@@ -1,0 +1,51 @@
+<div class="security app-container ng-scope">
+
+    <div class="kuiLocalNav">
+        <div class="kuiLocalNavRow">
+            <div class="kuiLocalNavRow__section">
+                <div class="kuiLocalTitle">
+                    Account Information
+                    <br />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+
+                <div class="kuiHeaderBar" style="margin-bottom: 20px; margin-top: 30px;">
+                    <div class="kuiHeaderBarSection">
+                        <h2 class="kuiSubTitle">Username</h2>
+                    </div>
+                </div>
+                <ul>
+                    <li>{{ctrl.security_user.user_name}}</li>
+                </ul>
+
+                <div class="kuiHeaderBar" style="margin-bottom: 20px; margin-top: 30px;">
+                    <div class="kuiHeaderBarSection">
+                        <h2 class="kuiSubTitle">Roles</h2>
+                    </div>
+                </div>
+                <p data-ng-repeat="role in ctrl.security_user.roles" style="margin-bottom: 10px;">
+                    {{role}}
+                </p>
+                <div ng-show="ctrl.security_user.roles == 0" style="font-style: italic">No roles found, please check the role mapping for this user.</div>
+
+                <div class="kuiHeaderBar" style="margin-bottom: 20px; margin-top: 30px;">
+                    <div class="kuiHeaderBarSection">
+                        <h2 class="kuiSubTitle">Backend Roles</h2>
+                    </div>
+                </div>
+                <p data-ng-repeat="backendrole in ctrl.security_user.backend_roles" style="margin-bottom: 10px;">
+                    {{backendrole}}
+                </p>
+                <div ng-show="ctrl.security_user.backend_roles.length == 0" style="font-style: italic">No backend roles found.</div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
