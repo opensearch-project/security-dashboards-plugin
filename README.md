@@ -1,33 +1,17 @@
-# Open Distro For Elasticsearch Security Kibana Plugin
+# Open Distro for Elasticsearch Security Kibana Plugin
 
-<p align="center">
-<img src="<TO BE REPLACED WITH OUR LOGO>" style="width: 60%" class="md_image"/>
-</p>
+This plugin for Kibana adds a configuration management UI for the Open Distro for Elasticsearch Security and Security-Advanced-Modules features, as well authentication, session management and multi-tenancy support to your secured cluster.
 
-## About this plugin
-This plugin for Kibana adds session management and multi-tenancy to your secured cluster.
+## Basic features 
 
-For Kibana 6.x it also provides a configuration GUI for the security features.
-
-## Downloads
-
-* Kibana 6.x: [Github](https://github.com/mauve-hedgehog/opendistro-elasticsearch-security-kibana-plugin)
-
-## Installation
-
-Download the release matching your Kibana installation, and install it like any other Kibana plugin:
-
-```
-bin/kibana-plugin install file:///path/to/opendistro-for-elasticsearch-security-kibana-plugin-<version>.zip
-```
+* Kibana authentication for Open Distro for Elasticsearch
+* Kibana session management
+* Open Distro for Elasticsearch Security configuration UI
+* Multi-tenancy support for Kibana 
 
 ## Documentation
 
-### Kibana 6.x
-* [Installation](TBD)
-* [Authentication](TBD)
-* [Multi Tenancy](TBD)
-* [Configuration GUI](TBD)
+Please refer to the [technical documentation](https://opendistro.github.io/for-elasticsearch-docs) for detailed information on installing and configuring opendistro-elasticsearch-security plugin.
 
 ## Copyright
 Open Distro For Elasticsearch Security Copyright 2019- Amazon.com, Inc. or its affiliates. All Rights Reserved.
