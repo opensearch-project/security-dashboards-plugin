@@ -13,6 +13,10 @@ This plugin for Kibana adds a configuration management UI for the Open Distro fo
 
 Please refer to the [technical documentation](https://opendistro.github.io/for-elasticsearch-docs) for detailed information on installing and configuring opendistro-elasticsearch-security plugin.
 
+## License
+
+This code is licensed under the Apache 2.0 License. 
+
 ## Copyright
 Open Distro For Elasticsearch Security Copyright 2019- Amazon.com, Inc. or its affiliates. All Rights Reserved.
 
