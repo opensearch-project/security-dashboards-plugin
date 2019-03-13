@@ -1,6 +1,6 @@
 # Open Distro for Elasticsearch Security Kibana Plugin
 
-This plugin for Kibana adds a configuration management UI for the Open Distro for Elasticsearch Security and Security-Advanced-Modules features, as well authentication, session management and multi-tenancy support to your secured cluster.
+This plugin for Kibana adds a configuration management UI for the Open Distro for Elasticsearch Security and Security-Advanced-Modules features, as well as authentication, session management and multi-tenancy support to your secured cluster.
 
 ## Basic features 
 
