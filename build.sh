@@ -73,14 +73,14 @@ cd "$DIR"
 mkdir -p build_stage
 cd build_stage
 
-echo "+++ Cloning https://github.com/mauve-hedgehog/opendistro-elasticsearch-kibana.git +++"
-git clone https://github.com/mauve-hedgehog/opendistro-elasticsearch-kibana.git || true > /dev/null 2>&1
+echo "+++ Cloning https://github.com/elastic/kibana.git +++"
+git clone https://github.com/elastic/kibana.git || true > /dev/null 2>&1
 if [ $? != 0 ]; then
     echo "got clone Kibana repository failed";
     exit 1;
 fi
 
-cd "opendistro-elasticsearch-kibana"
+cd "kibana"
 git fetch
 
 echo "+++ Change to tags/v$KIBANA_VERSION +++"

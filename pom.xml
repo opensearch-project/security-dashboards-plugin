@@ -36,7 +36,7 @@
   <version>0.7.0.0</version>
   <name>Open Distro Security for Elasticsearch Kibana Plugin</name>
   <description>Elasticsearch Security Kibana Plugin for Elasticsearch 6</description>
-  <url>https://github.com/mauve-hedgehog/opendistro-elasticsearch-security-kibana-plugin</url>
+  <url>https://github.com/opendistro-for-elasticsearch/security-kibana-plugin</url>
   <inceptionYear>2016</inceptionYear>
 
   <licenses>
@@ -52,7 +52,7 @@
   </properties>
 
   <scm>
-    <url>https://github.com/mauve-hedgehog/opendistro-elasticsearch-security-kibana-plugin</url>
+    <url>https://github.com/opendistro-for-elasticsearch/security-kibana-plugin</url>
     <connection>scm:git:git@github.com:mauve-hedgehog/opendistro-elasticsearch-security-kibana-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:mauve-hedgehog/opendistro-elasticsearch-security-kibana-plugin.git</developerConnection>
     <tag>v0.7.0.0</tag>
@@ -60,7 +60,7 @@
 
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/mauve-hedgehog/opendistro-elasticsearch-security-kibana-plugin/issues</url>
+    <url>https://github.com/opendistro-for-elasticsearch/security-kibana-plugin/issues</url>
   </issueManagement>
 
   <build>

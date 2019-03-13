@@ -3,11 +3,11 @@
   "version": "6.5.4",
   "description": "Security features for kibana",
   "main": "index.js",
-  "homepage": "https://github.com/mauve-hedgehog/opendistro-elasticsearch-security-kibana-plugin",
+  "homepage": "https://github.com/opendistro-for-elasticsearch/security-kibana-plugin",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mauve-hedgehog/opendistro-elasticsearch-security-kibana-plugin"
+    "url": "https://github.com/opendistro-for-elasticsearch/security-kibana-plugin"
   },
   "dependencies": {
     "@elastic/kibana-ui-framework": "0.0.11",
