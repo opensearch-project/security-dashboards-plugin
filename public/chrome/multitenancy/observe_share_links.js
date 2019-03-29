@@ -1,6 +1,9 @@
 import {parse} from 'url';
 
 /**
+ * @DEPRECATED
+ *
+ *
  * A MutationObserver that we attach to the top_nav in order to
  * detect when the share links area is shown and then make
  * sure that the tenant parameter is added to each URL
