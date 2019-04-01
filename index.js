@@ -315,6 +315,8 @@ export default function (kibana) {
 
             server.state('security_storage', storageCookieConf);
 
+            server.log(['error', 'security'], `authType is ${authType}`);
+
             if (authType && authType !== '' && ['basicauth', 'jwt', 'openid', 'saml', 'proxycache'].indexOf(authType) > -1) {
                 try {
                     await server.register({
@@ -330,14 +332,17 @@ export default function (kibana) {
                         this.status.yellow("'opendistro_security.cookie.secure' is set to false, cookies are transmitted over unsecure HTTP connection. Consider using HTTPS and set this key to 'true'");
                     }
 
-                    if (authType === 'openid') {
+
+
+
+                    if (authType == 'openid') {
                         let OpenId = require('./lib/auth/types/openid/OpenId');
                         authClass = new OpenId(pluginRoot, server, this, APP_ROOT, API_ROOT);
                         server.log("openid");
                     } else if (authType == 'basicauth') {
+                        server.log(['error', 'security'], `Basic Auth Has Been Matched`);
                         let BasicAuth = require('./lib/auth/types/basicauth/BasicAuth');
                         authClass = new BasicAuth(pluginRoot, server, this, APP_ROOT, API_ROOT);
-                        server.log("basicauth");
                     } else if (authType == 'jwt') {
                         let Jwt = require('./lib/auth/types/jwt/Jwt');
                         authClass = new Jwt(pluginRoot, server, this, APP_ROOT, API_ROOT);
@@ -350,12 +355,14 @@ export default function (kibana) {
                         authClass = new ProxyCache(pluginRoot, server, this, APP_ROOT, API_ROOT);
                     }
 
+                    server.log(['error', 'security'], `An PPOPPPPO error occurred authClass is ${authClass}`);
+
                     if (authClass) {
                         try {
                             // At the moment this is mainly to catch an error where the openid connect_url is wrong
                             await authClass.init();
                         } catch (error) {
-                            server.log(['error', 'security'], `An error occurred while enabling session management: ${error}`);
+                            server.log(['error', 'security'], `An KOKOKOOKOKO error occurred while enabling session management: ${error}`);
                             this.status.red('An error occurred during initialisation, please check the logs.');
                             return;
                         }
