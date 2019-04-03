@@ -32,6 +32,9 @@
 
 import chrome from 'ui/chrome';
 import { uiModules } from 'ui/modules';
+// This fixes an issue where the app icons would disappear while having a non-Kibana app open.
+// Should be fixed starting from Kibana 6.6.2
+import 'ui/autoload/modules';
 import { FeatureCatalogueRegistryProvider, FeatureCatalogueCategory } from 'ui/registry/feature_catalogue';
 require ('../../apps/configuration/systemstate/systemstate');
 

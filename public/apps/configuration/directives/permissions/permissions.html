@@ -11,7 +11,7 @@
             <th class="kuiTableHeaderCell tableHeaderCellIndexGroups actions">
                 <span class="kuiTableHeaderCell__liner">
                     <input type="checkbox" data-ng-model="showAdvanced"> Show Advanced</td>
-                </span>
+            </span>
             </th>
         </tr>
         </thead>
@@ -85,12 +85,17 @@
         <tr class="kuiTableRow" data-ng-repeat="permission in permissionsResource.permissions track by $index">
             <td class="kuiTableRowCell cellAlignTop">
                 <fieldset class="marginbottom--small" id="object-form-actiongroups">
-                    <ui-select ng-model="permissionsResource.permissions[$index]">
+                    <ui-select
+                            uis-open-close="onCloseNewSinglePermission(isOpen, $select)"
+                            ng-model="permissionsResource.permissions[$index]">
                         <ui-select-match placeholder="Start with cluster: or indices:">
-                            {{permission}}
+                            {{permission.name || permission}}
                         </ui-select-match>
-                        <ui-select-choices repeat="item in (permissionItems | filter: $select.search) track by $index">
-                            <span ng-bind="item"></span>
+                        <ui-select-choices
+                                refresh="refreshNewSinglePermission($select)"
+                                refresh-delay="0"
+                                repeat="item in (permissionItems | filter: $select.search) track by $index">
+                            <span ng-bind="item.name"></span>
                         </ui-select-choices>
                     </ui-select>
                 </fieldset>

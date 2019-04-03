@@ -52,6 +52,9 @@ uiModules
         var APP_ROOT = `${chrome.getBasePath()}`;
         var API_ROOT = `${APP_ROOT}/api/v1`;
 
+        this.opendistro_security_version = chrome.getInjected("opendistro_security_version");
+
+
         $http.get(`${API_ROOT}/auth/authinfo`)
             .then(
                 (response) => {

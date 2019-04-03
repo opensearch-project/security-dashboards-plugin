@@ -31,34 +31,6 @@ h5 {
   color: red;
 }
 
-.container {
-  margin-right: auto;
-  margin-left: 0px;
-  padding-left: 15px;
-  padding-right: 15px;
-}
-@media (min-width: 768px) {
-  .container {
-    width: 750px;
-  }
-}
-@media (min-width: 992px) {
-  .container {
-    width: 970px;
-  }
-}
-@media (min-width: 1200px) {
-  .container {
-    width: 1170px;
-  }
-}
-.container-fluid {
-  margin-right: auto;
-  margin-left: 0px;
-  padding-left: 15px;
-  padding-right: 15px;
-}
-
 .ng-submitted input.ng-invalid {
   border-color: #A30000 !important;
 }
@@ -128,13 +100,6 @@ h5 {
   font-weight: bold;
 }
 
-.kuiViewContent--constrainedWidth {
-  width: 100%;
-  max-width: 1100px;
-  margin-left: 0px;
-  margin-right: auto;
-}
-
 .kuiPanel--noborder {
   border: none;
 }
@@ -143,21 +108,7 @@ h5 {
   padding: 0px;
 }
 
-.kuiGalleryButton {
-  width: 130px;
-  height: 130px;
-  padding: 0px;
-}
 
-.kuiGalleryButton__label {
-  font-size: 14px;
-  color: #191E23;
-  text-align: center;
-  max-width: 100%;
-  white-space: inherit;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 
 .kuiTableRowCell {
   padding: 7px 8px 8px;
@@ -209,11 +160,6 @@ h5 {
 
 .kuiLocalNav {
   min-height: 60px;
-  margin-bottom: 20px;
-}
-
-.kuiLocalNavMain {
-  min-height: 30px;
   margin-bottom: 20px;
 }
 
@@ -286,4 +232,79 @@ h5 {
   background-color: #fff;
   color: #2D2D2D;
   border: 1px solid #D9D9D9;
+}
+
+.FeaturePanelList {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.FeaturePanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: 0 20px 20px 0;
+  padding: 25px 10px 10px;
+  width: 140px;
+  height: 140px;
+  border: 1px solid #CED5DA;
+  border-radius: 4px;
+  background-color: #F6F6F6;
+  line-height: 1.5;
+  text-decoration: none;
+}
+.FeaturePanel:hover {
+  border-color: #00A6FF;
+  background-color: #FFFFFF;
+}
+
+.FeaturePanel__image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  width: 50px;
+  height: 50px;
+}
+
+.FeaturePanel__label {
+  max-width: 100%;
+  font-size: 14px;
+  color: #191E23;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.FeaturePanel__icon {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  color: #666;
+}
+
+.FeaturePanelButton {
+  width: 130px;
+  height: 130px;
+  padding: 0px;
+}
+
+.FeaturePanelButton__label {
+  font-size: 14px;
+  color: #191E23;
+  text-align: center;
+  max-width: 100%;
+  white-space: inherit;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.securityLogoutLink__icon-image {
+  margin-left: 5px;
+  font-size: 20px;
+  vertical-align: middle;
+
 }

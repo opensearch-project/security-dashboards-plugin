@@ -32,7 +32,6 @@
 import chrome from 'ui/chrome';
 import { uiModules } from 'ui/modules';
 import { toastNotifications } from 'ui/notify';
-import setupShareObserver from '../../chrome/multitenancy/observe_share_links';
 import './readonly.less';
 
 // Needed to access the dashboardProvider
@@ -456,10 +455,6 @@ export function enableReadOnly($rootScope, $http, $window, $timeout, $q, $locati
     $rootScope.$on('$routeChangeSuccess', function(event, next, current) {
         if (next && next.$$route && next.$$route.originalPath) {
             document.body.setAttribute('security_path', next.$$route.originalPath.replace(':', '').split('/').join('_'));
-
-            if (chrome.getInjected('multitenancy_enabled') && next.locals && next.locals.security_resolvedInfo) {
-                setupShareObserver($timeout, next.locals.security_resolvedInfo.userRequestedTenant);
-            }
 
         }
     });
