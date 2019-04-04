@@ -257,9 +257,9 @@ export default function (kibana) {
                     }
                 });
 
-                if (xpackInstalled && config.get('xpack.opendistro_security.enabled') !== false) {
+                if (xpackInstalled && config.get('xpack.security.enabled') !== false) {
                     // It seems like X-Pack is installed and enabled, so we show an error message and then exit.
-                    this.status.red("X-Pack Security needs to be disabled for Security to work properly. Please set 'xpack.opendistro_security.enabled' to false in your kibana.yml");
+                    this.status.red("X-Pack Security needs to be disabled for Security to work properly. Please set 'xpack.security.enabled' to false in your kibana.yml");
                     return false;
                 }
             } catch (error) {
