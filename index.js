@@ -180,6 +180,8 @@ export default function (kibana) {
                     // If there's an error, it's probably because x-pack security is enabled.
                 }
 
+
+
                 if(server.config().get('opendistro_security.multitenancy.enabled')) {
                     let currentTenantName = 'global';
                     let currentTenant = '';
