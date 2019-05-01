@@ -1,0 +1,18 @@
+## 2019-04-23, Version 0.9.0.0 (Current)
+
+- Support For Kibana 6.7
+
+## 2019-04-04, Version 0.8.0.0
+
+- Support For  Kibana 6.6
+
+## 2019-03-19, Version 0.7.0.1
+ 
+- Fixed kibana tenant migration issue
+- Fixed saml logout URL ${APP_ROOT}/opendistro_security/saml/logout to ${APP_ROOT}/_opendistro/_security/saml/logout
+- Fixed build.sh script, package.json and pom.xml with correct github URLs.
+
+
+## 2019-03-12, Version 0.7.0.0
+
+- Initial launch of security-kibana-plugin for opendistro-for-elasticsearch
