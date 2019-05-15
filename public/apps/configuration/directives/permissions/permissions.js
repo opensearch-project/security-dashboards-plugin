@@ -8,6 +8,7 @@ app.directive('securitycPermissions', function () {
         restrict: 'EA',
         scope: {
             "permissionsResource": "=permissionsresource",
+            "actiongroupType": "&",
             'onShouldConfirm': '&',
         },
         controller: 'securityBaseController',
@@ -15,6 +16,10 @@ app.directive('securitycPermissions', function () {
 
             scope.showAdvanced = null;
             scope.actiongroupItems = [];
+
+            if (!scope.actiongroupType || scope.actiongroupType.length == 0) {
+                scope.actiongroupType = "all";
+            }
 
             scope.$watch('permissionsResource', function(newValue, oldValue){
                 if(newValue && (scope.showAdvanced == null)) {
@@ -31,11 +36,12 @@ app.directive('securitycPermissions', function () {
              * @returns {Array|*}
              */
             scope.getActiongroupItems = function() {
+
                 if (scope.actiongroupItems.length) {
                     return scope.actiongroupItems;
                 }
 
-                if (scope.actiongroupsAutoComplete) {
+                if (scope.actiongroupsAutoComplete && scope.actiongroupsAutoComplete.map) {
                     scope.actiongroupItems = scope.actiongroupsAutoComplete.map((item) => {
                         return item.name;
                     });

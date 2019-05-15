@@ -15,7 +15,7 @@
 
                             <div>
                                 <div ng-show="isNew" style="margin-bottom:20px;">
-                                    <h3 style="margin-top:0px;">{{service.newLabel}}:</h3>
+                                    <h3 class=" euiTitle euiTitle--medium" style="margin-top:0px;">{{service.newLabel}}:</h3>
                                     <ui-select ng-if="rolesAutoComplete.length && loaded"
                                                ng-model="newResourceName"
                                                on-select="onSelectedNewResourceName({item: $item})">
@@ -94,7 +94,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr class="kuiTableRow" ng-show="resourceloaded && (!resource.backendroles || resource.backendroles.length == 0)">
+                                <tr class="kuiTableRow" ng-show="resourceloaded && (!resource.backend_roles || resource.backend_roles.length == 0)">
                                     <td colspan="2" class="kuiTableRowCell">
                                         <div class="kuiPanel kuiPanel--centered kuiPanel--noborder">
                                             <div class="kuiEmptyTablePrompt kuiEmptyTablePrompt--nopadding">
@@ -103,14 +103,14 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <tr class="kuiTableRow" data-ng-repeat="backendrole in resource.backendroles track by $index">
+                                <tr class="kuiTableRow" data-ng-repeat="backendrole in resource.backend_roles track by $index">
                                     <td class="kuiTableRowCell cellAlignTop">
                                         <fieldset class="marginbottom--small" id="object-form-backendroles">
-                                            <input required type="text" class="kuiTextInput fullwidth" ng-model="resource.backendroles[$index]" name="">
+                                            <input required type="text" class="kuiTextInput fullwidth" ng-model="resource.backend_roles[$index]" name="">
                                         </fieldset>
                                     </td>
                                     <td class="kuiTableRowCell cellAlignTop actions">
-                                        <a ng-click="confirmRemoveArrayEntry(resource.backendroles, backendrole)" class="kuiButton kuiButton--danger kuiButton--iconText">
+                                        <a ng-click="confirmRemoveArrayEntry(resource.backend_roles, backendrole)" class="kuiButton kuiButton--danger kuiButton--iconText">
                                             <span class="kuiButton__icon kuiIcon fa-trash-o"></span>
                                         </a>
                                     </td>
@@ -118,7 +118,7 @@
                                 <tr class="kuiTableRow">
                                     <td class="kuiTableRowCell cellAlignTop actions"></td>
                                     <td class="kuiTableRowCell cellAlignTop actions">
-                                        <button ng-click="addArrayEntry(resource, 'backendroles', '')" ng-disabled="lastArrayEntryEmpty(resource.backendroles)" class="kuiButton kuiButton--primary kuiButton--iconText">
+                                        <button ng-click="addArrayEntry(resource, 'backend_roles', '')" ng-disabled="lastArrayEntryEmpty(resource.backend_roles)" class="kuiButton kuiButton--primary kuiButton--iconText">
                                             <span class="kuiButton__icon kuiIcon fa-plus"></span>
                                             Add Backend Role
                                         </button>
@@ -176,7 +176,7 @@
                             </table>
 
                             <div class="formsubmit">
-                                <button id="opendistro_security.button.submit" ng-disabled="!endpointAndMethodEnabled('ROLESMAPPING', 'PUT')  || resource.readonly"  class="kuiButton kuiButton--primary kuiButton--text" type="submit">Submit</button>
+                                <button id="opendistro_security.button.submit" ng-disabled="!endpointAndMethodEnabled('ROLESMAPPING', 'PUT')  || resource.reserved"  class="kuiButton kuiButton--primary kuiButton--text" type="submit">Submit</button>
                                 <button id="opendistro_security.button.cancel" class="kuiButton kuiButton--basic kuiButton--text" type="submit" ng-click="cancel()">Cancel</button>
                             </div>
                         </form>

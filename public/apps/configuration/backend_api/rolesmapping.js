@@ -43,14 +43,32 @@ uiModules.get('apps/opendistro_security/configuration', [])
             var rolemapping = {};
             rolemapping.users = [];
             rolemapping.hosts = [];
-            rolemapping.backendroles = [];
+            rolemapping.backend_roles = [];
             return rolemapping;
         };
 
         this.preSave = (rolemapping) => {
+
+            delete rolemapping.hidden;
+            delete rolemapping.reserved;
+            delete rolemapping.static;
+
             rolemapping.users = this.cleanArray(rolemapping.users);
-            rolemapping.backendroles = this.cleanArray(rolemapping.backendroles);
+            rolemapping.backend_roles = this.cleanArray(rolemapping.backend_roles);
             rolemapping.hosts = this.cleanArray(rolemapping.hosts);
+
+            if (rolemapping.hidden === false) {
+                delete rolemapping.hidden;
+            }
+
+            if (rolemapping.reserved === false) {
+                delete rolemapping.reserved;
+            }
+
+            if (typeof rolemapping.and_backend_roles !== 'undefined') {
+                delete rolemapping.and_backend_roles;
+            }
+
             return rolemapping;
         };
 

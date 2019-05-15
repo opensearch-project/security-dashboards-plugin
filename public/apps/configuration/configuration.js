@@ -37,10 +37,11 @@ import internalusers from './sections/internalusers';
 import actiongroups from './sections/actiongroups';
 import rolesmapping from './sections/rolesmapping';
 import roles from './sections/roles';
+import tenants from './sections/tenants';
 import securityconfiguration from './sections/securityconfiguration';
 
 import 'ui/autoload/styles';
-
+import '@elastic/eui/dist/eui_theme_light.css';
 import 'plugins/opendistro_security/apps/configuration/configuration.less';
 
 import 'ace';

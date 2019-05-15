@@ -94,7 +94,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="kuiTableRow" ng-class="{'selected': ctrl.currentTenant == ''}" ng-show="ctrl.globalEnabled && (ctrl.tenantSearch == '' || 'global'.startsWith(ctrl.tenantSearch.toLowerCase()))">
+                        <tr class="kuiTableRow" ng-class="{'selected': ctrl.currentTenant == ''}" ng-show="ctrl.GLOBAL_USER_VISIBLE && (ctrl.tenantSearch == '' || 'global'.startsWith(ctrl.tenantSearch.toLowerCase()))">
                             <td class="kuiTableRowCell">
                                 <div class="kuiTableRowCell__liner">
                                     <a id="opendistro_security.link.select.global" class="kuiLink" ng-click="ctrl.selectTenant(ctrl.GLOBAL_USER_LABEL, ctrl.GLOBAL_USER_VALUE)" title="Global">

@@ -13,6 +13,7 @@ app.directive('accordeon', function () {
     scope: {
       accordeonId: '@',
       title: '@',
+      testid: '@',
       isCollapsed: '=',
       additionalClass: '@'
     },

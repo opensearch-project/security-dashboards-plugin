@@ -45,7 +45,7 @@
                                tooltip="Map users, backend roles and hostnames to roles."
                                tooltip-placement="bottom" href="#/rolesmapping">
                                 <div class="FeaturePanelButton__image">
-                                    <img src="{{roleMappingsSvgURL}}" width="56" />
+                                    <span class="fa fa-exchange fa-4x"></span>
                                 </div>
                                 <div class="FeaturePanelButton__label">
                                     Role Mappings
@@ -56,7 +56,7 @@
                                ng-href="#/roles" tooltip="Configure Roles and their permissions."
                                tooltip-placement="bottom" href="#/roles">
                                 <div class="FeaturePanelButton__image">
-                                    <img src="{{rolesSvgURL}}" width="56" />
+                                    <span class="fa fa-users fa-4x"></span>
                                 </div>
                                 <div class="FeaturePanelButton__label">
                                     Roles
@@ -68,7 +68,7 @@
                                tooltip="Configure named groups of permissions that can be applied to roles."
                                tooltip-placement="bottom" href="#/actiongroups">
                                 <div class="FeaturePanelButton__image">
-                                    <img src="{{actionGroupsSvgURL}}" width="56" />
+                                    <span class="fa fa-sitemap fa-4x"></span>
                                 </div>
                                 <div class="FeaturePanelButton__label">
                                     Action Groups
@@ -88,7 +88,7 @@
                                tooltip="Use the Internal Users Database if you don't have any external authentication systems in place."
                                tooltip-placement="bottom" href="#/internalusers">
                                 <div class="FeaturePanelButton__image">
-                                    <img src="{{internalUserDatabaseSvgURL}}" width="56" />
+                                    <span class="fa fa-user fa-4x"></span>
                                 </div>
                                 <div class="FeaturePanelButton__label">
                                     Internal User Database
@@ -105,17 +105,30 @@
                                    tooltip="View the configured authentication and authorization modules."
                                    href="#/securityconfiguration">
                                     <div class="FeaturePanelButton__image">
-                                        <img src="{{authenticationSvgURL}}" width="56" />
+                                        <span class="fa fa-lock fa-4x"></span>
                                     </div>
                                     <div class="FeaturePanelButton__label">
-                                        Authentication & Authorization
+                                        Authentication & Authorisation
                                     </div>
                                 </a>
-                                <a id="opendistro_security.link.cache" ng-if="endpointAndMethodEnabled('CACHE', 'DELETE')" class="FeaturePanel ng-scope"
-                                   ng-click="clearCache()" tooltip="Purge all Security caches"
+
+                                <a id="opendistro_security.link.license" ng-if="endpointAndMethodEnabled('LICENSE', 'GET')" class="FeaturePanel ng-scope"
+                                   ng-href="#/system"
+                                   tooltip="Display all installed modules"
                                    tooltip-placement="bottom">
                                     <div class="FeaturePanelButton__image">
-                                        <img src="{{purgeCacheSvgURL}}" width="56" />
+                                        <span class="fa fa-info fa-4x"></span>
+                                    </div>
+                                    <div class="FeaturePanelButton__label">
+                                        License & System Info
+                                    </div>
+                                </a>
+
+                                <a id="opendistro_security.link.cache" ng-if="endpointAndMethodEnabled('CACHE', 'DELETE')" class="FeaturePanel ng-scope"
+                                   ng-click="clearCache()" tooltip="Purge all caches"
+                                   tooltip-placement="bottom">
+                                    <div class="FeaturePanelButton__image">
+                                        <span class="fa fa-refresh fa-4x"></span>
                                     </div>
                                     <div class="FeaturePanelButton__label">
                                         Purge Cache

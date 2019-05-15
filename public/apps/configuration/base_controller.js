@@ -217,6 +217,17 @@ app.controller('securityBaseController', function ($scope, $element, $route, $wi
         });
         editor.$blockScrolling = Infinity;
         editor.setShowPrintMargin(false);
+         editor.session.setMode("ace/mode/json")
+         editor.resize();
+         editor.renderer.updateFull();
+         // try to beautify
+         var code = editor.getSession().getValue();
+         try {
+             var codeAsJson = JSON.parse(code);
+             editor.getSession().setValue(JSON.stringify(codeAsJson, null, 2));
+         } catch(exception) {
+             // no valid json
+         }
     };
 
     $scope.toggleEditor = (resource) => {
@@ -231,6 +242,11 @@ app.controller('securityBaseController', function ($scope, $element, $route, $wi
         // copy resource, we don't want to modify current edit session
         var resourceCopy = JSON.parse(JSON.stringify(resource));
         $scope.resourceAsJson = JSON.stringify($scope.service.preSave(resourceCopy), null, 2);
+    }
+
+    $scope.extractPatternsFromObjectArray = function(objArray, key) {
+        let result = objArray.map(a => a[key]);
+        return result.flat().sort();
     }
 
     $scope.checkActionGroupExists = function (array, index, item) {
@@ -416,4 +432,29 @@ app.filter('escape', function() {
 
 app.filter('unsafe', function($sce) {
     return $sce.trustAsHtml;
+});
+
+app.directive('autoFocus', function($timeout) {
+    return {
+        link: function (scope, element, attrs) {
+            attrs.$observe("autoFocus", function(newValue){
+                if (newValue === "true")
+                    $timeout(function(){element[0].focus()});
+            });
+        }
+    };
+});
+
+// unused at the moment
+app.filter('actiongrouptype', function () {
+    return function (actiongroups, type) {
+        var filtered = [];
+        for (var i = 0; i < actiongroups.length; i++) {
+            var actiongroup = actiongroups[i];
+            if (type == "all" || actiongroup.type == type) {
+                filtered.push(actiongroup);
+            }
+        }
+        return filtered;
+    };
 });

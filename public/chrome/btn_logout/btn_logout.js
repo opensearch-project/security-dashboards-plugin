@@ -29,14 +29,23 @@
  * permissions and limitations under the License.
  */
 
-import { chromeNavControlsRegistry } from 'ui/registry/chrome_nav_controls';
-import { uiModules } from 'ui/modules';
+import { chromeHeaderNavControlsRegistry } from 'ui/registry/chrome_header_nav_controls';
+
 import chrome from 'ui/chrome';
 
+
 if (chrome.getInjected('auth.type') != "kerberos" && chrome.getInjected('auth.type') != "proxy") {
- chromeNavControlsRegistry.register(() => ({
+ chromeHeaderNavControlsRegistry.register(() => ({
   name: 'btn-logout',
   template: require('plugins/opendistro_security/chrome/btn_logout/btn_logout.html'),
-  order: 1000
+  order: 1000,
+  side: 'right',
+  render(el) {
+   // Compiles and adds the logout directive
+   angular.element(el.parentNode).injector().invoke(function($rootScope, $compile) {
+    const $compiled = $compile("<security-logout-button />")($rootScope);
+    el.parentNode.prepend($compiled[0]);
+   });
+  }
  }));
 }
