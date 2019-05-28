@@ -1,0 +1,51 @@
+<div ng-controller="securityBaseController">
+    <div class="security app-container ng-scope" id="section-editor" ng-controller="securityEditTenantsController">
+
+        <securityc-edit-header></securityc-edit-header>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="">
+                        <form securityc-form-focus-added-field name="objectForm" id="object-form" method="post" ng-submit="saveObject($event)" novalidate style="width:70%">
+
+                            <securityc-error-message></securityc-error-message>
+
+                            <securityc-form-resource-name></securityc-form-resource-name>
+
+                            <securityc-form-new-resource-field></securityc-form-new-resource-field>
+
+
+                            <table class="kuiTable tableIndexGroups">
+                                <thead>
+                                <tr>
+                                    <th class="kuiTableHeaderCell tableHeaderCellIndexGroups">
+                                        <span class="kuiTableHeaderCell__liner">
+                                            Description
+                                        </span>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="kuiTableRow">
+                                    <td class="kuiTableRowCell cellAlignTop">
+                                        <fieldset class="marginbottom--small" id="object-form-backendroles">
+                                            <input type="text" class="kuiTextInput fullwidth" id="object-form-description" ng-model="resource.description" name="">
+                                        </fieldset>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="formsubmit">
+                                <button id="opendistro_security.button.submit" ng-disabled="!endpointAndMethodEnabled('TENANTS', 'PUT')  || resource.reserved"  class="kuiButton kuiButton--primary kuiButton--text" type="submit">Submit</button>
+                                <button id="opendistro_security.button.cancel" class="kuiButton kuiButton--basic kuiButton--text" type="submit" ng-click="cancel()">Cancel</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

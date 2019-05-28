@@ -18,7 +18,7 @@
                             <securityc-permissions on-should-confirm="confirmRemoveArrayEntry" permissionsResource="resource"></securityc-permissions>
 
                             <div class="formsubmit">
-                                <button id="opendistro_security.button.submit" ng-disabled="!endpointAndMethodEnabled('ACTIONGROUPS', 'PUT') || resource.readonly" class="kuiButton kuiButton--primary kuiButton--text" type="submit">Submit</button>
+                                <button id="opendistro_security.button.submit" ng-disabled="!endpointAndMethodEnabled('ACTIONGROUPS', 'PUT') || resource.reserved" class="kuiButton kuiButton--primary kuiButton--text" type="submit">Submit</button>
                                 <button id="opendistro_security.button.cancel" class="kuiButton kuiButton--basic kuiButton--text" type="button" ng-click="cancel()">Cancel</button>
                             </div>
                         </form>
