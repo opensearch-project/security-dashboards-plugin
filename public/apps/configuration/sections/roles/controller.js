@@ -96,13 +96,6 @@ app.controller('securityEditRolesController', function ($rootScope, $scope, $ele
         return $scope.isNew? "New Role " : "Edit Role '" + $scope.resourcename+"'";
     }
 
-    $scope.initialiseStates = () => {
-        systemstate.loadSystemInfo().then(function(){
-            $scope.dlsFlsEnabled = systemstate.dlsFlsEnabled();
-            $scope.multiTenancyEnabled = systemstate.multiTenancyEnabled();
-        });
-    }
-
     $scope.loadIndices = () => {
 
         $scope.indices = {};

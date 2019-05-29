@@ -120,11 +120,9 @@ export default function LoginController(kbnUrl, $scope, $http, $window, systemst
                         // load and cache systeminfo and rest api info
                         // perform in the callback due to Chrome cancelling the
                         // promises if we navigate away from the page, even if async/await
-                        systemstate.loadSystemInfo().then((response) => {
-                            systemstate.loadRestInfo().then((response) => {
-                                var user = JSON.parse(sessionStorage.getItem("security_user"));
-                                $window.location.href = `${nextUrl}`;
-                            });
+                        systemstate.loadRestInfo().then((response) => {
+                            var user = JSON.parse(sessionStorage.getItem("security_user"));
+                            $window.location.href = `${nextUrl}`;
                         });
                     },
                     (error) => {
