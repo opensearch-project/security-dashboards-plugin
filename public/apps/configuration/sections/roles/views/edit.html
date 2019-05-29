@@ -19,10 +19,10 @@
 
             <div class="kuiLocalNavRow kuiLocalNavRow--secondary">
                 <div class="kuiLocalTabs">
-                    <a ng-click="selectTab('overview')" ng-class="getTabCss('overview')" id="security.roles.tab.overview">Overview</a>
-                    <a ng-click="selectTab('clusterpermissions')" ng-class="getTabCss('clusterpermissions')" id="security.roles.tab.clusterpermissions">Cluster Permissions</a>
-                    <a ng-click="selectTab('indexpermissions')" ng-class="getTabCss('indexpermissions')" id="security.roles.tab.indexpermissions">Index Permissions</a>
-                    <a ng-click="selectTab('applicationpermissions')" ng-class="getTabCss('applicationpermissions')" id="security.roles.tab.applicationpermissions">Tenant Permissions</a>
+                    <a ng-click="selectTab('overview')" ng-class="getTabCss('overview')" id="opendistro_security.roles.tab.overview">Overview</a>
+                    <a ng-click="selectTab('clusterpermissions')" ng-class="getTabCss('clusterpermissions')" id="opendistro_security.roles.tab.clusterpermissions">Cluster Permissions</a>
+                    <a ng-click="selectTab('indexpermissions')" ng-class="getTabCss('indexpermissions')" id="opendistro_security.roles.tab.indexpermissions">Index Permissions</a>
+                    <a ng-click="selectTab('applicationpermissions')" ng-class="getTabCss('applicationpermissions')" id="opendistro_security.roles.tab.applicationpermissions">Tenant Permissions</a>
                 </div>
             </div>
         </div>
@@ -126,7 +126,7 @@
 
                             <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive" data-ng-repeat="indexpermission in resource.index_permissions track by $index">
                                 <div class="euiFlexItem">
-                                    <accordeon title="Index patterns: {{getAccordeonTitle(indexpermission.index_patterns, '(No index patterns configured)')}}" is-collapsed="indexpermission.collapsed" testid="security.roles.indexpermissions-{{$index}}" additional-class="euiTitle euiTitle--xsmall">
+                                    <accordeon title="Index patterns: {{getAccordeonTitle(indexpermission.index_patterns, '(No index patterns configured)')}}" is-collapsed="indexpermission.collapsed" testid="opendistro_security.roles.indexpermissions-{{$index}}" additional-class="euiTitle euiTitle--xsmall">
 
                                         <!-- Delete index permissions -->
                                         <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive">
@@ -184,7 +184,7 @@
                                                                 ng-model="indexpermission.index_patterns[$index]"
                                                                 name=""
                                                                 autoFocus
-                                                                id="security.input.roles.indexpatterns.{{$parent.$index}}.{{$index}}">
+                                                                id="opendistro_security.input.roles.indexpatterns.{{$parent.$index}}.{{$index}}">
                                                     </fieldset>
                                                 </td>
                                                 <td class="kuiTableRowCell cellAlignTop actions">
@@ -277,8 +277,8 @@
                                                 <th class="kuiTableHeaderCell tableHeaderCellIndexGroups actions">
                                                     <div class="kuiTableHeaderCell__liner">
                                                         <select class="kuiSelect" name="flsModeSelect" ng-model="indexpermission.flsmode">
-                                                            <option value="whitelist" id="security.option.roles.fls.whitelist">Include fields</option>
-                                                            <option value="blacklist" id="security.option.roles.fls.blacklist">Exclude fields</option>
+                                                            <option value="whitelist" id="opendistro_security.option.roles.fls.whitelist">Include fields</option>
+                                                            <option value="blacklist" id="opendistro_security.option.roles.fls.blacklist">Exclude fields</option>
                                                         </select>
                                                     </div>
                                                 </th>
@@ -303,7 +303,7 @@
                                                                 class="kuiTextInput fullwidth"
                                                                 ng-model="indexpermission.fls[$index]"
                                                                 name=""
-                                                                id="security.input.roles.fls.{{indexpermission.fls[$index]}}">
+                                                                id="opendistro_security.input.roles.fls.{{indexpermission.fls[$index]}}">
                                                     </fieldset>
                                                 </td>
                                                 <td class="kuiTableRowCell cellAlignTop actions">
@@ -372,7 +372,7 @@
                                                                 class="kuiTextInput fullwidth"
                                                                 ng-model="indexpermission.masked_fields[$index]"
                                                                 name=""
-                                                                id="security.input.roles.maskedfields.{{$index}}">
+                                                                id="opendistro_security.input.roles.maskedfields.{{$index}}">
                                                     </fieldset>
                                                 </td>
                                                 <td class="kuiTableRowCell cellAlignTop actions">
@@ -481,7 +481,7 @@
                                                 tooltip="Delete field {{permission}}"
                                                 ng-click="confirmRemoveArrayEntry(resource.global_application_permissions, permission)"
                                                 class="kuiButton kuiButton--danger kuiButton--iconText"
-                                                id="opendistro_security.button.roles.applicationpermissionsecuritylobal.delete.{{$index}}">
+                                                id="opendistro_security.button.roles.applicationpermissionsglobal.delete.{{$index}}">
                                             <span class="kuiButton__icon kuiIcon fa-trash-o"></span>
                                         </a>
                                     </td>
@@ -493,7 +493,7 @@
                                                 ng-click="addArrayEntry(resource, 'global_application_permissions', '')"
                                                 ng-disabled="lastArrayEntryEmpty(resource.global_application_permissions)"
                                                 class="kuiButton kuiButton--primary kuiButton--iconText"
-                                                id="opendistro_security.button.roles.applicationpermissionsecuritylobal.add">
+                                                id="opendistro_security.button.roles.applicationpermissionsglobal.add">
                                             <span class="kuiButton__icon kuiIcon fa-plus"></span>
                                             Add Field
                                         </button>
@@ -531,7 +531,7 @@
 
                             <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive" data-ng-repeat="tenantpermission in resource.tenant_permissions track by $index" ng-if="multiTenancyEnabled">
                                 <div class="euiFlexItem">
-                                    <accordeon title="Tenant patterns: {{getAccordeonTitle(tenantpermission.tenant_patterns, '(no tenant patterns configured)')}}" is-collapsed="tenantpermission.collapsed" testid="security.roles.tenantpermissions-{{$index}}" additional-class="euiTitle euiTitle--xsmall">
+                                    <accordeon title="Tenant patterns: {{getAccordeonTitle(tenantpermission.tenant_patterns, '(no tenant patterns configured)')}}" is-collapsed="tenantpermission.collapsed" testid="opendistro_security.roles.tenantpermissions-{{$index}}" additional-class="euiTitle euiTitle--xsmall">
 
                                         <!-- Delete index permissions -->
                                         <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive">
@@ -588,7 +588,7 @@
                                                                 class="kuiTextInput fullwidth"
                                                                 ng-model="tenantpermission.tenant_patterns[$index]"
                                                                 name=""
-                                                                id="security.input.roles.tenantpatterns.{{$index}}">
+                                                                id="opendistro_security.input.roles.tenantpatterns.{{$index}}">
                                                     </fieldset>
                                                 </td>
                                                 <td class="kuiTableRowCell cellAlignTop actions">

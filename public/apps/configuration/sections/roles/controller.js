@@ -69,7 +69,7 @@ app.controller('securityEditRolesController', function ($rootScope, $scope, $ele
     $scope.service = backendRoles;
     $scope.$parent.service = backendRoles;
 
-    $scope.resourcelabel = "Search Guard Role";
+    $scope.resourcelabel = "Open Distro Security Role";
     $scope.loaded = false;
     $scope.resource = {};
     $scope.resourcename = "";

@@ -132,7 +132,7 @@ export default function LoginController(kbnUrl, $scope, $http, $window, systemst
                             // This happens either when the user doesn't have any valid tenants or roles
                             this.errorMessage = error.data.message;
                         } else {
-                            this.errorMessage = 'An error occurred while checking your credentials, make sure you have an Elasticsearch cluster secured by Search Guard running.';
+                            this.errorMessage = 'An error occurred while checking your credentials, make sure you have an Elasticsearch cluster secured by Open Distro Security running.';
                         }
                     }
                 );

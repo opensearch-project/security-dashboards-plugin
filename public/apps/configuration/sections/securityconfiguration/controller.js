@@ -17,12 +17,12 @@ app.controller('securityConfigController', function ($scope, $element, $route, c
     $scope.title = "Authentication / Authorization configuration";
     $scope.service.list().then(function (response) {
         $scope.resource = $scope.service.postFetch(response.data);
-        forEach(response.data.security_config.dynamic.authc, function(value, key) {
+        forEach(response.data.config.dynamic.authc, function(value, key) {
             value["name"] = key;
             $scope.sortedAuthc.push(value);
         });
 
-        forEach(response.data.security_config.dynamic.authz, function(value, key) {
+        forEach(response.data.config.dynamic.authz, function(value, key) {
             value["name"] = key;
             $scope.sortedAuthz.push(value);
         });
