@@ -37,7 +37,7 @@
   <name>Open Distro Security for Elasticsearch Kibana Plugin</name>
   <description>Open Distro Security for Elasticsearch Kibana Plugin</description>
   <url>https://github.com/opendistro-for-elasticsearch/security-kibana-plugin</url>
-  <inceptionYear>2016</inceptionYear>
+  <inceptionYear>2017</inceptionYear>
 
   <licenses>
     <license>
