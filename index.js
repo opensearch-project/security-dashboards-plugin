@@ -389,7 +389,7 @@ export default function (kibana) {
                             // At the moment this is mainly to catch an error where the openid connect_url is wrong
                             await authClass.init();
                         } catch (error) {
-                            this.status.red('An error occurred during initialisation, please check the logs.');
+                            this.status.red(`An error occurred during initialisation. Error: ${error}`);
                             return;
                         }
 
@@ -397,7 +397,7 @@ export default function (kibana) {
                     }
                 } catch (error) {
                     server.log(['error', 'security'], `An error occurred registering server plugins: ${error}`);
-                    this.status.red('An error occurred during initialisation, please check the logs.');
+                    this.status.red(`An error occurred during initialisation. Error: ${error}`);
                     return;
                 }
 
