@@ -45,7 +45,7 @@
                                tooltip="Map users, backend roles and hostnames to roles."
                                tooltip-placement="bottom" href="#/rolesmapping">
                                 <div class="FeaturePanelButton__image">
-                                    <span class="fa fa-exchange fa-4x configpanel"></span>
+                                    <img src="{{roleMappingsSvgURL}}" width="56" />
                                 </div>
                                 <div class="FeaturePanelButton__label">
                                     Role Mappings
@@ -56,7 +56,7 @@
                                ng-href="#/roles" tooltip="Configure Roles and their permissions."
                                tooltip-placement="bottom" href="#/roles">
                                 <div class="FeaturePanelButton__image">
-                                    <span class="fa fa-users fa-4x configpanel"></span>
+                                    <img src="{{rolesSvgURL}}" width="56" />
                                 </div>
                                 <div class="FeaturePanelButton__label">
                                     Roles
@@ -68,7 +68,7 @@
                                tooltip="Configure named groups of permissions that can be applied to roles."
                                tooltip-placement="bottom" href="#/actiongroups">
                                 <div class="FeaturePanelButton__image">
-                                    <span class="fa fa-sitemap fa-4x configpanel"></span>
+                                    <img src="{{actionGroupsSvgURL}}" width="56" />
                                 </div>
                                 <div class="FeaturePanelButton__label">
                                     Action Groups
@@ -100,7 +100,7 @@
                                tooltip="Use the Internal Users Database if you don't have any external authentication systems in place."
                                tooltip-placement="bottom" href="#/internalusers">
                                 <div class="FeaturePanelButton__image">
-                                    <span class="fa fa-user fa-4x configpanel"></span>
+                                    <img src="{{internalUserDatabaseSvgURL}}" width="56" />
                                 </div>
                                 <div class="FeaturePanelButton__label">
                                     Internal User Database
@@ -117,7 +117,7 @@
                                    tooltip="View the configured authentication and authorization modules."
                                    href="#/securityconfiguration">
                                     <div class="FeaturePanelButton__image">
-                                        <span class="fa fa-lock fa-4x configpanel"></span>
+                                        <img src="{{authenticationSvgURL}}" width="56" />
                                     </div>
                                     <div class="FeaturePanelButton__label">
                                         Authentication & Authorisation
@@ -128,7 +128,7 @@
                                    ng-click="clearCache()" tooltip="Purge all caches"
                                    tooltip-placement="bottom">
                                     <div class="FeaturePanelButton__image">
-                                        <span class="fa fa-refresh fa-4x configpanel"></span>
+                                        <img src="{{purgeCacheSvgURL}}" width="56" />
                                     </div>
                                     <div class="FeaturePanelButton__label">
                                         Purge Cache
