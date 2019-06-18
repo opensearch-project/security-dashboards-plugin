@@ -74,6 +74,7 @@ app.controller('securityBaseController', function ($scope, $element, $route, $wi
     $scope.internalUserDatabaseSvgURL = APP_ROOT + "/plugins/opendistro_security/assets/internal_user_database.svg";
     $scope.authenticationSvgURL = APP_ROOT + "/plugins/opendistro_security/assets/authentication.svg";
     $scope.purgeCacheSvgURL = APP_ROOT + "/plugins/opendistro_security/assets/purge_cache.svg";
+    $scope.tenantsSvgURL = APP_ROOT + "/plugins/opendistro_security/assets/tenants.svg";
 
     $scope.title = "Security Configuration";
 

@@ -77,8 +77,8 @@ app.controller('securityEditRolesController', function ($rootScope, $scope, $ele
     $scope.rolemapping = {};
     $scope.isNew = true;
 
-    $scope.dlsFlsEnabled = false;
-    $scope.multiTenancy = false;
+    $scope.dlsFlsEnabled = true;
+    $scope.multiTenancy = true;
 
     $scope.selectedTab = "indexpermissions";
 
@@ -95,6 +95,7 @@ app.controller('securityEditRolesController', function ($rootScope, $scope, $ele
     $scope.title = function () {
         return $scope.isNew? "New Role " : "Edit Role '" + $scope.resourcename+"'";
     }
+
 
     $scope.loadIndices = () => {
 
