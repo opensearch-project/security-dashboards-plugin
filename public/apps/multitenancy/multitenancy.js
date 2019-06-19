@@ -145,18 +145,18 @@ uiModules
                 var allTenants = response.data.tenants;
                 delete allTenants[this.username];
 
-                // delete the ODS_GLOBAL_TENANT for the moment. We fall back the GLOBAL until
+                // delete the global_tenant for the moment. We fall back the GLOBAL until
                 // RBAC is rolled out completely.
-                if(response.data.tenants.hasOwnProperty("ODS_GLOBAL_TENANT") && this.globalEnabled) {
-                    this.GLOBAL_USER_WRITEABLE = response.data.tenants.ODS_GLOBAL_TENANT && !this.userHasDashboardOnlyRole;
+                if(response.data.tenants.hasOwnProperty("global_tenant") && this.globalEnabled) {
+                    this.GLOBAL_USER_WRITEABLE = response.data.tenants.global_tenant && !this.userHasDashboardOnlyRole;
                     this.GLOBAL_USER_VISIBLE = true;
                 } else {
-                    // ODS_GLOBAL_TENANT not available in tenant list, needs to be
+                    // global_tenant not available in tenant list, needs to be
                     // removed from UI display as well
                     this.GLOBAL_USER_WRITEABLE = false;
                     this.GLOBAL_USER_VISIBLE = false;
                 }
-                delete response.data.tenants["ODS_GLOBAL_TENANT"];
+                delete response.data.tenants["global_tenant"];
 
                 // sort tenants by putting the keys in an array first
                 var tenantkeys = [];

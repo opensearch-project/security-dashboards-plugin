@@ -90,7 +90,7 @@ app.controller('securityEditRolesController', function ($rootScope, $scope, $ele
     $scope.globalEnabled = chrome.getInjected("multitenancy.tenants.enable_global");
 
     // todo: must be replaced wiith action groups from backend when RBAC is rolled out
-    $scope.applicationActionGroups = ["ODS_KIBANA_ALL_READ", "ODS_KIBANA_ALL_WRITE"];
+    $scope.applicationActionGroups = ["kibana_all_read", "kibana_all_write"];
 
     $scope.title = function () {
         return $scope.isNew? "New Role " : "Edit Role '" + $scope.resourcename+"'";
