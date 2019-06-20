@@ -6,6 +6,7 @@
 
         <div class="row">
             <div class="col-xs-12" style="text-align: center;">
+                <img class="brand-image" kbn-src="/plugins/opendistro_security/assets/open_distro_for_elasticsearch_logo_h.svg" width="250">
 
                 <h3 ng-if="accessState=='pending'" style="margin-top:0px;">Please wait ...</h3>
 
@@ -75,6 +76,18 @@
                                 </div>
                             </a>
 
+                            <a id="opendistro_security.link.tenants" ng-if="endpointAndMethodEnabled('TENANTS', 'GET')" class="FeaturePanel ng-scope"
+                               ng-href="#/tenants"
+                               tooltip="Configure tenants."
+                               tooltip-placement="bottom" href="#/tenants">
+                                <div class="FeaturePanelButton__image">
+                                    <img src="{{tenantsSvgURL}}" width="56" />
+                                </div>
+                                <div class="FeaturePanelButton__label">
+                                    Tenants
+                                </div>
+                            </a>
+
                         </div>
                     </div>
 
@@ -108,11 +121,12 @@
                                         <img src="{{authenticationSvgURL}}" width="56" />
                                     </div>
                                     <div class="FeaturePanelButton__label">
-                                        Authentication & Authorization
+                                        Authentication & Authorisation
                                     </div>
                                 </a>
+
                                 <a id="opendistro_security.link.cache" ng-if="endpointAndMethodEnabled('CACHE', 'DELETE')" class="FeaturePanel ng-scope"
-                                   ng-click="clearCache()" tooltip="Purge all Security caches"
+                                   ng-click="clearCache()" tooltip="Purge all caches"
                                    tooltip-placement="bottom">
                                     <div class="FeaturePanelButton__image">
                                         <img src="{{purgeCacheSvgURL}}" width="56" />

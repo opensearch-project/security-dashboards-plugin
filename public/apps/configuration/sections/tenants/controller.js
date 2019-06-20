@@ -1,20 +1,20 @@
 import { uiModules } from 'ui/modules';
 import { get } from 'lodash';
-import '../../backend_api/rolesmapping';
+import '../../backend_api/tenants';
 
 const app = uiModules.get('apps/opendistro_security/configuration', []);
 
-app.controller('securityRoleMappingsController', function ($scope, $element, $route, createNotifier, backendrolesmapping, kbnUrl) {
+app.controller('securityTenantsController', function ($scope, $element, $route, createNotifier, backendTenants, kbnUrl) {
 
-    $scope.endpoint = "rolesmapping";
-    $scope.$parent.endpoint = "rolesmapping";
+    $scope.endpoint = "tenants";
+    $scope.$parent.endpoint = "tenants";
 
-    $scope.service = backendrolesmapping;
-    $scope.$parent.service = backendrolesmapping;
+    $scope.service = backendTenants;
+    $scope.$parent.service = backendTenants;
 
     $scope.resources = {};
 
-    $scope.title = "Manage Role Mappings";
+    $scope.title = "Manage Tenants";
 
     $scope.service.list().then(function (response) {
         $scope.resourcenames = Object.keys(response.data).sort();
@@ -23,15 +23,8 @@ app.controller('securityRoleMappingsController', function ($scope, $element, $ro
         $scope.loaded = true;
     });
 
-    $scope.securityRoleMissing = function(mappingname) {
-        if ($scope.roleNames && $scope.roleNames.length > 0) {
-            return $scope.roleNames.indexOf(mappingname) == -1 ? true : false;
-        }
-        return false;
-    }
-
-    $scope.newRole = function(rolename) {
-        kbnUrl.change(`/roles/new?name=`+rolename);
+    $scope.newRole = function(tenantname) {
+        kbnUrl.change(`/tenants/new?name=`+tenantname);
     }
 
     /**
@@ -60,15 +53,15 @@ app.controller('securityRoleMappingsController', function ($scope, $element, $ro
 
 });
 
-app.controller('securityEditRoleMappingsController', function ($scope, $element, $route, $location, $routeParams, createNotifier, backendrolesmapping, backendAPI, kbnUrl) {
+app.controller('securityEditTenantsController', function ($scope, $element, $route, $location, $routeParams, createNotifier, backendTenants, backendAPI, kbnUrl) {
 
-    $scope.endpoint = "rolesmapping";
-    $scope.$parent.endpoint = "rolesmapping";
+    $scope.endpoint = "tenants";
+    $scope.$parent.endpoint = "tenants";
 
-    $scope.service = backendrolesmapping;
-    $scope.$parent.service = backendrolesmapping;
+    $scope.service = backendTenants;
+    $scope.$parent.service = backendTenants;
 
-    $scope.resourcelabel = "Role";
+    $scope.resourcelabel = "Tenant";
     $scope.resource = {};
     $scope.resourcename = "";
     $scope.resourcenames = [];
@@ -78,7 +71,7 @@ app.controller('securityEditRoleMappingsController', function ($scope, $element,
     $scope.resourceloaded = false;
 
     $scope.title = function () {
-        return $scope.isNew? "New Role Mapping" : "Edit Role Mapping '" + $scope.resourcename+"'";
+        return $scope.isNew? "New Tenant" : "Edit Tenant '" + $scope.resourcename+"'";
     }
 
     /**
@@ -89,23 +82,23 @@ app.controller('securityEditRoleMappingsController', function ($scope, $element,
         $scope.resourcename = event.item.name;
     };
 
-    // get all usernames and load pre-existing user, if any
     $scope.service.list().then((response) => {
+
         $scope.resourcenames = Object.keys(response.data);
 
-        var rolemapping = $routeParams.resourcename;
-        if (rolemapping) {
-            $scope.service.get(rolemapping)
+        var tenant = $routeParams.resourcename;
+        if (tenant) {
+            $scope.service.get(tenant)
                 .then((response) => {
                     $scope.resource = $scope.service.postFetch(response);
-                    $scope.resourcename = rolemapping;
+                    $scope.resourcename = tenant;
                     $scope.resourceloaded = true;
                     if($location.path().indexOf("clone") == -1) {
                         $scope.isNew = false;
                     } else {
                         $scope.resourcename = $scope.resourcename + " (COPY)";
                         $scope.isNew = true;
-                        delete($scope.resource.readonly);
+                        delete($scope.resource.reserved);
                     }
                 });
         } else {
@@ -125,32 +118,17 @@ app.controller('securityEditRoleMappingsController', function ($scope, $element,
 
         const form = $element.find('form[name="objectForm"]');
 
-        if (form.hasClass('ng-invalid-required')) {
-            $scope.errorMessage = 'Please fill in all the required parameters.';
-            return;
-        }
-
-        if (!form.hasClass('ng-valid')) {
-            $scope.errorMessage = 'Please correct all errors and try again.';
+        if (!$scope.resourcename || $scope.resourcename.length == 0) {
+            $scope.errorMessage = 'Please provide a tenant name';
             return;
         }
 
         if ($scope.isNew && $scope.resourcenames.indexOf($scope.resourcename) != -1) {
-            $scope.errorMessage = 'Role mapping for Security group "'+$scope.resourcename+'"already exists, please choose another one.';
+            $scope.errorMessage = 'Tenant "'+$scope.resourcename+'"already exists, please choose another one.';
             return;
         }
 
-        // check for empty arrays or undefined objects
-        $scope.resource.users = backendAPI.cleanArray($scope.resource.users);
-        $scope.resource.backend_roles = backendAPI.cleanArray($scope.resource.backend_roles);
-        $scope.resource.hosts = backendAPI.cleanArray($scope.resource.hosts);
-
-        if ($scope.resource.users.length == 0 && $scope.resource.backendroles.length == 0 && $scope.resource.hosts.length == 0) {
-            $scope.errorMessage = 'Please configure at least one of users, backend roles or hosts.';
-            return;
-        }
-
-        $scope.service.save($scope.resourcename, $scope.resource).then(() => kbnUrl.change(`/rolesmapping/`));
+        $scope.service.save($scope.resourcename, $scope.resource).then(() => kbnUrl.change(`/tenants/`));
 
         $scope.errorMessage = null;
 

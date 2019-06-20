@@ -4,6 +4,7 @@
     <div class="security " ng-controller="securityEditRolesController">
 
         <div class="kuiLocalNav">
+            <!--
             <div class="kuiLocalNavRow">
                 <div class="kuiLocalNavRow__section">
                     <div class="kuiLocalTitle">
@@ -11,14 +12,17 @@
                     </div>
                 </div>
             </div>
+            -->
+            <div class="kuiLocalNavRow__section">
+                <div class="headerHeadline"><security-license-warning ></security-license-warning></div>
+            </div>
 
             <div class="kuiLocalNavRow kuiLocalNavRow--secondary">
                 <div class="kuiLocalTabs">
                     <a ng-click="selectTab('overview')" ng-class="getTabCss('overview')" id="opendistro_security.roles.tab.overview">Overview</a>
                     <a ng-click="selectTab('clusterpermissions')" ng-class="getTabCss('clusterpermissions')" id="opendistro_security.roles.tab.clusterpermissions">Cluster Permissions</a>
                     <a ng-click="selectTab('indexpermissions')" ng-class="getTabCss('indexpermissions')" id="opendistro_security.roles.tab.indexpermissions">Index Permissions</a>
-                    <a ng-click="selectTab('dlsfls')" ng-class="getTabCss('dlsfls')" id="opendistro_security.roles.tab.dlsfls">DLS/FLS</a>
-                    <a ng-click="selectTab('tenants')" ng-class="getTabCss('tenants')" id="opendistro_security.roles.tab.tenants">Tenants</a>
+                    <a ng-click="selectTab('applicationpermissions')" ng-class="getTabCss('applicationpermissions')" id="opendistro_security.roles.tab.applicationpermissions">Tenant Permissions</a>
                 </div>
             </div>
         </div>
@@ -38,27 +42,26 @@
 
                             <securityc-form-new-resource-field></securityc-form-new-resource-field>
 
-                            <div class="kuiHeaderBar" style="margin-bottom: 20px; margin-top:10px;">
-                                <div class="kuiHeaderBarSection">
-                                    <h2 class="kuiSubTitle">Members</h2>
-                                </div>
-                            </div>
 
-                            <h5><b>Users:</b></h5>
+                            <h2 class="euiTitle euiTitle--medium">Members</h2>
+
+                            <h3 class="euiTitle euiTitle--small">Users:</h3>
                             <ul>
                                 <li data-ng-repeat="user in rolemapping.users" ng-bind="user"></li>
                             </ul>
-                            <div ng-show="!rolemapping.users" style="font-style: italic">No mapped users found.</div>
-                            <h5><b>Backend Roles:</b></h5>
+                            <div ng-show="!rolemapping.users || rolemapping.users.length == 0" style="font-style: italic">No mapped users found.</div>
+
+                            <h3 class="euiTitle euiTitle--small" style="margin-top:20px;">Backend Roles:</h3>
                             <ul>
-                                <li data-ng-repeat="backendrole in rolemapping.backendroles" ng-bind="backendrole"></li>
+                                <li data-ng-repeat="backendrole in rolemapping.backend_roles" ng-bind="backendrole"></li>
                             </ul>
-                            <div ng-show="!rolemapping.backendroles" style="font-style: italic">No mapped backend roles found.</div>
-                            <h5><b>Hosts:</b></h5>
+                            <div ng-show="!rolemapping.backend_roles || rolemapping.backend_roles.length == 0" style="font-style: italic">No mapped backend roles found.</div>
+
+                            <h3 class="euiTitle euiTitle--small" style="margin-top:20px;">Hosts:</h3>
                             <ul>
                                 <li data-ng-repeat="host in rolemapping.hosts" ng-bind="host"></li>
                             </ul>
-                            <div ng-show="!rolemapping.hosts" style="font-style: italic">No mapped hosts found.</div>
+                            <div ng-show="!rolemapping.hosts || rolemapping.hosts.length == 0" style="font-style: italic">No mapped hosts found.</div>
 
                         </div>
 
@@ -66,7 +69,7 @@
                             <table class="fullwidth">
                                 <tr>
                                     <td>
-                                        <h3 class="resourcename">
+                                        <h3 class="resourcename euiTitle euiTitle--medium">
                                             {{resourcelabel}}: <span ng-class="{'noresourcename': !resourcename}">{{resourcename || '(no role name defined)'}}</span>
                                             <div class="kuiBadge kuiBadge--default" ng-if="resource.readonly">
                                                 <span class="kuiIcon fa-lock"></span>
@@ -81,334 +84,363 @@
                                     <h2 class="kuiSubTitle">Cluster-wide permissions</h2>
                                 </div>
                             </div>
-                            <securityc-permissions on-should-confirm="confirmRemoveArrayEntry" permissionsResource="resource.cluster"></securityc-permissions>
+                            <securityc-permissions on-should-confirm="confirmRemoveArrayEntry" permissionsResource="resource.cluster_permissions"></securityc-permissions>
                         </div>
 
+                        <!-- Header -->
                         <div ng-show="selectedTab=='indexpermissions'">
                             <table class="fullwidth">
                                 <tr>
                                     <td>
-                                        <h3 class="resourcename">
+                                        <h3 class="resourcename euiTitle euiTitle--medium">
                                             {{resourcelabel}}: <span ng-class="{'noresourcename': !resourcename}">{{resourcename || '(no role name defined)'}}</span>
-                                            <div class="kuiBadge kuiBadge--default" ng-if="resource.readonly">
-                                                <span class="kuiIcon fa-lock"></span>
-                                                reserved
+                                            <div class="kuiBadge kuiBadge--default" ng-if="resource.reserved">
+                                                <span class="euiBadge euiBadge--default">
+                                                  <span class="euiBadge__content">
+                                                        <span class="euiIcon euiIcon--small euiBadge__icon kuiIcon fa-lock"></span>
+                                                    <span class="euiBadge__text">reserved</span>
+                                                  </span>
+                                                </span>
                                             </div>
                                         </h3>
                                     </td>
                                 </tr>
                             </table>
-                            <div class="kuiHeaderBar" style="margin-bottom: 20px; margin-top:10px;">
-                                <div class="kuiHeaderBarSection">
-                                    <h2 class="kuiSubTitle">Select Index and Document Type</h2>
+
+                            <!-- Add index permissions -->
+                            <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive">
+                                <div class="euiFlexItem">
+                                    <h2 ng-show="indicesEmpty()" class="euiTitle euiTitle--xsmall topBottomMargin ng-cloak" >No index permissions configured.</h2>
+                                </div>
+                                <div class="euiFlexItem euiFlexItem--flexGrowZero ">
+                                    <button class="euiButton euiButton--primary eui-alignMiddle" type="button" style="margin-top:15px;"
+                                            id="opendistro_security.button.roles.index_permissions.add"
+                                            ng-click="addEmptyIndexPermissions()"
+                                    >
+                                    <span class="euiButton__content">
+                                        <span class="euiButton__text">Add index permissions</span>
+                                    </span>
+                                    </button>
                                 </div>
                             </div>
 
-                            <!-- Index Table, display mode -->
+                            <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive" data-ng-repeat="indexpermission in resource.index_permissions track by $index">
+                                <div class="euiFlexItem">
+                                    <accordeon title="Index patterns: {{getAccordeonTitle(indexpermission.index_patterns, '(No index patterns configured)')}}" is-collapsed="indexpermission.collapsed" testid="opendistro_security.roles.indexpermissions-{{$index}}" additional-class="euiTitle euiTitle--xsmall">
 
-                            <table class="kuiTable" ng-show="!addingIndex">
-                                <thead ng-show="!indicesEmpty()">
-                                <tr>
-                                    <th class="kuiTableHeaderCell tableHeaderBold fourwidth">
-                                        <span class="kuiTableHeaderCell__liner">
-                                            Index
-                                        </span>
-                                    </th>
-                                    <th class="kuiTableHeaderCell tableHeaderBold fourwidth">
-                                        <span class="kuiTableHeaderCell__liner">
-                                            Document Type
-                                        </span>
-                                    </th>
-                                    <th class="kuiTableHeaderCell tableHeaderBold twowidth">
-                                    </th>
-                                </tr>
-                                </thead>
-                                <tbody>
-
-                                <tr class="kuiTableRow" ng-show="indicesEmpty()">
-                                    <td colspan="3" class="kuiTableRowCell">
-                                        <div class="kuiPanel kuiPanel--centered kuiPanel--noborder">
-                                            <div class="kuiEmptyTablePrompt kuiEmptyTablePrompt--nopadding">
-                                                <div class="kuiEmptyTablePrompt__message ng-binding">No configured indices or document types found.</div>
+                                        <!-- Delete index permissions -->
+                                        <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive">
+                                            <div class="euiFlexItem">
+                                                <h2 class="euiTitle euiTitle--xsmall topBottomMargin" ></h2>
+                                            </div>
+                                            <div class="euiFlexItem euiFlexItem--flexGrowZero ">
+                                                <button class="euiButton euiButton--danger eui-alignMiddle" type="button" style="margin-bottom:15px;"
+                                                        id="opendistro_security.button.roles.index_permissions.delete"
+                                                        ng-click="confirmRemoveFromObjectArray(resource.index_permissions, $index, getAccordeonTitle(indexpermission.index_patterns, ''))">
+                                                    <span class="euiButton__content">
+                                                        <span class="euiButton__text">Delete index permissions</span>
+                                                    </span>
+                                                </button>
                                             </div>
                                         </div>
-                                    </td>
-                                </tr>
 
-                                <tr class="kuiTableRow" ng-show="!indicesEmpty()">
-                                    <td class="kuiTableRowCell cellAlignTop">
-                                        <select class="sevenwidth kuiSelect" ng-model="selectedIndex" ng-change="onIndexChange()" ng-options="str for str in keys(resource.indices).sort() track by str"></select>
-                                    </td>
-                                    <td class="kuiTableRowCell cellAlignTop">
-                                        <select class="sevenwidth kuiSelect" ng-model="selectedDocumentType" ng-options="str for str in keys(resource.indices[selectedIndex]).sort() track by str"></select>
-                                    </td>
-                                    <td class="kuiTableRowCell cellAlignTop actions">
-                                        <a ng-show="!indicesEmpty()" ng-click="confirmDeleteDocumentType()" class="kuiButton kuiButton--danger kuiButton--iconText">
-                                            <span class="kuiButton__icon kuiIcon fa-trash-o"></span>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr class="kuiTableRow">
-                                    <td class="kuiTableRowCell cellAlignTop actions" colspan="3">
-                                        <button type="button" ng-click="addIndex()" class="kuiButton kuiButton--primary kuiButton--iconText">
-                                            <span class="kuiButton__icon kuiIcon fa-plus"></span>
-                                            Add new index and document Type
-                                        </button>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                                        <!-- Index patterns table -->
+                                        <table class="kuiTable tableIndexGroups">
+                                            <thead>
+                                            <tr>
+                                                <th class="kuiTableHeaderCell tableHeaderCellIndexGroups">
+                                                    <div class="kuiTableHeaderCell__liner">
+                                                        Index patterns:
+                                                        <div style="display: inline;">
+                                                <span class="kuiInfoButton help" tooltip='The index patterns the permissions apply to.'>
+                                                    <span class="kuiIcon fa-info-circle"></span>
+                                                </span>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                                <th class="kuiTableHeaderCell tableHeaderCellIndexGroups actions">
+                                                    <div class="kuiTableHeaderCell__liner">
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr class="kuiTableRow" ng-if="!indexpermission.index_patterns.length">
+                                                <td class="kuiTableRowCell" colspan="2" >
+                                                    <div class="kuiPanel--centered">
+                                                        <div class="kuiEmptyTablePrompt kuiEmptyTablePrompt--nopadding">
+                                                            <div class="kuiEmptyTablePrompt__message ng-binding">No index patterns configured.</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
 
-                            <!-- Index Table, add mode -->
-                            <table class="kuiTable tableIndexGroups" ng-show="addingIndex">
-                                <thead>
-                                <tr>
-                                    <th class="kuiTableHeaderCell tableHeaderBold">
-                                        <span class="kuiTableHeaderCell__liner">
-                                            Index
-                                        </span>
-                                    </th>
-                                    <th class="kuiTableHeaderCell tableHeaderBold">
-                                        <span class="kuiTableHeaderCell__liner">
-                                            Document Type
-                                        </span>
-                                    </th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr class="kuiTableRow">
-                                    <td class="kuiTableRowCell cellAlignTop" >
-                                        <fieldset class="marginbottom--small" id="object-form-index" securityc-form-focus-field focus-when="addingIndex === true">
-                                            <ui-select ng-model="newIndexValues.index"
-                                                       uis-open-close="onCloseNewIndexAutocompletes(isOpen, $select)"
-                                                       reset-search-input="true"
-                                                       on-select="onSelectedNewIndexName({item: $item})">
-                                                <ui-select-match placeholder="Index name">
-                                                    {{newIndexValues.index.name}}
-                                                </ui-select-match>
-                                                <ui-select-choices
-                                                    refresh="refreshNewIndexName($select)"
-                                                    refresh-delay="0"
-                                                    repeat="item in (indexAutoComplete | filter: $select.search) track by $index">
-                                                    <span ng-bind="item.name"></span>
-                                                </ui-select-choices>
-                                            </ui-select>
-                                        </fieldset>
-                                    </td>
-                                    <td class="kuiTableRowCell cellAlignTop ">
-                                        <fieldset class="marginbottom--small" id="object-form-actiongroups">
-                                            <ui-select ng-model="newIndexValues.documentType"
-                                                       ng-disabled="true"
-                                                       uis-open-close="onCloseNewIndexAutocompletes(isOpen, $select)"
-                                                       on-select="onSelectedNewDocumentTypeName({item: $item})">
-                                                <ui-select-match placeholder="Document Type name">
-                                                    {{newIndexValues.documentType.name}}
-                                                </ui-select-match>
-                                                <ui-select-choices
-                                                    refresh="refreshNewDocumentTypeNames($select)"
-                                                    refresh-delay="0"
-                                                    repeat="item in (doctypeAutoComplete | filter: $select.search) track by $index">
-                                                    <span ng-bind="item.name"></span>
-                                                </ui-select-choices>
-                                            </ui-select>
-                                        </fieldset>
-                                    </td>
-                                </tr>
-                                <tr class="kuiTableRow">
-                                    <td class="kuiTableRowCell cellAlignTop actions" style="border: none;"></td>
-                                    <td class="kuiTableRowCell cellAlignTop actions" style="border: none;">
-                                        <button class="kuiButton kuiButton--primary kuiButton--text" type="button" ng-click="submitAddIndex()">Save</button>
-                                        <button class="kuiButton kuiButton--secondary kuiButton--text" type="button" ng-click="cancelAddIndex()">Cancel</button>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                                            <tr data-ng-repeat="indexpattern in indexpermission.index_patterns track by $index">
+                                                <td class="kuiTableRowCell cellAlignTop">
+                                                    <fieldset class="marginbottom--small" id="" >
+                                                        <input
+                                                                type="text"
+                                                                class="kuiTextInput fullwidth"
+                                                                ng-model="indexpermission.index_patterns[$index]"
+                                                                name=""
+                                                                autoFocus
+                                                                id="opendistro_security.input.roles.indexpatterns.{{$parent.$index}}.{{$index}}">
+                                                    </fieldset>
+                                                </td>
+                                                <td class="kuiTableRowCell cellAlignTop actions">
+                                                    <a
+                                                            tooltip="Delete field {{indexpermission.index_patterns[$index]}}"
+                                                            ng-click="confirmRemoveArrayEntry(indexpermission.index_patterns, indexpattern)"
+                                                            class="kuiButton kuiButton--danger kuiButton--iconText"
+                                                            id="opendistro_security.button.roles.indexpatterns.delete.{{$index}}">
+                                                        <span class="kuiButton__icon kuiIcon fa-trash-o"></span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr class="kuiTableRow">
+                                                <td class="kuiTableRowCell cellAlignTop actions"></td>
+                                                <td class="kuiTableRowCell cellAlignTop actions">
+                                                    <button type="button"
+                                                            ng-click="addArrayEntry(indexpermission, 'index_patterns', '')"
+                                                            ng-disabled="lastArrayEntryEmpty(indexpermission.index_patterns)"
+                                                            class="kuiButton kuiButton--primary kuiButton--iconText"
+                                                            id="opendistro_security.button.roles.index_patterns.add">
+                                                        <span class="kuiButton__icon kuiIcon fa-plus"></span>
+                                                        Add index pattern
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
 
-                            <div class="kuiHeaderBar" style="margin-bottom: 20px; margin-top:40px;" ng-show="selectedIndex != '' && !addingIndex">
-                                <div class="kuiHeaderBarSection">
-                                    <h2 class="kuiSubTitle">Configure permissions for index <b>'{{selectedIndex}}'</b> and document type <b>'{{selectedDocumentType}}'</b></h2>
-                                </div>
-                            </div>
-                            <securityc-permissions on-should-confirm="confirmRemoveArrayEntry" permissionsResource="resource.indices[selectedIndex][selectedDocumentType]" ng-show="selectedIndex != '' && !addingIndex"></securityc-permissions>
+                                        <!-- Index Permissions -->
+                                        <securityc-permissions on-should-confirm="confirmRemoveArrayEntry" permissionsResource="indexpermission.allowed_actions"></securityc-permissions>
 
-                        </div>
+                                        <!-- DLS -->
+                                        <table class="kuiTable tableIndexGroups">
+                                            <thead>
+                                            <tr>
+                                                <th class="kuiTableHeaderCell tableHeaderCellIndexGroups">
 
-                        <div ng-show="selectedTab=='dlsfls'">
-                            <table class="fullwidth">
-                                <tr>
-                                    <td>
-                                        <h3 class="resourcename">
-                                            {{resourcelabel}}: <span ng-class="{'noresourcename': !resourcename}">{{resourcename || '(no role name defined)'}}</span>
-                                            <div class="kuiBadge kuiBadge--default" ng-if="resource.readonly">
-                                                <span class="kuiIcon fa-lock"></span>
-                                                reserved
-                                            </div>
-                                        </h3>
-                                    </td>
-                                </tr>
-                            </table>
-                            <div class="kuiHeaderBar" style="margin-bottom: 20px; margin-top:10px;">
-                                <div class="kuiHeaderBarSection">
-                                    <h2 class="kuiSubTitle">Document- and Field-Level-Security</h2>
-                                </div>
-                            </div>
-                            <!-- Index Table, display mode -->
-                            <table class="kuiTable tableIndexGroups">
-                                <thead ng-show="!indicesEmpty()">
-                                <tr>
-                                    <th class="kuiTableHeaderCell tableHeaderCellIndexGroups">
-                                        <span class="kuiTableHeaderCell__liner">
-                                            Index
-                                        </span>
-                                    </th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="kuiTableRow" ng-show="indicesEmpty()" >
-                                        <td colspan="2" class="kuiTableRowCell kuiPanel--noborder">
-                                            <div class="kuiPanel kuiPanel--centered kuiPanel--noborder">
-                                                <div class="kuiEmptyTablePrompt kuiEmptyTablePrompt--nopadding">
-                                                    <div class="kuiEmptyTablePrompt__message ng-binding">No index found. Please configure index permissions first.</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr ng-show="!indicesEmpty()" class="kuiTableRow">
-                                        <td class="kuiTableRowCell cellAlignTop">
-                                            <select class="fivewidth kuiSelect" ng-model="selectedIndex" ng-options="str for str in keys(resource.indices).sort() track by str"></select>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <!-- DLS Table -->
-                            <table class="kuiTable tableIndexGroups" ng-show="!indicesEmpty()">
-                                <thead>
-                                <tr>
-                                    <th class="kuiTableHeaderCell tableHeaderCellIndexGroups">
-
-                                        <div class="kuiTableHeaderCell__liner">
-                                            Document Level Security Query
-                                            <div style="display: inline;">
+                                                    <div class="kuiTableHeaderCell__liner">
+                                                        Document Level Security Query
+                                                        <div style="display: inline;">
                                                 <span class="kuiInfoButton help" tooltip='Use Elasticsearch’s full Query DSL for configuring the query used for Document Level Security. The query must be a valid JSON string, e.g. {"match": {"category": "event"}}'>
                                                     <span class="kuiIcon fa-info-circle"></span>
                                                 </span>
-                                            </div>
-                                        </div>
-                                    </th>
+                                                        </div>
+                                                    </div>
+                                                </th>
 
-                                    <th class="kuiTableHeaderCell">
-                                    </th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr class="kuiTableRow">
-                                    <td class="kuiTableRowCell cellAlignTop">
-                                        <fieldset class="marginbottom--small" id="object-form-actiongroups-dls">
+                                                <th class="kuiTableHeaderCell">
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr class="kuiTableRow">
+                                                <td class="kuiTableRowCell cellAlignTop">
+                                                    <fieldset class="marginbottom--small" id="object-form-actiongroups-dls">
+                                                        <div
+                                                                id="object-form-dls-json-raw-{{$index}}"
+                                                                name="jsonRaw"
+                                                                ui-ace="{ onLoad: aceRwLoaded, mode: 'json' }"
+                                                                ng-model="indexpermission.dls">
+                                                        </div
+                                                    </fieldset>
+                                                </td>
+                                                <td class="kuiTableRowCell cellAlignTop actions">
+                                                    <a tooltip="Test DLS query syntax" ng-click="testDls($index, indexpermission.dls, indexpermission.index_patterns[0])" class="kuiButton kuiButton--secondary kuiButton--iconText" title="Check Syntax">
+                                                        <span class="kuiButton__icon kuiIcon fa-check"></span>
+                                                    </a>
+                                                    <a tooltip="Delete DLS query" ng-click="indexpermission.dls=''" class="kuiButton kuiButton--danger kuiButton--iconText" title="Delete DLS query">
+                                                        <span class="kuiButton__icon kuiIcon fa-trash-o"></span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
 
-                                            <div
-
-                                                 id="object-form-dls-json-raw"
-                                                 name="jsonRaw"
-                                                 ui-ace="{ onLoad: aceRwLoaded, mode: 'json' }"
-                                                 ng-model="resource.dlsfls[selectedIndex]['_dls_']">
-                                            </div
-                                        </fieldset>
-                                    </td>
-                                    <td class="kuiTableRowCell cellAlignTop actions">
-                                        <a tooltip="Test DLS query syntax" ng-click="testDls()" class="kuiButton kuiButton--secondary kuiButton--iconText" title="Check Syntax">
-                                            <span class="kuiButton__icon kuiIcon fa-check"></span>
-                                        </a>
-                                        <a tooltip="Delete DLS query" ng-click="resource.dlsfls[selectedIndex]['_dls_']=''" class="kuiButton kuiButton--danger kuiButton--iconText" title="Delete DLS query">
-                                            <span class="kuiButton__icon kuiIcon fa-trash-o"></span>
-                                        </a>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-
-                            <!-- FLS Table -->
-                            <table class="kuiTable tableIndexGroups" ng-show="!indicesEmpty()">
-                                <thead>
-                                <tr>
-                                    <th class="kuiTableHeaderCell tableHeaderCellIndexGroups">
-                                        <div class="kuiTableHeaderCell__liner">
-                                            Include or exclude fields
-                                            <div style="display: inline;">
+                                        <!-- FLS -->
+                                        <table class="kuiTable tableIndexGroups">
+                                            <thead>
+                                            <tr>
+                                                <th class="kuiTableHeaderCell tableHeaderCellIndexGroups">
+                                                    <div class="kuiTableHeaderCell__liner">
+                                                        Include or exclude fields
+                                                        <div style="display: inline;">
                                                 <span class="kuiInfoButton help" tooltip='Include or exclude fields from documents returned by Elasticsearch.'>
                                                     <span class="kuiIcon fa-info-circle"></span>
                                                 </span>
-                                            </div>
-                                        </div>
-                                    </th>
-                                    <th class="kuiTableHeaderCell tableHeaderCellIndexGroups actions">
-                                        <div class="kuiTableHeaderCell__liner">
-                                            <select class="kuiSelect" name="flsModeSelect" ng-model="resource.dlsfls[selectedIndex]['_flsmode_']">
-                                                <option value="whitelist" id="opendistro_security.option.roles.fls.whitelist">Include fields</option>
-                                                <option value="blacklist" id="opendistro_security.option.roles.fls.blacklist">Exclude fields</option>
-                                            </select>
-                                        </div>
-                                    </th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr class="kuiTableRow" ng-if="!resource.dlsfls[selectedIndex]['_fls_'].length">
-                                    <td colspan="2" class="kuiTableRowCell">
-                                        <div class="kuiPanel kuiPanel--centered kuiPanel--noborder">
-                                            <div class="kuiEmptyTablePrompt kuiEmptyTablePrompt--nopadding">
-                                                <div class="kuiEmptyTablePrompt__message ng-binding">No fields configured.</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                                <th class="kuiTableHeaderCell tableHeaderCellIndexGroups actions">
+                                                    <div class="kuiTableHeaderCell__liner">
+                                                        <select class="kuiSelect" name="flsModeSelect" ng-model="indexpermission.flsmode">
+                                                            <option value="whitelist" id="opendistro_security.option.roles.fls.whitelist">Include fields</option>
+                                                            <option value="blacklist" id="opendistro_security.option.roles.fls.blacklist">Exclude fields</option>
+                                                        </select>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr class="kuiTableRow" ng-if="!indexpermission.fls.length">
+                                                <td colspan="2" class="kuiTableRowCell">
+                                                    <div class="kuiPanel--centered">
+                                                        <div class="kuiEmptyTablePrompt kuiEmptyTablePrompt--nopadding">
+                                                            <div class="kuiEmptyTablePrompt__message ng-binding">No fields configured.</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
 
-                                <tr data-ng-repeat="actiongroup in resource.dlsfls[selectedIndex]['_fls_'] track by $index">
-                                    <td class="kuiTableRowCell cellAlignTop">
-                                        <fieldset class="marginbottom--small" id="object-form-actiongroups" >
-                                            <input
-                                                    type="text"
-                                                    class="kuiTextInput fullwidth"
-                                                    ng-model="resource.dlsfls[selectedIndex]['_fls_'][$index]"
-                                                    name=""
-                                                    id="opendistro_security.input.roles.fls.{{resource.dlsfls[selectedIndex]['_fls_'][$index]}}">
-                                        </fieldset>
-                                    </td>
-                                    <td class="kuiTableRowCell cellAlignTop actions">
-                                        <a
-                                                tooltip="Delete field {{resource.dlsfls[selectedIndex]['_fls_'][$index]}}"
-                                                ng-click="confirmRemoveArrayEntry(resource.dlsfls[selectedIndex]['_fls_'], actiongroup)"
-                                                class="kuiButton kuiButton--danger kuiButton--iconText"
-                                                id="opendistro_security.button.roles.fls.delete.{{resource.dlsfls[selectedIndex]['_fls_'][$index]}}">
-                                            <span class="kuiButton__icon kuiIcon fa-trash-o"></span>
-                                        </a>
+                                            <tr data-ng-repeat="flsfield in indexpermission.fls track by $index">
+                                                <td class="kuiTableRowCell cellAlignTop">
+                                                    <fieldset class="marginbottom--small" id="" >
+                                                        <input
+                                                                type="text"
+                                                                class="kuiTextInput fullwidth"
+                                                                ng-model="indexpermission.fls[$index]"
+                                                                name=""
+                                                                id="opendistro_security.input.roles.fls.{{indexpermission.fls[$index]}}">
+                                                    </fieldset>
+                                                </td>
+                                                <td class="kuiTableRowCell cellAlignTop actions">
+                                                    <a
+                                                            tooltip="Delete field {{indexpermission.fls[$index]}}"
+                                                            ng-click="confirmRemoveArrayEntry(indexpermission.fls, flsfield)"
+                                                            class="kuiButton kuiButton--danger kuiButton--iconText"
+                                                            id="opendistro_security.button.roles.fls.delete.{{indexpermission.fls[$index]}}">
+                                                        <span class="kuiButton__icon kuiIcon fa-trash-o"></span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr class="kuiTableRow">
+                                                <td class="kuiTableRowCell cellAlignTop actions"></td>
+                                                <td class="kuiTableRowCell cellAlignTop actions">
+                                                    <button
+                                                            type="button"
+                                                            ng-click="addArrayEntry(indexpermission, 'fls', '')"
+                                                            ng-disabled="lastArrayEntryEmpty(indexpermission.fls)"
+                                                            class="kuiButton kuiButton--primary kuiButton--iconText"
+                                                            id="opendistro_security.button.roles.fls.add">
+                                                        <span class="kuiButton__icon kuiIcon fa-plus"></span>
+                                                        Add Field
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <!-- FLS Masked Fields Table -->
+                                        <table class="kuiTable tableIndexGroups" ng-show="complianceFeaturesEnabled">
+                                            <thead>
+                                            <tr>
+                                                <th class="kuiTableHeaderCell tableHeaderCellIndexGroups">
+                                                    <div class="kuiTableHeaderCell__liner">
+                                                        Anonymize fields:
+                                                        <div style="display: inline;">
+                                                <span class="kuiInfoButton help" tooltip='Replace the value of these fields with an anonymized hash.'>
+                                                    <span class="kuiIcon fa-info-circle"></span>
+                                                </span>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                                <th class="kuiTableHeaderCell tableHeaderCellIndexGroups actions">
+                                                    <div class="kuiTableHeaderCell__liner">
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr class="kuiTableRow" ng-if="!indexpermission.masked_fields.length">
+                                                <td class="kuiTableRowCell" colspan="2" >
+                                                    <div class="kuiPanel--centered">
+                                                        <div class="kuiEmptyTablePrompt kuiEmptyTablePrompt--nopadding">
+                                                            <div class="kuiEmptyTablePrompt__message ng-binding">No anonymized fields configured.</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <tr data-ng-repeat="maskedfield in indexpermission.masked_fields track by $index">
+                                                <td class="kuiTableRowCell cellAlignTop">
+                                                    <fieldset class="marginbottom--small" id="" >
+                                                        <input
+                                                                type="text"
+                                                                class="kuiTextInput fullwidth"
+                                                                ng-model="indexpermission.masked_fields[$index]"
+                                                                name=""
+                                                                id="opendistro_security.input.roles.maskedfields.{{$index}}">
+                                                    </fieldset>
+                                                </td>
+                                                <td class="kuiTableRowCell cellAlignTop actions">
+                                                    <a
+                                                            tooltip="Delete field {{indexpermission.masked_fields[$index]}}"
+                                                            ng-click="confirmRemoveArrayEntry(indexpermission.masked_fields, maskedfield)"
+                                                            class="kuiButton kuiButton--danger kuiButton--iconText"
+                                                            id="opendistro_security.button.roles.maskedfields.delete.{{$index}}">
+                                                        <span class="kuiButton__icon kuiIcon fa-trash-o"></span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr class="kuiTableRow">
+                                                <td class="kuiTableRowCell cellAlignTop actions"></td>
+                                                <td class="kuiTableRowCell cellAlignTop actions">
+                                                    <button type="button"
+                                                            ng-click="addArrayEntry(indexpermission, 'masked_fields', '')"
+                                                            ng-disabled="lastArrayEntryEmpty(indexpermission.masked_fields)"
+                                                            class="kuiButton kuiButton--primary kuiButton--iconText"
+                                                            id="opendistro_security.button.roles.maskedfields.add">
+                                                        <span class="kuiButton__icon kuiIcon fa-plus"></span>
+                                                        Add Field
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </accordeon>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div ng-show="selectedTab=='applicationpermissions'">
+                            <table class="fullwidth">
+                                <tr>
+                                    <td>
+                                        <h3 class="resourcename euiTitle euiTitle--medium">
+                                            {{resourcelabel}}: <span ng-class="{'noresourcename': !resourcename}">{{resourcename || '(no role name defined)'}}</span>
+                                            <div class="kuiBadge kuiBadge--default" ng-if="resource.reserved">
+                                                <span class="euiBadge euiBadge--default">
+                                                  <span class="euiBadge__content">
+                                                        <span class="euiIcon euiIcon--small euiBadge__icon kuiIcon fa-lock"></span>
+                                                    <span class="euiBadge__text">reserved</span>
+                                                  </span>
+                                                </span>
+                                            </div>
+                                        </h3>
                                     </td>
                                 </tr>
-                                <tr class="kuiTableRow">
-                                    <td class="kuiTableRowCell cellAlignTop actions"></td>
-                                    <td class="kuiTableRowCell cellAlignTop actions">
-                                        <button
-                                                type="button"
-                                                ng-click="addArrayEntry(resource.dlsfls[selectedIndex], '_fls_', '')"
-                                                ng-disabled="lastArrayEntryEmpty(resource.dlsfls[selectedIndex]['_fls_'])"
-                                                class="kuiButton kuiButton--primary kuiButton--iconText"
-                                                id="opendistro_security.button.roles.fls.add">
-                                            <span class="kuiButton__icon kuiIcon fa-plus"></span>
-                                            Add Field
-                                        </button>
-                                    </td>
-                                </tr>
-                                </tbody>
                             </table>
 
-                            <!-- FLS Masked Fields Table -->
-                            <table class="kuiTable tableIndexGroups" ng-show="!indicesEmpty() && complianceFeaturesEnabled">
+                            <!-- Global application permissions -->
+                            <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive" ng-if="globalEnabled">
+                                <div class="euiFlexItem">
+                                    <h3 class="euiTitle euiTitle--small">Global permissions</h3>
+                                </div>
+                            </div>
+
+                            <!-- Application permissions -->
+                            <table class="kuiTable tableIndexGroups" ng-if="globalEnabled">
                                 <thead>
                                 <tr>
                                     <th class="kuiTableHeaderCell tableHeaderCellIndexGroups">
                                         <div class="kuiTableHeaderCell__liner">
-                                            Anonymize fields:
+                                            Permissions:
                                             <div style="display: inline;">
-                                                <span class="kuiInfoButton help" tooltip='Replace the value of these fields with an anonymized hash.'>
+                                                <span class="kuiInfoButton help" tooltip='The permissions that apply for globally.'>
                                                     <span class="kuiIcon fa-info-circle"></span>
                                                 </span>
                                             </div>
@@ -421,33 +453,35 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr class="kuiTableRow" ng-if="!resource.dlsfls[selectedIndex]['_masked_fields_'].length">
+
+                                <tr class="kuiTableRow" ng-if="!resource.global_application_permissions.length">
                                     <td class="kuiTableRowCell" colspan="2" >
-                                        <div class="kuiPanel kuiPanel--centered kuiPanel--noborder">
+                                        <div class="kuiPanel--centered">
                                             <div class="kuiEmptyTablePrompt kuiEmptyTablePrompt--nopadding">
-                                                <div class="kuiEmptyTablePrompt__message ng-binding">No anonymized fields configured.</div>
+                                                <div class="kuiEmptyTablePrompt__message ng-binding">No global permissions configured.</div>
                                             </div>
                                         </div>
                                     </td>
                                 </tr>
-
-                                <tr data-ng-repeat="maskedfield in resource.dlsfls[selectedIndex]['_masked_fields_'] track by $index">
+                                <tr data-ng-repeat="permission in resource.global_application_permissions track by $index">
                                     <td class="kuiTableRowCell cellAlignTop">
-                                        <fieldset class="marginbottom--small" id="object-form-actiongroups" >
-                                            <input
-                                                    type="text"
-                                                    class="kuiTextInput fullwidth"
-                                                    ng-model="resource.dlsfls[selectedIndex]['_masked_fields_'][$index]"
-                                                    name=""
-                                                    id="opendistro_security.input.roles.maskedfields.{{resource.dlsfls[selectedIndex]['_masked_fields_'][$index]}}">
+                                        <fieldset class="marginbottom--small" id="object-form-actiongroupsecuritylobal">
+                                            <ui-select ng-model="resource.global_application_permissions[$index]">
+                                                <ui-select-match placeholder="Permission name">
+                                                    {{resource.global_application_permissions[$index]}}
+                                                </ui-select-match>
+                                                <ui-select-choices repeat="item in (applicationActionGroups | filter: $select.search) track by $index">
+                                                    <span ng-bind="item"></span>
+                                                </ui-select-choices>
+                                            </ui-select>
                                         </fieldset>
                                     </td>
                                     <td class="kuiTableRowCell cellAlignTop actions">
                                         <a
-                                                tooltip="Delete field {{resource.dlsfls[selectedIndex]['_masked_fields_'][$index]}}"
-                                                ng-click="confirmRemoveArrayEntry(resource.dlsfls[selectedIndex]['_masked_fields_'], maskedfield)"
+                                                tooltip="Delete field {{permission}}"
+                                                ng-click="confirmRemoveArrayEntry(resource.global_application_permissions, permission)"
                                                 class="kuiButton kuiButton--danger kuiButton--iconText"
-                                                id="opendistro_security.button.roles.maskedfields.delete.{{resource.dlsfls[selectedIndex]['_masked_fields_'][$index]}}">
+                                                id="opendistro_security.button.roles.applicationpermissionsglobal.delete.{{$index}}">
                                             <span class="kuiButton__icon kuiIcon fa-trash-o"></span>
                                         </a>
                                     </td>
@@ -456,111 +490,208 @@
                                     <td class="kuiTableRowCell cellAlignTop actions"></td>
                                     <td class="kuiTableRowCell cellAlignTop actions">
                                         <button type="button"
-                                                ng-click="addArrayEntry(resource.dlsfls[selectedIndex], '_masked_fields_', '')"
-                                                ng-disabled="lastArrayEntryEmpty(resource.dlsfls[selectedIndex]['_masked_fields_'])"
+                                                ng-click="addArrayEntry(resource, 'global_application_permissions', '')"
+                                                ng-disabled="lastArrayEntryEmpty(resource.global_application_permissions)"
                                                 class="kuiButton kuiButton--primary kuiButton--iconText"
-                                                id="opendistro_security.button.roles.maskedfields.add">
+                                                id="opendistro_security.button.roles.applicationpermissionsglobal.add">
                                             <span class="kuiButton__icon kuiIcon fa-plus"></span>
                                             Add Field
                                         </button>
                                     </td>
                                 </tr>
+
                                 </tbody>
                             </table>
-                        </div>
 
-                        <div ng-show="selectedTab=='tenants'">
-                            <table class="fullwidth">
-                                <tr>
-                                    <td>
-                                        <h3 class="resourcename">
-                                            {{resourcelabel}}: <span ng-class="{'noresourcename': !resourcename}">{{resourcename || '(no role name defined)'}}</span>
-                                            <div class="kuiBadge kuiBadge--default" ng-if="resource.readonly">
-                                                <span class="kuiIcon fa-lock"></span>
-                                                reserved
-                                            </div>
-                                        </h3>
-                                    </td>
-                                </tr>
-                            </table>
-                            <div class="kuiHeaderBar" style="margin-bottom: 20px; margin-top:10px;">
-                                <div class="kuiHeaderBarSection">
-                                    <h2 class="kuiSubTitle">Tenants</h2>
+
+                            <hr class="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginLarge" ng-if="multiTenancyEnabled">
+
+                            <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive" ng-if="multiTenancyEnabled">
+                                <div class="euiFlexItem">
+                                    <h3 class="euiTitle euiTitle--small">Tenant permissions</h3>
                                 </div>
                             </div>
-                            <table class="kuiTable">
-                                <thead>
-                                <tr>
-                                    <th class="kuiTableHeaderCell tableHeaderBold" style="width: 70%;">
-                                        <span class="kuiTableHeaderCell__liner">
-                                            Tenant
-                                        </span>
-                                    </th>
-                                    <th class="kuiTableHeaderCell tableHeaderBold">
-                                        <span class="kuiTableHeaderCell__liner">
-                                            Permissions
-                                        </span>
-                                    </th>
-                                    <th class="kuiTableHeaderCell tableHeaderBold">
 
-                                    </th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr class="kuiTableRow" ng-show="!resource.tenantsArray.length">
-                                    <td colspan="3" class="kuiTableRowCell">
-                                        <div class="kuiPanel kuiPanel--centered kuiPanel--noborder">
-                                            <div class="kuiEmptyTablePrompt kuiEmptyTablePrompt--nopadding">
-                                                <div class="kuiEmptyTablePrompt__message ng-binding">No Tenants configured for this role.</div>
+                            <!-- Add tenant permissions -->
+                            <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive" ng-if="multiTenancyEnabled">
+                                <div class="euiFlexItem">
+                                    <h2 ng-show="tenantPermissionsEmpty()" class="euiTitle euiTitle--xsmall topBottomMargin ng-cloak" >No tenant permissions configured.</h2>
+                                </div>
+                                <div class="euiFlexItem euiFlexItem--flexGrowZero ">
+                                    <button class="euiButton euiButton--primary eui-alignMiddle" type="button" style="margin-top:15px;"
+                                            id="opendistro_security.button.roles.index_appliicationpermissions.add"
+                                            ng-click="addEmptyTenantPermissions()"
+                                    >
+                                    <span class="euiButton__content">
+                                        <span class="euiButton__text">Add tenant permissions</span>
+                                    </span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive" data-ng-repeat="tenantpermission in resource.tenant_permissions track by $index" ng-if="multiTenancyEnabled">
+                                <div class="euiFlexItem">
+                                    <accordeon title="Tenant patterns: {{getAccordeonTitle(tenantpermission.tenant_patterns, '(no tenant patterns configured)')}}" is-collapsed="tenantpermission.collapsed" testid="opendistro_security.roles.tenantpermissions-{{$index}}" additional-class="euiTitle euiTitle--xsmall">
+
+                                        <!-- Delete index permissions -->
+                                        <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive">
+                                            <div class="euiFlexItem">
+                                                <h2 class="euiTitle euiTitle--xsmall topBottomMargin" ></h2>
+                                            </div>
+                                            <div class="euiFlexItem euiFlexItem--flexGrowZero ">
+                                                <button class="euiButton euiButton--danger eui-alignMiddle" type="button" style="margin-bottom:15px;"
+                                                        id="opendistro_security.button.roles.tenant_permissions.delete"
+                                                        ng-click="confirmRemoveFromObjectArray(resource.tenant_permissions, $index, getAccordeonTitle(tenantpermission.tenant_patterns, ''))">
+                                                    <span class="euiButton__content">
+                                                        <span class="euiButton__text">Delete tenant permissions</span>
+                                                    </span>
+                                                </button>
                                             </div>
                                         </div>
-                                    </td>
-                                </tr>
-                                <tr class="kuiTableRow" data-ng-repeat="tenant in sortObjectArray(resource.tenantsArray,'name') track by $index">
-                                    <td class="kuiTableRowCell">
-                                        <fieldset class="marginbottom--small" id="object-form-actiongroups">
-                                            <input
-                                                    type="text"
-                                                    class="kuiTextInput fullwidth"
-                                                    ng-model="resource.tenantsArray[$index].name"
-                                                    id="opendistro_security.input.roles.tenants.{{resource.tenantsArray[$index].name}}">
-                                        </fieldset>
-                                    </td>
-                                    <td class="kuiTableRowCell cellAlignTop">
-                                        <select class="kuiSelect" name="permissionsSelect" ng-model="resource.tenantsArray[$index].permissions">
-                                            <option value="RW" id="opendistro_security.option.roles.tenants.{{resource.tenantsArray[$index].name}}.rw">Read / Write</option>
-                                            <option value="RO" id="opendistro_security.option.roles.tenants.{{resource.tenantsArray[$index].name}}.ro">Read Only</option>
-                                        </select>
-                                    </td>
-                                    <td class="kuiTableRowCell actions">
-                                        <a
-                                                ng-click="confirmRemoveFromObjectArray(resource.tenantsArray, $index, resource.tenantsArray[$index].name)"
-                                                class="kuiButton kuiButton--danger kuiButton--iconText"
-                                                id="opendistro_security.button.roles.tenants.delete.{{resource.tenantsArray[$index].name}}">
-                                        <span class="kuiButton__icon kuiIcon fa-trash-o"></span>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr class="kuiTableRow">
-                                    <td class="kuiTableRowCell cellAlignTop actions"></td>
-                                    <td class="kuiTableRowCell cellAlignTop actions"></td>
-                                    <td class="kuiTableRowCell cellAlignTop actions">
-                                        <button type="button" ng-click="addToObjectArray(resource.tenantsArray, {name: '', permissions: 'RW'})"
-                                                ng-disabled="lastArrayEntryEmpty(resource.tenantsArray)"
-                                                id="opendistro_security.button.roles.tenants.add"
-                                                class="kuiButton kuiButton--primary kuiButton--iconText">
-                                            <span class="kuiButton__icon kuiIcon fa-plus"></span>
-                                            Add
-                                        </button>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+
+                                        <!-- Index patterns table -->
+                                        <table class="kuiTable tableIndexGroups">
+                                            <thead>
+                                            <tr>
+                                                <th class="kuiTableHeaderCell tableHeaderCellIndexGroups">
+                                                    <div class="kuiTableHeaderCell__liner">
+                                                        Tenant patterns:
+                                                        <div style="display: inline;">
+                                                <span class="kuiInfoButton help" tooltip='The tenants the permissions apply to. You can use wildcards here.'>
+                                                    <span class="kuiIcon fa-info-circle"></span>
+                                                </span>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                                <th class="kuiTableHeaderCell tableHeaderCellIndexGroups actions">
+                                                    <div class="kuiTableHeaderCell__liner">
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr class="kuiTableRow" ng-if="!tenantpermission.tenant_patterns.length">
+                                                <td class="kuiTableRowCell" colspan="2" >
+                                                    <div class="kuiPanel--centered">
+                                                        <div class="kuiEmptyTablePrompt kuiEmptyTablePrompt--nopadding">
+                                                            <div class="kuiEmptyTablePrompt__message ng-binding">No tenant patterns configured.</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <tr data-ng-repeat="tenantpattern in tenantpermission.tenant_patterns track by $index">
+                                                <td class="kuiTableRowCell cellAlignTop">
+                                                    <fieldset class="marginbottom--small">
+                                                        <input
+                                                                type="text"
+                                                                class="kuiTextInput fullwidth"
+                                                                ng-model="tenantpermission.tenant_patterns[$index]"
+                                                                name=""
+                                                                id="opendistro_security.input.roles.tenantpatterns.{{$index}}">
+                                                    </fieldset>
+                                                </td>
+                                                <td class="kuiTableRowCell cellAlignTop actions">
+                                                    <a
+                                                            tooltip="Delete field {{tenantpermission.tenant_patterns[$index]}}"
+                                                            ng-click="confirmRemoveArrayEntry(tenantpermission.tenant_patterns, tenantpattern)"
+                                                            class="kuiButton kuiButton--danger kuiButton--iconText"
+                                                            id="opendistro_security.button.roles.tenantpatterns.delete.{{$index}}">
+                                                        <span class="kuiButton__icon kuiIcon fa-trash-o"></span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr class="kuiTableRow">
+                                                <td class="kuiTableRowCell cellAlignTop actions"></td>
+                                                <td class="kuiTableRowCell cellAlignTop actions">
+                                                    <button type="button"
+                                                            ng-click="addArrayEntry(tenantpermission, 'tenant_patterns', '')"
+                                                            ng-disabled="lastArrayEntryEmpty(tenantpermission.tenant_patterns)"
+                                                            class="kuiButton kuiButton--primary kuiButton--iconText"
+                                                            id="opendistro_security.button.roles.tenant_patterns.add">
+                                                        <span class="kuiButton__icon kuiIcon fa-plus"></span>
+                                                        Add tenant pattern
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <!-- Application permissions -->
+                                        <table class="kuiTable tableIndexGroups">
+                                            <thead>
+                                            <tr>
+                                                <th class="kuiTableHeaderCell tableHeaderCellIndexGroups">
+                                                    <div class="kuiTableHeaderCell__liner">
+                                                        Permissions:
+                                                        <div style="display: inline;">
+                                                <span class="kuiInfoButton help" tooltip='The permissions that apply for this tenant.'>
+                                                    <span class="kuiIcon fa-info-circle"></span>
+                                                </span>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                                <th class="kuiTableHeaderCell tableHeaderCellIndexGroups actions">
+                                                    <div class="kuiTableHeaderCell__liner">
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr class="kuiTableRow" ng-if="!tenantpermission.allowed_actions.length">
+                                                <td class="kuiTableRowCell" colspan="2" >
+                                                    <div class="kuiPanel--centered">
+                                                        <div class="kuiEmptyTablePrompt kuiEmptyTablePrompt--nopadding">
+                                                            <div class="kuiEmptyTablePrompt__message ng-binding">No application permissions configured.</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <tr data-ng-repeat="permission in tenantpermission.allowed_actions track by $index">
+                                                <td class="kuiTableRowCell cellAlignTop">
+                                                    <fieldset class="marginbottom--small" id="object-form-actiongroups">
+                                                        <ui-select ng-model="tenantpermission.allowed_actions[$index]">
+                                                            <ui-select-match placeholder="Permission name">
+                                                                {{tenantpermission.allowed_actions[$index]}}
+                                                            </ui-select-match>
+                                                            <ui-select-choices repeat="item in (applicationActionGroups | filter: $select.search) track by $index">
+                                                                <span ng-bind="item"></span>
+                                                            </ui-select-choices>
+                                                        </ui-select>
+                                                    </fieldset>
+                                                </td>
+                                                <td class="kuiTableRowCell cellAlignTop actions">
+                                                    <a
+                                                            tooltip="Delete field {{tenantpermission.allowed_actions[$index]}}"
+                                                            ng-click="confirmRemoveArrayEntry(tenantpermission.allowed_actions, permission)"
+                                                            class="kuiButton kuiButton--danger kuiButton--iconText"
+                                                            id="opendistro_security.button.roles.applicationpermissions.delete.{{$index}}">
+                                                        <span class="kuiButton__icon kuiIcon fa-trash-o"></span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr class="kuiTableRow">
+                                                <td class="kuiTableRowCell cellAlignTop actions"></td>
+                                                <td class="kuiTableRowCell cellAlignTop actions">
+                                                    <button type="button"
+                                                            ng-click="addArrayEntry(tenantpermission, 'allowed_actions', '')"
+                                                            ng-disabled="lastArrayEntryEmpty(tenantpermission.allowed_actions)"
+                                                            class="kuiButton kuiButton--primary kuiButton--iconText"
+                                                            id="opendistro_security.button.roles.applicationpermissions.add">
+                                                        <span class="kuiButton__icon kuiIcon fa-plus"></span>
+                                                        Add Field
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </accordeon>
+                                </div>
+                            </div>
                         </div>
-
-
-                        <div class="formsubmit">
-                            <button id="opendistro_security.button.submit" ng-if="!addingIndex" ng-disabled="!endpointAndMethodEnabled('ROLES', 'PUT') || resource.readonly"  class="kuiButton kuiButton--primary kuiButton--text" type="submit">Save Role Definition</button>
+                        <div class="formsubmit" style="margin-top:20px;">
+                            <button id="opendistro_security.button.submit" ng-if="!addingIndex" ng-disabled="!endpointAndMethodEnabled('ROLES', 'PUT') || resource.reserved"  class="kuiButton kuiButton--primary kuiButton--text" type="submit">Save Role Definition</button>
                             <button id="opendistro_security.button.cancel" ng-if="!addingIndex" class="kuiButton kuiButton--basic kuiButton--text" type="button" ng-click="cancel()">Cancel</button>
                         </div>
                     </div>
@@ -568,11 +699,11 @@
             </div>
         </div>
         <securityc-confirmation-modal ng-if="deleteFromEditModal.displayModal"
-            header="{{deleteFromEditModal.header}}"
-            body="{{deleteFromEditModal.body}}"
-            params="deleteFromEditModal.params"
-            on-confirm="deleteFromEditModal.onConfirm"
-            on-close="deleteFromEditModal.onClose"
+                                header="{{deleteFromEditModal.header}}"
+                                body="{{deleteFromEditModal.body}}"
+                                params="deleteFromEditModal.params"
+                                on-confirm="deleteFromEditModal.onConfirm"
+                                on-close="deleteFromEditModal.onClose"
         ></securityc-confirmation-modal>
     </div>
 </div>

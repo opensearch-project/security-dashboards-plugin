@@ -87,7 +87,7 @@ app.controller('securityEditActionGroupsController', function ($scope, $element,
                     } else {
                         $scope.resourcename = $scope.resourcename + " (COPY)";
                         $scope.isNew = true;
-                        delete($scope.resource.readonly);
+                        delete($scope.resource.reserved);
                     }
                 });
         } else {

@@ -91,6 +91,7 @@ uiModules
 
         this.GLOBAL_USER_LABEL = "Global";
         this.GLOBAL_USER_VALUE = "";
+        this.GLOBAL_USER_VISIBLE = true;
         this.GLOBAL_USER_WRITEABLE = true;
         this.PRIVATE_USER_LABEL = "Private";
         this.PRIVATE_USER_VALUE = "__user__";
@@ -107,7 +108,7 @@ uiModules
                 // both ES and KI side
                 var mtinfo = response.data;
 
-                this.GLOBAL_USER_WRITEABLE = (!mtinfo.kibana_index_readonly && ! this.userHasDashboardOnlyRole);
+                // this.GLOBAL_USER_WRITEABLE = (!mtinfo.kibana_index_readonly && ! this.userHasDashboardOnlyRole);
 
                 if(!mtinfo.kibana_mt_enabled) {
                     this.errorMessage = "It seems that the Multitenancy module is not installed on your Elasticsearch cluster, or it is disabled. Multitenancy will not work, please check your installation.";
@@ -143,6 +144,19 @@ uiModules
                 this.username = response.data.user_name;
                 var allTenants = response.data.tenants;
                 delete allTenants[this.username];
+
+                // delete the global_tenant for the moment. We fall back the GLOBAL until
+                // RBAC is rolled out completely.
+                if(response.data.tenants.hasOwnProperty("global_tenant") && this.globalEnabled) {
+                    this.GLOBAL_USER_WRITEABLE = response.data.tenants.global_tenant && !this.userHasDashboardOnlyRole;
+                    this.GLOBAL_USER_VISIBLE = true;
+                } else {
+                    // global_tenant not available in tenant list, needs to be
+                    // removed from UI display as well
+                    this.GLOBAL_USER_WRITEABLE = false;
+                    this.GLOBAL_USER_VISIBLE = false;
+                }
+                delete response.data.tenants["global_tenant"];
 
                 // sort tenants by putting the keys in an array first
                 var tenantkeys = [];

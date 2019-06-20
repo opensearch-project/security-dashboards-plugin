@@ -46,6 +46,17 @@ uiModules.get('apps/opendistro_security/configuration', [])
             }
         }
 
+        this.loadSystemInfo = async function()  {
+            // load systeminfo if not found in cache
+            if (!sessionStorage.getItem('systeminfo')) {
+                return $http.get(`${API_ROOT}/systeminfo`).then(function(response) {
+                    sessionStorage.setItem('systeminfo', JSON.stringify(response.data));
+                }).catch(function(error) {
+                    sessionStorage.setItem('systeminfo', '{}');
+                });
+            }
+        }
+
         this.loadRestInfo =  async function()  {
             // load restinfo if not found in cache
             if (!sessionStorage.getItem('restapiinfo')) {

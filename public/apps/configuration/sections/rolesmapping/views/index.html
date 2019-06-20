@@ -8,12 +8,12 @@
                 <div class="col-xs-12">
 
                     <div style="margin-bottom: 10px;">
-                        <h3 class="indexheading" style="display: inline;">Role Mappings</h3>
                         <div style="display: inline;">
-                            <span class="kuiInfoButton help" tooltip="Use Role Mappings to configure the members of a Role. You can use usernames, backend roles and host names to assign users to a Role.">
-                                <span class="kuiIcon fa-info-circle"></span>
+                            <span class="help" tooltip="Use Role Mappings to configure the members of a Open Distro Security Role. You can use usernames, backend roles and host names to assign users to a Open Distro Security Role.">
+                                <svg class="euiIcon euiIcon--large" focusable="false" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><path id="help-a" d="M13.6 12.186l-1.357-1.358c-.025-.025-.058-.034-.084-.056.53-.794.84-1.746.84-2.773a4.977 4.977 0 0 0-.84-2.772c.026-.02.059-.03.084-.056L13.6 3.813a6.96 6.96 0 0 1 0 8.373zM8 15A6.956 6.956 0 0 1 3.814 13.6l1.358-1.358c.025-.025.034-.057.055-.084C6.02 12.688 6.974 13 8 13a4.978 4.978 0 0 0 2.773-.84c.02.026.03.058.056.083l1.357 1.358A6.956 6.956 0 0 1 8 15zm-5.601-2.813a6.963 6.963 0 0 1 0-8.373l1.359 1.358c.024.025.057.035.084.056A4.97 4.97 0 0 0 3 8c0 1.027.31 1.98.842 2.773-.027.022-.06.031-.084.056l-1.36 1.358zm5.6-.187A4 4 0 1 1 8 4a4 4 0 0 1 0 8zM8 1c1.573 0 3.019.525 4.187 1.4l-1.357 1.358c-.025.025-.035.057-.056.084A4.979 4.979 0 0 0 8 3a4.979 4.979 0 0 0-2.773.842c-.021-.027-.03-.059-.055-.084L3.814 2.4A6.957 6.957 0 0 1 8 1zm0-1a8.001 8.001 0 1 0 .003 16.002A8.001 8.001 0 0 0 8 0z"></path></defs><use xlink:href="#help-a" fill-rule="evenodd"></use></svg>
                             </span>
                         </div>
+                        <h3 class="indexheading euiTitle euiTitle--medium" style="display: inline;">Role Mappings</h3>
                     </div>
 
                     <div class="kuiControlledTable">
@@ -23,98 +23,100 @@
                         <!-- Table -->
                         <table class="kuiTable" ng-show="(resourcenames | filter:query).length">
                             <thead>
-                                <tr>
+                            <tr>
 
-                                    <th class="kuiTableHeaderCell" ng-click="onSortChange('resourcename')">
+                                <th class="kuiTableHeaderCell" ng-click="onSortChange('resourcename')">
                                         <span class="kuiTableHeaderCell__liner">
-                                            Role
+                                            Open Distro Security Role
                                         </span>
-                                        <span ng-show="sortTable.byKey === 'resourcename'"
-                                              class="kuiIcon"
-                                              ng-class="{'fa-long-arrow-down': sortTable.descending, 'fa-long-arrow-up': ! sortTable.descending}">
+                                    <span ng-show="sortTable.byKey === 'resourcename'"
+                                          class="kuiIcon"
+                                          ng-class="{'fa-long-arrow-down': sortTable.descending, 'fa-long-arrow-up': ! sortTable.descending}">
                                         </span>
-                                    </th>
+                                </th>
 
-                                    <th class="kuiTableHeaderCell">
+                                <th class="kuiTableHeaderCell">
                                         <span class="kuiTableHeaderCell__liner">
                                             Users
                                         </span>
-                                    </th>
+                                </th>
 
-                                    <th class="kuiTableHeaderCell">
+                                <th class="kuiTableHeaderCell">
                                         <span class="kuiTableHeaderCell__liner">
                                             Backend Roles
                                         </span>
-                                    </th>
+                                </th>
 
-                                    <th class="kuiTableHeaderCell">
+                                <th class="kuiTableHeaderCell">
                                         <span class="kuiTableHeaderCell__liner">
                                             Hosts
                                         </span>
-                                    </th>
+                                </th>
 
-                                    <th class="kuiTableHeaderCell">
-                                    </th>
+                                <th class="kuiTableHeaderCell">
+                                </th>
 
-                                </tr>
+                            </tr>
                             </thead>
 
                             <tbody>
-                                <tr ng-repeat="rolemappingname in resourcenames | filter:query | orderBy:'toString()':sortTable.descending" class="kuiTableRow">
+                            <tr ng-repeat="rolemappingname in resourcenames | filter:query | orderBy:'toString()':sortTable.descending" class="kuiTableRow">
 
-                                    <td class="kuiTableRowCell cellAlignTop">
-                                        <div class="kuiTableRowCell__liner">
-                                            <span ng-click="newRole(rolemappingname)" class="kuiStatusText__icon kuiStatusText--error kuiIcon fa-warning" ng-if="securityRoleMissing(rolemappingname)" tooltip="No corresponding role for mapping '{{rolemappingname}}' found. Click to create it."></span>
-                                            <a class="kuiLink" ng-click="edit(rolemappingname)" title="{{rolemappingname}}">
-                                                {{rolemappingname}}
-                                            </a>
-                                            <div ng-if="resources[rolemappingname].readonly">
-                                                <div class="kuiBadge kuiBadge--default" >
-                                                    <span class="kuiIcon fa-lock"></span>
-                                                    reserved
-                                                </div>
-                                            </div>
+                                <td class="kuiTableRowCell cellAlignTop">
+                                    <div class="kuiTableRowCell__liner">
+                                        <span ng-click="newRole(rolemappingname)" class="kuiStatusText__icon kuiStatusText--error kuiIcon fa-warning" ng-if="securityRoleMissing(rolemappingname)" tooltip="No corresponding Open Distro Security role for mapping '{{rolemappingname}}' found. Click to create it."></span>
+                                        <a class="kuiLink" ng-click="edit(rolemappingname)" title="{{rolemappingname}}">
+                                            {{rolemappingname}}
+                                        </a>
+                                        <div ng-if="resources[rolemappingname].reserved">
+                                                <span class="euiBadge euiBadge--default">
+                                                  <span class="euiBadge__content">
+                                                        <span class="euiIcon euiIcon--small euiBadge__icon kuiIcon fa-lock"></span>
+                                                    <span class="euiBadge__text">reserved</span>
+                                                  </span>
+                                                </span>
                                         </div>
-                                    </td>
+                                    </div>
+                                </td>
 
-                                    <td class="kuiTableRowCell cellAlignTop">
-                                        <div class="kuiTableRowCell__liner">
-                                            <span title="{{user}}" ng-repeat="user in resources[rolemappingname].users">{{user}}<br/></span>
-                                        </div>
-                                    </td>
+                                <td class="kuiTableRowCell cellAlignTop">
+                                    <div class="kuiTableRowCell__liner">
+                                        <span title="{{user}}" ng-repeat="user in resources[rolemappingname].users">{{user}}<br/></span>
+                                    </div>
+                                </td>
 
-                                    <td class="kuiTableRowCell cellAlignTop">
-                                        <div class="kuiTableRowCell__liner">
-                                            <span title="{{backendrole}}" ng-repeat="backendrole in resources[rolemappingname].backendroles">{{backendrole}}<br/></span>
-                                        </div>
-                                    </td>
+                                <td class="kuiTableRowCell cellAlignTop">
+                                    <div class="kuiTableRowCell__liner">
+                                        <span title="{{backendrole}}" ng-repeat="backendrole in resources[rolemappingname].backend_roles">{{backendrole}}<br/></span>
+                                    </div>
+                                </td>
 
-                                    <td class="kuiTableRowCell cellAlignTop">
-                                        <div class="kuiTableRowCell__liner">
-                                            <span title="{{host}}" ng-repeat="host in resources[rolemappingname].hosts">{{host}}<br/></span>
-                                        </div>
-                                    </td>
+                                <td class="kuiTableRowCell cellAlignTop">
+                                    <div class="kuiTableRowCell__liner">
+                                        <span title="{{host}}" ng-repeat="host in resources[rolemappingname].hosts">{{host}}<br/></span>
+                                    </div>
+                                </td>
 
-                                    <td class="kuiTableRowCell actions cellAlignTop">
-                                        <div class="kuiTableRowCell__liner">
-                                            <a tooltip="Edit" ng-click="edit(rolemappingname)" class="kuiButton kuiButton--primary kuiButton--iconText">
-                                                <span class="kuiButton__icon kuiIcon fa-edit"></span>
-                                            </a>
-                                            <a tooltip="Clone" ng-click="clone(rolemappingname)" class="kuiButton kuiButton--primary kuiButton--iconText">
-                                                <span class="kuiButton__icon kuiIcon fa-copy"></span>
-                                            </a>
-                                            <button tooltip="Delete"
-                                                    type="button"
-                                                    ng-disabled="!endpointAndMethodEnabled('ROLESMAPPING', 'DELETE') || resources[rolemappingname].readonly"
-                                                    ng-click="confirmDelete(rolemappingname)"
-                                                    class="kuiButton kuiButton--danger kuiButton--iconText"
-                                                    id="opendistro_security.button.rolesmapping.delete.{{rolemappingname}}">
-                                                <span class="kuiButton__icon kuiIcon fa-trash-o"></span>
-                                            </button>
-                                        </div>
-                                    </td>
+                                <td class="kuiTableRowCell actions cellAlignTop">
+                                    <div class="kuiTableRowCell__liner">
+                                        <a tooltip="Edit" ng-click="edit(rolemappingname)" class="kuiButton kuiButton--primary kuiButton--iconText">
+                                            <span class="kuiButton__icon kuiIcon fa-edit"></span>
+                                        </a>
+                                        <a tooltip="Clone" ng-click="clone(rolemappingname)" class="kuiButton kuiButton--primary kuiButton--iconText">
+                                            <span class="kuiButton__icon kuiIcon fa-copy"></span>
+                                        </a>
+                                        <button tooltip="Delete"
+                                                type="button"
+                                                ng-disabled="!endpointAndMethodEnabled('ROLESMAPPING', 'DELETE') || resources[rolemappingname].reserved"
+                                                ng-click="confirmDelete(rolemappingname)"
+                                                class="kuiButton kuiButton--danger kuiButton--iconText"
+                                                id="opendistro_security.button.rolesmapping.delete.{{rolemappingname}}">
+                                            <span class="kuiButton__icon kuiIcon fa-trash-o"></span>
+                                        </button>
+                                    </div>
+                                </td>
 
-                                </tr>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -123,10 +125,10 @@
         </div>
 
         <securityc-confirmation-modal ng-if="displayModal === true"
-            header="Confirm Delete"
-            body="Do you really want to delete '{{deleteModalResourceName}}'"
-            on-close="closeDeleteModal"
-            on-confirm="delete">
+                                header="Confirm Delete"
+                                body="Do you really want to delete '{{deleteModalResourceName}}'"
+                                on-close="closeDeleteModal"
+                                on-confirm="delete">
         </securityc-confirmation-modal>
 
 

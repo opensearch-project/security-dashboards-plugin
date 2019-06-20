@@ -114,28 +114,28 @@ export default function LoginController(kbnUrl, $scope, $http, $window, systemst
         try {
             $http.post(`${API_ROOT}/auth/login`, this.credentials)
                 .then(
-                (response) => {
-                    // cache the current user information, we need it at several places
-                    sessionStorage.setItem("security_user", JSON.stringify(response.data));
-                    // load and cache rest api info
-                    // perform in the callback due to Chrome cancelling the
-                    // promises if we navigate away from the page, even if async/await
-                    systemstate.loadRestInfo().then((response) => {
-                        var user = JSON.parse(sessionStorage.getItem("security_user"));
-                        $window.location.href = `${nextUrl}`;
-                    });
-                },
-                (error) => {
-                    if (error.status && error.status === 401) {
-                        this.errorMessage = 'Invalid username or password, please try again';
-                    } else if (error.status && error.status === 404) {
-                        // This happens either when the user doesn't have any valid tenants or roles
-                        this.errorMessage = error.data.message;
-                    } else {
-                        this.errorMessage = 'An error occurred while checking your credentials, make sure you have an Elasticsearch cluster secured by Security running.';
+                    (response) => {
+                        // cache the current user information, we need it at several places
+                        sessionStorage.setItem("security_user", JSON.stringify(response.data));
+                        // load and cache systeminfo and rest api info
+                        // perform in the callback due to Chrome cancelling the
+                        // promises if we navigate away from the page, even if async/await
+                        systemstate.loadRestInfo().then((response) => {
+                            var user = JSON.parse(sessionStorage.getItem("security_user"));
+                            $window.location.href = `${nextUrl}`;
+                        });
+                    },
+                    (error) => {
+                        if (error.status && error.status === 401) {
+                            this.errorMessage = 'Invalid username or password, please try again';
+                        } else if (error.status && error.status === 404) {
+                            // This happens either when the user doesn't have any valid tenants or roles
+                            this.errorMessage = error.data.message;
+                        } else {
+                            this.errorMessage = 'An error occurred while checking your credentials, make sure you have an Elasticsearch cluster secured by Open Distro Security running.';
+                        }
                     }
-                }
-            );
+                );
         } catch(error) {
             this.errorMessage = 'An internal error has occured.';
         }

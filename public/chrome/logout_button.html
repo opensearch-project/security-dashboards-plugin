@@ -1,10 +1,10 @@
-<div class=" kbnGlobalNavLink securityLogoutLink"  tooltip="{{logoutTooltip}}" tooltip-placement="right" tooltip-popup-delay="0" tooltip-append-to-body="1" icon="'plugins/opendistro_security/images/logout.svg'" tooltip-content="Logout" title="'Logout'">
+<div class="kbnGlobalNavLink securityLogoutLink" style="height: 100%;" tooltip="{{logoutTooltip}}" tooltip-placement="right" tooltip-popup-delay="0" tooltip-append-to-body="1" icon="'plugins/security/images/logout.svg'" tooltip-content="Logout" title="'Logout'">
 
-    <a class=" kbnGlobalNavLink__anchor" ng-click="logout()">
-        <div class=" kbnGlobalNavLink__icon">
-            <i class="fa fa-sign-out  kbnGlobalNavLink__icon-image"></i>
+    <a class="kbnGlobalNavLink__anchor" style="display: flex; align-items: center; justify-content: space-evenly; width: 150px; height: 100%" ng-click="logout()">
+        <div class="kbnGlobalNavLink__icon" style="padding: 0 5px">
+            <i class="fa fa-sign-out securityLogoutLink__icon-image"></i>
         </div>
-        <div class=" kbnGlobalNavLink__title ng-binding" style="overflow: hidden; text-overflow: ellipsis; padding-right: 5px">
+        <div class="kbnGlobalNavLink__title ng-binding" style="overflow: hidden; text-overflow: ellipsis; padding-right: 5px; white-space: nowrap;">
             {{logoutButtonLabel}}
         </div>
     </a>

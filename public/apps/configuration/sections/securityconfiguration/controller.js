@@ -17,12 +17,12 @@ app.controller('securityConfigController', function ($scope, $element, $route, c
     $scope.title = "Authentication / Authorization configuration";
     $scope.service.list().then(function (response) {
         $scope.resource = $scope.service.postFetch(response.data);
-        forEach(response.data.opendistro_security.dynamic.authc, function(value, key) {
+        forEach(response.data.config.dynamic.authc, function(value, key) {
             value["name"] = key;
             $scope.sortedAuthc.push(value);
         });
 
-        forEach(response.data.opendistro_security.dynamic.authz, function(value, key) {
+        forEach(response.data.config.dynamic.authz, function(value, key) {
             value["name"] = key;
             $scope.sortedAuthz.push(value);
         });
@@ -70,13 +70,13 @@ app.controller('securityConfigController', function ($scope, $element, $route, c
     }
 
     $scope.authczEnabled = function(authcz)  {
-        if (authcz.enabled && authcz.enabled == 'true') {
+        if (authcz.enabled && authcz.enabled === true) {
             return true;
         }
-        if (authcz.http_enabled && authcz.http_enabled == "true") {
+        if (authcz.http_enabled && authcz.http_enabled === true) {
             return true;
         }
-        if (authcz.transport_enabled && authcz.transport_enabled == "true") {
+        if (authcz.transport_enabled && authcz.transport_enabled === true) {
             return true;
         }
 

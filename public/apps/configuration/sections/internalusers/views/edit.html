@@ -23,7 +23,7 @@
                                         autocomplete="new-password"
                                         ng-model="resource.password"
                                         class="form-control"
-                                        ng-required="isNew">
+                                        >
                             </div>
                             <div class="form-group">
                                 <label for="object-form-password-confirmation">Repeat password <span ng-if="!isNew" class="labelhint">(leave empty to keep current password)</span></label>
@@ -36,7 +36,7 @@
                                         ng-model="resource.passwordConfirmation"
                                         class="form-control"
                                         match="resource.password"
-                                        ng-required="isNew"/>
+                                        />
                             </div>
 
                             <!-- Backend Roles -->
@@ -54,7 +54,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="kuiTableRow" ng-if="resource.roles.length == 0">
+                                    <tr class="kuiTableRow" ng-if="resource.backend_roles.length == 0">
                                         <td colspan="2" class="kuiTableRowCell">
                                             <div class="kuiPanel kuiPanel--centered kuiPanel--noborder">
                                                 <div class="kuiEmptyTablePrompt kuiEmptyTablePrompt--nopadding">
@@ -63,14 +63,14 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="kuiTableRow" data-ng-repeat="role in resource.roles track by $index">
+                                    <tr class="kuiTableRow" data-ng-repeat="role in resource.backend_roles track by $index">
                                         <td class="kuiTableRowCell cellAlignTop">
-                                            <fieldset class="marginbottom--small" id="object-form-backendroles-{{resource.roles[$index]}}">
-                                                <input type="text" class="kuiTextInput fullwidth" ng-model="resource.roles[$index]" name="" id="opendistro_security.input.backendroles.{{resource.roles[$index]}}">
+                                            <fieldset class="marginbottom--small" id="object-form-backendroles-{{resource.backend_roles[$index]}}">
+                                                <input type="text" class="kuiTextInput fullwidth" ng-model="resource.backend_roles[$index]" name="" id="opendistro_security.input.backendroles.{{resource.backend_roles[$index]}}">
                                             </fieldset>
                                         </td>
                                         <td class="kuiTableRowCell cellAlignTop actions">
-                                            <a ng-click="confirmRemoveArrayEntry(resource.roles, role)" class="kuiButton kuiButton--danger kuiButton--iconText" id="opendistro_security.button.backendroles.delete.{{resource.roles[$index]}}">
+                                            <a ng-click="confirmRemoveArrayEntry(resource.backend_roles, role)" class="kuiButton kuiButton--danger kuiButton--iconText" id="opendistro_security.button.backendroles.delete.{{resource.backend_roles[$index]}}">
                                                 <span class="kuiButton__icon kuiIcon fa-trash-o"></span>
                                             </a>
                                         </td>
@@ -81,7 +81,7 @@
                                             <button type="button"
                                                     id="opendistro_security.button.backendroles.add"
                                                     ng-click="addArrayEntry(resource, 'roles', '')"
-                                                    ng-disabled="lastArrayEntryEmpty(resource.roles)"
+                                                    ng-disabled="lastArrayEntryEmpty(resource.backend_roles)"
                                                     class="kuiButton kuiButton--primary kuiButton--iconText ">
                                                 <span class="kuiButton__icon kuiIcon fa-plus"></span>
                                                 Add backend role
@@ -149,7 +149,7 @@
                             </table>
 
                             <div class="formsubmit">
-                                <button id="opendistro_security.button.submit" ng-disabled="!endpointAndMethodEnabled('INTERNALUSERS', 'PUT') || resource.readonly" class="kuiButton kuiButton--primary kuiButton--text" type="submit">Submit</button>
+                                <button id="opendistro_security.button.submit" ng-disabled="!endpointAndMethodEnabled('INTERNALUSERS', 'PUT') || resource.reserved" class="kuiButton kuiButton--primary kuiButton--text" type="submit">Submit</button>
                                 <button id="opendistro_security.button.cancel" class="kuiButton kuiButton--basic kuiButton--text" type="submit" ng-click="cancel()">Cancel</button>
                             </div>
                         </form>

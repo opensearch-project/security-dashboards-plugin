@@ -3,11 +3,15 @@
     <table class="fullwidth" ng-show="!isNew" style="margin-bottom:10px;">
         <tr>
             <td>
-                <h3 class="resourcename" id="opendistro_security.label.resource.resourcename">
+                <h3 class="resourcename euiTitle euiTitle--medium" id="opendistro_security.label.resource.resourcename">
                     {{resourcelabel}}: {{resourcename}}
-                    <div class="kuiBadge kuiBadge--default" ng-if="resource.readonly">
-                        <span class="kuiIcon fa-lock" id="opendistro_security.label.resource.reserved"></span>
-                        reserved
+                    <div class="kuiBadge kuiBadge--default" ng-if="resource.reserved">
+                        <span class="euiBadge euiBadge--default">
+                            <span class="euiBadge__content">
+                                <span class="euiIcon euiIcon--small euiBadge__icon kuiIcon fa-lock"></span>
+                                <span class="euiBadge__text" id="opendistro_security.label.resource.reserved">reserved</span>
+                            </span>
+                        </span>
                     </div>
                 </h3>
             </td>
@@ -30,7 +34,6 @@
             ui-ace="{ onLoad: aceLoaded, mode: 'json' }"
             readonly
             ng-model="resourceAsJson"
-            required
             ng-if="showEditor"
             >
     </div>

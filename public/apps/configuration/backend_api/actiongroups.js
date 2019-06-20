@@ -55,6 +55,11 @@ uiModules.get('apps/opendistro_security/configuration', [])
         };
 
         this.preSave = (actiongroup) => {
+
+            delete actiongroup.hidden;
+            delete actiongroup.reserved;
+            delete actiongroup.static;
+
             var result = {};
             var all = [];
             all = all.concat(actiongroup.actiongroups);
@@ -63,7 +68,7 @@ uiModules.get('apps/opendistro_security/configuration', [])
             all = all.filter(e => String(e).trim());
             // remove duplicate roles
             all = uniq(all);
-            result["permissions"] = all;
+            result["allowed_actions"] = all;
             return result;
         };
 
@@ -74,8 +79,8 @@ uiModules.get('apps/opendistro_security/configuration', [])
             var permissionsArray = actiongroup;
 
             // new SECURITY6 format, explicit permissions entry
-            if (actiongroup.permissions) {
-                permissionsArray = actiongroup.permissions;
+            if (actiongroup.allowed_actions) {
+                permissionsArray = actiongroup.allowed_actions;
             }
             // determine which format to use
             permissionsArray = backendAPI.cleanArraysFromDuplicates(permissionsArray);
@@ -83,8 +88,8 @@ uiModules.get('apps/opendistro_security/configuration', [])
             var permissions = backendAPI.sortPermissions(permissionsArray);
 
             // if readonly flag is set for SECURITY6 format, add as well
-            if (actiongroup.readonly) {
-                permissions["readonly"] = actiongroup.readonly;
+            if (actiongroup.reserved) {
+                permissions["reserved"] = actiongroup.reserved;
             }
 
             return permissions;
