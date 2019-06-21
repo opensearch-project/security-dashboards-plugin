@@ -19,6 +19,22 @@ To build the security-kibana plugin from source follow these instructions:
 
 `./build.sh <es-version> <kibana-version> install`
 
+The above builds the final artifacts in zip format.
+
+`cd target/releases/`
+
+The artifacts can be found in the above directory
+
+## Install
+
+Install the plugin to Kibana cluster with the following commands:
+
+`cd kibana/bin`
+
+
+`./kibana-plugin install file:///path/to/security/target/releases/opendistro_security_kibana_plugin-<version>.zip`
+
+
 
 
 ## Documentation
