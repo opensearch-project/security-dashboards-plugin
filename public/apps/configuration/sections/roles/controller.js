@@ -78,7 +78,7 @@ app.controller('securityEditRolesController', function ($rootScope, $scope, $ele
     $scope.isNew = true;
 
     $scope.dlsFlsEnabled = true;
-    $scope.multiTenancy = true;
+    $scope.multiTenancyEnabled = true;
 
     $scope.selectedTab = "indexpermissions";
 
