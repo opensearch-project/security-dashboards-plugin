@@ -145,7 +145,7 @@ app.controller('securityEditRoleMappingsController', function ($scope, $element,
         $scope.resource.backend_roles = backendAPI.cleanArray($scope.resource.backend_roles);
         $scope.resource.hosts = backendAPI.cleanArray($scope.resource.hosts);
 
-        if ($scope.resource.users.length == 0 && $scope.resource.backendroles.length == 0 && $scope.resource.hosts.length == 0) {
+        if ($scope.resource.users.length == 0 && $scope.resource.backend_roles.length == 0 && $scope.resource.hosts.length == 0) {
             $scope.errorMessage = 'Please configure at least one of users, backend roles or hosts.';
             return;
         }
