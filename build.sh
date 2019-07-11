@@ -40,7 +40,13 @@ echo "+++ Sourcing nvm +++"
 echo "+++ Checking nvm version +++"
 nvm version
 if [ $? != 0 ]; then
-    echo "Checking mvn version failed";
+    echo "Checking nvm version failed";
+    exit 1;
+fi
+
+echo "+++ Checking gpg +++"
+if ! [ -x "$(command -v gpg)" ]; then
+    echo "Checking gpg failed. GPG not installed or not in path.";
     exit 1;
 fi
 

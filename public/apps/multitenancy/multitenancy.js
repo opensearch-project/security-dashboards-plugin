@@ -206,7 +206,9 @@ uiModules
                     chrome.getNavLinkById("kibana:visualize").lastSubUrl = chrome.getNavLinkById("kibana:visualize").url;
                     chrome.getNavLinkById("kibana:dashboard").lastSubUrl = chrome.getNavLinkById("kibana:dashboard").url;
                     chrome.getNavLinkById("kibana:discover").lastSubUrl = chrome.getNavLinkById("kibana:discover").url;
-                    chrome.getNavLinkById("timelion").lastSubUrl = chrome.getNavLinkById("timelion").url;
+                    if(chrome.getInjected("timelion.ui.enabled")) {
+                        chrome.getNavLinkById("timelion").lastSubUrl = chrome.getNavLinkById("timelion").url;
+                    }
                     // clear last sub urls, but leave our own items intouched. Take safe mutation approach.
                     var lastSubUrls = [];
                     for (var i = 0; i < sessionStorage.length; i++) {
