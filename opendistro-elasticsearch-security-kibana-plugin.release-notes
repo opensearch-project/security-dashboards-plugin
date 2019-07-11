@@ -1,6 +1,10 @@
-## 2019-06-21, Version 1.1.0.0 (Current)
 
-- Support for Elasticsearch 7.1
+## 2019-06-21, Version 1.0.0.1 (Current)
+
+- Fix wrong property name in rolesmapping config controller (https://github.com/opendistro-for-elasticsearch/security-kibana-plugin/pull/46)
+- Fixed Backend Role button ( https://github.com/opendistro-for-elasticsearch/security-kibana-plugin/pull/44 )
+- Avoid javascript error ( https://github.com/opendistro-for-elasticsearch/security-kibana-plugin/pull/41 )
+
 
 ## 2019-06-21, Version 1.0.0.0 
 
