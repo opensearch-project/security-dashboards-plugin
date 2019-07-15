@@ -25,6 +25,9 @@ export default function (kibana) {
                 readonly_mode: Joi.object().keys({
                     roles: Joi.array().default([]),
                 }).default(),
+                xff: Joi.object().keys({
+                    enabled: Joi.boolean().default(false),
+                }).default(),
                 cookie: Joi.object().keys({
                     secure: Joi.boolean().default(false),
                     name: Joi.string().default('security_authentication'),
@@ -41,6 +44,7 @@ export default function (kibana) {
                     type: Joi.string().valid(['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache']).default(''),
                     anonymous_auth_enabled: Joi.boolean().default(false),
                     unauthenticated_routes: Joi.array().default(["/api/status"]),
+                    logout_url: Joi.string().allow('').default(''),
                 }).default(),
                 basicauth: Joi.object().keys({
                     enabled: Joi.boolean().default(true),
@@ -417,6 +421,10 @@ export default function (kibana) {
                 this.status.yellow("Security copy JWT params disabled");
             }
 
+            if (config.get('opendistro_security.xff.enabled')) {
+                require('./lib/xff/xff')(pluginRoot, server, this);
+                this.status.yellow("Search Guard XFF enabled.");
+            }
             if (config.get('opendistro_security.multitenancy.enabled')) {
 
                 // sanity check - header whitelisted?

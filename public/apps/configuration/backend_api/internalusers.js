@@ -71,6 +71,15 @@ uiModules.get('apps/opendistro_security/configuration', [])
             if (!user.roles) {
                 user.roles = [];
             }
+
+            // Handle the case where the readonly flag is set to false.
+            // Since "false" is retrieved as a string, the views will
+            // not check for boolean true.
+            // Also, saving the resource would fail validation if readonly is present when saving.
+            if (user.readonly && user.readonly === "false") {
+                delete user.readonly;
+            }
+
             // transform user attributes to object
             user["attributesArray"] = [];
             if (user.attributes) {

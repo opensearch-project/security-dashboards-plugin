@@ -55,6 +55,14 @@ uiModules.get('apps/opendistro_security/configuration', [])
         };
 
         this.postFetch = (rolemapping) => {
+            // Handle the case where the readonly flag is set to false.
+            // Since "false" is retrieved as a string, the views will
+            // not check for boolean true.
+            // Also, saving the resource would fail validation if readonly is present when saving.
+            if (rolemapping.readonly && rolemapping.readonly === "false") {
+                delete rolemapping.readonly;
+            }
+
             rolemapping = backendAPI.cleanArraysFromDuplicates(rolemapping);
             return rolemapping;
         };
