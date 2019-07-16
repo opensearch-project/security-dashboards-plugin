@@ -420,7 +420,7 @@ export default function (kibana) {
 
             if (config.get('opendistro_security.xff.enabled')) {
                 require('./lib/xff/xff')(pluginRoot, server, this);
-                this.status.yellow("Search Guard XFF enabled.");
+                this.status.yellow("Opendistro Security XFF enabled.");
             }
             if (config.get('opendistro_security.multitenancy.enabled')) {
 
