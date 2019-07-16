@@ -14,9 +14,15 @@ app.controller('securityInternalUsersController', function ($scope, $element, $r
 
     $scope.title = "Manage Internal User";
 
+    $scope.resources = {};
+
     $scope.service.list().then(function (response) {
         $scope.resourcenames = Object.keys(response.data).sort();
-        $scope.resources = response.data;
+
+        $scope.resourcenames.forEach(function (entry) {
+            $scope.resources[entry] = $scope.service.postFetch(response.data[entry]);
+        });
+
         $scope.numresources = response.total;
         $scope.loaded = true;
     });

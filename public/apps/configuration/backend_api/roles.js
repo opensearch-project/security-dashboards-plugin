@@ -154,6 +154,14 @@ uiModules.get('apps/opendistro_security/configuration', [])
             // for the moment we're fiddling with the model directly
             role.dlsfls = {};
 
+            // Handle the case where the readonly flag is set to false.
+            // Since "false" is retrieved as a string, the views will
+            // not check for boolean true.
+            // Also, saving the resource would fail validation if readonly is present when saving.
+            if (role.readonly && role.readonly === "false") {
+                delete role.readonly;
+            }
+
             if (role.indices) {
 
                 // flat list of indexnames, can't be done in view

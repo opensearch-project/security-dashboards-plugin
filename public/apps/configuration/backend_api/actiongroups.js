@@ -68,6 +68,15 @@ uiModules.get('apps/opendistro_security/configuration', [])
         };
 
         this.postFetch = (actiongroup) => {
+
+            // Handle the case where the readonly flag is set to false.
+            // Since "false" is retrieved as a string, the views will
+            // not check for boolean true.
+            // Also, saving the resource would fail validation if readonly is present when saving.
+            if (actiongroup.readonly && actiongroup.readonly === "false") {
+                delete actiongroup.readonly;
+            }
+
             // we need to support old and new format of actiongroups,
             // normalize both formats to common representation
 

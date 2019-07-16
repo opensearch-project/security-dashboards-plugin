@@ -40,14 +40,7 @@ require ('../../apps/configuration/systemstate/systemstate');
 
 const app = uiModules.get('apps/opendistro_security/configuration');
 
-
-app.factory('errorInterceptor', function ($q, $window) {
-
-    return {
-        responseError: function (response) {
-
-            // Handles 401s, but only if we've explicitly set the redirect property on the response.
-            if (response.status == 401 && response.data && response.data.redirectTo === 'login') {
+function redirectOnSessionTimeout($window) {
                 const APP_ROOT = `${chrome.getBasePath()}`;
                 const path = chrome.removeBasePath($window.location.pathname);
                 const injectedConfig = chrome.getInjected();
@@ -79,6 +72,16 @@ app.factory('errorInterceptor', function ($q, $window) {
                 }
             }
 
+app.factory('errorInterceptor', function ($q, $window) {
+
+    return {
+        responseError: function (response) {
+
+            // Handles 401s, but only if we've explicitly set the redirect property on the response.
+            if (response.status == 401 && response.data && response.data.redirectTo === 'login') {
+                redirectOnSessionTimeout($window);
+            }
+
             // If unhandled, we just pass the error on to the next handler.
             return $q.reject(response);
         }
@@ -92,8 +95,44 @@ app.config(function($httpProvider) {
     $httpProvider.interceptors.push('errorInterceptor');
 });
 
+/**
+ * Setup a wrapper around fetch so that we can
+ * handle session timeouts on ajax calls made
+ * by the kfetch component
+ * @param $window
+ */
+function setupResponseErrorHandler($window) {
+    if (!window.fetch) {
+        return;
+    }
+
+    const nativeFetch = window.fetch;
+    window.fetch = (url, config) => {
+        return nativeFetch(url, config)
+            .then(async(result) => {
+                if (result.status === 401) {
+                    try {
+                        // We need to clone the response before converting the body to JSON,
+                        // otherwise the response will be locked for the next consumer.
+                        const bodyJSON = await result.clone().json();
+                        if (bodyJSON && bodyJSON.redirectTo === 'login') {
+                            redirectOnSessionTimeout($window);
+                        }
+
+                    } catch (error) {
+                        // Ignore
+                    }
+                }
+
+              return result;
+            });
+    };
+}
+
 
 export function enableConfiguration($http, $window, systemstate) {
+
+    setupResponseErrorHandler($window);
 
     chrome.getNavLinkById("security-configuration").hidden = true;
 
