@@ -1,8 +1,6 @@
 ## 2019-07-18, Version 1.0.0.2 (Current)
 
 - Fixed action group validator (https://github.com/opendistro-for-elasticsearch/security-kibana-plugin/pull/50)
-- Added Kibana readonly roles (https://github.com/opendistro-for-elasticsearch/security/pull/96)
-- Added alerting related roles.
 
 ## 2019-07-11, Version 1.0.0.1 
 
