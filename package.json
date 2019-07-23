@@ -1,6 +1,6 @@
 {
   "name": "opendistro_security",
-  "version": "6.7.1",
+  "version": "6.8.1",
   "description": "Security features for kibana",
   "main": "index.js",
   "homepage": "https://github.com/opendistro-for-elasticsearch/security-kibana-plugin",
