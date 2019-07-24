@@ -1,4 +1,9 @@
-## 2019-07-18, Version 1.0.0.2 (Current)
+## 2019-07-24, Version 1.0.0.3 (Current)
+
+- Fixed tenant migration issue (https://github.com/opendistro-for-elasticsearch/security-kibana-plugin/pull/52) 
+
+
+## 2019-07-18, Version 1.0.0.2 
 
 - Fixed action group validator (https://github.com/opendistro-for-elasticsearch/security-kibana-plugin/pull/50)
 
