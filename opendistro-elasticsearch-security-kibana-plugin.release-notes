@@ -1,5 +1,5 @@
 
-## 2019-04-23, Version 0.10.0.0 (Current)
+## 2019-07-24, Version 0.10.0.0 (Current)
 
 - Support For Kibana 6.8
 - Fixed kibana tenant migration issue (https://github.com/opendistro-for-elasticsearch/security-kibana-plugin/pull/52)
