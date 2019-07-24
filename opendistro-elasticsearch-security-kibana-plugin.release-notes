@@ -1,7 +1,12 @@
-## 2019-07-24, Version 0.9.0.1 (Current)
+## 2019-07-24, Version 0.9.0.2 (Current)
 
 - Fixed kibana tenant migration issue (https://github.com/opendistro-for-elasticsearch/security-kibana-plugin/pull/52)
 - Pass whitelisted headers from kibana to elasticsearch (https://github.com/opendistro-for-elasticsearch/security-kibana-plugin/pull/35)
+
+## 2019-07-16, Version 0.9.0.1
+
+- Improvements to Opendistro-For-Elasticsearch Security-Kibana-Plugin 0.9.0.0
+- Kibana version target: oss-6.7.1
 
 ## 2019-04-23, Version 0.9.0.0
 
