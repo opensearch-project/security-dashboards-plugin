@@ -51,6 +51,7 @@ function redirectOnSessionTimeout($window) {
         return $q.reject(response);
     }
 
+    console.log("handle session timeout redirect");
     let auth = injectedConfig.auth;
     if (auth && auth.type && auth.type === 'jwt') {
         // For JWT we don't have a login page, so we need to go to the custom error page
@@ -76,9 +77,13 @@ app.factory('errorInterceptor', function ($q, $window) {
 
     return {
         responseError: function (response) {
-
             // Handles 401s, but only if we've explicitly set the redirect property on the response.
-            if (response.status == 401 && response.data && response.data.redirectTo === 'login') {
+            // Fix for https://github.com/angular/angular/issues/19888
+            var data = null;
+            if (response.data) {
+                data = JSON.parse(response.data);
+            }
+            if (response.status == 401 && data && data.redirectTo === 'login') {
                 redirectOnSessionTimeout($window);
             }
 
@@ -110,6 +115,7 @@ function setupResponseErrorHandler($window) {
     window.fetch = (url, config) => {
         return nativeFetch(url, config)
             .then(async (result) => {
+                console.log(result);
                 if (result.status === 401) {
                     try {
                         // We need to clone the response before converting the body to JSON,
