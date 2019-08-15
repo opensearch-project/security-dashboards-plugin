@@ -81,7 +81,11 @@ app.factory('errorInterceptor', function ($q, $window) {
             // Fix for https://github.com/angular/angular/issues/19888
             var data = null;
             if (response.data) {
-                data = JSON.parse(response.data);
+                try { // Security plugin returns real json data. If its real json.parse fails and it sets data as the response
+                    data = JSON.parse(response.data);
+                } catch (error) {
+                    data = response.data;
+                }
             }
             if (response.status == 401 && data && data.redirectTo === 'login') {
                 redirectOnSessionTimeout($window);
