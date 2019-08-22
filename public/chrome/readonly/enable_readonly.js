@@ -33,6 +33,7 @@ import chrome from 'ui/chrome';
 import { uiModules } from 'ui/modules';
 import { toastNotifications } from 'ui/notify';
 import './readonly.less';
+import { chromeWrapper } from "../../services/chrome_wrapper";
 
 // Needed to access the dashboardProvider
 import 'plugins/kibana/dashboard/dashboard_config';
@@ -80,25 +81,11 @@ let originalNavItemsVisibility = null;
  */
 function hideNavItems() {
     originalNavItemsVisibility = {};
-    chrome.getNavLinks().forEach((navLink) => {
+    chromeWrapper.getNavLinks().forEach((navLink) => {
         if (navLink.id !== 'kibana:dashboard') {
 
             originalNavItemsVisibility[navLink.id] = navLink.hidden;
-            navLink.hidden = true;
-
-            // This is a bit of a hack to make sure that we detect
-            // changes that happen between reading the original
-            // state and resolving our info
-            navLink._securityHidden = navLink.hidden;
-            Object.defineProperty(navLink, 'hidden', {
-                set(value) {
-                    originalNavItemsVisibility[this.id] = value;
-                    this._securityHidden = value;
-                },
-                get() {
-                    return this._securityHidden;
-                }
-            });
+            chromeWrapper.hideNavLink(navLink.id, true, true);
         }
     });
 }
@@ -111,12 +98,13 @@ function hideNavItemsForTenantReadOnly() {
         'kibana:management'
     ];
 
-    chrome.getNavLinks().forEach((navLink) => {
+    chromeWrapper.getNavLinks().forEach((navLink) => {
         if (hiddenNavLinkIds.indexOf(navLink.id) > -1) {
             // A bit redundant if all items are hidden from the start
-            navLink.hidden = true;
+            chromeWrapper.hideNavLink(navLink.id, true);
         } else if (originalNavItemsVisibility !== null) {
-            navLink.hidden = originalNavItemsVisibility[navLink.id];
+            const isHidden = getFinalHiddenStatus(navLink.id);
+            chromeWrapper.hideNavLink(navLink.id, isHidden);
         }
     });
 }
@@ -134,12 +122,13 @@ function hideNavItemsForDashboardOnly(multitenancyVisible) {
         visibleNavLinkIds.push('security-multitenancy');
     }
 
-    chrome.getNavLinks().forEach((navLink) => {
+    chromeWrapper.getNavLinks().forEach((navLink) => {
         if (visibleNavLinkIds.indexOf(navLink.id) === -1) {
             // A bit redundant if all items are hidden from the start
-            navLink.hidden = true;
+            chromeWrapper.hideNavLink(navLink.id, true);
         } else if (originalNavItemsVisibility !== null) {
-            navLink.hidden = originalNavItemsVisibility[navLink.id];
+            const isHidden = getFinalHiddenStatus(navLink.id);
+            chromeWrapper.hideNavLink(navLink.id, isHidden);
         }
     });
 }
@@ -291,6 +280,16 @@ function resolveWithDashboardRole($q, $rootScope, $location, route, dashboardCon
 
 }
 
+function getFinalHiddenStatus(id) {
+    let updatedVisibility = chromeWrapper.changedVisibility[id];
+    if (typeof updatedVisibility !== 'undefined') {
+        return updatedVisibility;
+    }
+
+     return (originalNavItemsVisibility[id] === true);
+}
+
+
 function resolveRegular(authInfo) {
 
     resolvedReadOnly = {
@@ -303,8 +302,9 @@ function resolveRegular(authInfo) {
     // If we hid all navigation links before resolving we need to
     // change them back to their original state
     if (originalNavItemsVisibility !== null) {
-        chrome.getNavLinks().forEach((navLink) => {
-            navLink.hidden = originalNavItemsVisibility[navLink.id];
+        chromeWrapper.getNavLinks().forEach((navLink) => {
+            const isHidden = getFinalHiddenStatus(navLink.id);
+            chromeWrapper.hideNavLink(navLink.id, isHidden);
         });
     }
 
