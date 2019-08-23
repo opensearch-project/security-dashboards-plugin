@@ -7,7 +7,7 @@ import client from './client';
 uiModules.get('apps/opendistro_security/configuration', [])
     .service('securityConfiguration', function (backendAPI, Promise, $http) {
 
-        const RESOURCE = 'config';
+        const RESOURCE = 'securityconfig';
 
         this.title = {
             singular: 'Authentication / Authorization configuration',
