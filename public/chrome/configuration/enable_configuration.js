@@ -64,7 +64,7 @@ function redirectOnSessionTimeout($window) {
             $window.location.href = `${APP_ROOT}/auth/saml/login?nextUrl=${encodeURIComponent(nextUrl)}`;
         } else {
             // Handle differently if we were logged in anonymously
-            if (auth && auth.type === 'basicauth' && injectedConfig.sgDynamic && injectedConfig.sgDynamic.user && injectedConfig.sgDynamic.user.isAnonymousAuth) {
+            if (auth && auth.type === 'basicauth' && injectedConfig.securityDynamic && injectedConfig.securityDynamic.user && injectedConfig.securityDynamic.user.isAnonymousAuth) {
                 $window.location.href = `${APP_ROOT}/auth/anonymous?nextUrl=${encodeURIComponent(nextUrl)}`;
             } else {
                 $window.location.href = `${APP_ROOT}/login?nextUrl=${encodeURIComponent(nextUrl)}`;
