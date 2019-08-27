@@ -150,32 +150,20 @@ export function enableConfiguration($http, $window, systemstate) {
         return;
     }
 
-    // systemstate.loadSystemInfo().then(function(){ 
-        // if no REST module is installed the restinfo endpoint is not available, so fail fast
-        // if (!systemstate.restApiEnabled()) {
-        //     chromeWrapper.hideNavLink('security-configuration', true);
-        //     return;
-        // }
-        // rest module installed, check if user has access to the API
         systemstate.loadRestInfo().then(function(){
-            // if (systemstate.hasApiAccess()) {
-                chromeWrapper.hideNavLink('security-configuration', false);
-                FeatureCatalogueRegistryProvider.register(() => {
-                    return {
-                        id: 'security-configuration',
-                        title: 'Security Configuration',
-                        description: 'Configure users, roles and permissions for Open Distro Security.',
-                        icon: 'securityApp',
-                        path: '/app/security-configuration',
-                        showOnHomePage: true,
-                        category: FeatureCatalogueCategory.ADMIN
-                    };
-                });
-            // } else {
-            //     chromeWrapper.hideNavLink('security-configuration', true);
-            // }
+            chromeWrapper.hideNavLink('security-configuration', false);
+            FeatureCatalogueRegistryProvider.register(() => {
+                return {
+                    id: 'security-configuration',
+                    title: 'Security Configuration',
+                    description: 'Configure users, roles and permissions for Open Distro Security.',
+                    icon: 'securityApp',
+                    path: '/app/security-configuration',
+                    showOnHomePage: true,
+                    category: FeatureCatalogueCategory.ADMIN
+                };
+            });
         });
-    // });
 }
 
 uiModules.get('security').run(enableConfiguration);
