@@ -112,7 +112,7 @@ app.controller('securityBaseController', function ($scope, $element, $route, $wi
             }, (error) => {
                 toastNotifications.addDanger({
                     title: 'Unable to load action groups',
-                    text: error.message,
+                    text: error.data.message,
                 });
                 $scope.accessState = "forbidden";
             });
@@ -143,7 +143,7 @@ app.controller('securityBaseController', function ($scope, $element, $route, $wi
                 sessionStorage.setItem("rolenames", JSON.stringify(Object.keys(response.data)));
             }, (error) => {
                 toastNotifications.addDanger({
-                    text: error.message,
+                    text: error.data.message,
                 });
                 $scope.accessState = "forbidden";
             });
