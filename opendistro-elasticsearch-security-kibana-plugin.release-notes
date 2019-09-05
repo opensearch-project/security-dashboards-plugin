@@ -1,5 +1,13 @@
 
-## 2019-07-24, Version 0.10.0.0 (Current)
+## 2019-09-05, Version 0.10.0.3 (Current)
+- Fixed password validation error
+
+## 2019-08-21, Version 0.10.0.2
+- Fixed API path on Authentication and Authorization
+
+## 2019-08-01, Version 0.10.0.1 
+
+## 2019-07-24, Version 0.10.0.0
 
 - Support For Kibana 6.8
 - Fixed kibana tenant migration issue (https://github.com/opendistro-for-elasticsearch/security-kibana-plugin/pull/52)
