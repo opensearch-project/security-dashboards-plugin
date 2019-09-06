@@ -17,7 +17,6 @@ uiModules.get('apps/opendistro_security/configuration', [])
         const AUTH_BACKEND_API_ROOT = chrome.addBasePath("/api/v1");
 
         this.testConnection =  () => {
-
             return $http.post(`${AUTH_BACKEND_API_ROOT}/get/config`)
                 .then((response) => {
                     return 200;
@@ -100,7 +99,7 @@ uiModules.get('apps/opendistro_security/configuration', [])
                 });
         };
 
-        this.list = (resourceName)  => {
+        this.list = (resourceName)  => {	
             return $http.get(`${AUTH_BACKEND_API_ROOT}/configuration/${resourceName}`)
                 .then((response) => {
                     return response.data;
