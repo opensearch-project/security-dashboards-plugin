@@ -129,25 +129,22 @@ app.controller('securityEditInternalUsersController', function ($scope, $element
             return;
         }
 
-        if($scope.isNew) {
-            if ($scope.resource.password.length < 5) {
-                $scope.errorMessage = 'Passwords must be at least 5 characters.';
-                return;
-            }
-
-        } else {
+        if(! $scope.isNew) {
             if ($scope.resource.password.trim().length == 0) {
                 $scope.resource.passwordConfirmation = "";
             }
         }
-
 
         if ($scope.resource.password !== $scope.resource.passwordConfirmation) {
             $scope.errorMessage = 'Passwords do not match.';
             return;
         }
 
-        $scope.service.save($scope.resourcename, $scope.resource).then(() => kbnUrl.change(`/internalusers/`));
+        $scope.service.save($scope.resourcename, $scope.resource)
+          .then(
+            () => kbnUrl.change(`/internalusers/`),
+            (error) => {$scope.errorMessage = error.data.message}
+          );
 
         $scope.errorMessage = null;
 

@@ -131,7 +131,7 @@ app.controller('securityEditRolesController', function ($rootScope, $scope, $ele
             (error) => {
                 toastNotifications.addDanger({
                     title: 'Unable to load indices.',
-                    text: error.message,
+                    text: error.data.message,
                 });
             }
         );
@@ -466,7 +466,7 @@ app.controller('securityEditRolesController', function ($rootScope, $scope, $ele
             },
             (error) => {
                 toastNotifications.addDanger({
-                    text: error.message
+                    text: error.data.message
                 });
             }
         );
