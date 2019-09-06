@@ -58,12 +58,11 @@ uiModules
         $http.get(`${API_ROOT}/auth/authinfo`)
             .then(
                 (response) => {
-
                     this.security_user = response.data;
                 },
                 (error) => {
                     toastNotifications.addDanger({
-                        text: error.message,
+                        text: error.data.message,
                     });
                 }
             );

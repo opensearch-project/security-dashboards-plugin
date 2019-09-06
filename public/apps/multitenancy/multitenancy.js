@@ -130,7 +130,7 @@ uiModules
             {
                 toastNotifications.addDanger({
                     title: 'Unable to load multitenancy info.',
-                    text: error.message,
+                    text: error.data.message,
                 });
             }
         );
@@ -168,7 +168,7 @@ uiModules
                     },
                     (error) => {
                         toastNotifications.addDanger({
-                            text: error.message,
+                            text: error.data.message,
                         });
                     }
                 );
@@ -177,7 +177,7 @@ uiModules
             {
                 toastNotifications.addDanger({
                     title: 'Unable to load authentication info.',
-                    text: error.message,
+                    text: error.data.message,
                 });
             }
         );
@@ -236,7 +236,7 @@ uiModules
                 (error) =>
                 {
                     toastNotifications.addDanger({
-                        text: error.message
+                        text: error.data.message
                     });
                 }
             );
