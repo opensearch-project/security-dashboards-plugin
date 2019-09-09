@@ -1,4 +1,13 @@
-## 2019-06-21, Version 1.1.0.0 (Current)
+## 2019-09-09, Version 1.1.0.2 (Current)
+
+- Fixed password validation error
+- Added ability to configure logout_url 
+
+## 2019-08-21, Version 1.1.0.1
+
+- Fixed API path on Authentication and Authorization
+
+## 2019-06-21, Version 1.1.0.0
 
 - Support for Elasticsearch 7.1
 
