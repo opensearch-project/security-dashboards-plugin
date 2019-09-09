@@ -1,6 +1,6 @@
 import { uiModules } from 'ui/modules';
 import { merge } from 'lodash';
-import { uniq } from 'lodash';
+import { uniq, cloneDeep } from 'lodash';
 import client from './client';
 
 /**
@@ -27,8 +27,10 @@ uiModules.get('apps/opendistro_security/configuration', [])
         };
 
         this.save = (username, data) => {
-            data = this.preSave(data);
-            return backendAPI.save(RESOURCE, username, data);
+            let dataToSave = cloneDeep(data);
+            dataToSave = this.preSave(dataToSave);
+
+            return backendAPI.save(RESOURCE, username, dataToSave, false);
         };
 
         this.delete = (username) => {
