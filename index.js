@@ -477,7 +477,7 @@ export default function (kibana) {
                             this.status.green('Open Distro Security plugin version '+ opendistro_security_version + ' initialised.');
                         })
                         .catch((error) => {
-                            server.log(['error', 'Search Guard migration'], error);
+                            server.log(['error', 'Security plugin migration'], error);
                             this.status.yellow('Tenant indices migration failed');
                         });
 
