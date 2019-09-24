@@ -304,6 +304,12 @@ app.controller('securityEditRolesController', function ($rootScope, $scope, $ele
             event.preventDefault();
         }
 
+        // not dots in keys allowed 
+        if ($scope.resourcename.indexOf('.') != -1 || $scope.resourcename.indexOf("{") != -1 || $scope.resourcename.indexOf("}") != -1) {   
+            $scope.errorMessage = 'Please do not use dots or brackets in the role name.';   
+            return; 
+        }
+
         const form = $element.find('form[name="objectForm"]');
 
         // role name is required
