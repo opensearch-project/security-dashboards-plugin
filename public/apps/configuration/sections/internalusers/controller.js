@@ -119,7 +119,7 @@ app.controller('securityEditInternalUsersController', function ($scope, $element
         }
 
         if ($scope.resourcename.indexOf("{") != -1 || $scope.resourcename.indexOf("}") != -1 != -1) {
-            $scope.errorMessage = "Username must not contain brackets";
+            $scope.errorMessage = "Username must not contain curly brackets";
             return;
         }
 

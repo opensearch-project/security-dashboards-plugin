@@ -306,7 +306,7 @@ app.controller('securityEditRolesController', function ($rootScope, $scope, $ele
 
         // not dots in keys allowed 
         if ($scope.resourcename.indexOf('.') != -1 || $scope.resourcename.indexOf("{") != -1 || $scope.resourcename.indexOf("}") != -1) {   
-            $scope.errorMessage = 'Please do not use dots or brackets in the role name.';   
+            $scope.errorMessage = 'Please do not use dots or curly brackets in the role name.';   
             return; 
         }
 

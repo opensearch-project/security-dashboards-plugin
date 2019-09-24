@@ -125,10 +125,10 @@ app.controller('securityEditRoleMappingsController', function ($scope, $element,
 
         // not dots in keys allowed 
         if ($scope.resourcename.indexOf('.') != -1 || $scope.resourcename.indexOf("{") != -1 || $scope.resourcename.indexOf("}") != -1) {   
-            $scope.errorMessage = 'Please do not use dots or brackets in the role name.';   
+            $scope.errorMessage = 'Please do not use dots or curly brackets in the role name.';   
             return; 
         }
-        
+
         const form = $element.find('form[name="objectForm"]');
 
         if (form.hasClass('ng-invalid-required')) {
