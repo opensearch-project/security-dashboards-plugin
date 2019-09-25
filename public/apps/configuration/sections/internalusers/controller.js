@@ -113,10 +113,12 @@ app.controller('securityEditInternalUsersController', function ($scope, $element
             return;
         }
 
-        if ($scope.resourcename.indexOf("*") != -1) {
-            $scope.errorMessage = "Username must not contain '*'";
+        if ($scope.resourcename.indexOf("*") != -1 || $scope.resourcename.indexOf('.') != -1 ||
+            $scope.resourcename.indexOf("{") != -1 || $scope.resourcename.indexOf("}") != -1) {
+            $scope.errorMessage = "Username must not contain '*', '.' or curly brackets";
             return;
         }
+
 
         if (form.hasClass('ng-invalid-required')) {
             $scope.errorMessage = 'Please fill in all the required parameters.';
