@@ -1,4 +1,8 @@
-## 2019-09-20, Version 1.1.0.3 (Current)
+## 2019-09-25, Version 1.1.0.4 (Current)
+
+- Added validation rules to deny dots and curly brackets when creating internalusers, roles, and role-mappings
+
+## 2019-09-20, Version 1.1.0.3
 
 - Fixed Index Migration error while upgrading ES version from 6.x to 7.x
 
