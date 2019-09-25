@@ -1,4 +1,8 @@
-## 2019-08-06, Version 1.2.0.0 (Current)
+## 2019-09-25, Version 1.2.0.1 (Current)
+
+- Added validation rules to deny dots and curly brackets when creating internalusers, roles, and role-mappings
+
+## 2019-08-06, Version 1.2.0.0
 
 - Support for Elasticsearch 7.2
 
