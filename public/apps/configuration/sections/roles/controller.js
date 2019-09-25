@@ -304,10 +304,11 @@ app.controller('securityEditRolesController', function ($rootScope, $scope, $ele
             event.preventDefault();
         }
 
-        // not dots in keys allowed 
-        if ($scope.resourcename.indexOf('.') != -1 || $scope.resourcename.indexOf("{") != -1 || $scope.resourcename.indexOf("}") != -1) {   
-            $scope.errorMessage = 'Please do not use dots or curly brackets in the role name.';   
-            return; 
+        // no dots, curly brackets or * allowed 
+        if ($scope.resourcename.indexOf("*") != -1 || $scope.resourcename.indexOf('.') != -1 ||
+            $scope.resourcename.indexOf("{") != -1 || $scope.resourcename.indexOf("}") != -1) {
+            $scope.errorMessage = "Role name must not contain '*', '.' or curly brackets";
+            return;
         }
 
         const form = $element.find('form[name="objectForm"]');
