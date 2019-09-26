@@ -81,7 +81,11 @@ app.controller('securityBaseController', function ($scope, $element, $route, $wi
     $scope.initialiseStates = () => {
         $scope.complianceFeaturesEnabled = systemstate.complianceFeaturesEnabled();
         systemstate.loadRestInfo().then(function(){
-            $scope.accessState = "ok";
+            if (systemstate.getRestApiInfo().has_api_access) {
+                $scope.accessState = "ok";
+            } else {
+                $scope.accessState = "forbidden";
+            }
             $scope.loadActionGroups();
             $scope.loadRoles();
             $scope.currentuser = systemstate.getRestApiInfo().user_name;
