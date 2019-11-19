@@ -5,7 +5,7 @@ const app = uiModules.get('apps/opendistro_security/configuration', []);
 
 app.directive('securitycConfirmationModal', function () {
     return {
-        template: require('./confirmationmodal.html'),
+        template: require('./confirmationmodal.html').default,
         restrict: 'E',
         scope: {},
         controllerAs: 'vm',

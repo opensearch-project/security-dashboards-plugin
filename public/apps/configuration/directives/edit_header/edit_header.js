@@ -4,7 +4,7 @@ const app = uiModules.get('apps/opendistro_security/configuration', []);
 
 app.directive('securitycEditHeader', function () {
     return {
-        template: require('./edit_header.html'),
+        template: require('./edit_header.html').default,
         replace: true,
         restrict: 'E'
     };

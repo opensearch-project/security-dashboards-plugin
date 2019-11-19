@@ -30,7 +30,7 @@ app.directive('angucomplete', function ($parse, $http, $sce, $timeout) {
             "matchClass": "@matchclass",
             "isrequired": "@isrequired"
         },
-        template: require('./angucomplete.html'),
+        template: require('./angucomplete.html').default,
 
         link: function($scope, elem, attrs) {
             $scope.lastSearchTerm = null;

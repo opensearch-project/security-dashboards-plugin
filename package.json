@@ -1,6 +1,6 @@
 {
   "name": "opendistro_security",
-  "version": "7.2.0",
+  "version": "7.3.2",
   "description": "Security features for kibana",
   "main": "index.js",
   "homepage": "https://github.com/opendistro-for-elasticsearch/security-kibana-plugin",
@@ -49,6 +49,9 @@
     "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
+    "@elastic/eslint-config-kibana": "link:../../kibana/packages/eslint-config-kibana",
+    "@kbn/eslint-import-resolver-kibana": "link:../../kibana/packages/kbn-eslint-import-resolver-kibana",
+    "@kbn/plugin-helpers": "link:../../kibana/packages/kbn-plugin-helpers",
     "babel-eslint": "^9.0.0",
     "eslint": "^5.6.0",
     "eslint-config-airbnb": "^17.1.1",
