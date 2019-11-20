@@ -189,7 +189,7 @@ fi
 
 if [ "$COMMAND" = "install" ] ; then
     echo "+++ mvn clean install +++"
-    $MAVEN_HOME/bin/mvn clean install
+    $MAVEN_HOME/bin/mvn clean package -Duser.home=/home/jenkins
     if [ $? != 0 ]; then
         echo "$MAVEN_HOME/bin/mvn clean install failed"
         exit 1
