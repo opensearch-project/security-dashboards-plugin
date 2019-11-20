@@ -10,8 +10,8 @@
     "url": "https://github.com/opendistro-for-elasticsearch/security-kibana-plugin"
   },
   "scripts": {
-    "kbn": "node ../../kibana/scripts/kbn",
-    "lint": "../../kibana/node_modules/.bin/eslint '**/*.js' -c .eslintrc",
+    "kbn": "node ../../scripts/kbn",
+    "lint": "./node_modules/.bin/eslint .",
     "start": "plugin-helpers start",
     "test:server": "plugin-helpers test:server",
     "test:browser": "plugin-helpers test:browser",
@@ -49,9 +49,9 @@
     "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
-    "@elastic/eslint-config-kibana": "link:../../kibana/packages/eslint-config-kibana",
-    "@kbn/eslint-import-resolver-kibana": "link:../../kibana/packages/kbn-eslint-import-resolver-kibana",
-    "@kbn/plugin-helpers": "link:../../kibana/packages/kbn-plugin-helpers",
+    "@elastic/eslint-config-kibana": "link:../../packages/eslint-config-kibana",
+    "@kbn/eslint-import-resolver-kibana": "link:../../packages/kbn-eslint-import-resolver-kibana",
+    "@kbn/plugin-helpers": "link:../../packages/kbn-plugin-helpers",
     "babel-eslint": "^9.0.0",
     "eslint": "^5.6.0",
     "eslint-config-airbnb": "^17.1.1",

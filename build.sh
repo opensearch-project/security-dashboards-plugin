@@ -110,7 +110,7 @@ echo "+++ Sourcing Yarn +++"
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
 echo "+++ Copy plugin contents to build stage +++"
-BUILD_STAGE_PLUGIN_DIR="$BUILD_STAGE_DIR/kibana/plugins/search-guard-kibana-plugin"
+BUILD_STAGE_PLUGIN_DIR="$BUILD_STAGE_DIR/kibana/plugins/security-kibana-plugin"
 mkdir -p $BUILD_STAGE_PLUGIN_DIR
 cp -a "$WORK_DIR/index.js" "$BUILD_STAGE_PLUGIN_DIR"
 cp -a "$WORK_DIR/package.json" "$BUILD_STAGE_PLUGIN_DIR"
@@ -169,7 +169,7 @@ cp -a "$BUILD_STAGE_PLUGIN_DIR/public" "$COPYPATH"
 # Replace pom version
 rm -f pom.xml
 
-sed -e "s/RPLC_PLUGIN_VERSION/$KIBANA_VERSION-$SG_PLUGIN_VERSION/" ./pom.template.xml > ./pom.xml
+sed -e "s/RPLC_PLUGIN_VERSION/$KIBANA_VERSION-$SECURITY_PLUGIN_VERSION/" ./pom.template.xml > ./pom.xml
 if [ $? != 0 ]; then
     echo "sed failed"
     exit 1
