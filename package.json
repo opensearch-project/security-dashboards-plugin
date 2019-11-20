@@ -14,7 +14,7 @@
     "lint": "./node_modules/.bin/eslint .",
     "start": "plugin-helpers start",
     "test:server": "plugin-helpers test:server",
-    "test:browser": "plugin-helpers test:browser",
+    "test:browser": "./node_modules/.bin/jest --clearCache && ./node_modules/.bin/jest --config ./tests/jest.config.js",
     "test:jest": "../../kibana/node_modules/.bin/jest --config ./test/jest.config.js",
     "build": "plugin-helpers build"
   },
