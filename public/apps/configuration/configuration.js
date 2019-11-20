@@ -46,6 +46,7 @@ import '@elastic/eui/dist/eui_theme_light.css';
 import 'plugins/opendistro_security/apps/configuration/configuration.less';
 
 import 'ace';
+import 'ui-select';
 
 import securityConfigurationController from './configuration_controller';
 import template from './configuration.html';
