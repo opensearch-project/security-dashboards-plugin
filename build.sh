@@ -138,13 +138,6 @@ if [ $? != 0 ]; then
     exit 1
 fi
 
-echo "+++ Testing UI +++"
-uiTestsResult=`./node_modules/.bin/jest --config ./tests/jest.config.js --json`
-if [[ ! $uiTestsResult =~ .*\"numFailedTests\":0.* ]]; then
-  echo "Browser tests failed"
-  exit 1
-fi
-
 echo "+++ Installing plugin node modules for production +++"
 rm -rf "node_modules"
 yarn install --production --pure-lockfile
