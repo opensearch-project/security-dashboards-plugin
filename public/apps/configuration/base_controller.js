@@ -11,11 +11,15 @@ import { orderBy } from 'lodash';
 import clusterpermissions  from './permissions/clusterpermissions';
 import indexpermissions  from './permissions/indexpermissions';
 
+import 'jquery';
+import 'angular';
+import 'ui-select/dist/select';
+
 require ('./backend_api/actiongroups');
 require ('./systemstate/systemstate');
 
 
-const app = uiModules.get('apps/opendistro_security/configuration', ['ui.ace']);
+const app = uiModules.get('apps/opendistro_security/configuration', ['ui.ace', 'ui.select']);
 
 app.controller('securityBaseController', function ($scope, $element, $route, $window, $http, backendAPI, backendActionGroups, backendRoles, kbnUrl, systemstate) {
 
