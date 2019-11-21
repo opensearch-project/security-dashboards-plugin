@@ -11,8 +11,9 @@ import { orderBy } from 'lodash';
 import clusterpermissions  from './permissions/clusterpermissions';
 import indexpermissions  from './permissions/indexpermissions';
 
-import 'ui-select';
-import 'ui-select/dist/select.css';
+import 'jquery';
+import 'angular';
+import 'ui-select/dist/select';
 
 require ('./backend_api/actiongroups');
 require ('./systemstate/systemstate');

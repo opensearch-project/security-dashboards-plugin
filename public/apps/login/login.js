@@ -33,8 +33,9 @@ import chrome from 'ui/chrome';
 import 'ui/autoload/styles';
 import 'plugins/opendistro_security/apps/login/login.less';
 import LoginController from './login_controller';
+import template from 'plugins/opendistro_security/apps/login/login.html';
 
 chrome
 .setVisible(false)
-.setRootTemplate(require('plugins/opendistro_security/apps/login/login.html'))
+.setRootTemplate(template)
 .setRootController('ui', LoginController);

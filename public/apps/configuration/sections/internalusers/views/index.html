@@ -37,6 +37,12 @@
 
                                     <th class="kuiTableHeaderCell">
                                         <span class="kuiTableHeaderCell__liner">
+                                            Open Distro Security Roles
+                                        </span>
+                                    </th>
+
+                                    <th class="kuiTableHeaderCell">
+                                        <span class="kuiTableHeaderCell__liner">
                                             Backend Roles
                                         </span>
                                     </th>
@@ -71,6 +77,12 @@
                                                   </span>
                                                 </span>
                                             </div>
+                                        </div>
+                                    </td>
+
+                                    <td class="kuiTableRowCell">
+                                        <div class="kuiTableRowCell__liner">
+                                            <span title="{{role}}" ng-repeat="role in resources[username].opendistro_security_roles">{{role}}<br/></span>
                                         </div>
                                     </td>
 

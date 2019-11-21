@@ -1,6 +1,6 @@
 {
   "name": "opendistro_security",
-  "version": "7.2.0",
+  "version": "7.3.2",
   "description": "Security features for kibana",
   "main": "index.js",
   "homepage": "https://github.com/opendistro-for-elasticsearch/security-kibana-plugin",
@@ -10,11 +10,11 @@
     "url": "https://github.com/opendistro-for-elasticsearch/security-kibana-plugin"
   },
   "scripts": {
-    "kbn": "node ../../kibana/scripts/kbn",
-    "lint": "../../kibana/node_modules/.bin/eslint '**/*.js' -c .eslintrc",
+    "kbn": "node ../../scripts/kbn",
+    "lint": "./node_modules/.bin/eslint .",
     "start": "plugin-helpers start",
     "test:server": "plugin-helpers test:server",
-    "test:browser": "plugin-helpers test:browser",
+    "test:browser": "./node_modules/.bin/jest --clearCache && ./node_modules/.bin/jest --config ./tests/jest.config.js",
     "test:jest": "../../kibana/node_modules/.bin/jest --config ./test/jest.config.js",
     "build": "plugin-helpers build"
   },
@@ -50,6 +50,7 @@
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
     "babel-eslint": "^9.0.0",
+    "core-js": "^3.2.1",
     "eslint": "^5.6.0",
     "eslint-config-airbnb": "^17.1.1",
     "eslint-plugin-babel": "^5.2.0",
