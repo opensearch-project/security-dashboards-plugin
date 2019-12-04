@@ -66,7 +66,14 @@
                                     <tr class="kuiTableRow" ng-repeat="role in resource.opendistro_security_roles track by $index">
                                         <td class="kuiTableRowCell cellAlignTop">
                                             <fieldset class="marginbottom--small" id="object-form-opendistrosecurityroles-{{resource.opendistro_security_roles[$index]}}">
-                                                <input type="text" class="kuiTextInput fullwidth" ng-model="resource.opendistro_security_roles[$index]" name="" id="opendistro_security.input.opendistrosecurityroles.{{resource.opendistro_security_roles[$index]}}">
+                                                <ui-select ng-model="resource.opendistro_security_roles[$index]">
+                                                    <ui-select-match placeholder="Open Distro Security Role Name">
+                                                        {{resource.opendistro_security_roles[$index].name || resource.opendistro_security_roles[$index] }}
+                                                    </ui-select-match>
+                                                    <ui-select-choices repeat="item in rolesAutoComplete | filter: $select.search track by $index">
+                                                        <span ng-bind="item.name"></span>
+                                                    </ui-select-choices>
+                                                </ui-select>
                                             </fieldset>
                                         </td>
                                         <td class="kuiTableRowCell cellAlignTop actions">
