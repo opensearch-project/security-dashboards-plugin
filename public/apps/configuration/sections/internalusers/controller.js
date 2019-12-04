@@ -141,6 +141,16 @@ app.controller('securityEditInternalUsersController', function ($scope, $element
             return;
         }
 
+        let opendistro_security_roles = [];
+        for (let i = 0; i<$scope.resource.opendistro_security_roles.length; i++){
+            if (typeof $scope.resource.opendistro_security_roles[i] == "object" ) {
+                opendistro_security_roles.push($scope.resource.opendistro_security_roles[i].name);
+            } else {
+                opendistro_security_roles.push($scope.resource.opendistro_security_roles[i]);
+            }
+        }
+        $scope.resource.opendistro_security_roles = opendistro_security_roles;
+
         $scope.service.save($scope.resourcename, $scope.resource)
           .then(
             () => kbnUrl.change(`/internalusers/`),
