@@ -5,7 +5,7 @@ import client from '../../backend_api/securityconfiguration';
 
 const app = uiModules.get('apps/opendistro_security/configuration', []);
 
-app.controller('securityConfigController', function ($scope, $element, $route, createNotifier, securityConfiguration, kbnUrl) {
+app.controller('securityConfigController', function ($scope, $element, $route, securityConfiguration, kbnUrl) {
 
     $scope.endpoint = "SECURITYCONFIG";
 

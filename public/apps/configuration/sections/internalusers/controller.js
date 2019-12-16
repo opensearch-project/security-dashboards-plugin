@@ -4,7 +4,7 @@ import '../../backend_api/internalusers';
 
 const app = uiModules.get('apps/opendistro_security/configuration', []);
 
-app.controller('securityInternalUsersController', function ($scope, $element, $route, createNotifier, backendInternalUsers, kbnUrl) {
+app.controller('securityInternalUsersController', function ($scope, $element, $route, backendInternalUsers, kbnUrl) {
 
     $scope.endpoint = "INTERNALUSERS";
     $scope.$parent.endpoint = "INTERNALUSERS";
@@ -46,7 +46,7 @@ app.controller('securityInternalUsersController', function ($scope, $element, $r
 
 });
 
-app.controller('securityEditInternalUsersController', function ($scope, $element, $route, $location, $routeParams, createNotifier, backendInternalUsers, kbnUrl) {
+app.controller('securityEditInternalUsersController', function ($scope, $element, $route, $location, $routeParams, backendInternalUsers, kbnUrl) {
 
     $scope.endpoint = "INTERNALUSERS";
     $scope.$parent.endpoint = "INTERNALUSERS";
