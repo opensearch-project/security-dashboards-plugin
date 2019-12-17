@@ -86,6 +86,7 @@ app.controller('securityBaseController', function ($scope, $element, $route, $wi
             $scope.loadActionGroups();
             $scope.loadRoles();
             $scope.currentuser = systemstate.getRestApiInfo().user_name;
+            $scope.$digest();
         });
     }
 
