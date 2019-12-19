@@ -4,7 +4,7 @@ const app = uiModules.get('apps/opendistro_security/configuration', []);
 
 app.directive('securitycPermissions', function () {
     return {
-        template: require('./permissions.html'),
+        template: require('./permissions.html').default,
         restrict: 'EA',
         scope: {
             "permissionsResource": "=permissionsresource",

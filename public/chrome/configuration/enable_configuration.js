@@ -37,6 +37,7 @@ import { uiModules } from 'ui/modules';
 import 'ui/autoload/modules';
 import { FeatureCatalogueRegistryProvider, FeatureCatalogueCategory } from 'ui/registry/feature_catalogue';
 require('../../apps/configuration/systemstate/systemstate');
+import { chromeWrapper } from "../../services/chrome_wrapper";
 
 const app = uiModules.get('apps/opendistro_security/configuration');
 
@@ -51,7 +52,6 @@ function redirectOnSessionTimeout($window) {
         return $q.reject(response);
     }
 
-    console.log("handle session timeout redirect");
     let auth = injectedConfig.auth;
     if (auth && auth.type && auth.type === 'jwt') {
         // For JWT we don't have a login page, so we need to go to the custom error page
@@ -140,11 +140,47 @@ function setupResponseErrorHandler($window) {
 }
 
 
+/**
+ * Setup a wrapper around fetch so that we can
+ * handle session timeouts on ajax calls made
+ * by the kfetch component
+ * @param $window
+ */
+function setupResponseErrorHandler($window) {
+    if (!window.fetch) {
+        return;
+    }
+
+    const nativeFetch = window.fetch;
+    window.fetch = (url, config) => {
+        return nativeFetch(url, config)
+            .then(async (result) => {
+                if (result.status === 401) {
+                    try {
+                        // We need to clone the response before converting the body to JSON,
+                        // otherwise the response will be locked for the next consumer.
+                        const bodyJSON = await result.clone().json();
+                        if (bodyJSON && bodyJSON.redirectTo === 'login') {
+                            redirectOnSessionTimeout($window);
+                        }
+
+                    } catch (error) {
+                        // Ignore
+                    }
+                }
+
+                return result;
+            });
+    };
+}
+
+
+
 export function enableConfiguration($http, $window, systemstate) {
 
     setupResponseErrorHandler($window);
 
-    chrome.getNavLinkById("security-configuration").hidden = true;
+    chromeWrapper.hideNavLink('security-configuration', true);
 
     const ROOT = chrome.getBasePath();
     const APP_ROOT = `${ROOT}`;
@@ -156,9 +192,8 @@ export function enableConfiguration($http, $window, systemstate) {
         return;
     }
 
-    // rest module installed, check if user has access to the API
     systemstate.loadRestInfo().then(function () {
-        chrome.getNavLinkById("security-configuration").hidden = false;
+        chromeWrapper.hideNavLink('security-configuration', false);
         FeatureCatalogueRegistryProvider.register(() => {
             return {
                 id: 'security-configuration',

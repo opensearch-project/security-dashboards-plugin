@@ -39,6 +39,65 @@
                                         />
                             </div>
 
+                            <!-- Opendistro Security Roles -->
+                            <table class="kuiTable tableIndexGroups" securityc-form-focus-added-field>
+                                <thead>
+                                <tr>
+                                    <th class="kuiTableHeaderCell tableHeaderCellIndexGroups sevenwidth">
+                                            <span class="kuiTableHeaderCell__liner">
+                                                Open Distro Security Roles
+                                            </span>
+                                    </th>
+
+                                    <th class="kuiTableHeaderCell">
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="kuiTableRow" ng-show="!resource.opendistro_security_roles.length">
+                                        <td colspan="2" class="kuiTableRowCell">
+                                            <div class="kuiPanel kuiPanel--centered kuiPanel--noborder">
+                                                <div class="kuiEmptyTablePrompt kuiEmptyTablePrompt--nopadding">
+                                                    <div class="kuiEmptyTablePrompt__message ng-binding">No Open Distro security roles found</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="kuiTableRow" ng-repeat="role in resource.opendistro_security_roles track by $index">
+                                        <td class="kuiTableRowCell cellAlignTop">
+                                            <fieldset class="marginbottom--small" id="object-form-opendistrosecurityroles-{{resource.opendistro_security_roles[$index]}}">
+                                                <ui-select ng-model="resource.opendistro_security_roles[$index]">
+                                                    <ui-select-match placeholder="Open Distro Security Role Name">
+                                                        {{resource.opendistro_security_roles[$index].name || resource.opendistro_security_roles[$index] }}
+                                                    </ui-select-match>
+                                                    <ui-select-choices repeat="item in rolesAutoComplete | filter: $select.search track by $index">
+                                                        <span ng-bind="item.name"></span>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </fieldset>
+                                        </td>
+                                        <td class="kuiTableRowCell cellAlignTop actions">
+                                            <a ng-click="confirmRemoveArrayEntry(resource.opendistro_security_roles, role)" class="kuiButton kuiButton--danger kuiButton--iconText" id="opendistro_security.button.opendistrosecurityroles.delete.{{resource.opendistro_security_roles[$index]}}">
+                                                <span class="kuiButton__icon kuiIcon fa-trash-o"></span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr class="kuiTableRow">
+                                        <td class="kuiTableRowCell cellAlignTop actions"></td>
+                                        <td class="kuiTableRowCell cellAlignTop actions">
+                                            <button type="button"
+                                                    id="opendistro_security.button.opendistro_secuirty_roles.add"
+                                                    ng-click="addArrayEntry(resource, 'opendistro_security_roles', '')"
+                                                    ng-disabled="lastArrayEntryEmpty(resource.opendistro_security_roles)"
+                                                    class="kuiButton kuiButton--primary kuiButton--iconText ">
+                                                <span class="kuiButton__icon kuiIcon fa-plus"></span>
+                                                Add role
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
                             <!-- Backend Roles -->
                             <table class="kuiTable tableIndexGroups" securityc-form-focus-added-field>
                                 <thead>

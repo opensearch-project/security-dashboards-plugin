@@ -29,23 +29,39 @@
  * permissions and limitations under the License.
  */
 
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { chromeHeaderNavControlsRegistry } from 'ui/registry/chrome_header_nav_controls';
 
 import chrome from 'ui/chrome';
+import { EuiButtonEmpty } from '@elastic/eui';
 
-
-if (chrome.getInjected('auth.type') != "kerberos" && chrome.getInjected('auth.type') != "proxy") {
- chromeHeaderNavControlsRegistry.register(() => ({
-  name: 'btn-logout',
-  template: require('plugins/opendistro_security/chrome/btn_logout/btn_logout.html'),
-  order: 1000,
-  side: 'right',
-  render(el) {
-   // Compiles and adds the logout directive
-   angular.element(el.parentNode).injector().invoke(function($rootScope, $compile) {
-    const $compiled = $compile("<security-logout-button />")($rootScope);
-    el.parentNode.prepend($compiled[0]);
-   });
-  }
- }));
+if (chrome.getInjected('auth.type') !== 'kerberos' && chrome.getInjected('auth.type') !== 'proxy') {
+  chromeHeaderNavControlsRegistry.register((securityAccessControl) => ({
+    name: 'btn-logout',
+    order: 1000,
+    side: 'right',
+    render(el) {
+      function onClick() {
+        securityAccessControl.logout();
+      }
+      const chromeInjected = chrome.getInjected();
+      let logoutButtonLabel = "Logout";
+      if (chromeInjected && chromeInjected.securityDynamic && chromeInjected.securityDynamic.user) {
+        if (!chromeInjected.securityDynamic.user.isAnonymousAuth) {
+          logoutButtonLabel = chromeInjected.securityDynamic.user.username;
+        } else {
+          logoutButtonLabel = "Login";
+        }
+      }
+      //console.log(ctrl.username);
+      ReactDOM.render(
+        <div className="kbnGlobalNavLink__icon" style={{padding: "15px"}} onClick={onClick}>
+            <i className="fa fa-sign-out securityLogoutLink__icon-image"></i> {logoutButtonLabel}
+        </div>,
+        el
+      );
+      return () => ReactDOM.unmountComponentAtNode(el);
+    }
+  }));
 }

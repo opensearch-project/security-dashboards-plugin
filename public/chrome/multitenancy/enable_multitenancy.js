@@ -35,12 +35,12 @@ import { uiModules } from 'ui/modules';
 import { FeatureCatalogueRegistryProvider, FeatureCatalogueCategory } from 'ui/registry/feature_catalogue';
 import { EuiIcon } from '@elastic/eui';
 import {parse} from "url";
-
+import { chromeWrapper } from "../../services/chrome_wrapper"
 
 export function enableMultiTenancy(Private) {
     const securityDynamic = chrome.getInjected().securityDynamic;
     var enabled = chrome.getInjected('multitenancy_enabled');
-    chrome.getNavLinkById("security-multitenancy").hidden = !enabled;
+    chromeWrapper.hideNavLink('security-multitenancy', !enabled);
     if (enabled) {
       FeatureCatalogueRegistryProvider.register(() => {
           return {
@@ -102,7 +102,7 @@ export function enableMultiTenancy(Private) {
  */
 function addTenantToURL(url, originalValue = null, userRequestedTenant) {
     const tenantKey = 'security_tenant';
-    const tenantKeyAndValue = tenantKey + '=' + userRequestedTenant;
+    const tenantKeyAndValue = tenantKey + '=' + encodeURIComponent(userRequestedTenant);
 
     if (! originalValue) {
         originalValue = url;

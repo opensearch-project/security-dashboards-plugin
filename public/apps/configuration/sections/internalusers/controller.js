@@ -113,10 +113,12 @@ app.controller('securityEditInternalUsersController', function ($scope, $element
             return;
         }
 
-        if ($scope.resourcename.indexOf("*") != -1) {
-            $scope.errorMessage = "Username must not contain '*'";
+        if ($scope.resourcename.indexOf("*") != -1 || $scope.resourcename.indexOf('.') != -1 ||
+            $scope.resourcename.indexOf("{") != -1 || $scope.resourcename.indexOf("}") != -1) {
+            $scope.errorMessage = "Username must not contain '*', '.' or curly brackets";
             return;
         }
+
 
         if (form.hasClass('ng-invalid-required')) {
             $scope.errorMessage = 'Please fill in all the required parameters.';
@@ -128,25 +130,34 @@ app.controller('securityEditInternalUsersController', function ($scope, $element
             return;
         }
 
-        if($scope.isNew) {
-            if ($scope.resource.password.length < 5) {
-                $scope.errorMessage = 'Passwords must be at least 5 characters.';
-                return;
-            }
-
-        } else {
+        if(! $scope.isNew) {
             if ($scope.resource.password.trim().length == 0) {
                 $scope.resource.passwordConfirmation = "";
             }
         }
-
 
         if ($scope.resource.password !== $scope.resource.passwordConfirmation) {
             $scope.errorMessage = 'Passwords do not match.';
             return;
         }
 
-        $scope.service.save($scope.resourcename, $scope.resource).then(() => kbnUrl.change(`/internalusers/`));
+        if ($scope.resource.opendistro_security_roles && $scope.resource.opendistro_security_roles.length) {
+            let opendistro_security_roles = [];
+            for (let i = 0; i<$scope.resource.opendistro_security_roles.length; i++) {
+                if (typeof $scope.resource.opendistro_security_roles[i] == "object" ) {
+                    opendistro_security_roles.push($scope.resource.opendistro_security_roles[i].name);
+                } else  {
+                    opendistro_security_roles.push($scope.resource.opendistro_security_roles[i]);
+                }
+            }
+            $scope.resource.opendistro_security_roles = opendistro_security_roles;
+        }
+
+        $scope.service.save($scope.resourcename, $scope.resource)
+          .then(
+            () => kbnUrl.change(`/internalusers/`),
+            (error) => {$scope.errorMessage = error.data.message}
+          );
 
         $scope.errorMessage = null;
 

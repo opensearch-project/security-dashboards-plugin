@@ -32,6 +32,7 @@
 import chrome from 'ui/chrome';
 import uiRoutes from 'ui/routes';
 import { uiModules } from 'ui/modules';
+import { kbnUrlDirective} from "../../../../../src/legacy/ui/public/directives/kbn_href";
 
 import internalusers from './sections/internalusers';
 import actiongroups from './sections/actiongroups';
@@ -49,7 +50,7 @@ import 'ace';
 import securityConfigurationController from './configuration_controller';
 import template from './configuration.html';
 
-require('ui/tooltip');
+kbnUrlDirective('kbnSrc');
 
 uiRoutes.enable();
 

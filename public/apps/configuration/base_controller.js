@@ -11,8 +11,9 @@ import { orderBy } from 'lodash';
 import clusterpermissions  from './permissions/clusterpermissions';
 import indexpermissions  from './permissions/indexpermissions';
 
-import 'ui-select';
-import 'ui-select/dist/select.css';
+import 'jquery';
+import 'angular';
+import 'ui-select/dist/select';
 
 require ('./backend_api/actiongroups');
 require ('./systemstate/systemstate');
@@ -113,7 +114,7 @@ app.controller('securityBaseController', function ($scope, $element, $route, $wi
             }, (error) => {
                 toastNotifications.addDanger({
                     title: 'Unable to load action groups',
-                    text: error.message,
+                    text: error.data.message,
                 });
                 $scope.accessState = "forbidden";
             });
@@ -144,7 +145,7 @@ app.controller('securityBaseController', function ($scope, $element, $route, $wi
                 sessionStorage.setItem("rolenames", JSON.stringify(Object.keys(response.data)));
             }, (error) => {
                 toastNotifications.addDanger({
-                    text: error.message,
+                    text: error.data.message,
                 });
                 $scope.accessState = "forbidden";
             });

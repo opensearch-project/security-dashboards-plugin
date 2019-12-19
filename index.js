@@ -4,6 +4,7 @@ import { has } from 'lodash';
 import indexTemplate from './lib/elasticsearch/setup_index_template';
 import { migrateTenants } from './lib/multitenancy/migrate_tenants';
 import { version as opendistro_security_version } from './package.json';
+import { first } from 'rxjs/operators';
 
 export default function (kibana) {
 
@@ -41,6 +42,7 @@ export default function (kibana) {
                     type: Joi.string().valid(['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache']).default(''),
                     anonymous_auth_enabled: Joi.boolean().default(false),
                     unauthenticated_routes: Joi.array().default(["/api/status"]),
+                    logout_url: Joi.string().allow('').default(''),
                 }).default(),
                 basicauth: Joi.object().keys({
                     enabled: Joi.boolean().default(true),
@@ -204,6 +206,11 @@ export default function (kibana) {
                         currentTenant: currentTenant
                     };
                 }
+		
+		// @todo Is there a way to access this synchronously,
+                // so that we can move this setting back to injectDefaulVars?
+                const legacyEsConfig = await server.newPlatform.setup.core.elasticsearch.legacy.config$.pipe(first()).toPromise();
+                originalInjectedVars.kibana_server_user = legacyEsConfig.username;
 
                 return {
                     ...originalInjectedVars,
@@ -267,7 +274,6 @@ export default function (kibana) {
                 options.accountinfo_enabled = server.config().get('opendistro_security.accountinfo.enabled');
                 options.basicauth_enabled = server.config().get('opendistro_security.basicauth.enabled');
                 options.kibana_index = server.config().get('kibana.index');
-                options.kibana_server_user = server.config().get('elasticsearch.username');
                 options.opendistro_security_version = opendistro_security_version;
 
                 return options;
@@ -276,7 +282,7 @@ export default function (kibana) {
         },
 
         async init(server, options) {
-
+	    const legacyEsConfig = await server.newPlatform.setup.core.elasticsearch.legacy.config$.pipe(first()).toPromise();
             APP_ROOT = '';
             API_ROOT = `${APP_ROOT}/api/v1`;
             const config = server.config();
@@ -305,12 +311,12 @@ export default function (kibana) {
 
             // provides authentication methods against Security
             const BackendClass = pluginRoot(`lib/backend/opendistro_security`);
-            const securityBackend = new BackendClass(server, server.config);
+            const securityBackend = new BackendClass(server, server.config, legacyEsConfig);
             server.expose('getSecurityBackend', () => securityBackend);
 
             // provides configuration methods against Security
             const ConfigurationBackendClass = pluginRoot(`lib/configuration/backend/opendistro_security_configuration_backend`);
-            const securityConfigurationBackend = new ConfigurationBackendClass(server, server.config);
+            const securityConfigurationBackend = new ConfigurationBackendClass(server, server.config, legacyEsConfig);
             server.expose('getSecurityConfigurationBackend', () => securityConfigurationBackend);
 
             let authType = config.get('opendistro_security.auth.type');
@@ -417,7 +423,7 @@ export default function (kibana) {
             if (config.get('opendistro_security.multitenancy.enabled')) {
 
                 // sanity check - header whitelisted?
-                var headersWhitelist = config.get('elasticsearch.requestHeadersWhitelist');
+                var headersWhitelist = legacyEsConfig.requestHeadersWhitelist;
                 if (headersWhitelist.indexOf('securitytenant') == -1) {
                     this.status.red('No tenant header found in whitelist. Please add securitytenant to elasticsearch.requestHeadersWhitelist in kibana.yml');
                     return;
@@ -486,7 +492,7 @@ export default function (kibana) {
             }
 
             // Using an admin certificate may lead to unintended consequences
-            if ((typeof config.get('elasticsearch.ssl.certificate') !== 'undefined' && typeof config.get('elasticsearch.ssl.certificate') !== false) && config.get('opendistro_security.allow_client_certificates') !== true) {
+           if ((typeof legacyEsConfig.ssl.certificate !== 'undefined' && typeof legacyEsConfig.ssl.certificate !== false) && config.get('opendistro_security.allow_client_certificates') !== true) {
                 this.status.red("'elasticsearch.ssl.certificate' can not be used without setting 'opendistro_security.allow_client_certificates' to 'true' in kibana.yml. Please refer to the documentation for more information about the implications of doing so.");
             }
         }

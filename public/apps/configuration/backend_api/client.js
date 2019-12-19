@@ -42,7 +42,7 @@ uiModules.get('apps/opendistro_security/configuration', [])
                     } else {
                         toastNotifications.addDanger({
                             title: 'Unable to load data.',
-                            text: error.message,
+                            text: error.data.message || error.statusText
                         });
                     }
                     throw error;
@@ -60,20 +60,20 @@ uiModules.get('apps/opendistro_security/configuration', [])
                 });
         };
 
-        this.save = (resourceName, id, data) => {
+        this.save = (resourceName, id, data, showToastOnError = true) => {
             let url = `${AUTH_BACKEND_API_ROOT}/configuration/${resourceName}/${id}`;
             return $http.post(url, data)
                 .then((response) => {
                     toastNotifications.addSuccess({
-                        title: `'${id}' saved.`
+                        title: `'${decodeURIComponent(id)}' saved.`
                     });
                 })
                 .catch((error) => {
                     if (error.status == 403) {
                         securityAccessControl.logout();
-                    } else {
+                    } else if(showToastOnError) {
                         toastNotifications.addDanger({
-                            text: error.message
+                            text: error.data.message || error.statusText
                         });
                     }
                     throw error;
@@ -84,7 +84,7 @@ uiModules.get('apps/opendistro_security/configuration', [])
             return $http.delete(`${AUTH_BACKEND_API_ROOT}/configuration/${resourceName}/${id}`)
                 .then((response) => {
                     toastNotifications.addSuccess({
-                        title: `'${id}' deleted.`
+                        title: `'${decodeURIComponent(id)}' deleted.`
                     });
                 })
                 .catch((error) => {
@@ -93,7 +93,7 @@ uiModules.get('apps/opendistro_security/configuration', [])
                     } else {
                         toastNotifications.addDanger({
                             title: 'Unable to delete data.',
-                            text: error.message,
+                            text: error.data.message || error.statusText
                         });
                     }
                     throw error;
@@ -109,14 +109,13 @@ uiModules.get('apps/opendistro_security/configuration', [])
                     if (error.status == 403) {
                         securityAccessControl.logout();
                     } else {
-                        toastNotifications.addDanger({
-                            text: error.message
-                        });
-                    }
-                    toastNotifications.addDanger({
+                      toastNotifications.addDanger({
                         title: 'Unable to load data.',
-                        text: error.message,
-                    });
+                        text: error.data.message || error.statusText
+                      });
+                    }
+
+                    throw error;
                 });
         };
 
@@ -153,7 +152,7 @@ uiModules.get('apps/opendistro_security/configuration', [])
                     } else {
                         toastNotifications.addDanger({
                             title: 'Unable to clear cache.',
-                            text: error.message,
+                            text: error.data.message || error.statusText
                         });
                     }
                     throw error;

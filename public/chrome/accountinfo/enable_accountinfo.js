@@ -35,9 +35,11 @@ import { uiModules } from 'ui/modules';
 import { FeatureCatalogueRegistryProvider, FeatureCatalogueCategory } from 'ui/registry/feature_catalogue';
 import { EuiIcon } from '@elastic/eui';
 
+import { chromeWrapper } from "../../services/chrome_wrapper";
+
 export function toggleAccountInfoLink(Private) {
     var enabled = chrome.getInjected('accountinfo_enabled');
-    chrome.getNavLinkById("security-accountinfo").hidden = !enabled;
+    chromeWrapper.hideNavLink('security-accountinfo', !enabled);
 }
 
 uiModules.get('security').run(toggleAccountInfoLink);
