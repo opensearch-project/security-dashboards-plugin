@@ -4,7 +4,7 @@ import '../../backend_api/tenants';
 
 const app = uiModules.get('apps/opendistro_security/configuration', []);
 
-app.controller('securityTenantsController', function ($scope, $element, $route, createNotifier, backendTenants, kbnUrl) {
+app.controller('securityTenantsController', function ($scope, $element, $route, backendTenants, kbnUrl) {
 
     $scope.endpoint = "tenants";
     $scope.$parent.endpoint = "tenants";
@@ -53,7 +53,7 @@ app.controller('securityTenantsController', function ($scope, $element, $route, 
 
 });
 
-app.controller('securityEditTenantsController', function ($scope, $element, $route, $location, $routeParams, createNotifier, backendTenants, backendAPI, kbnUrl) {
+app.controller('securityEditTenantsController', function ($scope, $element, $route, $location, $routeParams, backendTenants, backendAPI, kbnUrl) {
 
     $scope.endpoint = "tenants";
     $scope.$parent.endpoint = "tenants";

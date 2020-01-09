@@ -5,7 +5,7 @@ import './directives/directives';
 
 const app = uiModules.get('apps/opendistro_security/configuration', ['ui.ace']);
 
-app.controller('securityConfigurationController', function ($scope, $element, $route, $window, $http, createNotifier, backendAPI) {
+app.controller('securityConfigurationController', function ($scope, $element, $route, $window, $http, backendAPI) {
 
     $scope.errorMessage = "";
 

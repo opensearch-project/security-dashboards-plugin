@@ -35,7 +35,7 @@ import { toastNotifications } from 'ui/notify';
 
 uiModules
 .get('kibana')
-.service('securityAccessControl', function ($rootScope, $window, $http, $location, createNotifier) {
+.service('securityAccessControl', function ($rootScope, $window, $http, $location) {
   const APP_ROOT = `${chrome.getBasePath()}`;
   const API_ROOT = `${APP_ROOT}/api/v1/auth`;
 

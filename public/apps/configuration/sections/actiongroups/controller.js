@@ -51,7 +51,7 @@ app.controller('securityActionGroupsController', function ($scope, $element, $ro
     };
 });
 
-app.controller('securityEditActionGroupsController', function ($scope, $element, $route, $location, $routeParams, createNotifier, backendActionGroups, backendAPI,  kbnUrl) {
+app.controller('securityEditActionGroupsController', function ($scope, $element, $route, $location, $routeParams, backendActionGroups, backendAPI,  kbnUrl) {
 
     $scope.endpoint = "ACTIONGROUPS";
     $scope.$parent.endpoint = "ACTIONGROUPS";
