@@ -35,6 +35,8 @@ import { uiModules } from 'ui/modules';
 import { toastNotifications } from 'ui/notify';
 import 'ui/autoload/styles';
 import infoTemplate from './accountinfo.html';
+import '../configuration/backend_api/account';
+import '../configuration/directives/directives'
 
 uiRoutes.enable();
 
@@ -45,25 +47,63 @@ uiRoutes
         controllerAs: 'ctrl'
     });
 
-uiModules
-    .get('app/security-accountinfo')
-    .controller('accountInfoNavController', function ($http, $window, Private, security_resolvedInfo) {
+const app = uiModules.get('app/security-accountinfo', []);
 
-        var APP_ROOT = `${chrome.getBasePath()}`;
-        var API_ROOT = `${APP_ROOT}/api/v1`;
+app.controller('accountInfoNavController', function ($scope, $http, $window, Private, security_resolvedInfo, backendAccount) {
 
-        this.opendistro_security_version = chrome.getInjected("opendistro_security_version");
+    $scope.security_user = {}
+    $scope.service = backendAccount;
+    $scope.resourcelabel = "Account";
+    $scope.show_password_box = false;
 
+    this.is_basicauth = chrome.getInjected("auth.type") == 'basicauth';
 
-        $http.get(`${API_ROOT}/auth/authinfo`)
+    $scope.service.fetch($scope.resource)
+        .then(
+          (response) => {
+            $scope.service.postFetch(response);
+            $scope.security_user = response.data;
+            $scope.show_password_box = this.is_basicauth && $scope.security_user.is_internal_user && !$scope.security_user.is_reserved && !$scope.security_user.is_hidden;
+            $scope.resourcename = $scope.security_user.user_name;
+          },
+          (error) => {
+            toastNotifications.addDanger({
+                text: error.data.message,
+            });
+          }
+        );
+});
+
+app.controller('accountEditController', function ($scope, $element, $route, $location, $routeParams, createNotifier, backendAccount, kbnUrl, securityAccessControl) {
+    $scope.service = backendAccount;
+
+    $scope.saveObject = (event) => {
+        if (event) {
+            event.preventDefault();
+        }
+
+        const form = $element.find('form[name="objectForm"]');
+
+        if (form.hasClass('ng-invalid-required')) {
+            $scope.errorMessage = 'Please fill in all the required parameters.';
+            return;
+        }
+        if (!form.hasClass('ng-valid')) {
+            $scope.errorMessage = 'Please correct all errors and try again.';
+            return;
+        }
+
+        if ($scope.resource.password !== $scope.resource.password_confirmation) {
+            $scope.errorMessage = 'Passwords do not match.';
+            return;
+        }
+
+        $scope.service.save($scope.resource)
             .then(
-                (response) => {
-                    this.security_user = response.data;
-                },
-                (error) => {
-                    toastNotifications.addDanger({
-                        text: error.data.message,
-                    });
-                }
+                () => { securityAccessControl.logout() },
+                (error) => {$scope.errorMessage = error.data.message}
             );
-    });
+
+        $scope.errorMessage = null;
+    }
+});
