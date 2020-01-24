@@ -74,7 +74,7 @@ app.controller('accountInfoNavController', function ($scope, $http, $window, Pri
         );
 });
 
-app.controller('accountEditController', function ($scope, $element, $route, $location, $routeParams, createNotifier, backendAccount, kbnUrl, securityAccessControl) {
+app.controller('accountEditController', function ($scope, $element, $route, $location, $routeParams, backendAccount, kbnUrl, securityAccessControl) {
     $scope.service = backendAccount;
 
     $scope.saveObject = (event) => {
