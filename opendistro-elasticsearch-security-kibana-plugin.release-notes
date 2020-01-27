@@ -1,3 +1,7 @@
+## 2020-01-27, Version 1.2.1.1 (Current)
+
+- New account details UI page with support for users to change own password configured through basicauth internal user
+
 ## 2019-10-10, Version 1.2.1.0 (Current)
 
 -Support for Elasticsearch 7.2.1

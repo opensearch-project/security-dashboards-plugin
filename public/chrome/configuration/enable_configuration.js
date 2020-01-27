@@ -151,7 +151,8 @@ export function enableConfiguration($http, $window, systemstate) {
     }
 
         systemstate.loadRestInfo().then(function(){
-            chromeWrapper.hideNavLink('security-configuration', false);
+            var rest_api_info = systemstate.getRestApiInfo();
+            chromeWrapper.hideNavLink('security-configuration', !rest_api_info.has_api_access);
             FeatureCatalogueRegistryProvider.register(() => {
                 return {
                     id: 'security-configuration',
