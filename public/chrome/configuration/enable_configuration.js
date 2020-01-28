@@ -109,7 +109,8 @@ export function enableConfiguration($http, $window, systemstate) {
 
     // rest module installed, check if user has access to the API
     systemstate.loadRestInfo().then(function(){
-        chrome.getNavLinkById("security-configuration").hidden = false;
+        var rest_api_info = systemstate.getRestApiInfo();
+        chrome.getNavLinkById("security-configuration").hidden = !rest_api_info.has_api_access;
         FeatureCatalogueRegistryProvider.register(() => {
             return {
                 id: 'security-configuration',
