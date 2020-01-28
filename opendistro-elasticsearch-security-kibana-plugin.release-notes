@@ -1,3 +1,7 @@
+## 2020-01-27, Version 1.0.0.6 (Current)
+
+- New account details UI page with support for users to change own password configured through basicauth internal user
+
 ## 2019-07-24, Version 1.0.0.3 (Current)
 
 - Fixed tenant migration issue (https://github.com/opendistro-for-elasticsearch/security-kibana-plugin/pull/52) 
