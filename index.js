@@ -143,7 +143,6 @@ export default function (kibana) {
             hacks: [
                 'plugins/opendistro_security/chrome/readonly/enable_readonly',
                 'plugins/opendistro_security/chrome/multitenancy/enable_multitenancy',
-                'plugins/opendistro_security/chrome/accountinfo/enable_accountinfo',
                 'plugins/opendistro_security/chrome/logout_button',
                 'plugins/opendistro_security/chrome/configuration/enable_configuration',
                 'plugins/opendistro_security/services/access_control',
