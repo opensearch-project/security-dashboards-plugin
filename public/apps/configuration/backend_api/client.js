@@ -79,6 +79,26 @@ uiModules.get('apps/opendistro_security/configuration', [])
                 });
         };
 
+        this.saveWithoutId = (resourceName, data, showToastOnError = true) => {
+            let url = `${AUTH_BACKEND_API_ROOT}/configuration/${resourceName}`;
+            return $http.post(url, data)
+                .then((response) => {
+                    toastNotifications.addSuccess({
+                        title: `'${resourceName}' saved.`
+                    });
+                })
+                .catch((error) => {
+                    if (error.status == 403) {
+                        securityAccessControl.logout();
+                    } else if(showToastOnError) {
+                        toastNotifications.addDanger({
+                            text: error.data.message || error.statusText
+                        });
+                    }
+                    throw error;
+                });
+        };
+
         this.delete = (resourceName, id) => {
             return $http.delete(`${AUTH_BACKEND_API_ROOT}/configuration/${resourceName}/${id}`)
                 .then((response) => {
