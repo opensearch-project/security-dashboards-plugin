@@ -17,11 +17,11 @@ To build the security-kibana plugin from source follow these instructions:
 
 `cd security-kibana-plugin.git`
 
-`./build.sh <kibana-version> <es-version> install`
+`./build.sh`
 
 The above builds the final artifacts in zip format.
 
-`cd target/releases/`
+`cd plugins/`
 
 The artifacts can be found in the above directory
 
