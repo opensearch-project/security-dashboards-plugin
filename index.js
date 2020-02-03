@@ -208,7 +208,7 @@ export default function (kibana) {
 		
 		// @todo Is there a way to access this synchronously,
                 // so that we can move this setting back to injectDefaulVars?
-                const legacyEsConfig = await server.newPlatform.setup.core.elasticsearch.legacy.config$.pipe(first()).toPromise();
+                const legacyEsConfig = await server.newPlatform.__internals.elasticsearch.legacy.config$.pipe(first()).toPromise();
                 originalInjectedVars.kibana_server_user = legacyEsConfig.username;
 
                 return {
@@ -281,7 +281,7 @@ export default function (kibana) {
         },
 
         async init(server, options) {
-	    const legacyEsConfig = await server.newPlatform.setup.core.elasticsearch.legacy.config$.pipe(first()).toPromise();
+            const legacyEsConfig = await server.newPlatform.__internals.elasticsearch.legacy.config$.pipe(first()).toPromise();
             APP_ROOT = '';
             API_ROOT = `${APP_ROOT}/api/v1`;
             const config = server.config();
