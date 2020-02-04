@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - '*'
+  push:
+    branches:
+      - master
+      - opendistro-*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout security kibana
+      uses: actions/checkout@v1
+      
+    - name: Build
+      run: |
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.2/install.sh | bash
+        export NVM_HOME="$HOME/.nvm"
+        ./build.sh
+    
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: artifacts
+        path: plugins/
