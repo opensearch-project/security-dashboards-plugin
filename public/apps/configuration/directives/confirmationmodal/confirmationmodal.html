@@ -1,19 +1,34 @@
-<div class="kuiModalOverlay js-confirmOverlay" ng-click="vm.closeOnOverlay($event)">
-    <div class="kuiModal" style="width: 450px;">
-        <div class="kuiModalHeader">
-            <div class="kuiModalHeader__title">
-                {{::vm.header}}
+<div class="euiOverlayMask js-confirmOverlay" ng-click="vm.closeOnOverlay($event)">
+    <div class="euiModal">
+        <div class="euiModal__flex">
+            <div class="euiModalHeader">
+                <div class="euiModalHeader__title">
+                    {{::vm.header}}
+                </div>
             </div>
-        </div>
-        <div class="kuiModalBody">
-            <div class="kuiModalBodyText">
-                {{::vm.body}}
+            <div class="euiModalBody">
+                <div class="euiModalBody__overflow">
+                    <div class="euiText euiText--medium">
+                        {{::vm.body}}
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="kuiModalFooter">
-            <button type="button" ng-click="vm.closeModal('cancel')" class="kuiButton {{::vm.config.buttons.cancel.classes}}"><span
-                    class="kuiButton__inner"><span>Cancel</span></span></button>
-            <button type="button" ng-click="vm.confirm()" class="kuiButton {{::vm.config.buttons.confirm.classes}}" id="opendistro_security.button.deletemodal.confirm"><span>Confirm</span></span></button>
+            <div class="euiModalFooter">
+                <button type="button" ng-click="vm.closeModal('cancel')" class="euiButtonEmpty {{::vm.config.buttons.cancel.classes}}">
+                    <span class="euiButtonEmpty__content">
+                        <span class="euiButtonEmpty__text">
+                        Cancel
+                        </span>
+                    </span>
+                </button>
+                <button type="button" ng-click="vm.confirm()" class="euiButton {{::vm.config.buttons.confirm.classes}}" id="opendistro_security.button.deletemodal.confirm">
+                    <span class="euiButton__content">
+                        <span class="euiButton__text">
+                        Confirm
+                        </span>
+                    </span>
+                </button>
+            </div>
         </div>
     </div>
 </div>
