@@ -1,42 +1,42 @@
-import { map } from 'rxjs/operators';
 import {
+  PluginInitializerContext,
   CoreSetup,
   CoreStart,
+  Plugin,
   Logger,
-  PluginInitializerContext,
-  PluginName,
-} from 'kibana/server';
-import { SecurityPluginConfigType } from './';
+} from '../../../src/core/server';
 
-export default class SecurityPlugin {
-  private readonly log: Logger;
+import { OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart } from './types';
+import { defineRoutes } from './routes';
+import { SecurityPluginConfigType } from '.';
+
+export class OpendistroSecurityPlugin
+    implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
+  private readonly logger: Logger;
 
   constructor(private readonly initializerContext: PluginInitializerContext) {
-    this.log = this.initializerContext.logger.get();
+    this.logger = initializerContext.logger.get();
   }
 
-  public setup(core: CoreSetup, deps: Record<PluginName, unknown>) {
+  public setup(core: CoreSetup) {
+    this.logger.debug('opendistro_security: Setup');
+    
     const config$ = this.initializerContext.config.create<SecurityPluginConfigType>();
 
     const router = core.http.createRouter();
-    router.get(
-      { path: '/test/authenticate', validate: false },
-      async (context, req, res) => {
-        const response = await context.core.elasticsearch.adminClient.callAsInternalUser('ping');
-        return res.ok({ body: `Elasticsearch: ${response}` });
-      }
-    );
+
+    // Register server side APIs
+    defineRoutes(router);
 
     return {
       config$,
     };
   }
 
-  public start(core: CoreStart, deps: Record<PluginName, unknown>) {
-    this.log.debug(`Starting security plugin`);
+  public start(core: CoreStart) {
+    this.logger.debug('opendistro_security: Started');
+    return {};
   }
 
-  public stop() {
-    this.log.debug(`Stopping security plugin`);
-  }
+  public stop() {}
 }

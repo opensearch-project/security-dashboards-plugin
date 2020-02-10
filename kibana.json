@@ -1,8 +1,8 @@
 {
   "id": "security",
   "version": "0.0.1",
-  "kibanaVersion": "kibana",
+  "kibanaVersion": "8.0.0",
   "configPath": ["opendistro_security"],
-  "server": false,
+  "server": true,
   "ui": true
 }

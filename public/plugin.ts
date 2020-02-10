@@ -1,39 +1,37 @@
+import { i18n } from '@kbn/i18n';
+import { AppMountParameters, CoreSetup, CoreStart, Plugin, PluginInitializerContext, AppMountContext } from '../../../src/core/public';
 import {
-  Plugin,
-  CoreSetup,
-  CoreStart,
-  PluginInitializerContext,
-  AppMountContext,
-  AppMountParameters
-} from 'kibana/public';
+  OpendistroSecurityPluginSetup,
+  OpendistroSecurityPluginStart,
+  AppPluginStartDependencies,
+} from './types';
+import { PLUGIN_NAME } from '../common';
 
-
-export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPluginStart> {
+export class OpendistroSecurityPlugin
+      implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
 
   constructor(private readonly initializerContext: PluginInitializerContext) {}
+  
+  public setup(core: CoreSetup): OpendistroSecurityPluginSetup {
 
-  public async setup(core: CoreSetup, deps: {}) {
-    
     core.application.register({
-      id: "security_management_app",
+      id: "opendistro_security",
       title: "Security",
       order: 1,
       mount: async (context: AppMountContext, params: AppMountParameters) => {
-        const { renderApp } = await import('./security-management/security-management');
+        const { renderApp } = await import('./application');
         return renderApp(params.element, context, params.appBasePath);
       }
     });
 
-    return {};
+    // Return methods that should be available to other plugins
+    return {
+    };
   }
 
-  public start(core: CoreStart) {
-    // eslint-disable-next-line no-console
-    console.log(`Security plugin started`);
+  public start(core: CoreStart): OpendistroSecurityPluginStart {
+    return {};
   }
 
   public stop() {}
 }
-
-export type SecurityPluginSetup = ReturnType<SecurityPlugin['setup']>;
-export type SecurityPluginStart = ReturnType<SecurityPlugin['start']>;

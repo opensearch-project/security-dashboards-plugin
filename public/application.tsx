@@ -1,13 +1,12 @@
-import { AppMountContext } from 'kibana/public';
-import ReactDOM from 'react-dom';
 import React from 'react';
-import SecurityManagementApp from './security-management-app'
+import ReactDOM from 'react-dom';
+import { AppMountContext } from '../../../src/core/public';
+import SecurityManagementApp from './components/security-management-app';
 
 export function renderApp(element: HTMLElement,
   appMountContext: AppMountContext,
   basePath: string
 ) {
-  console.log("in renderApp");
   setBreadcrumbs(appMountContext);
 
   ReactDOM.render(
@@ -23,7 +22,7 @@ export function renderApp(element: HTMLElement,
 function setBreadcrumbs(appMountContext: AppMountContext) {
   appMountContext.core.chrome.setBreadcrumbs([
     {
-      text: "Security Management",
+      text: "Security",
       href: '',
     }
   ]);
