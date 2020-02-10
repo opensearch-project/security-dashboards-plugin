@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { AppMountContext } from 'kibana/public';
 import { EuiTabbedContent, EuiTabbedContentTab } from '@elastic/eui';
 import { EuiPanel } from '@elastic/eui';
-import { RoleManagement } from './roles/role-management-app';
+import { RoleManagement } from './security-management/roles/role-management-app';
+import { AppMountContext } from '../../../../src/core/public';
 
 class SecurityManagementAppProps {
   element!: HTMLElement;
