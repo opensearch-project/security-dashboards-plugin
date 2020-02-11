@@ -11,16 +11,16 @@ export class OpendistroSecurityPlugin
       implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
 
   constructor(private readonly initializerContext: PluginInitializerContext) {}
-  
-  public setup(core: CoreSetup): OpendistroSecurityPluginSetup {
 
+  public setup(core: CoreSetup): OpendistroSecurityPluginSetup {
     core.application.register({
       id: "opendistro_security",
       title: "Security",
       order: 1,
       mount: async (context: AppMountContext, params: AppMountParameters) => {
         const { renderApp } = await import('./application');
-        return renderApp(params.element, context, params.appBasePath);
+        const [coreStart, depsStart] = await core.getStartServices();
+        return renderApp(coreStart, depsStart as AppPluginStartDependencies, context, params);
       }
     });
 

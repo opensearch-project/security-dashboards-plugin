@@ -1,22 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { AppMountContext } from '../../../src/core/public';
+import { AppMountContext, AppMountParameters, CoreStart } from '../../../src/core/public';
 import SecurityManagementApp from './components/security-management-app';
+import { AppPluginStartDependencies } from '../../np_demo/public/types';
 
-export function renderApp(element: HTMLElement,
+export function renderApp(
+  // element: HTMLElement,
+  { notifications, http }: CoreStart,
+  { navigation }: AppPluginStartDependencies,
   appMountContext: AppMountContext,
-  basePath: string
+  params: AppMountParameters
+  // basePath: string
 ) {
   setBreadcrumbs(appMountContext);
 
   ReactDOM.render(
     <SecurityManagementApp
-      element={element}
+      element={params.element}
       appMountContext={appMountContext}
-      basePath={basePath}
+      basePath={params.appBasePath}
     />,
-    element);
-  return () => ReactDOM.unmountComponentAtNode(element);
+    params.element);
+  return () => ReactDOM.unmountComponentAtNode(params.element);
 }
 
 function setBreadcrumbs(appMountContext: AppMountContext) {
