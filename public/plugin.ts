@@ -13,6 +13,7 @@ export class OpendistroSecurityPlugin
   constructor(private readonly initializerContext: PluginInitializerContext) {}
 
   public setup(core: CoreSetup): OpendistroSecurityPluginSetup {
+    console.log(this.initializerContext.config.get());
     core.application.register({
       id: "opendistro_security",
       title: "Security",
