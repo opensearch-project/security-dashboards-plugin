@@ -5,7 +5,6 @@ import SecurityManagementApp from './components/security-management-app';
 import { AppPluginStartDependencies } from '../../np_demo/public/types';
 
 export function renderApp(
-  // element: HTMLElement,
   { notifications, http }: CoreStart,
   { navigation }: AppPluginStartDependencies,
   appMountContext: AppMountContext,
