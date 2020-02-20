@@ -205,8 +205,8 @@ uiModules
                         if (appsToReset.indexOf(navLink.id) > -1) {
                             chromeWrapper.resetLastSubUrl(navLink.id);
                         }
-                    });  
-                    
+                    });
+
                     if(chrome.getInjected("timelion.ui.enabled")) {
                         chromeWrapper.getNavLinkById("timelion").lastSubUrl = chromeWrapper.getNavLinkById("timelion").url;
                     }
@@ -227,10 +227,10 @@ uiModules
                     // redirect to either Visualize or Dashboard depending on user selection.
                     if(redirect) {
                         if (redirect == 'vis') {
-                            $window.location.href = chromeWrapper.getNavLinkById("kibana:visualize").url;
+                            $window.location.href = chromeWrapper.getNavLinkById("kibana:visualize").baseUrl;
                         }
                         if (redirect == 'dash') {
-                            $window.location.href = chromeWrapper.getNavLinkById("kibana:dashboard").url;
+                            $window.location.href = chromeWrapper.getNavLinkById("kibana:dashboard").baseUrl;
                         }
                     } else {
                         toastNotifications.addSuccess({
