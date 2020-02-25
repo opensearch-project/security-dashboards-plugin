@@ -5,7 +5,6 @@ import {
   OpendistroSecurityPluginStart,
   AppPluginStartDependencies,
 } from './types';
-import { PLUGIN_NAME } from '../common';
 
 export class OpendistroSecurityPlugin
       implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
