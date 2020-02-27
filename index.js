@@ -370,20 +370,20 @@ export default function (kibana) {
 
                     if (authType == 'openid') {
                         let OpenId = require('./lib/auth/types/openid/OpenId');
-                        authClass = new OpenId(pluginRoot, server, this, APP_ROOT, API_ROOT);
+                        authClass = new OpenId(pluginRoot, server, this, APP_ROOT, API_ROOT, legacyEsConfig);
                     } else if (authType == 'basicauth') {
                         let BasicAuth = require('./lib/auth/types/basicauth/BasicAuth');
-                        authClass = new BasicAuth(pluginRoot, server, this, APP_ROOT, API_ROOT);
+                        authClass = new BasicAuth(pluginRoot, server, this, APP_ROOT, API_ROOT, legacyEsConfig);
                     } else if (authType == 'jwt') {
                         let Jwt = require('./lib/auth/types/jwt/Jwt');
-                        authClass = new Jwt(pluginRoot, server, this, APP_ROOT, API_ROOT);
+                        authClass = new Jwt(pluginRoot, server, this, APP_ROOT, API_ROOT, legacyEsConfig);
                         this.status.yellow("Security copy JWT params registered.");
                     } else if (authType == 'saml') {
                         let Saml = require('./lib/auth/types/saml/Saml');
-                        authClass = new Saml(pluginRoot, server, this, APP_ROOT, API_ROOT);
+                        authClass = new Saml(pluginRoot, server, this, APP_ROOT, API_ROOT, legacyEsConfig);
                     } else if (authType == 'proxycache') {
                         let ProxyCache = require('./lib/auth/types/proxycache/ProxyCache');
-                        authClass = new ProxyCache(pluginRoot, server, this, APP_ROOT, API_ROOT);
+                        authClass = new ProxyCache(pluginRoot, server, this, APP_ROOT, API_ROOT, legacyEsConfig);
                     }
 
                     if (authClass) {
