@@ -1,4 +1,13 @@
 #!/bin/bash
+TEST="$1"
+
+if [ "$TEST" != "test" ] && [ "$TEST" != "skipTests" ]; then
+    echo "Usage: ./build.sh <test|skipTests>"
+    echo "Unknown command: $TEST"
+    exit 1
+fi
+
+exit 0
 
 if ! [ -x "$(command -v jq)" ]; then
   echo 'Error: jq is not installed. jq is required for parsing package.json'
@@ -106,6 +115,15 @@ yarn kbn bootstrap
 if [ $? != 0 ]; then
     echo "Installing node modules failed"
     exit 1
+fi
+
+if [ "$TEST" = "test" ] ; then
+    echo "+++ Running unit tests +++"
+    yarn test:jest
+    if [ $? != 0 ]; then
+        echo "Tests failed"
+        exit 1
+    fi
 fi
 
 echo "+++ Building plugin +++"

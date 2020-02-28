@@ -22,7 +22,7 @@ jobs:
       run: |
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.2/install.sh | bash
         export NVM_HOME="$HOME/.nvm"
-        ./build.sh
+        ./build.sh test
     
     - name: Upload Artifacts
       uses: actions/upload-artifact@v1
