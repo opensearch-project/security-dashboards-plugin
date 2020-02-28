@@ -7,8 +7,6 @@ if [ "$TEST" != "test" ] && [ "$TEST" != "skipTests" ]; then
     exit 1
 fi
 
-exit 0
-
 if ! [ -x "$(command -v jq)" ]; then
   echo 'Error: jq is not installed. jq is required for parsing package.json'
   exit 1
