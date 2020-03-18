@@ -7,4 +7,5 @@ rm -rf ./target
 rm -rf ./releases
 rm -rf ./node_modules
 rm -rf ./build
+rm -rf ./plugins
 rm -f *.log
