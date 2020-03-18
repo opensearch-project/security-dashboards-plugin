@@ -1,3 +1,5 @@
+[![CI](https://github.com/opendistro-for-elasticsearch/security-kibana-plugin/workflows/CI/badge.svg?branch=master)](https://github.com/opendistro-for-elasticsearch/security-kibana-plugin/actions)
+
 # Open Distro for Elasticsearch Security Kibana Plugin
 
 This plugin for Kibana adds a configuration management UI for the Open Distro for Elasticsearch Security and Security-Advanced-Modules features, as well as authentication, session management and multi-tenancy support to your secured cluster.
