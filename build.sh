@@ -5,6 +5,13 @@ if ! [ -x "$(command -v jq)" ]; then
   exit 1
 fi
 
+echo "+++ Checking Maven version +++"
+mvn -version
+if [ $? != 0 ]; then
+    echo "Checking maven version failed";
+    exit 1
+fi
+
 KIBANA_VERSION=$(cat package.json | jq -r ".kibana.version")
 echo "+++ Building for kibana version $KIBANA_VERSION +++"
 
@@ -20,7 +27,7 @@ echo "+++ Sourcing nvm +++"
 echo "+++ Checking nvm version +++"
 nvm version
 if [ $? != 0 ]; then
-    echo "Checking mvn version failed"
+    echo "Checking nvm version failed"
     exit 1
 fi
 
@@ -36,7 +43,8 @@ if [ $? != 0 ]; then
 fi
 
 # prepare artifacts
-echo "+++ Preparing artifacts for building plugin +++"
+PLUGIN_NAME="opendistro_security_kibana_plugin"
+echo "+++ Building $PLUGIN_NAME.zip +++"
 
 WORK_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$WORK_DIR"
@@ -109,7 +117,6 @@ if [ $? != 0 ]; then
     exit 1
 fi
 
-
 echo "+++ Running tests +++"
 yarn test:jest
 if [ $? != 0 ]; then
@@ -117,16 +124,30 @@ if [ $? != 0 ]; then
     exit 1
 fi
 
-echo "+++ Building plugin +++"
-yarn build
+echo "+++ Installing plugin node modules for production +++"
+rm -rf "node_modules"
+yarn install --production --pure-lockfile
 if [ $? != 0 ]; then
     echo "Installing node modules failed"
     exit 1
 fi
 
 cd "$WORK_DIR"
-PLUGINS_OUTPUT_DIR="$WORK_DIR/plugins"
-mkdir -p $PLUGINS_OUTPUT_DIR
-cp $BUILD_STAGE_PLUGIN_DIR/build/*.zip $PLUGINS_OUTPUT_DIR/
+rm -rf build/
+rm -rf node_modules/
 
-echo "Plugin artifacts: $(find "$(cd $PLUGINS_OUTPUT_DIR; pwd)" -name '*.zip')"
+echo "+++ Copy plugin contents to finalize build +++"
+COPYPATH="build/kibana/$PLUGIN_NAME"
+mkdir -p "$COPYPATH"
+cp -a "$BUILD_STAGE_PLUGIN_DIR/index.js" "$COPYPATH"
+cp -a "$BUILD_STAGE_PLUGIN_DIR/package.json" "$COPYPATH"
+cp -a "$BUILD_STAGE_PLUGIN_DIR/node_modules" "$COPYPATH"
+cp -a "$BUILD_STAGE_PLUGIN_DIR/lib" "$COPYPATH"
+cp -a "$BUILD_STAGE_PLUGIN_DIR/public" "$COPYPATH"
+
+echo "+++ mvn clean package +++"
+mvn clean package
+if [ $? != 0 ]; then
+    echo "mvn clean package failed"
+    exit 1
+fi
