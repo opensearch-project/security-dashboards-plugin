@@ -13,13 +13,18 @@ jobs:
 
     - name: Checkout security kibana
       uses: actions/checkout@v1
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11.0.x
       
     - name: Test and Build
       run: |
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.2/install.sh | bash
         export NVM_HOME="$HOME/.nvm"
         ./build.sh
-        artifact_path=`ls $(pwd)/plugins/opendistro_security-*.zip`
+        artifact_path=`ls $(pwd)/target/releases/opendistro_security_kibana_plugin-*.zip`
         artifact_name=`basename $artifact_path`
         echo ::set-env name=ARTIFACT_PATH::$artifact_path
         echo ::set-env name=ARTIFACT_NAME::$artifact_name
@@ -35,7 +40,7 @@ jobs:
     - name: Upload Artifacts to S3
       run: |
         s3_path=s3://open-distro-artifacts/downloads
-        aws s3 cp plugins/*.zip $s3_path/kibana-plugins/opendistro-security/
+        aws s3 cp ${{ env.ARTIFACT_PATH }} $s3_path/kibana-plugins/opendistro-security/
         aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID }} --paths '/downloads/*'
 
     - name: Create Github Draft Release

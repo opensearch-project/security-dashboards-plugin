@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<assembly>
+  <id>plugin</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>${project.basedir}/build</directory>
+      <outputDirectory>${file.separator}</outputDirectory>
+      <useDefaultExcludes>false</useDefaultExcludes>
+      <includes>
+        <include>kibana/**</include>
+      </includes>
+      <fileMode>0755</fileMode>
+    </fileSet>
+  </fileSets>
+</assembly>
