@@ -39,7 +39,7 @@ jobs:
 
     - name: Upload Artifacts to S3
       run: |
-        s3_path=s3://open-distro-artifacts/downloads
+        s3_path=s3://artifacts.opendistroforelasticsearch.amazon.com/downloads
         aws s3 cp ${{ env.ARTIFACT_PATH }} $s3_path/kibana-plugins/opendistro-security/
         aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID }} --paths '/downloads/*'
 
