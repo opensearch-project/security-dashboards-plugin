@@ -1,17 +1,5 @@
 import AuthType  from "../lib/auth/types/AuthType";
-
-class MockServer {
-    config() {
-        return {
-            get: () => {
-                return null;
-            }
-        }
-    }
-    register(args) {
-        this.registerArgs = args;
-    }
-}
+import { MockServer } from './Mocks'
 
 describe('AuthType tests', () => {
     it('should contain only security_impersonate_as when no additional headers are passed', () => {
