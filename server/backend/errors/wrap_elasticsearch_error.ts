@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 import Boom from 'boom';
-import AuthenticationError from "../../../auth/errors/authentication_error";
+import AuthenticationError from "../../auth/errors/authentication_error";
 
 export default function wrapElasticsearchError(error) {
 

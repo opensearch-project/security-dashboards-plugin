@@ -4,11 +4,11 @@ export class User {
   readonly backendRoles: Array<string>;
   readonly tenants: Array<string>;
   readonly selectedTenant: string;
-  readonly credentials: Credentials;
-  readonly proxyCredentials: Credentials;
+  readonly credentials: any;
+  readonly proxyCredentials: any;
 
   constructor(username: string, roles: Array<string>, backendRoles: Array<string>, tenants: Array<string>,
-      selectedTenant: string, credentials: Credentials, proxyCredentials: Credentials) {
+      selectedTenant: string, credentials: any = undefined, proxyCredentials: any = undefined) {
     this.username = username;
     this.roles = roles;
     this.backendRoles = backendRoles;
@@ -19,12 +19,3 @@ export class User {
   }
 }
 
-export class Credentials {
-  readonly username: string;
-  readonly password: string;
-
-  constructor(username: string, password: string) {
-    this.username = username;
-    this.password = password;
-  }
-}
