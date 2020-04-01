@@ -1,7 +1,7 @@
-import { IRouter, IClusterClient, SessionStorageFactory } from '../../../../src/core/server';
+import { IRouter, IClusterClient } from '../../../../src/core/server';
 import { schema } from '@kbn/config-schema';
 
-export function defineRoutes(router: IRouter, securityConfigClient: IClusterClient, dummyCookieSessionStorageFactory: SessionStorageFactory<any>) {
+export function defineRoutes(router: IRouter, securityConfigClient: IClusterClient) {
   const API_PREFIX: string = '/api/v1/opendistro_security';
 
   const internalUserSchema = schema.object({
@@ -147,12 +147,6 @@ export function defineRoutes(router: IRouter, securityConfigClient: IClusterClie
       },
     },
     async (context, request, response) => {
-      /*
-      let cookieValue = await dummyCookieSessionStorageFactory.asScoped(request).get();
-      console.log(`cookie value: ${cookieValue}`);
-      dummyCookieSessionStorageFactory.asScoped(request).clear();
-      dummyCookieSessionStorageFactory.asScoped(request).set({dummyKey: 'dummy_value'});
-      */
       const client = securityConfigClient.asScoped(request);
       let esResp;
       try {
@@ -294,6 +288,7 @@ export function defineRoutes(router: IRouter, securityConfigClient: IClusterClie
       }
     }
   );
+  // test endpoint, DELETE it
   router.post(
     {
       path: `${API_PREFIX}/configuration/validate`,
@@ -307,10 +302,34 @@ export function defineRoutes(router: IRouter, securityConfigClient: IClusterClie
       try {
         validateOutput = internalUserSchema.validate(request.body);
       } catch (error) {
-        console.log(`${error}`);
         return response.badRequest({ body: error });
       }
       return response.ok({ body: validateOutput });
     },
+  );
+
+  router.get(
+    {
+      path: `${API_PREFIX}/auth/authinfo`,
+      validate: false,
+    },
+    async (context, request, response) => {
+      const client = securityConfigClient.asScoped(request);
+      let esResp;
+      try {
+        esResp = await client.callAsCurrentUser('opendistro_security.authinfo');
+        
+        return response.ok({
+          body: {
+            message: esResp.message,
+          }
+        });
+      } catch (error) {
+        return response.custom({
+          statusCode: error.statusCode,
+          body: error.message,
+        });
+      }
+    }
   );
 }

@@ -44,7 +44,7 @@ export const configSchema = schema.object({
     forbidden_usernames: schema.arrayOf(schema.string(), { defaultValue: [] }),
     logout_url: schema.string({ defaultValue: '' }),
   }),
-  basicauth: schema.maybe(schema.object({
+  basicauth: schema.object({
     enabled: schema.boolean({ defaultValue: true }),
     unauthenticated_routes: schema.arrayOf(schema.string(), { defaultValue: ["/api/status"] }),
     forbidden_usernames: schema.arrayOf(schema.string(), { defaultValue: [] }),
@@ -64,7 +64,7 @@ export const configSchema = schema.object({
       brandimage: schema.string({ defaultValue: '' }), // TODO: update brand image
       buttonstyle: schema.string({ defaultValue: '' }),
     }),
-  })),
+  }),
   multitenancy: schema.maybe(schema.object({
     enabled: schema.boolean({ defaultValue: false }),
     show_roles: schema.boolean({ defaultValue: false }),

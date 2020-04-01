@@ -1,5 +1,5 @@
-import { CoreSetup } from "../../../../../src/core/server";
-import { SecurityPluginConfigType } from "../..";
+import { CoreSetup } from "../../../../src/core/server";
+import { SecurityPluginConfigType } from "..";
 
 export default class AuthType { // TODO maybe replace the logic here with AuthenticationHandler
   /*

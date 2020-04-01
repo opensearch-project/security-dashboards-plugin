@@ -5,16 +5,23 @@ import {
   Plugin,
   Logger,
   IClusterClient,
+  SessionStorageFactory,
   KibanaRequest,
   LifecycleResponseFactory,
   OnPreAuthToolkit,
-  SessionStorageFactory,
 } from '../../../src/core/server';
 
 import { OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart } from './types';
 import { defineRoutes } from './routes';
 import { SecurityPluginConfigType } from '.';
 import opendistro_security_configuratoin_plugin from './backend/opendistro_security_configuration_plugin';
+import opendistro_security_plugin from './backend/opendistro_security_plugin';
+import { first } from 'rxjs/operators';
+import { SecuritySessionCookie, getSecurityCookieOptions } from './session/security_cookie';
+import { BasicAuthentication } from './auth/types/basic/basic_auth';
+import { defineTestRoutes } from './routes/test_routes';
+import { r } from 'tar';
+
 
 export class OpendistroSecurityPlugin
   implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
@@ -28,34 +35,44 @@ export class OpendistroSecurityPlugin
     this.logger.debug('opendistro_security: Setup');
 
     const config$ = this.initializerContext.config.create<SecurityPluginConfigType>();
-
-    const securityConfigClient: IClusterClient = core.elasticsearch.createClient(
-      'opendistro_security',
-      {
-        plugins: [opendistro_security_configuratoin_plugin]
-      }
-    );
-
-    // cookie session handling
-    const dummyCookieSessionStorageFactory: SessionStorageFactory<any> = await core.http.createCookieSessionStorageFactory({
-      name: 'cookie_name',
-      encryptionKey: 'abcdefghijklmnopqrstuvwxyz0123456789',
-      validate: (sessionValue) => {
-        // console.log(`sessionValue: ${sessionValue}`);
-        return { isValid: true, path: '/' };
-        // return { isValid: false };
-      },
-      isSecure: false,
-    });
+    const config: SecurityPluginConfigType = await config$.pipe(first()).toPromise();
 
     const router = core.http.createRouter();
 
+    const securityClient: IClusterClient = core.elasticsearch.createClient(
+      'opendistro_security',
+      {
+        plugins: [
+          opendistro_security_configuratoin_plugin,
+          // TODO need to add other endpoints such as multitenanct and other
+          // FIXME: having multiple plugins caused the extended endpoints not working, currently 
+          //        added all endpoints to opendistro_security_configuratoin_plugin as a workaround
+          // opendistro_security_plugin,
+        ],
+      }
+    );
+
+    const securitySessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>
+        = await core.http.createCookieSessionStorageFactory<SecuritySessionCookie>(getSecurityCookieOptions(config));
+
+    
     // Register server side APIs
-    defineRoutes(router, securityConfigClient, dummyCookieSessionStorageFactory);
+    defineRoutes(router, securityClient);
+
+    // test routes
+    defineTestRoutes(router, securityClient, securitySessionStorageFactory, core);
+    
+
+    // setup auth
+    if (config.auth.type === undefined || config.auth.type === '' || config.auth.type === 'basicauth') {
+      // TODO: switch implementation according to configurations
+      const auth = new BasicAuthentication(config, securitySessionStorageFactory, router, securityClient, core);
+      core.http.registerAuth(auth.authHandler);
+    }
 
     return {
       config$,
-      securityConfigClient,
+      securityConfigClient: securityClient,
     };
   }
 

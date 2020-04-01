@@ -12,7 +12,6 @@ export class OpendistroSecurityPlugin
   constructor(private readonly initializerContext: PluginInitializerContext) {}
 
   public setup(core: CoreSetup): OpendistroSecurityPluginSetup {
-    console.log(this.initializerContext.config.get());
     core.application.register({
       id: "opendistro_security",
       title: "Security",
@@ -22,6 +21,17 @@ export class OpendistroSecurityPlugin
         const [coreStart, depsStart] = await core.getStartServices();
         return renderApp(coreStart, depsStart as AppPluginStartDependencies, context, params);
       }
+    });
+
+    core.application.register({
+      id: 'opendistro_login',
+      title: 'Login',
+      chromeless: true,
+      // appRoute: `/app/login`,
+      mount: async (params: AppMountParameters) => {
+        const { renderApp } = await import('./login');
+        return renderApp(params);
+      },
     });
 
     // Return methods that should be available to other plugins
