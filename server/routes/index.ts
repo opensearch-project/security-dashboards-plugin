@@ -57,19 +57,6 @@ export function defineRoutes(router: IRouter, securityConfigClient: IClusterClie
 
   router.get(
     {
-      path: '/api/opendistro_security/example',
-      validate: false,
-    },
-    async (context, request, response) => {
-      return response.ok({
-        body: {
-          time: new Date().toISOString(),
-        },
-      });
-    }
-  );
-  router.get(
-    {
       path: '/api/test/security_config',
       validate: false,
     },
@@ -80,63 +67,8 @@ export function defineRoutes(router: IRouter, securityConfigClient: IClusterClie
       });
     }
   );
-  router.get(
-    {
-      path: '/api/test_call_as_internal_user',
-      validate: false,
-    },
-    async (context, request, response) => {
-      let catNodeResponse = {};
-      try {
-        catNodeResponse = await context.core.elasticsearch.adminClient.callAsInternalUser('cat.nodes', { format: 'json' });
-      } catch (err) {
-        catNodeResponse = err;
-      }
-      return response.ok({
-        body: {
-          time: new Date().toISOString(),
-          nodes: catNodeResponse
-        },
-      });
-    }
-  );
-  router.get(
-    {
-      path: '/api/test_call_as_current_user',
-      validate: false,
-    },
-    async (context, request, response) => {
-      let esResponse = {};
-      try {
-        esResponse = await context.core.elasticsearch.dataClient.callAsCurrentUser('search');
-      } catch (err) {
-        esResponse = err
-      }
-      return response.ok({
-        body: {
-          data: esResponse,
-        }
-      });
-    },
-  );
-  router.get(
-    {
-      path: '/api/test_params/{param1}',
-      validate: {
-        params: schema.object({
-          param1: schema.string({ defaultValue: undefined }),
-        }),
-      }
-    },
-    async (context, request, response) => {
-      request.params.param1
-      return response.ok({
-        body: {
-          data: request.params.param1,
-        },
-      });
-    },
-  );
+
+  // list resources by resource name
   router.get(
     {
       path: `${API_PREFIX}/configuration/{resourceName}`,
@@ -166,6 +98,7 @@ export function defineRoutes(router: IRouter, securityConfigClient: IClusterClie
     },
   );
 
+  // get resource by resource name and id
   router.get(
     {
       path: `${API_PREFIX}/configuration/{resourceName}/{id}`,
@@ -191,6 +124,7 @@ export function defineRoutes(router: IRouter, securityConfigClient: IClusterClie
     },
   );
 
+  // delete resource by resource name and id
   router.delete(
     {
       path: `${API_PREFIX}/configuration/{resourceName}/{id}`,
@@ -220,6 +154,7 @@ export function defineRoutes(router: IRouter, securityConfigClient: IClusterClie
     }
   );
 
+  // create new resource
   router.post(
     {
       path: `${API_PREFIX}/configuration/{resourceName}`,
@@ -254,6 +189,7 @@ export function defineRoutes(router: IRouter, securityConfigClient: IClusterClie
     }
   );
 
+  // update resource by Id
   router.post(
     {
       path: `${API_PREFIX}/configuration/{resourceName}/{id}`,
@@ -287,25 +223,6 @@ export function defineRoutes(router: IRouter, securityConfigClient: IClusterClie
         });
       }
     }
-  );
-  // test endpoint, DELETE it
-  router.post(
-    {
-      path: `${API_PREFIX}/configuration/validate`,
-      validate: {
-        body: schema.any(),
-        // body: internalUserSchema,
-      },
-    },
-    async (context, request, response) => {
-      let validateOutput;
-      try {
-        validateOutput = internalUserSchema.validate(request.body);
-      } catch (error) {
-        return response.badRequest({ body: error });
-      }
-      return response.ok({ body: validateOutput });
-    },
   );
 
   router.get(

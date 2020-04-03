@@ -5,7 +5,6 @@ import { CoreSetup } from "../../../../../../src/core/server";
 import _ from 'lodash';
 import { SecurityClient } from "../../../backend/opendistro_security_client";
 import { BasicAuthRoutes } from "./routes";
-import { LoggerAdapter } from "../../../../../../src/core/server/logging/logger_adapter";
 
 export class AuthConfig {
   constructor(

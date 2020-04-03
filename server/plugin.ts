@@ -6,9 +6,6 @@ import {
   Logger,
   IClusterClient,
   SessionStorageFactory,
-  KibanaRequest,
-  LifecycleResponseFactory,
-  OnPreAuthToolkit,
 } from '../../../src/core/server';
 
 import { OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart } from './types';
@@ -19,9 +16,7 @@ import opendistro_security_plugin from './backend/opendistro_security_plugin';
 import { first } from 'rxjs/operators';
 import { SecuritySessionCookie, getSecurityCookieOptions } from './session/security_cookie';
 import { BasicAuthentication } from './auth/types/basic/basic_auth';
-import { defineTestRoutes } from './routes/test_routes';
-import { r } from 'tar';
-
+import { defineTestRoutes } from './routes/test_routes'; // TODO: remove this later
 
 export class OpendistroSecurityPlugin
   implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
