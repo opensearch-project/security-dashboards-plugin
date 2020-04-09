@@ -1,0 +1,1 @@
+# security-kibana-plugin
