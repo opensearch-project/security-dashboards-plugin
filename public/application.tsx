@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppMountContext, AppMountParameters, CoreStart } from '../../../src/core/public';
 import SecurityManagementApp from './components/security-management-app';
-import { AppPluginStartDependencies } from '../../np_demo/public/types';
+import { AppPluginStartDependencies } from './types';
 
 export function renderApp(
   { notifications, http }: CoreStart,
