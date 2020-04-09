@@ -1,3 +1,18 @@
+/*
+ *   Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License").
+ *   You may not use this file except in compliance with the License.
+ *   A copy of the License is located at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   or in the "license" file accompanying this file. This file is distributed
+ *   on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ *   express or implied. See the License for the specific language governing
+ *   permissions and limitations under the License.
+ */
+
 import { i18n } from '@kbn/i18n';
 import { AppMountParameters, CoreSetup, CoreStart, Plugin, PluginInitializerContext, AppMountContext } from '../../../src/core/public';
 import {
@@ -21,17 +36,6 @@ export class OpendistroSecurityPlugin
         const [coreStart, depsStart] = await core.getStartServices();
         return renderApp(coreStart, depsStart as AppPluginStartDependencies, context, params);
       }
-    });
-
-    core.application.register({
-      id: 'opendistro_login',
-      title: 'Login',
-      chromeless: true,
-      // appRoute: `/app/login`,
-      mount: async (params: AppMountParameters) => {
-        const { renderApp } = await import('./login');
-        return renderApp(params);
-      },
     });
 
     // Return methods that should be available to other plugins
