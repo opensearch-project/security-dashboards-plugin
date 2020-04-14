@@ -17,9 +17,10 @@ import { AuthenticationHandler, SessionStorageFactory, IRouter, IClusterClient }
 import { SecurityPluginConfigType } from "../../..";
 import { SecuritySessionCookie } from "../../../session/security_cookie";
 import { CoreSetup } from "../../../../../../src/core/server";
-import _ from 'lodash';
-import { SecurityClient } from "../../../backend/opendistro_security_client";
-import { BasicAuthRoutes } from "./routes";
+import { assign } from 'lodash';
+import { SecurityClient } from '../../../backend/opendistro_security_client';
+import { BasicAuthRoutes } from './routes';
+import { isMultitenantPath, resolveTenant } from '../../../multitenancy/tenant_resolver';
 
 export class AuthConfig {
   constructor(
@@ -28,8 +29,8 @@ export class AuthConfig {
     public readonly allowedAdditionalAuthHeaders: string[],
     public readonly authenticateFunction: () => void,
     public readonly validateAvailableTenants: boolean,
-    public readonly validateAvailableRoles: boolean) {
-  }
+    public readonly validateAvailableRoles: boolean
+  ) {}
 }
 
 export class BasicAuthentication {
@@ -48,28 +49,38 @@ export class BasicAuthentication {
   private readonly securityClient: SecurityClient;
   private readonly authConfig: AuthConfig;
 
-  constructor(private readonly config: SecurityPluginConfigType,
+  constructor(
+    private readonly config: SecurityPluginConfigType,
     private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
     private readonly router: IRouter,
     private readonly esClient: IClusterClient,
-    private readonly coreSetup: CoreSetup) {
-
+    private readonly coreSetup: CoreSetup
+  ) {
     const multitenantEnabled = config.multitenancy.enabled;
 
     this.securityClient = new SecurityClient(this.esClient);
-    this.authConfig = new AuthConfig('basicauth',
+    this.authConfig = new AuthConfig(
+      'basicauth',
       BasicAuthentication.AUTH_HEADER_NAME,
       BasicAuthentication.ALLOWED_ADDITIONAL_AUTH_HEADERS,
-      async () => { },
+      async () => {},
       multitenantEnabled,
-      true);
+      true
+    );
     // this.unauthenticatedRoutes = this.config.auth.unauthenticated_routes;
 
     this.init();
   }
 
   private async init() {
-    const routes = new BasicAuthRoutes(this.router, this.config, this.sessionStorageFactory, this.securityClient, this.authConfig, this.coreSetup);
+    const routes = new BasicAuthRoutes(
+      this.router,
+      this.config,
+      this.sessionStorageFactory,
+      this.securityClient,
+      this.authConfig,
+      this.coreSetup
+    );
     routes.setupRoutes();
   }
 
@@ -77,7 +88,6 @@ export class BasicAuthentication {
    * Basic Authentication auth handler. Registered to core.http if basic authentication is enabled.
    */
   authHandler: AuthenticationHandler = async (request, response, toolkit) => {
-    
     if (BasicAuthentication.ROUTES_TO_IGNORE.includes(request.url.path)) {
       return toolkit.authenticated();
     }
@@ -94,22 +104,37 @@ export class BasicAuthentication {
       if (!cookie) {
         return response.unauthorized();
       }
+
+      let headers = {};
+
       // set cookie to extend ttl
       cookie.expiryTime = Date.now() + this.config.cookie.ttl;
       this.sessionStorageFactory.asScoped(request).set(cookie);
-      
+
       // pass credentials to request to Elasticsearch
       const credentials = cookie.credentials;
+      assign(headers, { authorization: credentials.authHeaderValue });
+
+      // add tenant to Elasticsearch request headers
+      if (this.config.multitenancy.enabled && isMultitenantPath(request)) {
+        const authInfo = await this.securityClient.authinfo(request);
+        const selectedTenant = resolveTenant(request, authInfo.user_name, authInfo.tenants, this.config, cookie);
+        assign(headers, { securitytenant: selectedTenant });
+        
+        if (selectedTenant !== cookie.tentent) {
+          cookie.tentent = selectedTenant;
+          this.sessionStorageFactory.asScoped(request).set(cookie);
+        }
+      }
+
       return toolkit.authenticated({
         // state: credentials,
-        requestHeaders: {
-          'authorization': credentials.authHeaderValue,
-        },
+        requestHeaders: headers,
       });
     } catch (error) {
       // TODO: switch to logger
       console.log(`error: ${error}`);
       // TODO: redirect using response?
     }
-  }
+  };
 }
