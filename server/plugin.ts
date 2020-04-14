@@ -21,6 +21,7 @@ import {
   Logger,
   IClusterClient,
   SessionStorageFactory,
+  SharedGlobalConfig,
 } from '../../../src/core/server';
 
 import { OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart } from './types';
@@ -32,10 +33,17 @@ import { first } from 'rxjs/operators';
 import { SecuritySessionCookie, getSecurityCookieOptions } from './session/security_cookie';
 import { BasicAuthentication } from './auth/types/basic/basic_auth';
 import { defineTestRoutes } from './routes/test_routes'; // TODO: remove this later
+import { Observable } from 'rxjs';
+import { SecurityClient } from './backend/opendistro_security_client';
+import { SavedObjectsSerializer, ISavedObjectTypeRegistry } from '../../../src/core/server/saved_objects';
+import { setupIndexTemplate, migrateTenantIndices } from './multitenancy/tenant_index';
 
-export class OpendistroSecurityPlugin
-  implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
+export class OpendistroSecurityPlugin implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
   private readonly logger: Logger;
+  private config$: Observable<SecurityPluginConfigType>;
+  // FIXME: keep an reference of admin client so that it can be used in start(), better to figureout a
+  //        decent way to get adminClient in start. (maybe using return from setup?)
+  private securityClient: SecurityClient;
 
   constructor(private readonly initializerContext: PluginInitializerContext) {
     this.logger = initializerContext.logger.get();
@@ -44,53 +52,65 @@ export class OpendistroSecurityPlugin
   public async setup(core: CoreSetup) {
     this.logger.debug('opendistro_security: Setup');
 
-    const config$ = this.initializerContext.config.create<SecurityPluginConfigType>();
-    const config: SecurityPluginConfigType = await config$.pipe(first()).toPromise();
+    this.config$ = this.initializerContext.config.create<SecurityPluginConfigType>();
+    const config: SecurityPluginConfigType = await this.config$.pipe(first()).toPromise();
 
     const router = core.http.createRouter();
 
-    const securityClient: IClusterClient = core.elasticsearch.createClient(
-      'opendistro_security',
-      {
-        plugins: [
-          opendistro_security_configuratoin_plugin,
-          // TODO need to add other endpoints such as multitenanct and other
-          // FIXME: having multiple plugins caused the extended endpoints not working, currently 
-          //        added all endpoints to opendistro_security_configuratoin_plugin as a workaround
-          // opendistro_security_plugin,
-        ],
-      }
-    );
+    const esClient: IClusterClient = core.elasticsearch.createClient('opendistro_security', {
+      plugins: [
+        opendistro_security_configuratoin_plugin,
+        // TODO need to add other endpoints such as multitenanct and other
+        // FIXME: having multiple plugins caused the extended endpoints not working, currently
+        //        added all endpoints to opendistro_security_configuratoin_plugin as a workaround
+        // opendistro_security_plugin,
+      ],
+    });
 
-    const securitySessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>
-        = await core.http.createCookieSessionStorageFactory<SecuritySessionCookie>(getSecurityCookieOptions(config));
+    this.securityClient = new SecurityClient(esClient);
 
-    
+    const securitySessionStorageFactory: SessionStorageFactory<SecuritySessionCookie> = await core.http.createCookieSessionStorageFactory<
+      SecuritySessionCookie
+    >(getSecurityCookieOptions(config));
+
     // Register server side APIs
-    defineRoutes(router, securityClient);
+    defineRoutes(router, esClient);
 
     // test routes
-    defineTestRoutes(router, securityClient, securitySessionStorageFactory, core);
-    
+    defineTestRoutes(router, esClient, securitySessionStorageFactory, core);
 
     // setup auth
     if (config.auth.type === undefined || config.auth.type === '' || config.auth.type === 'basicauth') {
       // TODO: switch implementation according to configurations
-      const auth = new BasicAuthentication(config, securitySessionStorageFactory, router, securityClient, core);
+      const auth = new BasicAuthentication(config, securitySessionStorageFactory, router, esClient, core);
       core.http.registerAuth(auth.authHandler);
     }
 
     return {
-      config$,
-      securityConfigClient: securityClient,
+      config$: this.config$,
+      securityConfigClient: esClient,
     };
   }
 
-  public start(core: CoreStart) {
+  public async start(core: CoreStart) {
     this.logger.debug('opendistro_security: Started');
+    const config = await this.config$.pipe(first()).toPromise();
+    if (config.multitenancy.enabled) {
+      const globalConfig$: Observable<SharedGlobalConfig> = this.initializerContext.config.legacy.globalConfig$;
+      const globalConfig: SharedGlobalConfig = await globalConfig$.pipe(first()).toPromise();
+      const kibanaIndex = globalConfig.kibana.index;
+      const typeRegistry: ISavedObjectTypeRegistry = core.savedObjects.getTypeRegistry();
+      const esClient = core.elasticsearch.legacy.client;
+
+      setupIndexTemplate(esClient, kibanaIndex, typeRegistry, this.logger);
+
+      const serializer: SavedObjectsSerializer = core.savedObjects.createSerializer();
+      const kibanaVersion = this.initializerContext.env.packageInfo.version;
+      migrateTenantIndices(kibanaVersion, esClient, this.securityClient, typeRegistry, serializer, this.logger);
+    }
+
     return {};
   }
 
-  public stop() { }
-
+  public stop() {}
 }
