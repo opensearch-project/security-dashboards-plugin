@@ -13,73 +13,28 @@
  *   permissions and limitations under the License.
  */
 
-import { IRouter, SessionStorageFactory, KibanaRequest } from "../../../../../../src/core/server";
-import { SecuritySessionCookie } from "../../../session/security_cookie";
-import { SecurityPluginConfigType } from "../../..";
-import { AuthConfig } from "./basic_auth";
-import { filterAuthHeaders } from "../../../utils/filter_auth_headers";
-import { User } from "../../user";
-import { SecurityClient } from "../../../backend/opendistro_security_client";
+import { IRouter, SessionStorageFactory, KibanaRequest } from '../../../../../../src/core/server';
+import { SecuritySessionCookie } from '../../../session/security_cookie';
+import { SecurityPluginConfigType } from '../../..';
+import { AuthConfig } from './basic_auth';
+import { filterAuthHeaders } from '../../../utils/filter_auth_headers';
+import { User } from '../../user';
+import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { schema } from '@kbn/config-schema';
-import { CoreSetup } from "../../../../../../src/core/server";
+import { CoreSetup } from '../../../../../../src/core/server';
 
 export class BasicAuthRoutes {
-  constructor(private readonly router: IRouter,
+  constructor(
+    private readonly router: IRouter,
     private readonly config: SecurityPluginConfigType,
     private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
     private readonly securityClient: SecurityClient,
     private readonly authConfig: AuthConfig,
-    private readonly coreSetup: CoreSetup) {
-  }
+    private readonly coreSetup: CoreSetup
+  ) {}
 
   public async setupRoutes() {
     const PREFIX = '';
-
-    // if the user can be authenticated using auth headers, redirect to the next url, otherwise, render login page 
-    this.router.get(
-      {
-        path: `${PREFIX}/login`,
-        validate: false,
-        options: {
-          authRequired: false,
-        }
-      },
-      async (context, request, response) => {
-        try {
-          const alternativeHeaders = this.config.basicauth.alternative_login.headers;
-          if (alternativeHeaders && alternativeHeaders.length) {
-            let requestHeaders = Object.keys(request.headers).map(header => header.toLowerCase());
-            let foundHeaders = alternativeHeaders.filter(header => requestHeaders.indexOf(header.toLowerCase()) > -1);
-            if (foundHeaders.length) {
-              await this.authenticateWithHeaders(request);
-
-              let nextUrl = undefined;
-              if (request.url.query) {
-                // TODO: extract nextUrl from query string 
-                response.redirected({
-                  headers: {
-                    location: nextUrl,
-                  }
-                });
-              }
-            }
-          }
-        } catch (error) {
-          return response.redirected({
-            headers: {
-              location: `/customerror`,
-            }
-          })
-        }
-        
-        return response.ok({
-          body: await context.core.rendering.render(),
-          headers: {
-            'content-security-policy': this.coreSetup.http.csp.header,
-          }
-        }); // render login page here
-      }
-    );
 
     // login using username and password
     this.router.post(
@@ -93,7 +48,7 @@ export class BasicAuthRoutes {
         },
         options: {
           authRequired: false,
-        }
+        },
       },
       async (context, request, response) => {
         const forbidden_usernames = this.config.auth.forbidden_usernames;
@@ -104,13 +59,13 @@ export class BasicAuthRoutes {
         // const authHeaderValue = Buffer.from(`${request.body.username}:${request.body.password}`).toString('base64');
         let user: User;
         try {
-          user = await this.securityClient.authenticate(request, { username: request.body.username, password: request.body.password});
+          user = await this.securityClient.authenticate(request, { username: request.body.username, password: request.body.password });
         } catch (error) {
           return response.unauthorized({
             headers: {
-              "www-authenticate": error.message,
-            }
-          })
+              'www-authenticate': error.message,
+            },
+          });
         }
 
         const encodedCredentials = Buffer.from(`${request.body.username}:${request.body.password}`).toString('base64');
@@ -122,10 +77,10 @@ export class BasicAuthRoutes {
           authType: 'basicauth',
           isAnonymousAuth: false,
           expiryTime: Date.now() + this.config.cookie.ttl,
-        } 
+        };
         this.sessionStorageFactory.asScoped(request).set(sessionStorage);
 
-        if (this.config.multitenancy.enabled) {
+        if (this.config.multitenancy?.enabled || false) {
           let globalTenantEnabled = this.config.multitenancy.tenants.enable_global;
           let privateTentantEnabled = this.config.multitenancy.tenants.enable_private;
           let preferredTenants = this.config.multitenancy.tenants.preferred;
@@ -139,64 +94,70 @@ export class BasicAuthRoutes {
               roles: user.roles,
               backendroles: user.backendRoles,
               selectedTenants: '', // TODO: determine selected tenants
-            }
-          })
+            },
+          });
         }
         return response.ok({
           body: {
             username: user.username,
             tenants: user.tenants,
-          }
+          },
         });
-      },
+      }
     );
 
     // logout
-    this.router.post({
-      path: `${PREFIX}/auth/logout`,
-      validate: false,
-      options: {
-        authRequired: false,
+    this.router.post(
+      {
+        path: `${PREFIX}/auth/logout`,
+        validate: false,
+        options: {
+          authRequired: false,
+        },
+      },
+      async (context, request, response) => {
+        this.sessionStorageFactory.asScoped(request).clear();
+        return response.ok(); // TODO: redirect to login?
       }
-    },
-    async (context, request, response) => {
-      this.sessionStorageFactory.asScoped(request).clear();
-      return response.ok(); // TODO: redirect to login?
-    });
+    );
 
     // anonymous auth
-    this.router.get({
-      path: `${PREFIX}/auth/anonymous`,
-      validate: false,
-      options: {
-        authRequired: false,
+    this.router.get(
+      {
+        path: `${PREFIX}/auth/anonymous`,
+        validate: false,
+        options: {
+          authRequired: false,
+        },
       },
-    },
-    async (context, request, response) => {
-      if (this.config.auth.anonymous_auth_enabled) {
-        // TODO: implement anonymous auth for basic authentication
-      } else {
-        return response.redirected({
-          headers: {
-            location: `${PREFIX}/login`,
-          }
-        })
+      async (context, request, response) => {
+        if (this.config.auth.anonymous_auth_enabled) {
+          // TODO: implement anonymous auth for basic authentication
+        } else {
+          return response.redirected({
+            headers: {
+              location: `${PREFIX}/login`,
+            },
+          });
+        }
       }
-    });
+    );
 
     // renders custom error page
-    this.router.get({
-      path: `${PREFIX}/customerror`,
-      validate: false,
-      options: {
-        authRequired: false,
+    this.router.get(
+      {
+        path: `${PREFIX}/customerror`,
+        validate: false,
+        options: {
+          authRequired: false,
+        },
+      },
+      async (context, request, response) => {
+        return response.ok({
+          body: '',
+        });
       }
-    },
-    async (context, request, response) => {
-      return response.ok({
-        body: '',
-      })
-    });
+    );
   }
 
   // session storage plugin's authenticateWithHeaders() function
@@ -220,17 +181,16 @@ export class BasicAuthRoutes {
         user,
       };
 
-      return this._handleAuthResponse(request, authResponse, additionalAuthHeaders);
+      return this.handleAuthResponse(request, authResponse, additionalAuthHeaders);
     } catch (error) {
       this.sessionStorageFactory.asScoped(request).clear();
       throw error;
     }
   }
 
-  private _handleAuthResponse(request: KibanaRequest, authResponse: AuthResponse, additionalAuthHeaders: any = {}) {
+  private handleAuthResponse(request: KibanaRequest, authResponse: AuthResponse, additionalAuthHeaders: any = {}) {
     // Validate the user has at least one tenant
-    if (this.authConfig.validateAvailableTenants && this.config.multitenancy.enabled &&
-      !this.config.multitenancy.tenants.enable_global) {
+    if (this.authConfig.validateAvailableTenants && this.config.multitenancy.enabled && !this.config.multitenancy.tenants.enable_global) {
       let privateTentantEnabled = this.config.multitenancy.tenants.enable_private;
       let allTenants = authResponse.user.tenants;
 
@@ -257,8 +217,11 @@ export class BasicAuthRoutes {
       return true;
     }
 
-    if (!allTenant || Object.keys(allTenant).length === 0 ||
-      (Object.keys(allTenant).length === 1 && Object.keys(allTenant)[0] === user.username)) {
+    if (
+      !allTenant ||
+      Object.keys(allTenant).length === 0 ||
+      (Object.keys(allTenant).length === 1 && Object.keys(allTenant)[0] === user.username)
+    ) {
       return false;
     }
     return true;
