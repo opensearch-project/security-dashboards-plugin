@@ -24,6 +24,7 @@ import {
   EuiListGroup,
   // @ts-ignore
   EuiForm,
+  EuiFormRow,
 } from '@elastic/eui';
 import { CoreStart } from '../../../../../src/core/public';
 
@@ -46,7 +47,7 @@ export function LoginPage(props: LoginPageDeps) {
     );
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     setloginFailed(false);
 
@@ -80,25 +81,28 @@ export function LoginPage(props: LoginPageDeps) {
       </EuiText>
       <EuiSpacer size="s" />
       <EuiForm>
-        <EuiFieldText
-          placeholder="Username"
-          prepend={<EuiIcon type="user" />}
-          onChange={e => setUsername(e.target.value)}
-          value={username}
-        />
-        <EuiSpacer size="s" />
-        <EuiFieldText
-          placeholder="Password"
-          prepend={<EuiIcon type="lock" />}
-          type="password"
-          onChange={e => setPassword(e.target.value)}
-          value={password}
-        />
-        <EuiSpacer size="s" />
-        <EuiButton fill size="s" type="submit" className="btn-login" onClick={handleSubmit}>
-          Log In
-        </EuiButton>
-        <EuiSpacer size="s" />
+        <EuiFormRow>
+          <EuiFieldText
+            placeholder="Username"
+            prepend={<EuiIcon type="user" />}
+            onChange={e => setUsername(e.target.value)}
+            value={username}
+          />
+        </EuiFormRow>
+        <EuiFormRow>
+          <EuiFieldText
+            placeholder="Password"
+            prepend={<EuiIcon type="lock" />}
+            type="password"
+            onChange={e => setPassword(e.target.value)}
+            value={password}
+          />
+        </EuiFormRow>
+        <EuiFormRow>
+          <EuiButton fill size="s" type="submit" className="btn-login" onClick={handleSubmit}>
+            Log In
+          </EuiButton>
+        </EuiFormRow>
         {errorLabel}
       </EuiForm>
     </EuiListGroup>
