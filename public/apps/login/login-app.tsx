@@ -17,8 +17,7 @@ import './_index.scss';
 
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { AppMountContext, AppMountParameters, CoreStart } from '../../../../../src/core/public';
-import { AppPluginStartDependencies } from '../../types';
+import { AppMountParameters, CoreStart } from '../../../../../src/core/public';
 import { LoginPage } from './login-page'
 
 export function renderApp(
