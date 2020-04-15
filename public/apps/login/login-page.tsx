@@ -37,6 +37,8 @@ export function LoginPage(props: LoginPageDeps) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginFailed, setloginFailed] = useState(false);
+  const [usernameValidationFailed, setUsernameValidationFailed] = useState(false);
+  const [passwordValidationFailed, setPasswordValidationFailed] = useState(false);
 
   let errorLabel = null;
   if (loginFailed) {
@@ -49,7 +51,22 @@ export function LoginPage(props: LoginPageDeps) {
 
   const handleSubmit = async e => {
     e.preventDefault();
+    
+    // Clear errors
     setloginFailed(false);
+    setUsernameValidationFailed(false);
+    setPasswordValidationFailed(false);
+
+    // Form validation
+    if (username === '') {
+        setUsernameValidationFailed(true);
+        return;
+    }
+
+    if (password === '') {
+        setPasswordValidationFailed(true);
+        return;
+    }
 
     try {
       const response = await props.http.post('auth/login', {
@@ -87,15 +104,17 @@ export function LoginPage(props: LoginPageDeps) {
             prepend={<EuiIcon type="user" />}
             onChange={e => setUsername(e.target.value)}
             value={username}
+            isInvalid={usernameValidationFailed}
           />
         </EuiFormRow>
-        <EuiFormRow>
+        <EuiFormRow isInvalid={passwordValidationFailed}>
           <EuiFieldText
             placeholder="Password"
             prepend={<EuiIcon type="lock" />}
             type="password"
             onChange={e => setPassword(e.target.value)}
             value={password}
+            isInvalid={usernameValidationFailed}
           />
         </EuiFormRow>
         <EuiFormRow>
