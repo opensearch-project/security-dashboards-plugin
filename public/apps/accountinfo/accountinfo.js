@@ -49,6 +49,7 @@ uiRoutes
 
 const app = uiModules.get('app/security-accountinfo', []);
 
+
 app.controller('accountInfoNavController', function ($scope, $http, $window, Private, security_resolvedInfo, backendAccount) {
 
     $scope.security_user = {}
@@ -58,7 +59,7 @@ app.controller('accountInfoNavController', function ($scope, $http, $window, Pri
 
     this.is_basicauth = chrome.getInjected("auth.type") == 'basicauth';
 
-    
+
     $scope.service.fetch($scope.resource)
         .then(
           (response) => {
