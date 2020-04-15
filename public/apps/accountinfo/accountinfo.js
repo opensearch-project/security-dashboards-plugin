@@ -58,6 +58,7 @@ app.controller('accountInfoNavController', function ($scope, $http, $window, Pri
 
     this.is_basicauth = chrome.getInjected("auth.type") == 'basicauth';
 
+    
     $scope.service.fetch($scope.resource)
         .then(
           (response) => {
