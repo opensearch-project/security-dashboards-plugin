@@ -13,95 +13,94 @@
  *   permissions and limitations under the License.
  */
 
-import React, { Component } from 'react';
-import { EuiText, EuiFieldText, EuiIcon, EuiSpacer, EuiButton, EuiImage } from '@elastic/eui';
-  
-class LoginPageProps {
-    appBasePath: string;
+import React, { Component, useState } from 'react';
+import {
+  EuiText,
+  EuiFieldText,
+  EuiIcon,
+  EuiSpacer,
+  EuiButton,
+  EuiImage,
+  EuiListGroup,
+  // @ts-ignore
+  EuiForm,
+} from '@elastic/eui';
+import { CoreStart } from '../../../../../src/core/public';
+
+interface LoginPageDeps {
+  appBasePath: string;
+  http: CoreStart['http'];
 }
 
-class LoginPageStates {
-    username: string;
-    password: string;
-    loginFailed: boolean;
+export function LoginPage(props: LoginPageDeps) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginFailed, setloginFailed] = useState(false);
+
+  let errorLabel = null;
+  if (loginFailed) {
+    errorLabel = (
+      <EuiText id="error" color="danger" textAlign="center">
+        <b>Invalid username or password, please try again</b>
+      </EuiText>
+    );
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setloginFailed(false);
+
+    try {
+      const response = await props.http.post('auth/login', {
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
+      });
+      // TODO: Parse nextUrl from paras
+      window.location.href = props.appBasePath + '/..';
+    } catch (error) {
+      console.log(error);
+      setloginFailed(true);
+      return;
+    }
+  };
+
+  // TODO: Get brand image from server config
+  return (
+    <EuiListGroup className="login-wrapper">
+      <EuiImage alt="" url="" />
+      <EuiSpacer size="s" />
+      <EuiText size="m" textAlign="center">
+        Please login to Kibana
+      </EuiText>
+      <EuiSpacer size="s" />
+      <EuiText size="s" textAlign="center">
+        If you have forgotten your username or password, please ask your system administrator
+      </EuiText>
+      <EuiSpacer size="s" />
+      <EuiForm>
+        <EuiFieldText
+          placeholder="Username"
+          prepend={<EuiIcon type="user" />}
+          onChange={e => setUsername(e.target.value)}
+          value={username}
+        />
+        <EuiSpacer size="s" />
+        <EuiFieldText
+          placeholder="Password"
+          prepend={<EuiIcon type="lock" />}
+          type="password"
+          onChange={e => setPassword(e.target.value)}
+          value={password}
+        />
+        <EuiSpacer size="s" />
+        <EuiButton fill size="s" type="submit" className="btn-login" onClick={handleSubmit}>
+          Log In
+        </EuiButton>
+        <EuiSpacer size="s" />
+        {errorLabel}
+      </EuiForm>
+    </EuiListGroup>
+  );
 }
-
-export class LoginPage extends Component<LoginPageProps, LoginPageStates> {
-    constructor(props: LoginPageProps) {
-        super(props);
-        this.state = {username: "", password: "", loginFailed: false}
-    }
-
-    onUsernameChange = (e) => {
-        this.setState({username: e.target.value})
-    }
-
-    onPasswordChange = (e) => {
-        this.setState({password: e.target.value})
-    }
-
-    onSubmit = () => {
-        fetch("auth/login", {
-           method: "POST",
-           headers: {"kbn-xsrf": "true"},
-           body: JSON.stringify({
-               "username": this.state.username,
-               "password": this.state.password
-            }) 
-        }).then((response) => {
-            if (response.status == 200) {
-                // TODO: Parse nextUrl from paras
-                window.location.href = this.props.appBasePath + "/..";
-            }
-            else {
-                this.onError(true);
-            }
-        }).catch((reason) => {
-            this.onError(true);
-        })
-    }
-
-    onError = (flag: boolean) => {
-        this.setState({loginFailed: flag})
-    }
-
-
-
-    render() {
-        let errorLabel = null;
-        if (this.state.loginFailed) {
-            errorLabel = <EuiText id="error" color="danger" textAlign="center"><b>Invalid username or password, please try again</b></EuiText>
-        }
-
-        // TODO: Get brand image from server config
-        return (<div className="login-wrapper">
-            <EuiImage alt="" url="" />
-            <EuiSpacer size="s" />
-            <EuiText size="m" textAlign="center">Please login to Kibana</EuiText>
-            <EuiSpacer size="s" />
-            <EuiText size="s" textAlign="center">If you have forgotten your username or password, please ask your system administrator</EuiText>
-            <EuiSpacer size="s" />
-            <form>
-                <EuiFieldText 
-                    placeholder="Username"
-                    prepend={<EuiIcon type="user" />}
-                    onChange={this.onUsernameChange} 
-                    value={this.state.username}
-                />
-                <EuiSpacer size="s" />
-                <EuiFieldText 
-                    placeholder="Password"
-                    prepend={<EuiIcon type="lock" />}
-                    type="password"
-                    onChange={this.onPasswordChange} 
-                    value={this.state.password}
-                />
-                <EuiSpacer size="s" />
-                <EuiButton fill size="s" className="btn-login" onClick={this.onSubmit}>Log In</EuiButton>
-                <EuiSpacer size="s" />
-                {errorLabel}
-            </form>
-        </div>)
-    }
-}
-

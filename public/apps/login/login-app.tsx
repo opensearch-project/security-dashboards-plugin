@@ -22,12 +22,14 @@ import { AppPluginStartDependencies } from '../../types';
 import { LoginPage } from './login-page'
 
 export function renderApp(
-    params: AppMountParameters
-  ) {
-    ReactDOM.render(     
-      <LoginPage 
-        appBasePath={params.appBasePath}
-      />,
-      params.element);
-    return () => ReactDOM.unmountComponentAtNode(params.element);
+  CoreStart: CoreStart,
+  params: AppMountParameters
+) {
+  ReactDOM.render(
+    <LoginPage
+      appBasePath={params.appBasePath}
+      http={CoreStart.http}
+    />,
+    params.element);
+  return () => ReactDOM.unmountComponentAtNode(params.element);
 }
