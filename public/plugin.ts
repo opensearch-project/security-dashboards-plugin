@@ -13,7 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-import { i18n } from '@kbn/i18n';
 import { AppMountParameters, CoreSetup, CoreStart, Plugin, PluginInitializerContext, AppMountContext } from '../../../src/core/public';
 import {
   OpendistroSecurityPluginSetup,
@@ -35,6 +34,18 @@ export class OpendistroSecurityPlugin
         const { renderApp } = await import('./application');
         const [coreStart, depsStart] = await core.getStartServices();
         return renderApp(coreStart, depsStart as AppPluginStartDependencies, context, params);
+      }
+    });
+
+    core.application.register({
+      id: "opendistro_security_login",
+      title: "Security",
+      chromeless: true,
+      appRoute: "/login",
+      mount: async (params: AppMountParameters) => {
+        const { renderApp } = await import('./apps/login/login-app');
+        const [coreStart, depsStart] = await core.getStartServices();
+        return renderApp(coreStart, params);
       }
     });
 
