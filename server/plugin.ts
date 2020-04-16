@@ -40,7 +40,6 @@ import { setupIndexTemplate, migrateTenantIndices } from './multitenancy/tenant_
 
 export class OpendistroSecurityPlugin implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
   private readonly logger: Logger;
-  private config$: Observable<SecurityPluginConfigType>;
   // FIXME: keep an reference of admin client so that it can be used in start(), better to figureout a
   //        decent way to get adminClient in start. (maybe using return from setup?)
   private securityClient: SecurityClient;
@@ -52,8 +51,8 @@ export class OpendistroSecurityPlugin implements Plugin<OpendistroSecurityPlugin
   public async setup(core: CoreSetup) {
     this.logger.debug('opendistro_security: Setup');
 
-    this.config$ = this.initializerContext.config.create<SecurityPluginConfigType>();
-    const config: SecurityPluginConfigType = await this.config$.pipe(first()).toPromise();
+    const config$ = this.initializerContext.config.create<SecurityPluginConfigType>();
+    const config: SecurityPluginConfigType = await config$.pipe(first()).toPromise();
 
     const router = core.http.createRouter();
 
@@ -87,14 +86,15 @@ export class OpendistroSecurityPlugin implements Plugin<OpendistroSecurityPlugin
     }
 
     return {
-      config$: this.config$,
+      config$: config$,
       securityConfigClient: esClient,
     };
   }
 
   public async start(core: CoreStart) {
     this.logger.debug('opendistro_security: Started');
-    const config = await this.config$.pipe(first()).toPromise();
+    const config$ = this.initializerContext.config.create<SecurityPluginConfigType>();
+    const config = await config$.pipe(first()).toPromise();
     if (config.multitenancy.enabled) {
       const globalConfig$: Observable<SharedGlobalConfig> = this.initializerContext.config.legacy.globalConfig$;
       const globalConfig: SharedGlobalConfig = await globalConfig$.pipe(first()).toPromise();
