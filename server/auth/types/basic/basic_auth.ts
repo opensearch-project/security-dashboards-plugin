@@ -13,13 +13,15 @@
  *   permissions and limitations under the License.
  */
 
-import { AuthenticationHandler, SessionStorageFactory, IRouter, IClusterClient } from "../../../../../../src/core/server";
+import { AuthenticationHandler, SessionStorageFactory, IRouter, IClusterClient, KibanaRequest } from "../../../../../../src/core/server";
 import { SecurityPluginConfigType } from "../../..";
 import { SecuritySessionCookie } from "../../../session/security_cookie";
 import { CoreSetup } from "../../../../../../src/core/server";
-import _ from 'lodash';
+import { cloneDeep } from 'lodash';
 import { SecurityClient } from "../../../backend/opendistro_security_client";
 import { BasicAuthRoutes } from "./routes";
+import { format } from "url";
+import { stringify } from 'querystring';
 
 export class AuthConfig {
   constructor(
@@ -38,10 +40,7 @@ export class BasicAuthentication {
   private static readonly ROUTES_TO_IGNORE: string[] = [
     '/bundles/app/security-login/bootstrap.js',
     '/bundles/app/security-customerror/bootstrap.js',
-    '/',
-    '/app/login',
-    '/app/opendistro_login',
-    '/api/core/capabilities',
+    '/api/core/capabilities', // FIXME: need to figureout how to bypass this API call
   ];
 
   // private readonly unauthenticatedRoutes: string[];
@@ -73,6 +72,13 @@ export class BasicAuthentication {
     routes.setupRoutes();
   }
 
+  private composeNextUrlQeuryParam(request: KibanaRequest): string {
+    let url = cloneDeep(request.url);
+    url.pathname = `${this.coreSetup.http.basePath.serverBasePath}${url.pathname}`;
+    const nextUrl = format(url);
+    return stringify({nextUrl});
+  }
+
   /**
    * Basic Authentication auth handler. Registered to core.http if basic authentication is enabled.
    */
@@ -92,6 +98,16 @@ export class BasicAuthentication {
       cookie = await this.sessionStorageFactory.asScoped(request).get();
       // TODO: need to do auth for each all?
       if (!cookie) {
+        if (request.url.pathname === '/' || request.url.pathname.startsWith('/app')) {
+          // requesting access to an application page, redirect to login
+          const nextUrlParam = this.composeNextUrlQeuryParam(request);
+          const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}/login?${nextUrlParam}`;
+          return response.redirected({
+            headers: {
+              location: `${redirectLocation}`,
+            }
+          });
+        }
         return response.unauthorized();
       }
       // set cookie to extend ttl
