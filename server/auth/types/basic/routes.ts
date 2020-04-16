@@ -39,7 +39,7 @@ export class BasicAuthRoutes {
     // login using username and password
     this.router.post(
       {
-        path: `${PREFIX}/auth/login`,
+        path: `${PREFIX}/auth/login`, // TODO: move the API endpoints to common to share with browser app
         validate: {
           body: schema.object({
             username: schema.string(),
@@ -80,7 +80,7 @@ export class BasicAuthRoutes {
         };
         this.sessionStorageFactory.asScoped(request).set(sessionStorage);
 
-        if (this.config.multitenancy?.enabled || false) {
+        if (this.config.multitenancy?.enabled) {
           let globalTenantEnabled = this.config.multitenancy.tenants.enable_global;
           let privateTentantEnabled = this.config.multitenancy.tenants.enable_private;
           let preferredTenants = this.config.multitenancy.tenants.preferred;

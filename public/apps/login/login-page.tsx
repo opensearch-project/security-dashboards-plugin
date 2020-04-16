@@ -69,14 +69,14 @@ export function LoginPage(props: LoginPageDeps) {
     }
 
     try {
-      const response = await props.http.post('auth/login', {
+      const response = await props.http.post('/auth/login', {
         body: JSON.stringify({
           username: username,
           password: password,
         }),
       });
       // TODO: Parse nextUrl from paras
-      window.location.href = props.appBasePath + '/..';
+      window.location.href = `${props.http.basePath.serverBasePath}/app/kibana`;
     } catch (error) {
       console.log(error);
       setloginFailed(true);

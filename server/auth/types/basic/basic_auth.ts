@@ -20,7 +20,6 @@ import { CoreSetup } from "../../../../../../src/core/server";
 import { cloneDeep } from 'lodash';
 import { format } from "url";
 import { stringify } from 'querystring';
-import { assign } from 'lodash';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { BasicAuthRoutes } from './routes';
 import { isMultitenantPath, resolveTenant } from '../../../multitenancy/tenant_resolver';
@@ -40,9 +39,10 @@ export class BasicAuthentication {
   private static readonly AUTH_HEADER_NAME: string = 'authorization';
   private static readonly ALLOWED_ADDITIONAL_AUTH_HEADERS: string[] = ['security_impersonate_as'];
   private static readonly ROUTES_TO_IGNORE: string[] = [
-    '/bundles/app/security-login/bootstrap.js',
+    '/bundles/app/security-login/bootstrap.js', // TODO: remove/update the js file path
     '/bundles/app/security-customerror/bootstrap.js',
     '/api/core/capabilities', // FIXME: need to figureout how to bypass this API call
+    '/app/login',
   ];
 
   // private readonly unauthenticatedRoutes: string[];
@@ -95,11 +95,11 @@ export class BasicAuthentication {
    * Basic Authentication auth handler. Registered to core.http if basic authentication is enabled.
    */
   authHandler: AuthenticationHandler = async (request, response, toolkit) => {
-    if (BasicAuthentication.ROUTES_TO_IGNORE.includes(request.url.path)) {
+    if (BasicAuthentication.ROUTES_TO_IGNORE.includes(request.url.pathname)) {
       return toolkit.authenticated();
     }
 
-    if (this.config.auth.unauthenticated_routes.indexOf(request.url.path) > -1) {
+    if (this.config.auth.unauthenticated_routes.indexOf(request.url.pathname) > -1) {
       // TODO: user kibana server user
       return toolkit.authenticated();
     }
@@ -112,7 +112,7 @@ export class BasicAuthentication {
         if (request.url.pathname === '/' || request.url.pathname.startsWith('/app')) {
           // requesting access to an application page, redirect to login
           const nextUrlParam = this.composeNextUrlQeuryParam(request);
-          const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}/login?${nextUrlParam}`;
+          const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}/app/login?${nextUrlParam}`;
           return response.redirected({
             headers: {
               location: `${redirectLocation}`,
@@ -129,14 +129,13 @@ export class BasicAuthentication {
       this.sessionStorageFactory.asScoped(request).set(cookie);
 
       // pass credentials to request to Elasticsearch
-      const credentials = cookie.credentials;
-      assign(headers, { authorization: credentials.authHeaderValue });
+      Object.assign(headers, { authorization: cookie.credentials?.authHeaderValue });
 
       // add tenant to Elasticsearch request headers
       if (this.config.multitenancy.enabled && isMultitenantPath(request)) {
         const authInfo = await this.securityClient.authinfo(request);
         const selectedTenant = resolveTenant(request, authInfo.user_name, authInfo.tenants, this.config, cookie);
-        assign(headers, { securitytenant: selectedTenant });
+        Object.assign(headers, { securitytenant: selectedTenant });
         
         if (selectedTenant !== cookie.tentent) {
           cookie.tentent = selectedTenant;

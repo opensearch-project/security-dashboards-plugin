@@ -16,7 +16,7 @@
 import { IRouter, IClusterClient } from '../../../../src/core/server';
 import { schema } from '@kbn/config-schema';
 
-// TODO: conside to extract entity CRUD operations and put it into a client class
+// TODO: consider to extract entity CRUD operations and put it into a client class
 //
 // TODO: use following approach to put securityClient into context instead of passing
 //       into route handler as parameter
@@ -79,29 +79,19 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
     current_password: schema.string(),
   });
 
+  const schemaMap = {
+    internalusers: internalUserSchema,
+    actiongroups: actionGroupSchema,
+    rolesmapping: roleMappingSchema,
+    roles: roleSchema,
+    tenants: tenantSchema,
+    account: accountSchema,
+  }
+
   function validateRequestBody(resourceName: string, requestBody: any): any {
-    let inputSchema;
-    switch (resourceName) {
-      case 'internalusers':
-        inputSchema = internalUserSchema;
-        break;
-      case 'actiongroups':
-        inputSchema = actionGroupSchema;
-        break;
-      case 'rolesmapping':
-        inputSchema = roleMappingSchema;
-        break;
-      case 'roles':
-        inputSchema = roleSchema;
-        break;
-      case 'tenants':
-        inputSchema = tenantSchema;
-        break;
-      case 'account':
-        inputSchema = accountSchema;
-        break;
-      default:
-        throw new Error(`Unknown resource ${resourceName}`);
+    const inputSchema = schemaMap[resourceName];
+    if (!inputSchema) {
+      throw new Error(`Unknown resource ${resourceName}`);
     }
     inputSchema.validate(requestBody); // throws error if validation fail
   }

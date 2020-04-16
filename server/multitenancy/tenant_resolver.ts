@@ -18,6 +18,9 @@ import { SecurityPluginConfigType } from '..';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { isEmpty, findKey, cloneDeep } from 'lodash';
 
+export const PRIVATE_TENANT: string = '__user__';
+export const GLOBAL_TENANT: string = '';
+
 /**
  * Resovles the tenant the user is using.
  *
@@ -29,10 +32,6 @@ import { isEmpty, findKey, cloneDeep } from 'lodash';
  *
  * @returns user preferred tenant of the request.
  */
-
-export const PRIVATE_TENANT: string = '__user__';
-export const GLOBAL_TENANT: string = '';
-
 export function resolveTenant(
   request: KibanaRequest,
   username: string,
@@ -41,10 +40,9 @@ export function resolveTenant(
   cookie: SecuritySessionCookie
 ): string {
   let selectedTenant: string = undefined;
-  if (request.query && ((request.query as any).security_tenant || (request.query as any).securitytenant)) {
-    selectedTenant = (request.query as any).security_tenant
-      ? (request.query as any).security_tenant
-      : (request.query as any).securitytenant;
+  const query: any = request.query as any;
+  if (query && (query.security_tenant || query.securitytenant)) {
+    selectedTenant = query.security_tenant ? query.security_tenant : query.securitytenant;
   } else if (request.headers.securitytenant || request.headers.security_tenant) {
     selectedTenant = request.headers.securitytenant
       ? (request.headers.securitytenant as string)
@@ -85,7 +83,7 @@ function resolve(
   globalTenantEnabled: boolean,
   privateTenantEnabled: boolean
 ): string {
-  let availableTenantsClone = cloneDeep(availableTenants);
+  const availableTenantsClone = cloneDeep(availableTenants);
   delete availableTenantsClone[username];
 
   if (!globalTenantEnabled && !privateTenantEnabled && isEmpty(availableTenantsClone)) {
