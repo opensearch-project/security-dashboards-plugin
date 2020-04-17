@@ -16,7 +16,30 @@
 import { IRouter, IClusterClient } from '../../../../src/core/server';
 import { schema } from '@kbn/config-schema';
 
-export function defineRoutes(router: IRouter, securityConfigClient: IClusterClient) {
+// TODO: consider to extract entity CRUD operations and put it into a client class
+//
+// TODO: use following approach to put securityClient into context instead of passing
+//       into route handler as parameter
+//       refer to https://github.com/elastic/kibana/blob/master/src/core/MIGRATION.md#use-scoped-services
+// class Plugin {
+//   setup(core: CoreSetup) {
+//     const client = core.elasticsearch.createClient('myClient');
+//     core.http.registerRouteHandlerContext('myPlugin', (context, req, res) => {
+//       return { client: client.asScoped(req) };
+//     });
+
+//     router.get(
+//       { path: '/api/my-plugin/', validate },
+//       async (context, req, res) => {
+//         const data = await context.myPlugin.client.callAsCurrentUser('endpoint');
+//         ...
+//       }
+//     );
+//   }
+//
+// TODO: same for loggers and sessionCookieFactory, inject them into context
+
+export function defineRoutes(router: IRouter, esClient: IClusterClient) {
   const API_PREFIX: string = '/api/v1/opendistro_security';
 
   const internalUserSchema = schema.object({
@@ -56,32 +79,22 @@ export function defineRoutes(router: IRouter, securityConfigClient: IClusterClie
     current_password: schema.string(),
   });
 
+  const schemaMap = {
+    internalusers: internalUserSchema,
+    actiongroups: actionGroupSchema,
+    rolesmapping: roleMappingSchema,
+    roles: roleSchema,
+    tenants: tenantSchema,
+    account: accountSchema,
+  }
+
   function validateRequestBody(resourceName: string, requestBody: any): any {
-    let inputSchema;
-    switch (resourceName) {
-      case 'internalusers': inputSchema = internalUserSchema; break;
-      case 'actiongroups': inputSchema = accountSchema; break;
-      case 'rolesmapping': inputSchema = roleMappingSchema; break;
-      case 'roles': inputSchema = roleSchema; break;
-      case 'tenants': inputSchema = tenantSchema; break;
-      case 'account': inputSchema = accountSchema; break;
-      default: throw new Error(`Unknown resource ${resourceName}`);
+    const inputSchema = schemaMap[resourceName];
+    if (!inputSchema) {
+      throw new Error(`Unknown resource ${resourceName}`);
     }
     inputSchema.validate(requestBody); // throws error if validation fail
   }
-
-  router.get(
-    {
-      path: '/api/test/security_config',
-      validate: false,
-    },
-    async (context, request, response) => {
-      const esResponse = await securityConfigClient.asScoped(request).callAsCurrentUser('opendistro_security.restapiinfo', { format: 'json' });
-      return response.ok({
-        body: esResponse,
-      });
-    }
-  );
 
   // list resources by resource name
   router.get(
@@ -94,7 +107,7 @@ export function defineRoutes(router: IRouter, securityConfigClient: IClusterClie
       },
     },
     async (context, request, response) => {
-      const client = securityConfigClient.asScoped(request);
+      const client = esClient.asScoped(request);
       let esResp;
       try {
         esResp = await client.callAsCurrentUser('opendistro_security.listResource', { resourceName: request.params.resourceName });
@@ -102,7 +115,7 @@ export function defineRoutes(router: IRouter, securityConfigClient: IClusterClie
           body: {
             total: Object.keys(esResp).length,
             data: esResp,
-          }
+          },
         });
       } catch (error) {
         return response.custom({
@@ -110,7 +123,7 @@ export function defineRoutes(router: IRouter, securityConfigClient: IClusterClie
           body: error.message,
         });
       }
-    },
+    }
   );
 
   // get resource by resource name and id
@@ -122,13 +135,16 @@ export function defineRoutes(router: IRouter, securityConfigClient: IClusterClie
           resourceName: schema.string(),
           id: schema.string(),
         }),
-      }
+      },
     },
     async (context, request, response) => {
-      const client = securityConfigClient.asScoped(request);
+      const client = esClient.asScoped(request);
       let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opendistro_security.getResource', { resourceName: request.params.resourceName, id: request.params.id });
+        esResp = await client.callAsCurrentUser('opendistro_security.getResource', {
+          resourceName: request.params.resourceName,
+          id: request.params.id,
+        });
         return response.ok({ body: esResp[request.params.id] });
       } catch (error) {
         return response.custom({
@@ -136,7 +152,7 @@ export function defineRoutes(router: IRouter, securityConfigClient: IClusterClie
           body: error.message,
         });
       }
-    },
+    }
   );
 
   // delete resource by resource name and id
@@ -148,18 +164,21 @@ export function defineRoutes(router: IRouter, securityConfigClient: IClusterClie
           resourceName: schema.string(),
           id: schema.string(),
         }),
-      }
+      },
     },
     async (context, request, response) => {
-      const client = securityConfigClient.asScoped(request);
+      const client = esClient.asScoped(request);
       let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opendistro_security.deleteResource', { resourceName: request.params.resourceName, id: request.params.id });
+        esResp = await client.callAsCurrentUser('opendistro_security.deleteResource', {
+          resourceName: request.params.resourceName,
+          id: request.params.id,
+        });
         return response.ok({
           body: {
             message: esResp.message,
-          }
-        })
+          },
+        });
       } catch (error) {
         return response.custom({
           statusCode: error.statusCode,
@@ -182,18 +201,21 @@ export function defineRoutes(router: IRouter, securityConfigClient: IClusterClie
     },
     async (context, request, response) => {
       try {
-        validateRequestBody(request.params.resourceName, request.body)
+        validateRequestBody(request.params.resourceName, request.body);
       } catch (error) {
         return response.badRequest({ body: error });
       }
-      const client = securityConfigClient.asScoped(request);
+      const client = esClient.asScoped(request);
       let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opendistro_security.saveResourceWithoutId', { resourceName: request.params.resourceName, body: request.body });
+        esResp = await client.callAsCurrentUser('opendistro_security.saveResourceWithoutId', {
+          resourceName: request.params.resourceName,
+          body: request.body,
+        });
         return response.ok({
           body: {
             message: esResp.message,
-          }
+          },
         });
       } catch (error) {
         return response.custom({
@@ -218,18 +240,22 @@ export function defineRoutes(router: IRouter, securityConfigClient: IClusterClie
     },
     async (context, request, response) => {
       try {
-        validateRequestBody(request.params.resourceName, request.body)
+        validateRequestBody(request.params.resourceName, request.body);
       } catch (error) {
         return response.badRequest({ body: error });
       }
-      const client = securityConfigClient.asScoped(request);
+      const client = esClient.asScoped(request);
       let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opendistro_security.saveResource', { resourceName: request.params.resourceName, id: request.params.id, body: request.body });
+        esResp = await client.callAsCurrentUser('opendistro_security.saveResource', {
+          resourceName: request.params.resourceName,
+          id: request.params.id,
+          body: request.body,
+        });
         return response.ok({
           body: {
             message: esResp.message,
-          }
+          },
         });
       } catch (error) {
         return response.custom({
@@ -246,15 +272,15 @@ export function defineRoutes(router: IRouter, securityConfigClient: IClusterClie
       validate: false,
     },
     async (context, request, response) => {
-      const client = securityConfigClient.asScoped(request);
+      const client = esClient.asScoped(request);
       let esResp;
       try {
         esResp = await client.callAsCurrentUser('opendistro_security.authinfo');
-        
+
         return response.ok({
           body: {
             message: esResp.message,
-          }
+          },
         });
       } catch (error) {
         return response.custom({

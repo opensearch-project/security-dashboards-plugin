@@ -62,6 +62,7 @@ export function defineTestRoutes(router: IRouter,
         }
       });
     } catch (error) {
+      console.log(error);
       return response.unauthorized({
         body: `Failed to authenticate with username: '${username}' and password: '${password}'`,
       })

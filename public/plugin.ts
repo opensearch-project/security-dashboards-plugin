@@ -41,7 +41,7 @@ export class OpendistroSecurityPlugin
       id: "opendistro_security_login",
       title: "Security",
       chromeless: true,
-      appRoute: "/login",
+      appRoute: "/app/login",
       mount: async (params: AppMountParameters) => {
         const { renderApp } = await import('./apps/login/login-app');
         const [coreStart, depsStart] = await core.getStartServices();

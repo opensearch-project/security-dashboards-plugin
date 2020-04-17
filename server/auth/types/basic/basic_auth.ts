@@ -18,10 +18,11 @@ import { SecurityPluginConfigType } from "../../..";
 import { SecuritySessionCookie } from "../../../session/security_cookie";
 import { CoreSetup } from "../../../../../../src/core/server";
 import { cloneDeep } from 'lodash';
-import { SecurityClient } from "../../../backend/opendistro_security_client";
-import { BasicAuthRoutes } from "./routes";
 import { format } from "url";
 import { stringify } from 'querystring';
+import { SecurityClient } from '../../../backend/opendistro_security_client';
+import { BasicAuthRoutes } from './routes';
+import { isMultitenantPath, resolveTenant } from '../../../multitenancy/tenant_resolver';
 
 export class AuthConfig {
   constructor(
@@ -30,45 +31,56 @@ export class AuthConfig {
     public readonly allowedAdditionalAuthHeaders: string[],
     public readonly authenticateFunction: () => void,
     public readonly validateAvailableTenants: boolean,
-    public readonly validateAvailableRoles: boolean) {
-  }
+    public readonly validateAvailableRoles: boolean
+  ) {}
 }
 
 export class BasicAuthentication {
   private static readonly AUTH_HEADER_NAME: string = 'authorization';
   private static readonly ALLOWED_ADDITIONAL_AUTH_HEADERS: string[] = ['security_impersonate_as'];
   private static readonly ROUTES_TO_IGNORE: string[] = [
-    '/bundles/app/security-login/bootstrap.js',
+    '/bundles/app/security-login/bootstrap.js', // TODO: remove/update the js file path
     '/bundles/app/security-customerror/bootstrap.js',
     '/api/core/capabilities', // FIXME: need to figureout how to bypass this API call
+    '/app/login',
   ];
 
   // private readonly unauthenticatedRoutes: string[];
   private readonly securityClient: SecurityClient;
   private readonly authConfig: AuthConfig;
 
-  constructor(private readonly config: SecurityPluginConfigType,
+  constructor(
+    private readonly config: SecurityPluginConfigType,
     private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
     private readonly router: IRouter,
     private readonly esClient: IClusterClient,
-    private readonly coreSetup: CoreSetup) {
-
+    private readonly coreSetup: CoreSetup
+  ) {
     const multitenantEnabled = config.multitenancy.enabled;
 
     this.securityClient = new SecurityClient(this.esClient);
-    this.authConfig = new AuthConfig('basicauth',
+    this.authConfig = new AuthConfig(
+      'basicauth',
       BasicAuthentication.AUTH_HEADER_NAME,
       BasicAuthentication.ALLOWED_ADDITIONAL_AUTH_HEADERS,
-      async () => { },
+      async () => {},
       multitenantEnabled,
-      true);
+      true
+    );
     // this.unauthenticatedRoutes = this.config.auth.unauthenticated_routes;
 
     this.init();
   }
 
   private async init() {
-    const routes = new BasicAuthRoutes(this.router, this.config, this.sessionStorageFactory, this.securityClient, this.authConfig, this.coreSetup);
+    const routes = new BasicAuthRoutes(
+      this.router,
+      this.config,
+      this.sessionStorageFactory,
+      this.securityClient,
+      this.authConfig,
+      this.coreSetup
+    );
     routes.setupRoutes();
   }
 
@@ -83,12 +95,11 @@ export class BasicAuthentication {
    * Basic Authentication auth handler. Registered to core.http if basic authentication is enabled.
    */
   authHandler: AuthenticationHandler = async (request, response, toolkit) => {
-    
-    if (BasicAuthentication.ROUTES_TO_IGNORE.includes(request.url.path)) {
+    if (BasicAuthentication.ROUTES_TO_IGNORE.includes(request.url.pathname)) {
       return toolkit.authenticated();
     }
 
-    if (this.config.auth.unauthenticated_routes.indexOf(request.url.path) > -1) {
+    if (this.config.auth.unauthenticated_routes.indexOf(request.url.pathname) > -1) {
       // TODO: user kibana server user
       return toolkit.authenticated();
     }
@@ -101,7 +112,7 @@ export class BasicAuthentication {
         if (request.url.pathname === '/' || request.url.pathname.startsWith('/app')) {
           // requesting access to an application page, redirect to login
           const nextUrlParam = this.composeNextUrlQeuryParam(request);
-          const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}/login?${nextUrlParam}`;
+          const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}/app/login?${nextUrlParam}`;
           return response.redirected({
             headers: {
               location: `${redirectLocation}`,
@@ -110,22 +121,36 @@ export class BasicAuthentication {
         }
         return response.unauthorized();
       }
+
+      let headers = {};
+
       // set cookie to extend ttl
       cookie.expiryTime = Date.now() + this.config.cookie.ttl;
       this.sessionStorageFactory.asScoped(request).set(cookie);
-      
+
       // pass credentials to request to Elasticsearch
-      const credentials = cookie.credentials;
+      Object.assign(headers, { authorization: cookie.credentials?.authHeaderValue });
+
+      // add tenant to Elasticsearch request headers
+      if (this.config.multitenancy.enabled && isMultitenantPath(request)) {
+        const authInfo = await this.securityClient.authinfo(request);
+        const selectedTenant = resolveTenant(request, authInfo.user_name, authInfo.tenants, this.config, cookie);
+        Object.assign(headers, { securitytenant: selectedTenant });
+        
+        if (selectedTenant !== cookie.tentent) {
+          cookie.tentent = selectedTenant;
+          this.sessionStorageFactory.asScoped(request).set(cookie);
+        }
+      }
+
       return toolkit.authenticated({
         // state: credentials,
-        requestHeaders: {
-          'authorization': credentials.authHeaderValue,
-        },
+        requestHeaders: headers,
       });
     } catch (error) {
       // TODO: switch to logger
       console.log(`error: ${error}`);
       // TODO: redirect using response?
     }
-  }
+  };
 }
