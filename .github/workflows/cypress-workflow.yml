@@ -54,11 +54,11 @@ jobs:
           tar -xzf elasticsearch-oss-${{ steps.kibana_version.outputs.kibana_version }}-darwin-x86_64.tar.gz
           cd elasticsearch-${{ steps.kibana_version.outputs.kibana_version }}/
           bin/elasticsearch-plugin install -b https://d3g5vo6xdbdb9a.cloudfront.net/downloads/elasticsearch-plugins/opendistro-security/opendistro_security-${{ steps.opendistro_version.outputs.opendistro_version }}.zip
-          bash plugins/opendistro_security/tools/install_demo_configuration.sh -y
+          bash plugins/opendistro_security/tools/install_demo_configuration.sh -y -i -c
           bin/elasticsearch &
           sleep 60
-          bash securityadmin_demo.sh
-          sleep 120
+          # bash securityadmin_demo.sh
+          # sleep 120
           curl https://localhost:9200 -u admin:admin -k
           # timeout 600 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' https://localhost:9200 -u admin:admin -k)" != "200" ]]; do sleep 5; done'
       - name: Checkout Kibana
