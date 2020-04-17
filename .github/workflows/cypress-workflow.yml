@@ -27,11 +27,11 @@ jobs:
           path: security
           # TODO: Move this after Kibana plugin setup so we can pull down the correct branch to support all opendistro branches
           repository: opendistro-for-elasticsearch/security
-      - name: Run elasticsearch with plugin
-        run: |
-          cd security
-          ./gradlew run &
-          timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9200)" != "200" ]]; do sleep 5; done'
+#      - name: Run elasticsearch with plugin
+#        run: |
+#          cd security
+#          ./gradlew run &
+#          timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9200)" != "200" ]]; do sleep 5; done'
       - name: Checkout Security Kibana plugin
         uses: actions/checkout@v2
         with:
@@ -40,6 +40,20 @@ jobs:
         id: kibana_version
         run: |
           echo "::set-output name=kibana_version::$(node -p "(require('./security-kibana-plugin/package.json').kibana.version).match(/[.0-9]+/)[0]")"
+      - name: Get Opendistro version
+        id: opendistro_version
+        run: |
+          echo "::set-output name=opendistro_version::$(node -p "(require('./security-kibana-plugin/package.json').version).match(/[.0-9]+/)[0]")"
+
+      - name: Run elasticsearch with plugin
+        run: |
+          wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-${{ steps.kibana_version.outputs.kibana_version }}-darwin-x86_64.tar.gz
+          tar -xzf elasticsearch-oss-${{ steps.kibana_version.outputs.kibana_version }}-darwin-x86_64.tar.gz
+          cd elasticsearch-${{ steps.kibana_version.outputs.kibana_version }}/
+          bin/elasticsearch-plugin install https://d3g5vo6xdbdb9a.cloudfront.net/downloads/elasticsearch-plugins/opendistro-security/opendistro_security-${{ steps.opendistro_version.outputs.opendistro_version }}.zip
+          sh plugins/opendistro_security/tools/install_demo_configuration.sh
+          bin/elasticsearch &
+          timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9200)" != "200" ]]; do sleep 5; done'
       - name: Checkout Kibana
         uses: actions/checkout@v2
         with:
@@ -72,6 +86,19 @@ jobs:
           yarn kbn bootstrap
       - name: Run kibana server
         run: |
+          security_config='
+            elasticsearch.username: "kibanaserver"\n
+            elasticsearch.password: "kibanaserver"\n
+            elasticsearch.hosts: "https://localhost:9200"\n
+            elasticsearch.ssl.verificationMode: none\n
+            elasticsearch.requestHeadersWhitelist: ["securitytenant","Authorization"]\n
+
+            opendistro_security.multitenancy.enabled: true\n
+            opendistro_security.multitenancy.tenants.preferred: ["Private", "Global"]\n
+            opendistro_security.readonly_mode.roles: ["kibana_read_only"]\n
+            opendistro_security.auth.type: "basicauth"\n
+          '
+          echo $security_config >> kibana/config/kibana.yml
           cd kibana/plugins/security-kibana-plugin
           yarn start --no-base-path --no-watch &
           sleep 300
