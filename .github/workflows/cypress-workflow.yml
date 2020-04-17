@@ -113,16 +113,6 @@ jobs:
           sleep 300
           curl localhost:5601/api/status
           # timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:5601/api/status)" != "200" ]]; do sleep 5; done'
-      - name: Cache Cypress
-        id: cache-cypress
-        uses: actions/cache@v1
-        with:
-          path: ~/.cache/Cypress
-          key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
-      # now let's install Cypress binary
-      - run: npm install cypress@${{ steps.cypress_version.outputs.cypress_version }}
-      - run: npx cypress cache list
-      # for now just chrome, use matrix to do all browsers later
       - name: Cypress tests
         run: |
           cd kibana/plugins/security-kibana-plugin
