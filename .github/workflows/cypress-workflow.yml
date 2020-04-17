@@ -50,7 +50,6 @@ jobs:
 
       - name: Run elasticsearch with plugin
         run: |
-#          bash -v
           wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-${{ steps.kibana_version.outputs.kibana_version }}-darwin-x86_64.tar.gz
           tar -xzf elasticsearch-oss-${{ steps.kibana_version.outputs.kibana_version }}-darwin-x86_64.tar.gz
           cd elasticsearch-${{ steps.kibana_version.outputs.kibana_version }}/
