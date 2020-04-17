@@ -10,6 +10,9 @@ jobs:
   tests:
     name: Run Cypress E2E tests
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     env:
       # prevents extra Cypress installation progress messages
       CI: 1
