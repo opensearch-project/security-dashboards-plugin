@@ -92,15 +92,15 @@ jobs:
       - name: Run kibana server
         run: |
           security_config='
-            elasticsearch.username: "kibanaserver"\n
-            elasticsearch.password: "kibanaserver"\n
-            elasticsearch.hosts: "https://localhost:9200"\n
-            elasticsearch.ssl.verificationMode: none\n
-            elasticsearch.requestHeadersWhitelist: ["securitytenant","Authorization"]\n
-            opendistro_security.multitenancy.enabled: true\n
-            opendistro_security.multitenancy.tenants.preferred: ["Private", "Global"]\n
-            opendistro_security.readonly_mode.roles: ["kibana_read_only"]\n
-            opendistro_security.auth.type: "basicauth"\n
+          elasticsearch.username: "kibanaserver"\n
+          elasticsearch.password: "kibanaserver"\n
+          elasticsearch.hosts: "https://localhost:9200"\n
+          elasticsearch.ssl.verificationMode: none\n
+          elasticsearch.requestHeadersWhitelist: ["securitytenant","Authorization"]\n
+          opendistro_security.multitenancy.enabled: true\n
+          opendistro_security.multitenancy.tenants.preferred: ["Private", "Global"]\n
+          opendistro_security.readonly_mode.roles: ["kibana_read_only"]\n
+          opendistro_security.auth.type: "basicauth"\n
           '
           echo -e $security_config >> kibana/config/kibana.yml
           cat kibana/config/kibana.yml
