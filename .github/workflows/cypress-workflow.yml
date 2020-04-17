@@ -104,7 +104,7 @@ jobs:
             opendistro_security.auth.type: "basicauth"\n
           '
           echo $security_config >> kibana/config/kibana.yml
-          cd kibana/plugins/security-kibana-plugin
+          cd kibana
           yarn start --no-base-path --no-watch &
           sleep 300
           curl localhost:5601/api/status
