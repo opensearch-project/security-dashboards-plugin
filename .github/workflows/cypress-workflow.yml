@@ -102,7 +102,7 @@ jobs:
             opendistro_security.readonly_mode.roles: ["kibana_read_only"]\n
             opendistro_security.auth.type: "basicauth"\n
           '
-          echo $security_config >> kibana/config/kibana.yml
+          echo -e $security_config >> kibana/config/kibana.yml
           cat kibana/config/kibana.yml
           cd kibana
           yarn start --no-base-path --no-watch &
