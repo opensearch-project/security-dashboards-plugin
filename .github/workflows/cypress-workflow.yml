@@ -87,7 +87,7 @@ jobs:
           npm i -g yarn@${{ steps.versions.outputs.yarn_version }}
       - name: Bootstrap plugin/kibana
         env:
-          CYPRESS_INSTALL_BINARY: 0
+          CYPRESS_INSTALL_BINARY: ${{ steps.cypress_version.outputs.cypress_version }}
         run: |
           mkdir -p kibana/plugins
           mv security-kibana-plugin kibana/plugins
@@ -113,6 +113,18 @@ jobs:
           sleep 300
           curl localhost:5601/api/status
           # timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:5601/api/status)" != "200" ]]; do sleep 5; done'
+      - name: Cache Cypress
+        id: cache-cypress
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+      # now let's install Cypress binary
+      # - run: npm install cypress@${{ steps.cypress_version.outputs.cypress_version }}
+      - run: npx cypress install
+      - run: npx cypress cache list
+      - run: npx cypress cache path
+        # for now just chrome, use matrix to do all browsers later
       - name: Cypress tests
         run: |
           cd kibana/plugins/security-kibana-plugin
