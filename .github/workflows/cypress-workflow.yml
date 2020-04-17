@@ -10,9 +10,6 @@ jobs:
   tests:
     name: Run Cypress E2E tests
     runs-on: ubuntu-latest
-#    defaults:
-#      run:
-#        shell: bash
     env:
       # prevents extra Cypress installation progress messages
       CI: 1
@@ -22,19 +19,13 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          # TODO: Parse this from index management plugin
+          # TODO: Parse this from security plugin
           java-version: 13
       - name: Checkout
         uses: actions/checkout@v2
         with:
           path: security
-          # TODO: Move this after Kibana plugin setup so we can pull down the correct branch to support all opendistro branches
           repository: opendistro-for-elasticsearch/security
-#      - name: Run elasticsearch with plugin
-#        run: |
-#          cd security
-#          ./gradlew run &
-#          timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9200)" != "200" ]]; do sleep 5; done'
       - name: Checkout Security Kibana plugin
         uses: actions/checkout@v2
         with:
@@ -51,7 +42,6 @@ jobs:
         id: cypress_version
         run: |
           echo "::set-output name=cypress_version::$(node -p "(require('./security-kibana-plugin/package.json').devDependencies.cypress).match(/[.0-9]+/)[0]")"
-
       - name: Run elasticsearch with plugin
         run: |
           wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-${{ steps.kibana_version.outputs.kibana_version }}-darwin-x86_64.tar.gz
@@ -62,7 +52,6 @@ jobs:
           bin/elasticsearch &
           sleep 60
           curl https://localhost:9200 -u admin:admin -k
-          # timeout 600 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' https://localhost:9200 -u admin:admin -k)" != "200" ]]; do sleep 5; done'
       - name: Checkout Kibana
         uses: actions/checkout@v2
         with:
@@ -105,14 +94,12 @@ jobs:
           opendistro_security.readonly_mode.roles: ["kibana_read_only"]
           opendistro_security.auth.type: "basicauth"
           '
-          echo "$security_config"
           echo "$security_config" >> kibana/config/kibana.yml
           cat kibana/config/kibana.yml
           cd kibana
           yarn start --no-base-path --no-watch &
           sleep 300
           curl localhost:5601/api/status
-          # timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:5601/api/status)" != "200" ]]; do sleep 5; done'
       - name: Cache Cypress
         id: cache-cypress
         uses: actions/cache@v1
@@ -120,7 +107,6 @@ jobs:
           path: ~/.cache/Cypress
           key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
       # now let's install Cypress binary
-      # - run: npm install cypress@${{ steps.cypress_version.outputs.cypress_version }}
       - run: npx cypress install
       - run: npx cypress cache list
       - run: npx cypress cache path
