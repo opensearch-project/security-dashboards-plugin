@@ -13,13 +13,14 @@
  *   permissions and limitations under the License.
  */
 
-import { NavigationPublicPluginStart } from '../../../src/plugins/navigation/public';
+import React, { ReactNode } from 'react';
+import { EuiPage, EuiPageSideBar, EuiPageBody } from '@elastic/eui';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface OpendistroSecurityPluginSetup {}
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface OpendistroSecurityPluginStart {}
-
-export interface AppPluginStartDependencies {
-  navigation: NavigationPublicPluginStart;
+export function SplitPage(props: { left: ReactNode; right: ReactNode }) {
+  return (
+    <EuiPage>
+      <EuiPageSideBar>{props.left}</EuiPageSideBar>
+      <EuiPageBody>{props.right}</EuiPageBody>
+    </EuiPage>
+  );
 }

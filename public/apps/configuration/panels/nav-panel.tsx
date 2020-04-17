@@ -13,13 +13,24 @@
  *   permissions and limitations under the License.
  */
 
-import { NavigationPublicPluginStart } from '../../../src/plugins/navigation/public';
+import React from 'react';
+import { EuiSideNav } from '@elastic/eui';
+import { RouteItem } from '../types';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface OpendistroSecurityPluginSetup {}
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface OpendistroSecurityPluginStart {}
+function buildTreeItems(items: RouteItem[]) {
+  return [{
+    name: 'Security',
+    id: 'security',
+    items: items.map(e => ({
+      id: e.name,
+      name: e.name,
+      href: "#" + e.href,
+    }))
+  }]
+}
 
-export interface AppPluginStartDependencies {
-  navigation: NavigationPublicPluginStart;
+export function NavPanel(props: {
+  items: RouteItem[]
+}) {
+  return (<EuiSideNav items={buildTreeItems(props.items)} />)
 }
