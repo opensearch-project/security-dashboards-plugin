@@ -2,10 +2,10 @@ name: E2E Cypress tests
 on:
   pull_request:
     branches:
-      - tianleh-test
+      - master
   push:
     branches:
-      - tianleh-test
+      - master
 jobs:
   tests:
     name: Run Cypress E2E tests
