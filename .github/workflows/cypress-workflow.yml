@@ -33,15 +33,15 @@ jobs:
       - name: Get Kibana version
         id: kibana_version
         run: |
-          echo "::set-output name=kibana_version::$(cat ./security-kibana-plugin/package.json | jq '.kibana.version')"
+          echo "::set-output name=kibana_version::$(cat ./security-kibana-plugin/package.json | jq '.kibana.version' | tr -d '"')"
       - name: Get Opendistro version
         id: opendistro_version
         run: |
-          echo "::set-output name=opendistro_version::$(cat ./security-kibana-plugin/package.json | jq '.version')"
+          echo "::set-output name=opendistro_version::$(cat ./security-kibana-plugin/package.json | jq '.version' | tr -d '"')"
       - name: Get Cypress version
         id: cypress_version
         run: |
-          echo "::set-output name=cypress_version::$(cat ./security-kibana-plugin/package.json | jq '.devDependencies.cypress')"
+          echo "::set-output name=cypress_version::$(cat ./security-kibana-plugin/package.json | jq '.devDependencies.cypress' | tr -d '"')"
       - name: Run elasticsearch with plugin
         run: |
           wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-${{ steps.kibana_version.outputs.kibana_version }}-darwin-x86_64.tar.gz
@@ -62,8 +62,8 @@ jobs:
       - name: Get node and yarn versions
         id: versions
         run: |
-          echo "::set-output name=node_version::$(cat ./kibana/package.json | jq '.engines.node')"
-          echo "::set-output name=yarn_version::$(cat ./kibana/package.json | jq '.engines.yarn')"
+          echo "::set-output name=node_version::$(cat ./kibana/package.json | jq '.engines.node' | tr -d '"')"
+          echo "::set-output name=yarn_version::$(cat ./kibana/package.json | jq '.engines.yarn' | tr -d '"')"
       - name: Setup node
         uses: actions/setup-node@v1
         with:
