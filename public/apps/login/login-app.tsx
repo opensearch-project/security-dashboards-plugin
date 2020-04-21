@@ -26,7 +26,6 @@ export function renderApp(
 ) {
   ReactDOM.render(
     <LoginPage
-      appBasePath={params.appBasePath}
       http={coreStart.http}
     />,
     params.element);
