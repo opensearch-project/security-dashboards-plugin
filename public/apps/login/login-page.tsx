@@ -74,7 +74,6 @@ export function LoginPage(props: LoginPageDeps) {
           password: password,
         }),
       });
-      // TODO: Parse nextUrl from paras
       const urlParams = new URLSearchParams(window.location.search);
       const nextUrl = urlParams.get('nextUrl') || props.http.basePath.serverBasePath;
       window.location.href = nextUrl;
