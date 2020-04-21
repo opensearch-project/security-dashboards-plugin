@@ -60,20 +60,20 @@ const RoutesList = [
 export function AppRouter(props: AppDependencies) {
   return (
     <Router basename={props.params.appBasePath}>
-      <Switch>
-        <EuiPage>
+      <EuiPage>
           <Route path={`(${RoutesList.map(r => r.href).join('|')})`} exact={true}>
             <EuiPageSideBar>
               <NavPanel items={RoutesList} />
             </EuiPageSideBar>
           </Route>
           <EuiPageBody>
-            <Route path={RoutesMap.roles.href}>
-              <RoleList />
-            </Route>
+            <Switch>
+              <Route path={RoutesMap.roles.href}>
+                <RoleList />
+              </Route>
+            </Switch>
           </EuiPageBody>
-        </EuiPage>
-      </Switch>
+      </EuiPage>
     </Router>
   );
 }
