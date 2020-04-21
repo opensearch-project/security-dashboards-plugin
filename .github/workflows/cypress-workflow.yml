@@ -2,10 +2,10 @@ name: E2E Integration Tests
 on:
   pull_request:
     branches:
-      - tianleh-test
+      - opendistro-1.6
   push:
     branches:
-      - tianleh-test
+      - opendistro-1.6
 jobs:
   tests:
     name: Run Cypress E2E tests
