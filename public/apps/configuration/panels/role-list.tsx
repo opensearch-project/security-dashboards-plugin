@@ -13,21 +13,117 @@
  *   permissions and limitations under the License.
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
+  EuiFlexGroup,
+  EuiText,
+  EuiIcon,
   EuiPageHeader,
   EuiTitle,
   EuiPageContent,
   EuiPageContentHeader,
   EuiPageContentHeaderSection,
-  EuiFlexItem,
-  EuiText,
   EuiLink,
-  EuiFlexGroup,
+  EuiFlexItem,
   EuiButton,
+  EuiPageBody,
+  EuiInMemoryTable,
 } from '@elastic/eui';
+import { AppDependencies } from '../../types';
 
-export function RoleList() {
+function truncatedListView(limit = 3) {
+  return (items: string[]) => {
+    // Show - to indicate empty
+    if (items == undefined || items.length == 0) {
+      return (
+        <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
+          <EuiText size="xs">-</EuiText>
+        </EuiFlexGroup>
+      );
+    }
+
+    // If number of items over than limit, truncate and show ...
+    return (
+      <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
+        {items.slice(0, limit).map(item => (
+          <EuiText size="xs">{item}</EuiText>
+        ))}
+        {items.length > limit && <EuiText size="xs">...</EuiText>}
+      </EuiFlexGroup>
+    );
+  };
+}
+
+const columns = [
+  {
+    field: 'role_name',
+    name: 'Role',
+    sortable: true,
+  },
+  {
+    field: 'cluster_permissions',
+    name: 'Cluster permissions',
+    render: truncatedListView(),
+    truncateText: true,
+  },
+  {
+    field: 'index_permissions',
+    name: 'Index patterns',
+    render: truncatedListView(),
+    truncateText: true,
+  },
+  {
+    field: 'internal_users',
+    name: 'Internal Users',
+    render: truncatedListView(),
+  },
+  {
+    field: 'backend_roles',
+    name: 'Backend Roles',
+    render: truncatedListView(),
+  },
+  {
+    field: 'tenant_permissions',
+    name: 'Tenant patterns',
+    render: truncatedListView(),
+  },
+  {
+    field: 'reserved',
+    name: 'Customization',
+    render: (reserved: string) => (
+      <>
+        <EuiIcon type={reserved ? 'lock' : 'pencil'} />
+        <EuiText size="xs">{reserved ? 'Reserved' : 'Custom'}</EuiText>
+      </>
+    ),
+  },
+];
+
+export function RoleList(props: AppDependencies) {
+  const [roleData, setRoleData] = useState([]);
+  const [errorFlag, setErrorFlag] = useState(false);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const rawRoleData = await props.coreStart.http.get(
+          '/api/v1/opendistro_security/configuration/roles'
+        );
+        const rawRoleMappingData = await props.coreStart.http.get(
+          '/api/v1/opendistro_security/configuration/rolesmapping'
+        );
+        // TODO: Join and tranform raw data'
+        const processedData = [];
+        setRoleData(processedData);
+        
+      } catch (e) {
+        console.log(e);
+        setErrorFlag(true);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <>
       <EuiPageHeader>
@@ -59,6 +155,17 @@ export function RoleList() {
             </EuiFlexGroup>
           </EuiPageContentHeaderSection>
         </EuiPageContentHeader>
+        <EuiPageBody>
+          <EuiInMemoryTable
+            loading={roleData === [] && !errorFlag}
+            columns={columns}
+            items={roleData}
+            itemId={'role_name'}
+            pagination={true}
+            search={true}
+            error={errorFlag ? "Load data failed, please check console log for more detail." : ""}
+          />
+        </EuiPageBody>
       </EuiPageContent>
     </>
   );
