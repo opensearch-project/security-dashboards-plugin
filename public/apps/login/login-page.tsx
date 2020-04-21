@@ -29,7 +29,6 @@ import {
 import { CoreStart } from '../../../../../src/core/public';
 
 interface LoginPageDeps {
-  appBasePath: string;
   http: CoreStart['http'];
 }
 
@@ -75,8 +74,9 @@ export function LoginPage(props: LoginPageDeps) {
           password: password,
         }),
       });
-      // TODO: Parse nextUrl from paras
-      window.location.href = `${props.http.basePath.serverBasePath}/app/kibana`;
+      const urlParams = new URLSearchParams(window.location.search);
+      const nextUrl = urlParams.get('nextUrl') || props.http.basePath.serverBasePath;
+      window.location.href = nextUrl;
     } catch (error) {
       console.log(error);
       setloginFailed(true);
