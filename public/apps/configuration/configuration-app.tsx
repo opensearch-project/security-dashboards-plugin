@@ -13,32 +13,21 @@
  *   permissions and limitations under the License.
  */
 
+import './_index.scss';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { AppMountContext, AppMountParameters, CoreStart } from '../../../src/core/public';
-import { AppPluginStartDependencies } from './types';
+import { AppMountParameters, CoreStart } from '../../../../../src/core/public';
+import { AppPluginStartDependencies } from '../../types';
+import { AppRouter } from './app-router'
 
 export function renderApp(
-  { notifications, http }: CoreStart,
-  { navigation }: AppPluginStartDependencies,
-  appMountContext: AppMountContext,
+  coreStart: CoreStart,
+  navigation: AppPluginStartDependencies,
   params: AppMountParameters
-  // basePath: string
 ) {
-
+  const deps = {coreStart, navigation, params};
   ReactDOM.render(
-    // security application
-    (<div>
-    </div>),
-    params.element);
+    <AppRouter {...deps} />, params.element);
   return () => ReactDOM.unmountComponentAtNode(params.element);
-}
-
-function setBreadcrumbs(appMountContext: AppMountContext) {
-  appMountContext.core.chrome.setBreadcrumbs([
-    {
-      text: "Security",
-      href: '',
-    }
-  ]);
 }

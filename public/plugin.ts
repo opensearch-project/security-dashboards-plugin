@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { AppMountParameters, CoreSetup, CoreStart, Plugin, PluginInitializerContext, AppMountContext } from '../../../src/core/public';
+import { AppMountParameters, CoreSetup, CoreStart, Plugin, PluginInitializerContext} from '../../../src/core/public';
 import {
   OpendistroSecurityPluginSetup,
   OpendistroSecurityPluginStart,
@@ -30,10 +30,10 @@ export class OpendistroSecurityPlugin
       id: "opendistro_security",
       title: "Security",
       order: 1,
-      mount: async (context: AppMountContext, params: AppMountParameters) => {
-        const { renderApp } = await import('./application');
+      mount: async (params: AppMountParameters) => {
+        const { renderApp } = await import('./apps/configuration/configuration-app');
         const [coreStart, depsStart] = await core.getStartServices();
-        return renderApp(coreStart, depsStart as AppPluginStartDependencies, context, params);
+        return renderApp(coreStart, depsStart as AppPluginStartDependencies, params);
       }
     });
 

@@ -13,13 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { NavigationPublicPluginStart } from '../../../src/plugins/navigation/public';
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface OpendistroSecurityPluginSetup {}
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface OpendistroSecurityPluginStart {}
-
-export interface AppPluginStartDependencies {
-  navigation: NavigationPublicPluginStart;
+export interface RouteItem {
+  name: string;
+  href: string;
 }
