@@ -51,6 +51,8 @@ jobs:
           bash plugins/opendistro_security/tools/install_demo_configuration.sh -y -i
           echo $(curl -s -o /dev/null -w ''%{http_code}'' https://localhost:9200 -u admin:admin -k)
           bin/elasticsearch
+      - name: Check elasticsearch status
+        run: |
           timeout 60 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' https://localhost:9200 -u admin:admin -k)" != "200" ]]; do sleep 5; done'
           curl https://localhost:9200 -u admin:admin -k
       - name: Checkout Kibana
