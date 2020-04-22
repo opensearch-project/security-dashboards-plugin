@@ -62,7 +62,7 @@ jobs:
       - name: Get node and yarn versions
         id: versions
         run: |
-          echo "::set-output name=node_version::$(cat ./kibana/package.json | jq '.engines.node' | tr -d '"')"
+          echo "::set-output name=node_version::$(cat ./kibana/.node-version)"
           echo "::set-output name=yarn_version::$(cat ./kibana/package.json | jq '.engines.yarn' | tr -d '"')"
       - name: Setup node
         uses: actions/setup-node@v1
