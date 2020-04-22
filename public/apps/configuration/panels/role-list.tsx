@@ -30,6 +30,9 @@ import {
   EuiInMemoryTable,
 } from '@elastic/eui';
 import { AppDependencies } from '../../types';
+import { EuiPopover } from '@elastic/eui';
+import { EuiContextMenuPanel } from '@elastic/eui';
+import { EuiContextMenuItem } from '@elastic/eui';
 
 function truncatedListView(limit = 3) {
   return (items: string[]) => {
@@ -110,6 +113,8 @@ const columns = [
 export function RoleList(props: AppDependencies) {
   const [roleData, setRoleData] = useState([]);
   const [errorFlag, setErrorFlag] = useState(false);
+  const [selection, setSelection] = useState([]);
+  const [isActionsPopoverOpen, setActionsPopoverOpen] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -126,7 +131,6 @@ export function RoleList(props: AppDependencies) {
         const processedData = [];
         // @ts-ignore : error TS2345: Argument of type 'any[]' is not assignable to parameter of type 'SetStateAction<never[]>'
         setRoleData(processedData);
-        
       } catch (e) {
         console.log(e);
         setErrorFlag(true);
@@ -135,6 +139,39 @@ export function RoleList(props: AppDependencies) {
 
     fetchData();
   }, []);
+
+  const actionsMenuItems = [
+    <EuiContextMenuItem
+      key="edit"
+      onClick={() => {}} // TODO: Redirect to edit page
+      disabled={selection.length != 1 || selection[0].reserved}
+    >
+      Edit
+    </EuiContextMenuItem>,
+    // TODO: Redirect to duplicate page
+    <EuiContextMenuItem key="duplicate" onClick={() => {}} disabled={selection.length != 1}>
+      Duplicate
+    </EuiContextMenuItem>,
+    <EuiContextMenuItem
+      key="delete"
+      onClick={() => {}} // TODO: Delete selection
+      disabled={selection.length == 0 || selection.some(e => e.reserved)}
+    >
+      Delete
+    </EuiContextMenuItem>,
+  ];
+
+  const actionsButton = (
+    <EuiButton
+      iconType="arrowDown"
+      iconSide="right"
+      onClick={() => {
+        setActionsPopoverOpen(true);
+      }}
+    >
+      Actions
+    </EuiButton>
+  );
 
   return (
     <>
@@ -159,7 +196,17 @@ export function RoleList(props: AppDependencies) {
           <EuiPageContentHeaderSection>
             <EuiFlexGroup>
               <EuiFlexItem>
-                <EuiButton>Actions</EuiButton>
+                <EuiPopover
+                  id="actionsMenu"
+                  button={actionsButton}
+                  isOpen={isActionsPopoverOpen}
+                  closePopover={() => {
+                    setActionsPopoverOpen(false);
+                  }}
+                  panelPaddingSize="s"
+                >
+                  <EuiContextMenuPanel items={actionsMenuItems} />
+                </EuiPopover>
               </EuiFlexItem>
               <EuiFlexItem>
                 <EuiButton fill>Create role</EuiButton>
@@ -174,8 +221,9 @@ export function RoleList(props: AppDependencies) {
             items={roleData}
             itemId={'role_name'}
             pagination={true}
-            search={true}
-            error={errorFlag ? "Load data failed, please check console log for more detail." : ""}
+            selection={{ onSelectionChange: setSelection }}
+            sorting={true}
+            error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
           />
         </EuiPageBody>
       </EuiPageContent>
