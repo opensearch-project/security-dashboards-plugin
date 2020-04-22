@@ -3,7 +3,7 @@ describe('Login succeeds', () => {
     cy.visit(`${Cypress.env('kibana')}`)
     // change URL to match your dev URL
 
-    cy.get('input[name=username]').type('admin', {force: true})
+    cy.get('input[name=username]', {timeout: 60000}).type('admin', {force: true})
 
     // {enter} causes the form to submit
     cy.get('input[name=password]').type('admin{enter}', {force: true})
@@ -17,7 +17,7 @@ describe('Login fails', () => {
     cy.visit(`${Cypress.env('kibana')}`)
     // change URL to match your dev URL
 
-    cy.get('input[name=username]').type('admin2', {force: true})
+    cy.get('input[name=username]', {timeout: 60000}).type('admin2', {force: true})
 
     // {enter} causes the form to submit
     cy.get('input[name=password]').type('admin{enter}', {force: true})
