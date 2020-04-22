@@ -69,7 +69,7 @@ export function AppRouter(props: AppDependencies) {
           <EuiPageBody>
             <Switch>
               <Route path={RoutesMap.roles.href}>
-                <RoleList />
+                <RoleList {...props}/>
               </Route>
             </Switch>
           </EuiPageBody>
