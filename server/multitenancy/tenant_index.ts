@@ -19,7 +19,7 @@ import { DocumentMigrator, IndexMigrator, buildActiveMappings } from '../../../.
 import { docValidator } from '../../../../src/core/server/saved_objects/validation';
 import { createIndexMap } from '../../../../src/core/server/saved_objects/migrations/core/build_index_map';
 import { mergeTypes } from '../../../../src/core/server/saved_objects/migrations/kibana/kibana_migrator';
-import { MigrationLogger } from '../../../../src/core/server/saved_objects/migrations/core/migration_logger';
+// import { MigrationLogger } from '../../../../src/core/server/saved_objects/migrations/core/migration_logger';
 import { SecurityClient } from '../backend/opendistro_security_client';
 
 export async function setupIndexTemplate(
@@ -102,7 +102,7 @@ export async function migrateTenantIndices(
       callCluster: esClient.callAsInternalUser,
       documentMigrator: documentMigrator,
       index: index_name,
-      log: new MigrationLogger(logger),
+      log: logger,
       mappingProperties: indexMap[index_name].typeMappings,
       pollInterval: 1500, // millisec
       scrollDuration: '15m',

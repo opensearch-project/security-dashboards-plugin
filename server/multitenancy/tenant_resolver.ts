@@ -38,8 +38,8 @@ export function resolveTenant(
   availabeTenants: any,
   config: SecurityPluginConfigType,
   cookie: SecuritySessionCookie
-): string {
-  let selectedTenant: string = undefined;
+): string | undefined {
+  let selectedTenant: string | undefined = undefined;
   const query: any = request.query as any;
   if (query && (query.security_tenant || query.securitytenant)) {
     selectedTenant = query.security_tenant ? query.security_tenant : query.securitytenant;
@@ -53,9 +53,9 @@ export function resolveTenant(
     selectedTenant = undefined;
   }
 
-  const preferredTenants = config.multitenancy.tenants.preferred;
-  const globalTenantEnabled = config.multitenancy.tenants.enable_global;
-  const privateTenantEnabled = config.multitenancy.tenants.enable_private;
+  const preferredTenants = config.multitenancy?.tenants.preferred;
+  const globalTenantEnabled = config.multitenancy?.tenants.enable_global || false;
+  const privateTenantEnabled = config.multitenancy?.tenants.enable_private || false;
 
   return resolve(username, selectedTenant, preferredTenants, availabeTenants, globalTenantEnabled, privateTenantEnabled);
 }
@@ -68,21 +68,21 @@ export function resolveTenant(
  */
 export function isMultitenantPath(request: KibanaRequest): boolean {
   return (
-    request.url.path.startsWith('/elasticsearch') ||
-    request.url.path.startsWith('/api') ||
-    request.url.path.startsWith('/app') ||
+    request.url.path?.startsWith('/elasticsearch') ||
+    request.url.path?.startsWith('/api') ||
+    request.url.path?.startsWith('/app') ||
     request.url.path === '/'
   );
 }
 
 function resolve(
   username: string,
-  requestedTenant: string,
-  preferredTenants: string[],
+  requestedTenant: string | undefined,
+  preferredTenants: string[] | undefined,
   availableTenants: any, // is an object like { tenant_name_1: true, tenant_name_2: false, ... }
   globalTenantEnabled: boolean,
   privateTenantEnabled: boolean
-): string {
+): string | undefined {
   const availableTenantsClone = cloneDeep(availableTenants);
   delete availableTenantsClone[username];
 

@@ -34,10 +34,9 @@ export function setupMultitenantRoutes(router: IRouter,
     }
   },
   async (context, request, response) => {
-    const username = request.body.username;
     const tenant = request.body.tenant;
 
-    let cookie: SecuritySessionCookie = await sessionStroageFactory.asScoped(request).get();
+    let cookie: SecuritySessionCookie | null = await sessionStroageFactory.asScoped(request).get();
     if (!cookie) {
       return response.badRequest({
         body: 'Invalid cookie',

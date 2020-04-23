@@ -53,7 +53,7 @@ export class SecurityClient {
         headerName,
         headerValue,
       };
-      let headers = {};
+      let headers: any = {};
       if (headerValue) {
         headers[headerName] = headerValue;
       }

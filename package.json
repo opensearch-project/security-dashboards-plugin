@@ -1,0 +1,17 @@
+{
+  "name": "opendistro_security",
+  "version": "0.0.1",
+  "main": "target/plugins/opendistro_security",
+  "kibana": {
+    "version": "8.0.0",
+    "templateVersion": "1.0.0"
+  },
+  "license": "Apache-2.0",
+  "scripts": {
+    "kbn": "node ../../scripts/kbn.js",
+    "build": "rm -rf './target' && tsc"
+  },
+  "devDependencies": {
+    "typescript": "3.7.2"
+  }
+}
