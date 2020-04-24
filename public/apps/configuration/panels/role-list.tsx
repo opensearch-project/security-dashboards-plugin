@@ -37,7 +37,9 @@ function truncatedListView(limit = 3) {
     if (items == undefined || items.length == 0) {
       return (
         <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
-          <EuiText size="xs">-</EuiText>
+          <EuiText key={'-'} size="xs">
+            -
+          </EuiText>
         </EuiFlexGroup>
       );
     }
@@ -46,9 +48,15 @@ function truncatedListView(limit = 3) {
     return (
       <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
         {items.slice(0, limit).map(item => (
-          <EuiText size="xs">{item}</EuiText>
+          <EuiText key={item} size="xs">
+            {item}
+          </EuiText>
         ))}
-        {items.length > limit && <EuiText size="xs">...</EuiText>}
+        {items.length > limit && (
+          <EuiText key={'...'} size="xs">
+            ...
+          </EuiText>
+        )}
       </EuiFlexGroup>
     );
   };
