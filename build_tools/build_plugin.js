@@ -24,7 +24,7 @@ const rewritePackageJson = require('@kbn/plugin-helpers/tasks/build/rewrite_pack
 const createPackage = require('@kbn/plugin-helpers/tasks/build/create_package');
 
 async function build() {
-  pluginRoot = process.cwd();
+  const pluginRoot = process.cwd();
 
   console.log('Building plugin...');
   console.log(`CWD: ${pluginRoot}`);
@@ -32,6 +32,7 @@ async function build() {
   // clean up target dir
   console.log('Cleaning up target directory...');
   execa.sync('rm', ['-rf', 'target']);
+  execa.sync('rm', ['-rf', 'build']);
   // transpile typescript code
   console.log('Transpiling typescript soruces...');
   const transpileResult = execa.sync('yarn', ['tsc']);
@@ -51,13 +52,13 @@ async function build() {
     console.log(error);
     process.exit(1);
   }
-  // create plugin package
-  console.log('Assembling plugin...')
-  const plugin = pluginConfig(pluginRoot);
-  createBuild(pluginRoot, plugin);
 
+  // create plugin package
+  console.log('Assembling plugin...');
+  const plugin = pluginConfig(pluginRoot);
   const buildTarget = path.resolve(pluginRoot, 'build');
   const buildVersion = plugin.pkg.version;
+  await createBuild(pluginRoot, plugin);
 
   // create plugin zip file
   console.log('Creating plugin zip bundle...');
@@ -66,7 +67,7 @@ async function build() {
   } catch (error) {
     console.log(error);
     process.exit(1);
-  };
+  }
   console.log(`BUILD SUCCESS`);
 }
 
@@ -95,54 +96,42 @@ function runOptimizer() {
     .toPromise();
 }
 
-function createBuild(pluginRoot, plugin) {
+async function createBuild(pluginRoot, plugin) {
   const pluginId = plugin.id;
   const buildVersion = plugin.pkg.version;
   const kibanaVeersion = plugin.pkg.kibana.version;
   const buildTarget = path.resolve(pluginRoot, 'build');
   const buildRoot = path.join(buildTarget, 'kibana', pluginId);
 
-  let nestFileInDir = (filePath) => {
+  console.log(`${pluginRoot} ${plugin} ${buildTarget}`);
+
+  function nestFileInDir(filePath) {
     const nonRelativeDirname = filePath.dirname.replace(/^(\.\.\/?)+/g, '');
     filePath.dirname = path.join(path.relative(buildTarget, buildRoot), nonRelativeDirname);
-  };
+  }
 
-  // copy configuration files to build dir
-  vfs
-    .src(['kibana.json', 'package.json', 'LICENSE', 'NOTICE'], {
-      cwd: pluginRoot,
-      base: pluginRoot,
-      allowEmpty: true,
-    })
-    .pipe(rewritePackageJson(pluginRoot, buildVersion, kibanaVeersion))
-    .pipe(rename(nestFileInDir))
-    .pipe(vfs.dest(buildTarget));
-  
-  // copy optimized browser application to build dir
-  vfs
-    .src(['target/public/**/*'], {
-      cwd: pluginRoot,
-      base: pluginRoot,
-      allowEmpty: true,
-    })
-    .pipe(rename(nestFileInDir))
-    .pipe(vfs.dest(buildTarget));
-  
-  // copy server plugin to build dir
-  vfs
-    .src(['**/*'], {
-      cwd: path.join(pluginRoot, 'target', 'plugins', pluginId),
-      base: path.join(pluginRoot, 'target', 'plugins', pluginId),
-      allowEmpty: true,
-    })
-    .pipe(rename(nestFileInDir))
-    .pipe(vfs.dest(buildTarget));
+  function copyArtifacts(srcGlobs, cwd, base, allowEmpty) {
+    return new Promise(function(resolve, reject) {
+      vfs
+        .src(srcGlobs, { cwd, base, allowEmpty })
+        .pipe(rewritePackageJson(pluginRoot, buildVersion, kibanaVeersion))
+        .pipe(rename(nestFileInDir))
+        .pipe(vfs.dest(buildTarget))
+        .on('end', resolve)
+        .on('error', reject);
+    });
+  }
+
+  await copyArtifacts(['kibana.json', 'package.json', 'LICENSE', 'NOTICE'], pluginRoot, pluginRoot, true);
+  await copyArtifacts(['target/public/**/*'], pluginRoot, pluginRoot, true);
+  const artifactDir = path.join(pluginRoot, 'target', 'plugins', pluginId);
+  await copyArtifacts(['**/*'], artifactDir, artifactDir, true);
   console.log('Copied artifacts to build dir.');
 
   // install dependencies
   console.log('Installing dependencies');
   const installResult = execa.sync('yarn', ['install', '--production', '--pure-lockfile'], {
-    cwd:buildRoot,
+    cwd: buildRoot,
   });
   if (installResult.exitCode !== 0) {
     console.log(installResult.error);
@@ -158,4 +147,4 @@ function createBuild(pluginRoot, plugin) {
   } catch (error) {
     console.log(error);
   }
-})()
+})();

@@ -39,7 +39,7 @@ export class OpendistroSecurityPlugin
     });
 
     core.application.register({
-      id: "opendistro_security_login",
+      id: "login",
       title: "Security",
       chromeless: true,
       appRoute: "/app/login",
