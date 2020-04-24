@@ -13,8 +13,8 @@
  *   permissions and limitations under the License.
  */
 
-import { SessionStorageCookieOptions } from "../../../../src/core/server";
-import { SecurityPluginConfigType } from "..";
+import { SessionStorageCookieOptions } from '../../../../src/core/server';
+import { SecurityPluginConfigType } from '..';
 
 export interface SecuritySessionCookie {
   // security_authentication
@@ -30,24 +30,30 @@ export interface SecuritySessionCookie {
   tentent?: any;
 }
 
-export function getSecurityCookieOptions(config: SecurityPluginConfigType): SessionStorageCookieOptions<SecuritySessionCookie> {
+export function getSecurityCookieOptions(
+  config: SecurityPluginConfigType
+): SessionStorageCookieOptions<SecuritySessionCookie> {
   return {
     name: config.cookie.name,
     encryptionKey: config.cookie.password,
     validate: (sessionStorage: SecuritySessionCookie | SecuritySessionCookie[]) => {
       sessionStorage = sessionStorage as SecuritySessionCookie;
-      if (sessionStorage === undefined
-          || sessionStorage.username === undefined
-          || sessionStorage.credentials === undefined) {
+      if (
+        sessionStorage === undefined ||
+        sessionStorage.username === undefined ||
+        sessionStorage.credentials === undefined
+      ) {
         return { isValid: false, path: '/' };
       }
 
-      if (sessionStorage.expiryTime === undefined
-          || new Date(sessionStorage.expiryTime) < new Date()) {
+      if (
+        sessionStorage.expiryTime === undefined ||
+        new Date(sessionStorage.expiryTime) < new Date()
+      ) {
         return { isValid: false, path: '/' };
       }
       return { isValid: true, path: '/' };
     },
     isSecure: false, // config.cookie.secure,
-  }
+  };
 }

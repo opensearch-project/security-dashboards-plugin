@@ -13,22 +13,21 @@
  *   permissions and limitations under the License.
  */
 
-export default function (Client: any, config: any, components: any) {
-
+export default function(Client: any, config: any, components: any) {
   const ca = components.clientAction.factory;
 
   Client.prototype.opendistro_security = components.clientAction.namespaceFactory();
 
   Client.prototype.opendistro_security.prototype.restapiinfo = ca({
     url: {
-      fmt: '/_opendistro/_security/api/permissionsinfo'
-    }
+      fmt: '/_opendistro/_security/api/permissionsinfo',
+    },
   });
 
   Client.prototype.opendistro_security.prototype.indices = ca({
     url: {
-      fmt: '/_all/_mapping/field/*'
-    }
+      fmt: '/_all/_mapping/field/*',
+    },
   });
   /**
    * Returns a Security resource configuration.
@@ -47,10 +46,10 @@ export default function (Client: any, config: any, components: any) {
       req: {
         resourceName: {
           type: 'string',
-          required: true
-        }
-      }
-    }
+          required: true,
+        },
+      },
+    },
   });
 
   /**
@@ -74,14 +73,14 @@ export default function (Client: any, config: any, components: any) {
       req: {
         resourceName: {
           type: 'string',
-          required: true
+          required: true,
         },
         id: {
           type: 'string',
-          required: true
-        }
-      }
-    }
+          required: true,
+        },
+      },
+    },
   });
 
   /**
@@ -102,10 +101,10 @@ export default function (Client: any, config: any, components: any) {
       req: {
         resourceName: {
           type: 'string',
-          required: true
-        }
-      }
-    }
+          required: true,
+        },
+      },
+    },
   });
 
   /**
@@ -126,14 +125,14 @@ export default function (Client: any, config: any, components: any) {
       req: {
         resourceName: {
           type: 'string',
-          required: true
+          required: true,
         },
         id: {
           type: 'string',
-          required: true
-        }
-      }
-    }
+          required: true,
+        },
+      },
+    },
   });
 
   /**
@@ -146,16 +145,15 @@ export default function (Client: any, config: any, components: any) {
       req: {
         resourceName: {
           type: 'string',
-          required: true
+          required: true,
         },
         id: {
           type: 'string',
-          required: true
-        }
-      }
-    }
+          required: true,
+        },
+      },
+    },
   });
-
 
   /**
    * Deletes a Security resource instance.
@@ -164,15 +162,15 @@ export default function (Client: any, config: any, components: any) {
     method: 'DELETE',
     url: {
       fmt: '/_opendistro/_security/api/cache',
-    }
+    },
   });
 
   Client.prototype.opendistro_security.prototype.validateDls = ca({
     method: 'POST',
     needBody: true,
     url: {
-      fmt: '/_validate/query?explain=true'
-    }
+      fmt: '/_validate/query?explain=true',
+    },
   });
 
   Client.prototype.opendistro_security.prototype.getIndexMappings = ca({
@@ -183,37 +181,36 @@ export default function (Client: any, config: any, components: any) {
       req: {
         index: {
           type: 'string',
-          required: true
-        }
-      }
-    }
+          required: true,
+        },
+      },
+    },
   });
-
 
   /////
   Client.prototype.opendistro_security.prototype.authinfo = ca({
     url: {
-      fmt: '/_opendistro/_security/authinfo'
-    }
+      fmt: '/_opendistro/_security/authinfo',
+    },
   });
 
   Client.prototype.opendistro_security.prototype.multitenancyinfo = ca({
     url: {
-      fmt: '/_opendistro/_security/kibanainfo'
-    }
+      fmt: '/_opendistro/_security/kibanainfo',
+    },
   });
 
   Client.prototype.opendistro_security.prototype.tenantinfo = ca({
     url: {
-      fmt: '/_opendistro/_security/tenantinfo'
-    }
+      fmt: '/_opendistro/_security/tenantinfo',
+    },
   });
 
   Client.prototype.opendistro_security.prototype.authtoken = ca({
     method: 'POST',
     needBody: true,
     url: {
-      fmt: '/_opendistro/_security/api/authtoken'
-    }
+      fmt: '/_opendistro/_security/api/authtoken',
+    },
   });
 }

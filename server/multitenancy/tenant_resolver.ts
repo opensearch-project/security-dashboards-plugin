@@ -57,7 +57,14 @@ export function resolveTenant(
   const globalTenantEnabled = config.multitenancy?.tenants.enable_global || false;
   const privateTenantEnabled = config.multitenancy?.tenants.enable_private || false;
 
-  return resolve(username, selectedTenant, preferredTenants, availabeTenants, globalTenantEnabled, privateTenantEnabled);
+  return resolve(
+    username,
+    selectedTenant,
+    preferredTenants,
+    availabeTenants,
+    globalTenantEnabled,
+    privateTenantEnabled
+  );
 }
 
 /**
@@ -95,11 +102,18 @@ function resolve(
       return requestedTenant;
     }
 
-    if (privateTenantEnabled && availableTenants[username] && requestedTenant === PRIVATE_TENANT /* || requestedTenant === 'private'*/) {
+    if (
+      privateTenantEnabled &&
+      availableTenants[username] &&
+      requestedTenant === PRIVATE_TENANT /* || requestedTenant === 'private'*/
+    ) {
       return PRIVATE_TENANT;
     }
 
-    if (globalTenantEnabled && requestedTenant === GLOBAL_TENANT /*|| requestedTenant === 'global'*/) {
+    if (
+      globalTenantEnabled &&
+      requestedTenant === GLOBAL_TENANT /*|| requestedTenant === 'global'*/
+    ) {
       return GLOBAL_TENANT;
     }
   }

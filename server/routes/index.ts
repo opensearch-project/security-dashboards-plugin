@@ -53,7 +53,11 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
   const actionGroupSchema = schema.object({
     description: schema.string(),
     allowed_actions: schema.arrayOf(schema.string()),
-    type: schema.oneOf([schema.literal('cluster'), schema.literal('index'), schema.literal('kibana')]),
+    type: schema.oneOf([
+      schema.literal('cluster'),
+      schema.literal('index'),
+      schema.literal('kibana'),
+    ]),
   });
 
   const roleMappingSchema = schema.object({
@@ -86,7 +90,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
     roles: roleSchema,
     tenants: tenantSchema,
     account: accountSchema,
-  }
+  };
 
   function validateRequestBody(resourceName: string, requestBody: any): any {
     const inputSchema = schemaMap[resourceName];
@@ -110,7 +114,9 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
       const client = esClient.asScoped(request);
       let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opendistro_security.listResource', { resourceName: request.params.resourceName });
+        esResp = await client.callAsCurrentUser('opendistro_security.listResource', {
+          resourceName: request.params.resourceName,
+        });
         return response.ok({
           body: {
             total: Object.keys(esResp).length,

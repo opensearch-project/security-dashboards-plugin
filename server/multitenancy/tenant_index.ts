@@ -13,9 +13,18 @@
  *   permissions and limitations under the License.
  */
 
-import { IClusterClient, SavedObjectsSerializer, ISavedObjectTypeRegistry, Logger } from '../../../../src/core/server';
+import {
+  IClusterClient,
+  SavedObjectsSerializer,
+  ISavedObjectTypeRegistry,
+  Logger,
+} from '../../../../src/core/server';
 import { IndexMapping } from '../../../../src/core/server/saved_objects/mappings';
-import { DocumentMigrator, IndexMigrator, buildActiveMappings } from '../../../../src/core/server/saved_objects/migrations/core';
+import {
+  DocumentMigrator,
+  IndexMigrator,
+  buildActiveMappings,
+} from '../../../../src/core/server/saved_objects/migrations/core';
 import { docValidator } from '../../../../src/core/server/saved_objects/validation';
 import { createIndexMap } from '../../../../src/core/server/saved_objects/migrations/core/build_index_map';
 import { mergeTypes } from '../../../../src/core/server/saved_objects/migrations/kibana/kibana_migrator';

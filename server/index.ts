@@ -51,7 +51,11 @@ export const configSchema = schema.object({
     type: schema.string({
       defaultValue: '',
       validate(value) {
-        if (!['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache'].includes(value)) {
+        if (
+          !['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache'].includes(
+            value
+          )
+        ) {
           return `allowed auth.type are ['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache']`;
         }
       },
@@ -76,7 +80,10 @@ export const configSchema = schema.object({
     loadbalancer_url: schema.maybe(schema.string()),
     login: schema.object({
       title: schema.string({ defaultValue: 'Please login to Kibana' }),
-      subtitle: schema.string({ defaultValue: 'If you have forgotten your username or password, please ask your system administrator' }),
+      subtitle: schema.string({
+        defaultValue:
+          'If you have forgotten your username or password, please ask your system administrator',
+      }),
       showbrandimage: schema.boolean({ defaultValue: true }),
       brandimage: schema.string({ defaultValue: '' }), // TODO: update brand image
       buttonstyle: schema.string({ defaultValue: '' }),
@@ -111,7 +118,12 @@ export const configSchema = schema.object({
       header: schema.string({ defaultValue: 'Authorization' }),
       // TODO: test if siblingRef() works here
       // client_id is required when auth.type is openid
-      client_id: schema.conditional(schema.siblingRef('auth.type'), 'openid', schema.string(), schema.maybe(schema.string())),
+      client_id: schema.conditional(
+        schema.siblingRef('auth.type'),
+        'openid',
+        schema.string(),
+        schema.maybe(schema.string())
+      ),
       client_secret: schema.string({ defaultValue: '' }),
       scope: schema.string({ defaultValue: 'openid profile email address phone' }),
       base_redirect_url: schema.string({ defaultValue: '' }),
@@ -123,10 +135,25 @@ export const configSchema = schema.object({
   proxycache: schema.maybe(
     schema.object({
       // when auth.type is proxycache, user_header, roles_header and proxy_header_ip are required
-      user_header: schema.conditional(schema.siblingRef('auth.type'), 'proxycache', schema.string(), schema.maybe(schema.string())),
-      roles_header: schema.conditional(schema.siblingRef('auth.type'), 'proxycache', schema.string(), schema.maybe(schema.string())),
+      user_header: schema.conditional(
+        schema.siblingRef('auth.type'),
+        'proxycache',
+        schema.string(),
+        schema.maybe(schema.string())
+      ),
+      roles_header: schema.conditional(
+        schema.siblingRef('auth.type'),
+        'proxycache',
+        schema.string(),
+        schema.maybe(schema.string())
+      ),
       proxy_header: schema.maybe(schema.string({ defaultValue: 'x-forwarded-for' })),
-      proxy_header_ip: schema.conditional(schema.siblingRef('auth.type'), 'proxycache', schema.string(), schema.maybe(schema.string())),
+      proxy_header_ip: schema.conditional(
+        schema.siblingRef('auth.type'),
+        'proxycache',
+        schema.string(),
+        schema.maybe(schema.string())
+      ),
       login_endpoint: schema.maybe(schema.string({ defaultValue: '' })),
     })
   ),
@@ -144,7 +171,10 @@ export const configSchema = schema.object({
       // Since we are now rendering login page to browser app, so move these config to browser side.
       login: schema.object({
         title: schema.string({ defaultValue: 'Please login to Kibana' }),
-        subtitle: schema.string({ defaultValue: 'If you have forgotten your username or password, please ask your system administrator' }),
+        subtitle: schema.string({
+          defaultValue:
+            'If you have forgotten your username or password, please ask your system administrator',
+        }),
         showbrandimage: schema.boolean({ defaultValue: true }),
         brandimage: schema.string({ defaultValue: '' }),
         buttonstyle: schema.string({ defaultValue: '' }),
