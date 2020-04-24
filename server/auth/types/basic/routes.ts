@@ -61,7 +61,10 @@ export class BasicAuthRoutes {
         // const authHeaderValue = Buffer.from(`${request.body.username}:${request.body.password}`).toString('base64');
         let user: User;
         try {
-          user = await this.securityClient.authenticate(request, { username: request.body.username, password: request.body.password });
+          user = await this.securityClient.authenticate(request, {
+            username: request.body.username,
+            password: request.body.password,
+          });
         } catch (error) {
           return response.unauthorized({
             headers: {
@@ -70,7 +73,9 @@ export class BasicAuthRoutes {
           });
         }
 
-        const encodedCredentials = Buffer.from(`${request.body.username}:${request.body.password}`).toString('base64');
+        const encodedCredentials = Buffer.from(
+          `${request.body.username}:${request.body.password}`
+        ).toString('base64');
         const sessionStorage: SecuritySessionCookie = {
           username: user.username,
           credentials: {
@@ -168,10 +173,21 @@ export class BasicAuthRoutes {
 
   // session storage plugin's authenticateWithHeaders() function
   // @ts-ignore
-  private async authenticateWithHeaders(request: KibanaRequest, credentials: any = {}, options: any = {}) {
+  private async authenticateWithHeaders(
+    request: KibanaRequest,
+    credentials: any = {},
+    options: any = {}
+  ) {
     try {
-      const additionalAuthHeaders = filterAuthHeaders(request.headers, this.authConfig.allowedAdditionalAuthHeaders);
-      let user = await this.securityClient.authenticateWithHeaders(request, credentials, additionalAuthHeaders);
+      const additionalAuthHeaders = filterAuthHeaders(
+        request.headers,
+        this.authConfig.allowedAdditionalAuthHeaders
+      );
+      let user = await this.securityClient.authenticateWithHeaders(
+        request,
+        credentials,
+        additionalAuthHeaders
+      );
 
       let session: SecuritySessionCookie = {
         username: user.username,
@@ -195,19 +211,34 @@ export class BasicAuthRoutes {
     }
   }
 
-  private handleAuthResponse(request: KibanaRequest, authResponse: AuthResponse, additionalAuthHeaders: any = {}) {
+  private handleAuthResponse(
+    request: KibanaRequest,
+    authResponse: AuthResponse,
+    additionalAuthHeaders: any = {}
+  ) {
     // Validate the user has at least one tenant
-    if (this.authConfig.validateAvailableTenants && this.config.multitenancy?.enabled && !this.config.multitenancy?.tenants.enable_global) {
+    if (
+      this.authConfig.validateAvailableTenants &&
+      this.config.multitenancy?.enabled &&
+      !this.config.multitenancy?.tenants.enable_global
+    ) {
       let privateTentantEnabled = this.config.multitenancy?.tenants.enable_private;
       let allTenants = authResponse.user.tenants;
 
       if (!this._hasAtLastOneTenant(authResponse.user, allTenants, privateTentantEnabled)) {
-        throw new Error('No tenant available for this user, please contact your system administrator.');
+        throw new Error(
+          'No tenant available for this user, please contact your system administrator.'
+        );
       }
     }
 
-    if (this.authConfig.validateAvailableRoles && (!authResponse.user.roles || authResponse.user.roles.length === 0)) {
-      throw new Error('No roles available for this user, please contact your system administrator.');
+    if (
+      this.authConfig.validateAvailableRoles &&
+      (!authResponse.user.roles || authResponse.user.roles.length === 0)
+    ) {
+      throw new Error(
+        'No roles available for this user, please contact your system administrator.'
+      );
     }
 
     if (Object.keys(additionalAuthHeaders).length > 0) {

@@ -21,5 +21,4 @@ export type User = {
   selectedTenant?: string;
   credentials?: any;
   proxyCredentials?: any;
-}
-
+};

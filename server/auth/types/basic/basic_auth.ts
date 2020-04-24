@@ -13,12 +13,18 @@
  *   permissions and limitations under the License.
  */
 
-import { AuthenticationHandler, SessionStorageFactory, IRouter, IClusterClient, KibanaRequest } from "../../../../../../src/core/server";
-import { SecurityPluginConfigType } from "../../..";
-import { SecuritySessionCookie } from "../../../session/security_cookie";
-import { CoreSetup } from "../../../../../../src/core/server";
+import {
+  AuthenticationHandler,
+  SessionStorageFactory,
+  IRouter,
+  IClusterClient,
+  KibanaRequest,
+} from '../../../../../../src/core/server';
+import { SecurityPluginConfigType } from '../../..';
+import { SecuritySessionCookie } from '../../../session/security_cookie';
+import { CoreSetup } from '../../../../../../src/core/server';
 import { cloneDeep } from 'lodash';
-import { format } from "url";
+import { format } from 'url';
 import { stringify } from 'querystring';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { BasicAuthRoutes } from './routes';
@@ -88,7 +94,7 @@ export class BasicAuthentication {
     let url = cloneDeep(request.url);
     url.pathname = `${this.coreSetup.http.basePath.serverBasePath}${url.pathname}`;
     const nextUrl = format(url);
-    return stringify({nextUrl});
+    return stringify({ nextUrl });
   }
 
   /**
@@ -117,7 +123,7 @@ export class BasicAuthentication {
           return response.redirected({
             headers: {
               location: `${redirectLocation}`,
-            }
+            },
           });
         }
         return response.unauthorized();
@@ -135,9 +141,15 @@ export class BasicAuthentication {
       // add tenant to Elasticsearch request headers
       if (this.config.multitenancy?.enabled && isMultitenantPath(request)) {
         const authInfo = await this.securityClient.authinfo(request);
-        const selectedTenant = resolveTenant(request, authInfo.user_name, authInfo.tenants, this.config, cookie);
+        const selectedTenant = resolveTenant(
+          request,
+          authInfo.user_name,
+          authInfo.tenants,
+          this.config,
+          cookie
+        );
         Object.assign(headers, { securitytenant: selectedTenant });
-        
+
         if (selectedTenant !== cookie.tentent) {
           cookie.tentent = selectedTenant;
           this.sessionStorageFactory.asScoped(request).set(cookie);
