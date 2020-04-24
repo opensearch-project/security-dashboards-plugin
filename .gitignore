@@ -9,6 +9,8 @@ test/
 /elasticsearch-security-kibana-plugin.iml
 /.idea
 /elasticsearch-security-kibana-plugin.iml
+/cypress/screenshots/
+/cypress/videos/
 # Logs
 logs
 *.log
