@@ -28,7 +28,7 @@ import { OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart } from './
 import { defineRoutes } from './routes';
 import { SecurityPluginConfigType } from '.';
 import opendistro_security_configuratoin_plugin from './backend/opendistro_security_configuration_plugin';
-import opendistro_security_plugin from './backend/opendistro_security_plugin';
+// import opendistro_security_plugin from './backend/opendistro_security_plugin';
 import { first } from 'rxjs/operators';
 import { SecuritySessionCookie, getSecurityCookieOptions } from './session/security_cookie';
 import { BasicAuthentication } from './auth/types/basic/basic_auth';
@@ -41,7 +41,9 @@ import { setupIndexTemplate, migrateTenantIndices } from './multitenancy/tenant_
 export class OpendistroSecurityPlugin implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
   private readonly logger: Logger;
   // FIXME: keep an reference of admin client so that it can be used in start(), better to figureout a
-  //        decent way to get adminClient in start. (maybe using return from setup?)
+  //        decent way to get adminClient in start. (maybe using getStartServices() from setup?)
+  
+  // @ts-ignore: property not initialzied in constructor
   private securityClient: SecurityClient;
 
   constructor(private readonly initializerContext: PluginInitializerContext) {
@@ -95,7 +97,7 @@ export class OpendistroSecurityPlugin implements Plugin<OpendistroSecurityPlugin
     this.logger.debug('opendistro_security: Started');
     const config$ = this.initializerContext.config.create<SecurityPluginConfigType>();
     const config = await config$.pipe(first()).toPromise();
-    if (config.multitenancy.enabled) {
+    if (config.multitenancy?.enabled) {
       const globalConfig$: Observable<SharedGlobalConfig> = this.initializerContext.config.legacy.globalConfig$;
       const globalConfig: SharedGlobalConfig = await globalConfig$.pipe(first()).toPromise();
       const kibanaIndex = globalConfig.kibana.index;

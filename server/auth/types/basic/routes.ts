@@ -30,6 +30,8 @@ export class BasicAuthRoutes {
     private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
     private readonly securityClient: SecurityClient,
     private readonly authConfig: AuthConfig,
+
+    // @ts-ignore unused variable
     private readonly coreSetup: CoreSetup
   ) {}
 
@@ -81,9 +83,12 @@ export class BasicAuthRoutes {
         this.sessionStorageFactory.asScoped(request).set(sessionStorage);
 
         if (this.config.multitenancy?.enabled) {
-          let globalTenantEnabled = this.config.multitenancy.tenants.enable_global;
-          let privateTentantEnabled = this.config.multitenancy.tenants.enable_private;
-          let preferredTenants = this.config.multitenancy.tenants.preferred;
+          // @ts-ignore
+          let globalTenantEnabled = this.config.multitenancy?.tenants.enable_global || true;
+          // @ts-ignore
+          let privateTentantEnabled = this.config.multitenancy?.tenants.enable_private || true;
+          // @ts-ignore
+          let preferredTenants = this.config.multitenancy?.tenants.preferred;
 
           // TODO: figureout selected tenant here and set it in the cookie
 
@@ -133,6 +138,7 @@ export class BasicAuthRoutes {
       async (context, request, response) => {
         if (this.config.auth.anonymous_auth_enabled) {
           // TODO: implement anonymous auth for basic authentication
+          return response.ok();
         } else {
           return response.redirected({
             headers: {
@@ -161,6 +167,7 @@ export class BasicAuthRoutes {
   }
 
   // session storage plugin's authenticateWithHeaders() function
+  // @ts-ignore
   private async authenticateWithHeaders(request: KibanaRequest, credentials: any = {}, options: any = {}) {
     try {
       const additionalAuthHeaders = filterAuthHeaders(request.headers, this.authConfig.allowedAdditionalAuthHeaders);
@@ -190,8 +197,8 @@ export class BasicAuthRoutes {
 
   private handleAuthResponse(request: KibanaRequest, authResponse: AuthResponse, additionalAuthHeaders: any = {}) {
     // Validate the user has at least one tenant
-    if (this.authConfig.validateAvailableTenants && this.config.multitenancy.enabled && !this.config.multitenancy.tenants.enable_global) {
-      let privateTentantEnabled = this.config.multitenancy.tenants.enable_private;
+    if (this.authConfig.validateAvailableTenants && this.config.multitenancy?.enabled && !this.config.multitenancy?.tenants.enable_global) {
+      let privateTentantEnabled = this.config.multitenancy?.tenants.enable_private;
       let allTenants = authResponse.user.tenants;
 
       if (!this._hasAtLastOneTenant(authResponse.user, allTenants, privateTentantEnabled)) {
@@ -228,7 +235,7 @@ export class BasicAuthRoutes {
   }
 }
 
-class AuthResponse {
+interface AuthResponse {
   session: SecuritySessionCookie;
   user: User;
 }

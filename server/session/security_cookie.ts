@@ -13,10 +13,10 @@
  *   permissions and limitations under the License.
  */
 
-import { SessionStorageCookieOptions, Logger } from "../../../../src/core/server";
+import { SessionStorageCookieOptions } from "../../../../src/core/server";
 import { SecurityPluginConfigType } from "..";
 
-export class SecuritySessionCookie {
+export interface SecuritySessionCookie {
   // security_authentication
   username: string;
   credentials?: any;
@@ -34,16 +34,17 @@ export function getSecurityCookieOptions(config: SecurityPluginConfigType): Sess
   return {
     name: config.cookie.name,
     encryptionKey: config.cookie.password,
-    validate: (sessionStorage: SecuritySessionCookie) => {
+    validate: (sessionStorage: SecuritySessionCookie | SecuritySessionCookie[]) => {
+      sessionStorage = sessionStorage as SecuritySessionCookie;
       if (sessionStorage === undefined
           || sessionStorage.username === undefined
           || sessionStorage.credentials === undefined) {
-        return { isValid: false };
+        return { isValid: false, path: '/' };
       }
 
       if (sessionStorage.expiryTime === undefined
           || new Date(sessionStorage.expiryTime) < new Date()) {
-        return { isValid: false };
+        return { isValid: false, path: '/' };
       }
       return { isValid: true, path: '/' };
     },

@@ -17,7 +17,7 @@ import _ from 'lodash';
 import { Headers } from '../../../../src/core/server/http/router/headers';
 
 export function filterAuthHeaders(originalHeaders: Headers, headersToKeep: string[]) {
-  const normalizeHeader = function (header: string) {
+  const normalizeHeader = function (header: string | undefined) {
     if (!header) {
       return '';
     }

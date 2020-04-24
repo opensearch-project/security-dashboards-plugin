@@ -1,0 +1,20 @@
+{
+  // extend Kibana's tsconfig, or use your own settings
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "outDir": "./target",
+  },
+
+  // tell the TypeScript compiler where to find your source files
+  "include": [
+    "index.ts",
+    "public/**/*.ts",
+    "public/**/*.tsx",
+    "server/**/*.ts",
+    "common/**/*.ts",
+    "../../typings/**/*",
+  ],
+  "exclude": [
+  ]
+}

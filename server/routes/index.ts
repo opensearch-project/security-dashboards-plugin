@@ -79,7 +79,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
     current_password: schema.string(),
   });
 
-  const schemaMap = {
+  const schemaMap: any = {
     internalusers: internalUserSchema,
     actiongroups: actionGroupSchema,
     rolesmapping: roleMappingSchema,

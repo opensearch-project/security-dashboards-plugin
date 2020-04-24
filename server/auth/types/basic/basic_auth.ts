@@ -56,7 +56,7 @@ export class BasicAuthentication {
     private readonly esClient: IClusterClient,
     private readonly coreSetup: CoreSetup
   ) {
-    const multitenantEnabled = config.multitenancy.enabled;
+    const multitenantEnabled = config.multitenancy?.enabled || false;
 
     this.securityClient = new SecurityClient(this.esClient);
     this.authConfig = new AuthConfig(
@@ -95,21 +95,22 @@ export class BasicAuthentication {
    * Basic Authentication auth handler. Registered to core.http if basic authentication is enabled.
    */
   authHandler: AuthenticationHandler = async (request, response, toolkit) => {
-    if (BasicAuthentication.ROUTES_TO_IGNORE.includes(request.url.pathname)) {
+    const pathname = request.url.pathname;
+    if (pathname && BasicAuthentication.ROUTES_TO_IGNORE.includes(pathname)) {
       return toolkit.authenticated();
     }
 
-    if (this.config.auth.unauthenticated_routes.indexOf(request.url.pathname) > -1) {
+    if (pathname && this.config.auth.unauthenticated_routes.indexOf(pathname) > -1) {
       // TODO: user kibana server user
       return toolkit.authenticated();
     }
 
-    let cookie: SecuritySessionCookie = undefined;
+    let cookie: SecuritySessionCookie | null;
     try {
       cookie = await this.sessionStorageFactory.asScoped(request).get();
       // TODO: need to do auth for each all?
       if (!cookie) {
-        if (request.url.pathname === '/' || request.url.pathname.startsWith('/app')) {
+        if (request.url.pathname === '/' || request.url.pathname?.startsWith('/app')) {
           // requesting access to an application page, redirect to login
           const nextUrlParam = this.composeNextUrlQeuryParam(request);
           const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}/app/login?${nextUrlParam}`;
@@ -132,7 +133,7 @@ export class BasicAuthentication {
       Object.assign(headers, { authorization: cookie.credentials?.authHeaderValue });
 
       // add tenant to Elasticsearch request headers
-      if (this.config.multitenancy.enabled && isMultitenantPath(request)) {
+      if (this.config.multitenancy?.enabled && isMultitenantPath(request)) {
         const authInfo = await this.securityClient.authinfo(request);
         const selectedTenant = resolveTenant(request, authInfo.user_name, authInfo.tenants, this.config, cookie);
         Object.assign(headers, { securitytenant: selectedTenant });
@@ -150,6 +151,7 @@ export class BasicAuthentication {
     } catch (error) {
       // TODO: switch to logger
       console.log(`error: ${error}`);
+      return toolkit.notHandled();
       // TODO: redirect using response?
     }
   };

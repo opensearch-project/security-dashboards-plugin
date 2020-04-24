@@ -23,6 +23,7 @@ import {
 export class OpendistroSecurityPlugin
       implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
 
+  // @ts-ignore : initializerContext not used
   constructor(private readonly initializerContext: PluginInitializerContext) {}
 
   public setup(core: CoreSetup): OpendistroSecurityPluginSetup {
@@ -38,12 +39,13 @@ export class OpendistroSecurityPlugin
     });
 
     core.application.register({
-      id: "opendistro_security_login",
+      id: "login",
       title: "Security",
       chromeless: true,
       appRoute: "/app/login",
       mount: async (params: AppMountParameters) => {
         const { renderApp } = await import('./apps/login/login-app');
+        // @ts-ignore depsStart not used.
         const [coreStart, depsStart] = await core.getStartServices();
         return renderApp(coreStart, params);
       }

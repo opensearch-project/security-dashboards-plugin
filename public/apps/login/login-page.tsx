@@ -13,6 +13,7 @@
  *   permissions and limitations under the License.
  */
 
+// @ts-ignore : Component not used
 import React, { Component, useState } from 'react';
 import {
   EuiText,
@@ -48,6 +49,7 @@ export function LoginPage(props: LoginPageDeps) {
     );
   }
 
+  // @ts-ignore : Parameter 'e' implicitly has an 'any' type.
   const handleSubmit = async e => {
     e.preventDefault();
     
@@ -68,6 +70,7 @@ export function LoginPage(props: LoginPageDeps) {
     }
 
     try {
+      // @ts-ignore : response not used
       const response = await props.http.post('/auth/login', {
         body: JSON.stringify({
           username: username,
