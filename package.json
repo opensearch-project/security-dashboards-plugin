@@ -15,7 +15,5 @@
     "typescript": "3.7.2"
   },
   "dependencies": {
-    "axios": "^0.19.2",
-    "map-stream": "^0.0.7"
   }
 }
