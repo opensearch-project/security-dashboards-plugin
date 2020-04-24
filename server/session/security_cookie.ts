@@ -39,12 +39,12 @@ export function getSecurityCookieOptions(config: SecurityPluginConfigType): Sess
       if (sessionStorage === undefined
           || sessionStorage.username === undefined
           || sessionStorage.credentials === undefined) {
-        return { isValid: false };
+        return { isValid: false, path: '/' };
       }
 
       if (sessionStorage.expiryTime === undefined
           || new Date(sessionStorage.expiryTime) < new Date()) {
-        return { isValid: false };
+        return { isValid: false, path: '/' };
       }
       return { isValid: true, path: '/' };
     },

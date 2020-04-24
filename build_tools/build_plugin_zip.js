@@ -1,1 +1,0 @@
-require('@kbn/plugin-helpers/cli');
