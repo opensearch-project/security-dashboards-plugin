@@ -28,11 +28,11 @@ import {
   EuiButton,
   EuiPageBody,
   EuiInMemoryTable,
+  EuiContextMenuItem,
+  EuiPopover,
+  EuiContextMenuPanel,
 } from '@elastic/eui';
 import { AppDependencies } from '../../types';
-import { EuiPopover } from '@elastic/eui';
-import { EuiContextMenuPanel } from '@elastic/eui';
-import { EuiContextMenuItem } from '@elastic/eui';
 
 function truncatedListView(limit = 3) {
   return (items: string[]) => {
