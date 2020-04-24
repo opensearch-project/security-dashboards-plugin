@@ -14,6 +14,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import jq from 'jq-web';
 import {
   EuiFlexGroup,
   EuiText,
@@ -110,6 +111,55 @@ const columns = [
   },
 ];
 
+/* 
+Input[0] - Role Schema: {
+  data: {
+    [roleName]: {
+      reserved: bool,
+      cluster_permissions: [""]
+      index_permissions: [{
+        index_patterns: [""],
+        fls: [""],
+        masked_fields: [""],
+        allowed_actions: [""]
+      }],
+      tenant_permissions: [{
+        tenant_patterns: [""],
+        allowed_actions: [""]
+      }]
+    }
+  }
+}
+
+Input[1] - RoleMapping schema: {
+  data: {
+    [roleName]: {
+      backend_roles: [""],
+      users: [""]
+    }
+  }
+}
+
+Output schema: [{
+  role_name: ""
+  reserved: bool,
+  cluster_permissions: [""],
+  index_permissions: [""],
+  tenant_permissions: [""],
+  internal_users: [""],
+  backend_roles: [""]
+}]
+*/
+const RoleDataTransformer = `.[0].data * .[1].data | [to_entries[] | {
+  role_name: .key, 
+  reserved: .value.reserved,
+  cluster_permissions: .value.cluster_permissions, 
+  index_permissions: [.value.index_permissions | .[].index_patterns] | flatten,
+  tenant_permissions: [.value.tenant_permissions | .[].tenant_patterns] | flatten,
+  internal_users: .value.users,
+  backend_roles: .value.backend_roles
+}]`;
+
 export function RoleList(props: AppDependencies) {
   const [roleData, setRoleData] = useState([]);
   const [errorFlag, setErrorFlag] = useState(false);
@@ -126,10 +176,10 @@ export function RoleList(props: AppDependencies) {
         const rawRoleMappingData = await props.coreStart.http.get(
           '/api/v1/opendistro_security/configuration/rolesmapping'
         );
-        // TODO: Join and tranform raw data'
-        // @ts-ignore : implicit any
-        const processedData = [];
-        // @ts-ignore : error TS2345: Argument of type 'any[]' is not assignable to parameter of type 'SetStateAction<never[]>'
+        const processedData = await jq.promised.json(
+          [rawRoleData, rawRoleMappingData],
+          RoleDataTransformer
+        );
         setRoleData(processedData);
       } catch (e) {
         console.log(e);
