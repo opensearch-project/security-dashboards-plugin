@@ -203,6 +203,7 @@ export function RoleList(props: AppDependencies) {
                   closePopover={() => {
                     setActionsPopoverOpen(false);
                   }}
+                  panelPaddingSize="s"
                 >
                   <EuiContextMenuPanel items={actionsMenuItems} />
                 </EuiPopover>
