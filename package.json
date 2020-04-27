@@ -10,7 +10,10 @@
   "scripts": {
     "kbn": "node ../../scripts/kbn.js",
     "build": "rm -rf './target' && tsc",
-    "start": "node ../../scripts/kibana --dev"
+    "start": "node ../../scripts/kibana --dev",
+    "lint:es": "node ../../scripts/eslint",
+    "lint:sass": "node ../../scripts/sasslint",
+    "lint": "yarn run lint:es && yarn run lint:sass"
   },
   "devDependencies": {
     "typescript": "3.7.2"
