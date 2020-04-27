@@ -13,9 +13,9 @@
  *   permissions and limitations under the License.
  */
 
+import { schema } from '@kbn/config-schema';
 import { IRouter, IClusterClient, SessionStorageFactory } from '../../../../src/core/server';
 import { SecuritySessionCookie } from '../session/security_cookie';
-import { schema } from '@kbn/config-schema';
 import { User } from '../auth/user';
 import { SecurityClient } from '../backend/opendistro_security_client';
 import { CoreSetup } from '../../../../src/core/server';

@@ -13,8 +13,8 @@
  *   permissions and limitations under the License.
  */
 
-import { IRouter, IClusterClient } from '../../../../src/core/server';
 import { schema } from '@kbn/config-schema';
+import { IRouter, IClusterClient } from '../../../../src/core/server';
 
 // TODO: consider to extract entity CRUD operations and put it into a client class
 //

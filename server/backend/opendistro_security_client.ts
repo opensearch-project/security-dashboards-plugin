@@ -20,20 +20,24 @@ export class SecurityClient {
   constructor(private readonly esClient: IClusterClient) {}
 
   public async authenticate(request: KibanaRequest, credentials: any): Promise<User> {
-    const authHeader = Buffer.from(`${credentials.username}:${credentials.password}`).toString('base64');
+    const authHeader = Buffer.from(`${credentials.username}:${credentials.password}`).toString(
+      'base64'
+    );
     try {
-      let esResponse = await this.esClient.asScoped(request).callAsCurrentUser('opendistro_security.authinfo', {
-        headers: {
-          authorization: `Basic ${authHeader}`,
-        },
-      });
+      const esResponse = await this.esClient
+        .asScoped(request)
+        .callAsCurrentUser('opendistro_security.authinfo', {
+          headers: {
+            authorization: `Basic ${authHeader}`,
+          },
+        });
       return {
         username: credentials.username,
         roles: esResponse.roles,
         backendRoles: esResponse.backend_roles,
         tenants: esResponse.teanats,
         selectedTenant: esResponse.user_requested_tenant,
-        credentials: credentials,
+        credentials,
         proxyCredentials: credentials,
       };
     } catch (error) {
@@ -53,23 +57,25 @@ export class SecurityClient {
         headerName,
         headerValue,
       };
-      let headers: any = {};
+      const headers: any = {};
       if (headerValue) {
         headers[headerName] = headerValue;
       }
 
       // cannot get config elasticsearch.requestHeadersWhitelist from kibana.yml file in new platfrom
       // meanwhile, do we really need to save all headers in cookie?
-      const esResponse = await this.esClient.asScoped(request).callAsCurrentUser('opendistro_security.authinfo', {
-        headers: headers,
-      });
+      const esResponse = await this.esClient
+        .asScoped(request)
+        .callAsCurrentUser('opendistro_security.authinfo', {
+          headers,
+        });
       return {
         username: esResponse.user_name,
         roles: esResponse.roles,
         backendRoles: esResponse.backend_roles,
         tenants: esResponse.teanats,
         selectedTenant: esResponse.user_requested_tenant,
-        credentials: credentials,
+        credentials,
       };
     } catch (error) {
       throw new Error(error.message);
@@ -82,9 +88,11 @@ export class SecurityClient {
     additionalAuthHeaders: any = {}
   ): Promise<User> {
     try {
-      const esResponse = await this.esClient.asScoped(request).callAsCurrentUser('opendistro_security.authinfo', {
-        headers: additionalAuthHeaders,
-      });
+      const esResponse = await this.esClient
+        .asScoped(request)
+        .callAsCurrentUser('opendistro_security.authinfo', {
+          headers: additionalAuthHeaders,
+        });
       return {
         username: esResponse.user_name,
         roles: esResponse.roles,
@@ -99,7 +107,9 @@ export class SecurityClient {
 
   public async authinfo(request: KibanaRequest) {
     try {
-      return await this.esClient.asScoped(request).callAsCurrentUser('opendistro_security.authinfo');
+      return await this.esClient
+        .asScoped(request)
+        .callAsCurrentUser('opendistro_security.authinfo');
     } catch (error) {
       throw new Error(error.message);
     }
@@ -108,7 +118,9 @@ export class SecurityClient {
   // Multi-tenancy APIs
   public async getMultitenancyInfo(request: KibanaRequest) {
     try {
-      return await this.esClient.asScoped(request).callAsCurrentUser('opendistro_security.multitenancyinfo');
+      return await this.esClient
+        .asScoped(request)
+        .callAsCurrentUser('opendistro_security.multitenancyinfo');
     } catch (error) {
       throw new Error(error.message);
     }

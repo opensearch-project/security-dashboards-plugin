@@ -13,6 +13,8 @@
  *   permissions and limitations under the License.
  */
 
+import { first } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import {
   PluginInitializerContext,
   CoreSetup,
@@ -29,20 +31,22 @@ import { defineRoutes } from './routes';
 import { SecurityPluginConfigType } from '.';
 import opendistro_security_configuratoin_plugin from './backend/opendistro_security_configuration_plugin';
 // import opendistro_security_plugin from './backend/opendistro_security_plugin';
-import { first } from 'rxjs/operators';
 import { SecuritySessionCookie, getSecurityCookieOptions } from './session/security_cookie';
 import { BasicAuthentication } from './auth/types/basic/basic_auth';
 import { defineTestRoutes } from './routes/test_routes'; // TODO: remove this later
-import { Observable } from 'rxjs';
 import { SecurityClient } from './backend/opendistro_security_client';
-import { SavedObjectsSerializer, ISavedObjectTypeRegistry } from '../../../src/core/server/saved_objects';
+import {
+  SavedObjectsSerializer,
+  ISavedObjectTypeRegistry,
+} from '../../../src/core/server/saved_objects';
 import { setupIndexTemplate, migrateTenantIndices } from './multitenancy/tenant_index';
 
-export class OpendistroSecurityPlugin implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
+export class OpendistroSecurityPlugin
+  implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
   private readonly logger: Logger;
   // FIXME: keep an reference of admin client so that it can be used in start(), better to figureout a
   //        decent way to get adminClient in start. (maybe using getStartServices() from setup?)
-  
+
   // @ts-ignore: property not initialzied in constructor
   private securityClient: SecurityClient;
 
@@ -81,14 +85,24 @@ export class OpendistroSecurityPlugin implements Plugin<OpendistroSecurityPlugin
     defineTestRoutes(router, esClient, securitySessionStorageFactory, core);
 
     // setup auth
-    if (config.auth.type === undefined || config.auth.type === '' || config.auth.type === 'basicauth') {
+    if (
+      config.auth.type === undefined ||
+      config.auth.type === '' ||
+      config.auth.type === 'basicauth'
+    ) {
       // TODO: switch implementation according to configurations
-      const auth = new BasicAuthentication(config, securitySessionStorageFactory, router, esClient, core);
+      const auth = new BasicAuthentication(
+        config,
+        securitySessionStorageFactory,
+        router,
+        esClient,
+        core
+      );
       core.http.registerAuth(auth.authHandler);
     }
 
     return {
-      config$: config$,
+      config$,
       securityConfigClient: esClient,
     };
   }
@@ -98,7 +112,8 @@ export class OpendistroSecurityPlugin implements Plugin<OpendistroSecurityPlugin
     const config$ = this.initializerContext.config.create<SecurityPluginConfigType>();
     const config = await config$.pipe(first()).toPromise();
     if (config.multitenancy?.enabled) {
-      const globalConfig$: Observable<SharedGlobalConfig> = this.initializerContext.config.legacy.globalConfig$;
+      const globalConfig$: Observable<SharedGlobalConfig> = this.initializerContext.config.legacy
+        .globalConfig$;
       const globalConfig: SharedGlobalConfig = await globalConfig$.pipe(first()).toPromise();
       const kibanaIndex = globalConfig.kibana.index;
       const typeRegistry: ISavedObjectTypeRegistry = core.savedObjects.getTypeRegistry();
@@ -108,7 +123,14 @@ export class OpendistroSecurityPlugin implements Plugin<OpendistroSecurityPlugin
 
       const serializer: SavedObjectsSerializer = core.savedObjects.createSerializer();
       const kibanaVersion = this.initializerContext.env.packageInfo.version;
-      migrateTenantIndices(kibanaVersion, esClient, this.securityClient, typeRegistry, serializer, this.logger);
+      migrateTenantIndices(
+        kibanaVersion,
+        esClient,
+        this.securityClient,
+        typeRegistry,
+        serializer,
+        this.logger
+      );
     }
 
     return {};
