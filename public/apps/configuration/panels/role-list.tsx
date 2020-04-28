@@ -33,6 +33,7 @@ import {
   EuiContextMenuPanel,
 } from '@elastic/eui';
 import { AppDependencies } from '../../types';
+import { transformRoleData } from '../utils/role-list-utils'
 
 function truncatedListView(limit = 3) {
   return (items: string[]) => {
@@ -126,10 +127,7 @@ export function RoleList(props: AppDependencies) {
         const rawRoleMappingData = await props.coreStart.http.get(
           '/api/v1/opendistro_security/configuration/rolesmapping'
         );
-        // TODO: Join and tranform raw data'
-        // @ts-ignore : implicit any
-        const processedData = [];
-        // @ts-ignore : error TS2345: Argument of type 'any[]' is not assignable to parameter of type 'SetStateAction<never[]>'
+        const processedData = transformRoleData(rawRoleData, rawRoleMappingData);
         setRoleData(processedData);
       } catch (e) {
         console.log(e);
