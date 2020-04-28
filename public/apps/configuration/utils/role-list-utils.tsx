@@ -14,7 +14,7 @@
  *   permissions and limitations under the License.
  */
 
-import _ from 'lodash';
+import { forEach, merge, chain } from 'lodash';
 
 /* 
 Input[0] - Role Schema: {
@@ -56,21 +56,21 @@ Output schema: [{
 }]
 */
 export function transformRoleData(rawRoleData: any, rawRoleMappingData: any) {
-  return _.pairs(_.merge(rawRoleData.data, rawRoleMappingData.data)).map(r => ({
-    role_name: r[0],
-    reserved: r[1].reserved,
-    cluster_permissions: r[1].cluster_permissions,
-    index_permissions: _.chain(r[1].index_permissions)
+  return forEach(merge(rawRoleData.data, rawRoleMappingData.data), (v, k) => ({
+    role_name: k,
+    reserved: v.reserved,
+    cluster_permissions: v.cluster_permissions,
+    index_permissions: chain(v.index_permissions)
       .map('index_patterns')
       .flatten()
       .compact()
       .value(),
-    tenant_permissions: _.chain(r[1].index_permissions)
+    tenant_permissions: _.chain(v.index_permissions)
       .map('tenant_patterns')
       .flatten()
       .compact()
       .value(),
-    internal_users: r[1].users,
-    backend_roles: r[1].backend_roles,
+    internal_users: v.users,
+    backend_roles: v.backend_roles,
   }));
 }
