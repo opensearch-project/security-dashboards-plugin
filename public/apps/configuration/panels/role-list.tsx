@@ -14,7 +14,6 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import jq from 'jq-web';
 import {
   EuiFlexGroup,
   EuiText,
