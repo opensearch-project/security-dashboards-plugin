@@ -119,11 +119,9 @@ export function RoleList(props: AppDependencies) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // @ts-ignore : not used
         const rawRoleData = await props.coreStart.http.get(
           '/api/v1/opendistro_security/configuration/roles'
         );
-        // @ts-ignore : not used
         const rawRoleMappingData = await props.coreStart.http.get(
           '/api/v1/opendistro_security/configuration/rolesmapping'
         );
