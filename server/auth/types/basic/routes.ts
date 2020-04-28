@@ -13,6 +13,7 @@
  *   permissions and limitations under the License.
  */
 
+import { schema } from '@kbn/config-schema';
 import { IRouter, SessionStorageFactory, KibanaRequest } from '../../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
@@ -20,7 +21,6 @@ import { AuthConfig } from './basic_auth';
 import { filterAuthHeaders } from '../../../utils/filter_auth_headers';
 import { User } from '../../user';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
-import { schema } from '@kbn/config-schema';
 import { CoreSetup } from '../../../../../../src/core/server';
 
 export class BasicAuthRoutes {
@@ -53,8 +53,8 @@ export class BasicAuthRoutes {
         },
       },
       async (context, request, response) => {
-        const forbidden_usernames = this.config.auth.forbidden_usernames;
-        if (forbidden_usernames.indexOf(request.body.username) > -1) {
+        const forbiddenUsernames = this.config.auth.forbidden_usernames;
+        if (forbiddenUsernames.indexOf(request.body.username) > -1) {
           throw new Error('Invalid username or password'); // Cannot login using forbidden user name.
         }
 
@@ -89,11 +89,11 @@ export class BasicAuthRoutes {
 
         if (this.config.multitenancy?.enabled) {
           // @ts-ignore
-          let globalTenantEnabled = this.config.multitenancy?.tenants.enable_global || true;
+          const globalTenantEnabled = this.config.multitenancy?.tenants.enable_global || true;
           // @ts-ignore
-          let privateTentantEnabled = this.config.multitenancy?.tenants.enable_private || true;
+          const privateTentantEnabled = this.config.multitenancy?.tenants.enable_private || true;
           // @ts-ignore
-          let preferredTenants = this.config.multitenancy?.tenants.preferred;
+          const preferredTenants = this.config.multitenancy?.tenants.preferred;
 
           // TODO: figureout selected tenant here and set it in the cookie
 
@@ -183,19 +183,19 @@ export class BasicAuthRoutes {
         request.headers,
         this.authConfig.allowedAdditionalAuthHeaders
       );
-      let user = await this.securityClient.authenticateWithHeaders(
+      const user = await this.securityClient.authenticateWithHeaders(
         request,
         credentials,
         additionalAuthHeaders
       );
 
-      let session: SecuritySessionCookie = {
+      const session: SecuritySessionCookie = {
         username: user.username,
-        credentials: credentials,
+        credentials,
         authType: this.authConfig.authType,
         assignAuthHeader: false,
       };
-      let sessionTtl = this.config.session.ttl;
+      const sessionTtl = this.config.session.ttl;
       if (sessionTtl) {
         session.expiryTime = Date.now() + sessionTtl;
       }
@@ -222,8 +222,8 @@ export class BasicAuthRoutes {
       this.config.multitenancy?.enabled &&
       !this.config.multitenancy?.tenants.enable_global
     ) {
-      let privateTentantEnabled = this.config.multitenancy?.tenants.enable_private;
-      let allTenants = authResponse.user.tenants;
+      const privateTentantEnabled = this.config.multitenancy?.tenants.enable_private;
+      const allTenants = authResponse.user.tenants;
 
       if (!this._hasAtLastOneTenant(authResponse.user, allTenants, privateTentantEnabled)) {
         throw new Error(

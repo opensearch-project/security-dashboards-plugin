@@ -13,10 +13,10 @@
  *   permissions and limitations under the License.
  */
 
-import { KibanaRequest } from '../../../../src/core/server';
-import { SecurityPluginConfigType } from '..';
-import { SecuritySessionCookie } from '../session/security_cookie';
 import { isEmpty, findKey, cloneDeep } from 'lodash';
+import { KibanaRequest } from '../../../../src/core/server';
+import { SecuritySessionCookie } from '../session/security_cookie';
+import { SecurityPluginConfigType } from '..';
 
 export const PRIVATE_TENANT: string = '__user__';
 export const GLOBAL_TENANT: string = '';
@@ -39,7 +39,7 @@ export function resolveTenant(
   config: SecurityPluginConfigType,
   cookie: SecuritySessionCookie
 ): string | undefined {
-  let selectedTenant: string | undefined = undefined;
+  let selectedTenant: string | undefined;
   const query: any = request.query as any;
   if (query && (query.security_tenant || query.securitytenant)) {
     selectedTenant = query.security_tenant ? query.security_tenant : query.securitytenant;
@@ -112,14 +112,14 @@ function resolve(
 
     if (
       globalTenantEnabled &&
-      requestedTenant === GLOBAL_TENANT /*|| requestedTenant === 'global'*/
+      requestedTenant === GLOBAL_TENANT /* || requestedTenant === 'global'*/
     ) {
       return GLOBAL_TENANT;
     }
   }
 
   if (preferredTenants && !isEmpty(preferredTenants)) {
-    for (let element of preferredTenants) {
+    for (const element of preferredTenants) {
       const tenant = element.toLowerCase();
 
       if (tenant === GLOBAL_TENANT && globalTenantEnabled) {

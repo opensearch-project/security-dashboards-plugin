@@ -13,8 +13,8 @@
  *   permissions and limitations under the License.
  */
 
-import { IRouter, SessionStorageFactory } from '../../../../src/core/server';
 import { schema } from '@kbn/config-schema';
+import { IRouter, SessionStorageFactory } from '../../../../src/core/server';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { SecurityClient } from '../backend/opendistro_security_client';
 
@@ -39,7 +39,7 @@ export function setupMultitenantRoutes(
     async (context, request, response) => {
       const tenant = request.body.tenant;
 
-      let cookie: SecuritySessionCookie | null = await sessionStroageFactory
+      const cookie: SecuritySessionCookie | null = await sessionStroageFactory
         .asScoped(request)
         .get();
       if (!cookie) {

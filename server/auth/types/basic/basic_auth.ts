@@ -13,6 +13,9 @@
  *   permissions and limitations under the License.
  */
 
+import { cloneDeep } from 'lodash';
+import { format } from 'url';
+import { stringify } from 'querystring';
 import {
   AuthenticationHandler,
   SessionStorageFactory,
@@ -23,9 +26,6 @@ import {
 import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { CoreSetup } from '../../../../../../src/core/server';
-import { cloneDeep } from 'lodash';
-import { format } from 'url';
-import { stringify } from 'querystring';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { BasicAuthRoutes } from './routes';
 import { isMultitenantPath, resolveTenant } from '../../../multitenancy/tenant_resolver';
@@ -91,7 +91,7 @@ export class BasicAuthentication {
   }
 
   private composeNextUrlQeuryParam(request: KibanaRequest): string {
-    let url = cloneDeep(request.url);
+    const url = cloneDeep(request.url);
     url.pathname = `${this.coreSetup.http.basePath.serverBasePath}${url.pathname}`;
     const nextUrl = format(url);
     return stringify({ nextUrl });
@@ -129,7 +129,7 @@ export class BasicAuthentication {
         return response.unauthorized();
       }
 
-      let headers = {};
+      const headers = {};
 
       // set cookie to extend ttl
       cookie.expiryTime = Date.now() + this.config.cookie.ttl;

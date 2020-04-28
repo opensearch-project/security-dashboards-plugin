@@ -86,17 +86,17 @@ export async function migrateTenantIndices(
   // follows the same approach in kibana_migrator.ts to initiate DocumentMigrator here
   // see: https://tiny.amazon.com/fdpo47ue/githelaskibablobd275srccore
   const documentMigrator = new DocumentMigrator({
-    kibanaVersion: kibanaVersion,
-    typeRegistry: typeRegistry,
+    kibanaVersion,
+    typeRegistry,
     // doc validation in kibana_migrator is initialized int saved_object_service at
     // https://tiny.amazon.com/1ienclahn/githelaskibablobd275srccore , cannot get it from plugin
     validateDoc: docValidator({}),
     log: logger,
   });
 
-  Object.keys(tenentInfo).forEach(async (index_name, i, array) => {
+  Object.keys(tenentInfo).forEach(async (indexName, i, array) => {
     const indexMap = createIndexMap({
-      kibanaIndexName: index_name,
+      kibanaIndexName: indexName,
       indexMap: mergeTypes(typeRegistry.getAllTypes()),
       registry: typeRegistry,
     });
@@ -109,15 +109,15 @@ export async function migrateTenantIndices(
     const indexMigrator = new IndexMigrator({
       batchSize: 100,
       callCluster: esClient.callAsInternalUser,
-      documentMigrator: documentMigrator,
-      index: index_name,
+      documentMigrator,
+      index: indexName,
       log: logger,
-      mappingProperties: indexMap[index_name].typeMappings,
+      mappingProperties: indexMap[indexName].typeMappings,
       pollInterval: 1500, // millisec
       scrollDuration: '15m',
-      serializer: serializer,
+      serializer,
       obsoleteIndexTemplatePattern: undefined,
-      convertToAliasScript: indexMap[index_name].script,
+      convertToAliasScript: indexMap[indexName].script,
     });
     try {
       await indexMigrator.migrate();

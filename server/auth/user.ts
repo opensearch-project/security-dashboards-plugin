@@ -13,12 +13,12 @@
  *   permissions and limitations under the License.
  */
 
-export type User = {
+export interface User {
   username: string;
-  roles?: Array<string>;
-  backendRoles?: Array<string>;
-  tenants?: Array<string>;
+  roles?: string[];
+  backendRoles?: string[];
+  tenants?: string[];
   selectedTenant?: string;
   credentials?: any;
   proxyCredentials?: any;
-};
+}

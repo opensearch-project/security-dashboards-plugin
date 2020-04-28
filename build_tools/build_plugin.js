@@ -15,7 +15,7 @@
 
 const execa = require('execa');
 const optimizer = require('@kbn/optimizer');
-const dev_utils = require('@kbn/dev-utils');
+const devUtils = require('@kbn/dev-utils');
 const pluginConfig = require('@kbn/plugin-helpers/lib/plugin_config');
 const path = require('path');
 const vfs = require('vinyl-fs');
@@ -72,7 +72,7 @@ async function build() {
 }
 
 function runOptimizer() {
-  const log = new dev_utils.ToolingLog({
+  const log = new devUtils.ToolingLog({
     level: 'verbose',
     writeTo: process.stdout,
   });
@@ -81,7 +81,7 @@ function runOptimizer() {
   log.info(`Start running JS optimization for plugin at ${pluignRoot}`);
 
   const config = optimizer.OptimizerConfig.create({
-    repoRoot: dev_utils.REPO_ROOT,
+    repoRoot: devUtils.REPO_ROOT,
     watch: false,
     oss: true,
     dist: true,
@@ -122,7 +122,12 @@ async function createBuild(pluginRoot, plugin) {
     });
   }
 
-  await copyArtifacts(['kibana.json', 'package.json', 'LICENSE', 'NOTICE'], pluginRoot, pluginRoot, true);
+  await copyArtifacts(
+    ['kibana.json', 'package.json', 'LICENSE', 'NOTICE'],
+    pluginRoot,
+    pluginRoot,
+    true
+  );
   await copyArtifacts(['target/public/**/*'], pluginRoot, pluginRoot, true);
   const artifactDir = path.join(pluginRoot, 'target', 'plugins', pluginId);
   await copyArtifacts(['**/*'], artifactDir, artifactDir, true);
