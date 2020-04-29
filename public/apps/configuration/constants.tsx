@@ -13,7 +13,8 @@
  *   permissions and limitations under the License.
  */
 
-export const PLUGIN_ID = 'opendistroSecurity';
-export const PLUGIN_NAME = 'opendistro_security';
+import { API_PREFIX } from "../../../common";
 
-export const API_PREFIX = '/api/v1/opendistro_security'
+export const API_ENDPOINT = API_PREFIX + '/configuration';
+export const API_ENDPOINT_ROLES = API_PREFIX + '/configuration/roles';
+export const API_ENDPOINT_ROLESMAPPING = API_PREFIX + '/configuration/rolesmapping';

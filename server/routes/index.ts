@@ -15,6 +15,7 @@
 
 import { schema } from '@kbn/config-schema';
 import { IRouter, IClusterClient } from '../../../../src/core/server';
+import { API_PREFIX } from '../../common';
 
 // TODO: consider to extract entity CRUD operations and put it into a client class
 //
@@ -40,8 +41,6 @@ import { IRouter, IClusterClient } from '../../../../src/core/server';
 // TODO: same for loggers and sessionCookieFactory, inject them into context
 
 export function defineRoutes(router: IRouter, esClient: IClusterClient) {
-  const API_PREFIX: string = '/api/v1/opendistro_security';
-
   const internalUserSchema = schema.object({
     description: schema.string(),
     password: schema.string(),
