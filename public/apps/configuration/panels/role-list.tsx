@@ -33,7 +33,7 @@ import {
   EuiContextMenuPanel,
 } from '@elastic/eui';
 import { AppDependencies } from '../../types';
-import { transformRoleData } from '../utils/role-list-utils'
+import { transformRoleData, buildSearchFilterOptions } from '../utils/role-list-utils'
 
 function truncatedListView(limit = 3) {
   return (items: string[]) => {
@@ -117,7 +117,6 @@ export function RoleList(props: AppDependencies) {
   const [errorFlag, setErrorFlag] = useState(false);
   const [selection, setSelection] = useState([]);
   const [isActionsPopoverOpen, setActionsPopoverOpen] = useState(false);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -140,7 +139,6 @@ export function RoleList(props: AppDependencies) {
 
   const actionsMenuItems = [
     <EuiContextMenuItem
-      color="primary"
       key="edit"
       onClick={() => {}} // TODO: Redirect to edit page
       disabled={selection.length != 1 || selection[0].reserved}
@@ -174,13 +172,6 @@ export function RoleList(props: AppDependencies) {
 
   const [searchOptions, setSearchOptions] = useState({});
   useEffect(() => {
-    // Flatten list, remove duplicate and null, sort
-    const buildSearchFilterOptions = (roleList: any[], attrName: string) => {
-      const optionSet = new Set(_.flatten(roleList.map(e => e[attrName])));
-      return _.compact([...optionSet])
-        .sort()
-        .map(e => ({ value: e }));
-    };
     setSearchOptions({
       filters: [
         {

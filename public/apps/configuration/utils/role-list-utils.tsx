@@ -1,4 +1,3 @@
-
 /*
  *   Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -14,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { map, merge, chain } from 'lodash';
+import { map, merge, chain, compact, flatten } from 'lodash';
 
 /* 
 Input[0] - Role Schema: {
@@ -65,7 +64,7 @@ export function transformRoleData(rawRoleData: any, rawRoleMappingData: any) {
       .flatten()
       .compact()
       .value(),
-    tenant_permissions: _.chain(v.index_permissions)
+    tenant_permissions: chain(v.index_permissions)
       .map('tenant_patterns')
       .flatten()
       .compact()
@@ -73,4 +72,16 @@ export function transformRoleData(rawRoleData: any, rawRoleMappingData: any) {
     internal_users: v.users,
     backend_roles: v.backend_roles,
   }));
+}
+
+// Flatten list, remove duplicate and null, sort
+export function buildSearchFilterOptions(roleList: any[], attrName: string) {
+  return chain(roleList)
+    .map(attrName)
+    .flatten()
+    .compact()
+    .uniq()
+    .sortBy()
+    .map(e => ({ value: e }))
+    .value();
 }
