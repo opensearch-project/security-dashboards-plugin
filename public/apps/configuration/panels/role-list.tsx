@@ -135,7 +135,7 @@ export function RoleList(props: AppDependencies) {
         setErrorFlag(true);
       }
     };
-    
+
     fetchData();
   }, []);
 
