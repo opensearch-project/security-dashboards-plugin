@@ -33,7 +33,7 @@ import {
   EuiContextMenuPanel,
 } from '@elastic/eui';
 import { AppDependencies } from '../../types';
-import { transformRoleData } from '../utils/role-list-utils'
+import { transformRoleData, buildSearchFilterOptions } from '../utils/role-list-utils'
 
 function truncatedListView(limit = 3) {
   return (items: string[]) => {
@@ -65,6 +65,12 @@ function truncatedListView(limit = 3) {
     );
   };
 }
+const renderCustomization = (reserved: boolean) => (
+  <EuiText size="xs">
+    <EuiIcon type={reserved ? 'lock' : 'pencil'} />
+    {reserved ? 'Reserved' : 'Custom'}
+  </EuiText>
+);
 
 const columns = [
   {
@@ -102,12 +108,7 @@ const columns = [
   {
     field: 'reserved',
     name: 'Customization',
-    render: (reserved: string) => (
-      <>
-        <EuiIcon type={reserved ? 'lock' : 'pencil'} />
-        <EuiText size="xs">{reserved ? 'Reserved' : 'Custom'}</EuiText>
-      </>
-    ),
+    render: renderCustomization,
   },
 ];
 
@@ -169,6 +170,60 @@ export function RoleList(props: AppDependencies) {
     </EuiButton>
   );
 
+  const [searchOptions, setSearchOptions] = useState({});
+  useEffect(() => {
+    setSearchOptions({
+      filters: [
+        {
+          type: 'field_value_selection',
+          field: 'cluster_permissions',
+          name: 'Cluster Permissions',
+          options: buildSearchFilterOptions(roleData, 'cluster_permissions'),
+        },
+        {
+          type: 'field_value_selection',
+          field: 'index_permissions',
+          name: 'Index Permissions',
+          options: buildSearchFilterOptions(roleData, 'index_permissions'),
+        },
+        {
+          type: 'field_value_selection',
+          field: 'internal_users',
+          name: 'Internal Users',
+          options: buildSearchFilterOptions(roleData, 'internal_users'),
+        },
+        {
+          type: 'field_value_selection',
+          field: 'backend_roles',
+          name: 'External Identities',
+          options: buildSearchFilterOptions(roleData, 'backend_roles'),
+        },
+        {
+          type: 'field_value_selection',
+          field: 'tenant_permissions',
+          name: 'Tenants',
+          options: buildSearchFilterOptions(roleData, 'tenant_permissions'),
+        },
+        {
+          type: 'field_value_selection',
+          field: 'reserved',
+          name: 'Customization',
+          multiSelect: false,
+          options: [
+            {
+              value: true,
+              view: renderCustomization(true),
+            },
+            {
+              value: false,
+              view: renderCustomization(false),
+            },
+          ],
+        },
+      ],
+    });
+  }, [roleData]);
+  
   return (
     <>
       <EuiPageHeader>
@@ -180,7 +235,7 @@ export function RoleList(props: AppDependencies) {
         <EuiPageContentHeader id="role-table-container">
           <EuiPageContentHeaderSection>
             <EuiTitle>
-              <h3>Roles</h3>
+              <h3>Roles ({roleData.length})</h3>
             </EuiTitle>
             <EuiText size="s" color="subdued">
               Roles are the core way of controlling access to your cluster. Roles contain any
@@ -219,6 +274,7 @@ export function RoleList(props: AppDependencies) {
             pagination={true}
             selection={{ onSelectionChange: setSelection }}
             sorting={true}
+            search={searchOptions}
             error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
           />
         </EuiPageBody>
