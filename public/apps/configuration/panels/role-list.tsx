@@ -119,22 +119,25 @@ export function RoleList(props: AppDependencies) {
   const [errorFlag, setErrorFlag] = useState(false);
   const [selection, setSelection] = useState([]);
   const [isActionsPopoverOpen, setActionsPopoverOpen] = useState(false);
-
-  const fetchData = async () => {
-    try {
-      const rawRoleData = await props.coreStart.http.get(`${API_ENDPOINT_ROLES}`);
-      const rawRoleMappingData = await props.coreStart.http.get(`${API_ENDPOINT_ROLESMAPPING}`);
-      const processedData = transformRoleData(rawRoleData, rawRoleMappingData);
-      setRoleData(processedData);
-    } catch (e) {
-      console.log(e);
-      setErrorFlag(true);
-    }
-  };
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const rawRoleData = await props.coreStart.http.get(
+          '/api/v1/opendistro_security/configuration/roles'
+        );
+        const rawRoleMappingData = await props.coreStart.http.get(
+          '/api/v1/opendistro_security/configuration/rolesmapping'
+        );
+        const processedData = transformRoleData(rawRoleData, rawRoleMappingData);
+        setRoleData(processedData);
+      } catch (e) {
+        console.log(e);
+        setErrorFlag(true);
+      }
+    };
     fetchData();
   }, []);
-
+  
   const handleDelete = async () => {
     const rolesToDelete: string[] = selection.map(r => r.role_name);
     try {
