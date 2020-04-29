@@ -135,9 +135,10 @@ export function RoleList(props: AppDependencies) {
         setErrorFlag(true);
       }
     };
+    
     fetchData();
   }, []);
-  
+
   const handleDelete = async () => {
     const rolesToDelete: string[] = selection.map(r => r.role_name);
     try {
