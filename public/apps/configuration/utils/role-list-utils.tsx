@@ -13,7 +13,9 @@
  *   permissions and limitations under the License.
  */
 
-import { map, merge, chain, compact, flatten } from 'lodash';
+import { map, merge, chain } from 'lodash';
+import { HttpStart } from '../../../../../../src/core/public';
+import { API_ENDPOINT_ROLES } from '../constants';
 
 /* 
 Input[0] - Role Schema: {
@@ -55,7 +57,7 @@ Output schema: [{
 }]
 */
 export function transformRoleData(rawRoleData: any, rawRoleMappingData: any) {
-  return map(merge(rawRoleData.data, rawRoleMappingData.data), (v, k) => ({
+  return map(merge(rawRoleData.data, rawRoleMappingData.data), (v: any, k: string) => ({
     role_name: k,
     reserved: v.reserved,
     cluster_permissions: v.cluster_permissions,
@@ -84,4 +86,11 @@ export function buildSearchFilterOptions(roleList: any[], attrName: string) {
     .sortBy()
     .map(e => ({ value: e }))
     .value();
+}
+
+// Submit request to delete given roles. No error handling in this function.
+export async function requestDeleteRoles(http: HttpStart, roles: string[]) {
+  roles.forEach(async r => {
+    await http.delete(`${API_ENDPOINT_ROLES}/${r}`);
+  });
 }

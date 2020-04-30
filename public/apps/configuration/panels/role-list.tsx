@@ -33,7 +33,13 @@ import {
   EuiContextMenuPanel,
 } from '@elastic/eui';
 import { AppDependencies } from '../../types';
-import { transformRoleData, buildSearchFilterOptions } from '../utils/role-list-utils'
+import {
+  transformRoleData,
+  buildSearchFilterOptions,
+  requestDeleteRoles,
+} from '../utils/role-list-utils';
+import { API_ENDPOINT_ROLES, API_ENDPOINT_ROLESMAPPING } from '../constants';
+import { difference } from 'lodash';
 
 function truncatedListView(limit = 3) {
   return (items: string[]) => {
@@ -120,12 +126,8 @@ export function RoleList(props: AppDependencies) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const rawRoleData = await props.coreStart.http.get(
-          '/api/v1/opendistro_security/configuration/roles'
-        );
-        const rawRoleMappingData = await props.coreStart.http.get(
-          '/api/v1/opendistro_security/configuration/rolesmapping'
-        );
+        const rawRoleData = await props.coreStart.http.get(API_ENDPOINT_ROLES);
+        const rawRoleMappingData = await props.coreStart.http.get(API_ENDPOINT_ROLESMAPPING);
         const processedData = transformRoleData(rawRoleData, rawRoleMappingData);
         setRoleData(processedData);
       } catch (e) {
@@ -136,6 +138,22 @@ export function RoleList(props: AppDependencies) {
 
     fetchData();
   }, []);
+
+  const handleDelete = async () => {
+    const rolesToDelete: string[] = selection.map(r => r.role_name);
+    try {
+      await requestDeleteRoles(props.coreStart.http, rolesToDelete);
+      // Refresh from server (calling fetchData) does not work here, the server still return the roles
+      // that had been just deleted, probably because ES takes some time to sync to all nodes.
+      // So here remove the selected roles from local memory directly.
+      setRoleData(difference(roleData, selection));
+      setSelection([]);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setActionsPopoverOpen(false);
+    }
+  };
 
   const actionsMenuItems = [
     <EuiContextMenuItem
@@ -151,7 +169,7 @@ export function RoleList(props: AppDependencies) {
     </EuiContextMenuItem>,
     <EuiContextMenuItem
       key="delete"
-      onClick={() => {}} // TODO: Delete selection
+      onClick={handleDelete}
       disabled={selection.length == 0 || selection.some(e => e.reserved)}
     >
       Delete
@@ -223,7 +241,7 @@ export function RoleList(props: AppDependencies) {
       ],
     });
   }, [roleData]);
-  
+
   return (
     <>
       <EuiPageHeader>
