@@ -19,6 +19,7 @@ import { AppDependencies } from '../types';
 import { RouteItem } from './types';
 import { NavPanel } from './panels/nav-panel';
 import { RoleList } from './panels/role-list';
+import { RoleEdit } from './panels/role-edit';
 import { EuiPage, EuiPageSideBar, EuiPageBody } from '@elastic/eui';
 
 const RoutesMap: { [key: string]: RouteItem } = {
@@ -61,18 +62,21 @@ export function AppRouter(props: AppDependencies) {
   return (
     <Router basename={props.params.appBasePath}>
       <EuiPage>
-          <Route path={`(${RoutesList.map(r => r.href).join('|')})`} exact={true}>
-            <EuiPageSideBar>
-              <NavPanel items={RoutesList} />
-            </EuiPageSideBar>
-          </Route>
-          <EuiPageBody>
-            <Switch>
-              <Route path={RoutesMap.roles.href}>
-                <RoleList {...props}/>
-              </Route>
-            </Switch>
-          </EuiPageBody>
+        <Route path={`(${RoutesList.map(r => r.href).join('|')})`} exact>
+          <EuiPageSideBar>
+            <NavPanel items={RoutesList} />
+          </EuiPageSideBar>
+        </Route>
+        <EuiPageBody>
+          <Switch>
+            <Route path={`${RoutesMap.roles.href}/:action/:sourceRoleName`} render={(match) => (
+              <RoleEdit {...{...props, ...match.match.params}} />
+            )} />
+            <Route path={RoutesMap.roles.href}>
+              <RoleList {...props} />
+            </Route>
+          </Switch>
+        </EuiPageBody>
       </EuiPage>
     </Router>
   );
