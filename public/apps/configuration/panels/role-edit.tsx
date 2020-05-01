@@ -45,8 +45,8 @@ export function RoleEdit(props: RoleEditDeps) {
   return (
     <>
       <EuiPageHeader>
-        <EuiText size="s" color="subdued">
-          <EuiTitle size="l">
+        <EuiText size="xs" color="subdued">
+          <EuiTitle size="m">
             <h1>{titleText}</h1>
           </EuiTitle>
           Roles are the core way of controlling access to your cluster. Roles contain any
