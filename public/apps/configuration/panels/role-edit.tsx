@@ -27,11 +27,13 @@ import {
   EuiButton,
   EuiFlexGroup,
   EuiFlexItem,
+  EuiComboBoxOptionOption,
+  EuiComboBox,
 } from '@elastic/eui';
 import { FormRow } from '../utils/form-row';
-import { EuiComboBox } from '@elastic/eui';
 import { CLUSTER_PERMISSIONS, INDEX_PERMISSIONS } from '../constants';
 import { fetchActionGroups } from '../utils/action-groups-utils';
+import { getRoleDetail } from '../utils/role-detail-utils';
 
 interface RoleEditDeps extends AppDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -41,13 +43,39 @@ interface RoleEditDeps extends AppDependencies {
   sourceRoleName: string;
 }
 
+type OptionSeletion = EuiComboBoxOptionOption[];
+
 function buildPermissionOptions(optionsList: string[]) {
   return optionsList.map(e => ({ label: e }));
 }
 
 export function RoleEdit(props: RoleEditDeps) {
-  const [actionGroups, setActionGroups] = useState<string[]>([]);
+  const [roleName, setRoleName] = useState("");
+  const [roleClusterPermission, setRoleClusterPermission] = useState<OptionSeletion>([]);
+  useEffect(() => {
+    const action = props.action
+    if (action == 'edit' || action == 'duplicate') {
+      const fetchData = async () => {
+        try {
+          const roleData = await getRoleDetail(props.coreStart.http, props.sourceRoleName);
+          setRoleClusterPermission(buildPermissionOptions(roleData.cluster_permissions));
 
+          if (action == 'edit') {
+            setRoleName(props.sourceRoleName);
+          }
+          if (action == 'duplicate') {
+            setRoleName(props.sourceRoleName + '_copy');
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      };
+
+      fetchData();
+    }
+  }, []);
+
+  const [actionGroups, setActionGroups] = useState<string[]>([]);
   useEffect(() => {
     const fetchActionGroupNames = async () => {
       const actionGroupsObject = await fetchActionGroups(props.coreStart.http);
@@ -102,7 +130,7 @@ export function RoleEdit(props: RoleEditDeps) {
             helpText="The Role name must contain from m to n characters. Valid characters are 
             lowercase a-z, 0-9 and (-) hyphen."
           >
-            <EuiFieldText />
+            <EuiFieldText value={ roleName } onChange={e => {setRoleName(e.target.value)}} disabled={props.action == 'edit'} />
           </FormRow>
         </EuiForm>
       </PanelWithHeader>
@@ -121,7 +149,8 @@ export function RoleEdit(props: RoleEditDeps) {
           >
             <EuiFlexGroup>
               <EuiFlexItem style={{ maxWidth: '400px' }}>
-                <EuiComboBox options={clusterWidePermissionOptions} />
+                <EuiComboBox options={ clusterWidePermissionOptions } selectedOptions={ roleClusterPermission }
+                 onChange={ setRoleClusterPermission }/>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
                 <EuiButton>Browse and select</EuiButton>
