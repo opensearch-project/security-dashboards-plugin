@@ -13,26 +13,26 @@
  *   permissions and limitations under the License.
  */
 
-import React, { useState, useEffect } from 'react';
-import { AppDependencies } from '../../types';
-import { PanelWithHeader } from '../utils/panel-with-header';
 import {
-  EuiPageHeader,
-  EuiText,
-  EuiTitle,
-  EuiLink,
-  EuiForm,
-  EuiFieldText,
-  EuiSpacer,
   EuiButton,
+  EuiComboBox,
+  EuiComboBoxOptionOption,
+  EuiFieldText,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiComboBoxOptionOption,
-  EuiComboBox,
+  EuiForm,
+  EuiLink,
+  EuiPageHeader,
+  EuiSpacer,
+  EuiText,
+  EuiTitle,
 } from '@elastic/eui';
-import { FormRow } from '../utils/form-row';
+import React, { useEffect, useState } from 'react';
+import { AppDependencies } from '../../types';
 import { CLUSTER_PERMISSIONS, INDEX_PERMISSIONS } from '../constants';
 import { fetchActionGroups } from '../utils/action-groups-utils';
+import { FormRow } from '../utils/form-row';
+import { PanelWithHeader } from '../utils/panel-with-header';
 import { getRoleDetail } from '../utils/role-detail-utils';
 
 interface RoleEditDeps extends AppDependencies {
@@ -50,10 +50,10 @@ function buildPermissionOptions(optionsList: string[]) {
 }
 
 export function RoleEdit(props: RoleEditDeps) {
-  const [roleName, setRoleName] = useState("");
+  const [roleName, setRoleName] = useState('');
   const [roleClusterPermission, setRoleClusterPermission] = useState<OptionSeletion>([]);
   useEffect(() => {
-    const action = props.action
+    const action = props.action;
     if (action == 'edit' || action == 'duplicate') {
       const fetchData = async () => {
         try {
@@ -130,7 +130,13 @@ export function RoleEdit(props: RoleEditDeps) {
             helpText="The Role name must contain from m to n characters. Valid characters are 
             lowercase a-z, 0-9 and (-) hyphen."
           >
-            <EuiFieldText value={ roleName } onChange={e => {setRoleName(e.target.value)}} disabled={props.action == 'edit'} />
+            <EuiFieldText
+              value={roleName}
+              onChange={e => {
+                setRoleName(e.target.value);
+              }}
+              disabled={props.action == 'edit'}
+            />
           </FormRow>
         </EuiForm>
       </PanelWithHeader>
@@ -149,8 +155,11 @@ export function RoleEdit(props: RoleEditDeps) {
           >
             <EuiFlexGroup>
               <EuiFlexItem style={{ maxWidth: '400px' }}>
-                <EuiComboBox options={ clusterWidePermissionOptions } selectedOptions={ roleClusterPermission }
-                 onChange={ setRoleClusterPermission }/>
+                <EuiComboBox
+                  options={clusterWidePermissionOptions}
+                  selectedOptions={roleClusterPermission}
+                  onChange={setRoleClusterPermission}
+                />
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
                 <EuiButton>Browse and select</EuiButton>
