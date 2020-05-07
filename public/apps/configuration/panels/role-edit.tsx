@@ -13,19 +13,27 @@
  *   permissions and limitations under the License.
  */
 
-import React from 'react';
-import { AppDependencies } from '../../types';
-import { PanelWithHeader } from '../utils/panel-with-header';
 import {
+  EuiButton,
+  EuiComboBox,
+  EuiComboBoxOptionOption,
+  EuiFieldText,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiForm,
+  EuiLink,
   EuiPageHeader,
+  EuiSpacer,
   EuiText,
   EuiTitle,
-  EuiLink,
-  EuiForm,
-  EuiFormRow,
-  EuiFieldText,
-  EuiSpacer,
 } from '@elastic/eui';
+import React, { useEffect, useState } from 'react';
+import { AppDependencies } from '../../types';
+import { CLUSTER_PERMISSIONS, INDEX_PERMISSIONS } from '../constants';
+import { fetchActionGroups } from '../utils/action-groups-utils';
+import { FormRow } from '../utils/form-row';
+import { PanelWithHeader } from '../utils/panel-with-header';
+import { getRoleDetail } from '../utils/role-detail-utils';
 
 interface RoleEditDeps extends AppDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -35,19 +43,80 @@ interface RoleEditDeps extends AppDependencies {
   sourceRoleName: string;
 }
 
+const TITLE_TEXT_DICT = {
+  create: 'Create Role',
+  edit: 'Edit Role',
+  duplicate: 'Duplicate Role',
+}
+
+type OptionSeletion = EuiComboBoxOptionOption[];
+
+function buildPermissionOptions(optionsList: string[]) {
+  return optionsList.map(e => ({ label: e }));
+}
+
 export function RoleEdit(props: RoleEditDeps) {
-  const titleText = {
-    create: 'Create Role',
-    edit: 'Edit Role',
-    duplicate: 'Duplicate Role',
-  }[props.action];
+  const [roleName, setRoleName] = useState('');
+  const [roleClusterPermission, setRoleClusterPermission] = useState<OptionSeletion>([]);
+  useEffect(() => {
+    const action = props.action;
+    if (action == 'edit' || action == 'duplicate') {
+      const fetchData = async () => {
+        try {
+          const roleData = await getRoleDetail(props.coreStart.http, props.sourceRoleName);
+          setRoleClusterPermission(buildPermissionOptions(roleData.cluster_permissions));
+
+          if (action == 'edit') {
+            setRoleName(props.sourceRoleName);
+          } else {
+            setRoleName(props.sourceRoleName + '_copy');
+          }
+        } catch (e) {
+          // TODO: show user friendly error message
+          console.log(e);
+        }
+      };
+
+      fetchData();
+    }
+  }, [props.sourceRoleName]);
+
+  const [actionGroups, setActionGroups] = useState<string[]>([]);
+  useEffect(() => {
+    const fetchActionGroupNames = async () => {
+      try {
+        const actionGroupsObject = await fetchActionGroups(props.coreStart.http);
+        setActionGroups(Object.keys(actionGroupsObject));
+      } catch (e) {
+        // TODO: show user friendly error message
+        console.log(e);
+      }
+    };
+
+    fetchActionGroupNames();
+  }, []);
+
+  const clusterWidePermissionOptions = [
+    {
+      label: 'Permission groups',
+      options: buildPermissionOptions(actionGroups),
+    },
+    {
+      label: 'Cluster permissions',
+      options: buildPermissionOptions(CLUSTER_PERMISSIONS),
+    },
+    {
+      label: 'Index permissions',
+      options: buildPermissionOptions(INDEX_PERMISSIONS),
+    },
+  ];
 
   return (
     <>
       <EuiPageHeader>
         <EuiText size="xs" color="subdued">
           <EuiTitle size="m">
-            <h1>{titleText}</h1>
+            <h1>{TITLE_TEXT_DICT[props.action]}</h1>
           </EuiTitle>
           Roles are the core way of controlling access to your cluster. Roles contain any
           combination of cluster-wide permission, index-specific permissions, document- and
@@ -60,21 +129,20 @@ export function RoleEdit(props: RoleEditDeps) {
       </EuiPageHeader>
       <PanelWithHeader headerText="Name">
         <EuiForm>
-          <EuiFormRow
-            label={
-              <EuiText size="xs" color="subdued">
-                <EuiTitle size="xxs">
-                  <h4>Name</h4>
-                </EuiTitle>
-                Specify a descriptive and unique role name. You cannot edit the name onece the role
-                is created.
-              </EuiText>
-            }
+          <FormRow
+            headerText="Name"
+            headerSubText="Specify a descriptive and unique role name. You cannot edit the name onece the role is created."
             helpText="The Role name must contain from m to n characters. Valid characters are 
             lowercase a-z, 0-9 and (-) hyphen."
           >
-            <EuiFieldText />
-          </EuiFormRow>
+            <EuiFieldText
+              value={roleName}
+              onChange={e => {
+                setRoleName(e.target.value);
+              }}
+              disabled={props.action == 'edit'}
+            />
+          </FormRow>
         </EuiForm>
       </PanelWithHeader>
       <EuiSpacer size="m" />
@@ -82,7 +150,34 @@ export function RoleEdit(props: RoleEditDeps) {
         headerText="Cluster Permissions"
         headerSubText="Specify how users in this role can access the cluster. By default, no cluster permission is granted."
         helpLink="/"
-      ></PanelWithHeader>
+      >
+        <EuiForm>
+          <FormRow
+            headerText="Cluster Permissions"
+            headerSubText="Specify permissions using either action groups or single permissions. An action group is a list of single permissions.
+            You can often achieve your desired security posture using some combination of the default permission groups. You can
+            also create your own reusable permission groups."
+          >
+            <EuiFlexGroup>
+              <EuiFlexItem style={{ maxWidth: '400px' }}>
+                <EuiComboBox
+                  options={clusterWidePermissionOptions}
+                  selectedOptions={roleClusterPermission}
+                  onChange={setRoleClusterPermission}
+                />
+              </EuiFlexItem>
+              <EuiFlexItem grow={false}>
+                <EuiButton>Browse and select</EuiButton>
+              </EuiFlexItem>
+              <EuiFlexItem grow={false}>
+                <EuiButton iconType="popout" iconSide="right">
+                  Create Action Groups
+                </EuiButton>
+              </EuiFlexItem>
+            </EuiFlexGroup>
+          </FormRow>
+        </EuiForm>
+      </PanelWithHeader>
       <EuiSpacer size="m" />
       <PanelWithHeader
         headerText="Index Permissions"
