@@ -43,6 +43,12 @@ interface RoleEditDeps extends AppDependencies {
   sourceRoleName: string;
 }
 
+const TITLE_TEXT_DICT = {
+  create: 'Create Role',
+  edit: 'Edit Role',
+  duplicate: 'Duplicate Role',
+}
+
 type OptionSeletion = EuiComboBoxOptionOption[];
 
 function buildPermissionOptions(optionsList: string[]) {
@@ -62,34 +68,33 @@ export function RoleEdit(props: RoleEditDeps) {
 
           if (action == 'edit') {
             setRoleName(props.sourceRoleName);
-          }
-          if (action == 'duplicate') {
+          } else {
             setRoleName(props.sourceRoleName + '_copy');
           }
         } catch (e) {
+          // TODO: show user friendly error message
           console.log(e);
         }
       };
 
       fetchData();
     }
-  }, []);
+  }, [props.sourceRoleName]);
 
   const [actionGroups, setActionGroups] = useState<string[]>([]);
   useEffect(() => {
     const fetchActionGroupNames = async () => {
-      const actionGroupsObject = await fetchActionGroups(props.coreStart.http);
-      setActionGroups(Object.keys(actionGroupsObject));
+      try {
+        const actionGroupsObject = await fetchActionGroups(props.coreStart.http);
+        setActionGroups(Object.keys(actionGroupsObject));
+      } catch (e) {
+        // TODO: show user friendly error message
+        console.log(e);
+      }
     };
 
     fetchActionGroupNames();
   }, []);
-
-  const titleText = {
-    create: 'Create Role',
-    edit: 'Edit Role',
-    duplicate: 'Duplicate Role',
-  }[props.action];
 
   const clusterWidePermissionOptions = [
     {
@@ -111,7 +116,7 @@ export function RoleEdit(props: RoleEditDeps) {
       <EuiPageHeader>
         <EuiText size="xs" color="subdued">
           <EuiTitle size="m">
-            <h1>{titleText}</h1>
+            <h1>{TITLE_TEXT_DICT[props.action]}</h1>
           </EuiTitle>
           Roles are the core way of controlling access to your cluster. Roles contain any
           combination of cluster-wide permission, index-specific permissions, document- and
