@@ -18,7 +18,7 @@ import { API_ENDPOINT_ACTIONGROUPS } from '../constants';
 
 /* Output:
 {
-  actionGroupName]: {
+  [actionGroupName]: {
     reseverd: boolean,
     hidden: boolean,
     allowed_actions: string[],
