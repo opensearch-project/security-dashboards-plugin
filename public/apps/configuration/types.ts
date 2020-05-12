@@ -17,3 +17,26 @@ export interface RouteItem {
   name: string;
   href: string;
 }
+
+export interface RoleIndexPermission {
+  index_patterns: string[];
+  dls: string;
+  fls: string[];
+  masked_fields: string[];
+  allowed_actions: string[];
+}
+
+export interface RoleTenantPermission {
+  tenant_patterns: string[];
+  allowed_actions: string[];
+}
+
+export interface RoleUpdate {
+  cluster_permissions: string[];
+  index_permissions: RoleIndexPermission[];
+  tenant_permissions: RoleTenantPermission[];
+}
+
+export interface RoleDetail extends RoleUpdate {
+  reserved: boolean;
+}
