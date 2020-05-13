@@ -65,7 +65,7 @@ type OptionSeletion = EuiComboBoxOptionOption[];
 interface RoleIndexPermissionStateClass {
   indexPatterns: OptionSeletion;
   dls: string;
-  isFlsIncluded: boolean;
+  flsMethod: 'exclude' | 'include';
   fls: OptionSeletion;
   maskedFields: OptionSeletion;
   allowedActions: OptionSeletion;
@@ -75,7 +75,7 @@ function getEmptyIndexPermission(): RoleIndexPermissionStateClass {
   return {
     indexPatterns: [],
     dls: '',
-    isFlsIncluded: false,
+    flsMethod: 'exclude',
     fls: [],
     maskedFields: [],
     allowedActions: [],
@@ -87,7 +87,7 @@ function buildPermissionOptions(optionsList: string[]): OptionSeletion {
   return optionsList.map(e => ({ label: e }));
 }
 
-// Unbuild EuiComboBox option objects to string ]s
+// Unbuild EuiComboBox option objects to string[]
 function unbuildPermissionOptions(selectedOptions: OptionSeletion): string[] {
   return selectedOptions.map(e => e.label);
 }
@@ -99,7 +99,7 @@ function buildIndexPermissionState(
     indexPatterns: buildPermissionOptions(perm.index_patterns),
     dls: perm.dls,
     // Leading ~ indicates exclude.
-    isFlsIncluded: perm.fls.some((s: string) => !s.startsWith('~')),
+    flsMethod: perm.fls.some((s: string) => !s.startsWith('~')) ? 'exclude' : 'include',
     fls: buildPermissionOptions(perm.fls.map((s: string) => s.replace(/^~/, ''))),
     maskedFields: [],
     allowedActions: [],
@@ -196,17 +196,17 @@ function generateIndexPermissionPanels(
             optional
           >
             <EuiFlexGroup>
-              <EuiFlexItem grow={false}>
+              <EuiFlexItem grow={1}>
                 <EuiSuperSelect
-                  valueOfSelected={perm.isFlsIncluded.toString()}
+                  valueOfSelected={perm.flsMethod}
                   options={[
-                    { inputDisplay: 'Included', value: 'true' },
-                    { inputDisplay: 'Excluded', value: 'false' },
+                    { inputDisplay: 'Include', value: 'include' },
+                    { inputDisplay: 'Exclude', value: 'exclude' },
                   ]}
-                  onChange={onComboBoxChangeHandler('isFlsIncluded')}
+                  onChange={onComboBoxChangeHandler('flsMethod')}
                 />
               </EuiFlexItem>
-              <EuiFlexItem>
+              <EuiFlexItem grow={9}>
                 <EuiComboBox
                   noSuggestions
                   placeholder="Type in field name"
