@@ -61,12 +61,13 @@ const TITLE_TEXT_DICT = {
 };
 
 type OptionSeletion = EuiComboBoxOptionOption[];
+type FieldLevelSecurityMethod = 'exclude' | 'include';
 
 interface RoleIndexPermissionStateClass {
   indexPatterns: OptionSeletion;
-  dls: string;
-  flsMethod: 'exclude' | 'include';
-  fls: OptionSeletion;
+  docLevelSecurity: string;
+  fieldLevelSecurityMethod: FieldLevelSecurityMethod;
+  fieldLevelSecurityFields: OptionSeletion;
   maskedFields: OptionSeletion;
   allowedActions: OptionSeletion;
 }
@@ -74,12 +75,33 @@ interface RoleIndexPermissionStateClass {
 function getEmptyIndexPermission(): RoleIndexPermissionStateClass {
   return {
     indexPatterns: [],
-    dls: '',
-    flsMethod: 'exclude',
-    fls: [],
+    docLevelSecurity: '',
+    fieldLevelSecurityMethod: 'exclude',
+    fieldLevelSecurityFields: [],
     maskedFields: [],
     allowedActions: [],
   };
+}
+
+/**
+ * Identify the method is whether exclude or include.
+ * @param fieldLevelSecurityRawFields fields fetched from backend
+ * ["~field1", "~field2"] => exclude
+ * ["field1", "field2"] => include
+ */
+function getFieldLevelSecurityMethod(fieldLevelSecurityRawFields: string[]): FieldLevelSecurityMethod {
+  // Leading ~ indicates exclude.
+  return fieldLevelSecurityRawFields.some((s: string) => s.startsWith('~')) ? 'exclude' : 'include';
+}
+
+/**
+ * Remove the leading ~ which indicates exclude and convert to combo box option.
+ * @param fieldLevelSecurityRawFields fields fetched from backend
+ * ["~field1", "~field2"] => ["field1", "field2"]
+ * ["field1", "field2"] => ["field1", "field2"]
+ */
+function getFieldLevelSecurityFields(fieldLevelSecurityRawFields: string[]): OptionSeletion {
+  return fieldLevelSecurityRawFields.map((s: string) => s.replace(/^~/, '')).map(stringToComboBoxOption)
 }
 
 function buildIndexPermissionState(
@@ -87,10 +109,9 @@ function buildIndexPermissionState(
 ): RoleIndexPermissionStateClass[] {
   return indexPerm.map(perm => ({
     indexPatterns: perm.index_patterns.map(stringToComboBoxOption),
-    dls: perm.dls,
-    // Leading ~ indicates exclude.
-    flsMethod: perm.fls.some((s: string) => !s.startsWith('~')) ? 'exclude' : 'include',
-    fls: perm.fls.map((s: string) => s.replace(/^~/, '')).map(stringToComboBoxOption),
+    docLevelSecurity: perm.dls,
+    fieldLevelSecurityMethod: getFieldLevelSecurityMethod(perm.fls),
+    fieldLevelSecurityFields: getFieldLevelSecurityFields(perm.fls),
     maskedFields: [],
     allowedActions: [],
   }));
@@ -112,7 +133,7 @@ function generateIndexPermissionPanels(
   setRoleIndexPermission: Dispatch<SetStateAction<RoleIndexPermissionStateClass[]>>
 ) {
   const panels = indexPermissions.map((perm, index) => {
-    const onComboBoxChangeHandler = (field: string) =>
+    const onValueChangeHandler = (field: string) =>
       updateElementInArrayHandler(setRoleIndexPermission, [index, field]);
 
     const onCreateOptionHandler = (field: string) =>
@@ -139,7 +160,7 @@ function generateIndexPermissionPanels(
               noSuggestions
               placeholder="Search for index name or type in index pattern"
               selectedOptions={perm.indexPatterns}
-              onChange={onComboBoxChangeHandler('indexPatterns')}
+              onChange={onValueChangeHandler('indexPatterns')}
               onCreateOption={onCreateOptionHandler('indexPatterns')}
             />
           </FormRow>
@@ -155,7 +176,7 @@ function generateIndexPermissionPanels(
                   placeholder="Search for action group name or permission name"
                   options={permisionOptionsSet}
                   selectedOptions={perm.allowedActions}
-                  onChange={onComboBoxChangeHandler('allowedActions')}
+                  onChange={onValueChangeHandler('allowedActions')}
                 />
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
@@ -176,8 +197,8 @@ function generateIndexPermissionPanels(
           >
             <EuiTextArea
               placeholder={FIELD_LEVEL_SECURITY_PLACEHOLDER}
-              value={perm.dls}
-              onChange={e => onComboBoxChangeHandler('dls')(e.target.value)}
+              value={perm.docLevelSecurity}
+              onChange={e => onValueChangeHandler('docLevelSecurity')(e.target.value)}
             />
           </FormRow>
           <FormRow
@@ -188,21 +209,21 @@ function generateIndexPermissionPanels(
             <EuiFlexGroup>
               <EuiFlexItem grow={1}>
                 <EuiSuperSelect
-                  valueOfSelected={perm.flsMethod}
+                  valueOfSelected={perm.fieldLevelSecurityMethod}
                   options={[
                     { inputDisplay: 'Include', value: 'include' },
                     { inputDisplay: 'Exclude', value: 'exclude' },
                   ]}
-                  onChange={onComboBoxChangeHandler('flsMethod')}
+                  onChange={onValueChangeHandler('fieldLevelSecurityMethod')}
                 />
               </EuiFlexItem>
               <EuiFlexItem grow={9}>
                 <EuiComboBox
                   noSuggestions
                   placeholder="Type in field name"
-                  selectedOptions={perm.fls}
-                  onChange={onComboBoxChangeHandler('fls')}
-                  onCreateOption={onCreateOptionHandler('fls')}
+                  selectedOptions={perm.fieldLevelSecurityFields}
+                  onChange={onValueChangeHandler('fieldLevelSecurityFields')}
+                  onCreateOption={onCreateOptionHandler('fieldLevelSecurityFields')}
                 />
               </EuiFlexItem>
             </EuiFlexGroup>
@@ -216,7 +237,7 @@ function generateIndexPermissionPanels(
               noSuggestions
               placeholder="Type in field name"
               selectedOptions={perm.maskedFields}
-              onChange={onComboBoxChangeHandler('maskedFields')}
+              onChange={onValueChangeHandler('maskedFields')}
               onCreateOption={onCreateOptionHandler('maskedFields')}
             />
           </FormRow>

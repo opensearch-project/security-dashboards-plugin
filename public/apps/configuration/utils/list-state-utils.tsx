@@ -75,10 +75,8 @@ export function appendElementToArray<T>(
   const resolvedNewValue = resolveValue(newValue);
   setStateCallback(prevState => {
     if ((path as StringRepresentable[]).length == 0) {
-      let newState = [...prevState, resolvedNewValue];
-      return newState;
-    }
-    else {
+      return [...prevState, resolvedNewValue];
+    } else {
       const newArray = [...(get(prevState, path) as T[]), resolvedNewValue];
       let newState = [...prevState];
       set(newState, path, newArray);
@@ -113,11 +111,8 @@ export function removeElementFromArray<T>(
 ) {
   setStateCallback(prevState => {
     if ((path as StringRepresentable[]).length == 0) {
-      let newState = [...prevState];
-      newState.splice(index, 1);
-      return newState;
-    }
-    else {
+      return [...prevState].splice(index, 1);
+    } else {
       let newArray = [...(get(prevState, path) as T[])];
       newArray.splice(index, 1);
       let newState = [...prevState];
