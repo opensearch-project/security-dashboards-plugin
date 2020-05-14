@@ -39,12 +39,12 @@ import { fetchActionGroups } from '../utils/action-groups-utils';
 import { FormRow } from '../utils/form-row';
 import {
   appendElementToArray,
-  appendOptionToComboBoxHandler,
   removeElementFromArray,
   updateElementInArrayHandler
 } from '../utils/list-state-utils';
 import { PanelWithHeader } from '../utils/panel-with-header';
 import { getRoleDetail } from '../utils/role-detail-utils';
+import { stringToComboBoxOption, comboBoxOptionToString, appendOptionToComboBoxHandler } from '../utils/combo-box-utils';
 
 interface RoleEditDeps extends AppDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -82,25 +82,15 @@ function getEmptyIndexPermission(): RoleIndexPermissionStateClass {
   };
 }
 
-// Build option objects for EuiComboBox
-function buildPermissionOptions(optionsList: string[]): OptionSeletion {
-  return optionsList.map(e => ({ label: e }));
-}
-
-// Unbuild EuiComboBox option objects to string[]
-function unbuildPermissionOptions(selectedOptions: OptionSeletion): string[] {
-  return selectedOptions.map(e => e.label);
-}
-
 function buildIndexPermissionState(
   indexPerm: RoleIndexPermission[]
 ): RoleIndexPermissionStateClass[] {
   return indexPerm.map(perm => ({
-    indexPatterns: buildPermissionOptions(perm.index_patterns),
+    indexPatterns: perm.index_patterns.map(stringToComboBoxOption),
     dls: perm.dls,
     // Leading ~ indicates exclude.
     flsMethod: perm.fls.some((s: string) => !s.startsWith('~')) ? 'exclude' : 'include',
-    fls: buildPermissionOptions(perm.fls.map((s: string) => s.replace(/^~/, ''))),
+    fls: perm.fls.map((s: string) => s.replace(/^~/, '')).map(stringToComboBoxOption),
     maskedFields: [],
     allowedActions: [],
   }));
@@ -133,7 +123,7 @@ function generateIndexPermissionPanels(
         <EuiAccordion
           id={`index-permission-${index}`}
           buttonContent={
-            unbuildPermissionOptions(perm.indexPatterns).join(', ') || 'Add index permission'
+            perm.indexPatterns.map(comboBoxOptionToString).join(', ') || 'Add index permission'
           }
           extraAction={
             <EuiButton
@@ -251,7 +241,7 @@ export function RoleEdit(props: RoleEditDeps) {
       const fetchData = async () => {
         try {
           const roleData = await getRoleDetail(props.coreStart.http, props.sourceRoleName);
-          setRoleClusterPermission(buildPermissionOptions(roleData.cluster_permissions));
+          setRoleClusterPermission(roleData.cluster_permissions.map(stringToComboBoxOption));
           setRoleIndexPermission(buildIndexPermissionState(roleData.index_permissions));
 
           if (action == 'edit') {
@@ -287,15 +277,15 @@ export function RoleEdit(props: RoleEditDeps) {
   const clusterWidePermissionOptions = [
     {
       label: 'Permission groups',
-      options: buildPermissionOptions(actionGroups),
+      options: actionGroups.map(stringToComboBoxOption),
     },
     {
       label: 'Cluster permissions',
-      options: buildPermissionOptions(CLUSTER_PERMISSIONS),
+      options: CLUSTER_PERMISSIONS.map(stringToComboBoxOption),
     },
     {
       label: 'Index permissions',
-      options: buildPermissionOptions(INDEX_PERMISSIONS),
+      options: INDEX_PERMISSIONS.map(stringToComboBoxOption),
     },
   ];
 

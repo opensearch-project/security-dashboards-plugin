@@ -22,12 +22,24 @@ function resolveValue<T>(
   return (typeof value === 'function') ? (value as Function)() : value;
 }
 
+/**
+ * Update an element in an sub array
+ * @param setStateCallback setState function
+ * @param path lodash path, e.g. [0, indexPattern] or "[0].indexPattern" 
+ * @param newValue value to be updated
+ * 
+ * e.g. 
+ *  currentState = [{a: 1}, {a: 2}], 
+ *  path = [1, 'a']
+ *  newValue = 10
+ * The newState will be [{a: 1}, {a: 10}]
+ */
 export function updateElementInArray<T>(
-  setStateFunc: Dispatch<SetStateAction<any[]>>,
+  setStateCallback: Dispatch<SetStateAction<any[]>>,
   path: StringRepresentable|StringRepresentable[],
   newValue: T | (() => T)
 ) {
-  setStateFunc(prevState => {
+  setStateCallback(prevState => {
     let newState = [...prevState];
     set(newState, path, resolveValue(newValue));
     return newState;
@@ -36,13 +48,32 @@ export function updateElementInArray<T>(
 
 export const updateElementInArrayHandler = curry(updateElementInArray);
 
+/**
+ * Append an element to an array (or sub array indicating by path)
+ * @param setStateCallback setState function
+ * @param path lodash path, e.g. [0, indexPattern] or "[0].indexPattern", use [] to indicate root level
+ * @param newValue value to be updated
+ * 
+ * e.g.
+ * Scenario 1, path = [] to append to root level array
+ *  currentState = [1, 2], 
+ *  path = []
+ *  newValue = 3
+ * The newState will be [1, 2, 3]
+ * 
+ * Scenario 2, path != [] to append to sub array
+ *  currentState = [{a: [1, 2]}, {a: [3, 4]}], 
+ *  path = [0, 'a']
+ *  newValue = 5
+ * The newState will be [{a: [1, 2, 5]}, {a: [3, 4]}]
+ */
 export function appendElementToArray<T>(
-  setStateFunc: Dispatch<SetStateAction<any[]>>,
+  setStateCallback: Dispatch<SetStateAction<any[]>>,
   path: StringRepresentable|StringRepresentable[],
   newValue: T | (() => T)
 ) {
   const resolvedNewValue = resolveValue(newValue);
-  setStateFunc(prevState => {
+  setStateCallback(prevState => {
     if ((path as StringRepresentable[]).length == 0) {
       let newState = [...prevState, resolvedNewValue];
       return newState;
@@ -56,22 +87,31 @@ export function appendElementToArray<T>(
   });
 }
 
-export function appendOptionToComboBox(
-  setStateFunc: Dispatch<SetStateAction<any[]>>,
-  path: StringRepresentable|StringRepresentable[],
-  newValue: string
-) {
-  appendElementToArray(setStateFunc, path, { label: newValue });
-}
-
-export const appendOptionToComboBoxHandler = curry(appendOptionToComboBox);
-
+/**
+ * Remove an element from an array (or sub array indicating by path)
+ * @param setStateCallback setState function
+ * @param path lodash path, e.g. [0, indexPattern] or "[0].indexPattern", use [] to indicate root level
+ * @param index index of element to be removed
+ * 
+ * e.g.
+ * Scenario 1, path = [] to append to root level array
+ *  currentState = [1, 2], 
+ *  path = []
+ *  index = 0
+ * The newState will be [2]
+ * 
+ * Scenario 2, path != [] to append to sub array
+ *  currentState = [{a: [1, 2]}, {a: [3, 4]}], 
+ *  path = [0, 'a']
+ *  index = 1
+ * The newState will be [{a: [1]}, {a: [3, 4]}]
+ */
 export function removeElementFromArray<T>(
-  setStateFunc: Dispatch<SetStateAction<any[]>>,
+  setStateCallback: Dispatch<SetStateAction<any[]>>,
   path: StringRepresentable|StringRepresentable[],
   index: number
 ) {
-  setStateFunc(prevState => {
+  setStateCallback(prevState => {
     if ((path as StringRepresentable[]).length == 0) {
       let newState = [...prevState];
       newState.splice(index, 1);
@@ -86,5 +126,3 @@ export function removeElementFromArray<T>(
     }
   });
 }
-
-export const removeElementFromArrayHandler = curry(appendOptionToComboBox);
