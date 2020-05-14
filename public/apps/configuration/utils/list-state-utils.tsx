@@ -27,9 +27,9 @@ function resolveValue<T>(
  * @param setStateCallback setState function
  * @param path lodash path, e.g. [0, indexPattern] or "[0].indexPattern" 
  * @param newValue value to be updated
- * 
+ *
  * e.g. 
- *  currentState = [{a: 1}, {a: 2}], 
+ *  currentState = [{a: 1}, {a: 2}]
  *  path = [1, 'a']
  *  newValue = 10
  * The newState will be [{a: 1}, {a: 10}]
@@ -53,16 +53,16 @@ export const updateElementInArrayHandler = curry(updateElementInArray);
  * @param setStateCallback setState function
  * @param path lodash path, e.g. [0, indexPattern] or "[0].indexPattern", use [] to indicate root level
  * @param newValue value to be updated
- * 
+ *
  * e.g.
  * Scenario 1, path = [] to append to root level array
- *  currentState = [1, 2], 
+ *  currentState = [1, 2]
  *  path = []
  *  newValue = 3
  * The newState will be [1, 2, 3]
- * 
+ *
  * Scenario 2, path != [] to append to sub array
- *  currentState = [{a: [1, 2]}, {a: [3, 4]}], 
+ *  currentState = [{a: [1, 2]}, {a: [3, 4]}]
  *  path = [0, 'a']
  *  newValue = 5
  * The newState will be [{a: [1, 2, 5]}, {a: [3, 4]}]
@@ -92,16 +92,16 @@ export function appendElementToArray<T>(
  * @param setStateCallback setState function
  * @param path lodash path, e.g. [0, indexPattern] or "[0].indexPattern", use [] to indicate root level
  * @param index index of element to be removed
- * 
+ *
  * e.g.
  * Scenario 1, path = [] to append to root level array
- *  currentState = [1, 2], 
+ *  currentState = [1, 2]
  *  path = []
  *  index = 0
  * The newState will be [2]
- * 
+ *
  * Scenario 2, path != [] to append to sub array
- *  currentState = [{a: [1, 2]}, {a: [3, 4]}], 
+ *  currentState = [{a: [1, 2]}, {a: [3, 4]}]
  *  path = [0, 'a']
  *  index = 1
  * The newState will be [{a: [1]}, {a: [3, 4]}]

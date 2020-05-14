@@ -33,14 +33,14 @@ export function comboBoxOptionToString(option: EuiComboBoxOptionOption): string 
  * @param setStateCallback setState function
  * @param path lodash path, e.g. [0, indexPattern] or "[0].indexPattern", use [] to indicate root level
  * @param newValue value to be updated
- * 
+ *
  * e.g.
  * Scenario 1, path = [] to append to root level array
- *  currentState = [{label: 1}, {label: 2}], 
+ *  currentState = [{label: 1}, {label: 2}]
  *  path = []
  *  newValue = 3
  * The newState will be [{label: 1}, {label: 2}, {label: 3}]
- * 
+ *
  * Scenario 2, path != [] to append to sub array
  *  currentState = [
  *    {options: [{label: 1}, {label: 2}]},
