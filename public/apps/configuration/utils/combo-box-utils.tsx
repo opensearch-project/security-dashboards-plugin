@@ -29,7 +29,7 @@ export function comboBoxOptionToString(option: EuiComboBoxOptionOption): string 
 }
 
 /**
- * Convert a string to an combo box option and append to an array (or sub array indicating by path)
+ * Convert a string to a combo box option and append to an array (or sub array indicating by path)
  * @param setStateCallback setState function
  * @param path lodash path, e.g. [0, indexPattern] or "[0].indexPattern", use [] to indicate root level
  * @param newValue value to be updated
