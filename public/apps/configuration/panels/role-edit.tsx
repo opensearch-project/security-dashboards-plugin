@@ -41,7 +41,7 @@ import {
   appendElementToArray,
   removeElementFromArray,
   updateElementInArrayHandler,
-} from '../utils/list-state-utils';
+} from '../utils/array-state-utils';
 import { PanelWithHeader } from '../utils/panel-with-header';
 import { getRoleDetail } from '../utils/role-detail-utils';
 import {
