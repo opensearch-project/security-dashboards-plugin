@@ -29,7 +29,7 @@ import {
   EuiSuperSelect,
   EuiText,
   EuiTextArea,
-  EuiTitle
+  EuiTitle,
 } from '@elastic/eui';
 import React, { Dispatch, Fragment, SetStateAction, useEffect, useState } from 'react';
 import { AppDependencies } from '../../types';
@@ -40,11 +40,15 @@ import { FormRow } from '../utils/form-row';
 import {
   appendElementToArray,
   removeElementFromArray,
-  updateElementInArrayHandler
+  updateElementInArrayHandler,
 } from '../utils/list-state-utils';
 import { PanelWithHeader } from '../utils/panel-with-header';
 import { getRoleDetail } from '../utils/role-detail-utils';
-import { stringToComboBoxOption, comboBoxOptionToString, appendOptionToComboBoxHandler } from '../utils/combo-box-utils';
+import {
+  stringToComboBoxOption,
+  comboBoxOptionToString,
+  appendOptionToComboBoxHandler,
+} from '../utils/combo-box-utils';
 
 interface RoleEditDeps extends AppDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -89,7 +93,9 @@ function getEmptyIndexPermission(): RoleIndexPermissionStateClass {
  * ["~field1", "~field2"] => exclude
  * ["field1", "field2"] => include
  */
-function getFieldLevelSecurityMethod(fieldLevelSecurityRawFields: string[]): FieldLevelSecurityMethod {
+function getFieldLevelSecurityMethod(
+  fieldLevelSecurityRawFields: string[]
+): FieldLevelSecurityMethod {
   // Leading ~ indicates exclude.
   return fieldLevelSecurityRawFields.some((s: string) => s.startsWith('~')) ? 'exclude' : 'include';
 }
@@ -101,7 +107,9 @@ function getFieldLevelSecurityMethod(fieldLevelSecurityRawFields: string[]): Fie
  * ["field1", "field2"] => ["field1", "field2"]
  */
 function getFieldLevelSecurityFields(fieldLevelSecurityRawFields: string[]): OptionSeletion {
-  return fieldLevelSecurityRawFields.map((s: string) => s.replace(/^~/, '')).map(stringToComboBoxOption)
+  return fieldLevelSecurityRawFields
+    .map((s: string) => s.replace(/^~/, ''))
+    .map(stringToComboBoxOption);
 }
 
 function buildIndexPermissionState(
@@ -126,6 +134,139 @@ const FIELD_LEVEL_SECURITY_PLACEHOLDER = `{
         }
     }
 }`;
+
+function IndexPatternRow(props: {
+  value: OptionSeletion;
+  onChangeHandler: (s: OptionSeletion) => void;
+  onCreateHandler: (s: string) => void;
+}) {
+  return (
+    <FormRow headerText="Index" helpText="Specify index pattern using *">
+      <EuiComboBox
+        noSuggestions
+        placeholder="Search for index name or type in index pattern"
+        selectedOptions={props.value}
+        onChange={props.onChangeHandler}
+        onCreateOption={props.onCreateHandler}
+      />
+    </FormRow>
+  );
+}
+
+function IndexPermissionRow(props: {
+  value: OptionSeletion;
+  permisionOptionsSet: OptionSeletion;
+  onChangeHandler: (s: OptionSeletion) => void;
+}) {
+  return (
+    <FormRow
+      headerText="Index permissions"
+      headerSubText="You can specify permissions using both action groups or single permissions. 
+        An permission group is a list of single permissions.
+        You can often achieve your desired security posture using some combination of the default permission groups. 
+        You can also create your own reusable permission groups."
+    >
+      <EuiFlexGroup>
+        <EuiFlexItem style={{ maxWidth: '400px' }}>
+          <EuiComboBox
+            placeholder="Search for action group name or permission name"
+            options={props.permisionOptionsSet}
+            selectedOptions={props.value}
+            onChange={props.onChangeHandler}
+          />
+        </EuiFlexItem>
+        <EuiFlexItem grow={false}>
+          <EuiButton>Browse and select</EuiButton>
+        </EuiFlexItem>
+        <EuiFlexItem grow={false}>
+          <EuiButton iconType="popout" iconSide="right">
+            Create new permission group
+          </EuiButton>
+        </EuiFlexItem>
+      </EuiFlexGroup>
+    </FormRow>
+  );
+}
+
+function DocLevelSecurityRow(props: {
+  value: string;
+  onChangeHandler: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+}) {
+  return (
+    <FormRow
+      headerText="Document level security"
+      headerSubText="You can restrict a role to a subset of document in an index."
+      helpLink="/"
+      optional
+    >
+      <EuiTextArea
+        placeholder={FIELD_LEVEL_SECURITY_PLACEHOLDER}
+        value={props.value}
+        onChange={props.onChangeHandler}
+      />
+    </FormRow>
+  );
+}
+
+function FieldLevelSecurityRow(props: {
+  method: FieldLevelSecurityMethod;
+  fields: OptionSeletion;
+  onMethodChangeHandler: (s: string) => void;
+  onFieldChangeHandler: (s: OptionSeletion) => void;
+  onFieldCreateHandler: (s: string) => void;
+}) {
+  return (
+    <FormRow
+      headerText="Field level security"
+      headerSubText="You can restrict what document field that user can see. If you use field level security in conjunction with document-level security, make sure you don't restrict to the field that document-level security uses."
+      optional
+    >
+      <EuiFlexGroup>
+        <EuiFlexItem grow={1}>
+          <EuiSuperSelect
+            valueOfSelected={props.method}
+            options={[
+              { inputDisplay: 'Include', value: 'include' },
+              { inputDisplay: 'Exclude', value: 'exclude' },
+            ]}
+            onChange={props.onMethodChangeHandler}
+          />
+        </EuiFlexItem>
+        <EuiFlexItem grow={9}>
+          <EuiComboBox
+            noSuggestions
+            placeholder="Type in field name"
+            selectedOptions={props.fields}
+            onChange={props.onFieldChangeHandler}
+            onCreateOption={props.onFieldCreateHandler}
+          />
+        </EuiFlexItem>
+      </EuiFlexGroup>
+    </FormRow>
+  );
+}
+
+function AnonymizationRow(props: {
+  value: OptionSeletion;
+  onChangeHandler: (s: OptionSeletion) => void;
+  onCreateHandler: (s: string) => void;
+}) {
+  return (
+    <FormRow
+      headerText="Anonymization"
+      headerSubText="Masks any sensitive fields with random value to protect your data security."
+      optional
+    >
+      <EuiComboBox
+        noSuggestions
+        placeholder="Type in field name"
+        selectedOptions={props.value}
+        onChange={props.onChangeHandler}
+        onCreateOption={props.onCreateHandler}
+      />
+    </FormRow>
+  );
+}
 
 function generateIndexPermissionPanels(
   indexPermissions: RoleIndexPermissionStateClass[],
@@ -155,92 +296,32 @@ function generateIndexPermissionPanels(
             </EuiButton>
           }
         >
-          <FormRow headerText="Index" helpText="Specify index pattern using *">
-            <EuiComboBox
-              noSuggestions
-              placeholder="Search for index name or type in index pattern"
-              selectedOptions={perm.indexPatterns}
-              onChange={onValueChangeHandler('indexPatterns')}
-              onCreateOption={onCreateOptionHandler('indexPatterns')}
-            />
-          </FormRow>
-          <FormRow
-            headerText="Index Permissions"
-            headerSubText="Specify permissions using either action groups or single permissions. An action group is a list of single permissions.
-        You can often achieve your desired security posture using some combination of the default permission groups. You can
-        also create your own reusable permission groups."
-          >
-            <EuiFlexGroup>
-              <EuiFlexItem style={{ maxWidth: '400px' }}>
-                <EuiComboBox
-                  placeholder="Search for action group name or permission name"
-                  options={permisionOptionsSet}
-                  selectedOptions={perm.allowedActions}
-                  onChange={onValueChangeHandler('allowedActions')}
-                />
-              </EuiFlexItem>
-              <EuiFlexItem grow={false}>
-                <EuiButton>Browse and select</EuiButton>
-              </EuiFlexItem>
-              <EuiFlexItem grow={false}>
-                <EuiButton iconType="popout" iconSide="right">
-                  Create Action Groups
-                </EuiButton>
-              </EuiFlexItem>
-            </EuiFlexGroup>
-          </FormRow>
-          <FormRow
-            headerText="Document level security"
-            headerSubText="You can restrict a role to a subset of document in an index."
-            helpLink="/"
-            optional
-          >
-            <EuiTextArea
-              placeholder={FIELD_LEVEL_SECURITY_PLACEHOLDER}
-              value={perm.docLevelSecurity}
-              onChange={e => onValueChangeHandler('docLevelSecurity')(e.target.value)}
-            />
-          </FormRow>
-          <FormRow
-            headerText="Field level security"
-            headerSubText="You can restrict what document field that user can see. If you use field level security in conjunction with document-level security, make sure you don't restrict to the field that document-level security uses."
-            optional
-          >
-            <EuiFlexGroup>
-              <EuiFlexItem grow={1}>
-                <EuiSuperSelect
-                  valueOfSelected={perm.fieldLevelSecurityMethod}
-                  options={[
-                    { inputDisplay: 'Include', value: 'include' },
-                    { inputDisplay: 'Exclude', value: 'exclude' },
-                  ]}
-                  onChange={onValueChangeHandler('fieldLevelSecurityMethod')}
-                />
-              </EuiFlexItem>
-              <EuiFlexItem grow={9}>
-                <EuiComboBox
-                  noSuggestions
-                  placeholder="Type in field name"
-                  selectedOptions={perm.fieldLevelSecurityFields}
-                  onChange={onValueChangeHandler('fieldLevelSecurityFields')}
-                  onCreateOption={onCreateOptionHandler('fieldLevelSecurityFields')}
-                />
-              </EuiFlexItem>
-            </EuiFlexGroup>
-          </FormRow>
-          <FormRow
-            headerText="Anonomization"
-            headerSubText="Masks any sensitive fields with random value to protect your data security."
-            optional
-          >
-            <EuiComboBox
-              noSuggestions
-              placeholder="Type in field name"
-              selectedOptions={perm.maskedFields}
-              onChange={onValueChangeHandler('maskedFields')}
-              onCreateOption={onCreateOptionHandler('maskedFields')}
-            />
-          </FormRow>
+          <IndexPatternRow
+            value={perm.indexPatterns}
+            onChangeHandler={onValueChangeHandler('indexPatterns')}
+            onCreateHandler={onCreateOptionHandler('indexPatterns')}
+          />
+          <IndexPermissionRow
+            value={perm.allowedActions}
+            permisionOptionsSet={permisionOptionsSet}
+            onChangeHandler={onValueChangeHandler('allowedActions')}
+          />
+          <DocLevelSecurityRow
+            value={perm.docLevelSecurity}
+            onChangeHandler={e => onValueChangeHandler('docLevelSecurity')(e.target.value)}
+          />
+          <FieldLevelSecurityRow
+            method={perm.fieldLevelSecurityMethod}
+            fields={perm.fieldLevelSecurityFields}
+            onMethodChangeHandler={onValueChangeHandler('fieldLevelSecurityMethod')}
+            onFieldChangeHandler={onValueChangeHandler('fieldLevelSecurityFields')}
+            onFieldCreateHandler={onCreateOptionHandler('fieldLevelSecurityFields')}
+          />
+          <AnonymizationRow
+            value={perm.maskedFields}
+            onChangeHandler={onValueChangeHandler('maskedFields')}
+            onCreateHandler={onCreateOptionHandler('maskedFields')}
+          />
         </EuiAccordion>
         <EuiHorizontalRule />
       </Fragment>
