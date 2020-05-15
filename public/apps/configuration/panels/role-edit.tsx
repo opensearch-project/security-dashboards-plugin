@@ -79,11 +79,11 @@ interface RoleIndexPermissionStateClass {
 function getEmptyIndexPermission(): RoleIndexPermissionStateClass {
   return {
     indexPatterns: [],
+    allowedActions: [],
     docLevelSecurity: '',
     fieldLevelSecurityMethod: 'exclude',
     fieldLevelSecurityFields: [],
     maskedFields: [],
-    allowedActions: [],
   };
 }
 
@@ -117,11 +117,11 @@ function buildIndexPermissionState(
 ): RoleIndexPermissionStateClass[] {
   return indexPerm.map(perm => ({
     indexPatterns: perm.index_patterns.map(stringToComboBoxOption),
+    allowedActions: [],
     docLevelSecurity: perm.dls,
     fieldLevelSecurityMethod: getFieldLevelSecurityMethod(perm.fls),
     fieldLevelSecurityFields: getFieldLevelSecurityFields(perm.fls),
     maskedFields: [],
-    allowedActions: [],
   }));
 }
 
@@ -195,7 +195,7 @@ function DocLevelSecurityRow(props: {
   return (
     <FormRow
       headerText="Document level security"
-      headerSubText="You can restrict a role to a subset of document in an index."
+      headerSubText="You can restrict a role to a subset of documents in an index."
       helpLink="/"
       optional
     >
@@ -218,7 +218,7 @@ function FieldLevelSecurityRow(props: {
   return (
     <FormRow
       headerText="Field level security"
-      headerSubText="You can restrict what document field that user can see. If you use field level security in conjunction with document-level security, make sure you don't restrict to the field that document-level security uses."
+      headerSubText="You can restrict what document fields that user can see. If you use field-level security in conjunction with document-level security, make sure you don't restrict access to the field that document-level security uses."
       optional
     >
       <EuiFlexGroup>
@@ -273,52 +273,52 @@ function generateIndexPermissionPanels(
   permisionOptionsSet: EuiComboBoxOptionOption[],
   setRoleIndexPermission: Dispatch<SetStateAction<RoleIndexPermissionStateClass[]>>
 ) {
-  const panels = indexPermissions.map((perm, index) => {
-    const onValueChangeHandler = (field: string) =>
-      updateElementInArrayHandler(setRoleIndexPermission, [index, field]);
+  const panels = indexPermissions.map((permission, arrayIndex) => {
+    const onValueChangeHandler = (attributeToUpdate: string) =>
+      updateElementInArrayHandler(setRoleIndexPermission, [arrayIndex, attributeToUpdate]);
 
-    const onCreateOptionHandler = (field: string) =>
-      appendOptionToComboBoxHandler(setRoleIndexPermission, [index, field]);
+    const onCreateOptionHandler = (attributeToUpdate: string) =>
+      appendOptionToComboBoxHandler(setRoleIndexPermission, [arrayIndex, attributeToUpdate]);
 
     return (
-      <Fragment key={`index-permission-${index}`}>
+      <Fragment key={`index-permission-${arrayIndex}`}>
         <EuiAccordion
-          id={`index-permission-${index}`}
+          id={`index-permission-${arrayIndex}`}
           buttonContent={
-            perm.indexPatterns.map(comboBoxOptionToString).join(', ') || 'Add index permission'
+            permission.indexPatterns.map(comboBoxOptionToString).join(', ') || 'Add index permission'
           }
           extraAction={
             <EuiButton
               color="danger"
-              onClick={() => removeElementFromArray(setRoleIndexPermission, [], index)}
+              onClick={() => removeElementFromArray(setRoleIndexPermission, [], arrayIndex)}
             >
               Remove
             </EuiButton>
           }
         >
           <IndexPatternRow
-            value={perm.indexPatterns}
+            value={permission.indexPatterns}
             onChangeHandler={onValueChangeHandler('indexPatterns')}
             onCreateHandler={onCreateOptionHandler('indexPatterns')}
           />
           <IndexPermissionRow
-            value={perm.allowedActions}
+            value={permission.allowedActions}
             permisionOptionsSet={permisionOptionsSet}
             onChangeHandler={onValueChangeHandler('allowedActions')}
           />
           <DocLevelSecurityRow
-            value={perm.docLevelSecurity}
+            value={permission.docLevelSecurity}
             onChangeHandler={e => onValueChangeHandler('docLevelSecurity')(e.target.value)}
           />
           <FieldLevelSecurityRow
-            method={perm.fieldLevelSecurityMethod}
-            fields={perm.fieldLevelSecurityFields}
+            method={permission.fieldLevelSecurityMethod}
+            fields={permission.fieldLevelSecurityFields}
             onMethodChangeHandler={onValueChangeHandler('fieldLevelSecurityMethod')}
             onFieldChangeHandler={onValueChangeHandler('fieldLevelSecurityFields')}
             onFieldCreateHandler={onCreateOptionHandler('fieldLevelSecurityFields')}
           />
           <AnonymizationRow
-            value={perm.maskedFields}
+            value={permission.maskedFields}
             onChangeHandler={onValueChangeHandler('maskedFields')}
             onCreateHandler={onCreateOptionHandler('maskedFields')}
           />
@@ -376,7 +376,7 @@ export function RoleEdit(props: RoleEditDeps) {
     fetchActionGroupNames();
   }, []);
 
-  const clusterWidePermissionOptions = [
+  const clusterWisePermissionOptions = [
     {
       label: 'Permission groups',
       options: actionGroups.map(stringToComboBoxOption),
@@ -441,7 +441,7 @@ export function RoleEdit(props: RoleEditDeps) {
             <EuiFlexGroup>
               <EuiFlexItem style={{ maxWidth: '400px' }}>
                 <EuiComboBox
-                  options={clusterWidePermissionOptions}
+                  options={clusterWisePermissionOptions}
                   selectedOptions={roleClusterPermission}
                   onChange={setRoleClusterPermission}
                 />
@@ -466,7 +466,7 @@ export function RoleEdit(props: RoleEditDeps) {
       >
         {generateIndexPermissionPanels(
           roleIndexPermission,
-          clusterWidePermissionOptions,
+          clusterWisePermissionOptions,
           setRoleIndexPermission
         )}
         <EuiButton

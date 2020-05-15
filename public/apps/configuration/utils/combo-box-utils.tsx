@@ -16,7 +16,7 @@
 import { EuiComboBoxOptionOption } from '@elastic/eui';
 import { Dispatch, SetStateAction } from 'react';
 import { StringRepresentable, curry } from 'lodash';
-import { appendElementToArray } from './list-state-utils';
+import { appendElementToArray } from './array-state-utils';
 
 // Build option objects for EuiComboBox
 export function stringToComboBoxOption(option: string): EuiComboBoxOptionOption {
