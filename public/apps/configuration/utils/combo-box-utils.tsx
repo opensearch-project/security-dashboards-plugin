@@ -18,12 +18,12 @@ import { Dispatch, SetStateAction } from 'react';
 import { StringRepresentable, curry } from 'lodash';
 import { appendElementToArray } from './array-state-utils';
 
-// Build option objects for EuiComboBox
+// Build an option object for EuiComboBox
 export function stringToComboBoxOption(option: string): EuiComboBoxOptionOption {
   return { label: option };
 }
 
-// Unbuild EuiComboBox option objects to string[]
+// Unbuild an EuiComboBox option objects to string
 export function comboBoxOptionToString(option: EuiComboBoxOptionOption): string {
   return option.label;
 }

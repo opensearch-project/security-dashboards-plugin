@@ -30,9 +30,9 @@ function resolveValue<T>(
  *
  * e.g. 
  *  currentState = [{a: 1}, {a: 2}]
- *  path = [1, 'a']
+ *  path = [0, 'a']
  *  newValue = 10
- * The newState will be [{a: 1}, {a: 10}]
+ * The newState will be [{a: 10}, {a: 2}]
  */
 export function updateElementInArray<T>(
   setStateCallback: Dispatch<SetStateAction<any[]>>,
