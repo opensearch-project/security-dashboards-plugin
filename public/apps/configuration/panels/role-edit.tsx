@@ -64,6 +64,8 @@ const TITLE_TEXT_DICT = {
   duplicate: 'Duplicate Role',
 };
 
+// Break down this file by sub panels.
+
 type OptionSeletion = EuiComboBoxOptionOption[];
 type FieldLevelSecurityMethod = 'exclude' | 'include';
 
