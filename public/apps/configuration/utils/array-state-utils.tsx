@@ -111,7 +111,9 @@ export function removeElementFromArray<T>(
 ) {
   setStateCallback(prevState => {
     if ((path as StringRepresentable[]).length == 0) {
-      return [...prevState].splice(index, 1);
+      let newState = [...prevState]
+      newState.splice(index, 1);
+      return newState;
     } else {
       let newArray = [...(get(prevState, path) as T[])];
       newArray.splice(index, 1);
