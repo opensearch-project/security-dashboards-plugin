@@ -13,28 +13,40 @@
  *   permissions and limitations under the License.
  */
 
+import { EuiFormRow, EuiLink, EuiText } from '@elastic/eui';
 import React from 'react';
-import { EuiFormRow, EuiText, EuiTitle } from '@elastic/eui';
 
 interface FormRowDeps {
   headerText: string;
+  optional?: boolean;
   headerSubText?: string;
+  helpLink?: string;
   helpText?: string;
   children: React.ReactElement;
 }
 
 export function FormRow(props: FormRowDeps) {
   return (
-    <EuiFormRow fullWidth
+    <EuiFormRow
+      fullWidth
       label={
         <EuiText size="xs" color="subdued">
-          <EuiTitle size="xxs">
-            <h4>{ props.headerText }</h4>
-          </EuiTitle>
-          { props.headerSubText }
+          <p>
+            <b>{props.headerText}</b>
+            <i>{props.optional && ' - optional'}</i>
+          </p>
+          {props.headerSubText}
+          {props.helpLink && (
+            <>
+              {' '}
+              <EuiLink href="{props.helpLink}" external>
+                Learn more
+              </EuiLink>
+            </>
+          )}
         </EuiText>
       }
-      helpText={ props.helpText }
+      helpText={props.helpText}
     >
       {props.children}
     </EuiFormRow>
