@@ -298,7 +298,7 @@ export function IndexPermissionPanel(props: {
   const { state, optionUniverse, setState } = props;
   return (
     <PanelWithHeader
-      headerText="Index Permissions"
+      headerText="Index permissions"
       headerSubText="Index permissions allow you to specify how users in this role can access the specific indices. By default, no index permission is granted."
       helpLink="/"
     >

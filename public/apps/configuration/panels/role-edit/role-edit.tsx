@@ -130,7 +130,7 @@ export function RoleEdit(props: RoleEditDeps) {
         <EuiForm>
           <FormRow
             headerText="Name"
-            headerSubText="Specify a descriptive and unique role name. You cannot edit the name onece the role is created."
+            headerSubText="Specify a descriptive and unique role name. You cannot edit the name once the role is created."
             helpText="The Role name must contain from m to n characters. Valid characters are 
             lowercase a-z, 0-9 and (-) hyphen."
           >

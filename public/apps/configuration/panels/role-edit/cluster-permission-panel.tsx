@@ -27,7 +27,7 @@ export function ClusterPermissionPanel(props: {
 }) {
   const {state, optionUniverse, setState} = props;
   return (<PanelWithHeader
-    headerText="Cluster Permissions"
+    headerText="Cluster permissions"
     headerSubText="Specify how users in this role can access the cluster. By default, no cluster permission is granted."
     helpLink="/"
   >
