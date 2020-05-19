@@ -120,7 +120,7 @@ export function RoleEdit(props: RoleEditDeps) {
           Roles are the core way of controlling access to your cluster. Roles contain any
           combination of cluster-wide permission, index-specific permissions, document- and
           field-level security, and tenants. Once you've created the role, you can map users to
-          these roles so that users gain those permissions.{' '}
+          the roles so that users gain those permissions.{' '}
           <EuiLink external href="/">
             Learn More
           </EuiLink>
