@@ -19,7 +19,7 @@ import { AppDependencies } from '../types';
 import { RouteItem } from './types';
 import { NavPanel } from './panels/nav-panel';
 import { RoleList } from './panels/role-list';
-import { RoleEdit } from './panels/role-edit';
+import { RoleEdit } from './panels/role-edit/role-edit';
 import { EuiPage, EuiPageSideBar, EuiPageBody } from '@elastic/eui';
 
 const RoutesMap: { [key: string]: RouteItem } = {
