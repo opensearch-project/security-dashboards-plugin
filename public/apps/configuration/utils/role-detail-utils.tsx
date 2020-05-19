@@ -18,5 +18,5 @@ import { API_ENDPOINT_ROLES } from '../constants';
 import { RoleDetail } from '../types';
 
 export async function getRoleDetail(http: HttpStart, roleName: string) {
-  return await http.get(`${API_ENDPOINT_ROLES}/${roleName}`) as RoleDetail;
+  return (await http.get(`${API_ENDPOINT_ROLES}/${roleName}`)) as RoleDetail;
 }

@@ -52,7 +52,7 @@ export function LoginPage(props: LoginPageDeps) {
   // @ts-ignore : Parameter 'e' implicitly has an 'any' type.
   const handleSubmit = async e => {
     e.preventDefault();
-    
+
     // Clear errors
     setloginFailed(false);
     setUsernameValidationFailed(false);
@@ -60,21 +60,21 @@ export function LoginPage(props: LoginPageDeps) {
 
     // Form validation
     if (username === '') {
-        setUsernameValidationFailed(true);
-        return;
+      setUsernameValidationFailed(true);
+      return;
     }
 
     if (password === '') {
-        setPasswordValidationFailed(true);
-        return;
+      setPasswordValidationFailed(true);
+      return;
     }
 
     try {
       // @ts-ignore : response not used
       const response = await props.http.post('/auth/login', {
         body: JSON.stringify({
-          username: username,
-          password: password,
+          username,
+          password,
         }),
       });
       const urlParams = new URLSearchParams(window.location.search);

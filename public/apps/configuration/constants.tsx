@@ -59,7 +59,7 @@ export const CLUSTER_PERMISSIONS = [
   'cluster:monitor/task',
   'cluster:monitor/task/get',
   'cluster:monitor/tasks/list',
-]
+];
 
 export const INDEX_PERMISSIONS = [
   'indices:admin/aliases',

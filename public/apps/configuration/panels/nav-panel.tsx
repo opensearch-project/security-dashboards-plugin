@@ -18,19 +18,19 @@ import { EuiSideNav } from '@elastic/eui';
 import { RouteItem } from '../types';
 
 function buildTreeItems(items: RouteItem[]) {
-  return [{
-    name: 'Security',
-    id: 'security',
-    items: items.map(e => ({
-      id: e.name,
-      name: e.name,
-      href: "#" + e.href,
-    }))
-  }]
+  return [
+    {
+      name: 'Security',
+      id: 'security',
+      items: items.map(e => ({
+        id: e.name,
+        name: e.name,
+        href: '#' + e.href,
+      })),
+    },
+  ];
 }
 
-export function NavPanel(props: {
-  items: RouteItem[]
-}) {
-  return (<EuiSideNav items={buildTreeItems(props.items)} />)
+export function NavPanel(props: { items: RouteItem[] }) {
+  return <EuiSideNav items={buildTreeItems(props.items)} />;
 }
