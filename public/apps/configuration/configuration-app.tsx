@@ -19,15 +19,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppMountParameters, CoreStart } from '../../../../../src/core/public';
 import { AppPluginStartDependencies } from '../../types';
-import { AppRouter } from './app-router'
+import { AppRouter } from './app-router';
 
 export function renderApp(
   coreStart: CoreStart,
   navigation: AppPluginStartDependencies,
   params: AppMountParameters
 ) {
-  const deps = {coreStart, navigation, params};
-  ReactDOM.render(
-    <AppRouter {...deps} />, params.element);
+  const deps = { coreStart, navigation, params };
+  ReactDOM.render(<AppRouter {...deps} />, params.element);
   return () => ReactDOM.unmountComponentAtNode(params.element);
 }

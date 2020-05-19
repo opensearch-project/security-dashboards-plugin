@@ -58,14 +58,14 @@ export function RoleEdit(props: RoleEditDeps) {
 
   useEffect(() => {
     const action = props.action;
-    if (action == 'edit' || action == 'duplicate') {
+    if (action === 'edit' || action === 'duplicate') {
       const fetchData = async () => {
         try {
           const roleData = await getRoleDetail(props.coreStart.http, props.sourceRoleName);
           setRoleClusterPermission(roleData.cluster_permissions.map(stringToComboBoxOption));
           setRoleIndexPermission(buildIndexPermissionState(roleData.index_permissions));
 
-          if (action == 'edit') {
+          if (action === 'edit') {
             setRoleName(props.sourceRoleName);
           } else {
             setRoleName(props.sourceRoleName + '_copy');
@@ -78,7 +78,7 @@ export function RoleEdit(props: RoleEditDeps) {
 
       fetchData();
     }
-  }, [props.sourceRoleName]);
+  }, [props.action, props.coreStart.http, props.sourceRoleName]);
 
   const [actionGroups, setActionGroups] = useState<string[]>([]);
   useEffect(() => {
@@ -93,7 +93,7 @@ export function RoleEdit(props: RoleEditDeps) {
     };
 
     fetchActionGroupNames();
-  }, []);
+  }, [props.coreStart.http]);
 
   const clusterWisePermissionOptions = [
     {
@@ -119,7 +119,7 @@ export function RoleEdit(props: RoleEditDeps) {
           </EuiTitle>
           Roles are the core way of controlling access to your cluster. Roles contain any
           combination of cluster-wide permission, index-specific permissions, document- and
-          field-level security, and tenants. Once you've created the role, you can map users to
+          field-level security, and tenants. Once you&apos;ve created the role, you can map users to
           the roles so that users gain those permissions.{' '}
           <EuiLink external href="/">
             Learn More
@@ -139,7 +139,7 @@ export function RoleEdit(props: RoleEditDeps) {
               onChange={e => {
                 setRoleName(e.target.value);
               }}
-              disabled={props.action == 'edit'}
+              disabled={props.action === 'edit'}
             />
           </FormRow>
         </EuiForm>

@@ -13,10 +13,10 @@
  *   permissions and limitations under the License.
  */
 
-import { PanelWithHeader } from '../../utils/panel-with-header';
 import React from 'react';
-import { FormRow } from '../../utils/form-row';
 import { EuiFieldText } from '@elastic/eui';
+import { PanelWithHeader } from '../../utils/panel-with-header';
+import { FormRow } from '../../utils/form-row';
 
 export function TenantPanel(props: {}) {
   return (

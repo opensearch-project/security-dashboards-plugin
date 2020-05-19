@@ -32,6 +32,7 @@ import {
   EuiPopover,
   EuiContextMenuPanel,
 } from '@elastic/eui';
+import { difference } from 'lodash';
 import { AppDependencies } from '../../types';
 import {
   transformRoleData,
@@ -39,12 +40,11 @@ import {
   requestDeleteRoles,
 } from '../utils/role-list-utils';
 import { API_ENDPOINT_ROLES, API_ENDPOINT_ROLESMAPPING } from '../constants';
-import { difference } from 'lodash';
 
 function truncatedListView(limit = 3) {
   return (items: string[]) => {
     // Show - to indicate empty
-    if (items == undefined || items.length == 0) {
+    if (items === undefined || items.length === 0) {
       return (
         <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
           <EuiText key={'-'} size="xs">
@@ -137,7 +137,7 @@ export function RoleList(props: AppDependencies) {
     };
 
     fetchData();
-  }, []);
+  }, [props.coreStart.http]);
 
   const handleDelete = async () => {
     const rolesToDelete: string[] = selection.map(r => r.role_name);
@@ -159,18 +159,18 @@ export function RoleList(props: AppDependencies) {
     <EuiContextMenuItem
       key="edit"
       onClick={() => {}} // TODO: Redirect to edit page
-      disabled={selection.length != 1 || selection[0].reserved}
+      disabled={selection.length !== 1 || selection[0].reserved}
     >
       Edit
     </EuiContextMenuItem>,
     // TODO: Redirect to duplicate page
-    <EuiContextMenuItem key="duplicate" onClick={() => {}} disabled={selection.length != 1}>
+    <EuiContextMenuItem key="duplicate" onClick={() => {}} disabled={selection.length !== 1}>
       Duplicate
     </EuiContextMenuItem>,
     <EuiContextMenuItem
       key="delete"
       onClick={handleDelete}
-      disabled={selection.length == 0 || selection.some(e => e.reserved)}
+      disabled={selection.length === 0 || selection.some(e => e.reserved)}
     >
       Delete
     </EuiContextMenuItem>,

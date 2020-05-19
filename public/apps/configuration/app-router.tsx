@@ -15,12 +15,12 @@
 
 import React from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
+import { EuiPage, EuiPageSideBar, EuiPageBody } from '@elastic/eui';
 import { AppDependencies } from '../types';
 import { RouteItem } from './types';
 import { NavPanel } from './panels/nav-panel';
 import { RoleList } from './panels/role-list';
 import { RoleEdit } from './panels/role-edit/role-edit';
-import { EuiPage, EuiPageSideBar, EuiPageBody } from '@elastic/eui';
 
 const RoutesMap: { [key: string]: RouteItem } = {
   getStarted: {
@@ -69,9 +69,10 @@ export function AppRouter(props: AppDependencies) {
         </Route>
         <EuiPageBody>
           <Switch>
-            <Route path={`${RoutesMap.roles.href}/:action/:sourceRoleName`} render={(match) => (
-              <RoleEdit {...{...props, ...match.match.params}} />
-            )} />
+            <Route
+              path={`${RoutesMap.roles.href}/:action/:sourceRoleName`}
+              render={match => <RoleEdit {...{ ...props, ...match.match.params }} />}
+            />
             <Route path={RoutesMap.roles.href}>
               <RoleList {...props} />
             </Route>

@@ -31,6 +31,7 @@ module.exports = {
             license: LICENSE_HEADER,
           },
         ],
+        "no-console": 0
       }
     }
   ],

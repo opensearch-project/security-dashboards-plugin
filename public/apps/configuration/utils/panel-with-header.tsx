@@ -31,11 +31,14 @@ export function PanelWithHeader(props: PanelWithHeaderDeps) {
       </EuiTitle>
       <EuiText size="xs" color="subdued">
         {props.headerSubText}
-        {props.helpLink && (<>{' '}
-          <EuiLink href="{props.helpLink}" external>
-            Learn more
-          </EuiLink>
-        </>)}
+        {props.helpLink && (
+          <>
+            {' '}
+            <EuiLink href="{props.helpLink}" external>
+              Learn more
+            </EuiLink>
+          </>
+        )}
       </EuiText>
       <EuiHorizontalRule margin="s" />
       {props.children}

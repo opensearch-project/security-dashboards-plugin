@@ -13,7 +13,13 @@
  *   permissions and limitations under the License.
  */
 
-import { AppMountParameters, CoreSetup, CoreStart, Plugin, PluginInitializerContext} from '../../../src/core/public';
+import {
+  AppMountParameters,
+  CoreSetup,
+  CoreStart,
+  Plugin,
+  PluginInitializerContext,
+} from '../../../src/core/public';
 import {
   OpendistroSecurityPluginSetup,
   OpendistroSecurityPluginStart,
@@ -21,39 +27,37 @@ import {
 } from './types';
 
 export class OpendistroSecurityPlugin
-      implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
-
+  implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
   // @ts-ignore : initializerContext not used
   constructor(private readonly initializerContext: PluginInitializerContext) {}
 
   public setup(core: CoreSetup): OpendistroSecurityPluginSetup {
     core.application.register({
-      id: "opendistro_security",
-      title: "Security",
+      id: 'opendistro_security',
+      title: 'Security',
       order: 1,
       mount: async (params: AppMountParameters) => {
         const { renderApp } = await import('./apps/configuration/configuration-app');
         const [coreStart, depsStart] = await core.getStartServices();
         return renderApp(coreStart, depsStart as AppPluginStartDependencies, params);
-      }
+      },
     });
 
     core.application.register({
-      id: "login",
-      title: "Security",
+      id: 'login',
+      title: 'Security',
       chromeless: true,
-      appRoute: "/app/login",
+      appRoute: '/app/login',
       mount: async (params: AppMountParameters) => {
         const { renderApp } = await import('./apps/login/login-app');
         // @ts-ignore depsStart not used.
         const [coreStart, depsStart] = await core.getStartServices();
         return renderApp(coreStart, params);
-      }
+      },
     });
 
     // Return methods that should be available to other plugins
-    return {
-    };
+    return {};
   }
 
   public start(core: CoreStart): OpendistroSecurityPluginStart {

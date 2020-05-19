@@ -18,16 +18,9 @@ import './_index.scss';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { AppMountParameters, CoreStart } from '../../../../../src/core/public';
-import { LoginPage } from './login-page'
+import { LoginPage } from './login-page';
 
-export function renderApp(
-  coreStart: CoreStart,
-  params: AppMountParameters
-) {
-  ReactDOM.render(
-    <LoginPage
-      http={coreStart.http}
-    />,
-    params.element);
+export function renderApp(coreStart: CoreStart, params: AppMountParameters) {
+  ReactDOM.render(<LoginPage http={coreStart.http} />, params.element);
   return () => ReactDOM.unmountComponentAtNode(params.element);
 }

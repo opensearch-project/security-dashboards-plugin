@@ -16,19 +16,17 @@
 import { get, set, curry, StringRepresentable } from 'lodash';
 import { Dispatch, SetStateAction } from 'react';
 
-function resolveValue<T>(
-  value: T | (() => T)
-) {
-  return (typeof value === 'function') ? (value as Function)() : value;
+function resolveValue<T>(value: T | (() => T)) {
+  return typeof value === 'function' ? (value as Function)() : value;
 }
 
 /**
  * Update an element in an sub array
  * @param setStateCallback setState function
- * @param path lodash path, e.g. [0, indexPattern] or "[0].indexPattern" 
+ * @param path lodash path, e.g. [0, indexPattern] or "[0].indexPattern"
  * @param newValue value to be updated
  *
- * e.g. 
+ * e.g.
  *  currentState = [{a: 1}, {a: 2}]
  *  path = [0, 'a']
  *  newValue = 10
@@ -36,11 +34,11 @@ function resolveValue<T>(
  */
 export function updateElementInArray<T>(
   setStateCallback: Dispatch<SetStateAction<any[]>>,
-  path: StringRepresentable|StringRepresentable[],
+  path: StringRepresentable | StringRepresentable[],
   newValue: T | (() => T)
 ) {
   setStateCallback(prevState => {
-    let newState = [...prevState];
+    const newState = [...prevState];
     set(newState, path, resolveValue(newValue));
     return newState;
   });
@@ -69,16 +67,16 @@ export const updateElementInArrayHandler = curry(updateElementInArray);
  */
 export function appendElementToArray<T>(
   setStateCallback: Dispatch<SetStateAction<any[]>>,
-  path: StringRepresentable|StringRepresentable[],
+  path: StringRepresentable | StringRepresentable[],
   newValue: T | (() => T)
 ) {
   const resolvedNewValue = resolveValue(newValue);
   setStateCallback(prevState => {
-    if ((path as StringRepresentable[]).length == 0) {
+    if ((path as StringRepresentable[]).length === 0) {
       return [...prevState, resolvedNewValue];
     } else {
       const newArray = [...(get(prevState, path) as T[]), resolvedNewValue];
-      let newState = [...prevState];
+      const newState = [...prevState];
       set(newState, path, newArray);
       return newState;
     }
@@ -106,18 +104,18 @@ export function appendElementToArray<T>(
  */
 export function removeElementFromArray<T>(
   setStateCallback: Dispatch<SetStateAction<any[]>>,
-  path: StringRepresentable|StringRepresentable[],
+  path: StringRepresentable | StringRepresentable[],
   index: number
 ) {
   setStateCallback(prevState => {
-    if ((path as StringRepresentable[]).length == 0) {
-      let newState = [...prevState]
+    if ((path as StringRepresentable[]).length === 0) {
+      const newState = [...prevState];
       newState.splice(index, 1);
       return newState;
     } else {
-      let newArray = [...(get(prevState, path) as T[])];
+      const newArray = [...(get(prevState, path) as T[])];
       newArray.splice(index, 1);
-      let newState = [...prevState];
+      const newState = [...prevState];
       set(newState, path, newArray);
       return newState;
     }
