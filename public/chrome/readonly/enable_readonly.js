@@ -35,8 +35,6 @@ import { toastNotifications } from 'ui/notify';
 import './readonly.less';
 import { chromeWrapper } from "../../services/chrome_wrapper";
 
-// Needed to access the dashboardProvider
-import 'plugins/kibana/dashboard/dashboard_config';
 
 /**
  * Holds resolved information
@@ -49,24 +47,6 @@ let resolvedReadOnly = null;
  * @type {boolean}
  */
 let readOnlyMessageAlreadyShown = false;
-
-// As of today, the dashboardConfigProvider doesn't provide a setter
-// with which we can change the state after Angular's config phase.
-// Hence, we extend it with our own method.
-uiModules.get('kibana').config((dashboardConfigProvider) => {
-
-    let providerGetter = dashboardConfigProvider.$get();
-
-    // This method will be added to the providers $get function (standard Angular provider)
-    providerGetter.setHideWriteControls = function(){
-        this.turnHideWriteControlsOn()
-    }.bind(dashboardConfigProvider);
-
-    // Makes the setter available in the original provider
-    dashboardConfigProvider.$get = function() {
-        return providerGetter;
-    };
-});
 
 /**
  * Holds the original state of the navigation links "hidden" property
@@ -211,10 +191,9 @@ function addReadOnlyCSSHelper(isReadOnlyTenant = false) {
  * Response for when we have a read only tenant
  * @param $rootScope
  * @param $location
- * @param dashboardConfig
  * @returns {Object}
  */
-function resolveWithTenantReadOnly($rootScope, $location, dashboardConfig, authInfo) {
+function resolveWithTenantReadOnly($rootScope, $location, authInfo) {
     // We can't use the built in function here since it hides too many controls
     // Instead, this is handled in the CSS
     //dashboardConfig.setHideWriteControls();
@@ -237,11 +216,10 @@ function resolveWithTenantReadOnly($rootScope, $location, dashboardConfig, authI
  * @param $rootScope
  * @param $location
  * @param route
- * @param dashboardConfig
  * @param authInfo
  * @returns {*}
  */
-function resolveWithDashboardRole($q, $rootScope, $location, route, dashboardConfig, authInfo) {
+function resolveWithDashboardRole($q, $rootScope, $location, route, authInfo) {
 
     // If we have more than one tenant, we will leave the tenants app visible
     const globalTenantEnabled = chrome.getInjected('multitenancy.tenants.enable_global');
@@ -266,7 +244,7 @@ function resolveWithDashboardRole($q, $rootScope, $location, route, dashboardCon
         return $q.reject();
     }
 
-    dashboardConfig.setHideWriteControls();
+    npStart.plugins.kibanaLegacy.dashboardConfig.turnHideWriteControlsOn();
     handleRoutingForDashboardOnly($rootScope, $location);
     hideNavItemsForDashboardOnly((numberOfTenants > 1));
     addReadOnlyCSSHelper();
@@ -323,10 +301,9 @@ function resolveRegular(authInfo) {
  * @param $http
  * @param $location
  * @param route
- * @param dashboardConfig
  * @returns {*}
  */
-function readOnlyResolver($q, $rootScope, $http, $location, route, dashboardConfig) {
+function readOnlyResolver($q, $rootScope, $http, $location, route) {
 
     // If we've already fetched what we need, just return/resolve it to save us the AJAX calls
     if (resolvedReadOnly !== null) {
@@ -364,7 +341,7 @@ function readOnlyResolver($q, $rootScope, $http, $location, route, dashboardConf
             if (isReadOnlyByRole) {
                 // A dashboardOnly role trumps the tenant access rights,
                 // so we can return early here.
-                return resolveWithDashboardRole($q, $rootScope, $location, route, dashboardConfig, authInfo);
+                return resolveWithDashboardRole($q, $rootScope, $location, route, authInfo);
             }
 
             // If the user is on the global tenant, we need to get the
@@ -376,7 +353,7 @@ function readOnlyResolver($q, $rootScope, $http, $location, route, dashboardConf
                         let mtinfo = response.data;
 
                         if (mtinfo.kibana_index_readonly) {
-                            return resolveWithTenantReadOnly($rootScope, $location, dashboardConfig, authInfo);
+                            return resolveWithTenantReadOnly($rootScope, $location, authInfo);
                         } else {
                             return resolveRegular(authInfo);
                         }
@@ -389,7 +366,7 @@ function readOnlyResolver($q, $rootScope, $http, $location, route, dashboardConf
                     ||
                     (authInfo.tenants[authInfo.user_requested_tenant] === false)
                 ) {
-                    return resolveWithTenantReadOnly($rootScope, $location, dashboardConfig, authInfo);
+                    return resolveWithTenantReadOnly($rootScope, $location, authInfo);
                 }
 
             }
@@ -409,9 +386,8 @@ function readOnlyResolver($q, $rootScope, $http, $location, route, dashboardConf
  * @param $q
  * @param $location
  * @param $injector
- * @param dashboardConfig
  */
-export function enableReadOnly($rootScope, $http, $window, $timeout, $q, $location, $injector, dashboardConfig) {
+export function enableReadOnly($rootScope, $http, $window, $timeout, $q, $location, $injector) {
     const readOnlyConfig = chrome.getInjected('readonly_mode');
     const path = chrome.removeBasePath($window.location.pathname);
 
@@ -444,7 +420,7 @@ export function enableReadOnly($rootScope, $http, $window, $timeout, $q, $locati
                 }
 
                 route.resolve['security_resolvedInfo'] = function() {
-                    return readOnlyResolver($q, $rootScope, $http, $location, route, dashboardConfig);
+                    return readOnlyResolver($q, $rootScope, $http, $location, route);
                 }
             }
         }

@@ -32,7 +32,8 @@
 
 import chrome from 'ui/chrome';
 import { uiModules } from 'ui/modules';
-import { FeatureCatalogueRegistryProvider, FeatureCatalogueCategory } from 'ui/registry/feature_catalogue';
+import { npSetup } from 'ui/new_platform';
+import { FeatureCatalogueCategory } from '../../../../../src/plugins/home/public';
 import { EuiIcon } from '@elastic/eui';
 import {parse} from "url";
 import { chromeWrapper } from "../../services/chrome_wrapper"
@@ -42,18 +43,19 @@ export function enableMultiTenancy(Private) {
     var enabled = chrome.getInjected('multitenancy_enabled');
     chromeWrapper.hideNavLink('security-multitenancy', !enabled);
     if (enabled) {
-      FeatureCatalogueRegistryProvider.register(() => {
-          return {
-              id: 'security-multitenancy',
-              title: 'Security Multi Tenancy',
-              description: 'Separate searches, visualizations and dashboards by tenants.',
-              icon: 'usersRolesApp',
-              path: '/app/security-multitenancy',
-              showOnHomePage: true,
-              category: FeatureCatalogueCategory.DATA
-          };
-      });
-  }
+        const {
+            plugins: { home },
+        } = npSetup;
+        home.featureCatalogue.register({
+            id: 'security-multitenancy',
+            title: 'Security Multi Tenancy',
+            description: 'Separate searches, visualizations and dashboards by tenants.',
+            icon: 'usersRolesApp',
+            path: '/app/security-multitenancy',
+            showOnHomePage: true,
+            category: FeatureCatalogueCategory.DATA
+        });
+    }
 
     // Add tenant info to the request
     if (securityDynamic && securityDynamic.multiTenancy) {

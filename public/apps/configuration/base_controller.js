@@ -1,6 +1,5 @@
 import { uiModules } from 'ui/modules';
 import chrome from 'ui/chrome';
-import { SavedObjectsClientProvider } from 'ui/saved_objects';
 import { toastNotifications } from 'ui/notify';
 import { get } from 'lodash';
 import './directives/directives';

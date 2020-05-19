@@ -35,7 +35,8 @@ import { uiModules } from 'ui/modules';
 // This fixes an issue where the app icons would disappear while having a non-Kibana app open.
 // Should be fixed starting from Kibana 6.6.2
 import 'ui/autoload/modules';
-import { FeatureCatalogueRegistryProvider, FeatureCatalogueCategory } from 'ui/registry/feature_catalogue';
+import { npSetup } from 'ui/new_platform';
+import { FeatureCatalogueCategory } from '../../../../../src/plugins/home/public';
 require ('../../apps/configuration/systemstate/systemstate');
 import { chromeWrapper } from "../../services/chrome_wrapper";
 
@@ -150,21 +151,23 @@ export function enableConfiguration($http, $window, systemstate) {
         return;
     }
 
-        systemstate.loadRestInfo().then(function(){
-            var rest_api_info = systemstate.getRestApiInfo();
-            chromeWrapper.hideNavLink('security-configuration', !rest_api_info.has_api_access);
-            FeatureCatalogueRegistryProvider.register(() => {
-                return {
-                    id: 'security-configuration',
-                    title: 'Security Configuration',
-                    description: 'Configure users, roles and permissions for Open Distro Security.',
-                    icon: 'securityApp',
-                    path: '/app/security-configuration',
-                    showOnHomePage: true,
-                    category: FeatureCatalogueCategory.ADMIN
-                };
-            });
+    systemstate.loadRestInfo().then(function(){
+        var rest_api_info = systemstate.getRestApiInfo();
+        chromeWrapper.hideNavLink('security-configuration', !rest_api_info.has_api_access);
+        const {
+            plugins: { home },
+        } = npSetup;
+
+        home.featureCatalogue.register({
+            id: 'security-configuration',
+            title: 'Security Configuration',
+            description: 'Configure users, roles and permissions for Open Distro Security.',
+            icon: 'securityApp',
+            path: '/app/security-configuration',
+            showOnHomePage: true,
+            category: FeatureCatalogueCategory.ADMIN
         });
+    });
 }
 
 uiModules.get('security').run(enableConfiguration);
