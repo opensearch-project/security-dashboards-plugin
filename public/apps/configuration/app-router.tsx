@@ -21,6 +21,7 @@ import { RouteItem } from './types';
 import { NavPanel } from './panels/nav-panel';
 import { RoleList } from './panels/role-list';
 import { RoleEdit } from './panels/role-edit/role-edit';
+import { AuthView } from './panels/auth-view/auth-view';
 
 const RoutesMap: { [key: string]: RouteItem } = {
   getStarted: {
@@ -75,6 +76,9 @@ export function AppRouter(props: AppDependencies) {
             />
             <Route path={RoutesMap.roles.href}>
               <RoleList {...props} />
+            </Route>
+            <Route path={RoutesMap.auth.href}>
+              <AuthView {...props} />
             </Route>
           </Switch>
         </EuiPageBody>
