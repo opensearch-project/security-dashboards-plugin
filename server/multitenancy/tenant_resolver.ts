@@ -75,10 +75,10 @@ export function resolveTenant(
  */
 export function isMultitenantPath(request: KibanaRequest): boolean {
   return (
-    request.url.path?.startsWith('/elasticsearch') ||
-    request.url.path?.startsWith('/api') ||
-    request.url.path?.startsWith('/app') ||
-    request.url.path === '/'
+    request.url.pathname?.startsWith('/elasticsearch') ||
+    request.url.pathname?.startsWith('/api') ||
+    request.url.pathname?.startsWith('/app') ||
+    request.url.pathname === '/'
   );
 }
 

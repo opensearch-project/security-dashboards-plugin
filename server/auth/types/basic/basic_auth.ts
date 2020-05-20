@@ -30,6 +30,7 @@ import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { BasicAuthRoutes } from './routes';
 import { isMultitenantPath, resolveTenant } from '../../../multitenancy/tenant_resolver';
 
+// TODO: change to interface
 export class AuthConfig {
   constructor(
     public readonly authType: string,
@@ -140,6 +141,8 @@ export class BasicAuthentication {
 
       // add tenant to Elasticsearch request headers
       if (this.config.multitenancy?.enabled && isMultitenantPath(request)) {
+        // FIXME: !!!! when calling authInfo, the request doesn't have a credentials set in the request
+        //             header yet, thus the call will fail, consider moving tenant stuff to post auth
         const authInfo = await this.securityClient.authinfo(request);
         const selectedTenant = resolveTenant(
           request,

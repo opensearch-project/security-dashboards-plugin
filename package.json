@@ -19,5 +19,7 @@
     "typescript": "3.7.2"
   },
   "dependencies": {
+    "@hapi/wreck": "17.0.0",
+    "@hapi/cryptiles": "5.0.0"
   }
 }
