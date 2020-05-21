@@ -27,6 +27,8 @@ import wreck from '@hapi/wreck';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
 
 export class OpenIdAuthRoutes {
+  private static readonly NONCE_LENGTH: number = 22;
+
   constructor(
     private readonly router: IRouter,
     private readonly config: SecurityPluginConfigType,
@@ -57,11 +59,11 @@ export class OpenIdAuthRoutes {
 
         // Sign-in initialization
         if (!request.query.code) {
-          const nonce = randomString(22);
+          const nonce = randomString(OpenIdAuthRoutes.NONCE_LENGTH);
           const query: any = {
             client_id: this.config.openid?.client_id,
             response_type: 'code',
-            redirect_uri: `${this.getBaseRedirectUrl()}`, // TODO: generate actual domain name
+            redirect_uri: `${this.getBaseRedirectUrl()}`,
             state: nonce,
           };
 
@@ -116,7 +118,6 @@ export class OpenIdAuthRoutes {
           }
 
           const tokenPayload: any = this.parseTokenResponse(tokenResponse.payload as Buffer);
-
           const idToken: string = tokenPayload.id_token;
           const accessToken: string = tokenPayload.access_token;
           const refreshToken: string = tokenPayload.refresh_token;
@@ -134,7 +135,7 @@ export class OpenIdAuthRoutes {
             credentials: {
               authHeaderValue: `Bearer ${idToken}`,
               refresh_token: refreshToken,
-              expires_at: Date.now() + expiresIn * 1000,
+              expires_at: Date.now() + expiresIn * 1000, // expiresIn is in second
             },
             authType: 'openid',
             expiryTime: Date.now() + this.config.cookie.ttl,
@@ -161,7 +162,8 @@ export class OpenIdAuthRoutes {
         const cookie = await this.sessionStorageFactory.asScoped(request).get();
         this.sessionStorageFactory.asScoped(request).clear();
 
-        const token = cookie?.credentials.authHeaderValue.split(' ')[1];
+        // authHeaderValue is the bearer header, e.g. "Bearer <auth_token>"
+        const token = cookie?.credentials.authHeaderValue.split(' ')[1]; // get auth token
         let requestQueryParameters = `?post_logout_redirect_uri=${this.getBaseRedirectUrl()}/app/kibana`;
 
         let endSessionUrl = '/';

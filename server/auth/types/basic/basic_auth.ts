@@ -153,8 +153,8 @@ export class BasicAuthentication {
         );
         Object.assign(headers, { securitytenant: selectedTenant });
 
-        if (selectedTenant !== cookie.tentent) {
-          cookie.tentent = selectedTenant;
+        if (selectedTenant !== cookie.tenant) {
+          cookie.tenant = selectedTenant;
           this.sessionStorageFactory.asScoped(request).set(cookie);
         }
       }

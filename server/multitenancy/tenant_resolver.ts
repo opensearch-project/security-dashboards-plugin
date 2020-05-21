@@ -47,8 +47,8 @@ export function resolveTenant(
     selectedTenant = request.headers.securitytenant
       ? (request.headers.securitytenant as string)
       : (request.headers.security_tenant as string);
-  } else if (cookie.tentent) {
-    selectedTenant = cookie.tentent;
+  } else if (cookie.tenant) {
+    selectedTenant = cookie.tenant;
   } else {
     selectedTenant = undefined;
   }

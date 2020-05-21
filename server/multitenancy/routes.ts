@@ -47,7 +47,7 @@ export function setupMultitenantRoutes(
           body: 'Invalid cookie',
         });
       }
-      cookie.tentent = tenant;
+      cookie.tenant = tenant;
       sessionStroageFactory.asScoped(request);
       return response.ok({
         body: tenant,
@@ -69,7 +69,7 @@ export function setupMultitenantRoutes(
         });
       }
       return response.ok({
-        body: cookie.tentent,
+        body: cookie.tenant,
       });
     }
   );

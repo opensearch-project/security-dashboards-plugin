@@ -41,7 +41,7 @@ export interface OpenIdAuthConfig {
 
 export class OpenIdAuthentication {
   private openIdAuthConfig: OpenIdAuthConfig;
-  private authHaderName: string;
+  private authHeaderName: string;
   private openIdConnectUrl: string;
   private securityClient: SecurityClient;
 
@@ -62,8 +62,8 @@ export class OpenIdAuthentication {
       log.debug(`openId auth 'verify_hostnames' option is on.`);
     }
 
-    this.authHaderName = this.config.openid?.header || '';
-    this.openIdAuthConfig.authHeaderName = this.authHaderName;
+    this.authHeaderName = this.config.openid?.header || '';
+    this.openIdAuthConfig.authHeaderName = this.authHeaderName;
 
     this.openIdConnectUrl = this.config.openid?.connect_url || '';
     this.securityClient = new SecurityClient(this.esClient);
@@ -124,7 +124,7 @@ export class OpenIdAuthentication {
 
       // extract credentials from cookie
     } catch (error) {
-      console.log(error); // FIXME: log and handler properly
+      console.log(error); // FIXME: log and handle properly
     }
     return toolkit.authenticated();
   };

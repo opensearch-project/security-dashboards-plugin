@@ -27,7 +27,7 @@ export interface SecuritySessionCookie {
   additionalAuthHeaders?: any;
 
   // security_storage
-  tentent?: any;
+  tenant?: any;
 
   // for oicd auth workflow
   oidcState?: any;
