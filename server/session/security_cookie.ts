@@ -18,7 +18,7 @@ import { SecurityPluginConfigType } from '..';
 
 export interface SecuritySessionCookie {
   // security_authentication
-  username: string;
+  username?: string;
   credentials?: any;
   authType?: string;
   assignAuthHeader?: boolean;
@@ -27,7 +27,10 @@ export interface SecuritySessionCookie {
   additionalAuthHeaders?: any;
 
   // security_storage
-  tentent?: any;
+  tenant?: any;
+
+  // for oidc auth workflow
+  oidcState?: any;
 }
 
 export function getSecurityCookieOptions(

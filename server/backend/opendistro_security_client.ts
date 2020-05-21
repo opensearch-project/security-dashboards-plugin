@@ -49,7 +49,7 @@ export class SecurityClient {
     request: KibanaRequest,
     headerName: string,
     headerValue: string,
-    whitelistedHeadersAndValues: any,
+    whitelistedHeadersAndValues: any = {},
     additionalAuthHeaders: any = {}
   ): Promise<User> {
     try {

@@ -47,8 +47,8 @@ export function resolveTenant(
     selectedTenant = request.headers.securitytenant
       ? (request.headers.securitytenant as string)
       : (request.headers.security_tenant as string);
-  } else if (cookie.tentent) {
-    selectedTenant = cookie.tentent;
+  } else if (cookie.tenant) {
+    selectedTenant = cookie.tenant;
   } else {
     selectedTenant = undefined;
   }
@@ -75,10 +75,10 @@ export function resolveTenant(
  */
 export function isMultitenantPath(request: KibanaRequest): boolean {
   return (
-    request.url.path?.startsWith('/elasticsearch') ||
-    request.url.path?.startsWith('/api') ||
-    request.url.path?.startsWith('/app') ||
-    request.url.path === '/'
+    request.url.pathname?.startsWith('/elasticsearch') ||
+    request.url.pathname?.startsWith('/api') ||
+    request.url.pathname?.startsWith('/app') ||
+    request.url.pathname === '/'
   );
 }
 

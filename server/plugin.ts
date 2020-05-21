@@ -40,6 +40,7 @@ import {
   ISavedObjectTypeRegistry,
 } from '../../../src/core/server/saved_objects';
 import { setupIndexTemplate, migrateTenantIndices } from './multitenancy/tenant_index';
+import { OpenIdAuthentication } from './auth/types/openid/openid_auth';
 
 export class OpendistroSecurityPlugin
   implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
@@ -97,6 +98,16 @@ export class OpendistroSecurityPlugin
         router,
         esClient,
         core
+      );
+      core.http.registerAuth(auth.authHandler);
+    } else if (config.auth.type === 'openid') {
+      const auth = new OpenIdAuthentication(
+        config,
+        securitySessionStorageFactory,
+        router,
+        esClient,
+        core,
+        this.logger
       );
       core.http.registerAuth(auth.authHandler);
     }
