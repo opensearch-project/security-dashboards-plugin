@@ -29,7 +29,7 @@ export interface SecuritySessionCookie {
   // security_storage
   tenant?: any;
 
-  // for oicd auth workflow
+  // for oidc auth workflow
   oidcState?: any;
 }
 

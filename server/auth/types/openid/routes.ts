@@ -118,6 +118,7 @@ export class OpenIdAuthRoutes {
           }
 
           const tokenPayload: any = this.parseTokenResponse(tokenResponse.payload as Buffer);
+
           const idToken: string = tokenPayload.id_token;
           const accessToken: string = tokenPayload.access_token;
           const refreshToken: string = tokenPayload.refresh_token;
