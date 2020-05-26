@@ -1,0 +1,6 @@
+figure {
+    max-width: 16px !important;
+    margin-right: 12px;
+    flex-grow: 0;
+    flex-shrink: 0;
+}

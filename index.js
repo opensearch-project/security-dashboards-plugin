@@ -264,6 +264,7 @@ export default function (kibana) {
                     url: '/app/security-configuration#/'
                 }
             ],
+            styleSheetPaths: require('path').resolve(__dirname, 'public/app.css'),
             chromeNavControls: [
                 'plugins/opendistro_security/chrome/btn_logout/btn_logout.js'
             ]
