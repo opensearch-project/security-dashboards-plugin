@@ -102,7 +102,7 @@ export class JwtAuthentication {
       }
     }
 
-    // not credetail in query parameter, header, or cookie,
+    // no credentials in query parameter, header, or cookie,
     // redirect to login url if there is one
     const loginEndpoint = this.config.jwt?.login_endpoint;
     if (loginEndpoint) {
@@ -135,8 +135,8 @@ export class JwtAuthentication {
 
     // fallback to HTTP header
     const authHeaderValue = request.headers[this.authHeaderName];
+    // authHeaderValue should not be array, to ensure client doesn't pass multiple auth header
     if (authHeaderValue && !Array.isArray(authHeaderValue)) {
-      // authHeaderValue should not be array, to ensure client doesn't pass multiple auth header
       return authHeaderValue;
     }
 
