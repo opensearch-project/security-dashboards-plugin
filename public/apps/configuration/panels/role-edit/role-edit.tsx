@@ -87,7 +87,7 @@ export function RoleEdit(props: RoleEditDeps) {
 
       fetchData();
     }
-  }, [props.action, props.sourceRoleName]);
+  }, [props.action, props.coreStart.http, props.sourceRoleName]);
 
   const [actionGroups, setActionGroups] = useState<string[]>([]);
   useEffect(() => {
@@ -102,14 +102,13 @@ export function RoleEdit(props: RoleEditDeps) {
     };
 
     fetchActionGroupNames();
-  }, []);
+  }, [props.coreStart.http]);
 
   const [tenantNames, setTenantNames] = useState<string[]>([]);
   useEffect(() => {
     const fetchTenantNames = async () => {
       try {
-        const tenantNames = await fetchTenantNameList(props.coreStart.http);
-        setTenantNames(tenantNames);
+        setTenantNames(await fetchTenantNameList(props.coreStart.http));
       } catch (e) {
         // TODO: show user friendly error message
         console.log(e);
@@ -117,7 +116,7 @@ export function RoleEdit(props: RoleEditDeps) {
     };
 
     fetchTenantNames();
-  }, []);
+  }, [props.coreStart.http]);
 
   const clusterWisePermissionOptions = [
     {

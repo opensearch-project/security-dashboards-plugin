@@ -45,7 +45,7 @@ export function buildTenantPermissionState(
     }
     return {
       tenantPatterns: permission.tenant_patterns.map(stringToComboBoxOption),
-      permissionType: permissionType,
+      permissionType,
     };
   });
 }
