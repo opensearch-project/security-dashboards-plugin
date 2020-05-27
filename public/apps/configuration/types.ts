@@ -18,6 +18,15 @@ export interface RouteItem {
   href: string;
 }
 
+export interface DataObject<T> {
+  [key: string]: T;
+}
+
+export interface ObjectsMessage<T> {
+  total: number;
+  data: DataObject<T>;
+}
+
 export interface RoleIndexPermission {
   index_patterns: string[];
   dls: string;
@@ -39,4 +48,9 @@ export interface RoleUpdate {
 
 export interface RoleDetail extends RoleUpdate {
   reserved: boolean;
+}
+
+export interface Tenant {
+  reserved: boolean;
+  description: string;
 }

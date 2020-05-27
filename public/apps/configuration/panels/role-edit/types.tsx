@@ -25,3 +25,15 @@ export interface RoleIndexPermissionStateClass {
   maskedFields: ComboBoxOptions;
   allowedActions: ComboBoxOptions;
 }
+
+export enum TenantPermissionType {
+  None = '',
+  Read = 'r',
+  Write = 'w',
+  Full = 'rw',
+}
+
+export interface RoleTenantPermissionStateClass {
+  tenantPatterns: ComboBoxOptions;
+  permissionType: TenantPermissionType;
+}
