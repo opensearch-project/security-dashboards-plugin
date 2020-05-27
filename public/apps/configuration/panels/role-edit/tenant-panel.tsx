@@ -81,15 +81,14 @@ function generateTenantPermissionPanels(
               options={permisionOptionsSet}
             />
           </EuiFlexItem>
-          <EuiFlexItem style={{ maxWidth: '150px' }}>
+          <EuiFlexItem style={{ maxWidth: '170px' }}>
             <EuiSuperSelect
               valueOfSelected={permission.permissionType}
               onChange={onValueChangeHandler('permissionType')}
               options={[
-                { inputDisplay: '', value: TenantPermissionType.None },
-                { inputDisplay: 'Read', value: TenantPermissionType.Read },
-                { inputDisplay: 'Write', value: TenantPermissionType.Write },
-                { inputDisplay: 'Read/Write', value: TenantPermissionType.Full },
+                { inputDisplay: 'Read only', value: TenantPermissionType.Read },
+                { inputDisplay: 'Write only', value: TenantPermissionType.Write },
+                { inputDisplay: 'Read and Write', value: TenantPermissionType.Full },
               ]}
             />
           </EuiFlexItem>
@@ -129,7 +128,7 @@ export function TenantPanel(props: {
           appendElementToArray(setState, [], getEmptyTenantPermission());
         }}
       >
-        Add another index permission
+        Add another tenant
       </EuiButton>
     </PanelWithHeader>
   );
