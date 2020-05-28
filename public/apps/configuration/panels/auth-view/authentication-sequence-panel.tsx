@@ -14,16 +14,113 @@
  */
 
 import React from 'react';
+import { EuiInMemoryTable } from '@elastic/eui';
+import { _ } from 'lodash';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 
-export function AuthenticationSequencePanel(props: {}) {
+import { ExpressionModal } from './expression-modal';
+
+const renderExpression = (title: string) => {
+  return (expression: string) => {
+    if (_.isEmpty(expression)) {
+      return '-';
+    }
+
+    return <ExpressionModal title={title} expression={expression} />;
+  };
+};
+
+const columns = [
+  {
+    field: 'order',
+    name: 'Execution order',
+    sortable: true,
+  },
+  {
+    field: 'domain_name',
+    name: 'Domain name',
+  },
+  {
+    field: 'http_enabled',
+    name: 'HTTP',
+  },
+  {
+    field: 'transport_enabled',
+    name: 'TRANSPORT',
+  },
+  {
+    field: 'http_type',
+    name: 'HTTP type',
+  },
+  {
+    field: 'http_challenge',
+    name: 'HTTP challenge',
+  },
+  {
+    field: 'http_configuration',
+    name: 'HTTP configuration',
+    render: renderExpression('HTTP configuration'),
+  },
+  {
+    field: 'backend_type',
+    name: 'Backend type',
+  },
+  {
+    field: 'backend_configuration',
+    name: 'Backend configuration',
+    render: renderExpression('Backend configuration'),
+  },
+];
+
+const ENABLED_STRING = 'Enabled';
+const DISABLED_STRING = 'Disabled';
+const TRUE_STRING = 'True';
+const FALSE_STRING = 'False';
+
+export function AuthenticationSequencePanel(props: { authc: [] }) {
+  const domains = _.keys(props.authc);
+
+  const items = _.map(domains, function(domain: string) {
+    const data = _.get(props.authc, domain);
+    const httpAuthenticator = data.http_authenticator;
+    const backend = data.authentication_backend;
+    return {
+      order: data.order,
+      domain_name: domain,
+      http_enabled: data.http_enabled ? ENABLED_STRING : DISABLED_STRING,
+      transport_enabled: data.transport_enabled ? ENABLED_STRING : DISABLED_STRING,
+      http_type: httpAuthenticator.type,
+      http_challenge: httpAuthenticator.challenge ? TRUE_STRING : FALSE_STRING,
+      http_configuration: httpAuthenticator.config,
+      backend_type: backend.type,
+      backend_configuration: backend.config,
+    };
+  });
+
+  const search = {
+    box: {
+      placeholder: 'Search authentication domain',
+    },
+  };
+
+  const headerText = 'Authentication sequences (' + domains.length + ')';
+
   return (
     <PanelWithHeader
-      headerText="Authentication sequences"
-      headerSubText="WORKING IN PROGRESS"
+      headerText={headerText}
+      headerSubText="An authentication module specifies where to get the user credentials from, and against which
+      backend they should be authenticated. When there are multiple authentication domains, the plugin will authenticate
+      the user sequentially against each backend until one succeeds"
       helpLink="/"
     >
-      WORKING IN PROGRESS
+      <EuiInMemoryTable
+        columns={columns}
+        items={items}
+        itemId={'domain_name'}
+        pagination={true}
+        sorting={true}
+        search={search}
+      />
     </PanelWithHeader>
   );
 }

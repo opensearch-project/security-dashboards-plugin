@@ -14,12 +14,89 @@
  */
 
 import React from 'react';
+import { EuiInMemoryTable } from '@elastic/eui';
+import { _ } from 'lodash';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 
-export function AuthorizationPanel(props: {}) {
+import { ExpressionModal } from './expression-modal';
+
+const renderExpression = (title: string) => {
+  return (expression: string) => {
+    if (_.isEmpty(expression)) {
+      return '-';
+    }
+
+    return <ExpressionModal title={title} expression={expression} />;
+  };
+};
+
+const columns = [
+  {
+    field: 'domain_name',
+    name: 'Domain name',
+  },
+  {
+    field: 'http_enabled',
+    name: 'HTTP',
+  },
+  {
+    field: 'transport_enabled',
+    name: 'TRANSPORT',
+  },
+  {
+    field: 'backend_type',
+    name: 'Backend type',
+  },
+  {
+    field: 'backend_configuration',
+    name: 'Backend configuration',
+    render: renderExpression('Backend configuration'),
+  },
+];
+
+const ENABLED_STRING = 'Enabled';
+const DISABLED_STRING = 'Disabled';
+const TRUE_STRING = 'True';
+const FALSE_STRING = 'False';
+
+export function AuthorizationPanel(props: { authz: [] }) {
+  const domains = _.keys(props.authz);
+
+  const items = _.map(domains, function(domain: string) {
+    const data = _.get(props.authz, domain);
+    const backend = data.authorization_backend;
+    return {
+      domain_name: domain,
+      http_enabled: data.http_enabled ? ENABLED_STRING : DISABLED_STRING,
+      transport_enabled: data.transport_enabled ? ENABLED_STRING : DISABLED_STRING,
+      backend_type: backend.type,
+      backend_configuration: backend.config,
+    };
+  });
+
+  const search = {
+    box: {
+      placeholder: 'Search authorization domain',
+    },
+  };
+
+  const headerText = 'Authorization (' + domains.length + ')';
+
   return (
-    <PanelWithHeader headerText="Authorization" headerSubText="WORKING IN PROGRESS" helpLink="/">
-      WORKING IN PROGRESS
+    <PanelWithHeader
+      headerText={headerText}
+      headerSubText="After the user has been authenticated, authorization allows optional user collection from backend systems.
+      There is no execution order among multiple authorization domains."
+      helpLink="/"
+    >
+      <EuiInMemoryTable
+        columns={columns}
+        items={items}
+        itemId={'domain_name'}
+        pagination={true}
+        sorting={true}
+        search={search}
+      />
     </PanelWithHeader>
   );
 }
