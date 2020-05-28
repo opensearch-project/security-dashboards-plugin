@@ -15,14 +15,14 @@
 
 import React from 'react';
 import { EuiInMemoryTable } from '@elastic/eui';
-import { _ } from 'lodash';
+import { isEmpty, keys, map, get } from 'lodash';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 
 import { ExpressionModal } from './expression-modal';
 
 const renderExpression = (title: string) => {
   return (expression: string) => {
-    if (_.isEmpty(expression)) {
+    if (isEmpty(expression)) {
       return '-';
     }
 
@@ -56,14 +56,12 @@ const columns = [
 
 const ENABLED_STRING = 'Enabled';
 const DISABLED_STRING = 'Disabled';
-const TRUE_STRING = 'True';
-const FALSE_STRING = 'False';
 
 export function AuthorizationPanel(props: { authz: [] }) {
-  const domains = _.keys(props.authz);
+  const domains = keys(props.authz);
 
-  const items = _.map(domains, function(domain: string) {
-    const data = _.get(props.authz, domain);
+  const items = map(domains, function(domain: string) {
+    const data = get(props.authz, domain);
     const backend = data.authorization_backend;
     return {
       domain_name: domain,

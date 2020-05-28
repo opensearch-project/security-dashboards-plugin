@@ -15,14 +15,14 @@
 
 import React from 'react';
 import { EuiInMemoryTable } from '@elastic/eui';
-import { _ } from 'lodash';
+import { isEmpty, keys, map, get } from 'lodash';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 
 import { ExpressionModal } from './expression-modal';
 
 const renderExpression = (title: string) => {
   return (expression: string) => {
-    if (_.isEmpty(expression)) {
+    if (isEmpty(expression)) {
       return '-';
     }
 
@@ -78,10 +78,10 @@ const TRUE_STRING = 'True';
 const FALSE_STRING = 'False';
 
 export function AuthenticationSequencePanel(props: { authc: [] }) {
-  const domains = _.keys(props.authc);
+  const domains = keys(props.authc);
 
-  const items = _.map(domains, function(domain: string) {
-    const data = _.get(props.authc, domain);
+  const items = map(domains, function(domain: string) {
+    const data = get(props.authc, domain);
     const httpAuthenticator = data.http_authenticator;
     const backend = data.authentication_backend;
     return {

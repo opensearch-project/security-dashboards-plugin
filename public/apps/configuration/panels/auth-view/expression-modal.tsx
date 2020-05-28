@@ -17,7 +17,6 @@ import React, { useState } from 'react';
 import {
   EuiButtonEmpty,
   EuiCodeBlock,
-  EuiForm,
   EuiModal,
   EuiModalBody,
   EuiModalHeader,
@@ -32,14 +31,6 @@ export function ExpressionModal(props: { title: string; expression: string }) {
 
   const showModal = () => setIsModalVisible(true);
 
-  const formSample = (
-    <EuiForm>
-      <EuiCodeBlock fontSize="m" paddingSize="m" color="dark" overflowHeight={300} isCopyable>
-        {JSON.stringify(props.expression, null, 2)}
-      </EuiCodeBlock>
-    </EuiForm>
-  );
-
   let modal;
 
   if (isModalVisible) {
@@ -50,7 +41,11 @@ export function ExpressionModal(props: { title: string; expression: string }) {
             <EuiModalHeaderTitle>{props.title}</EuiModalHeaderTitle>
           </EuiModalHeader>
 
-          <EuiModalBody>{formSample}</EuiModalBody>
+          <EuiModalBody>
+            <EuiCodeBlock fontSize="m" paddingSize="m" color="dark" overflowHeight={300} isCopyable>
+              {JSON.stringify(props.expression, null, 2)}
+            </EuiCodeBlock>
+          </EuiModalBody>
         </EuiModal>
       </EuiOverlayMask>
     );
