@@ -1,3 +1,3 @@
 ## 2019-04-04, Version 0.8.0.0
 
-- Support For  Kibana 6.6
+- Support For Kibana 6.6
