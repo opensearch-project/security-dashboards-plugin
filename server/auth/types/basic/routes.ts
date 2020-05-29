@@ -35,7 +35,7 @@ export class BasicAuthRoutes {
     private readonly coreSetup: CoreSetup
   ) {}
 
-  public async setupRoutes() {
+  public setupRoutes() {
     const PREFIX = '';
 
     // login using username and password
@@ -107,6 +107,7 @@ export class BasicAuthRoutes {
             },
           });
         }
+
         return response.ok({
           body: {
             username: user.username,
