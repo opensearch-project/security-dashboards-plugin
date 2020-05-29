@@ -29,7 +29,7 @@ import {
 import { OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart } from './types';
 import { defineRoutes } from './routes';
 import { SecurityPluginConfigType } from '.';
-import opendistro_security_configuratoin_plugin from './backend/opendistro_security_configuration_plugin';
+import opendistroSecurityConfiguratoinPlugin from './backend/opendistro_security_configuration_plugin';
 // import opendistro_security_plugin from './backend/opendistro_security_plugin';
 import { SecuritySessionCookie, getSecurityCookieOptions } from './session/security_cookie';
 import { BasicAuthentication } from './auth/types/basic/basic_auth';
@@ -66,7 +66,7 @@ export class OpendistroSecurityPlugin
 
     const esClient: IClusterClient = core.elasticsearch.createClient('opendistro_security', {
       plugins: [
-        opendistro_security_configuratoin_plugin,
+        opendistroSecurityConfiguratoinPlugin,
         // TODO need to add other endpoints such as multitenanct and other
         // FIXME: having multiple plugins caused the extended endpoints not working, currently
         //        added all endpoints to opendistro_security_configuratoin_plugin as a workaround
@@ -111,13 +111,13 @@ export class OpendistroSecurityPlugin
         this.logger
       );
       core.http.registerAuth(auth.authHandler);
-    } else if (config.auth.type == 'jwt') {
+    } else if (config.auth.type === 'jwt') {
       const auth = new JwtAuthentication(
         config,
         securitySessionStorageFactory,
         router,
         esClient,
-        core,
+        core
       );
       core.http.registerAuth(auth.authHandler);
     }

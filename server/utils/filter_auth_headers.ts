@@ -17,7 +17,7 @@ import { mapKeys, pick } from 'lodash';
 import { Headers } from '../../../../src/core/server/http/router/headers';
 
 export function filterAuthHeaders(originalHeaders: Headers, headersToKeep: string[]) {
-  const normalizeHeader = function(header: string | undefined) {
+  const normalizeHeader = function (header: string | undefined) {
     if (!header) {
       return '';
     }
@@ -25,7 +25,7 @@ export function filterAuthHeaders(originalHeaders: Headers, headersToKeep: strin
   };
 
   const headersToKeepNormalized = headersToKeep.map(normalizeHeader);
-  const originalHeadersNormalized = mapKeys(originalHeaders, function(headerValue, headerName) {
+  const originalHeadersNormalized = mapKeys(originalHeaders, function (headerValue, headerName) {
     return normalizeHeader(headerName);
   });
   return pick(originalHeadersNormalized, headersToKeepNormalized);

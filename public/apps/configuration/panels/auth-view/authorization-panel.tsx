@@ -60,7 +60,7 @@ const DISABLED_STRING = 'Disabled';
 export function AuthorizationPanel(props: { authz: [] }) {
   const domains = keys(props.authz);
 
-  const items = map(domains, function(domain: string) {
+  const items = map(domains, function (domain: string) {
     const data = get(props.authz, domain);
     const backend = data.authorization_backend;
     return {

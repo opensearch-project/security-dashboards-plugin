@@ -78,7 +78,7 @@ function getFieldLevelSecurityFields(fieldLevelSecurityRawFields: string[]): Com
 export function buildIndexPermissionState(
   indexPerm: RoleIndexPermission[]
 ): RoleIndexPermissionStateClass[] {
-  return indexPerm.map(perm => ({
+  return indexPerm.map((perm) => ({
     indexPatterns: perm.index_patterns.map(stringToComboBoxOption),
     allowedActions: [],
     docLevelSecurity: perm.dls,
@@ -268,7 +268,7 @@ export function generateIndexPermissionPanels(
           />
           <DocLevelSecurityRow
             value={permission.docLevelSecurity}
-            onChangeHandler={e => onValueChangeHandler('docLevelSecurity')(e.target.value)}
+            onChangeHandler={(e) => onValueChangeHandler('docLevelSecurity')(e.target.value)}
           />
           <FieldLevelSecurityRow
             method={permission.fieldLevelSecurityMethod}

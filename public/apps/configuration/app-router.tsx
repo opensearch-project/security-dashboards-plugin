@@ -63,7 +63,7 @@ export function AppRouter(props: AppDependencies) {
   return (
     <Router basename={props.params.appBasePath}>
       <EuiPage>
-        <Route path={`(${RoutesList.map(r => r.href).join('|')})`} exact>
+        <Route path={`(${RoutesList.map((r) => r.href).join('|')})`} exact>
           <EuiPageSideBar>
             <NavPanel items={RoutesList} />
           </EuiPageSideBar>
@@ -72,7 +72,7 @@ export function AppRouter(props: AppDependencies) {
           <Switch>
             <Route
               path={`${RoutesMap.roles.href}/:action/:sourceRoleName`}
-              render={match => <RoleEdit {...{ ...props, ...match.match.params }} />}
+              render={(match) => <RoleEdit {...{ ...props, ...match.match.params }} />}
             />
             <Route path={RoutesMap.roles.href}>
               <RoleList {...props} />

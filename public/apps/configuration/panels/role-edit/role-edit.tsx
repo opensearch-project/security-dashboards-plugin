@@ -161,7 +161,7 @@ export function RoleEdit(props: RoleEditDeps) {
           >
             <EuiFieldText
               value={roleName}
-              onChange={e => {
+              onChange={(e) => {
                 setRoleName(e.target.value);
               }}
               disabled={props.action === 'edit'}

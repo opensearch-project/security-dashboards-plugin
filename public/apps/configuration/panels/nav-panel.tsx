@@ -22,7 +22,7 @@ function buildTreeItems(items: RouteItem[]) {
     {
       name: 'Security',
       id: 'security',
-      items: items.map(e => ({
+      items: items.map((e) => ({
         id: e.name,
         name: e.name,
         href: '#' + e.href,
