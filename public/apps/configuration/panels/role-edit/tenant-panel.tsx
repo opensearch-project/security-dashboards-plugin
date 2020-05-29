@@ -32,7 +32,7 @@ const TENANT_WRITE_PERMISSION = 'kibana_all_write';
 export function buildTenantPermissionState(
   permissions: RoleTenantPermission[]
 ): RoleTenantPermissionStateClass[] {
-  return permissions.map(permission => {
+  return permissions.map((permission) => {
     const readable = permission.allowed_actions.includes(TENANT_READ_PERMISSION);
     const writable = permission.allowed_actions.includes(TENANT_WRITE_PERMISSION);
     let permissionType = TenantPermissionType.None;
