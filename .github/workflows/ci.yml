@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - dev
+  push:
+    branches:
+      - dev
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Set up JDK
+      uses: actions/setup-java@v1
+      with:
+        # TODO: Parse this from security plugin
+        java-version: 13
+    - name: Checkout Kibana
+      uses: actions/checkout@v2
+      with:
+        path: kibana
+        repository: elastic/kibana
+    - name: Get node and yarn versions
+      id: versions
+      run: |
+        echo "::set-output name=node_version::$(cat ./kibana/.node-version)"
+        echo "::set-output name=yarn_version::$(cat ./kibana/package.json | jq '.engines.yarn' | tr -d '"')"
+    - name: Setup node
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ steps.versions.outputs.node_version }}
+        registry-url: 'https://registry.npmjs.org'
+    - name: Install correct yarn version for Kibana
+      run: |
+        npm uninstall -g yarn
+        echo "Installing yarn ${{ steps.versions_step.outputs.yarn_version }}"
+        npm i -g yarn@${{ steps.versions.outputs.yarn_version }}
+    - name: Create plugins dir
+      run: |
+        cd ./kibana
+        mkdir plugins
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        path: security-kibana-plugin
+        repository: opendistro-for-elasticsearch/security-kibana-plugin
+        ref: 'dev'
+    - name: Bootstrap Kibana
+      run: |
+        mv ./security-kibana-plugin ./kibana/plugins/
+        cd ./kibana
+        yarn kbn bootstrap
+    - name: Run lint
+      run: |
+        cd ./kibana/plugins/security-kibana-plugin
+        node ../../scripts/eslint -v
+        yarn lint
+

@@ -37,7 +37,7 @@ export function updateElementInArray<T>(
   path: StringRepresentable | StringRepresentable[],
   newValue: T | (() => T)
 ) {
-  setStateCallback(prevState => {
+  setStateCallback((prevState) => {
     const newState = [...prevState];
     set(newState, path, resolveValue(newValue));
     return newState;
@@ -71,7 +71,7 @@ export function appendElementToArray<T>(
   newValue: T | (() => T)
 ) {
   const resolvedNewValue = resolveValue(newValue);
-  setStateCallback(prevState => {
+  setStateCallback((prevState) => {
     if ((path as StringRepresentable[]).length === 0) {
       return [...prevState, resolvedNewValue];
     } else {
@@ -107,7 +107,7 @@ export function removeElementFromArray<T>(
   path: StringRepresentable | StringRepresentable[],
   index: number
 ) {
-  setStateCallback(prevState => {
+  setStateCallback((prevState) => {
     if ((path as StringRepresentable[]).length === 0) {
       const newState = [...prevState];
       newState.splice(index, 1);

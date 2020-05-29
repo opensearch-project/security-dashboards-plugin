@@ -61,11 +61,7 @@ export function transformRoleData(rawRoleData: any, rawRoleMappingData: any) {
     role_name: k,
     reserved: v.reserved,
     cluster_permissions: v.cluster_permissions,
-    index_permissions: chain(v.index_permissions)
-      .map('index_patterns')
-      .flatten()
-      .compact()
-      .value(),
+    index_permissions: chain(v.index_permissions).map('index_patterns').flatten().compact().value(),
     tenant_permissions: chain(v.index_permissions)
       .map('tenant_patterns')
       .flatten()
@@ -84,13 +80,13 @@ export function buildSearchFilterOptions(roleList: any[], attrName: string) {
     .compact()
     .uniq()
     .sortBy()
-    .map(e => ({ value: e }))
+    .map((e) => ({ value: e }))
     .value();
 }
 
 // Submit request to delete given roles. No error handling in this function.
 export async function requestDeleteRoles(http: HttpStart, roles: string[]) {
-  roles.forEach(async r => {
+  roles.forEach(async (r) => {
     await http.delete(`${API_ENDPOINT_ROLES}/${r}`);
   });
 }

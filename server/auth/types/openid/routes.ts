@@ -12,18 +12,14 @@
  *   express or implied. See the License for the specific language governing
  *   permissions and limitations under the License.
  */
-import {
-  IRouter,
-  SessionStorageFactory,
-  CoreSetup,
-} from '../../../../../../src/core/server';
-import { SecuritySessionCookie } from '../../../session/security_cookie';
-import { SecurityPluginConfigType } from '../../..';
 import { schema } from '@kbn/config-schema';
 import { randomString } from '@hapi/cryptiles';
 import { parse, stringify } from 'querystring';
-import { OpenIdAuthConfig } from './openid_auth';
 import wreck from '@hapi/wreck';
+import { IRouter, SessionStorageFactory, CoreSetup } from '../../../../../../src/core/server';
+import { SecuritySessionCookie } from '../../../session/security_cookie';
+import { SecurityPluginConfigType } from '../../..';
+import { OpenIdAuthConfig } from './openid_auth';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
 
 export class OpenIdAuthRoutes {
@@ -80,7 +76,7 @@ export class OpenIdAuthRoutes {
           this.sessionStorageFactory.asScoped(request).set(cookie);
           return response.redirected({
             headers: {
-              location: location,
+              location,
             },
           });
         }
@@ -165,7 +161,7 @@ export class OpenIdAuthRoutes {
 
         // authHeaderValue is the bearer header, e.g. "Bearer <auth_token>"
         const token = cookie?.credentials.authHeaderValue.split(' ')[1]; // get auth token
-        let requestQueryParameters = `?post_logout_redirect_uri=${this.getBaseRedirectUrl()}/app/kibana`;
+        const requestQueryParameters = `?post_logout_redirect_uri=${this.getBaseRedirectUrl()}/app/kibana`;
 
         let endSessionUrl = '/';
         const customLogoutUrl = this.config.openid?.logout_url;
@@ -181,7 +177,7 @@ export class OpenIdAuthRoutes {
         return response.redirected({
           headers: {
             location: endSessionUrl,
-          }
+          },
         });
       }
     );
@@ -201,7 +197,7 @@ export class OpenIdAuthRoutes {
 
   private getBaseRedirectUrl(): string {
     if (this.config.openid?.base_redirect_url) {
-      let baseRedirectUrl = this.config.openid.base_redirect_url;
+      const baseRedirectUrl = this.config.openid.base_redirect_url;
       return baseRedirectUrl.endsWith('/') ? baseRedirectUrl.slice(0, -1) : baseRedirectUrl;
     }
 

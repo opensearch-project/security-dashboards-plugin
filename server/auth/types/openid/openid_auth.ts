@@ -13,9 +13,9 @@
  *   permissions and limitations under the License.
  */
 
-import { SecurityPluginConfigType } from '../../..';
 import * as fs from 'fs';
 import wreck from '@hapi/wreck';
+import { SecurityPluginConfigType } from '../../..';
 
 import {
   Logger,
@@ -116,7 +116,7 @@ export class OpenIdAuthentication {
         headers[authHeaderName] = cookie.credentials.authHeaderValue;
         // need to implement token refresh when id token is expired
         return toolkit.authenticated({
-          requestHeaders: headers
+          requestHeaders: headers,
         });
       } else {
         return toolkit.notHandled();
@@ -128,5 +128,4 @@ export class OpenIdAuthentication {
     }
     return toolkit.authenticated();
   };
-
 }

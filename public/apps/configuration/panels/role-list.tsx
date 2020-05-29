@@ -57,7 +57,7 @@ function truncatedListView(limit = 3) {
     // If number of items over than limit, truncate and show ...
     return (
       <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
-        {items.slice(0, limit).map(item => (
+        {items.slice(0, limit).map((item) => (
           <EuiText key={item} size="xs">
             {item}
           </EuiText>
@@ -140,7 +140,7 @@ export function RoleList(props: AppDependencies) {
   }, [props.coreStart.http]);
 
   const handleDelete = async () => {
-    const rolesToDelete: string[] = selection.map(r => r.role_name);
+    const rolesToDelete: string[] = selection.map((r) => r.role_name);
     try {
       await requestDeleteRoles(props.coreStart.http, rolesToDelete);
       // Refresh from server (calling fetchData) does not work here, the server still return the roles
@@ -170,7 +170,7 @@ export function RoleList(props: AppDependencies) {
     <EuiContextMenuItem
       key="delete"
       onClick={handleDelete}
-      disabled={selection.length === 0 || selection.some(e => e.reserved)}
+      disabled={selection.length === 0 || selection.some((e) => e.reserved)}
     >
       Delete
     </EuiContextMenuItem>,

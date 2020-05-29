@@ -13,6 +13,9 @@
  *   permissions and limitations under the License.
  */
 
+import { parse, format } from 'url';
+import { get } from 'lodash';
+import { ParsedUrlQuery } from 'querystring';
 import { SecurityPluginConfigType } from '../../..';
 import {
   SessionStorageFactory,
@@ -25,9 +28,6 @@ import {
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { User } from '../../user';
-import { parse, format } from 'url';
-import { get } from 'lodash';
-import { ParsedUrlQuery } from 'querystring';
 
 export class JwtAuthentication {
   private static readonly AUTH_TYPE: string = 'jwt';
@@ -46,7 +46,6 @@ export class JwtAuthentication {
   }
 
   authHandler: AuthenticationHandler = async (request, response, tookit) => {
-
     const jwtToken = this.getJwtToken(request);
     if (jwtToken) {
       const authHeaderValue = `Bearer ${jwtToken}`;
@@ -68,7 +67,7 @@ export class JwtAuthentication {
       const cookie: SecuritySessionCookie = {
         username: user.username,
         credentials: {
-          authHeaderValue: authHeaderValue,
+          authHeaderValue,
         },
         authType: JwtAuthentication.AUTH_TYPE,
         expiryTime: Date.now() + this.config.cookie.ttl,
@@ -81,7 +80,7 @@ export class JwtAuthentication {
     }
 
     // check if credentials present in cookie
-    let cookie = undefined;
+    let cookie;
     try {
       cookie = await this.sessionStorageFactory.asScoped(request).get();
     } catch (error) {
@@ -122,7 +121,7 @@ export class JwtAuthentication {
   };
 
   private getJwtToken(request: KibanaRequest): string | undefined {
-    let token: string | undefined = undefined;
+    let token: string | undefined;
 
     // try to extract JWT token from url query parameters
     const urlParamName = this.config.jwt?.url_param;

@@ -80,7 +80,7 @@ const FALSE_STRING = 'False';
 export function AuthenticationSequencePanel(props: { authc: [] }) {
   const domains = keys(props.authc);
 
-  const items = map(domains, function(domain: string) {
+  const items = map(domains, function (domain: string) {
     const data = get(props.authc, domain);
     const httpAuthenticator = data.http_authenticator;
     const backend = data.authentication_backend;

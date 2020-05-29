@@ -50,7 +50,7 @@ export function LoginPage(props: LoginPageDeps) {
   }
 
   // @ts-ignore : Parameter 'e' implicitly has an 'any' type.
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Clear errors
@@ -105,7 +105,7 @@ export function LoginPage(props: LoginPageDeps) {
           <EuiFieldText
             placeholder="Username"
             prepend={<EuiIcon type="user" />}
-            onChange={e => setUsername(e.target.value)}
+            onChange={(e) => setUsername(e.target.value)}
             value={username}
             isInvalid={usernameValidationFailed}
           />
@@ -115,7 +115,7 @@ export function LoginPage(props: LoginPageDeps) {
             placeholder="Password"
             prepend={<EuiIcon type="lock" />}
             type="password"
-            onChange={e => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             value={password}
             isInvalid={usernameValidationFailed}
           />

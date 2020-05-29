@@ -13,7 +13,8 @@
  *   permissions and limitations under the License.
  */
 
-export default function(Client: any, config: any, components: any) {
+// eslint-disable-next-line import/no-default-export
+export default function (Client: any, config: any, components: any) {
   const ca = components.clientAction.factory;
 
   Client.prototype.opendistro_security = components.clientAction.namespaceFactory();

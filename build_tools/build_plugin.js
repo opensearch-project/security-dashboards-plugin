@@ -16,11 +16,14 @@
 const execa = require('execa');
 const optimizer = require('@kbn/optimizer');
 const devUtils = require('@kbn/dev-utils');
+// eslint-disable-next-line import/no-unresolved
 const pluginConfig = require('@kbn/plugin-helpers/lib/plugin_config');
 const path = require('path');
 const vfs = require('vinyl-fs');
 const rename = require('gulp-rename');
+// eslint-disable-next-line import/no-unresolved
 const rewritePackageJson = require('@kbn/plugin-helpers/tasks/build/rewrite_package_json');
+// eslint-disable-next-line import/no-unresolved
 const createPackage = require('@kbn/plugin-helpers/tasks/build/create_package');
 
 async function build() {
@@ -90,10 +93,7 @@ function runOptimizer() {
     cache: false,
   });
 
-  return optimizer
-    .runOptimizer(config)
-    .pipe(optimizer.logOptimizerState(log, config))
-    .toPromise();
+  return optimizer.runOptimizer(config).pipe(optimizer.logOptimizerState(log, config)).toPromise();
 }
 
 async function createBuild(pluginRoot, plugin) {
@@ -111,7 +111,7 @@ async function createBuild(pluginRoot, plugin) {
   }
 
   function copyArtifacts(srcGlobs, cwd, base, allowEmpty) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       vfs
         .src(srcGlobs, { cwd, base, allowEmpty })
         .pipe(rewritePackageJson(pluginRoot, buildVersion, kibanaVeersion))
@@ -146,7 +146,7 @@ async function createBuild(pluginRoot, plugin) {
 }
 
 // entry point
-(async function() {
+(async function () {
   try {
     await build();
   } catch (error) {
