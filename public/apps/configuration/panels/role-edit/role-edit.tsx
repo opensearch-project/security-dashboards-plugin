@@ -30,10 +30,15 @@ import { stringToComboBoxOption } from '../../utils/combo-box-utils';
 import { FormRow } from '../../utils/form-row';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { getRoleDetail } from '../../utils/role-detail-utils';
-import { buildIndexPermissionState, IndexPermissionPanel } from './index-permission-panel';
-import { TenantPanel } from './tenant-panel';
-import { ComboBoxOptions, RoleIndexPermissionStateClass } from './types';
+import { fetchTenantNameList } from '../../utils/tenant-utils';
 import { ClusterPermissionPanel } from './cluster-permission-panel';
+import { buildIndexPermissionState, IndexPermissionPanel } from './index-permission-panel';
+import { buildTenantPermissionState, TenantPanel } from './tenant-panel';
+import {
+  ComboBoxOptions,
+  RoleIndexPermissionStateClass,
+  RoleTenantPermissionStateClass,
+} from './types';
 
 interface RoleEditDeps extends AppDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -55,6 +60,9 @@ export function RoleEdit(props: RoleEditDeps) {
   const [roleIndexPermission, setRoleIndexPermission] = useState<RoleIndexPermissionStateClass[]>(
     []
   );
+  const [roleTenantPermission, setRoleTenantPermission] = useState<
+    RoleTenantPermissionStateClass[]
+  >([]);
 
   useEffect(() => {
     const action = props.action;
@@ -64,6 +72,7 @@ export function RoleEdit(props: RoleEditDeps) {
           const roleData = await getRoleDetail(props.coreStart.http, props.sourceRoleName);
           setRoleClusterPermission(roleData.cluster_permissions.map(stringToComboBoxOption));
           setRoleIndexPermission(buildIndexPermissionState(roleData.index_permissions));
+          setRoleTenantPermission(buildTenantPermissionState(roleData.tenant_permissions));
 
           if (action === 'edit') {
             setRoleName(props.sourceRoleName);
@@ -95,6 +104,20 @@ export function RoleEdit(props: RoleEditDeps) {
     fetchActionGroupNames();
   }, [props.coreStart.http]);
 
+  const [tenantNames, setTenantNames] = useState<string[]>([]);
+  useEffect(() => {
+    const fetchTenantNames = async () => {
+      try {
+        setTenantNames(await fetchTenantNameList(props.coreStart.http));
+      } catch (e) {
+        // TODO: show user friendly error message
+        console.log(e);
+      }
+    };
+
+    fetchTenantNames();
+  }, [props.coreStart.http]);
+
   const clusterWisePermissionOptions = [
     {
       label: 'Permission groups',
@@ -109,6 +132,8 @@ export function RoleEdit(props: RoleEditDeps) {
       options: INDEX_PERMISSIONS.map(stringToComboBoxOption),
     },
   ];
+
+  const tenantOptions = tenantNames.map(stringToComboBoxOption);
 
   return (
     <>
@@ -157,7 +182,11 @@ export function RoleEdit(props: RoleEditDeps) {
         optionUniverse={clusterWisePermissionOptions}
       />
       <EuiSpacer size="m" />
-      <TenantPanel />
+      <TenantPanel
+        state={roleTenantPermission}
+        setState={setRoleTenantPermission}
+        optionUniverse={tenantOptions}
+      />
     </>
   );
 }

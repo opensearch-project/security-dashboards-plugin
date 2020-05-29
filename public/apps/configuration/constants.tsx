@@ -19,6 +19,7 @@ export const API_ENDPOINT = API_PREFIX + '/configuration';
 export const API_ENDPOINT_ROLES = API_PREFIX + '/configuration/roles';
 export const API_ENDPOINT_ROLESMAPPING = API_PREFIX + '/configuration/rolesmapping';
 export const API_ENDPOINT_ACTIONGROUPS = API_PREFIX + '/configuration/actiongroups';
+export const API_ENDPOINT_TENANTS = API_ENDPOINT + '/tenants';
 export const API_ENDPOINT_SECURITYCONFIG = API_PREFIX + '/configuration/securityconfig';
 
 export const CLUSTER_PERMISSIONS = [
