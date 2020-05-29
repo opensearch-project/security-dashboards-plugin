@@ -13,12 +13,74 @@
  *   permissions and limitations under the License.
  */
 
-import React from 'react';
-import { EuiButton, EuiPageHeader, EuiSpacer, EuiTitle } from '@elastic/eui';
+import React, { useEffect, useState } from 'react';
+import { EuiButton, EuiCode, EuiPageHeader, EuiSpacer, EuiText, EuiTitle } from '@elastic/eui';
 import { AuthenticationSequencePanel } from './authentication-sequence-panel';
 import { AuthorizationPanel } from './authorization-panel';
+import { API_ENDPOINT_SECURITYCONFIG } from '../../constants';
+import { AppDependencies } from '../../../types';
 
-export function AuthView(props: {}) {
+function renderInstructionView() {
+  return (
+    <>
+      <EuiTitle size="l">
+        <h1>Authentication and authorization</h1>
+      </EuiTitle>
+
+      <EuiSpacer size="xxl" />
+
+      <EuiText textAlign="center">
+        <h2>You have not set up authentication and authorization</h2>
+      </EuiText>
+
+      <EuiText
+        textAlign="center"
+        size="xs"
+        color="subdued"
+        style={{ marginLeft: 500, marginRight: 500 }}
+      >
+        In order to use Security plugin, you must decide on authentication <EuiCode>authc</EuiCode>{' '}
+        and authorization backends <EuiCode>authz</EuiCode>. Use{' '}
+        <EuiCode>plugins/opendistro_security/securityconfig/config.yml</EuiCode> to define how to
+        retrieve and verify the user credentials, and how to fetch additional roles from backend
+        system if needed.
+      </EuiText>
+
+      <EuiSpacer />
+
+      <div style={{ textAlign: 'center' }}>
+        <EuiButton iconType="popout" iconSide="right" fill size="s" fullWidth={false}>
+          Create config.yml
+        </EuiButton>
+      </div>
+    </>
+  );
+}
+
+export function AuthView(props: AppDependencies) {
+  const [authentication, setAuthentication] = useState([]);
+  const [authorization, setAuthorization] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const rawSecurityConfig = await props.coreStart.http.get(API_ENDPOINT_SECURITYCONFIG);
+        const dynamic = rawSecurityConfig.data.config.dynamic;
+
+        setAuthentication(dynamic.authc);
+        setAuthorization(dynamic.authz);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    fetchData();
+  }, [props.coreStart.http]);
+
+  if (!authentication) {
+    return renderInstructionView();
+  }
+
   return (
     <>
       <EuiPageHeader>
@@ -29,9 +91,9 @@ export function AuthView(props: {}) {
           Manage via config.yml
         </EuiButton>
       </EuiPageHeader>
-      <AuthenticationSequencePanel />
+      <AuthenticationSequencePanel authc={authentication} />
       <EuiSpacer size="m" />
-      <AuthorizationPanel />
+      <AuthorizationPanel authz={authorization} />
     </>
   );
 }

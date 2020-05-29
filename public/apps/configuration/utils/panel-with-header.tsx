@@ -26,7 +26,7 @@ interface PanelWithHeaderDeps {
 export function PanelWithHeader(props: PanelWithHeaderDeps) {
   return (
     <EuiPanel>
-      <EuiTitle size="xs">
+      <EuiTitle size="s">
         <h3>{props.headerText}</h3>
       </EuiTitle>
       <EuiText size="xs" color="subdued">
