@@ -58,11 +58,11 @@ function getEmptyTenantPermission(): RoleTenantPermissionStateClass {
 }
 
 function generateTenantPermissionPanels(
-  permissions: RoleTenantPermissionStateClass[],
+  tenantPermissions: RoleTenantPermissionStateClass[],
   permisionOptionsSet: ComboBoxOptions,
   setPermissions: Dispatch<SetStateAction<RoleTenantPermissionStateClass[]>>
 ) {
-  const panels = permissions.map((permission, arrayIndex) => {
+  const panels = tenantPermissions.map((tenantPermission, arrayIndex) => {
     const onValueChangeHandler = (attributeToUpdate: string) =>
       updateElementInArrayHandler(setPermissions, [arrayIndex, attributeToUpdate]);
 
@@ -75,7 +75,7 @@ function generateTenantPermissionPanels(
           <EuiFlexItem style={{ maxWidth: '400px' }}>
             <EuiComboBox
               placeholder="Search tenant name"
-              selectedOptions={permission.tenantPatterns}
+              selectedOptions={tenantPermission.tenantPatterns}
               onChange={onValueChangeHandler('tenantPatterns')}
               onCreateOption={onCreateOptionHandler('tenantPatterns')}
               options={permisionOptionsSet}
@@ -83,7 +83,7 @@ function generateTenantPermissionPanels(
           </EuiFlexItem>
           <EuiFlexItem style={{ maxWidth: '170px' }}>
             <EuiSuperSelect
-              valueOfSelected={permission.permissionType}
+              valueOfSelected={tenantPermission.permissionType}
               onChange={onValueChangeHandler('permissionType')}
               options={[
                 { inputDisplay: 'Read only', value: TenantPermissionType.Read },
