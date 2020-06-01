@@ -136,9 +136,66 @@ export class SecurityClient {
 
   public async getTenantInfo(request: KibanaRequest) {
     try {
-      return this.esClient.asScoped(request).callAsCurrentUser('opendistro_security.tenantinfo');
+      return await this.esClient.asScoped(request).callAsCurrentUser('opendistro_security.tenantinfo');
     } catch (error) {
       throw new Error(error.message);
+    }
+  }
+
+  public async getSamlHeader(request: KibanaRequest) {
+    try {
+      const response = await this.esClient.asScoped(request).callAsCurrentUser('opendistro_security.authinfo');
+      // response is expected to be an error
+      throw Error('Invalid Saml configuration.');
+    } catch (error) {
+      // the error looks like
+      // wwwAuthenticateDirective:
+      //   '
+      //     X-Security-IdP realm="Open Distro Security"
+      //     location="https://<your-auth-domain.com>/api/saml2/v1/sso?SAMLRequest=<some-encoded-string>"
+      //     requestId="<request_id>"
+      //   '
+      if (!error.wwwAuthenticateDirective) {
+        throw error;
+      }
+
+      try {
+        const locationRegExp = /location="(.*?)"/;
+        const requestIdRegExp = /requestId="(.*?)"/;
+
+        const locationExecArray = locationRegExp.exec(error.wwwAuthenticateDirective);
+        const requestExecArray = requestIdRegExp.exec(error.wwwAuthenticateDirective);
+        if (locationExecArray && requestExecArray) {
+          return {
+            location: locationExecArray[1],
+            requestId: requestExecArray[1],
+          };
+        }
+        throw Error('failed parsing SAML config');
+      } catch (error) {
+        console.log(error);
+        throw new Error();
+      }
+    }
+  }
+
+  public async authToken(
+    requestId: string | undefined,
+    samlResponse: any,
+    acsEndpoint: any | undefined = undefined
+  ) {
+    const body = {
+      RequestId: requestId,
+      SAMLResponse: samlResponse,
+      acsEndpoint: acsEndpoint,
+    };
+    try {
+      return await this.esClient.callAsInternalUser('opendistro_security.authtoken', {
+        body: body,
+      });
+    } catch (error) {
+      console.log(error);
+      throw new Error('failed to get token');
     }
   }
 }

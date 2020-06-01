@@ -50,7 +50,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
   });
 
   const actionGroupSchema = schema.object({
-    description: schema.string(),
+    description: schema.maybe(schema.string()),
     allowed_actions: schema.arrayOf(schema.string()),
     type: schema.oneOf([
       schema.literal('cluster'),

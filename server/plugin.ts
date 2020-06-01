@@ -42,6 +42,7 @@ import {
 import { setupIndexTemplate, migrateTenantIndices } from './multitenancy/tenant_index';
 import { OpenIdAuthentication } from './auth/types/openid/openid_auth';
 import { JwtAuthentication } from './auth/types/jwt/jwt_auth';
+import { SamlAuthentication } from './auth/types/saml/saml_auth';
 
 export class OpendistroSecurityPlugin
   implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
@@ -111,8 +112,17 @@ export class OpendistroSecurityPlugin
         this.logger
       );
       core.http.registerAuth(auth.authHandler);
-    } else if (config.auth.type == 'jwt') {
+    } else if (config.auth.type === 'jwt') {
       const auth = new JwtAuthentication(
+        config,
+        securitySessionStorageFactory,
+        router,
+        esClient,
+        core,
+      );
+      core.http.registerAuth(auth.authHandler);
+    } else if (config.auth.type === 'saml') {
+      const auth = new SamlAuthentication(
         config,
         securitySessionStorageFactory,
         router,
