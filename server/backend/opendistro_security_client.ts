@@ -144,9 +144,8 @@ export class SecurityClient {
 
   public async getSamlHeader(request: KibanaRequest) {
     try {
-      const response = await this.esClient.asScoped(request).callAsCurrentUser('opendistro_security.authinfo');
       // response is expected to be an error
-      throw Error('Invalid Saml configuration.');
+      await this.esClient.asScoped(request).callAsCurrentUser('opendistro_security.authinfo');
     } catch (error) {
       // the error looks like
       // wwwAuthenticateDirective:

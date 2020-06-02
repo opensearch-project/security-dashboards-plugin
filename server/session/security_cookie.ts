@@ -58,11 +58,6 @@ export function getSecurityCookieOptions(
         return { isValid: true, path: '/'};
       }
 
-      // if OIDC fields present
-      if (sessionStorage.oidc ) {
-        return { isValid: true, path: '/'};
-      }
-
       if (
         sessionStorage.username === undefined ||
         sessionStorage.credentials === undefined
