@@ -71,7 +71,9 @@ export class OpenIdAuthRoutes {
           const queryString = stringify(query);
           const location = `${this.openIdAuthConfig.authorizationEndpoint}?${queryString}`;
           const cookie: SecuritySessionCookie = {
-            oidcState: nonce,
+            oidc: {
+              oidcState: nonce,
+            },
           };
           this.sessionStorageFactory.asScoped(request).set(cookie);
           return response.redirected({
