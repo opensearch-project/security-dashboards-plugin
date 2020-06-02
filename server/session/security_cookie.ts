@@ -30,7 +30,13 @@ export interface SecuritySessionCookie {
   tenant?: any;
 
   // for oidc auth workflow
-  oidcState?: any;
+  oidc?: any;
+
+  // for Saml auth workflow
+  saml?: {
+    requestId?: string;
+    nextUrl?: string;
+  };
 }
 
 export function getSecurityCookieOptions(
@@ -41,8 +47,18 @@ export function getSecurityCookieOptions(
     encryptionKey: config.cookie.password,
     validate: (sessionStorage: SecuritySessionCookie | SecuritySessionCookie[]) => {
       sessionStorage = sessionStorage as SecuritySessionCookie;
+      if (sessionStorage === undefined) {
+        return { isValid: false, path: '/' };
+      }
+
+      // TODO: with setting redirect attributes to support OIDC and SAML,
+      //       we need to do additonal cookie validatin in AuthenticationHandlers.
+      // if SAML fields present
+      if (sessionStorage.saml && sessionStorage.saml.requestId && sessionStorage.saml.nextUrl) {
+        return { isValid: true, path: '/'};
+      }
+
       if (
-        sessionStorage === undefined ||
         sessionStorage.username === undefined ||
         sessionStorage.credentials === undefined
       ) {
