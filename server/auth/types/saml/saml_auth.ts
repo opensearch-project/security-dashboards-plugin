@@ -13,6 +13,7 @@
  *   permissions and limitations under the License.
  */
 
+import { escape } from 'querystring';
 import { SecurityPluginConfigType } from '../../..';
 import {
   AuthenticationHandler,
@@ -26,12 +27,10 @@ import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { CoreSetup } from '../../../../../../src/core/server';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { SamlAuthRoutes } from './routes';
-import { escape } from 'querystring';
-import { format } from 'url';
 
 export class SamlAuthentication {
-  private static readonly AUTH_TYPE = 'saml';
   public static readonly AUTH_HEADER_NAME = 'authorization';
+  private static readonly AUTH_TYPE = 'saml';
 
   private readonly securityClient: SecurityClient;
   constructor(
@@ -46,7 +45,7 @@ export class SamlAuthentication {
   }
 
   authHandler: AuthenticationHandler = async (request, response, toolkit) => {
-    let cookie = undefined;
+    let cookie;
     try {
       cookie = await this.sessionStorageFactory.asScoped(request).get();
     } catch (error) {
@@ -81,10 +80,10 @@ export class SamlAuthentication {
           authHeaderValue
         );
 
-        const cookie: SecuritySessionCookie = {
+        cookie = {
           username: user.username,
           credentials: {
-            authHeaderValue: authHeaderValue,
+            authHeaderValue,
           },
           authType: SamlAuthentication.AUTH_TYPE,
           expiryTime: Date.now() + this.config.cookie.ttl,

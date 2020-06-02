@@ -142,9 +142,8 @@ export class BasicAuthentication {
 
       // add tenant to Elasticsearch request headers
       if (this.config.multitenancy?.enabled && isMultitenantPath(request)) {
-        // FIXME: !!!! when calling authInfo, the request doesn't have a credentials set in the request
-        //             header yet, thus the call will fail, consider moving tenant stuff to post auth
-        const authInfo = await this.securityClient.authinfo(request);
+        // TODO: consider move tenant resolution to postAuthHandler?
+        const authInfo = await this.securityClient.authinfo(request, headers);
         const selectedTenant = resolveTenant(
           request,
           authInfo.user_name,

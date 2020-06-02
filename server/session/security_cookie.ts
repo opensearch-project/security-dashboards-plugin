@@ -55,13 +55,15 @@ export function getSecurityCookieOptions(
       //       we need to do additonal cookie validatin in AuthenticationHandlers.
       // if SAML fields present
       if (sessionStorage.saml && sessionStorage.saml.requestId && sessionStorage.saml.nextUrl) {
-        return { isValid: true, path: '/'};
+        return { isValid: true, path: '/' };
       }
 
-      if (
-        sessionStorage.username === undefined ||
-        sessionStorage.credentials === undefined
-      ) {
+      // if OIDC fields present
+      if (sessionStorage.oidc) {
+        return { isValid: true, path: '/' };
+      }
+
+      if (sessionStorage.username === undefined || sessionStorage.credentials === undefined) {
         return { isValid: false, path: '/' };
       }
 

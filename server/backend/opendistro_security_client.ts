@@ -105,11 +105,13 @@ export class SecurityClient {
     }
   }
 
-  public async authinfo(request: KibanaRequest) {
+  public async authinfo(request: KibanaRequest, headers: any = {}) {
     try {
       return await this.esClient
         .asScoped(request)
-        .callAsCurrentUser('opendistro_security.authinfo');
+        .callAsCurrentUser('opendistro_security.authinfo', {
+          headers,
+        });
     } catch (error) {
       throw new Error(error.message);
     }
@@ -136,7 +138,9 @@ export class SecurityClient {
 
   public async getTenantInfo(request: KibanaRequest) {
     try {
-      return await this.esClient.asScoped(request).callAsCurrentUser('opendistro_security.tenantinfo');
+      return await this.esClient
+        .asScoped(request)
+        .callAsCurrentUser('opendistro_security.tenantinfo');
     } catch (error) {
       throw new Error(error.message);
     }
@@ -171,9 +175,9 @@ export class SecurityClient {
           };
         }
         throw Error('failed parsing SAML config');
-      } catch (error) {
-        console.log(error);
-        throw new Error();
+      } catch (parsingError) {
+        console.log(parsingError);
+        throw new Error(parsingError);
       }
     }
     throw new Error(`Invalid SAML configuration.`);
@@ -187,11 +191,11 @@ export class SecurityClient {
     const body = {
       RequestId: requestId,
       SAMLResponse: samlResponse,
-      acsEndpoint: acsEndpoint,
+      acsEndpoint,
     };
     try {
       return await this.esClient.callAsInternalUser('opendistro_security.authtoken', {
-        body: body,
+        body,
       });
     } catch (error) {
       console.log(error);
