@@ -14,26 +14,39 @@
  */
 
 import {
+  EuiButton,
   EuiFieldText,
+  EuiFlexGroup,
+  EuiFlexItem,
   EuiForm,
+  EuiGlobalToastList,
   EuiLink,
   EuiPageHeader,
   EuiSpacer,
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import React, { useEffect, useState } from 'react';
+import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
+import React, { useEffect, useState, useCallback } from 'react';
 import { AppDependencies } from '../../../types';
 import { CLUSTER_PERMISSIONS, INDEX_PERMISSIONS } from '../../constants';
 import { fetchActionGroups } from '../../utils/action-groups-utils';
-import { stringToComboBoxOption } from '../../utils/combo-box-utils';
+import { comboBoxOptionToString, stringToComboBoxOption } from '../../utils/combo-box-utils';
 import { FormRow } from '../../utils/form-row';
 import { PanelWithHeader } from '../../utils/panel-with-header';
-import { getRoleDetail } from '../../utils/role-detail-utils';
+import { getRoleDetail, updateRole } from '../../utils/role-detail-utils';
 import { fetchTenantNameList } from '../../utils/tenant-utils';
 import { ClusterPermissionPanel } from './cluster-permission-panel';
-import { buildIndexPermissionState, IndexPermissionPanel } from './index-permission-panel';
-import { buildTenantPermissionState, TenantPanel } from './tenant-panel';
+import {
+  buildIndexPermissionState,
+  IndexPermissionPanel,
+  unbuildIndexPermissionState,
+} from './index-permission-panel';
+import {
+  buildTenantPermissionState,
+  TenantPanel,
+  unbuildTenantPermissionState,
+} from './tenant-panel';
 import {
   ComboBoxOptions,
   RoleIndexPermissionStateClass,
@@ -64,6 +77,14 @@ export function RoleEdit(props: RoleEditDeps) {
     RoleTenantPermissionStateClass[]
   >([]);
 
+  const [toasts, setToasts] = useState<Toast[]>([]);
+  const addToast = useCallback((toastToAdd: Toast) => {
+    setToasts((state) => state.concat(toastToAdd));
+  }, []);
+  const removeToast = (toastToDelete: Toast) => {
+    setToasts(toasts.filter((toast) => toast.id !== toastToDelete.id));
+  };
+
   useEffect(() => {
     const action = props.action;
     if (action === 'edit' || action === 'duplicate') {
@@ -80,14 +101,20 @@ export function RoleEdit(props: RoleEditDeps) {
             setRoleName(props.sourceRoleName + '_copy');
           }
         } catch (e) {
-          // TODO: show user friendly error message
-          console.log(e);
+          addToast({
+            id: 'fetchRole',
+            color: 'danger',
+            title: 'Failed to load data',
+            text:
+              'Failed to load data. You may refresh the page to retry or see browser console for more information.',
+          });
+          console.error(e);
         }
       };
 
       fetchData();
     }
-  }, [props.action, props.coreStart.http, props.sourceRoleName]);
+  }, [addToast, props.action, props.coreStart.http, props.sourceRoleName]);
 
   const [actionGroups, setActionGroups] = useState<string[]>([]);
   useEffect(() => {
@@ -96,13 +123,19 @@ export function RoleEdit(props: RoleEditDeps) {
         const actionGroupsObject = await fetchActionGroups(props.coreStart.http);
         setActionGroups(Object.keys(actionGroupsObject));
       } catch (e) {
-        // TODO: show user friendly error message
-        console.log(e);
+        addToast({
+          id: 'actionGroup',
+          color: 'danger',
+          title: 'Failed to load data',
+          text:
+            'Failed to load data. You may refresh the page to retry or see browser console for more information.',
+        });
+        console.error(e);
       }
     };
 
     fetchActionGroupNames();
-  }, [props.coreStart.http]);
+  }, [addToast, props.coreStart.http]);
 
   const [tenantNames, setTenantNames] = useState<string[]>([]);
   useEffect(() => {
@@ -110,13 +143,38 @@ export function RoleEdit(props: RoleEditDeps) {
       try {
         setTenantNames(await fetchTenantNameList(props.coreStart.http));
       } catch (e) {
-        // TODO: show user friendly error message
-        console.log(e);
+        addToast({
+          id: 'tenant',
+          color: 'danger',
+          title: 'Failed to load data',
+          text:
+            'Failed to load data. You may refresh the page to retry or see browser console for more information.',
+        });
+        console.error(e);
       }
     };
 
     fetchTenantNames();
-  }, [props.coreStart.http]);
+  }, [addToast, props.coreStart.http]);
+
+  const updateRoleHandler = async () => {
+    try {
+      await updateRole(props.coreStart.http, roleName, {
+        cluster_permissions: roleClusterPermission.map(comboBoxOptionToString),
+        index_permissions: unbuildIndexPermissionState(roleIndexPermission),
+        tenant_permissions: unbuildTenantPermissionState(roleTenantPermission),
+      });
+      // Redirect to role detail page
+    } catch (e) {
+      addToast({
+        id: 'updateRole',
+        color: 'danger',
+        title: `Failed to ${props.action} role`,
+        text: `Failed to ${props.action} role. You may refresh the page and then retry or see browser console for more information.`,
+      });
+      console.error(e);
+    }
+  };
 
   const clusterWisePermissionOptions = [
     {
@@ -187,6 +245,18 @@ export function RoleEdit(props: RoleEditDeps) {
         setState={setRoleTenantPermission}
         optionUniverse={tenantOptions}
       />
+      <EuiSpacer size="m" />
+      <EuiFlexGroup justifyContent="flexEnd">
+        <EuiFlexItem grow={false}>
+          <EuiButton>{/* // TODO: add a link returning to role listing page */}Cancel</EuiButton>
+        </EuiFlexItem>
+        <EuiFlexItem grow={false}>
+          <EuiButton fill onClick={updateRoleHandler}>
+            {props.action === 'edit' ? 'Update' : 'Create'}
+          </EuiButton>
+        </EuiFlexItem>
+      </EuiFlexGroup>
+      <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={10000} dismissToast={removeToast} />
     </>
   );
 }

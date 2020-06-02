@@ -15,8 +15,14 @@
 
 import { HttpStart } from 'kibana/public';
 import { API_ENDPOINT_ROLES } from '../constants';
-import { RoleDetail } from '../types';
+import { RoleDetail, RoleUpdate } from '../types';
 
 export async function getRoleDetail(http: HttpStart, roleName: string) {
   return (await http.get(`${API_ENDPOINT_ROLES}/${roleName}`)) as RoleDetail;
+}
+
+export async function updateRole(http: HttpStart, roleName: string, updateObject: RoleUpdate) {
+  return await http.post(`${API_ENDPOINT_ROLES}/${roleName}`, {
+    body: JSON.stringify(updateObject),
+  });
 }

@@ -75,6 +75,14 @@ function getFieldLevelSecurityFields(fieldLevelSecurityRawFields: string[]): Com
     .map(stringToComboBoxOption);
 }
 
+function packFieldLevelSecurity(method: FieldLevelSecurityMethod, fieldOptions: ComboBoxOptions) {
+  const fields = fieldOptions.map(comboBoxOptionToString);
+  if (method === 'include') {
+    return fields;
+  }
+  return fields.map((field) => '~' + field);
+}
+
 export function buildIndexPermissionState(
   indexPerm: RoleIndexPermission[]
 ): RoleIndexPermissionStateClass[] {
@@ -85,6 +93,18 @@ export function buildIndexPermissionState(
     fieldLevelSecurityMethod: getFieldLevelSecurityMethod(perm.fls),
     fieldLevelSecurityFields: getFieldLevelSecurityFields(perm.fls),
     maskedFields: [],
+  }));
+}
+
+export function unbuildIndexPermissionState(
+  indexPerm: RoleIndexPermissionStateClass[]
+): RoleIndexPermission[] {
+  return indexPerm.map((perm) => ({
+    index_patterns: perm.indexPatterns.map(comboBoxOptionToString),
+    dls: perm.docLevelSecurity,
+    fls: packFieldLevelSecurity(perm.fieldLevelSecurityMethod, perm.fieldLevelSecurityFields),
+    masked_fields: perm.maskedFields.map(comboBoxOptionToString),
+    allowed_actions: perm.allowedActions.map(comboBoxOptionToString),
   }));
 }
 
