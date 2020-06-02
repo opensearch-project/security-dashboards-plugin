@@ -176,6 +176,7 @@ export class SecurityClient {
         throw new Error();
       }
     }
+    throw new Error(`Invalid SAML configuration.`);
   }
 
   public async authToken(
