@@ -33,7 +33,6 @@ import opendistroSecurityConfiguratoinPlugin from './backend/opendistro_security
 // import opendistro_security_plugin from './backend/opendistro_security_plugin';
 import { SecuritySessionCookie, getSecurityCookieOptions } from './session/security_cookie';
 import { BasicAuthentication } from './auth/types/basic/basic_auth';
-import { defineTestRoutes } from './routes/test_routes'; // TODO: remove this later
 import { SecurityClient } from './backend/opendistro_security_client';
 import {
   SavedObjectsSerializer,
@@ -65,7 +64,7 @@ export class OpendistroSecurityPlugin
 
     const router = core.http.createRouter();
 
-    const esClient: IClusterClient = core.elasticsearch.createClient('opendistro_security', {
+    const esClient: IClusterClient = core.elasticsearch.legacy.createClient('opendistro_security', {
       plugins: [
         opendistroSecurityConfiguratoinPlugin,
         // TODO need to add other endpoints such as multitenanct and other
@@ -83,9 +82,6 @@ export class OpendistroSecurityPlugin
 
     // Register server side APIs
     defineRoutes(router, esClient);
-
-    // test routes
-    defineTestRoutes(router, esClient, securitySessionStorageFactory, core);
 
     // setup auth
     if (
@@ -127,7 +123,7 @@ export class OpendistroSecurityPlugin
         securitySessionStorageFactory,
         router,
         esClient,
-        core,
+        core
       );
       core.http.registerAuth(auth.authHandler);
     }
@@ -164,7 +160,9 @@ export class OpendistroSecurityPlugin
       );
     }
 
-    return {};
+    return {
+      es: core.elasticsearch.legacy,
+    };
   }
 
   public stop() {}

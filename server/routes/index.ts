@@ -42,7 +42,7 @@ import { API_PREFIX } from '../../common';
 
 export function defineRoutes(router: IRouter, esClient: IClusterClient) {
   const internalUserSchema = schema.object({
-    description: schema.string(),
+    description: schema.maybe(schema.string()),
     password: schema.string(),
     backend_roles: schema.arrayOf(schema.string()),
     // opendistro_security_roles: schema.nullable(schema.arrayOf(schema.string())),
@@ -50,7 +50,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
   });
 
   const actionGroupSchema = schema.object({
-    description: schema.string(),
+    description: schema.maybe(schema.string()),
     allowed_actions: schema.arrayOf(schema.string()),
     type: schema.oneOf([
       schema.literal('cluster'),
@@ -60,14 +60,14 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
   });
 
   const roleMappingSchema = schema.object({
-    description: schema.string(),
+    description: schema.maybe(schema.string()),
     backend_roles: schema.arrayOf(schema.string()),
     hosts: schema.arrayOf(schema.string()),
     users: schema.arrayOf(schema.string()),
   });
 
   const roleSchema = schema.object({
-    description: schema.string(),
+    description: schema.maybe(schema.string()),
     cluster_permissions: schema.nullable(schema.arrayOf(schema.string())),
     tenant_permissions: schema.arrayOf(schema.any()),
     index_permissions: schema.arrayOf(schema.any()),
@@ -283,9 +283,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
         esResp = await client.callAsCurrentUser('opendistro_security.authinfo');
 
         return response.ok({
-          body: {
-            message: esResp.message,
-          },
+          body: esResp,
         });
       } catch (error) {
         return response.custom({

@@ -12,6 +12,7 @@
  *   express or implied. See the License for the specific language governing
  *   permissions and limitations under the License.
  */
+
 import { schema } from '@kbn/config-schema';
 import { IRouter, SessionStorageFactory, KibanaRequest } from '../../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
@@ -53,7 +54,7 @@ export class SamlAuthRoutes {
 
         try {
           const samlHeader = await this.securityClient.getSamlHeader(request);
-          let cookie: SecuritySessionCookie = {
+          const cookie: SecuritySessionCookie = {
             saml: {
               nextUrl: request.query.nextUrl,
               requestId: samlHeader.requestId,
@@ -103,12 +104,12 @@ export class SamlAuthRoutes {
         }
 
         try {
-          let credentials = await this.securityClient.authToken(
+          const credentials = await this.securityClient.authToken(
             requestId,
             request.body.SAMLResponse,
             undefined
           );
-          let user = await this.securityClient.authenticateWithHeader(
+          const user = await this.securityClient.authenticateWithHeader(
             request,
             'authorization',
             credentials.authorization
@@ -148,12 +149,12 @@ export class SamlAuthRoutes {
       async (context, request, response) => {
         const acsEndpoint = `${this.coreSetup.http.basePath.serverBasePath}/_opendistro/_security/saml/acs/idpinitiated`;
         try {
-          let credentials = await this.securityClient.authToken(
+          const credentials = await this.securityClient.authToken(
             undefined,
             request.body.SAMLResponse,
             acsEndpoint
           );
-          let user = await this.securityClient.authenticateWithHeader(
+          const user = await this.securityClient.authenticateWithHeader(
             request,
             'authorization',
             credentials.authorization

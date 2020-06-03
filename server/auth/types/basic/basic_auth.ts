@@ -117,7 +117,7 @@ export class BasicAuthentication {
     try {
       cookie = await this.sessionStorageFactory.asScoped(request).get();
       // TODO: need to do auth for each all?
-      if (!cookie) {
+      if (!cookie || !cookie.credentials) {
         if (request.url.pathname === '/' || request.url.pathname?.startsWith('/app')) {
           // requesting access to an application page, redirect to login
           const nextUrlParam = this.composeNextUrlQeuryParam(request);
@@ -142,9 +142,8 @@ export class BasicAuthentication {
 
       // add tenant to Elasticsearch request headers
       if (this.config.multitenancy?.enabled && isMultitenantPath(request)) {
-        // FIXME: !!!! when calling authInfo, the request doesn't have a credentials set in the request
-        //             header yet, thus the call will fail, consider moving tenant stuff to post auth
-        const authInfo = await this.securityClient.authinfo(request);
+        // TODO: consider move tenant resolution to postAuthHandler?
+        const authInfo = await this.securityClient.authinfo(request, headers);
         const selectedTenant = resolveTenant(
           request,
           authInfo.user_name,
