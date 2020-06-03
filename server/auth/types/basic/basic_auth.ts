@@ -117,7 +117,7 @@ export class BasicAuthentication {
     try {
       cookie = await this.sessionStorageFactory.asScoped(request).get();
       // TODO: need to do auth for each all?
-      if (!cookie) {
+      if (!cookie || cookie.credentials) {
         if (request.url.pathname === '/' || request.url.pathname?.startsWith('/app')) {
           // requesting access to an application page, redirect to login
           const nextUrlParam = this.composeNextUrlQeuryParam(request);

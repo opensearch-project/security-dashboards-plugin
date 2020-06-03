@@ -74,10 +74,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
   });
 
   const tenantSchema = schema.object({
-    description: schema.maybe(schema.string()),
-    reserved: schema.boolean(),
-    hidden: schema.boolean(),
-    static: schema.boolean(),
+    description: schema.string(),
   });
 
   const accountSchema = schema.object({
@@ -286,9 +283,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
         esResp = await client.callAsCurrentUser('opendistro_security.authinfo');
 
         return response.ok({
-          body: {
-            message: esResp.message,
-          },
+          body: esResp,
         });
       } catch (error) {
         return response.custom({
