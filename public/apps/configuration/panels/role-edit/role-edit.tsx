@@ -67,6 +67,16 @@ const TITLE_TEXT_DICT = {
   duplicate: 'Duplicate Role',
 };
 
+function createErrorToast(id: string, failedAction: string): Toast {
+  return {
+    id,
+    color: 'danger',
+    title: `Failed to ${failedAction}`,
+    text:
+      `Failed to ${failedAction}. You may refresh the page to retry or see browser console for more information.`,
+  }
+}
+
 export function RoleEdit(props: RoleEditDeps) {
   const [roleName, setRoleName] = useState('');
   const [roleClusterPermission, setRoleClusterPermission] = useState<ComboBoxOptions>([]);
@@ -101,13 +111,7 @@ export function RoleEdit(props: RoleEditDeps) {
             setRoleName(props.sourceRoleName + '_copy');
           }
         } catch (e) {
-          addToast({
-            id: 'fetchRole',
-            color: 'danger',
-            title: 'Failed to load data',
-            text:
-              'Failed to load data. You may refresh the page to retry or see browser console for more information.',
-          });
+          addToast(createErrorToast('fetchRole', 'load data'))
           console.error(e);
         }
       };
@@ -123,13 +127,7 @@ export function RoleEdit(props: RoleEditDeps) {
         const actionGroupsObject = await fetchActionGroups(props.coreStart.http);
         setActionGroups(Object.keys(actionGroupsObject));
       } catch (e) {
-        addToast({
-          id: 'actionGroup',
-          color: 'danger',
-          title: 'Failed to load data',
-          text:
-            'Failed to load data. You may refresh the page to retry or see browser console for more information.',
-        });
+        addToast(createErrorToast('actionGroup', 'load data'));
         console.error(e);
       }
     };
@@ -143,13 +141,7 @@ export function RoleEdit(props: RoleEditDeps) {
       try {
         setTenantNames(await fetchTenantNameList(props.coreStart.http));
       } catch (e) {
-        addToast({
-          id: 'tenant',
-          color: 'danger',
-          title: 'Failed to load data',
-          text:
-            'Failed to load data. You may refresh the page to retry or see browser console for more information.',
-        });
+        addToast(createErrorToast('tenant', 'load data'))
         console.error(e);
       }
     };
@@ -166,12 +158,7 @@ export function RoleEdit(props: RoleEditDeps) {
       });
       // Redirect to role detail page
     } catch (e) {
-      addToast({
-        id: 'updateRole',
-        color: 'danger',
-        title: `Failed to ${props.action} role`,
-        text: `Failed to ${props.action} role. You may refresh the page and then retry or see browser console for more information.`,
-      });
+      addToast(createErrorToast('updateRole', `${props.action} role`))
       console.error(e);
     }
   };
