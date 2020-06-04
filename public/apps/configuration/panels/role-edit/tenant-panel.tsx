@@ -21,7 +21,11 @@ import {
   removeElementFromArray,
   updateElementInArrayHandler,
 } from '../../utils/array-state-utils';
-import { appendOptionToComboBoxHandler, stringToComboBoxOption } from '../../utils/combo-box-utils';
+import {
+  appendOptionToComboBoxHandler,
+  stringToComboBoxOption,
+  comboBoxOptionToString,
+} from '../../utils/combo-box-utils';
 import { FormRow } from '../../utils/form-row';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { ComboBoxOptions, RoleTenantPermissionStateClass, TenantPermissionType } from './types';
@@ -46,6 +50,26 @@ export function buildTenantPermissionState(
     return {
       tenantPatterns: permission.tenant_patterns.map(stringToComboBoxOption),
       permissionType,
+    };
+  });
+}
+
+export function unbuildTenantPermissionState(
+  permissions: RoleTenantPermissionStateClass[]
+): RoleTenantPermission[] {
+  return permissions.map((permission) => {
+    const permissionType = permission.permissionType;
+    let allowedActions: string[] = [];
+    if (permissionType === TenantPermissionType.Full) {
+      allowedActions = [TENANT_READ_PERMISSION, TENANT_WRITE_PERMISSION];
+    } else if (permissionType === TenantPermissionType.Read) {
+      allowedActions = [TENANT_READ_PERMISSION];
+    } else if (permissionType === TenantPermissionType.Write) {
+      allowedActions = [TENANT_WRITE_PERMISSION];
+    }
+    return {
+      tenant_patterns: permission.tenantPatterns.map(comboBoxOptionToString),
+      allowed_actions: allowedActions,
     };
   });
 }
