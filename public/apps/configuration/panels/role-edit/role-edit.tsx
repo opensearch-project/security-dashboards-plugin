@@ -72,9 +72,8 @@ function createErrorToast(id: string, failedAction: string): Toast {
     id,
     color: 'danger',
     title: `Failed to ${failedAction}`,
-    text:
-      `Failed to ${failedAction}. You may refresh the page to retry or see browser console for more information.`,
-  }
+    text: `Failed to ${failedAction}. You may refresh the page to retry or see browser console for more information.`,
+  };
 }
 
 export function RoleEdit(props: RoleEditDeps) {
@@ -111,7 +110,7 @@ export function RoleEdit(props: RoleEditDeps) {
             setRoleName(props.sourceRoleName + '_copy');
           }
         } catch (e) {
-          addToast(createErrorToast('fetchRole', 'load data'))
+          addToast(createErrorToast('fetchRole', 'load data'));
           console.error(e);
         }
       };
@@ -141,7 +140,7 @@ export function RoleEdit(props: RoleEditDeps) {
       try {
         setTenantNames(await fetchTenantNameList(props.coreStart.http));
       } catch (e) {
-        addToast(createErrorToast('tenant', 'load data'))
+        addToast(createErrorToast('tenant', 'load data'));
         console.error(e);
       }
     };
@@ -158,7 +157,7 @@ export function RoleEdit(props: RoleEditDeps) {
       });
       // Redirect to role detail page
     } catch (e) {
-      addToast(createErrorToast('updateRole', `${props.action} role`))
+      addToast(createErrorToast('updateRole', `${props.action} role`));
       console.error(e);
     }
   };
