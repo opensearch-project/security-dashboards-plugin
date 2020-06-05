@@ -27,9 +27,9 @@ export function transformUserData(rawData: DataObject<InternalUser>): InternalUs
     rawData,
     (value: InternalUser, key?: string) =>
       ({
-        username: key,
+        username: key || '',
         attributes: value.attributes,
-      } as InternalUsersListing)
+      })
   );
 }
 

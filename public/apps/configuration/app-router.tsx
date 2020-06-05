@@ -25,10 +25,10 @@ import { RoleView } from './panels/role-view/role-view';
 import { UserList } from './panels/user-list';
 import { RouteItem } from './types';
 
-const RoutesMap: { [key: string]: RouteItem } = {
+const ROUTE_MAP: { [key: string]: RouteItem } = {
   getStarted: {
     name: 'Get Started',
-    href: '/getstarted',
+    href: '/',
   },
   roles: {
     name: 'Roles',
@@ -52,41 +52,43 @@ const RoutesMap: { [key: string]: RouteItem } = {
   },
 };
 
-const RoutesList = [
-  RoutesMap.getStarted,
-  RoutesMap.roles,
-  RoutesMap.users,
-  RoutesMap.permissions,
-  RoutesMap.tenets,
-  RoutesMap.auth,
+const ROUTE_LIST = [
+  ROUTE_MAP.getStarted,
+  ROUTE_MAP.roles,
+  ROUTE_MAP.users,
+  ROUTE_MAP.permissions,
+  ROUTE_MAP.tenets,
+  ROUTE_MAP.auth,
 ];
+
+const PATTERNS_ROUTES_WITH_NAV_PANEL = '(' + ROUTE_LIST.map((route) => route.href).join('|') + ')';
 
 export function AppRouter(props: AppDependencies) {
   return (
     <Router basename={props.params.appBasePath}>
       <EuiPage>
-        <Route path={`(${RoutesList.map((r) => r.href).join('|')}|/)`} exact>
+        <Route path={PATTERNS_ROUTES_WITH_NAV_PANEL} exact>
           <EuiPageSideBar>
-            <NavPanel items={RoutesList} />
+            <NavPanel items={ROUTE_LIST} />
           </EuiPageSideBar>
         </Route>
         <EuiPageBody>
           <Switch>
             <Route
-              path={`${RoutesMap.roles.href}/:action/:sourceRoleName`}
+              path={`${ROUTE_MAP.roles.href}/:action/:sourceRoleName`}
               render={(match) => <RoleEdit {...{ ...props, ...match.match.params }} />}
             />
             <Route
-              path={`${RoutesMap.roles.href}/:roleName`}
+              path={`${ROUTE_MAP.roles.href}/:roleName`}
               render={(match) => <RoleView {...{ ...props, ...match.match.params }} />}
             />
-            <Route path={RoutesMap.roles.href}>
+            <Route path={ROUTE_MAP.roles.href}>
               <RoleList {...props} />
             </Route>
-            <Route path={RoutesMap.auth.href}>
+            <Route path={ROUTE_MAP.auth.href}>
               <AuthView {...props} />
             </Route>
-            <Route path={RoutesMap.users.href}>
+            <Route path={ROUTE_MAP.users.href}>
               <UserList {...props} />
             </Route>
           </Switch>
