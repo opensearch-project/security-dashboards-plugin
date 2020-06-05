@@ -152,7 +152,7 @@ export function UserList(props: AppDependencies) {
             <EuiText size="xs" color="subdued">
               The Security plugin includes an internal user database. Use this database in place of
               or in addition to an external authentication system such as LDAP or Active Directory.
-              You can map an internal user to a role from Roles. First, click into the detail page
+              You can map an internal user to a role from <EuiLink href="/">Roles</EuiLink>. First, click into the detail page
               of the role. Then under “Mapped users”, click “Manage mapping”.{' '}
               <EuiLink external={true} href="/">
                 Learn More
