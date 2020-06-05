@@ -73,6 +73,7 @@ export function UserList(props: AppDependencies) {
   const [selection, setSelection] = useState<InternalUsersListing[]>([]);
   const [isActionsPopoverOpen, setActionsPopoverOpen] = useState(false);
   const [currentUsername, setCurrentUsername] = useState('');
+  // TODO: fetch current username
   useEffect(() => {
     const fetchData = async () => {
       try {
