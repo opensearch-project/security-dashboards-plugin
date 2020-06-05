@@ -13,16 +13,17 @@
  *   permissions and limitations under the License.
  */
 
+import { EuiPage, EuiPageBody, EuiPageSideBar } from '@elastic/eui';
 import React from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
-import { EuiPage, EuiPageSideBar, EuiPageBody } from '@elastic/eui';
 import { AppDependencies } from '../types';
-import { RouteItem } from './types';
-import { NavPanel } from './panels/nav-panel';
-import { RoleList } from './panels/role-list';
-import { RoleEdit } from './panels/role-edit/role-edit';
 import { AuthView } from './panels/auth-view/auth-view';
+import { NavPanel } from './panels/nav-panel';
+import { RoleEdit } from './panels/role-edit/role-edit';
+import { RoleList } from './panels/role-list';
 import { RoleView } from './panels/role-view/role-view';
+import { UserList } from './panels/user-list';
+import { RouteItem } from './types';
 
 const RoutesMap: { [key: string]: RouteItem } = {
   getStarted: {
@@ -64,7 +65,7 @@ export function AppRouter(props: AppDependencies) {
   return (
     <Router basename={props.params.appBasePath}>
       <EuiPage>
-        <Route path={`(${RoutesList.map((r) => r.href).join('|')})`} exact>
+        <Route path={`(${RoutesList.map((r) => r.href).join('|')}|/)`} exact>
           <EuiPageSideBar>
             <NavPanel items={RoutesList} />
           </EuiPageSideBar>
@@ -84,6 +85,9 @@ export function AppRouter(props: AppDependencies) {
             </Route>
             <Route path={RoutesMap.auth.href}>
               <AuthView {...props} />
+            </Route>
+            <Route path={RoutesMap.users.href}>
+              <UserList {...props} />
             </Route>
           </Switch>
         </EuiPageBody>

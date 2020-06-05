@@ -21,6 +21,7 @@ export const API_ENDPOINT_ROLESMAPPING = API_ENDPOINT + '/rolesmapping';
 export const API_ENDPOINT_ACTIONGROUPS = API_ENDPOINT + '/actiongroups';
 export const API_ENDPOINT_TENANTS = API_ENDPOINT + '/tenants';
 export const API_ENDPOINT_SECURITYCONFIG = API_ENDPOINT + '/securityconfig';
+export const API_ENDPOINT_INTERNALUSERS = API_ENDPOINT + '/internalusers';
 
 export const CLUSTER_PERMISSIONS = [
   'cluster:admin/ingest/pipeline/delete',
