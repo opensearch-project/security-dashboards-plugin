@@ -86,7 +86,7 @@ export function buildSearchFilterOptions(roleList: any[], attrName: string) {
 
 // Submit request to delete given roles. No error handling in this function.
 export async function requestDeleteRoles(http: HttpStart, roles: string[]) {
-  roles.forEach(async (r) => {
-    await http.delete(`${API_ENDPOINT_ROLES}/${r}`);
-  });
+  for (const role of roles) {
+    await http.delete(`${API_ENDPOINT_ROLES}/${role}`);
+  }
 }

@@ -175,7 +175,7 @@ export function UserList(props: AppDependencies) {
                 </EuiPopover>
               </EuiFlexItem>
               <EuiFlexItem>
-                <EuiButton fill>Create user</EuiButton>
+                <EuiButton fill>Create internal user</EuiButton>
               </EuiFlexItem>
             </EuiFlexGroup>
           </EuiPageContentHeaderSection>

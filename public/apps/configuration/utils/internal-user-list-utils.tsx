@@ -23,20 +23,16 @@ export interface InternalUsersListing extends InternalUser {
 }
 
 export function transformUserData(rawData: DataObject<InternalUser>): InternalUsersListing[] {
-  return map(
-    rawData,
-    (value: InternalUser, key?: string) =>
-      ({
-        username: key || '',
-        attributes: value.attributes,
-      })
-  );
+  return map(rawData, (value: InternalUser, key?: string) => ({
+    username: key || '',
+    attributes: value.attributes,
+  }));
 }
 
 export async function requestDeleteUsers(http: HttpStart, users: string[]) {
-  users.forEach(async (r) => {
-    await http.delete(`${API_ENDPOINT_INTERNALUSERS}/${r}`);
-  });
+  for (const user of users) {
+    await http.delete(`${API_ENDPOINT_INTERNALUSERS}/${user}`);
+  }
 }
 
 async function getUserListRaw(http: HttpStart) {
