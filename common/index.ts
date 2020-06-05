@@ -17,3 +17,5 @@ export const PLUGIN_ID = 'opendistroSecurity';
 export const PLUGIN_NAME = 'opendistro_security';
 
 export const API_PREFIX = '/api/v1/opendistro_security';
+
+export const OPENDISTRO_URL_PREFIX = PLUGIN_NAME + '#/';
