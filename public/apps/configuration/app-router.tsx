@@ -61,6 +61,7 @@ const ROUTE_LIST = [
   ROUTE_MAP.auth,
 ];
 
+// url regex pattern for all pages with left nav panel, (/|/roles|/internalusers|...)
 const PATTERNS_ROUTES_WITH_NAV_PANEL = '(' + ROUTE_LIST.map((route) => route.href).join('|') + ')';
 
 export function AppRouter(props: AppDependencies) {
