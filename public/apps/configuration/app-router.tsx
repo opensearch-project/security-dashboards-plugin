@@ -22,6 +22,7 @@ import { NavPanel } from './panels/nav-panel';
 import { RoleList } from './panels/role-list';
 import { RoleEdit } from './panels/role-edit/role-edit';
 import { AuthView } from './panels/auth-view/auth-view';
+import { RoleView } from './panels/role-view/role-view';
 
 const RoutesMap: { [key: string]: RouteItem } = {
   getStarted: {
@@ -73,6 +74,10 @@ export function AppRouter(props: AppDependencies) {
             <Route
               path={`${RoutesMap.roles.href}/:action/:sourceRoleName`}
               render={(match) => <RoleEdit {...{ ...props, ...match.match.params }} />}
+            />
+            <Route
+              path={`${RoutesMap.roles.href}/:roleName`}
+              render={(match) => <RoleView {...{ ...props, ...match.match.params }} />}
             />
             <Route path={RoutesMap.roles.href}>
               <RoleList {...props} />
