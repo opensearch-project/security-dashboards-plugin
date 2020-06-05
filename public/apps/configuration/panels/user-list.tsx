@@ -111,9 +111,9 @@ export function UserList(props: AppDependencies) {
     >
       Edit
     </EuiContextMenuItem>,
-    // TODO: Redirect to duplicate page
-    <EuiContextMenuItem key="duplicate" onClick={() => {}} disabled={selection.length !== 1}>
-      Duplicate
+    // TODO: Redirect to export page
+    <EuiContextMenuItem key="export" onClick={() => {}} disabled={selection.length !== 1}>
+      Export JSON
     </EuiContextMenuItem>,
     <EuiContextMenuItem
       key="delete"
