@@ -25,6 +25,7 @@ import {
   OpendistroSecurityPluginStart,
   AppPluginStartDependencies,
 } from './types';
+import { PLUGIN_NAME } from '../common';
 
 export class OpendistroSecurityPlugin
   implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
@@ -33,7 +34,7 @@ export class OpendistroSecurityPlugin
 
   public setup(core: CoreSetup): OpendistroSecurityPluginSetup {
     core.application.register({
-      id: 'opendistro_security',
+      id: PLUGIN_NAME,
       title: 'Security',
       order: 1,
       mount: async (params: AppMountParameters) => {

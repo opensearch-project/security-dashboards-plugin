@@ -25,6 +25,7 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 import { AppDependencies } from '../../../types';
+import { DUPLICATE_ROLES_URL_PREFIX } from '../../constants';
 
 const tabs = [
   {
@@ -63,6 +64,8 @@ function createBreadcrumbs(roleName: string) {
 }
 
 export function RoleView(props: RoleViewProps) {
+  const duplicateRoleLink = DUPLICATE_ROLES_URL_PREFIX + props.roleName;
+
   return (
     <>
       <EuiBreadcrumbs breadcrumbs={createBreadcrumbs(props.roleName)} truncate={false} />
@@ -75,7 +78,7 @@ export function RoleView(props: RoleViewProps) {
         </EuiPageContentHeaderSection>
 
         <EuiPageContentHeaderSection>
-          <EuiButton>Duplicate role</EuiButton>
+          <EuiButton href={duplicateRoleLink}>Duplicate role</EuiButton>
         </EuiPageContentHeaderSection>
       </EuiPageContentHeader>
 
