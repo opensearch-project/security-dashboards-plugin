@@ -252,10 +252,10 @@ export function RoleList(props: AppDependencies) {
       <EuiPageContent>
         <EuiPageContentHeader id="role-table-container">
           <EuiPageContentHeaderSection>
-            <EuiTitle>
+            <EuiTitle size="s">
               <h3>Roles ({roleData.length})</h3>
             </EuiTitle>
-            <EuiText size="s" color="subdued">
+            <EuiText size="xs" color="subdued">
               Roles are the core way of controlling access to your cluster. Roles contain any
               combinatioin of cluster-wide permission, index-specific permissions, document- and
               field-level security, and tenants. Then you map users to these roles so that users

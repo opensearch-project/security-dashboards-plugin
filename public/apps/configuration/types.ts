@@ -54,3 +54,8 @@ export interface Tenant {
   reserved: boolean;
   description: string;
 }
+export interface InternalUser {
+  attributes: {
+    [key: string]: string;
+  };
+}
