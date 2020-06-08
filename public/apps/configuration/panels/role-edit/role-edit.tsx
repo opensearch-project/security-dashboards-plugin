@@ -28,7 +28,7 @@ import {
 } from '@elastic/eui';
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 import React, { useEffect, useState, useCallback } from 'react';
-import { AppDependencies, SingleResourcePageDependencies } from '../../../types';
+import { SingleResourcePageDependencies } from '../../../types';
 import { CLUSTER_PERMISSIONS, INDEX_PERMISSIONS } from '../../constants';
 import { fetchActionGroups } from '../../utils/action-groups-utils';
 import { comboBoxOptionToString, stringToComboBoxOption } from '../../utils/combo-box-utils';
