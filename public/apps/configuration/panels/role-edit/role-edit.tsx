@@ -28,7 +28,7 @@ import {
 } from '@elastic/eui';
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 import React, { useEffect, useState, useCallback } from 'react';
-import { AppDependencies, SingleResourcePageDepencies } from '../../../types';
+import { AppDependencies, SingleResourcePageDependencies } from '../../../types';
 import { CLUSTER_PERMISSIONS, INDEX_PERMISSIONS } from '../../constants';
 import { fetchActionGroups } from '../../utils/action-groups-utils';
 import { comboBoxOptionToString, stringToComboBoxOption } from '../../utils/combo-box-utils';
@@ -55,7 +55,7 @@ import {
 import { buildHashUrl } from '../../utils/url-builder';
 import { ResourceType, Action } from '../../types';
 
-interface RoleEditDeps extends SingleResourcePageDepencies {
+interface RoleEditDeps extends SingleResourcePageDependencies {
   action: 'create' | 'edit' | 'duplicate';
   // For creation, sourceRoleName should be empty string.
   // For editing, sourceRoleName should be the name of the role to edit.
