@@ -23,5 +23,5 @@ export interface AppDependencies {
 }
 
 export interface SingleResourcePageDepencies extends AppDependencies {
-  buildBreadscrumb: (pageTitle: string) => React.ReactNode;
+  buildBreadcrumbs: (pageTitle: string) => React.ReactNode;
 }

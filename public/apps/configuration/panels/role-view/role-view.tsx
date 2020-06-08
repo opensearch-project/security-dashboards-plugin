@@ -50,7 +50,7 @@ export function RoleView(props: RoleViewProps) {
 
   return (
     <>
-      {props.buildBreadscrumb(props.roleName)}
+      {props.buildBreadcrumbs(props.roleName)}
 
       <EuiPageContentHeader>
         <EuiPageContentHeaderSection>

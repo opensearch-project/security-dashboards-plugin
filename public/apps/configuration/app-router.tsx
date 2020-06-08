@@ -101,7 +101,7 @@ export function AppRouter(props: AppDependencies) {
               path={buildUrl(ResourceType.roles, Action.view, ':roleName')}
               render={(match) => (
                 <RoleView
-                  buildBreadscrumb={partial(Breadcrumbs, ResourceType.roles)}
+                  buildBreadcrumbs={partial(Breadcrumbs, ResourceType.roles)}
                   {...{ ...props, ...match.match.params }}
                 />
               )}
@@ -110,7 +110,7 @@ export function AppRouter(props: AppDependencies) {
               path={buildUrl(ResourceType.roles) + '/:action/:sourceRoleName'}
               render={(match) => (
                 <RoleEdit
-                  buildBreadscrumb={partial(Breadcrumbs, ResourceType.roles)}
+                  buildBreadcrumbs={partial(Breadcrumbs, ResourceType.roles)}
                   {...{ ...props, ...match.match.params }}
                 />
               )}
