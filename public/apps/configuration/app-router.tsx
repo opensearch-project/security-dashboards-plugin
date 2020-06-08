@@ -59,8 +59,8 @@ const ROUTE_LIST = [
   ROUTE_MAP[ResourceType.auth],
   ROUTE_MAP[ResourceType.roles],
   ROUTE_MAP[ResourceType.users],
+  ROUTE_MAP[ResourceType.permissions],
   ROUTE_MAP[ResourceType.tenants],
-  ROUTE_MAP[ResourceType.auth],
 ];
 
 // url regex pattern for all pages with left nav panel, (/|/roles|/internalusers|...)
