@@ -38,6 +38,8 @@ import {
   InternalUsersListing,
   requestDeleteUsers,
 } from '../utils/internal-user-list-utils';
+import { buildHashUrl } from '../utils/url-builder';
+import { ResourceType, Action } from '../types';
 
 function dictView() {
   return (items: Dictionary<string>) => {
@@ -57,6 +59,9 @@ const columns = [
   {
     field: 'username',
     name: 'Username',
+    render: (text: string) => (
+      <a href={buildHashUrl(ResourceType.users, Action.view, text)}>{text}</a>
+    ),
     sortable: true,
   },
   {
@@ -106,7 +111,13 @@ export function UserList(props: AppDependencies) {
   const actionsMenuItems = [
     <EuiContextMenuItem
       key="edit"
-      onClick={() => {}} // TODO: Redirect to edit page
+      onClick={() => {
+        window.location.href = buildHashUrl(
+          ResourceType.roles,
+          Action.duplicate,
+          selection[0].username
+        );
+      }}
       disabled={selection.length !== 1}
     >
       Edit

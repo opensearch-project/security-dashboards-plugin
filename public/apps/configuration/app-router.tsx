@@ -13,9 +13,10 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiPage, EuiPageBody, EuiPageSideBar } from '@elastic/eui';
+import { EuiPage, EuiPageBody, EuiPageSideBar, EuiBreadcrumbs } from '@elastic/eui';
 import React from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
+import { partial } from 'lodash';
 import { AppDependencies } from '../types';
 import { AuthView } from './panels/auth-view/auth-view';
 import { NavPanel } from './panels/nav-panel';
@@ -23,46 +24,67 @@ import { RoleEdit } from './panels/role-edit/role-edit';
 import { RoleList } from './panels/role-list';
 import { RoleView } from './panels/role-view/role-view';
 import { UserList } from './panels/user-list';
-import { RouteItem } from './types';
+import { RouteItem, ResourceType, Action } from './types';
+import { buildUrl, buildHashUrl } from './utils/url-builder';
 
 const ROUTE_MAP: { [key: string]: RouteItem } = {
   getStarted: {
     name: 'Get Started',
-    href: '/',
+    href: buildUrl(),
   },
-  roles: {
+  [ResourceType.roles]: {
     name: 'Roles',
-    href: '/roles',
+    href: buildUrl(ResourceType.roles),
   },
-  users: {
-    name: 'Users',
-    href: '/internalusers',
+  [ResourceType.users]: {
+    name: 'Internal users',
+    href: buildUrl(ResourceType.users),
   },
-  permissions: {
+  [ResourceType.permissions]: {
     name: 'Permissions',
-    href: '/permissions',
+    href: buildUrl(ResourceType.permissions),
   },
-  tenets: {
-    name: 'Tenets',
-    href: '/tenants',
+  [ResourceType.tenants]: {
+    name: 'Tenants',
+    href: buildUrl(ResourceType.tenants),
   },
-  auth: {
+  [ResourceType.auth]: {
     name: 'Authentication and authorization',
-    href: '/auth',
+    href: buildUrl(ResourceType.auth),
   },
 };
 
 const ROUTE_LIST = [
   ROUTE_MAP.getStarted,
-  ROUTE_MAP.roles,
-  ROUTE_MAP.users,
-  ROUTE_MAP.permissions,
-  ROUTE_MAP.tenets,
-  ROUTE_MAP.auth,
+  ROUTE_MAP[ResourceType.auth],
+  ROUTE_MAP[ResourceType.roles],
+  ROUTE_MAP[ResourceType.users],
+  ROUTE_MAP[ResourceType.tenants],
+  ROUTE_MAP[ResourceType.auth],
 ];
 
 // url regex pattern for all pages with left nav panel, (/|/roles|/internalusers|...)
 const PATTERNS_ROUTES_WITH_NAV_PANEL = '(' + ROUTE_LIST.map((route) => route.href).join('|') + ')';
+
+function Breadcrumbs(resourceType: ResourceType, pageTitle: string) {
+  return (
+    <EuiBreadcrumbs
+      breadcrumbs={[
+        {
+          text: 'Security',
+          href: buildHashUrl(),
+        },
+        {
+          text: ROUTE_MAP[resourceType].name,
+          href: buildHashUrl(resourceType),
+        },
+        {
+          text: pageTitle,
+        },
+      ]}
+    />
+  );
+}
 
 export function AppRouter(props: AppDependencies) {
   return (
@@ -76,12 +98,22 @@ export function AppRouter(props: AppDependencies) {
         <EuiPageBody>
           <Switch>
             <Route
-              path={`${ROUTE_MAP.roles.href}/:action/:sourceRoleName`}
-              render={(match) => <RoleEdit {...{ ...props, ...match.match.params }} />}
+              path={buildUrl(ResourceType.roles, Action.view, ':roleName')}
+              render={(match) => (
+                <RoleView
+                  buildBreadscrumb={partial(Breadcrumbs, ResourceType.roles)}
+                  {...{ ...props, ...match.match.params }}
+                />
+              )}
             />
             <Route
-              path={`${ROUTE_MAP.roles.href}/:roleName`}
-              render={(match) => <RoleView {...{ ...props, ...match.match.params }} />}
+              path={buildUrl(ResourceType.roles) + '/:action/:sourceRoleName'}
+              render={(match) => (
+                <RoleEdit
+                  buildBreadscrumb={partial(Breadcrumbs, ResourceType.roles)}
+                  {...{ ...props, ...match.match.params }}
+                />
+              )}
             />
             <Route path={ROUTE_MAP.roles.href}>
               <RoleList {...props} />
