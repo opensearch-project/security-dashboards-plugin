@@ -22,6 +22,6 @@ export interface AppDependencies {
   params: AppMountParameters;
 }
 
-export interface SingleResourcePageDependencies extends AppDependencies {
+export interface BreadcrumbsPageDependencies extends AppDependencies {
   buildBreadcrumbs: (pageTitle: string) => React.ReactNode;
 }

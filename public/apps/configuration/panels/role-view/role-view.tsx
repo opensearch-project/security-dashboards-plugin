@@ -23,7 +23,7 @@ import {
   EuiTabbedContent,
   EuiTitle,
 } from '@elastic/eui';
-import { SingleResourcePageDependencies } from '../../../types';
+import { BreadcrumbsPageDependencies } from '../../../types';
 import { DUPLICATE_ROLES_URL_PREFIX } from '../../constants';
 
 const tabs = [
@@ -41,7 +41,7 @@ const tabs = [
   },
 ];
 
-interface RoleViewProps extends SingleResourcePageDependencies {
+interface RoleViewProps extends BreadcrumbsPageDependencies {
   roleName: string;
 }
 
