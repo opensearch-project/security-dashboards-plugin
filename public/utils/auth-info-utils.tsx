@@ -13,8 +13,10 @@
  *   permissions and limitations under the License.
  */
 
-export const PLUGIN_ID = 'opendistroSecurity';
-export const PLUGIN_NAME = 'opendistro_security';
+import { HttpStart } from 'kibana/public';
+import { API_ENDPOINT_AUTHINFO } from '../../common';
+import { AuthInfo } from '../types';
 
-export const API_PREFIX = '/api/v1/opendistro_security';
-export const API_ENDPOINT_AUTHINFO = API_PREFIX + '/auth/authinfo';
+export async function getAuthInfo(http: HttpStart) {
+  return (await http.get(`${API_ENDPOINT_AUTHINFO}`)) as AuthInfo;
+}

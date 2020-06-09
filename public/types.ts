@@ -23,3 +23,10 @@ export interface OpendistroSecurityPluginStart {}
 export interface AppPluginStartDependencies {
   navigation: NavigationPublicPluginStart;
 }
+
+export interface AuthInfo {
+  user_name: string;
+  tenants: {
+    [tenant: string]: boolean;
+  };
+}
