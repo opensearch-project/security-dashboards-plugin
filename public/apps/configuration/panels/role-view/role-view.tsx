@@ -24,7 +24,8 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 import { BreadcrumbsPageDependencies } from '../../../types';
-import { DUPLICATE_ROLES_URL_PREFIX } from '../../constants';
+import { buildHashUrl } from '../../utils/url-builder';
+import { ResourceType, Action } from '../../types';
 
 const tabs = [
   {
@@ -46,7 +47,7 @@ interface RoleViewProps extends BreadcrumbsPageDependencies {
 }
 
 export function RoleView(props: RoleViewProps) {
-  const duplicateRoleLink = DUPLICATE_ROLES_URL_PREFIX + props.roleName;
+  const duplicateRoleLink = buildHashUrl(ResourceType.roles, Action.duplicate, props.roleName);
 
   return (
     <>
