@@ -62,10 +62,10 @@ function getColumns(currentUsername: string) {
     {
       field: 'username',
       name: 'Username',
-      render: (text: string) => (
+      render: (username: string) => (
         <>
-          <a href={buildHashUrl(ResourceType.users, Action.view, text)}>{text}</a>
-          {text === currentUsername && (
+          <a href={buildHashUrl(ResourceType.users, Action.view, username)}>{username}</a>
+          {username === currentUsername && (
             <>
               &nbsp;
               <EuiBadge>Current</EuiBadge>
