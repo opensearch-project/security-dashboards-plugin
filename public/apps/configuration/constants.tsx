@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { API_PREFIX, OPENDISTRO_URL_PREFIX } from '../../../common';
+import { API_PREFIX } from '../../../common';
 
 export const API_ENDPOINT = API_PREFIX + '/configuration';
 export const API_ENDPOINT_ROLES = API_ENDPOINT + '/roles';
@@ -22,9 +22,6 @@ export const API_ENDPOINT_ACTIONGROUPS = API_ENDPOINT + '/actiongroups';
 export const API_ENDPOINT_TENANTS = API_ENDPOINT + '/tenants';
 export const API_ENDPOINT_SECURITYCONFIG = API_ENDPOINT + '/securityconfig';
 export const API_ENDPOINT_INTERNALUSERS = API_ENDPOINT + '/internalusers';
-
-export const ROLES_URL_PREFIX = OPENDISTRO_URL_PREFIX + 'roles/';
-export const DUPLICATE_ROLES_URL_PREFIX = ROLES_URL_PREFIX + 'duplicate/';
 
 export const CLUSTER_PERMISSIONS = [
   'cluster:admin/ingest/pipeline/delete',
