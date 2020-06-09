@@ -40,6 +40,8 @@ import {
   requestDeleteRoles,
 } from '../utils/role-list-utils';
 import { API_ENDPOINT_ROLES, API_ENDPOINT_ROLESMAPPING } from '../constants';
+import { ResourceType, Action } from '../types';
+import { buildHashUrl } from '../utils/url-builder';
 
 function truncatedListView(limit = 3) {
   return (items: string[]) => {
@@ -82,6 +84,9 @@ const columns = [
   {
     field: 'role_name',
     name: 'Role',
+    render: (text: string) => (
+      <a href={buildHashUrl(ResourceType.roles, Action.view, text)}>{text}</a>
+    ),
     sortable: true,
   },
   {
@@ -158,13 +163,29 @@ export function RoleList(props: AppDependencies) {
   const actionsMenuItems = [
     <EuiContextMenuItem
       key="edit"
-      onClick={() => {}} // TODO: Redirect to edit page
+      onClick={() => {
+        window.location.href = buildHashUrl(
+          ResourceType.roles,
+          Action.edit,
+          selection[0].role_name
+        );
+      }}
       disabled={selection.length !== 1 || selection[0].reserved}
     >
       Edit
     </EuiContextMenuItem>,
-    // TODO: Redirect to duplicate page
-    <EuiContextMenuItem key="duplicate" onClick={() => {}} disabled={selection.length !== 1}>
+    // TODO: Change duplication to a popup window
+    <EuiContextMenuItem
+      key="duplicate"
+      onClick={() => {
+        window.location.href = buildHashUrl(
+          ResourceType.roles,
+          Action.duplicate,
+          selection[0].role_name
+        );
+      }}
+      disabled={selection.length !== 1}
+    >
       Duplicate
     </EuiContextMenuItem>,
     <EuiContextMenuItem

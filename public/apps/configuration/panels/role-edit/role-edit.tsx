@@ -28,7 +28,7 @@ import {
 } from '@elastic/eui';
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 import React, { useEffect, useState, useCallback } from 'react';
-import { AppDependencies } from '../../../types';
+import { BreadcrumbsPageDependencies } from '../../../types';
 import { CLUSTER_PERMISSIONS, INDEX_PERMISSIONS } from '../../constants';
 import { fetchActionGroups } from '../../utils/action-groups-utils';
 import { comboBoxOptionToString, stringToComboBoxOption } from '../../utils/combo-box-utils';
@@ -52,8 +52,10 @@ import {
   RoleIndexPermissionStateClass,
   RoleTenantPermissionStateClass,
 } from './types';
+import { buildHashUrl } from '../../utils/url-builder';
+import { ResourceType, Action } from '../../types';
 
-interface RoleEditDeps extends AppDependencies {
+interface RoleEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
   // For creation, sourceRoleName should be empty string.
   // For editing, sourceRoleName should be the name of the role to edit.
@@ -155,7 +157,7 @@ export function RoleEdit(props: RoleEditDeps) {
         index_permissions: unbuildIndexPermissionState(roleIndexPermission),
         tenant_permissions: unbuildTenantPermissionState(roleTenantPermission),
       });
-      // Redirect to role detail page
+      window.location.href = buildHashUrl(ResourceType.roles, Action.view, roleName);
     } catch (e) {
       addToast(createErrorToast('updateRole', `${props.action} role`));
       console.error(e);
@@ -181,6 +183,7 @@ export function RoleEdit(props: RoleEditDeps) {
 
   return (
     <>
+      {props.buildBreadcrumbs(TITLE_TEXT_DICT[props.action])}
       <EuiPageHeader>
         <EuiText size="xs" color="subdued">
           <EuiTitle size="m">
@@ -234,7 +237,13 @@ export function RoleEdit(props: RoleEditDeps) {
       <EuiSpacer size="m" />
       <EuiFlexGroup justifyContent="flexEnd">
         <EuiFlexItem grow={false}>
-          <EuiButton>{/* // TODO: add a link returning to role listing page */}Cancel</EuiButton>
+          <EuiButton
+            onClick={() => {
+              window.location.href = buildHashUrl(ResourceType.roles);
+            }}
+          >
+            Cancel
+          </EuiButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
           <EuiButton fill onClick={updateRoleHandler}>

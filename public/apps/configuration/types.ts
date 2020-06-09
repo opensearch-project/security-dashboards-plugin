@@ -13,6 +13,21 @@
  *   permissions and limitations under the License.
  */
 
+export enum ResourceType {
+  roles = 'roles',
+  users = 'users',
+  permissions = 'permissions',
+  tenants = 'tenants',
+  auth = 'auth',
+}
+
+export enum Action {
+  view = 'view',
+  new = 'new',
+  edit = 'edit',
+  duplicate = 'duplicate',
+}
+
 export interface RouteItem {
   name: string;
   href: string;

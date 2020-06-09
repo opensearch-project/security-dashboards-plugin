@@ -21,3 +21,7 @@ export interface AppDependencies {
   navigation: AppPluginStartDependencies;
   params: AppMountParameters;
 }
+
+export interface BreadcrumbsPageDependencies extends AppDependencies {
+  buildBreadcrumbs: (pageTitle: string) => React.ReactNode;
+}

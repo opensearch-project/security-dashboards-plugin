@@ -16,7 +16,6 @@
 import React, { Fragment } from 'react';
 
 import {
-  EuiBreadcrumbs,
   EuiButton,
   EuiPageContentHeader,
   EuiPageContentHeaderSection,
@@ -24,7 +23,7 @@ import {
   EuiTabbedContent,
   EuiTitle,
 } from '@elastic/eui';
-import { AppDependencies } from '../../../types';
+import { BreadcrumbsPageDependencies } from '../../../types';
 import { DUPLICATE_ROLES_URL_PREFIX } from '../../constants';
 
 const tabs = [
@@ -42,25 +41,8 @@ const tabs = [
   },
 ];
 
-interface RoleViewProps extends AppDependencies {
+interface RoleViewProps extends BreadcrumbsPageDependencies {
   roleName: string;
-}
-
-// TODO: move breadcrumbs to router level as it is common in multiple role related pages.
-function createBreadcrumbs(roleName: string) {
-  return [
-    {
-      text: 'Security',
-      href: '#',
-    },
-    {
-      text: 'Roles',
-      href: '#',
-    },
-    {
-      text: roleName,
-    },
-  ];
 }
 
 export function RoleView(props: RoleViewProps) {
@@ -68,7 +50,7 @@ export function RoleView(props: RoleViewProps) {
 
   return (
     <>
-      <EuiBreadcrumbs breadcrumbs={createBreadcrumbs(props.roleName)} truncate={false} />
+      {props.buildBreadcrumbs(props.roleName)}
 
       <EuiPageContentHeader>
         <EuiPageContentHeaderSection>
