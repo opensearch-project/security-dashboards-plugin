@@ -14,6 +14,7 @@
  */
 
 import {
+  EuiBadge,
   EuiButton,
   EuiContextMenuItem,
   EuiContextMenuPanel,
@@ -30,16 +31,17 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import { difference, map, Dictionary } from 'lodash';
+import { Dictionary, difference, map } from 'lodash';
 import React, { useEffect, useState } from 'react';
+import { getAuthInfo } from '../../../utils/auth-info-utils';
 import { AppDependencies } from '../../types';
+import { Action, ResourceType } from '../types';
 import {
   getUserList,
   InternalUsersListing,
   requestDeleteUsers,
 } from '../utils/internal-user-list-utils';
 import { buildHashUrl } from '../utils/url-builder';
-import { ResourceType, Action } from '../types';
 
 function dictView() {
   return (items: Dictionary<string>) => {
@@ -55,22 +57,32 @@ function dictView() {
   };
 }
 
-const columns = [
-  {
-    field: 'username',
-    name: 'Username',
-    render: (text: string) => (
-      <a href={buildHashUrl(ResourceType.users, Action.view, text)}>{text}</a>
-    ),
-    sortable: true,
-  },
-  {
-    field: 'attributes',
-    name: 'Attributes',
-    render: dictView(),
-    truncateText: true,
-  },
-];
+function getColumns(currentUsername: string) {
+  return [
+    {
+      field: 'username',
+      name: 'Username',
+      render: (text: string) => (
+        <>
+          <a href={buildHashUrl(ResourceType.users, Action.view, text)}>{text}</a>
+          {text === currentUsername && (
+            <>
+              &nbsp;
+              <EuiBadge>Current</EuiBadge>
+            </>
+          )}
+        </>
+      ),
+      sortable: true,
+    },
+    {
+      field: 'attributes',
+      name: 'Attributes',
+      render: dictView(),
+      truncateText: true,
+    },
+  ];
+}
 
 export function UserList(props: AppDependencies) {
   const [userData, setUserData] = useState<InternalUsersListing[]>([]);
@@ -78,11 +90,13 @@ export function UserList(props: AppDependencies) {
   const [selection, setSelection] = useState<InternalUsersListing[]>([]);
   const [isActionsPopoverOpen, setActionsPopoverOpen] = useState(false);
   const [currentUsername, setCurrentUsername] = useState('');
-  // TODO: fetch current username
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setUserData(await getUserList(props.coreStart.http));
+        const userDataPromise = getUserList(props.coreStart.http);
+        setCurrentUsername((await getAuthInfo(props.coreStart.http)).user_name);
+        setUserData(await userDataPromise);
       } catch (e) {
         console.log(e);
         setErrorFlag(true);
@@ -90,7 +104,7 @@ export function UserList(props: AppDependencies) {
     };
 
     fetchData();
-  }, [props.coreStart.http]);
+  }, [props.coreStart.http]); // TODO: fetch current username
 
   const handleDelete = async () => {
     const usersToDelete: string[] = selection.map((r) => r.username);
@@ -195,7 +209,7 @@ export function UserList(props: AppDependencies) {
         <EuiPageBody>
           <EuiInMemoryTable
             loading={userData === [] && !errorFlag}
-            columns={columns}
+            columns={getColumns(currentUsername)}
             items={userData}
             itemId={'username'}
             pagination
