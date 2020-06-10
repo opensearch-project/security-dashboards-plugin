@@ -101,17 +101,22 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
   return (
     <>
       {props.buildBreadcrumbs(TITLE_TEXT_DICT[props.action])}
+      <EuiSpacer />
       <EuiPageHeader>
-        <EuiText size="xs" color="subdued">
-          <EuiTitle size="m">
+        <EuiFlexGroup direction='column' gutterSize='xs'><EuiFlexItem>
+        <EuiTitle size="l">
             <h1>{TITLE_TEXT_DICT[props.action]}</h1>
-          </EuiTitle>
+          </EuiTitle></EuiFlexItem>
+          <EuiFlexItem>
+        <EuiText size="xs" color="subdued">
+
           The security plugin includes an internal user database. Use this database in place of or
           in addtion to an external authentication system such as LDAP or Active Directory{' '}
           <EuiLink external href="/">
             Learn More
           </EuiLink>
-        </EuiText>
+        </EuiText></EuiFlexItem>
+        </EuiFlexGroup>
       </EuiPageHeader>
       <PanelWithHeader headerText="Credendtials">
         <EuiForm>
