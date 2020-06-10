@@ -31,7 +31,7 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import { Dictionary, difference, map } from 'lodash';
+import { Dictionary, difference, map, isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { getAuthInfo } from '../../../utils/auth-info-utils';
 import { AppDependencies } from '../../types';
@@ -45,6 +45,9 @@ import { buildHashUrl } from '../utils/url-builder';
 
 function dictView() {
   return (items: Dictionary<string>) => {
+    if (isEmpty(items)) {
+      return '-';
+    }
     return (
       <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
         {map(items, (v, k) => (
