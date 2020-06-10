@@ -52,7 +52,7 @@ function dictView() {
       <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
         {map(items, (v, k) => (
           <EuiText key={k} size="xs">
-            {k}: {v}
+            {k}: {`"${v}"`}
           </EuiText>
         ))}
       </EuiFlexGroup>
