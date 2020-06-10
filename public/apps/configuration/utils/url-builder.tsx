@@ -20,10 +20,10 @@ import { ResourceType, Action } from '../types';
  * e.g.
  *   buildUrl() => "/" (landing page)
  *   buildUrl(ResourceType.roles) => "/roles" (role listing page)
- *   buildUrl(ResourceType.roles, Action.new) => "/roles/create" (role creation page)
+ *   buildUrl(ResourceType.roles, Action.create) => "/roles/create" (role creation page)
  *   buildUrl(ResourceType.roles, Action.view, "someRole") => "/roles/view/someRole" (role detail page)
  * edge case (wrong usage) fallbacks:
- *   buildUrl(undefined, Action.new) => ""
+ *   buildUrl(undefined, Action.create) => ""
  *   buildUrl(ResourceType.roles, undefined, "someRole") => "/roles"
  */
 export function buildUrl(resouceType?: ResourceType, action?: Action, resourceId?: string) {

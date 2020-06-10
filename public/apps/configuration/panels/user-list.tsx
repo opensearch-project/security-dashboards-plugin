@@ -67,7 +67,7 @@ function getColumns(currentUsername: string) {
       name: 'Username',
       render: (username: string) => (
         <>
-          <a href={buildHashUrl(ResourceType.users, Action.view, username)}>{username}</a>
+          <a href={buildHashUrl(ResourceType.users, Action.edit, username)}>{username}</a>
           {username === currentUsername && (
             <>
               &nbsp;
@@ -113,9 +113,9 @@ export function UserList(props: AppDependencies) {
     const usersToDelete: string[] = selection.map((r) => r.username);
     try {
       await requestDeleteUsers(props.coreStart.http, usersToDelete);
-      // Refresh from server (calling fetchData) does not work here, the server still return the roles
+      // Refresh from server (calling fetchData) does not work here, the server still return the users
       // that had been just deleted, probably because ES takes some time to sync to all nodes.
-      // So here remove the selected roles from local memory directly.
+      // So here remove the selected users from local memory directly.
       setUserData(difference(userData, selection));
       setSelection([]);
     } catch (e) {
@@ -129,11 +129,7 @@ export function UserList(props: AppDependencies) {
     <EuiContextMenuItem
       key="edit"
       onClick={() => {
-        window.location.href = buildHashUrl(
-          ResourceType.roles,
-          Action.duplicate,
-          selection[0].username
-        );
+        window.location.href = buildHashUrl(ResourceType.users, Action.edit, selection[0].username);
       }}
       disabled={selection.length !== 1}
     >

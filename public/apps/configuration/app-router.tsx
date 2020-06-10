@@ -26,6 +26,7 @@ import { RoleView } from './panels/role-view/role-view';
 import { UserList } from './panels/user-list';
 import { RouteItem, ResourceType, Action } from './types';
 import { buildUrl, buildHashUrl } from './utils/url-builder';
+import { InternalUserEdit } from './panels/internal-user-edit/internal-user-edit';
 
 const ROUTE_MAP: { [key: string]: RouteItem } = {
   getStarted: {
@@ -121,6 +122,15 @@ export function AppRouter(props: AppDependencies) {
             <Route path={ROUTE_MAP.auth.href}>
               <AuthView {...props} />
             </Route>
+            <Route
+              path={buildUrl(ResourceType.users) + '/:action/:sourceUserName'}
+              render={(match) => (
+                <InternalUserEdit
+                  buildBreadcrumbs={partial(Breadcrumbs, ResourceType.users)}
+                  {...{ ...props, ...match.match.params }}
+                />
+              )}
+            />
             <Route path={ROUTE_MAP.users.href}>
               <UserList {...props} />
             </Route>
