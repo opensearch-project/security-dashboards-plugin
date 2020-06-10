@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { map, merge, chain } from 'lodash';
+import { map, chain } from 'lodash';
 import { HttpStart } from '../../../../../../src/core/public';
 import { API_ENDPOINT_ROLES } from '../constants';
 
@@ -40,6 +40,7 @@ Input[0] - Role Schema: {
 Input[1] - RoleMapping schema: {
   data: {
     [roleName]: {
+      reserved,
       backend_roles: [""],
       users: [""]
     }
@@ -57,7 +58,7 @@ Output schema: [{
 }]
 */
 export function transformRoleData(rawRoleData: any, rawRoleMappingData: any) {
-  return map(merge(rawRoleData.data, rawRoleMappingData.data), (v: any, k: string) => ({
+  return map(rawRoleData.data, (v: any, k: string) => ({
     role_name: k,
     reserved: v.reserved,
     cluster_permissions: v.cluster_permissions,
@@ -67,8 +68,8 @@ export function transformRoleData(rawRoleData: any, rawRoleMappingData: any) {
       .flatten()
       .compact()
       .value(),
-    internal_users: v.users,
-    backend_roles: v.backend_roles,
+    internal_users: rawRoleMappingData.data[k]?.users || [],
+    backend_roles: rawRoleMappingData.data[k]?.backend_roles || [],
   }));
 }
 
