@@ -19,6 +19,7 @@ export enum ResourceType {
   permissions = 'permissions',
   tenants = 'tenants',
   auth = 'auth',
+  auditLogging = 'auditLogging',
 }
 
 export enum Action {
