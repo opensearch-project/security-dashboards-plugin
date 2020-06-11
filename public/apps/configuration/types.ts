@@ -23,7 +23,7 @@ export enum ResourceType {
 
 export enum Action {
   view = 'view',
-  new = 'new',
+  create = 'create',
   edit = 'edit',
   duplicate = 'duplicate',
 }
