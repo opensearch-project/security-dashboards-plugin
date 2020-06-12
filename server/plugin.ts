@@ -42,6 +42,8 @@ import { setupIndexTemplate, migrateTenantIndices } from './multitenancy/tenant_
 import { OpenIdAuthentication } from './auth/types/openid/openid_auth';
 import { JwtAuthentication } from './auth/types/jwt/jwt_auth';
 import { SamlAuthentication } from './auth/types/saml/saml_auth';
+import { configSchema } from 'src/plugins/kibana_legacy/config';
+import { ProxyAuthentication } from './auth/types/proxy/proxy_auth';
 
 export class OpendistroSecurityPlugin
   implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
@@ -119,6 +121,15 @@ export class OpendistroSecurityPlugin
       core.http.registerAuth(auth.authHandler);
     } else if (config.auth.type === 'saml') {
       const auth = new SamlAuthentication(
+        config,
+        securitySessionStorageFactory,
+        router,
+        esClient,
+        core
+      );
+      core.http.registerAuth(auth.authHandler);
+    } else if (config.auth.type === 'proxy') {
+      const auth = new ProxyAuthentication(
         config,
         securitySessionStorageFactory,
         router,
