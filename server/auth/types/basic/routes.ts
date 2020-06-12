@@ -55,10 +55,12 @@ export class BasicAuthRoutes {
       async (context, request, response) => {
         const forbiddenUsernames = this.config.auth.forbidden_usernames;
         if (forbiddenUsernames.indexOf(request.body.username) > -1) {
-          throw new Error('Invalid username or password'); // Cannot login using forbidden user name.
+          context.security_plugin?.logger.error(`Denied login for forbidden username ${request.body.username}`);
+          return response.badRequest({ // Cannot login using forbidden user name.
+            body: 'Invalid username or password',
+          });
         }
 
-        // const authHeaderValue = Buffer.from(`${request.body.username}:${request.body.password}`).toString('base64');
         let user: User;
         try {
           user = await this.securityClient.authenticate(request, {

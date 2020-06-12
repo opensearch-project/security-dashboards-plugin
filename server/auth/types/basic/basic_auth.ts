@@ -23,6 +23,7 @@ import {
   IRouter,
   IClusterClient,
   KibanaRequest,
+  Logger,
 } from '../../../../../../src/core/server';
 import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
@@ -62,7 +63,8 @@ export class BasicAuthentication {
     private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
     private readonly router: IRouter,
     private readonly esClient: IClusterClient,
-    private readonly coreSetup: CoreSetup
+    private readonly coreSetup: CoreSetup,
+    private readonly logger: Logger
   ) {
     const multitenantEnabled = config.multitenancy?.enabled || false;
 
@@ -164,8 +166,7 @@ export class BasicAuthentication {
         requestHeaders: headers,
       });
     } catch (error) {
-      // TODO: switch to logger
-      console.log(`error: ${error}`);
+      this.logger.error(`Failed authentication: ${error}`)
       return toolkit.notHandled();
       // TODO: redirect using response?
     }

@@ -44,6 +44,16 @@ import { JwtAuthentication } from './auth/types/jwt/jwt_auth';
 import { SamlAuthentication } from './auth/types/saml/saml_auth';
 import { ProxyAuthentication } from './auth/types/proxy/proxy_auth';
 
+export interface SecurityPluginRequestContext {
+  logger: Logger;
+}
+
+declare module 'kibana/server' {
+  interface RequestHandlerContext {
+    security_plugin?: SecurityPluginRequestContext;
+  }
+}
+
 export class OpendistroSecurityPlugin
   implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
   private readonly logger: Logger;
@@ -64,6 +74,12 @@ export class OpendistroSecurityPlugin
     const config: SecurityPluginConfigType = await config$.pipe(first()).toPromise();
 
     const router = core.http.createRouter();
+
+    core.http.registerRouteHandlerContext('security_plugin', (context, request) => {
+      return {
+        logger: this.logger,
+      };
+    });
 
     const esClient: IClusterClient = core.elasticsearch.legacy.createClient('opendistro_security', {
       plugins: [
@@ -96,7 +112,8 @@ export class OpendistroSecurityPlugin
         securitySessionStorageFactory,
         router,
         esClient,
-        core
+        core,
+        this.logger
       );
       core.http.registerAuth(auth.authHandler);
     } else if (config.auth.type === 'openid') {
