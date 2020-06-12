@@ -75,6 +75,12 @@ export class OpendistroSecurityPlugin
 
     const router = core.http.createRouter();
 
+    core.http.registerRouteHandlerContext('security_plugin', (context, request) => {
+      return {
+        logger: this.logger,
+      };
+    });
+
     const esClient: IClusterClient = core.elasticsearch.legacy.createClient('opendistro_security', {
       plugins: [
         opendistroSecurityConfiguratoinPlugin,
