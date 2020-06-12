@@ -25,9 +25,9 @@ export function PasswordEditPanel(props: {
   updatePassword: (p: string) => void;
   updateIsInvalid: (v: boolean) => void;
 }) {
-  const [password, setPassword] = useState('');
-  const [isPasswordInvalid, setIsPasswordInvalid] = useState(false);
-  const [isRepeatPasswordInvalid, setIsRepeatPasswordInvalid] = useState(false);
+  const [password, setPassword] = useState<string>('');
+  const [isPasswordInvalid, setIsPasswordInvalid] = useState<boolean>(false);
+  const [isRepeatPasswordInvalid, setIsRepeatPasswordInvalid] = useState<boolean>(false);
 
   const updateValidStatus = () => {
     props.updateIsInvalid(isPasswordInvalid || isRepeatPasswordInvalid);
