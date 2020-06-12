@@ -21,6 +21,11 @@ import { FormRow } from './form-row';
 // and at least 8 characters long
 const PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?([^\w\s]|[_])).{8,}$/;
 
+// TODO: Add unit test
+function isValidPassword(password: string) {
+  return PASSWORD_PATTERN.test(password);
+}
+
 export function PasswordEditPanel(props: {
   updatePassword: (p: string) => void;
   updateIsInvalid: (v: boolean) => void;
@@ -32,7 +37,7 @@ export function PasswordEditPanel(props: {
   const passwordChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setPassword(newValue);
-    setIsPasswordInvalid(!PASSWORD_PATTERN.test(newValue) && newValue !== '');
+    setIsPasswordInvalid(!isValidPassword(newValue) && newValue !== '');
     props.updatePassword(newValue);
     props.updateIsInvalid(isPasswordInvalid || isRepeatPasswordInvalid);
   };
