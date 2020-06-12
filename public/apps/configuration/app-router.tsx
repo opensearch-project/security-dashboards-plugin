@@ -27,6 +27,7 @@ import { UserList } from './panels/user-list';
 import { RouteItem, ResourceType, Action } from './types';
 import { buildUrl, buildHashUrl } from './utils/url-builder';
 import { InternalUserEdit } from './panels/internal-user-edit/internal-user-edit';
+import { AuditLogging } from './panels/audit-logging/audit-logging';
 
 const ROUTE_MAP: { [key: string]: RouteItem } = {
   getStarted: {
@@ -53,6 +54,10 @@ const ROUTE_MAP: { [key: string]: RouteItem } = {
     name: 'Authentication and authorization',
     href: buildUrl(ResourceType.auth),
   },
+  [ResourceType.auditLogging]: {
+    name: 'Audit logs',
+    href: buildUrl(ResourceType.auditLogging),
+  },
 };
 
 const ROUTE_LIST = [
@@ -62,6 +67,7 @@ const ROUTE_LIST = [
   ROUTE_MAP[ResourceType.users],
   ROUTE_MAP[ResourceType.permissions],
   ROUTE_MAP[ResourceType.tenants],
+  ROUTE_MAP[ResourceType.auditLogging],
 ];
 
 // url regex pattern for all pages with left nav panel, (/|/roles|/internalusers|...)
@@ -133,6 +139,9 @@ export function AppRouter(props: AppDependencies) {
             />
             <Route path={ROUTE_MAP.users.href}>
               <UserList {...props} />
+            </Route>
+            <Route path={ROUTE_MAP.auditLogging.href}>
+              <AuditLogging {...props} />
             </Route>
           </Switch>
         </EuiPageBody>
