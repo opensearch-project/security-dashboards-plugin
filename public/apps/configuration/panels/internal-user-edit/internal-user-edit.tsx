@@ -59,9 +59,9 @@ function createErrorToast(id: string, failedAction: string): Toast {
 }
 
 export function InternalUserEdit(props: InternalUserEditDeps) {
-  const [userName, setUserName] = useState('');
-  const [password, setPassword] = useState('');
-  const [isPasswordInvalid, setIsPasswordInvalid] = useState(false);
+  const [userName, setUserName] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [isPasswordInvalid, setIsPasswordInvalid] = useState<boolean>(false);
 
   const [toasts, setToasts] = useState<Toast[]>([]);
   const addToast = useCallback((toastToAdd: Toast) => {

@@ -29,22 +29,18 @@ export function PasswordEditPanel(props: {
   const [isPasswordInvalid, setIsPasswordInvalid] = useState<boolean>(false);
   const [isRepeatPasswordInvalid, setIsRepeatPasswordInvalid] = useState<boolean>(false);
 
-  const updateValidStatus = () => {
-    props.updateIsInvalid(isPasswordInvalid || isRepeatPasswordInvalid);
-  };
-
   const passwordChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setPassword(newValue);
     setIsPasswordInvalid(!PASSWORD_PATTERN.test(newValue) && newValue !== '');
     props.updatePassword(newValue);
-    updateValidStatus();
+    props.updateIsInvalid(isPasswordInvalid || isRepeatPasswordInvalid);
   };
 
   const repeatPasswordChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setIsRepeatPasswordInvalid(newValue !== password);
-    updateValidStatus();
+    props.updateIsInvalid(isPasswordInvalid || isRepeatPasswordInvalid);
   };
 
   return (
