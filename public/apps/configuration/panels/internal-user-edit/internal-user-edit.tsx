@@ -33,6 +33,7 @@ import { ResourceType } from '../../types';
 import { FormRow } from '../../utils/form-row';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { buildHashUrl } from '../../utils/url-builder';
+import { PasswordEditPanel } from '../../utils/password-edit-panel';
 
 interface InternalUserEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -59,6 +60,8 @@ function createErrorToast(id: string, failedAction: string): Toast {
 
 export function InternalUserEdit(props: InternalUserEditDeps) {
   const [userName, setUserName] = useState('');
+  const [password, setPassword] = useState('');
+  const [isPasswordInvalid, setIsPasswordInvalid] = useState(false);
 
   const [toasts, setToasts] = useState<Toast[]>([]);
   const addToast = useCallback((toastToAdd: Toast) => {
@@ -136,6 +139,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
               disabled={props.action === 'edit'}
             />
           </FormRow>
+          <PasswordEditPanel updatePassword={setPassword} updateIsInvalid={setIsPasswordInvalid} />
         </EuiForm>
       </PanelWithHeader>
       <EuiSpacer size="m" />
