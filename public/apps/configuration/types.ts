@@ -73,7 +73,7 @@ export interface Tenant {
 
 export interface UserAttributes {
   [key: string]: string;
-};
+}
 
 export interface InternalUser {
   attributes: UserAttributes;

@@ -66,17 +66,20 @@ function generateAttributesPanels(
       <Fragment key={`attributes-${arrayIndex}`}>
         <EuiFlexGroup justifyContent="flexStart">
           <EuiFlexItem grow={false}>
-            <FormRow headerText={arrayIndex == 0 ? 'Variable name' : ''}>
-              <EuiFieldText onChange={onValueChangeHandler('key')} />
-              </FormRow>
-          </EuiFlexItem>
-          <EuiFlexItem grow={false}>
-            <FormRow headerText={arrayIndex == 0 ? 'Value' : ''}>
-              <EuiFieldText onChange={onValueChangeHandler('value')} />
+            <FormRow headerText={arrayIndex === 0 ? 'Variable name' : ''}>
+              <EuiFieldText
+                onChange={onValueChangeHandler('key')}
+                placeholder="Type in variable name"
+              />
             </FormRow>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiFormRow hasEmptyLabelSpace={arrayIndex == 0 ? true : false}>
+            <FormRow headerText={arrayIndex === 0 ? 'Value' : ''}>
+              <EuiFieldText onChange={onValueChangeHandler('value')} placeholder="Type in value" />
+            </FormRow>
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>
+            <EuiFormRow hasEmptyLabelSpace={arrayIndex === 0 ? true : false}>
               <EuiButton
                 color="danger"
                 onClick={() => removeElementFromArray(setAttributes, [], arrayIndex)}
