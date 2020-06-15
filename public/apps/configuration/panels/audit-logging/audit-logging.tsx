@@ -25,6 +25,7 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 import { AppDependencies } from '../../../types';
+import { API_ENDPOINT_AUDITLOGGING } from '../../constants';
 
 function renderStatusPanel(onSwitchChange: any, auditLoggingEnabled: boolean) {
   return (
@@ -52,11 +53,21 @@ export function AuditLogging(props: AppDependencies) {
   const onSwitchChange = () => {
     setAuditLoggingEnabled((prevAuditLoggingEnabled) => !prevAuditLoggingEnabled);
   };
+
   useEffect(() => {
-    // TODO: switch to actual calls to fetch data once backend APIs are ready.
-    const enabled = true;
-    setAuditLoggingEnabled(enabled);
-  }, []);
+    const fetchData = async () => {
+      try {
+        const configuration = await props.coreStart.http.get(API_ENDPOINT_AUDITLOGGING);
+
+        setAuditLoggingEnabled(configuration.data.config.enabled);
+      } catch (e) {
+        // TODO: switch to better error handling.
+        console.log(e);
+      }
+    };
+
+    fetchData();
+  }, [props.coreStart.http]);
 
   const content = renderStatusPanel(onSwitchChange, auditLoggingEnabled);
 
