@@ -13,6 +13,7 @@
  *   permissions and limitations under the License.
  */
 
+import { get } from 'lodash';
 import { SecurityPluginConfigType } from '../../..';
 import {
   SessionStorageFactory,
@@ -21,7 +22,6 @@ import {
   CoreSetup,
   AuthenticationHandler,
 } from '../../../../../../src/core/server';
-import { assign, get } from 'lodash';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { User } from '../../user';
@@ -44,9 +44,6 @@ export class ProxyAuthentication {
     this.securityClient = new SecurityClient(this.esClient);
 
     this.userHeaderName = this.config.proxycache?.user_header?.toLowerCase() || '';
-    if (!this.userHeaderName) {
-      throw new Error('User header is mandatory for proxy auth.');
-    }
     this.roleHeaderName = this.config.proxycache?.roles_header?.toLowerCase() || '';
 
     this.setupRoutes();
@@ -64,69 +61,76 @@ export class ProxyAuthentication {
 
     if (cookie) {
       if (get(cookie.credentials, this.userHeaderName)) {
-        authHeaders[this.userHeaderName] = request.headers[this.userHeaderName];
-        authHeaders[this.roleHeaderName] = request.headers[this.roleHeaderName];
+        authHeaders[this.userHeaderName] = cookie.credentials[this.userHeaderName];
+        if (get(cookie.credentials, this.roleHeaderName)) {
+          authHeaders[this.roleHeaderName] = cookie.credentials[this.roleHeaderName];
+        }
+        if (get(cookie.credentials, 'x-forwarded-for')) {
+          authHeaders['x-forwarded-for'] = cookie.credentials['x-forwarded-for'];
+        }
 
         cookie.expiryTime = Date.now() + this.config.cookie.ttl;
         this.sessionStorageFactory.asScoped(request).set(cookie);
+        console.log(`use cookie`);
         return toolkit.authenticated({
           requestHeaders: authHeaders,
         });
       } else if (get(cookie.credentials, 'authorization')) {
-        authHeaders['authorization'] = get(cookie.credentials, 'authorization');
+        authHeaders.authorization = get(cookie.credentials, 'authorization');
         return toolkit.authenticated({
           requestHeaders: authHeaders,
         });
       }
     }
 
-    if (request.headers[`${this.userHeaderName}`]) {
+    // no credentials in the cookie, fall back to do authentication with header
+    if (request.headers[this.userHeaderName]) {
       authHeaders[this.userHeaderName] = request.headers[this.userHeaderName];
-      authHeaders['x-forwarded-for'] = request.headers['x-forwarded-for'];
-      if (this.roleHeaderName && request.headers[this.roleHeaderName]) {
-        authHeaders[this.roleHeaderName] = request.headers[this.roleHeaderName];
-      }
-
-      let user: User;
-      try {
-        user = await this.securityClient.authenticateWithHeaders(request, {}, authHeaders);
-        const cookie: SecuritySessionCookie = {
-          username: user.username,
-          credentials: {
-            [this.userHeaderName]: request.headers[this.userHeaderName],
-            'x-forwarded-for': request.headers['x-forwarded-for'],
-          },
-          authType: 'proxycache',
-          isAnonymousAuth: false,
-          expiryTime: Date.now() + this.config.cookie.ttl,
-        };
-        if (this.roleHeaderName) {
-          cookie.credentials[this.roleHeaderName] = request.headers[this.roleHeaderName];
-        }
-        this.sessionStorageFactory.asScoped(request).set(cookie);
-      } catch (error) {
-        const loginEndpoint = this.config.proxycache?.login_endpoint;
-        if (loginEndpoint) {
-          return toolkit.redirected({
-            location: loginEndpoint,
-          });
-        } else {
-          return toolkit.notHandled(); // TODO: redirect to error page?
-        }
-      }
-
-      return toolkit.authenticated({
-        requestHeaders: authHeaders,
-      });
-    } else if (request.headers['authorization']) {
-      const authHeaders: any = {
-        authorization: request.headers['authorization'],
-      };
-      return toolkit.authenticated({
-        requestHeaders: authHeaders,
-      });
     }
-    return toolkit.notHandled();
+    if (this.roleHeaderName && request.headers[this.roleHeaderName]) {
+      authHeaders[this.roleHeaderName] = request.headers[this.roleHeaderName];
+    }
+    if (request.headers['x-forwarded-for']) {
+      authHeaders['x-forwarded-for'] = request.headers['x-forwarded-for'];
+    }
+
+    let user: User;
+    try {
+      user = await this.securityClient.authenticateWithHeaders(request, {}, authHeaders);
+      cookie = {
+        username: user.username,
+        credentials: {},
+        authType: this.authType,
+        isAnonymousAuth: false,
+        expiryTime: Date.now() + this.config.cookie.ttl,
+      };
+      if (this.userHeaderName && request.headers[this.userHeaderName]) {
+        cookie.credentials[this.userHeaderName] = request.headers[this.userHeaderName];
+      }
+      if (this.roleHeaderName) {
+        cookie.credentials[this.roleHeaderName] = request.headers[this.roleHeaderName];
+      }
+      if (request.headers['x-forwarded-for']) {
+        cookie.credentials['x-forwarded-for'] = request.headers['x-forwarded-for'];
+      }
+      if (request.headers.authorization) {
+        cookie.credentials.authorization = request.headers.authorization;
+      }
+      this.sessionStorageFactory.asScoped(request).set(cookie);
+    } catch (error) {
+      const loginEndpoint = this.config.proxycache?.login_endpoint;
+      if (loginEndpoint) {
+        return toolkit.redirected({
+          location: loginEndpoint,
+        });
+      } else {
+        return toolkit.notHandled(); // TODO: redirect to error page?
+      }
+    }
+
+    return toolkit.authenticated({
+      requestHeaders: authHeaders,
+    });
   };
 
   private setupRoutes() {

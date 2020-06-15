@@ -20,7 +20,6 @@ import { SecurityPluginConfigType } from '../../..';
 import { User } from '../../user';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { CoreSetup } from '../../../../../../src/core/server';
-import { TimeHistory } from 'src/plugins/data/public';
 
 export class ProxyAuthRoutes {
   constructor(
