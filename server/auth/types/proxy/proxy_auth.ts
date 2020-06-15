@@ -71,7 +71,6 @@ export class ProxyAuthentication {
 
         cookie.expiryTime = Date.now() + this.config.cookie.ttl;
         this.sessionStorageFactory.asScoped(request).set(cookie);
-        console.log(`use cookie`);
         return toolkit.authenticated({
           requestHeaders: authHeaders,
         });
