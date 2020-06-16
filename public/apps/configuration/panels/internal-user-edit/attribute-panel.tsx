@@ -64,7 +64,7 @@ function generateAttributesPanels(
 
     return (
       <Fragment key={`attributes-${arrayIndex}`}>
-        <EuiFlexGroup justifyContent="flexStart">
+        <EuiFlexGroup>
           <EuiFlexItem grow={false}>
             <FormRow headerText={arrayIndex === 0 ? 'Variable name' : ''}>
               <EuiFieldText
