@@ -102,11 +102,12 @@ export function AttributePanel(props: {
   const { state, setState } = props;
   return (
     <PanelWithHeader
-      headerText="Attributes - optional"
+      headerText="Attributes"
       headerSubText="Attributes can be used to further describe the user, and, more importantly they can be used as 
       variables in the Document Level Security query in the index permission of a role. This makes it possible to 
       write dynamic DLS queries based on a user's attributes"
       helpLink="/"
+      optional
     >
       {generateAttributesPanels(state, setState)}
       <EuiSpacer />

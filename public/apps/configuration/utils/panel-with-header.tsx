@@ -21,13 +21,17 @@ interface PanelWithHeaderDeps {
   headerSubText?: string;
   helpLink?: string;
   children?: React.ReactNode;
+  optional?: boolean;
 }
 
 export function PanelWithHeader(props: PanelWithHeaderDeps) {
   return (
     <EuiPanel>
       <EuiTitle size="s">
-        <h3>{props.headerText}</h3>
+        <h3>
+          {props.headerText}
+          {props.optional && <i> - optional</i>}
+        </h3>
       </EuiTitle>
       <EuiText size="xs" color="subdued">
         {props.headerSubText}
