@@ -28,6 +28,7 @@ import { User } from '../../user';
 import { ProxyAuthRoutes } from './routes';
 
 export class ProxyAuthentication {
+  private static readonly XFF: string = 'x-forwarded-for';
   private readonly authType: string = 'proxycache';
   private readonly securityClient: SecurityClient;
 
@@ -69,8 +70,8 @@ export class ProxyAuthentication {
         if (get(cookie.credentials, this.roleHeaderName)) {
           authHeaders[this.roleHeaderName] = cookie.credentials[this.roleHeaderName];
         }
-        if (get(cookie.credentials, 'x-forwarded-for')) {
-          authHeaders['x-forwarded-for'] = cookie.credentials['x-forwarded-for'];
+        if (get(cookie.credentials, ProxyAuthentication.XFF)) {
+          authHeaders[ProxyAuthentication.XFF] = cookie.credentials[ProxyAuthentication.XFF];
         }
 
         cookie.expiryTime = Date.now() + this.config.cookie.ttl;
@@ -93,8 +94,8 @@ export class ProxyAuthentication {
     if (this.roleHeaderName && request.headers[this.roleHeaderName]) {
       authHeaders[this.roleHeaderName] = request.headers[this.roleHeaderName];
     }
-    if (request.headers['x-forwarded-for']) {
-      authHeaders['x-forwarded-for'] = request.headers['x-forwarded-for'];
+    if (request.headers[ProxyAuthentication.XFF]) {
+      authHeaders[ProxyAuthentication.XFF] = request.headers[ProxyAuthentication.XFF];
     }
 
     let user: User;
@@ -113,8 +114,8 @@ export class ProxyAuthentication {
       if (this.roleHeaderName) {
         cookie.credentials[this.roleHeaderName] = request.headers[this.roleHeaderName];
       }
-      if (request.headers['x-forwarded-for']) {
-        cookie.credentials['x-forwarded-for'] = request.headers['x-forwarded-for'];
+      if (request.headers[ProxyAuthentication.XFF]) {
+        cookie.credentials[ProxyAuthentication.XFF] = request.headers[ProxyAuthentication.XFF];
       }
       if (request.headers.authorization) {
         cookie.credentials.authorization = request.headers.authorization;
