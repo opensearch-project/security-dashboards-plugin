@@ -70,8 +70,11 @@ export interface Tenant {
   reserved: boolean;
   description: string;
 }
+
+export interface UserAttributes {
+  [key: string]: string;
+}
+
 export interface InternalUser {
-  attributes: {
-    [key: string]: string;
-  };
+  attributes: UserAttributes;
 }

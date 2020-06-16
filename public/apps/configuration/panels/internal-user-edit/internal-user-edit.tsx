@@ -34,6 +34,9 @@ import { FormRow } from '../../utils/form-row';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { buildHashUrl } from '../../utils/url-builder';
 import { PasswordEditPanel } from '../../utils/password-edit-panel';
+import { UserAttributeStateClass } from './types';
+import { AttributePanel } from './attribute-panel';
+import { getUserDetail } from '../../utils/internal-user-detail-utils';
 
 interface InternalUserEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -62,6 +65,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
   const [userName, setUserName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isPasswordInvalid, setIsPasswordInvalid] = useState<boolean>(false);
+  const [attributes, setAttributes] = useState<UserAttributeStateClass[]>([]);
 
   const [toasts, setToasts] = useState<Toast[]>([]);
   const addToast = useCallback((toastToAdd: Toast) => {
@@ -76,7 +80,8 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
     if (action === 'edit' || action === 'duplicate') {
       const fetchData = async () => {
         try {
-          // Fetch user data
+          const user = await getUserDetail(props.coreStart.http, props.sourceUserName);
+          setAttributes(buildAttributeState(user.attributes));
           if (action === 'edit') {
             setUserName(props.sourceUserName);
           } else {
@@ -143,14 +148,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
         </EuiForm>
       </PanelWithHeader>
       <EuiSpacer size="m" />
-      <PanelWithHeader
-        headerText="Attributes - optional"
-        headerSubText="Attributes can be used to further describe the user, and, more importantly they can be used as 
-        variables in the Document Level Security query in the index permission of a role. This makes it possible to 
-        write dynamic DLS queries based on a user's attributes"
-      >
-        <EuiForm />
-      </PanelWithHeader>
+      <AttributePanel state={attributes} setState={setAttributes} />
       <EuiSpacer size="m" />
       <EuiFlexGroup justifyContent="flexEnd">
         <EuiFlexItem grow={false}>
