@@ -60,7 +60,7 @@ function generateAttributesPanels(
 ) {
   const panels = userAttributes.map((userAttribute, arrayIndex) => {
     const onValueChangeHandler = (attributeToUpdate: string) =>
-      updateElementInArrayHandler(userAttributes, [arrayIndex, attributeToUpdate]);
+      updateElementInArrayHandler(setAttributes, [arrayIndex, attributeToUpdate]);
 
     return (
       <Fragment key={`attributes-${arrayIndex}`}>
