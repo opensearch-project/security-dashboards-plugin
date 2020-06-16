@@ -68,6 +68,7 @@ function generateAttributesPanels(
           <EuiFlexItem grow={false}>
             <FormRow headerText={arrayIndex === 0 ? 'Variable name' : ''}>
               <EuiFieldText
+                defaultValue={userAttribute.key}
                 onChange={onValueChangeHandler('key')}
                 placeholder="Type in variable name"
               />
@@ -75,7 +76,11 @@ function generateAttributesPanels(
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <FormRow headerText={arrayIndex === 0 ? 'Value' : ''}>
-              <EuiFieldText onChange={onValueChangeHandler('value')} placeholder="Type in value" />
+              <EuiFieldText
+                defaultValue={userAttribute.value}
+                onChange={onValueChangeHandler('value')}
+                placeholder="Type in value"
+              />
             </FormRow>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>

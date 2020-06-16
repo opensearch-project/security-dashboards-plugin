@@ -35,7 +35,8 @@ import { PanelWithHeader } from '../../utils/panel-with-header';
 import { buildHashUrl } from '../../utils/url-builder';
 import { PasswordEditPanel } from '../../utils/password-edit-panel';
 import { UserAttributeStateClass } from './types';
-import { AttributePanel } from './attribute-panel';
+import { AttributePanel, buildAttributeState } from './attribute-panel';
+import { getUserDetail } from '../../utils/internal-user-detail-utils';
 
 interface InternalUserEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -79,7 +80,8 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
     if (action === 'edit' || action === 'duplicate') {
       const fetchData = async () => {
         try {
-          // Fetch user data
+          const user = await getUserDetail(props.coreStart.http, props.sourceUserName);
+          setAttributes(buildAttributeState(user.attributes));
           if (action === 'edit') {
             setUserName(props.sourceUserName);
           } else {
