@@ -54,9 +54,10 @@ export class ProxyAuthentication {
     const authHeaders: any = {};
 
     const customProxyHeader = this.config.proxycache?.proxy_header;
-    if (customProxyHeader && !request.headers[customProxyHeader]) {
-      const configProxyIp = this.config.proxycache?.proxy_header_ip;
-      authHeaders[customProxyHeader] = `${configProxyIp}`; // TODO: check how to get remoteIp
+    if (customProxyHeader && !request.headers[customProxyHeader]
+        && this.config.proxycache?.proxy_header_ip) {
+      // TODO: check how to get remoteIp from KibanaRequest and add remoteIp to this header
+      authHeaders[customProxyHeader] = this.config.proxycache!.proxy_header_ip;
     }
 
     if (cookie) {

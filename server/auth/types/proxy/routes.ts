@@ -14,10 +14,9 @@
  */
 
 import { schema } from '@kbn/config-schema';
-import { IRouter, SessionStorageFactory, KibanaRequest } from '../../../../../../src/core/server';
+import { IRouter, SessionStorageFactory } from '../../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
-import { User } from '../../user';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { CoreSetup } from '../../../../../../src/core/server';
 
