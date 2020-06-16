@@ -35,7 +35,7 @@ import { PanelWithHeader } from '../../utils/panel-with-header';
 import { buildHashUrl } from '../../utils/url-builder';
 import { PasswordEditPanel } from '../../utils/password-edit-panel';
 import { UserAttributeStateClass } from './types';
-import { AttributePanel } from './attribute-panel';
+import { AttributePanel, buildAttributeState } from './attribute-panel';
 import { getUserDetail } from '../../utils/internal-user-detail-utils';
 
 interface InternalUserEditDeps extends BreadcrumbsPageDependencies {
