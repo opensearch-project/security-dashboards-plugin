@@ -50,7 +50,7 @@ export interface SecurityPluginRequestContext {
 
 declare module 'kibana/server' {
   interface RequestHandlerContext {
-    security_plugin?: SecurityPluginRequestContext;
+    security_plugin: SecurityPluginRequestContext;
   }
 }
 
@@ -74,12 +74,6 @@ export class OpendistroSecurityPlugin
     const config: SecurityPluginConfigType = await config$.pipe(first()).toPromise();
 
     const router = core.http.createRouter();
-
-    core.http.registerRouteHandlerContext('security_plugin', (context, request) => {
-      return {
-        logger: this.logger,
-      };
-    });
 
     const esClient: IClusterClient = core.elasticsearch.legacy.createClient('opendistro_security', {
       plugins: [
@@ -141,7 +135,8 @@ export class OpendistroSecurityPlugin
         securitySessionStorageFactory,
         router,
         esClient,
-        core
+        core,
+        this.logger
       );
       core.http.registerAuth(auth.authHandler);
     } else if (config.auth.type === 'proxy') {
@@ -154,6 +149,13 @@ export class OpendistroSecurityPlugin
       );
       core.http.registerAuth(auth.authHandler);
     }
+
+    // put logger into route handler context, so that we don't need to pass througth parameters
+    core.http.registerRouteHandlerContext('security_plugin', (context, request) => {
+      return {
+        logger: this.logger,
+      };
+    });
 
     return {
       config$,

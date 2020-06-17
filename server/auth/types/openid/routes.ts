@@ -146,7 +146,7 @@ export class OpenIdAuthRoutes {
             },
           });
         } catch (error) {
-          console.log(error); // TODO: change to logger
+          context.security_plugin.logger.error(`OpenId authentication failed: ${error}`);
           return response.unauthorized();
         }
       }

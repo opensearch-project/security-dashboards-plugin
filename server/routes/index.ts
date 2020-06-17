@@ -14,7 +14,7 @@
  */
 
 import { schema } from '@kbn/config-schema';
-import { IRouter, IClusterClient } from '../../../../src/core/server';
+import { IRouter, IClusterClient, ResponseError, IKibanaResponse } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
 
 // TODO: consider to extract entity CRUD operations and put it into a client class
@@ -125,7 +125,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
       } catch (error) {
         return response.custom({
           statusCode: error.statusCode,
-          body: error.message,
+          body: parseEsErrorResponse(error),
         });
       }
     }
@@ -154,7 +154,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
       } catch (error) {
         return response.custom({
           statusCode: error.statusCode,
-          body: error.message,
+          body: parseEsErrorResponse(error),
         });
       }
     }
@@ -187,7 +187,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
       } catch (error) {
         return response.custom({
           statusCode: error.statusCode,
-          body: error.message,
+          body: parseEsErrorResponse(error),
         });
       }
     }
@@ -225,7 +225,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
       } catch (error) {
         return response.custom({
           statusCode: error.statusCode,
-          body: error.message,
+          body: parseEsErrorResponse(error),
         });
       }
     }
@@ -243,7 +243,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
         body: schema.any(),
       },
     },
-    async (context, request, response) => {
+    async (context, request, response): Promise<IKibanaResponse<any | ResponseError>> => {
       try {
         validateRequestBody(request.params.resourceName, request.body);
       } catch (error) {
@@ -263,10 +263,10 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
           },
         });
       } catch (error) {
-        return response.custom({
+        return response.customError({
           statusCode: error.statusCode,
-          body: error.message,
-        });
+          body: parseEsErrorResponse(error),
+        })
       }
     }
   );
@@ -288,9 +288,21 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
       } catch (error) {
         return response.custom({
           statusCode: error.statusCode,
-          body: error.message,
+          body: parseEsErrorResponse(error),
         });
       }
     }
   );
+}
+
+function parseEsErrorResponse(error: any) {
+  if (error.response) {
+    try {
+      const esErrorResponse = JSON.parse(error.response);
+      return esErrorResponse.reason || error.response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+  return error.message;
 }

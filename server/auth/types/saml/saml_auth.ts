@@ -22,6 +22,7 @@ import {
   IClusterClient,
   KibanaRequest,
   AuthToolkit,
+  Logger,
 } from '../../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { CoreSetup } from '../../../../../../src/core/server';
@@ -38,7 +39,8 @@ export class SamlAuthentication {
     private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
     private readonly router: IRouter,
     private readonly esClient: IClusterClient,
-    private readonly coreSetup: CoreSetup
+    private readonly coreSetup: CoreSetup,
+    private readonly logger: Logger
   ) {
     this.securityClient = new SecurityClient(esClient);
     this.setupRoutes();
@@ -49,7 +51,7 @@ export class SamlAuthentication {
     try {
       cookie = await this.sessionStorageFactory.asScoped(request).get();
     } catch (error) {
-      console.log(error);
+      this.logger.error(`Failed to parse cookie due to: ${error}`);
       toolkit.notHandled();
     }
 

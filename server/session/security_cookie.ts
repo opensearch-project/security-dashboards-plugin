@@ -69,12 +69,12 @@ export function getSecurityCookieOptions(
 
       if (
         sessionStorage.expiryTime === undefined ||
-        new Date(sessionStorage.expiryTime) < new Date()
+        sessionStorage.expiryTime < Date.now()
       ) {
         return { isValid: false, path: '/' };
       }
       return { isValid: true, path: '/' };
     },
-    isSecure: false, // config.cookie.secure,
+    isSecure: false, // TODO: config.cookie.secure,
   };
 }

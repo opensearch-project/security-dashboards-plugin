@@ -67,7 +67,7 @@ export class SamlAuthRoutes {
             },
           });
         } catch (error) {
-          console.log(error);
+          context.security_plugin.logger.error(`Failed to get saml header: ${error}`);
           return response.internalError(); // TODO: redirect to error page?
         }
       }
@@ -99,7 +99,7 @@ export class SamlAuthRoutes {
             });
           }
         } catch (error) {
-          console.log(error);
+          context.security_plugin.logger.error(`Failed to parse cookie: ${error}`);
           return response.badRequest();
         }
 
@@ -129,7 +129,7 @@ export class SamlAuthRoutes {
             },
           });
         } catch (error) {
-          console.log(error);
+          context.security_plugin.logger.error(`SAML SP initiated authentication workflow failed: ${error}`);
         }
 
         return response.internalError();
@@ -174,7 +174,7 @@ export class SamlAuthRoutes {
             },
           });
         } catch (error) {
-          console.log(error);
+          context.security_plugin.logger.error(`SAML IDP initiated authentication workflow failed: ${error}`);
         }
         return response.internalError();
       }
@@ -197,7 +197,7 @@ export class SamlAuthRoutes {
             },
           });
         } catch (error) {
-          console.log(error);
+          context.security_plugin.logger.error(`SAML logout failed: ${error}`);
           return response.badRequest();
         }
       }
