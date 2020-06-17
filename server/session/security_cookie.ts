@@ -67,10 +67,7 @@ export function getSecurityCookieOptions(
         return { isValid: false, path: '/' };
       }
 
-      if (
-        sessionStorage.expiryTime === undefined ||
-        sessionStorage.expiryTime < Date.now()
-      ) {
+      if (sessionStorage.expiryTime === undefined || sessionStorage.expiryTime < Date.now()) {
         return { isValid: false, path: '/' };
       }
       return { isValid: true, path: '/' };

@@ -166,7 +166,7 @@ export class BasicAuthentication {
         requestHeaders: headers,
       });
     } catch (error) {
-      this.logger.error(`Failed authentication: ${error}`)
+      this.logger.error(`Failed authentication: ${error}`);
       return toolkit.notHandled();
       // TODO: redirect using response?
     }

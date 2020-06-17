@@ -36,7 +36,6 @@ export class BasicAuthRoutes {
   ) {}
 
   public setupRoutes() {
-
     // login using username and password
     this.router.post(
       {
@@ -54,8 +53,11 @@ export class BasicAuthRoutes {
       async (context, request, response) => {
         const forbiddenUsernames = this.config.auth.forbidden_usernames;
         if (forbiddenUsernames.indexOf(request.body.username) > -1) {
-          context.security_plugin?.logger.error(`Denied login for forbidden username ${request.body.username}`);
-          return response.badRequest({ // Cannot login using forbidden user name.
+          context.security_plugin.logger.error(
+            `Denied login for forbidden username ${request.body.username}`
+          );
+          return response.badRequest({
+            // Cannot login using forbidden user name.
             body: 'Invalid username or password',
           });
         }
@@ -77,7 +79,7 @@ export class BasicAuthRoutes {
 
         this.sessionStorageFactory.asScoped(request).clear();
         const encodedCredentials = Buffer.from(
-          `${request.body.username}:${request.body.password}`,
+          `${request.body.username}:${request.body.password}`
         ).toString('base64');
         const sessionStorage: SecuritySessionCookie = {
           username: user.username,

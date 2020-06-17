@@ -129,7 +129,9 @@ export class SamlAuthRoutes {
             },
           });
         } catch (error) {
-          context.security_plugin.logger.error(`SAML SP initiated authentication workflow failed: ${error}`);
+          context.security_plugin.logger.error(
+            `SAML SP initiated authentication workflow failed: ${error}`
+          );
         }
 
         return response.internalError();
@@ -174,7 +176,9 @@ export class SamlAuthRoutes {
             },
           });
         } catch (error) {
-          context.security_plugin.logger.error(`SAML IDP initiated authentication workflow failed: ${error}`);
+          context.security_plugin.logger.error(
+            `SAML IDP initiated authentication workflow failed: ${error}`
+          );
         }
         return response.internalError();
       }

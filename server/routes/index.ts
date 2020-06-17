@@ -14,7 +14,12 @@
  */
 
 import { schema } from '@kbn/config-schema';
-import { IRouter, IClusterClient, ResponseError, IKibanaResponse } from '../../../../src/core/server';
+import {
+  IRouter,
+  IClusterClient,
+  ResponseError,
+  IKibanaResponse,
+} from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
 
 // TODO: consider to extract entity CRUD operations and put it into a client class
@@ -266,7 +271,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
         return response.customError({
           statusCode: error.statusCode,
           body: parseEsErrorResponse(error),
-        })
+        });
       }
     }
   );
@@ -300,7 +305,7 @@ function parseEsErrorResponse(error: any) {
     try {
       const esErrorResponse = JSON.parse(error.response);
       return esErrorResponse.reason || error.response;
-    } catch (error) {
+    } catch (parsingError) {
       return error.response;
     }
   }
