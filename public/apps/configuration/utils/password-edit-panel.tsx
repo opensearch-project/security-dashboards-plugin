@@ -13,57 +13,48 @@
  *   permissions and limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { EuiFieldText, EuiIcon } from '@elastic/eui';
 import { FormRow } from './form-row';
-
-// At least one uppercase, one lowercase, one digit and one special character
-// and at least 8 characters long
-const PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?([^\w\s]|[_])).{8,}$/;
-
-// TODO: Add unit test
-function isValidPassword(password: string) {
-  return PASSWORD_PATTERN.test(password);
-}
 
 export function PasswordEditPanel(props: {
   updatePassword: (p: string) => void;
   updateIsInvalid: (v: boolean) => void;
 }) {
   const [password, setPassword] = useState<string>('');
-  const [isPasswordInvalid, setIsPasswordInvalid] = useState<boolean>(false);
+  const [repeatPassword, setRepeatPassword] = useState<string>('');
   const [isRepeatPasswordInvalid, setIsRepeatPasswordInvalid] = useState<boolean>(false);
 
+  useEffect(() => {
+    props.updatePassword(password);
+    const isValid = repeatPassword !== password;
+    setIsRepeatPasswordInvalid(isValid);
+    props.updateIsInvalid(isValid);
+  }, [password, repeatPassword])
+
   const passwordChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    setPassword(newValue);
-    setIsPasswordInvalid(!isValidPassword(newValue) && newValue !== '');
-    props.updatePassword(newValue);
-    props.updateIsInvalid(isPasswordInvalid || isRepeatPasswordInvalid);
+    setPassword(e.target.value);
   };
 
   const repeatPasswordChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    setIsRepeatPasswordInvalid(newValue !== password);
-    props.updateIsInvalid(isPasswordInvalid || isRepeatPasswordInvalid);
+    setRepeatPassword(e.target.value);
   };
 
   return (
     <>
       <FormRow
         headerText="Password"
-        helpText="Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character."
+        helpText="A good password will be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character."
       >
         <EuiFieldText
           prepend={<EuiIcon type="lock" />}
           type="password"
-          isInvalid={isPasswordInvalid}
           onChange={passwordChangeHandler}
         />
       </FormRow>
 
       <FormRow
-        headerText="Re-enter assword"
+        headerText="Re-enter password"
         helpText="The password must be identical to what you entered above"
       >
         <EuiFieldText

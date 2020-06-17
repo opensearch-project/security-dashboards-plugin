@@ -69,7 +69,7 @@ function generateAttributesPanels(
             <FormRow headerText={arrayIndex === 0 ? 'Variable name' : ''}>
               <EuiFieldText
                 value={userAttribute.key}
-                onChange={onValueChangeHandler('key')}
+                onChange={(e) => onValueChangeHandler('key')(e.target.value)}
                 placeholder="Type in variable name"
               />
             </FormRow>
@@ -78,7 +78,7 @@ function generateAttributesPanels(
             <FormRow headerText={arrayIndex === 0 ? 'Value' : ''}>
               <EuiFieldText
                 value={userAttribute.value}
-                onChange={onValueChangeHandler('value')}
+                onChange={(e) => onValueChangeHandler('value')(e.target.value)}
                 placeholder="Type in value"
               />
             </FormRow>
