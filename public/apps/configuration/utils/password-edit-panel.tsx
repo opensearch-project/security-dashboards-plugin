@@ -27,9 +27,9 @@ export function PasswordEditPanel(props: {
 
   useEffect(() => {
     props.updatePassword(password);
-    const isValid = repeatPassword !== password;
-    setIsRepeatPasswordInvalid(isValid);
-    props.updateIsInvalid(isValid);
+    const isInvalid = repeatPassword !== password;
+    setIsRepeatPasswordInvalid(isInvalid);
+    props.updateIsInvalid(isInvalid);
   }, [password, props, repeatPassword]);
 
   const passwordChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
