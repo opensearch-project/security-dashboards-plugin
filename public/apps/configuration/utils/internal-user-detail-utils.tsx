@@ -15,8 +15,18 @@
 
 import { HttpStart } from 'kibana/public';
 import { API_ENDPOINT_INTERNALUSERS } from '../constants';
-import { InternalUser } from '../types';
+import { InternalUser, InternalUserUpdate } from '../types';
 
 export async function getUserDetail(http: HttpStart, username: string): Promise<InternalUser> {
   return await http.get(`${API_ENDPOINT_INTERNALUSERS}/${username}`);
+}
+
+export async function updateUser(
+  http: HttpStart,
+  username: string,
+  updateObject: InternalUserUpdate
+): Promise<InternalUser> {
+  return await http.post(`${API_ENDPOINT_INTERNALUSERS}/${username}`, {
+    body: JSON.stringify(updateObject),
+  });
 }
