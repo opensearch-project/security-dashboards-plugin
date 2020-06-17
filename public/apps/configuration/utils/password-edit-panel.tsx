@@ -30,7 +30,7 @@ export function PasswordEditPanel(props: {
     const isValid = repeatPassword !== password;
     setIsRepeatPasswordInvalid(isValid);
     props.updateIsInvalid(isValid);
-  }, [password, repeatPassword])
+  }, [password, props, repeatPassword]);
 
   const passwordChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
