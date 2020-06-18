@@ -114,7 +114,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
         }),
       },
     },
-    async (context, request, response) => {
+    async (context, request, response): Promise<IKibanaResponse<any | ResponseError>> => {
       const client = esClient.asScoped(request);
       let esResp;
       try {
@@ -147,7 +147,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
         }),
       },
     },
-    async (context, request, response) => {
+    async (context, request, response): Promise<IKibanaResponse<any | ResponseError>> => {
       const client = esClient.asScoped(request);
       let esResp;
       try {
@@ -176,7 +176,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
         }),
       },
     },
-    async (context, request, response) => {
+    async (context, request, response): Promise<IKibanaResponse<any | ResponseError>> => {
       const client = esClient.asScoped(request);
       let esResp;
       try {
@@ -209,7 +209,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
         body: schema.any(),
       },
     },
-    async (context, request, response) => {
+    async (context, request, response): Promise<IKibanaResponse<any | ResponseError>> => {
       try {
         validateRequestBody(request.params.resourceName, request.body);
       } catch (error) {
@@ -281,7 +281,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
       path: `${API_PREFIX}/auth/authinfo`,
       validate: false,
     },
-    async (context, request, response) => {
+    async (context, request, response): Promise<IKibanaResponse<any | ResponseError>> => {
       const client = esClient.asScoped(request);
       let esResp;
       try {

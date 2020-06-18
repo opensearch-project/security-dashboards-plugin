@@ -51,7 +51,7 @@ export class BasicAuthRoutes {
         },
       },
       async (context, request, response) => {
-        const forbiddenUsernames = this.config.auth.forbidden_usernames;
+        const forbiddenUsernames: string[] = this.config.auth.forbidden_usernames;
         if (forbiddenUsernames.indexOf(request.body.username) > -1) {
           context.security_plugin.logger.error(
             `Denied login for forbidden username ${request.body.username}`
