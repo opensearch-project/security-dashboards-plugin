@@ -152,8 +152,12 @@ export function UserList(props: AppDependencies) {
     <EuiContextMenuItem
       key="export"
       disabled={selection.length !== 1}
-      href={selection.length === 1 ? `${props.coreStart.http.basePath.serverBasePath}${API_ENDPOINT_INTERNALUSERS}/${selection[0].username}` : ''}
-      target='_blank'
+      href={
+        selection.length === 1
+          ? `${props.coreStart.http.basePath.serverBasePath}${API_ENDPOINT_INTERNALUSERS}/${selection[0].username}`
+          : ''
+      }
+      target="_blank"
     >
       Export JSON
     </EuiContextMenuItem>,
