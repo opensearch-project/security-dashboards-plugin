@@ -299,7 +299,14 @@ export function RoleList(props: AppDependencies) {
                 </EuiPopover>
               </EuiFlexItem>
               <EuiFlexItem>
-                <EuiButton fill>Create role</EuiButton>
+                <EuiButton
+                  fill
+                  onClick={() => {
+                    window.location.href = buildHashUrl(ResourceType.users, Action.create);
+                  }}
+                >
+                  Create role
+                </EuiButton>
               </EuiFlexItem>
             </EuiFlexGroup>
           </EuiPageContentHeaderSection>
