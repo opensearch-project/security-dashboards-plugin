@@ -77,4 +77,9 @@ export interface UserAttributes {
 
 export interface InternalUser {
   attributes: UserAttributes;
+  backend_roles: string[];
+}
+
+export interface InternalUserUpdate extends InternalUser {
+  password: string;
 }

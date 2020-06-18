@@ -26,17 +26,17 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import React, { useCallback, useEffect, useState } from 'react';
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
+import React, { useCallback, useEffect, useState } from 'react';
 import { BreadcrumbsPageDependencies } from '../../../types';
-import { ResourceType } from '../../types';
+import { InternalUserUpdate, ResourceType } from '../../types';
 import { FormRow } from '../../utils/form-row';
+import { getUserDetail, updateUser } from '../../utils/internal-user-detail-utils';
 import { PanelWithHeader } from '../../utils/panel-with-header';
-import { buildHashUrl } from '../../utils/url-builder';
 import { PasswordEditPanel } from '../../utils/password-edit-panel';
+import { buildHashUrl } from '../../utils/url-builder';
+import { AttributePanel, buildAttributeState, unbuildAttributeState } from './attribute-panel';
 import { UserAttributeStateClass } from './types';
-import { AttributePanel, buildAttributeState } from './attribute-panel';
-import { getUserDetail } from '../../utils/internal-user-detail-utils';
 
 interface InternalUserEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -52,13 +52,27 @@ const TITLE_TEXT_DICT = {
   duplicate: 'Duplicate internal user',
 };
 
-function createErrorToast(id: string, failedAction: string): Toast {
+const UPDATE_TEXT_DICT = {
+  create: 'User successfully created',
+  edit: 'User successfully updated',
+  duplicate: 'User successfully duplicated',
+};
+
+function createErrorToast(id: string, title: string, text: string): Toast {
   return {
     id,
     color: 'danger',
-    title: `Failed to ${failedAction}`,
-    text: `Failed to ${failedAction}. You may refresh the page to retry or see browser console for more information.`,
+    title,
+    text,
   };
+}
+
+function createUnknownErrorToast(id: string, failedAction: string): Toast {
+  return createErrorToast(
+    id,
+    `Failed to ${failedAction}`,
+    `Failed to ${failedAction}. You may refresh the page to retry or see browser console for more information.`
+  );
 }
 
 export function InternalUserEdit(props: InternalUserEditDeps) {
@@ -66,6 +80,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
   const [password, setPassword] = useState<string>('');
   const [isPasswordInvalid, setIsPasswordInvalid] = useState<boolean>(false);
   const [attributes, setAttributes] = useState<UserAttributeStateClass[]>([]);
+  const [backendRoles, setBackendRoles] = useState<string[]>([]);
 
   const [toasts, setToasts] = useState<Toast[]>([]);
   const addToast = useCallback((toastToAdd: Toast) => {
@@ -82,13 +97,14 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
         try {
           const user = await getUserDetail(props.coreStart.http, props.sourceUserName);
           setAttributes(buildAttributeState(user.attributes));
+          setBackendRoles(user.backend_roles);
           if (action === 'edit') {
             setUserName(props.sourceUserName);
           } else {
             setUserName(props.sourceUserName + '_copy');
           }
         } catch (e) {
-          addToast(createErrorToast('fetchUser', 'load data'));
+          addToast(createUnknownErrorToast('fetchUser', 'load data'));
           console.error(e);
         }
       };
@@ -99,10 +115,31 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
 
   const updateUserHandler = async () => {
     try {
-      // TODO: update
+      if (isPasswordInvalid) {
+        addToast(createErrorToast('passwordInvalid', 'Update error', 'Password does not match.'));
+        return;
+      }
+
+      const updateObject: InternalUserUpdate = {
+        password,
+        backend_roles: backendRoles,
+        attributes: unbuildAttributeState(attributes),
+      };
+      await updateUser(props.coreStart.http, userName, updateObject);
+
+      addToast({
+        id: 'updateUserSucceeded',
+        color: 'success',
+        title: UPDATE_TEXT_DICT[props.action],
+      });
+      // TODO: redirect to somewhere?
     } catch (e) {
-      addToast(createErrorToast('updateUser', `${props.action} user`));
-      console.error(e);
+      if (e.message) {
+        addToast(createErrorToast('updateUserFailed', 'Update error', e.message));
+      } else {
+        addToast(createUnknownErrorToast('updateUserFailed', `${props.action} user`));
+        console.error(e);
+      }
     }
   };
 
