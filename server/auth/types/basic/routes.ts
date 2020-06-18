@@ -36,12 +36,10 @@ export class BasicAuthRoutes {
   ) {}
 
   public setupRoutes() {
-    const PREFIX = '';
-
     // login using username and password
     this.router.post(
       {
-        path: `${PREFIX}/auth/login`, // TODO: move the API endpoints to common to share with browser app
+        path: `/auth/login`, // TODO: move the API endpoints to common to share with browser app
         validate: {
           body: schema.object({
             username: schema.string(),
@@ -53,12 +51,17 @@ export class BasicAuthRoutes {
         },
       },
       async (context, request, response) => {
-        const forbiddenUsernames = this.config.auth.forbidden_usernames;
+        const forbiddenUsernames: string[] = this.config.auth.forbidden_usernames;
         if (forbiddenUsernames.indexOf(request.body.username) > -1) {
-          throw new Error('Invalid username or password'); // Cannot login using forbidden user name.
+          context.security_plugin.logger.error(
+            `Denied login for forbidden username ${request.body.username}`
+          );
+          return response.badRequest({
+            // Cannot login using forbidden user name.
+            body: 'Invalid username or password',
+          });
         }
 
-        // const authHeaderValue = Buffer.from(`${request.body.username}:${request.body.password}`).toString('base64');
         let user: User;
         try {
           user = await this.securityClient.authenticate(request, {
@@ -66,6 +69,7 @@ export class BasicAuthRoutes {
             password: request.body.password,
           });
         } catch (error) {
+          context.security_plugin.logger.error(`Failed authentication: ${error}`);
           return response.unauthorized({
             headers: {
               'www-authenticate': error.message,
@@ -73,6 +77,7 @@ export class BasicAuthRoutes {
           });
         }
 
+        this.sessionStorageFactory.asScoped(request).clear();
         const encodedCredentials = Buffer.from(
           `${request.body.username}:${request.body.password}`
         ).toString('base64');
@@ -120,7 +125,7 @@ export class BasicAuthRoutes {
     // logout
     this.router.post(
       {
-        path: `${PREFIX}/auth/logout`,
+        path: `/auth/logout`,
         validate: false,
         options: {
           authRequired: false,
@@ -135,7 +140,7 @@ export class BasicAuthRoutes {
     // anonymous auth
     this.router.get(
       {
-        path: `${PREFIX}/auth/anonymous`,
+        path: `/auth/anonymous`,
         validate: false,
         options: {
           authRequired: false,
@@ -148,7 +153,7 @@ export class BasicAuthRoutes {
         } else {
           return response.redirected({
             headers: {
-              location: `${PREFIX}/login`,
+              location: `/login`,
             },
           });
         }
@@ -158,7 +163,7 @@ export class BasicAuthRoutes {
     // renders custom error page
     this.router.get(
       {
-        path: `${PREFIX}/customerror`,
+        path: `/customerror`,
         validate: false,
         options: {
           authRequired: false,
