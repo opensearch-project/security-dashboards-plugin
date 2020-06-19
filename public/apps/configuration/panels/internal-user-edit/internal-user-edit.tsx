@@ -120,7 +120,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
         return;
       }
 
-      // Remove attribute with empty key
+      // Remove attributes with empty key
       const validAttributes = attributes.filter((v: UserAttributeStateClass) => v.key !== '');
 
       const updateObject: InternalUserUpdate = {
