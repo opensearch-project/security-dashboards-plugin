@@ -120,10 +120,13 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
         return;
       }
 
+      // Remove attribute with empty key
+      const validAttributes = attributes.filter((v: UserAttributeStateClass) => v.key !== '');
+
       const updateObject: InternalUserUpdate = {
         password,
         backend_roles: backendRoles,
-        attributes: unbuildAttributeState(attributes),
+        attributes: unbuildAttributeState(validAttributes),
       };
       await updateUser(props.coreStart.http, userName, updateObject);
 

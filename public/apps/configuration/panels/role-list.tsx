@@ -302,7 +302,7 @@ export function RoleList(props: AppDependencies) {
                 <EuiButton
                   fill
                   onClick={() => {
-                    window.location.href = buildHashUrl(ResourceType.users, Action.create);
+                    window.location.href = buildHashUrl(ResourceType.roles, Action.create);
                   }}
                 >
                   Create role

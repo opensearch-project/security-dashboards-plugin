@@ -21,7 +21,7 @@ import {
   EuiSpacer,
   EuiFormRow,
 } from '@elastic/eui';
-import { map } from 'lodash';
+import { map, isEmpty } from 'lodash';
 import React, { Dispatch, Fragment, SetStateAction } from 'react';
 import { UserAttributes } from '../../types';
 import {
@@ -105,6 +105,10 @@ export function AttributePanel(props: {
   setState: Dispatch<SetStateAction<UserAttributeStateClass[]>>;
 }) {
   const { state, setState } = props;
+  // Show one empty row if there is no data.
+  if (isEmpty(state)) {
+    setState([getEmptyAttribute()]);
+  }
   return (
     <PanelWithHeader
       headerText="Attributes"

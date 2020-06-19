@@ -29,6 +29,7 @@ import {
 import { FormRow } from '../../utils/form-row';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { ComboBoxOptions, RoleTenantPermissionStateClass, TenantPermissionType } from './types';
+import { isEmpty } from 'lodash';
 
 const TENANT_READ_PERMISSION = 'kibana_all_read';
 const TENANT_WRITE_PERMISSION = 'kibana_all_write';
@@ -137,6 +138,10 @@ export function TenantPanel(props: {
   setState: Dispatch<SetStateAction<RoleTenantPermissionStateClass[]>>;
 }) {
   const { state, optionUniverse, setState } = props;
+  // Show one empty row if there is no data.
+  if (isEmpty(state)) {
+    setState([getEmptyTenantPermission()]);
+  }
   return (
     <PanelWithHeader
       headerText="Tenants"

@@ -38,6 +38,7 @@ import {
 import { FormRow } from '../../utils/form-row';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { ComboBoxOptions, FieldLevelSecurityMethod, RoleIndexPermissionStateClass } from './types';
+import { isEmpty } from 'lodash';
 
 export function getEmptyIndexPermission(): RoleIndexPermissionStateClass {
   return {
@@ -316,6 +317,10 @@ export function IndexPermissionPanel(props: {
   setState: Dispatch<SetStateAction<RoleIndexPermissionStateClass[]>>;
 }) {
   const { state, optionUniverse, setState } = props;
+  // Show one empty row if there is no data.
+  if (isEmpty(state)) {
+    setState([getEmptyIndexPermission()]);
+  }
   return (
     <PanelWithHeader
       headerText="Index permissions"
