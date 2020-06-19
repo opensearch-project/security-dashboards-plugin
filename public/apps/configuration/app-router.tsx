@@ -114,7 +114,7 @@ export function AppRouter(props: AppDependencies) {
               )}
             />
             <Route
-              path={buildUrl(ResourceType.roles) + '/:action/:sourceRoleName'}
+              path={buildUrl(ResourceType.roles) + '/:action/:sourceRoleName?'}
               render={(match) => (
                 <RoleEdit
                   buildBreadcrumbs={partial(Breadcrumbs, ResourceType.roles)}
@@ -129,7 +129,7 @@ export function AppRouter(props: AppDependencies) {
               <AuthView {...props} />
             </Route>
             <Route
-              path={buildUrl(ResourceType.users) + '/:action/:sourceUserName'}
+              path={buildUrl(ResourceType.users) + '/:action/:sourceUserName?'}
               render={(match) => (
                 <InternalUserEdit
                   buildBreadcrumbs={partial(Breadcrumbs, ResourceType.users)}
