@@ -24,6 +24,7 @@ import {
   EuiTextArea,
 } from '@elastic/eui';
 import React, { Dispatch, Fragment, SetStateAction } from 'react';
+import { isEmpty } from 'lodash';
 import { RoleIndexPermission } from '../../types';
 import {
   appendElementToArray,
@@ -316,6 +317,10 @@ export function IndexPermissionPanel(props: {
   setState: Dispatch<SetStateAction<RoleIndexPermissionStateClass[]>>;
 }) {
   const { state, optionUniverse, setState } = props;
+  // Show one empty row if there is no data.
+  if (isEmpty(state)) {
+    setState([getEmptyIndexPermission()]);
+  }
   return (
     <PanelWithHeader
       headerText="Index permissions"

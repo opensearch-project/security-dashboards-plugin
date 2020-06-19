@@ -15,6 +15,7 @@
 
 import { EuiButton, EuiComboBox, EuiFlexGroup, EuiFlexItem, EuiSuperSelect } from '@elastic/eui';
 import React, { Dispatch, Fragment, SetStateAction } from 'react';
+import { isEmpty } from 'lodash';
 import { RoleTenantPermission } from '../../types';
 import {
   appendElementToArray,
@@ -137,6 +138,10 @@ export function TenantPanel(props: {
   setState: Dispatch<SetStateAction<RoleTenantPermissionStateClass[]>>;
 }) {
   const { state, optionUniverse, setState } = props;
+  // Show one empty row if there is no data.
+  if (isEmpty(state)) {
+    setState([getEmptyTenantPermission()]);
+  }
   return (
     <PanelWithHeader
       headerText="Tenants"
