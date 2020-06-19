@@ -15,6 +15,7 @@
 
 import { EuiButton, EuiComboBox, EuiFlexGroup, EuiFlexItem, EuiSuperSelect } from '@elastic/eui';
 import React, { Dispatch, Fragment, SetStateAction } from 'react';
+import { isEmpty } from 'lodash';
 import { RoleTenantPermission } from '../../types';
 import {
   appendElementToArray,
@@ -29,7 +30,6 @@ import {
 import { FormRow } from '../../utils/form-row';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { ComboBoxOptions, RoleTenantPermissionStateClass, TenantPermissionType } from './types';
-import { isEmpty } from 'lodash';
 
 const TENANT_READ_PERMISSION = 'kibana_all_read';
 const TENANT_WRITE_PERMISSION = 'kibana_all_write';

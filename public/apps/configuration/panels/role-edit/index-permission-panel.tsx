@@ -24,6 +24,7 @@ import {
   EuiTextArea,
 } from '@elastic/eui';
 import React, { Dispatch, Fragment, SetStateAction } from 'react';
+import { isEmpty } from 'lodash';
 import { RoleIndexPermission } from '../../types';
 import {
   appendElementToArray,
@@ -38,7 +39,6 @@ import {
 import { FormRow } from '../../utils/form-row';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { ComboBoxOptions, FieldLevelSecurityMethod, RoleIndexPermissionStateClass } from './types';
-import { isEmpty } from 'lodash';
 
 export function getEmptyIndexPermission(): RoleIndexPermissionStateClass {
   return {

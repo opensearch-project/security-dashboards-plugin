@@ -28,6 +28,7 @@ import {
 } from '@elastic/eui';
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 import React, { useEffect, useState, useCallback } from 'react';
+import { isEmpty } from 'lodash';
 import { BreadcrumbsPageDependencies } from '../../../types';
 import { CLUSTER_PERMISSIONS, INDEX_PERMISSIONS } from '../../constants';
 import { fetchActionGroups } from '../../utils/action-groups-utils';
@@ -152,10 +153,16 @@ export function RoleEdit(props: RoleEditDeps) {
 
   const updateRoleHandler = async () => {
     try {
+      const validIndexPermission = roleIndexPermission.filter(
+        (v: RoleIndexPermissionStateClass) => !isEmpty(v.indexPatterns)
+      );
+      const validTenantPermission = roleTenantPermission.filter(
+        (v: RoleTenantPermissionStateClass) => !isEmpty(v.tenantPatterns)
+      );
       await updateRole(props.coreStart.http, roleName, {
         cluster_permissions: roleClusterPermission.map(comboBoxOptionToString),
-        index_permissions: unbuildIndexPermissionState(roleIndexPermission),
-        tenant_permissions: unbuildTenantPermissionState(roleTenantPermission),
+        index_permissions: unbuildIndexPermissionState(validIndexPermission),
+        tenant_permissions: unbuildTenantPermissionState(validTenantPermission),
       });
       window.location.href = buildHashUrl(ResourceType.roles, Action.view, roleName);
     } catch (e) {
