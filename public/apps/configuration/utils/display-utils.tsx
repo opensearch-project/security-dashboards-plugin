@@ -31,14 +31,14 @@ export function renderTextFlexItem(header: string, value: string) {
   );
 }
 
-export function displayBoolean(bool: boolean) {
+export function displayBoolean(bool: boolean | undefined) {
   return bool ? 'Enabled' : 'Disabled';
 }
 
-export function displayArray(array: string[]) {
+export function displayArray(array: string[] | undefined) {
   return array?.join(', ') || '--';
 }
 
-export function displayObject(object: object) {
+export function displayObject(object: object | undefined) {
   return !isEmpty(object) ? JSON.stringify(object) : '--';
 }

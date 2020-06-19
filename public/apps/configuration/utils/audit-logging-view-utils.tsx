@@ -17,6 +17,7 @@ import {
   EuiFlexGrid,
   EuiForm,
   EuiFormRow,
+  EuiHorizontalRule,
   EuiPanel,
   EuiSpacer,
   EuiSwitch,
@@ -25,60 +26,38 @@ import {
 } from '@elastic/eui';
 
 import React from 'react';
+import { HttpStart } from 'kibana/public';
 import { displayArray, displayBoolean, displayObject, renderTextFlexItem } from './display-utils';
-
-interface GeneralSettings {
-  // layer
-  enable_rest: boolean;
-  enable_transport: boolean;
-  disabled_rest_categories: string[];
-  disabled_transport_categories: string[];
-
-  // attribute
-  resolve_bulk_requests: boolean;
-  resolve_indices: boolean;
-  log_request_body: boolean;
-  exclude_sensitive_headers: boolean;
-
-  // ignore
-  ignore_users: string[];
-  ignore_requests: string[];
-}
-
-interface ComplianceSettings {
-  enabled: boolean;
-
-  // read
-  read_metadata_only: boolean;
-  read_ignore_users: string[];
-  read_watched_fields: {
-    [key: string]: string;
-  };
-
-  // write
-  write_metadata_only: boolean;
-  write_log_diffs: boolean;
-  write_ignore_users: string[];
-  write_watched_indices: string[];
-}
+import { API_ENDPOINT_AUDITLOGGING_UPDATE } from '../constants';
+import {
+  AuditLoggingSettings,
+  ComplianceSettings,
+  GeneralSettings,
+} from '../panels/audit-logging/types';
 
 export function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: boolean) {
   return (
-    <EuiForm>
-      <EuiDescribedFormGroup
-        title={<h3>Enable audit logging</h3>}
-        description={<>Enable or disable audit logging</>}
-      >
-        <EuiFormRow>
-          <EuiSwitch
-            name="auditLoggingEnabledSwitch"
-            label={displayBoolean(auditLoggingEnabled)}
-            checked={auditLoggingEnabled}
-            onChange={onSwitchChange}
-          />
-        </EuiFormRow>
-      </EuiDescribedFormGroup>
-    </EuiForm>
+    <EuiPanel>
+      <EuiTitle>
+        <h3>Audit logging</h3>
+      </EuiTitle>
+      <EuiHorizontalRule />
+      <EuiForm>
+        <EuiDescribedFormGroup
+          title={<h3>Enable audit logging</h3>}
+          description={<>Enable or disable audit logging</>}
+        >
+          <EuiFormRow>
+            <EuiSwitch
+              name="auditLoggingEnabledSwitch"
+              label={displayBoolean(auditLoggingEnabled)}
+              checked={auditLoggingEnabled}
+              onChange={onSwitchChange}
+            />
+          </EuiFormRow>
+        </EuiDescribedFormGroup>
+      </EuiForm>
+    </EuiPanel>
   );
 }
 
@@ -214,4 +193,10 @@ export function renderComplianceSettings(complianceSettings: ComplianceSettings)
       </EuiPanel>
     </>
   );
+}
+
+export async function updateAuditLogging(http: HttpStart, updateObject: AuditLoggingSettings) {
+  return await http.post(`${API_ENDPOINT_AUDITLOGGING_UPDATE}`, {
+    body: JSON.stringify(updateObject),
+  });
 }
