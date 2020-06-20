@@ -17,7 +17,6 @@ import React, { useState, useEffect } from 'react';
 import {
   EuiFlexGroup,
   EuiText,
-  EuiIcon,
   EuiPageHeader,
   EuiTitle,
   EuiPageContent,
@@ -42,6 +41,7 @@ import {
 import { API_ENDPOINT_ROLES, API_ENDPOINT_ROLESMAPPING } from '../constants';
 import { ResourceType, Action } from '../types';
 import { buildHashUrl } from '../utils/url-builder';
+import { renderCustomization } from '../utils/display-utils';
 
 function truncatedListView(limit = 3) {
   return (items: string[]) => {
@@ -73,12 +73,6 @@ function truncatedListView(limit = 3) {
     );
   };
 }
-const renderCustomization = (reserved: boolean) => (
-  <EuiText size="xs">
-    <EuiIcon type={reserved ? 'lock' : 'pencil'} />
-    {reserved ? 'Reserved' : 'Custom'}
-  </EuiText>
-);
 
 const columns = [
   {

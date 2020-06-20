@@ -14,21 +14,37 @@
  */
 
 import { HttpStart } from 'kibana/public';
+import { map } from 'lodash';
 import { API_ENDPOINT_ACTIONGROUPS } from '../constants';
+import { DataObject, ActionGroupItem } from '../types';
 
-/* Output:
-{
-  [actionGroupName]: {
-    reseverd: boolean,
-    hidden: boolean,
-    allowed_actions: string[],
-    type: "cluster" | "index",
-    description: "",
-    static: boolean,
-  }
+export interface ActionGroupListingItem {
+  name: string;
+  type: 'Action group' | 'Single permission';
+  reserved: boolean;
+  allowedActions: string[];
+  hasClusterPermission: boolean;
+  hasIndexPermission: boolean;
 }
-*/
-export async function fetchActionGroups(http: HttpStart) {
+
+export async function fetchActionGroups(http: HttpStart): Promise<DataObject<ActionGroupItem>> {
   const actiongroups = await http.get(API_ENDPOINT_ACTIONGROUPS);
   return actiongroups.data;
+}
+
+function tranformActionGroupsToListingFormat(
+  rawData: DataObject<ActionGroupItem>
+): ActionGroupListingItem[] {
+  return map(rawData, (value: ActionGroupItem, key?: string) => ({
+    name: key || '',
+    type: 'Action group',
+    reserved: value.reserved,
+    allowedActions: value.allowed_actions,
+    hasClusterPermission: value.type === 'cluster' || value.type === 'all',
+    hasIndexPermission: value.type === 'index' || value.type === 'all',
+  }));
+}
+
+export async function fetchActionGroupListing(http: HttpStart): Promise<ActionGroupListingItem[]> {
+  return tranformActionGroupsToListingFormat(await fetchActionGroups(http));
 }

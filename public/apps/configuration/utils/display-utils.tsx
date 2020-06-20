@@ -15,7 +15,7 @@
 
 // TODO: call the util functions from wherever applicable.
 
-import { EuiFlexItem, EuiText } from '@elastic/eui';
+import { EuiFlexItem, EuiText, EuiIcon } from '@elastic/eui';
 import { isEmpty } from 'lodash';
 
 import React from 'react';
@@ -41,4 +41,13 @@ export function displayArray(array: string[]) {
 
 export function displayObject(object: object) {
   return !isEmpty(object) ? JSON.stringify(object) : '--';
+}
+
+export function renderCustomization(reserved: boolean) {
+  return (
+    <EuiText size="xs">
+      <EuiIcon type={reserved ? 'lock' : 'pencil'} />
+      {reserved ? 'Reserved' : 'Custom'}
+    </EuiText>
+  );
 }
