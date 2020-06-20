@@ -214,4 +214,12 @@ export default function (Client: any, config: any, components: any) {
       fmt: '/_opendistro/_security/api/authtoken',
     },
   });
+
+  Client.prototype.opendistro_security.prototype.audit = ca({
+    method: 'PUT',
+    needBody: true,
+    url: {
+      fmt: '/_opendistro/_security/api/audit/config',
+    },
+  });
 }

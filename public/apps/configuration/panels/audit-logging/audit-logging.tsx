@@ -30,22 +30,30 @@ import {
   renderComplianceSettings,
   renderGeneralSettings,
   renderStatusPanel,
+  updateAuditLogging,
 } from '../../utils/audit-logging-view-utils';
+import { AuditLoggingSettings } from './types';
 
 export function AuditLogging(props: AppDependencies) {
-  // TODO: modify the logic when making the post calls for update.
-  const [auditLoggingEnabled, setAuditLoggingEnabled] = useState<boolean>(false);
-  const [configuration, setConfiguration] = useState<any>({});
-  const onSwitchChange = () => {
-    setAuditLoggingEnabled((prevAuditLoggingEnabled) => !prevAuditLoggingEnabled);
+  const [configuration, setConfiguration] = useState<AuditLoggingSettings>({});
+
+  const onSwitchChange = async () => {
+    try {
+      const updatedConfiguration = { ...configuration };
+      updatedConfiguration.enabled = !updatedConfiguration.enabled;
+
+      await updateAuditLogging(props.coreStart.http, updatedConfiguration);
+
+      setConfiguration(updatedConfiguration);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const rawConfiguration = await props.coreStart.http.get(API_ENDPOINT_AUDITLOGGING);
-
-        setAuditLoggingEnabled(rawConfiguration.data.config.enabled);
         setConfiguration(rawConfiguration.data.config);
       } catch (e) {
         // TODO: switch to better error handling.
@@ -56,17 +64,15 @@ export function AuditLogging(props: AppDependencies) {
     fetchData();
   }, [props.coreStart.http]);
 
-  const statusPanel = renderStatusPanel(onSwitchChange, auditLoggingEnabled);
+  const statusPanel = renderStatusPanel(onSwitchChange, configuration.enabled || false);
+
+  if (!configuration.enabled) {
+    return statusPanel;
+  }
 
   return (
     <>
-      <EuiPanel>
-        <EuiTitle>
-          <h3>Audit logging</h3>
-        </EuiTitle>
-        <EuiHorizontalRule />
-        {statusPanel}
-      </EuiPanel>
+      {statusPanel}
 
       <EuiSpacer />
 

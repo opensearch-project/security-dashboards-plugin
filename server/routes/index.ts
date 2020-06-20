@@ -298,6 +298,34 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
       }
     }
   );
+
+  router.post(
+    {
+      path: `${API_PREFIX}/configuration/audit/config`,
+      validate: {
+        body: schema.any(),
+      },
+    },
+    async (context, request, response) => {
+      const client = esClient.asScoped(request);
+      let esResp;
+      try {
+        esResp = await client.callAsCurrentUser('opendistro_security.audit', {
+          body: request.body,
+        });
+        return response.ok({
+          body: {
+            message: esResp.message,
+          },
+        });
+      } catch (error) {
+        return response.custom({
+          statusCode: error.statusCode,
+          body: parseEsErrorResponse(error),
+        });
+      }
+    }
+  );
 }
 
 function parseEsErrorResponse(error: any) {
