@@ -58,7 +58,7 @@ app.controller('securityRolesController', function ($scope, $element, $route, ba
     };
 });
 
-app.controller('securityEditRolesController', function ($rootScope, $scope, $element, $route, $location, $routeParams, $http, $window, createNotifier, backendRoles, backendrolesmapping, backendAPI, backendTenants, kbnUrl, systemstate) {
+app.controller('securityEditRolesController', function ($rootScope, $scope, $element, $route, $location, $routeParams, $http, $window, backendRoles, backendrolesmapping, backendAPI, backendTenants, kbnUrl, systemstate) {
 
     var APP_ROOT = `${chrome.getBasePath()}`;
     var API_ROOT = `${APP_ROOT}/api/v1`;

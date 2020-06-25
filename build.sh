@@ -1,32 +1,19 @@
 #!/bin/bash
-KIBANA_VERSION="$1"
-ELASTICSEARCH_SECURITY_PLUGIN_VERSION="$2"
-COMMAND="$3"
 
-# sanity checks for options
-if [ -z "$KIBANA_VERSION" ] || [ -z "$ELASTICSEARCH_SECURITY_PLUGIN_VERSION" ] || [ -z "$COMMAND" ]; then
-    echo "Usage: ./build.sh <kibana_version> <elasticsearch_security_plugin_version> <install|deploy>"
-    exit 1
-fi
-
-if [ "$COMMAND" != "deploy" ] && [ "$COMMAND" != "deploy-snapshot" ] && [ "$COMMAND" != "install" ]; then
-    echo "Usage: ./build.sh <kibana_version> <elasticsearch_security_plugin_version> <install|deploy>"
-    echo "Unknown command: $COMMAND"
-    exit 1
-fi
-
-# sanity checks for maven
-if [ -z "$MAVEN_HOME" ]; then
-    echo "MAVEN_HOME not set"
-    exit 1
+if ! [ -x "$(command -v jq)" ]; then
+  echo 'Error: jq is not installed. jq is required for parsing package.json'
+  exit 1
 fi
 
 echo "+++ Checking Maven version +++"
-$MAVEN_HOME/bin/mvn -version
+mvn -version
 if [ $? != 0 ]; then
     echo "Checking maven version failed";
     exit 1
 fi
+
+KIBANA_VERSION=$(cat package.json | jq -r ".kibana.version")
+echo "+++ Building for kibana version $KIBANA_VERSION +++"
 
 # sanity checks for nvm
 if [ -z "$NVM_HOME" ]; then
@@ -40,22 +27,13 @@ echo "+++ Sourcing nvm +++"
 echo "+++ Checking nvm version +++"
 nvm version
 if [ $? != 0 ]; then
-    echo "Checking mvn version failed"
+    echo "Checking nvm version failed"
     exit 1
 fi
 
 # check version matches. Do not use jq here, only bash
 WORK_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $WORK_DIR
-# while read -r line
-# do
-#     if [[ "$line" =~ ^\"version\".* ]]; then
-#       if [[ "$line" != "\"version\": \"$1-$2\"," ]]; then
-#         echo "Provided version \"version\": \"$1-$2\" does not match Kibana version: $line"
-#         exit 1;
-#       fi
-#     fi
-# done < "package.json"
 
 # cleanup any leftovers
 ./clean.sh
@@ -64,8 +42,8 @@ if [ $? != 0 ]; then
     exit 1
 fi
 
-# prepare artefacts
-PLUGIN_NAME="opendistro_security_kibana_plugin-$ELASTICSEARCH_SECURITY_PLUGIN_VERSION"
+# prepare artifacts
+PLUGIN_NAME="opendistro_security_kibana_plugin"
 echo "+++ Building $PLUGIN_NAME.zip +++"
 
 WORK_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -77,7 +55,7 @@ cd $BUILD_STAGE_DIR
 echo "+++ Cloning https://github.com/elastic/kibana.git +++"
 git clone https://github.com/elastic/kibana.git || true > /dev/null 2>&1
 if [ $? != 0 ]; then
-    echo "got clone Kibana repository failed"
+    echo "git clone Kibana repository failed"
     exit 1
 fi
 
@@ -117,6 +95,7 @@ cp -a "$WORK_DIR/package.json" "$BUILD_STAGE_PLUGIN_DIR"
 cp -a "$WORK_DIR/lib" "$BUILD_STAGE_PLUGIN_DIR"
 cp -a "$WORK_DIR/public" "$BUILD_STAGE_PLUGIN_DIR"
 cp -a "$WORK_DIR/tests" "$BUILD_STAGE_PLUGIN_DIR"
+cp -a "$WORK_DIR/.babelrc" "$BUILD_STAGE_PLUGIN_DIR"
 cp -a "$WORK_DIR/babel.config.js" "$BUILD_STAGE_PLUGIN_DIR"
 
 cd $BUILD_STAGE_PLUGIN_DIR
@@ -135,6 +114,13 @@ echo "+++ Installing plugin node modules +++"
 yarn kbn bootstrap
 if [ $? != 0 ]; then
     echo "Installing node modules failed"
+    exit 1
+fi
+
+echo "+++ Running tests +++"
+yarn test:jest
+if [ $? != 0 ]; then
+    echo "Tests failed"
     exit 1
 fi
 
@@ -159,39 +145,9 @@ cp -a "$BUILD_STAGE_PLUGIN_DIR/node_modules" "$COPYPATH"
 cp -a "$BUILD_STAGE_PLUGIN_DIR/lib" "$COPYPATH"
 cp -a "$BUILD_STAGE_PLUGIN_DIR/public" "$COPYPATH"
 
-# Replace pom version
-rm -f pom.xml
-
-sed -e "s/RPLC_PLUGIN_VERSION/$KIBANA_VERSION-$SECURITY_PLUGIN_VERSION/" ./pom.template.xml > ./pom.xml
+echo "+++ mvn clean package +++"
+mvn clean package
 if [ $? != 0 ]; then
-    echo "sed failed"
+    echo "mvn clean package failed"
     exit 1
-fi
-
-if [ "$COMMAND" = "deploy" ] ; then
-    echo "+++ mvn clean deploy -Prelease +++"
-    $MAVEN_HOME/bin/mvn clean deploy -Prelease
-    if [ $? != 0 ]; then
-        echo "$MAVEN_HOME/bin/mvn clean deploy -Prelease failed"
-        exit 1
-    fi
-fi
-
-#-s settings.xml is needed on circleci only
-if [ "$COMMAND" = "deploy-snapshot" ] ; then
-    echo "+++ mvn clean deploy +++"
-    $MAVEN_HOME/bin/mvn clean deploy -s settings.xml
-    if [ $? != 0 ]; then
-        echo "$MAVEN_HOME/bin/mvn clean deploy -s settings.xml failed"
-        exit 1
-    fi
-fi
-
-if [ "$COMMAND" = "install" ] ; then
-    echo "+++ mvn clean install +++"
-    $MAVEN_HOME/bin/mvn clean package -Duser.home=/home/jenkins
-    if [ $? != 0 ]; then
-        echo "$MAVEN_HOME/bin/mvn clean install failed"
-        exit 1
-    fi
 fi

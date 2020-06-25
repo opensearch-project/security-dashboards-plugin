@@ -141,7 +141,6 @@ export default function (kibana) {
             hacks: [
                 'plugins/opendistro_security/chrome/readonly/enable_readonly',
                 'plugins/opendistro_security/chrome/multitenancy/enable_multitenancy',
-                'plugins/opendistro_security/chrome/accountinfo/enable_accountinfo',
                 'plugins/opendistro_security/chrome/logout_button',
                 'plugins/opendistro_security/chrome/configuration/enable_configuration',
                 'plugins/opendistro_security/services/access_control',
@@ -209,7 +208,7 @@ export default function (kibana) {
 		
 		// @todo Is there a way to access this synchronously,
                 // so that we can move this setting back to injectDefaulVars?
-                const legacyEsConfig = await server.newPlatform.setup.core.elasticsearch.legacy.config$.pipe(first()).toPromise();
+                const legacyEsConfig = await server.newPlatform.__internals.elasticsearch.legacy.config$.pipe(first()).toPromise();
                 originalInjectedVars.kibana_server_user = legacyEsConfig.username;
 
                 return {
@@ -282,7 +281,7 @@ export default function (kibana) {
         },
 
         async init(server, options) {
-	    const legacyEsConfig = await server.newPlatform.setup.core.elasticsearch.legacy.config$.pipe(first()).toPromise();
+            const legacyEsConfig = await server.newPlatform.__internals.elasticsearch.legacy.config$.pipe(first()).toPromise();
             APP_ROOT = '';
             API_ROOT = `${APP_ROOT}/api/v1`;
             const config = server.config();
@@ -371,20 +370,20 @@ export default function (kibana) {
 
                     if (authType == 'openid') {
                         let OpenId = require('./lib/auth/types/openid/OpenId');
-                        authClass = new OpenId(pluginRoot, server, this, APP_ROOT, API_ROOT);
+                        authClass = new OpenId(pluginRoot, server, this, APP_ROOT, API_ROOT, legacyEsConfig);
                     } else if (authType == 'basicauth') {
                         let BasicAuth = require('./lib/auth/types/basicauth/BasicAuth');
-                        authClass = new BasicAuth(pluginRoot, server, this, APP_ROOT, API_ROOT);
+                        authClass = new BasicAuth(pluginRoot, server, this, APP_ROOT, API_ROOT, legacyEsConfig);
                     } else if (authType == 'jwt') {
                         let Jwt = require('./lib/auth/types/jwt/Jwt');
-                        authClass = new Jwt(pluginRoot, server, this, APP_ROOT, API_ROOT);
+                        authClass = new Jwt(pluginRoot, server, this, APP_ROOT, API_ROOT, legacyEsConfig);
                         this.status.yellow("Security copy JWT params registered.");
                     } else if (authType == 'saml') {
                         let Saml = require('./lib/auth/types/saml/Saml');
-                        authClass = new Saml(pluginRoot, server, this, APP_ROOT, API_ROOT);
+                        authClass = new Saml(pluginRoot, server, this, APP_ROOT, API_ROOT, legacyEsConfig);
                     } else if (authType == 'proxycache') {
                         let ProxyCache = require('./lib/auth/types/proxycache/ProxyCache');
-                        authClass = new ProxyCache(pluginRoot, server, this, APP_ROOT, API_ROOT);
+                        authClass = new ProxyCache(pluginRoot, server, this, APP_ROOT, API_ROOT, legacyEsConfig);
                     }
 
                     if (authClass) {

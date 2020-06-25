@@ -4,7 +4,7 @@ import '../../backend_api/internalusers';
 
 const app = uiModules.get('apps/opendistro_security/configuration', []);
 
-app.controller('securityInternalUsersController', function ($scope, $element, $route, createNotifier, backendInternalUsers, kbnUrl) {
+app.controller('securityInternalUsersController', function ($scope, $element, $route, backendInternalUsers, kbnUrl) {
 
     $scope.endpoint = "INTERNALUSERS";
     $scope.$parent.endpoint = "INTERNALUSERS";
@@ -46,7 +46,7 @@ app.controller('securityInternalUsersController', function ($scope, $element, $r
 
 });
 
-app.controller('securityEditInternalUsersController', function ($scope, $element, $route, $location, $routeParams, createNotifier, backendInternalUsers, kbnUrl) {
+app.controller('securityEditInternalUsersController', function ($scope, $element, $route, $location, $routeParams, backendInternalUsers, kbnUrl) {
 
     $scope.endpoint = "INTERNALUSERS";
     $scope.$parent.endpoint = "INTERNALUSERS";
@@ -139,6 +139,18 @@ app.controller('securityEditInternalUsersController', function ($scope, $element
         if ($scope.resource.password !== $scope.resource.passwordConfirmation) {
             $scope.errorMessage = 'Passwords do not match.';
             return;
+        }
+
+        if ($scope.resource.opendistro_security_roles && $scope.resource.opendistro_security_roles.length) {
+            let opendistro_security_roles = [];
+            for (let i = 0; i<$scope.resource.opendistro_security_roles.length; i++) {
+                if (typeof $scope.resource.opendistro_security_roles[i] == "object" ) {
+                    opendistro_security_roles.push($scope.resource.opendistro_security_roles[i].name);
+                } else  {
+                    opendistro_security_roles.push($scope.resource.opendistro_security_roles[i]);
+                }
+            }
+            $scope.resource.opendistro_security_roles = opendistro_security_roles;
         }
 
         $scope.service.save($scope.resourcename, $scope.resource)

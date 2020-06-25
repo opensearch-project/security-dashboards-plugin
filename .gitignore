@@ -1,5 +1,6 @@
 /package-lock.json
 build_stage/
+plugins/
 target/
 /package.json
 /releases
@@ -47,6 +48,5 @@ jspm_packages
 .node_repl_history
 
 .DS_Store
-/pom.xml
 
 *.iml

@@ -49,11 +49,11 @@ app.directive('securitycConfirmationModal', function () {
                 buttons: {
                     confirm: {
                         label: 'Confirm',
-                        classes: 'kuiButton--primary'
+                        classes: 'euiButton--primary euiButton--fill'
                     },
                     cancel: {
                         label: 'Cancel',
-                        classes: 'kuiButton--hollow'
+                        classes: 'euiButtonEmpty--primary'
                     }
                 }
             };

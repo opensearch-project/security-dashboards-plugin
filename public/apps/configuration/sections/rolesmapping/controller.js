@@ -4,7 +4,7 @@ import '../../backend_api/rolesmapping';
 
 const app = uiModules.get('apps/opendistro_security/configuration', []);
 
-app.controller('securityRoleMappingsController', function ($scope, $element, $route, createNotifier, backendrolesmapping, kbnUrl) {
+app.controller('securityRoleMappingsController', function ($scope, $element, $route, backendrolesmapping, kbnUrl) {
 
     $scope.endpoint = "rolesmapping";
     $scope.$parent.endpoint = "rolesmapping";
@@ -60,7 +60,7 @@ app.controller('securityRoleMappingsController', function ($scope, $element, $ro
 
 });
 
-app.controller('securityEditRoleMappingsController', function ($scope, $element, $route, $location, $routeParams, createNotifier, backendrolesmapping, backendAPI, kbnUrl) {
+app.controller('securityEditRoleMappingsController', function ($scope, $element, $route, $location, $routeParams, backendrolesmapping, backendAPI, kbnUrl) {
 
     $scope.endpoint = "rolesmapping";
     $scope.$parent.endpoint = "rolesmapping";

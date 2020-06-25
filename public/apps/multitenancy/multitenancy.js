@@ -34,13 +34,8 @@ import chrome from 'ui/chrome';
 import uiRoutes from 'ui/routes';
 import { uiModules } from 'ui/modules';
 import 'ui/autoload/styles';
-import { indexPatternsGetProvider } from 'ui/index_patterns/_get';
-
 import 'plugins/opendistro_security/apps/configuration/configuration.less';
-
 import tenantTemplate from './multitenancy.html';
-
-// import { chromeWrapper} from "/Users/agamansi/kibana-dev/kibana-extra/security-kibana-plugin/public/services/chrome_wrapper";
 import { chromeWrapper } from "../../services/chrome_wrapper";
 
 uiRoutes.enable();
@@ -55,7 +50,6 @@ uiRoutes
 uiModules
     .get('app/security-multitenancy')
     .controller('securityMultitenancyController', function ($http, $window, security_resolvedInfo) {
-        indexPatternsGetProvider(chrome.getSavedObjectsClient())('id');
 
         var APP_ROOT = `${chrome.getBasePath()}`;
         var API_ROOT = `${APP_ROOT}/api/v1`;
