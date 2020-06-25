@@ -310,8 +310,8 @@ export default function (kibana) {
                 server.log(['error', 'security'], `An error occurred while making sure that X-Pack isn't enabled`);
             }
 
-
             // all your routes are belong to us
+            require('./lib/auth/routes_authtype')(pluginRoot, server, this, APP_ROOT, API_ROOT);
             require('./lib/auth/routes_authinfo')(pluginRoot, server, this, APP_ROOT, API_ROOT);
 
             // provides authentication methods against Security
