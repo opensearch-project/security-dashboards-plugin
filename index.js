@@ -309,6 +309,7 @@ export default function (kibana) {
 
 
             // all your routes are belong to us
+            require('./lib/auth/routes_authtype')(pluginRoot, server, this, APP_ROOT, API_ROOT);
             require('./lib/auth/routes_authinfo')(pluginRoot, server, this, APP_ROOT, API_ROOT);
 
             // provides authentication methods against Security
