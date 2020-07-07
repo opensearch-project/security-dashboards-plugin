@@ -20,7 +20,7 @@ import {
   ResponseError,
   IKibanaResponse,
 } from '../../../../src/core/server';
-import { API_PREFIX } from '../../common';
+import { API_PREFIX, CONFIGURATION_API_PREFIX } from '../../common';
 
 // TODO: consider to extract entity CRUD operations and put it into a client class
 //
@@ -45,7 +45,7 @@ import { API_PREFIX } from '../../common';
 //
 // TODO: same for loggers and sessionCookieFactory, inject them into context
 
-export function defineRoutes(router: IRouter, esClient: IClusterClient) {
+export function defineRoutes(router: IRouter) {
   const internalUserSchema = schema.object({
     description: schema.maybe(schema.string()),
     password: schema.string(),
@@ -107,7 +107,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
   // list resources by resource name
   router.get(
     {
-      path: `${API_PREFIX}/configuration/{resourceName}`,
+      path: `${API_PREFIX}/${CONFIGURATION_API_PREFIX}/{resourceName}`,
       validate: {
         params: schema.object({
           resourceName: schema.string(),
@@ -115,7 +115,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
       },
     },
     async (context, request, response): Promise<IKibanaResponse<any | ResponseError>> => {
-      const client = esClient.asScoped(request);
+      const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
         esResp = await client.callAsCurrentUser('opendistro_security.listResource', {
@@ -139,7 +139,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
   // get resource by resource name and id
   router.get(
     {
-      path: `${API_PREFIX}/configuration/{resourceName}/{id}`,
+      path: `${API_PREFIX}/${CONFIGURATION_API_PREFIX}/{resourceName}/{id}`,
       validate: {
         params: schema.object({
           resourceName: schema.string(),
@@ -148,7 +148,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
       },
     },
     async (context, request, response): Promise<IKibanaResponse<any | ResponseError>> => {
-      const client = esClient.asScoped(request);
+      const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
         esResp = await client.callAsCurrentUser('opendistro_security.getResource', {
@@ -168,7 +168,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
   // delete resource by resource name and id
   router.delete(
     {
-      path: `${API_PREFIX}/configuration/{resourceName}/{id}`,
+      path: `${API_PREFIX}/${CONFIGURATION_API_PREFIX}/{resourceName}/{id}`,
       validate: {
         params: schema.object({
           resourceName: schema.string(),
@@ -177,7 +177,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
       },
     },
     async (context, request, response): Promise<IKibanaResponse<any | ResponseError>> => {
-      const client = esClient.asScoped(request);
+      const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
         esResp = await client.callAsCurrentUser('opendistro_security.deleteResource', {
@@ -201,7 +201,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
   // create new resource
   router.post(
     {
-      path: `${API_PREFIX}/configuration/{resourceName}`,
+      path: `${API_PREFIX}/${CONFIGURATION_API_PREFIX}/{resourceName}`,
       validate: {
         params: schema.object({
           resourceName: schema.string(),
@@ -215,7 +215,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
       } catch (error) {
         return response.badRequest({ body: error });
       }
-      const client = esClient.asScoped(request);
+      const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
         esResp = await client.callAsCurrentUser('opendistro_security.saveResourceWithoutId', {
@@ -239,7 +239,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
   // update resource by Id
   router.post(
     {
-      path: `${API_PREFIX}/configuration/{resourceName}/{id}`,
+      path: `${API_PREFIX}/${CONFIGURATION_API_PREFIX}/{resourceName}/{id}`,
       validate: {
         params: schema.object({
           resourceName: schema.string(),
@@ -254,7 +254,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
       } catch (error) {
         return response.badRequest({ body: error });
       }
-      const client = esClient.asScoped(request);
+      const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
         esResp = await client.callAsCurrentUser('opendistro_security.saveResource', {
@@ -282,7 +282,7 @@ export function defineRoutes(router: IRouter, esClient: IClusterClient) {
       validate: false,
     },
     async (context, request, response): Promise<IKibanaResponse<any | ResponseError>> => {
-      const client = esClient.asScoped(request);
+      const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
         esResp = await client.callAsCurrentUser('opendistro_security.authinfo');

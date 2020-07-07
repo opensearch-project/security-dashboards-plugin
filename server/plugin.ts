@@ -32,20 +32,18 @@ import { SecurityPluginConfigType } from '.';
 import opendistroSecurityConfiguratoinPlugin from './backend/opendistro_security_configuration_plugin';
 // import opendistro_security_plugin from './backend/opendistro_security_plugin';
 import { SecuritySessionCookie, getSecurityCookieOptions } from './session/security_cookie';
-import { BasicAuthentication } from './auth/types/basic/basic_auth';
 import { SecurityClient } from './backend/opendistro_security_client';
 import {
   SavedObjectsSerializer,
   ISavedObjectTypeRegistry,
 } from '../../../src/core/server/saved_objects';
 import { setupIndexTemplate, migrateTenantIndices } from './multitenancy/tenant_index';
-import { OpenIdAuthentication } from './auth/types/openid/openid_auth';
-import { JwtAuthentication } from './auth/types/jwt/jwt_auth';
-import { SamlAuthentication } from './auth/types/saml/saml_auth';
-import { ProxyAuthentication } from './auth/types/proxy/proxy_auth';
+import { IAuthenticationType } from './auth/types/authentication_type';
+import { getAuthenticationHandler } from './auth/auth_handler_factory';
 
 export interface SecurityPluginRequestContext {
   logger: Logger;
+  esClient: IClusterClient;
 }
 
 declare module 'kibana/server' {
@@ -91,71 +89,28 @@ export class OpendistroSecurityPlugin
       SecuritySessionCookie
     >(getSecurityCookieOptions(config));
 
-    // Register server side APIs
-    defineRoutes(router, esClient);
-
-    // setup auth
-    if (
-      config.auth.type === undefined ||
-      config.auth.type === '' ||
-      config.auth.type === 'basicauth'
-    ) {
-      // TODO: switch implementation according to configurations
-      const auth = new BasicAuthentication(
-        config,
-        securitySessionStorageFactory,
-        router,
-        esClient,
-        core,
-        this.logger
-      );
-      core.http.registerAuth(auth.authHandler);
-    } else if (config.auth.type === 'openid') {
-      const auth = new OpenIdAuthentication(
-        config,
-        securitySessionStorageFactory,
-        router,
-        esClient,
-        core,
-        this.logger
-      );
-      core.http.registerAuth(auth.authHandler);
-    } else if (config.auth.type === 'jwt') {
-      const auth = new JwtAuthentication(
-        config,
-        securitySessionStorageFactory,
-        router,
-        esClient,
-        core
-      );
-      core.http.registerAuth(auth.authHandler);
-    } else if (config.auth.type === 'saml') {
-      const auth = new SamlAuthentication(
-        config,
-        securitySessionStorageFactory,
-        router,
-        esClient,
-        core,
-        this.logger
-      );
-      core.http.registerAuth(auth.authHandler);
-    } else if (config.auth.type === 'proxy') {
-      const auth = new ProxyAuthentication(
-        config,
-        securitySessionStorageFactory,
-        router,
-        esClient,
-        core
-      );
-      core.http.registerAuth(auth.authHandler);
-    }
-
     // put logger into route handler context, so that we don't need to pass througth parameters
     core.http.registerRouteHandlerContext('security_plugin', (context, request) => {
       return {
         logger: this.logger,
+        esClient,
       };
     });
+
+    // setup auth
+    const auth: IAuthenticationType = getAuthenticationHandler(
+      config.auth.type,
+      router,
+      config,
+      core,
+      esClient,
+      securitySessionStorageFactory,
+      this.logger
+    );
+    core.http.registerAuth(auth.authHandler);
+
+    // Register server side APIs
+    defineRoutes(router);
 
     return {
       config$,
@@ -163,6 +118,7 @@ export class OpendistroSecurityPlugin
     };
   }
 
+  // TODO: add more logs
   public async start(core: CoreStart) {
     this.logger.debug('opendistro_security: Started');
     const config$ = this.initializerContext.config.create<SecurityPluginConfigType>();
