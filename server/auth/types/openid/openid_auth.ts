@@ -28,6 +28,7 @@ import {
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { OpenIdAuthRoutes } from './routes';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
+import { IAuthenticationType } from '../authentication_type';
 
 export interface OpenIdAuthConfig {
   ca?: Buffer | undefined;
@@ -39,7 +40,7 @@ export interface OpenIdAuthConfig {
   authHeaderName?: string;
 }
 
-export class OpenIdAuthentication {
+export class OpenIdAuthentication implements IAuthenticationType {
   private openIdAuthConfig: OpenIdAuthConfig;
   private authHeaderName: string;
   private openIdConnectUrl: string;

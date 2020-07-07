@@ -31,6 +31,7 @@ import { CoreSetup } from '../../../../../../src/core/server';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { BasicAuthRoutes } from './routes';
 import { isMultitenantPath, resolveTenant } from '../../../multitenancy/tenant_resolver';
+import { IAuthenticationType } from '../authentication_type';
 
 // TODO: change to interface
 export class AuthConfig {
@@ -44,7 +45,7 @@ export class AuthConfig {
   ) {}
 }
 
-export class BasicAuthentication {
+export class BasicAuthentication implements IAuthenticationType {
   private static readonly AUTH_HEADER_NAME: string = 'authorization';
   private static readonly ALLOWED_ADDITIONAL_AUTH_HEADERS: string[] = ['security_impersonate_as'];
   private static readonly ROUTES_TO_IGNORE: string[] = [
