@@ -42,6 +42,7 @@ import {
   requestDeleteUsers,
 } from '../utils/internal-user-list-utils';
 import { buildHashUrl } from '../utils/url-builder';
+import { API_ENDPOINT_INTERNALUSERS } from '../constants';
 
 function dictView() {
   return (items: Dictionary<string>) => {
@@ -135,8 +136,29 @@ export function UserList(props: AppDependencies) {
     >
       Edit
     </EuiContextMenuItem>,
-    // TODO: Redirect to export page
-    <EuiContextMenuItem key="export" onClick={() => {}} disabled={selection.length !== 1}>
+    <EuiContextMenuItem
+      key="duplicate"
+      onClick={() => {
+        window.location.href = buildHashUrl(
+          ResourceType.users,
+          Action.duplicate,
+          selection[0].username
+        );
+      }}
+      disabled={selection.length !== 1}
+    >
+      Duplicate
+    </EuiContextMenuItem>,
+    <EuiContextMenuItem
+      key="export"
+      disabled={selection.length !== 1}
+      href={
+        selection.length === 1
+          ? `${props.coreStart.http.basePath.serverBasePath}${API_ENDPOINT_INTERNALUSERS}/${selection[0].username}`
+          : ''
+      }
+      target="_blank"
+    >
       Export JSON
     </EuiContextMenuItem>,
     <EuiContextMenuItem
@@ -200,7 +222,14 @@ export function UserList(props: AppDependencies) {
                 </EuiPopover>
               </EuiFlexItem>
               <EuiFlexItem>
-                <EuiButton fill>Create internal user</EuiButton>
+                <EuiButton
+                  fill
+                  onClick={() => {
+                    window.location.href = buildHashUrl(ResourceType.users, Action.create);
+                  }}
+                >
+                  Create internal user
+                </EuiButton>
               </EuiFlexItem>
             </EuiFlexGroup>
           </EuiPageContentHeaderSection>

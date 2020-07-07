@@ -16,50 +16,45 @@
 import React, { useEffect, useState } from 'react';
 
 import {
-  EuiDescribedFormGroup,
-  EuiForm,
-  EuiFormRow,
+  EuiButton,
+  EuiFlexGroup,
+  EuiFlexItem,
   EuiHorizontalRule,
   EuiPanel,
-  EuiSwitch,
+  EuiSpacer,
   EuiTitle,
 } from '@elastic/eui';
 import { AppDependencies } from '../../../types';
 import { API_ENDPOINT_AUDITLOGGING } from '../../constants';
-
-function renderStatusPanel(onSwitchChange: any, auditLoggingEnabled: boolean) {
-  return (
-    <EuiForm>
-      <EuiDescribedFormGroup
-        title={<h3>Enable audit logging</h3>}
-        description={<>Enable or disable audit logging</>}
-      >
-        <EuiFormRow>
-          <EuiSwitch
-            name="auditLoggingEnabledSwitch"
-            label={auditLoggingEnabled ? 'Enabled' : 'Disabled'}
-            checked={auditLoggingEnabled}
-            onChange={onSwitchChange}
-          />
-        </EuiFormRow>
-      </EuiDescribedFormGroup>
-    </EuiForm>
-  );
-}
+import {
+  renderComplianceSettings,
+  renderGeneralSettings,
+  renderStatusPanel,
+  updateAuditLogging,
+} from '../../utils/audit-logging-view-utils';
+import { AuditLoggingSettings } from './types';
 
 export function AuditLogging(props: AppDependencies) {
-  const [auditLoggingEnabled, setAuditLoggingEnabled] = useState<boolean>(false);
+  const [configuration, setConfiguration] = useState<AuditLoggingSettings>({});
 
-  const onSwitchChange = () => {
-    setAuditLoggingEnabled((prevAuditLoggingEnabled) => !prevAuditLoggingEnabled);
+  const onSwitchChange = async () => {
+    try {
+      const updatedConfiguration = { ...configuration };
+      updatedConfiguration.enabled = !updatedConfiguration.enabled;
+
+      await updateAuditLogging(props.coreStart.http, updatedConfiguration);
+
+      setConfiguration(updatedConfiguration);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const configuration = await props.coreStart.http.get(API_ENDPOINT_AUDITLOGGING);
-
-        setAuditLoggingEnabled(configuration.data.config.enabled);
+        const rawConfiguration = await props.coreStart.http.get(API_ENDPOINT_AUDITLOGGING);
+        setConfiguration(rawConfiguration.data.config);
       } catch (e) {
         // TODO: switch to better error handling.
         console.log(e);
@@ -69,15 +64,50 @@ export function AuditLogging(props: AppDependencies) {
     fetchData();
   }, [props.coreStart.http]);
 
-  const content = renderStatusPanel(onSwitchChange, auditLoggingEnabled);
+  const statusPanel = renderStatusPanel(onSwitchChange, configuration.enabled || false);
+
+  if (!configuration.enabled) {
+    return statusPanel;
+  }
 
   return (
-    <EuiPanel>
-      <EuiTitle>
-        <h3>Audit logging</h3>
-      </EuiTitle>
-      <EuiHorizontalRule />
-      {content}
-    </EuiPanel>
+    <>
+      {statusPanel}
+
+      <EuiSpacer />
+
+      <EuiPanel>
+        <EuiFlexGroup>
+          <EuiFlexItem>
+            <EuiTitle>
+              <h3>General settings</h3>
+            </EuiTitle>
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>
+            <EuiButton>Configure</EuiButton>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+        <EuiHorizontalRule />
+        {renderGeneralSettings(configuration.audit || {})}
+      </EuiPanel>
+
+      <EuiSpacer />
+
+      <EuiPanel>
+        <EuiFlexGroup>
+          <EuiFlexItem>
+            <EuiTitle>
+              <h3>Compliance settings</h3>
+            </EuiTitle>
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>
+            <EuiButton>Configure</EuiButton>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+
+        <EuiHorizontalRule />
+        {renderComplianceSettings(configuration.compliance || {})}
+      </EuiPanel>
+    </>
   );
 }
