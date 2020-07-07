@@ -68,8 +68,10 @@ export function getAuthenticationHandler(
         core,
         logger
       );
+      break;
     case AuthType.PROXY:
       auth = new ProxyAuthentication(config, securitySessionStorageFactory, router, esClient, core);
+      break;
     default:
       throw new Error(`Unsupported authentication type: ${authType}`);
   }
