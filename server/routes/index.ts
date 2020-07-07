@@ -16,7 +16,6 @@
 import { schema } from '@kbn/config-schema';
 import {
   IRouter,
-  IClusterClient,
   ResponseError,
   IKibanaResponse,
 } from '../../../../src/core/server';
@@ -42,8 +41,6 @@ import { API_PREFIX, CONFIGURATION_API_PREFIX } from '../../common';
 //       }
 //     );
 //   }
-//
-// TODO: same for loggers and sessionCookieFactory, inject them into context
 
 export function defineRoutes(router: IRouter) {
   const internalUserSchema = schema.object({
@@ -307,7 +304,7 @@ export function defineRoutes(router: IRouter) {
       },
     },
     async (context, request, response) => {
-      const client = esClient.asScoped(request);
+      const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
         esResp = await client.callAsCurrentUser('opendistro_security.audit', {

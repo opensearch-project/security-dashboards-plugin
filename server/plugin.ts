@@ -52,6 +52,16 @@ declare module 'kibana/server' {
   }
 }
 
+export interface SecurityPluginRequestContext {
+  logger: Logger;
+}
+
+declare module 'kibana/server' {
+  interface RequestHandlerContext {
+    security_plugin: SecurityPluginRequestContext;
+  }
+}
+
 export class OpendistroSecurityPlugin
   implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
   private readonly logger: Logger;
