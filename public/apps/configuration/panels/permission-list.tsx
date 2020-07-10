@@ -172,7 +172,7 @@ export function PermissionList(props: AppDependencies) {
     <>
       <EuiPageHeader>
         <EuiTitle size="l">
-          <h1>Permission</h1>
+          <h1>Permissions</h1>
         </EuiTitle>
       </EuiPageHeader>
       <EuiPageContent>
