@@ -127,14 +127,14 @@ export function PermissionList(props: AppDependencies) {
 
   const createActionGroupMenuItems = [
     <EuiContextMenuItem
-      key="blank"
+      key="create-from-blank"
       // TODO create empty
       onClick={() => {}}
     >
       Create from blank
     </EuiContextMenuItem>,
     <EuiContextMenuItem
-      key="blank"
+      key="create-from-selection"
       // TODO create from selection
       onClick={() => {}}
       disabled={selection.length === 0}
