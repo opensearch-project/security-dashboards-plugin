@@ -83,3 +83,12 @@ export interface InternalUser {
 export interface InternalUserUpdate extends InternalUser {
   password: string;
 }
+
+export interface ActionGroupUpdate {
+  allowed_actions: string[];
+}
+
+export interface ActionGroupItem extends ActionGroupUpdate {
+  reserved: boolean;
+  type: 'cluster' | 'index' | 'all' | 'kibana' | undefined;
+}
