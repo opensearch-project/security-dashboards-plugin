@@ -208,7 +208,7 @@ export function PermissionList(props: AppDependencies) {
               </EuiFlexItem>
               <EuiFlexItem>
                 <EuiPopover
-                  id="actionsMenu"
+                  id="createActionsGroupMenu"
                   button={createActionGroupMenuButton}
                   isOpen={isCreateActionGroupPopoverOpen}
                   closePopover={() => {
