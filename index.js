@@ -29,6 +29,8 @@ export default function (kibana) {
                 cookie: Joi.object().keys({
                     secure: Joi.boolean().default(false),
                     name: Joi.string().default('security_authentication'),
+                    storage_cookie_name: Joi.string().default('security_storage'),
+                    preferences_cookie_name: Joi.string().default('security_preferences'),
                     password: Joi.string().min(32).default('security_cookie_default_password'),
                     ttl: Joi.number().integer().min(0).default(60 * 60 * 1000),
                     domain: Joi.string(),
@@ -348,7 +350,7 @@ export default function (kibana) {
                 storageCookieConf["domain"] = config.get('opendistro_security.cookie.domain');
             }
 
-            server.state('security_storage', storageCookieConf);
+            server.state(config.get('opendistro_security.cookie.storage_cookie_name'), storageCookieConf);
 
 
             if (authType && authType !== '' && ['basicauth', 'jwt', 'openid', 'saml', 'proxycache'].indexOf(authType) > -1) {
@@ -446,7 +448,7 @@ export default function (kibana) {
                     preferenceCookieConf["domain"] = config.get('opendistro_security.cookie.domain');
                 }
 
-                server.state('security_preferences', preferenceCookieConf);
+                server.state(config.get("opendistro_security.cookie.preferences_cookie_name"), preferenceCookieConf);
 
 
                 this.status.yellow("Security multitenancy registered.");
