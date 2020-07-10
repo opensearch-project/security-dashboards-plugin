@@ -38,15 +38,14 @@ import { ActionGroupListingItem, fetchActionGroupListing } from '../utils/action
 import { renderCustomization } from '../utils/display-utils';
 import { requestDeleteUsers } from '../utils/internal-user-list-utils';
 
-
 function renderBooleanToCheckMark(value: boolean): React.ReactNode {
-  return value ? <EuiIcon type="check" /> : ''
+  return value ? <EuiIcon type="check" /> : '';
 }
 
 const COLUMNS = [
   {
     field: 'name',
-    name: 'name',
+    name: 'Name',
     sortable: true,
   },
   {
