@@ -15,7 +15,7 @@
 
 import { HttpStart } from 'kibana/public';
 import { map } from 'lodash';
-import { API_ENDPOINT_ACTIONGROUPS } from '../constants';
+import { API_ENDPOINT_ACTIONGROUPS, CLUSTER_PERMISSIONS, INDEX_PERMISSIONS } from '../constants';
 import { DataObject, ActionGroupItem } from '../types';
 
 export interface ActionGroupListingItem {
@@ -47,4 +47,31 @@ function tranformActionGroupsToListingFormat(
 
 export async function fetchActionGroupListing(http: HttpStart): Promise<ActionGroupListingItem[]> {
   return tranformActionGroupsToListingFormat(await fetchActionGroups(http));
+}
+
+function getClusterSinglePermissions(): ActionGroupListingItem[] {
+  return CLUSTER_PERMISSIONS.map((permission) => ({
+    name: permission,
+    type: 'Single permission',
+    reserved: true,
+    allowedActions: [],
+    hasClusterPermission: true,
+    hasIndexPermission: false,
+  }));
+}
+
+function getIndexSinglePermissions(): ActionGroupListingItem[] {
+  return INDEX_PERMISSIONS.map((permission) => ({
+    name: permission,
+    type: 'Single permission',
+    reserved: true,
+    allowedActions: [],
+    hasClusterPermission: false,
+    hasIndexPermission: true,
+  }));
+}
+
+export async function getAllPermissionsListing(http: HttpStart): Promise<ActionGroupListingItem[]> {
+  const actionGroups = await fetchActionGroupListing(http);
+  return actionGroups.concat(getClusterSinglePermissions()).concat(getIndexSinglePermissions());
 }

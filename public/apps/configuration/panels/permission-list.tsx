@@ -34,7 +34,7 @@ import {
 import { difference } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { AppDependencies } from '../../types';
-import { ActionGroupListingItem, fetchActionGroupListing } from '../utils/action-groups-utils';
+import { ActionGroupListingItem, getAllPermissionsListing } from '../utils/action-groups-utils';
 import { renderCustomization } from '../utils/display-utils';
 import { requestDeleteUsers } from '../utils/internal-user-list-utils';
 
@@ -80,7 +80,7 @@ export function PermissionList(props: AppDependencies) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setActionGroups(await fetchActionGroupListing(props.coreStart.http));
+        setActionGroups(await getAllPermissionsListing(props.coreStart.http));
       } catch (e) {
         console.log(e);
         setErrorFlag(true);
