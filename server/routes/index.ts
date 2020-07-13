@@ -14,11 +14,7 @@
  */
 
 import { schema } from '@kbn/config-schema';
-import {
-  IRouter,
-  ResponseError,
-  IKibanaResponse,
-} from '../../../../src/core/server';
+import { IRouter, ResponseError, IKibanaResponse } from '../../../../src/core/server';
 import { API_PREFIX, CONFIGURATION_API_PREFIX } from '../../common';
 
 // TODO: consider to extract entity CRUD operations and put it into a client class

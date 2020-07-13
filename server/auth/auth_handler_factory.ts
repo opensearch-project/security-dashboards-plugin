@@ -45,7 +45,6 @@ export function getAuthenticationHandler(
   securitySessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
   logger: Logger
 ): IAuthenticationType {
-  let auth: IAuthenticationType;
   let authHandlerType: IAuthHandlerConstructor;
   switch (authType) {
     case '':
@@ -67,7 +66,7 @@ export function getAuthenticationHandler(
     default:
       throw new Error(`Unsupported authentication type: ${authType}`);
   }
-  auth = createAuthentication(
+  const auth: IAuthenticationType = createAuthentication(
     authHandlerType,
     config,
     securitySessionStorageFactory,
