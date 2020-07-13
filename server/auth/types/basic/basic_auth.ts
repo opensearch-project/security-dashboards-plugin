@@ -31,7 +31,7 @@ import { CoreSetup } from '../../../../../../src/core/server';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { BasicAuthRoutes } from './routes';
 import { isMultitenantPath, resolveTenant } from '../../../multitenancy/tenant_resolver';
-import { IAuthenticationType, IAuthHandlerConstructor } from '../authentication_type';
+import { IAuthenticationType } from '../authentication_type';
 
 // TODO: change to interface
 export class AuthConfig {

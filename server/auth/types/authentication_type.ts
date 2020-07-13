@@ -16,7 +16,7 @@
 import {
   AuthenticationHandler,
   SessionStorageFactory,
-  IClusterClient,
+  ILegacyClusterClient,
   IRouter,
   CoreSetup,
   Logger,
@@ -32,7 +32,7 @@ export type IAuthHandlerConstructor = new (
   config: SecurityPluginConfigType,
   sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
   router: IRouter,
-  esClient: IClusterClient,
+  esClient: ILegacyClusterClient,
   coreSetup: CoreSetup,
   logger: Logger
 ) => IAuthenticationType;
