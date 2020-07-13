@@ -13,11 +13,11 @@
  *   permissions and limitations under the License.
  */
 
-import { IClusterClient, KibanaRequest } from '../../../../src/core/server';
+import { ILegacyClusterClient, KibanaRequest } from '../../../../src/core/server';
 import { User } from '../auth/user';
 
 export class SecurityClient {
-  constructor(private readonly esClient: IClusterClient) {}
+  constructor(private readonly esClient: ILegacyClusterClient) {}
 
   public async authenticate(request: KibanaRequest, credentials: any): Promise<User> {
     const authHeader = Buffer.from(`${credentials.username}:${credentials.password}`).toString(

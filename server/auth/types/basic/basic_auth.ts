@@ -21,7 +21,7 @@ import {
   AuthenticationHandler,
   SessionStorageFactory,
   IRouter,
-  IClusterClient,
+  ILegacyClusterClient,
   KibanaRequest,
   Logger,
 } from '../../../../../../src/core/server';
@@ -63,7 +63,7 @@ export class BasicAuthentication implements IAuthenticationType {
     private readonly config: SecurityPluginConfigType,
     private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
     private readonly router: IRouter,
-    private readonly esClient: IClusterClient,
+    private readonly esClient: ILegacyClusterClient,
     private readonly coreSetup: CoreSetup,
     private readonly logger: Logger
   ) {

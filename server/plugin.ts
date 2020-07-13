@@ -21,7 +21,7 @@ import {
   CoreStart,
   Plugin,
   Logger,
-  IClusterClient,
+  ILegacyClusterClient,
   SessionStorageFactory,
   SharedGlobalConfig,
 } from '../../../src/core/server';
@@ -83,7 +83,7 @@ export class OpendistroSecurityPlugin
 
     const router = core.http.createRouter();
 
-    const esClient: IClusterClient = core.elasticsearch.legacy.createClient('opendistro_security', {
+    const esClient: ILegacyClusterClient = core.elasticsearch.legacy.createClient('opendistro_security', {
       plugins: [
         opendistroSecurityConfiguratoinPlugin,
         // TODO need to add other endpoints such as multitenanct and other
