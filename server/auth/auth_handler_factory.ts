@@ -18,11 +18,23 @@ import { AuthType } from '../../common';
 import { OpenIdAuthentication } from './types/openid/openid_auth';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { BasicAuthentication } from './types/basic/basic_auth';
-import { IAuthenticationType } from './types/authentication_type';
+import { IAuthenticationType, IAuthHandlerConstructor } from './types/authentication_type';
 import { SamlAuthentication } from './types/saml/saml_auth';
 import { ProxyAuthentication } from './types/proxy/proxy_auth';
 import { JwtAuthentication } from './types/jwt/jwt_auth';
 import { SecurityPluginConfigType } from '..';
+
+export function createAuthentication(
+  ctor: IAuthHandlerConstructor,
+  config: SecurityPluginConfigType,
+  sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
+  router: IRouter,
+  esClient: IClusterClient,
+  coreSetup: CoreSetup,
+  logger: Logger
+): IAuthenticationType {
+  return new ctor(config, sessionStorageFactory, router, esClient, coreSetup, logger);
+}
 
 export function getAuthenticationHandler(
   authType: string,
@@ -34,46 +46,35 @@ export function getAuthenticationHandler(
   logger: Logger
 ): IAuthenticationType {
   let auth: IAuthenticationType;
+  let authHandlerType: IAuthHandlerConstructor;
   switch (authType) {
     case '':
     case 'basicauth':
-      auth = new BasicAuthentication(
-        config,
-        securitySessionStorageFactory,
-        router,
-        esClient,
-        core,
-        logger
-      );
+      authHandlerType = BasicAuthentication;
       break;
     case AuthType.JWT:
-      auth = new JwtAuthentication(config, securitySessionStorageFactory, router, esClient, core);
+      authHandlerType = JwtAuthentication;
       break;
     case AuthType.OPEN_ID:
-      auth = new OpenIdAuthentication(
-        config,
-        securitySessionStorageFactory,
-        router,
-        esClient,
-        core,
-        logger
-      );
+      authHandlerType = OpenIdAuthentication;
       break;
     case AuthType.SAML:
-      auth = new SamlAuthentication(
-        config,
-        securitySessionStorageFactory,
-        router,
-        esClient,
-        core,
-        logger
-      );
+      authHandlerType = SamlAuthentication;
       break;
     case AuthType.PROXY:
-      auth = new ProxyAuthentication(config, securitySessionStorageFactory, router, esClient, core);
+      authHandlerType = ProxyAuthentication;
       break;
     default:
       throw new Error(`Unsupported authentication type: ${authType}`);
   }
+  auth = createAuthentication(
+    authHandlerType,
+    config,
+    securitySessionStorageFactory,
+    router,
+    esClient,
+    esClient,
+    logger
+  );
   return auth;
 }

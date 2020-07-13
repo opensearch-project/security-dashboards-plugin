@@ -13,8 +13,28 @@
  *   permissions and limitations under the License.
  */
 
-import { AuthenticationHandler } from 'kibana/server';
+import {
+  AuthenticationHandler,
+  SessionStorageFactory,
+  IClusterClient,
+  IRouter,
+  CoreSetup,
+  Logger,
+} from 'kibana/server';
+import { SecurityPluginConfigType } from '../..';
+import { SecuritySessionCookie } from '../../session/security_cookie';
 
 export interface IAuthenticationType {
   authHandler: AuthenticationHandler;
+}
+
+export interface IAuthHandlerConstructor {
+  new (
+    config: SecurityPluginConfigType,
+    sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
+    router: IRouter,
+    esClient: IClusterClient,
+    coreSetup: CoreSetup,
+    logger: Logger
+  ): IAuthenticationType;
 }

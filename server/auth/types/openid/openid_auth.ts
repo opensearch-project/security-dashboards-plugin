@@ -51,8 +51,8 @@ export class OpenIdAuthentication implements IAuthenticationType {
     private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
     private readonly router: IRouter,
     private readonly esClient: IClusterClient,
-    private readonly core: CoreSetup,
-    private readonly log: Logger
+    private readonly coreSetup: CoreSetup,
+    private readonly logger: Logger
   ) {
     this.openIdAuthConfig = {};
 

@@ -24,6 +24,7 @@ import {
   CoreSetup,
   AuthenticationHandler,
   KibanaRequest,
+  Logger,
 } from '../../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
@@ -40,7 +41,8 @@ export class JwtAuthentication implements IAuthenticationType {
     private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
     private readonly router: IRouter,
     private readonly esClient: IClusterClient,
-    private readonly coreSetup: CoreSetup
+    private readonly coreSetup: CoreSetup,
+    private readonly logger: Logger
   ) {
     this.authHeaderName = this.config.jwt?.header.toLowerCase() || 'authorization';
     this.securityClient = new SecurityClient(esClient);
