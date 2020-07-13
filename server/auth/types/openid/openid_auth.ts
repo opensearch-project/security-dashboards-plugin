@@ -23,7 +23,7 @@ import {
   SessionStorageFactory,
   CoreSetup,
   IRouter,
-  IClusterClient,
+  ILegacyClusterClient,
 } from '../../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { OpenIdAuthRoutes } from './routes';
@@ -50,8 +50,8 @@ export class OpenIdAuthentication implements IAuthenticationType {
     private readonly config: SecurityPluginConfigType,
     private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
     private readonly router: IRouter,
-    private readonly esClient: IClusterClient,
-    private readonly coreSetup: CoreSetup,
+    private readonly esClient: ILegacyClusterClient,
+    private readonly core: CoreSetup,
     private readonly logger: Logger
   ) {
     this.openIdAuthConfig = {};
@@ -60,7 +60,7 @@ export class OpenIdAuthentication implements IAuthenticationType {
       this.openIdAuthConfig.ca = fs.readFileSync(this.config.openid.root_ca);
     }
     if (this.config.openid?.verify_hostnames) {
-      log.debug(`openId auth 'verify_hostnames' option is on.`);
+      logger.debug(`openId auth 'verify_hostnames' option is on.`);
     }
 
     this.authHeaderName = this.config.openid?.header || '';
@@ -91,7 +91,7 @@ export class OpenIdAuthentication implements IAuthenticationType {
       );
       routes.setupRoutes();
     } catch (error) {
-      this.log.error(error); // TODO: log more info
+      this.logger.error(error); // TODO: log more info
       throw new Error('Failed when trying to obtain the endpoints from your IdP');
     }
   }

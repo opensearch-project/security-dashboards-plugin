@@ -14,7 +14,7 @@
  */
 
 import {
-  IClusterClient,
+  ILegacyClusterClient,
   SavedObjectsSerializer,
   ISavedObjectTypeRegistry,
   Logger,
@@ -32,7 +32,7 @@ import { mergeTypes } from '../../../../src/core/server/saved_objects/migrations
 import { SecurityClient } from '../backend/opendistro_security_client';
 
 export async function setupIndexTemplate(
-  esClient: IClusterClient,
+  esClient: ILegacyClusterClient,
   kibanaIndex: string,
   typeRegistry: ISavedObjectTypeRegistry,
   logger: Logger
@@ -69,7 +69,7 @@ export async function setupIndexTemplate(
 
 export async function migrateTenantIndices(
   kibanaVersion: string,
-  esClient: IClusterClient,
+  esClient: ILegacyClusterClient,
   securityClient: SecurityClient,
   typeRegistry: ISavedObjectTypeRegistry,
   serializer: SavedObjectsSerializer,

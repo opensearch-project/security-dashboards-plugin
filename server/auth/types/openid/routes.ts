@@ -203,7 +203,7 @@ export class OpenIdAuthRoutes {
       return baseRedirectUrl.endsWith('/') ? baseRedirectUrl.slice(0, -1) : baseRedirectUrl;
     }
 
-    const host = this.core.http.getServerInfo().host;
+    const host = this.core.http.getServerInfo().hostname;
     const port = this.core.http.getServerInfo().port;
     const protocol = this.core.http.getServerInfo().protocol;
     if (this.core.http.basePath.serverBasePath) {

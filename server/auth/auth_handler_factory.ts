@@ -13,7 +13,13 @@
  *   permissions and limitations under the License.
  */
 
-import { IRouter, CoreSetup, IClusterClient, Logger, SessionStorageFactory } from 'kibana/server';
+import {
+  IRouter,
+  CoreSetup,
+  ILegacyClusterClient,
+  Logger,
+  SessionStorageFactory,
+} from 'kibana/server';
 import { AuthType } from '../../common';
 import { OpenIdAuthentication } from './types/openid/openid_auth';
 import { SecuritySessionCookie } from '../session/security_cookie';
@@ -24,12 +30,12 @@ import { ProxyAuthentication } from './types/proxy/proxy_auth';
 import { JwtAuthentication } from './types/jwt/jwt_auth';
 import { SecurityPluginConfigType } from '..';
 
-export function createAuthentication(
+function createAuthentication(
   ctor: IAuthHandlerConstructor,
   config: SecurityPluginConfigType,
   sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
   router: IRouter,
-  esClient: IClusterClient,
+  esClient: ILegacyClusterClient,
   coreSetup: CoreSetup,
   logger: Logger
 ): IAuthenticationType {
@@ -41,7 +47,7 @@ export function getAuthenticationHandler(
   router: IRouter,
   config: SecurityPluginConfigType,
   core: CoreSetup,
-  esClient: IClusterClient,
+  esClient: ILegacyClusterClient,
   securitySessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
   logger: Logger
 ): IAuthenticationType {
@@ -72,7 +78,7 @@ export function getAuthenticationHandler(
     securitySessionStorageFactory,
     router,
     esClient,
-    esClient,
+    core,
     logger
   );
   return auth;

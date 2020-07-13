@@ -20,7 +20,7 @@ import { SecurityPluginConfigType } from '../../..';
 import {
   SessionStorageFactory,
   IRouter,
-  IClusterClient,
+  ILegacyClusterClient,
   CoreSetup,
   AuthenticationHandler,
   KibanaRequest,
@@ -40,7 +40,7 @@ export class JwtAuthentication implements IAuthenticationType {
     private readonly config: SecurityPluginConfigType,
     private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
     private readonly router: IRouter,
-    private readonly esClient: IClusterClient,
+    private readonly esClient: ILegacyClusterClient,
     private readonly coreSetup: CoreSetup,
     private readonly logger: Logger
   ) {
@@ -109,7 +109,7 @@ export class JwtAuthentication implements IAuthenticationType {
     const loginEndpoint = this.config.jwt?.login_endpoint;
     if (loginEndpoint) {
       const loginUrl = parse(loginEndpoint, true);
-      let nextUrl: string = get(loginUrl.query, 'nexturl');
+      let nextUrl: string = get(loginUrl.query, 'nexturl') as string;
       if (!nextUrl) {
         nextUrl = format(request.url);
         nextUrl = encodeURIComponent(nextUrl);

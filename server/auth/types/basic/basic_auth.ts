@@ -21,7 +21,7 @@ import {
   AuthenticationHandler,
   SessionStorageFactory,
   IRouter,
-  IClusterClient,
+  ILegacyClusterClient,
   KibanaRequest,
   Logger,
 } from '../../../../../../src/core/server';
@@ -31,7 +31,7 @@ import { CoreSetup } from '../../../../../../src/core/server';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { BasicAuthRoutes } from './routes';
 import { isMultitenantPath, resolveTenant } from '../../../multitenancy/tenant_resolver';
-import { IAuthenticationType, IAuthHandlerConstructor } from '../authentication_type';
+import { IAuthenticationType } from '../authentication_type';
 
 // TODO: change to interface
 export class AuthConfig {
@@ -63,7 +63,7 @@ export class BasicAuthentication implements IAuthenticationType {
     private readonly config: SecurityPluginConfigType,
     private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
     private readonly router: IRouter,
-    private readonly esClient: IClusterClient,
+    private readonly esClient: ILegacyClusterClient,
     private readonly coreSetup: CoreSetup,
     private readonly logger: Logger
   ) {

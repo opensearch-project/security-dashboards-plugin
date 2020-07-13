@@ -18,7 +18,7 @@ import { SecurityPluginConfigType } from '../../..';
 import {
   SessionStorageFactory,
   IRouter,
-  IClusterClient,
+  ILegacyClusterClient,
   CoreSetup,
   AuthenticationHandler,
   Logger,
@@ -41,7 +41,7 @@ export class ProxyAuthentication implements IAuthenticationType {
     private readonly config: SecurityPluginConfigType,
     private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
     private readonly router: IRouter,
-    private readonly esClient: IClusterClient,
+    private readonly esClient: ILegacyClusterClient,
     private readonly coreSetup: CoreSetup,
     private readonly logger: Logger
   ) {
