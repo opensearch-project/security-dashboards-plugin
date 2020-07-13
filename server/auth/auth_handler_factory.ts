@@ -13,7 +13,13 @@
  *   permissions and limitations under the License.
  */
 
-import { IRouter, CoreSetup, ILegacyClusterClient, Logger, SessionStorageFactory } from 'kibana/server';
+import {
+  IRouter,
+  CoreSetup,
+  ILegacyClusterClient,
+  Logger,
+  SessionStorageFactory,
+} from 'kibana/server';
 import { AuthType } from '../../common';
 import { OpenIdAuthentication } from './types/openid/openid_auth';
 import { SecuritySessionCookie } from '../session/security_cookie';
@@ -24,7 +30,7 @@ import { ProxyAuthentication } from './types/proxy/proxy_auth';
 import { JwtAuthentication } from './types/jwt/jwt_auth';
 import { SecurityPluginConfigType } from '..';
 
-export function createAuthentication(
+function createAuthentication(
   ctor: IAuthHandlerConstructor,
   config: SecurityPluginConfigType,
   sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,

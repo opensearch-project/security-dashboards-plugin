@@ -43,7 +43,7 @@ import { getAuthenticationHandler } from './auth/auth_handler_factory';
 
 export interface SecurityPluginRequestContext {
   logger: Logger;
-  esClient: IClusterClient;
+  esClient: ILegacyClusterClient;
 }
 
 declare module 'kibana/server' {
@@ -83,15 +83,18 @@ export class OpendistroSecurityPlugin
 
     const router = core.http.createRouter();
 
-    const esClient: ILegacyClusterClient = core.elasticsearch.legacy.createClient('opendistro_security', {
-      plugins: [
-        opendistroSecurityConfiguratoinPlugin,
-        // TODO need to add other endpoints such as multitenanct and other
-        // FIXME: having multiple plugins caused the extended endpoints not working, currently
-        //        added all endpoints to opendistro_security_configuratoin_plugin as a workaround
-        // opendistro_security_plugin,
-      ],
-    });
+    const esClient: ILegacyClusterClient = core.elasticsearch.legacy.createClient(
+      'opendistro_security',
+      {
+        plugins: [
+          opendistroSecurityConfiguratoinPlugin,
+          // TODO need to add other endpoints such as multitenanct and other
+          // FIXME: having multiple plugins caused the extended endpoints not working, currently
+          //        added all endpoints to opendistro_security_configuratoin_plugin as a workaround
+          // opendistro_security_plugin,
+        ],
+      }
+    );
 
     this.securityClient = new SecurityClient(esClient);
 
