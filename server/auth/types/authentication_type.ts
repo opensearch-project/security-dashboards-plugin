@@ -28,13 +28,11 @@ export interface IAuthenticationType {
   authHandler: AuthenticationHandler;
 }
 
-export interface IAuthHandlerConstructor {
-  new (
-    config: SecurityPluginConfigType,
-    sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
-    router: IRouter,
-    esClient: IClusterClient,
-    coreSetup: CoreSetup,
-    logger: Logger
-  ): IAuthenticationType;
-}
+export type IAuthHandlerConstructor = new (
+  config: SecurityPluginConfigType,
+  sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
+  router: IRouter,
+  esClient: IClusterClient,
+  coreSetup: CoreSetup,
+  logger: Logger
+) => IAuthenticationType;
