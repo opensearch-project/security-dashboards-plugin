@@ -28,8 +28,9 @@ import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { CoreSetup } from '../../../../../../src/core/server';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { SamlAuthRoutes } from './routes';
+import { IAuthenticationType } from '../authentication_type';
 
-export class SamlAuthentication {
+export class SamlAuthentication implements IAuthenticationType {
   public static readonly AUTH_HEADER_NAME = 'authorization';
   private static readonly AUTH_TYPE = 'saml';
 

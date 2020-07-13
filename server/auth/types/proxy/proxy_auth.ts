@@ -21,13 +21,15 @@ import {
   IClusterClient,
   CoreSetup,
   AuthenticationHandler,
+  Logger,
 } from '../../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { User } from '../../user';
 import { ProxyAuthRoutes } from './routes';
+import { IAuthenticationType } from '../authentication_type';
 
-export class ProxyAuthentication {
+export class ProxyAuthentication implements IAuthenticationType {
   private static readonly XFF: string = 'x-forwarded-for';
   private readonly authType: string = 'proxycache';
   private readonly securityClient: SecurityClient;
@@ -40,7 +42,8 @@ export class ProxyAuthentication {
     private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
     private readonly router: IRouter,
     private readonly esClient: IClusterClient,
-    private readonly coreSetup: CoreSetup
+    private readonly coreSetup: CoreSetup,
+    private readonly logger: Logger
   ) {
     this.securityClient = new SecurityClient(this.esClient);
 

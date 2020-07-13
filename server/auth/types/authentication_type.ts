@@ -13,17 +13,26 @@
  *   permissions and limitations under the License.
  */
 
-export const PLUGIN_ID = 'opendistroSecurity';
-export const PLUGIN_NAME = 'opendistro_security';
+import {
+  AuthenticationHandler,
+  SessionStorageFactory,
+  IClusterClient,
+  IRouter,
+  CoreSetup,
+  Logger,
+} from 'kibana/server';
+import { SecurityPluginConfigType } from '../..';
+import { SecuritySessionCookie } from '../../session/security_cookie';
 
-export const API_PREFIX = '/api/v1/opendistro_security';
-export const CONFIGURATION_API_PREFIX = 'configuration';
-export const API_ENDPOINT_AUTHINFO = API_PREFIX + '/auth/authinfo';
-
-export enum AuthType {
-  BASIC = 'basicauth',
-  OPEN_ID = 'openid',
-  JWT = 'jwt',
-  SAML = 'saml',
-  PROXY = 'proxy',
+export interface IAuthenticationType {
+  authHandler: AuthenticationHandler;
 }
+
+export type IAuthHandlerConstructor = new (
+  config: SecurityPluginConfigType,
+  sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
+  router: IRouter,
+  esClient: IClusterClient,
+  coreSetup: CoreSetup,
+  logger: Logger
+) => IAuthenticationType;
