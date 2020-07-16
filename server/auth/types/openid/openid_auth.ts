@@ -41,6 +41,8 @@ export interface OpenIdAuthConfig {
 }
 
 export class OpenIdAuthentication implements IAuthenticationType {
+  public readonly type: string = 'openid';
+
   private openIdAuthConfig: OpenIdAuthConfig;
   private authHeaderName: string;
   private openIdConnectUrl: string;
