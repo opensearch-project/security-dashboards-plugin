@@ -33,6 +33,10 @@ import {
   updateAuditLogging,
 } from '../../utils/audit-logging-view-utils';
 import { AuditLoggingSettings } from './types';
+import {
+  SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT,
+  SUB_URL_FOR_GENERAL_SETTINGS_EDIT,
+} from './constants';
 
 export function AuditLogging(props: AppDependencies) {
   const [configuration, setConfiguration] = useState<AuditLoggingSettings>({});
@@ -84,7 +88,13 @@ export function AuditLogging(props: AppDependencies) {
             </EuiTitle>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton>Configure</EuiButton>
+            <EuiButton
+              onClick={() => {
+                window.location.href += SUB_URL_FOR_GENERAL_SETTINGS_EDIT;
+              }}
+            >
+              Configure
+            </EuiButton>
           </EuiFlexItem>
         </EuiFlexGroup>
         <EuiHorizontalRule />
@@ -101,7 +111,13 @@ export function AuditLogging(props: AppDependencies) {
             </EuiTitle>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton>Configure</EuiButton>
+            <EuiButton
+              onClick={() => {
+                window.location.href += SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT;
+              }}
+            >
+              Configure
+            </EuiButton>
           </EuiFlexItem>
         </EuiFlexGroup>
 

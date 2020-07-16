@@ -13,10 +13,11 @@
     "start": "node ../../scripts/kibana --dev",
     "lint:es": "node ../../scripts/eslint",
     "lint:sass": "node ../../scripts/sasslint",
-    "lint": "yarn run lint:es && yarn run lint:sass"
+    "lint": "yarn run lint:es && yarn run lint:sass",
+    "test:jest": "NODE_PATH=../../node_modules ../../node_modules/.bin/jest --config ./test/jest.config.js"
   },
   "devDependencies": {
-    "typescript": "3.7.2"
+    "typescript": "3.9.5"
   },
   "dependencies": {
     "@hapi/wreck": "17.0.0",

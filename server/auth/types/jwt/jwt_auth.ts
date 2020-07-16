@@ -32,7 +32,8 @@ import { User } from '../../user';
 import { IAuthenticationType } from '../authentication_type';
 
 export class JwtAuthentication implements IAuthenticationType {
-  private static readonly AUTH_TYPE: string = 'jwt';
+  public readonly type: string = 'jwt';
+
   private authHeaderName: string;
   private securityClient: SecurityClient;
 
@@ -72,7 +73,7 @@ export class JwtAuthentication implements IAuthenticationType {
         credentials: {
           authHeaderValue,
         },
-        authType: JwtAuthentication.AUTH_TYPE,
+        authType: this.type,
         expiryTime: Date.now() + this.config.cookie.ttl,
       };
       this.sessionStorageFactory.asScoped(request).set(cookie);

@@ -21,13 +21,15 @@ import {
   SessionStorageFactory,
 } from 'kibana/server';
 import { AuthType } from '../../common';
-import { OpenIdAuthentication } from './types/openid/openid_auth';
+import {
+  BasicAuthentication,
+  JwtAuthentication,
+  OpenIdAuthentication,
+  ProxyAuthentication,
+  SamlAuthentication,
+} from './types/authentication_type';
 import { SecuritySessionCookie } from '../session/security_cookie';
-import { BasicAuthentication } from './types/basic/basic_auth';
 import { IAuthenticationType, IAuthHandlerConstructor } from './types/authentication_type';
-import { SamlAuthentication } from './types/saml/saml_auth';
-import { ProxyAuthentication } from './types/proxy/proxy_auth';
-import { JwtAuthentication } from './types/jwt/jwt_auth';
 import { SecurityPluginConfigType } from '..';
 
 function createAuthentication(
