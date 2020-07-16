@@ -28,6 +28,12 @@ import { RouteItem, ResourceType, Action } from './types';
 import { buildUrl, buildHashUrl } from './utils/url-builder';
 import { InternalUserEdit } from './panels/internal-user-edit/internal-user-edit';
 import { AuditLogging } from './panels/audit-logging/audit-logging';
+import { AuditLoggingEditGeneralSetting } from './panels/audit-logging/audit-logging-general-settings';
+import { AuditLoggingEditComplianceSetting } from './panels/audit-logging/audit-logging-compliance-settings';
+import {
+  SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT,
+  SUB_URL_FOR_GENERAL_SETTINGS_EDIT,
+} from './panels/audit-logging/constants';
 import { PermissionList } from './panels/permission-list';
 
 const ROUTE_MAP: { [key: string]: RouteItem } = {
@@ -71,8 +77,13 @@ const ROUTE_LIST = [
   ROUTE_MAP[ResourceType.auditLogging],
 ];
 
+const allNavPanelUrls = ROUTE_LIST.map((route) => route.href).concat([
+  buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT,
+  buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT,
+]);
+
 // url regex pattern for all pages with left nav panel, (/|/roles|/internalusers|...)
-const PATTERNS_ROUTES_WITH_NAV_PANEL = '(' + ROUTE_LIST.map((route) => route.href).join('|') + ')';
+const PATTERNS_ROUTES_WITH_NAV_PANEL = '(' + allNavPanelUrls.join('|') + ')';
 
 function Breadcrumbs(resourceType: ResourceType, pageTitle: string) {
   return (
@@ -140,6 +151,14 @@ export function AppRouter(props: AppDependencies) {
             />
             <Route path={ROUTE_MAP.users.href}>
               <UserList {...props} />
+            </Route>
+            <Route path={buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT}>
+              <AuditLoggingEditGeneralSetting {...props} />
+            </Route>
+            <Route
+              path={buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT}
+            >
+              <AuditLoggingEditComplianceSetting {...props} />
             </Route>
             <Route path={ROUTE_MAP.auditLogging.href}>
               <AuditLogging {...props} />
