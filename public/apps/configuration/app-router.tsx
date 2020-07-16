@@ -29,7 +29,7 @@ import { buildUrl, buildHashUrl } from './utils/url-builder';
 import { InternalUserEdit } from './panels/internal-user-edit/internal-user-edit';
 import { AuditLogging } from './panels/audit-logging/audit-logging';
 import { PermissionList } from './panels/permission-list';
-import { GetStarted } from './panels/get-started'
+import { GetStarted } from './panels/get-started';
 
 const ROUTE_MAP: { [key: string]: RouteItem } = {
   getStarted: {
