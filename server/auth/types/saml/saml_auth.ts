@@ -32,9 +32,11 @@ import { IAuthenticationType } from '../authentication_type';
 
 export class SamlAuthentication implements IAuthenticationType {
   public static readonly AUTH_HEADER_NAME = 'authorization';
-  private static readonly AUTH_TYPE = 'saml';
+
+  public readonly type: string = 'saml';
 
   private readonly securityClient: SecurityClient;
+
   constructor(
     private readonly config: SecurityPluginConfigType,
     private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
@@ -88,7 +90,7 @@ export class SamlAuthentication implements IAuthenticationType {
           credentials: {
             authHeaderValue,
           },
-          authType: SamlAuthentication.AUTH_TYPE,
+          authType: this.type,
           expiryTime: Date.now() + this.config.cookie.ttl,
         };
         this.sessionStorageFactory.asScoped(request).set(cookie);

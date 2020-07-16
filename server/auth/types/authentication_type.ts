@@ -25,6 +25,7 @@ import { SecurityPluginConfigType } from '../..';
 import { SecuritySessionCookie } from '../../session/security_cookie';
 
 export interface IAuthenticationType {
+  type: string;
   authHandler: AuthenticationHandler;
 }
 
@@ -36,3 +37,9 @@ export type IAuthHandlerConstructor = new (
   coreSetup: CoreSetup,
   logger: Logger
 ) => IAuthenticationType;
+
+export { BasicAuthentication } from './basic/basic_auth';
+export { JwtAuthentication } from './jwt/jwt_auth';
+export { OpenIdAuthentication } from './openid/openid_auth';
+export { ProxyAuthentication } from './proxy/proxy_auth';
+export { SamlAuthentication } from './saml/saml_auth';

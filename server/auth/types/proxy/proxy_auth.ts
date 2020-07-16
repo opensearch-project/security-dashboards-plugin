@@ -31,6 +31,9 @@ import { IAuthenticationType } from '../authentication_type';
 
 export class ProxyAuthentication implements IAuthenticationType {
   private static readonly XFF: string = 'x-forwarded-for';
+
+  public readonly type: string = 'proxy';
+
   private readonly authType: string = 'proxycache';
   private readonly securityClient: SecurityClient;
 

@@ -59,6 +59,8 @@ export class BasicAuthentication implements IAuthenticationType {
   private readonly securityClient: SecurityClient;
   private readonly authConfig: AuthConfig;
 
+  public readonly type: string = 'basicauth';
+
   constructor(
     private readonly config: SecurityPluginConfigType,
     private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
