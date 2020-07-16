@@ -26,9 +26,9 @@ import {
   EuiFlexGroup,
   EuiLink,
 } from '@elastic/eui';
-import React, { Fragment } from 'react';
+import React from 'react';
 import { AppDependencies } from '../../types';
-import securitysteps from '../../../assets/get_started.png';
+import securityStepsDiagram from '../../../assets/get_started.png';
 import { buildHashUrl } from '../utils/url-builder';
 import { Action, ResourceType } from '../types';
 
@@ -36,7 +36,7 @@ const setOfSteps = [
   {
     title: 'Secure your backends (authc & authz)',
     children: (
-      <Fragment>
+      <>
         <EuiText size="s" color="subdued" grow={false}>
           In order to use Security plugin, you must decide on authentication
           <EuiCode>authc</EuiCode> and authorization backends <EuiCode>authz</EuiCode>.<br />
@@ -47,7 +47,7 @@ const setOfSteps = [
 
         <EuiSpacer />
 
-        <EuiFlexGroup gutterSize="s" alignItems="center">
+        <EuiFlexGroup gutterSize="s">
           <EuiFlexItem grow={false}>
             <EuiButton fill iconType="popout" iconSide="right">
               Create config.yml
@@ -63,13 +63,13 @@ const setOfSteps = [
             </EuiButton>
           </EuiFlexItem>
         </EuiFlexGroup>
-      </Fragment>
+      </>
     ),
   },
   {
     title: 'Find a role that satisfies your security needs',
     children: (
-      <Fragment>
+      <>
         <EuiText size="s" color="subdued" grow={false}>
           A role defines cluster permissions, index permissions, and read/write access to a tenant.
           <br />
@@ -81,7 +81,7 @@ const setOfSteps = [
 
         <EuiSpacer />
 
-        <EuiFlexGroup gutterSize="s" alignItems="center">
+        <EuiFlexGroup gutterSize="s">
           <EuiFlexItem grow={false}>
             <EuiButton
               fill
@@ -102,13 +102,13 @@ const setOfSteps = [
             </EuiButton>
           </EuiFlexItem>
         </EuiFlexGroup>
-      </Fragment>
+      </>
     ),
   },
   {
     title: 'Map internal users or external identities to your role',
     children: (
-      <Fragment>
+      <>
         <EuiText size="s" color="subdued" grow={false}>
           Map users to a role to uptake its role settings. You can build an internal user database
           within this plugin, or use a external entities to directly map to a role through an
@@ -120,7 +120,7 @@ const setOfSteps = [
 
         <EuiSpacer />
 
-        <EuiFlexGroup gutterSize="s" alignItems="center">
+        <EuiFlexGroup gutterSize="s">
           <EuiFlexItem grow={false}>
             <EuiButton fill>Map users to a role</EuiButton>
           </EuiFlexItem>
@@ -134,7 +134,7 @@ const setOfSteps = [
             </EuiButton>
           </EuiFlexItem>
         </EuiFlexGroup>
-      </Fragment>
+      </>
     ),
   },
 ];
@@ -161,7 +161,7 @@ export function GetStarted(props: AppDependencies) {
 
       <EuiSpacer size="l" />
 
-      <EuiImage size="xl" alt="Three steps to set up your security" url={securitysteps} />
+      <EuiImage size="xl" alt="Three steps to set up your security" url={securityStepsDiagram} />
 
       <EuiSpacer size="l" />
 
