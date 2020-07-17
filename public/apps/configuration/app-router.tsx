@@ -35,6 +35,7 @@ import {
   SUB_URL_FOR_GENERAL_SETTINGS_EDIT,
 } from './panels/audit-logging/constants';
 import { PermissionList } from './panels/permission-list';
+import { GetStarted } from './panels/get-started';
 
 const ROUTE_MAP: { [key: string]: RouteItem } = {
   getStarted: {
@@ -165,6 +166,9 @@ export function AppRouter(props: AppDependencies) {
             </Route>
             <Route path={ROUTE_MAP.permissions.href}>
               <PermissionList {...props} />
+            </Route>
+            <Route path={ROUTE_MAP.getStarted.href}>
+              <GetStarted {...props} />
             </Route>
           </Switch>
         </EuiPageBody>
