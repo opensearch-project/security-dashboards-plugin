@@ -28,8 +28,7 @@ import { RouteItem, ResourceType, Action } from './types';
 import { buildUrl, buildHashUrl } from './utils/url-builder';
 import { InternalUserEdit } from './panels/internal-user-edit/internal-user-edit';
 import { AuditLogging } from './panels/audit-logging/audit-logging';
-import { AuditLoggingEditGeneralSetting } from './panels/audit-logging/audit-logging-general-settings';
-import { AuditLoggingEditComplianceSetting } from './panels/audit-logging/audit-logging-compliance-settings';
+import { AuditLoggingEditSettings } from './panels/audit-logging/audit-logging-edit-settings';
 import {
   SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT,
   SUB_URL_FOR_GENERAL_SETTINGS_EDIT,
@@ -154,12 +153,12 @@ export function AppRouter(props: AppDependencies) {
               <UserList {...props} />
             </Route>
             <Route path={buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT}>
-              <AuditLoggingEditGeneralSetting {...props} />
+              <AuditLoggingEditSettings setting={'general'} {...props} />
             </Route>
             <Route
               path={buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT}
             >
-              <AuditLoggingEditComplianceSetting {...props} />
+              <AuditLoggingEditSettings setting={'compliance'} {...props} />
             </Route>
             <Route path={ROUTE_MAP.auditLogging.href}>
               <AuditLogging {...props} />

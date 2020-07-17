@@ -33,18 +33,23 @@ export const RESPONSE_MESSAGES = {
   UPDATE_FAILURE: 'Audit configuration could not be updated. Please check configuration.',
 };
 
+export interface SettingMapItem {
+  key: string;
+  value: string[];
+}
+
 export interface SettingContent {
   title: string;
-  key: string;
   path: string;
   description: string;
   type: string;
   options?: string[];
+  code?: string;
+  error?: string;
 }
 
 const REST_LAYER: SettingContent = {
   title: 'REST layer',
-  key: 'config:audit:enable_rest',
   path: 'audit.enable_rest',
   description: 'Enable or disable auditing events that happen on the REST layer',
   type: 'bool',
@@ -52,7 +57,6 @@ const REST_LAYER: SettingContent = {
 
 const REST_DISABLED_CATEGORIES: SettingContent = {
   title: 'REST disabled categories',
-  key: 'config:audit:disabled_rest_categories',
   path: 'audit.disabled_rest_categories',
   description: 'Specify audit categories which must be ignored on the REST layer',
   type: 'array',
@@ -68,7 +72,6 @@ const REST_DISABLED_CATEGORIES: SettingContent = {
 
 const TRANSPORT_LAYER: SettingContent = {
   title: 'Transport layer',
-  key: 'config:audit:enable_transport',
   path: 'audit.enable_transport',
   description: 'Enable or disable auditing events that happen on the Transport layer',
   type: 'bool',
@@ -76,7 +79,6 @@ const TRANSPORT_LAYER: SettingContent = {
 
 const TRANSPORT_DISABLED_CATEGORIES: SettingContent = {
   title: 'Transport disabled categories',
-  key: 'config:audit:disabled_transport_categories',
   path: 'audit.disabled_transport_categories',
   description: 'Specify audit categories which must be ignored on the Transport layer',
   type: 'array',
@@ -92,7 +94,6 @@ const TRANSPORT_DISABLED_CATEGORIES: SettingContent = {
 
 const BULK_REQUESTS: SettingContent = {
   title: 'Bulk requests',
-  key: 'config:audit:resolve_bulk_requests',
   path: 'audit.resolve_bulk_requests',
   description: 'Resolve bulk requests during auditing of requests.',
   type: 'bool',
@@ -100,7 +101,6 @@ const BULK_REQUESTS: SettingContent = {
 
 const REQUEST_BODY: SettingContent = {
   title: 'Request body',
-  key: 'config:audit:log_request_body',
   path: 'audit.log_request_body',
   description: 'Include request body during auditing of requests.',
   type: 'bool',
@@ -108,7 +108,6 @@ const REQUEST_BODY: SettingContent = {
 
 const RESOLVE_INDICES: SettingContent = {
   title: 'Resolve indices',
-  key: 'config:audit:resolve_indices',
   path: 'audit.resolve_indices',
   description: 'Resolve indices during auditing of requests.',
   type: 'bool',
@@ -116,7 +115,6 @@ const RESOLVE_INDICES: SettingContent = {
 
 const SENSITIVE_HEADERS: SettingContent = {
   title: 'Sensitive headers',
-  key: 'config:audit:exclude_sensitive_headers',
   path: 'audit.exclude_sensitive_headers',
   description: 'Exclude sensitive headers during auditing. Eg: Authorization header',
   type: 'bool',
@@ -124,7 +122,6 @@ const SENSITIVE_HEADERS: SettingContent = {
 
 const IGNORED_USERS: SettingContent = {
   title: 'Ignored users',
-  key: 'config:audit:ignore_users',
   path: 'audit.ignore_users',
   description: 'Users to ignore during auditing.',
   type: 'array',
@@ -132,16 +129,91 @@ const IGNORED_USERS: SettingContent = {
 
 const IGNORED_REQUESTS: SettingContent = {
   title: 'Ignored requests',
-  key: 'config:audit:ignore_requests',
   path: 'audit.ignore_requests',
   description: 'Request patterns to ignore during auditing.',
+  type: 'array',
+};
+
+const ENABLED: SettingContent = {
+  title: 'Enable compliance mode',
+  path: 'compliance.enabled',
+  description: 'Enable or disable compliance logging',
+  type: 'bool',
+};
+
+const INTERNAL_CONFIG: SettingContent = {
+  title: 'Enable internal config logging',
+  path: 'compliance.internal_config',
+  description: 'Enable or disable logging of events on internal security index',
+  type: 'bool',
+};
+
+const EXTERNAL_CONFIG: SettingContent = {
+  title: 'Enable external config logging',
+  path: 'compliance.external_config',
+  description: 'Enable or disable logging of external configuration',
+  type: 'bool',
+};
+
+const READ_METADATA_ONLY: SettingContent = {
+  title: 'Read metadata',
+  path: 'compliance.read_metadata_only',
+  description: 'Do not log any document fields. Log only metadata of the document',
+  type: 'bool',
+};
+
+const READ_IGNORED_USERS: SettingContent = {
+  title: 'Ignored users',
+  path: 'compliance.read_ignore_users',
+  description: 'Users to ignore during auditing.',
+  type: 'array',
+};
+
+const READ_WATCHED_FIELDS: SettingContent = {
+  title: 'Watched fields',
+  path: 'compliance.read_watched_fields',
+  description:
+    'List the indices and fields to watch during read events. Sample data content is as follows',
+  type: 'map',
+  code: `{
+  "index-name-pattern": ["field-name-pattern"],
+  "logs*": ["message"],
+  "twitter": ["id", "user*"]
+}`,
+  error: 'Invalid content. Please check sample data content.',
+};
+
+const WRITE_METADATA_ONLY: SettingContent = {
+  title: 'Write metadata',
+  path: 'compliance.write_metadata_only',
+  description: 'Do not log any document content. Log only metadata of the document',
+  type: 'bool',
+};
+
+const WRITE_LOG_DIFFS: SettingContent = {
+  title: 'Log diffs',
+  path: 'compliance.write_log_diffs',
+  description: 'Log only diffs for document updates',
+  type: 'bool',
+};
+
+const WRITE_IGNORED_USERS: SettingContent = {
+  title: 'Ignored users',
+  path: 'compliance.write_ignore_users',
+  description: 'Users to ignore during auditing.',
+  type: 'array',
+};
+
+const WRITE_WATCHED_FIELDS: SettingContent = {
+  title: 'Watch indices',
+  path: 'compliance.write_watched_indices',
+  description: 'List the indices to watch during write events.',
   type: 'array',
 };
 
 const CONFIG = {
   ENABLED: {
     title: 'Enable audit logging',
-    key: 'config:enabled',
     path: 'enabled',
     description: 'Enable or disable audit logging',
     type: 'bool',
@@ -157,6 +229,18 @@ const CONFIG = {
     SENSITIVE_HEADERS,
     IGNORED_USERS,
     IGNORED_REQUESTS,
+  },
+  COMPLIANCE: {
+    ENABLED,
+    INTERNAL_CONFIG,
+    EXTERNAL_CONFIG,
+    READ_METADATA_ONLY,
+    READ_IGNORED_USERS,
+    READ_WATCHED_FIELDS,
+    WRITE_METADATA_ONLY,
+    WRITE_LOG_DIFFS,
+    WRITE_IGNORED_USERS,
+    WRITE_WATCHED_FIELDS,
   },
 };
 
@@ -190,6 +274,35 @@ export const IGNORE_SETTINGS: SettingGroup = {
   settings: [CONFIG.AUDIT.IGNORED_USERS, CONFIG.AUDIT.IGNORED_REQUESTS],
 };
 
+export const COMPLIANCE_CONFIG_MODE_SETTINGS: SettingGroup = {
+  title: CONFIG_LABELS.COMPLIANCE,
+  settings: [CONFIG.COMPLIANCE.ENABLED],
+};
+
+export const COMPLIANCE_CONFIG_SETTINGS: SettingGroup = {
+  title: CONFIG_LABELS.COMPLIANCE_CONFIG_SETTINGS,
+  settings: [CONFIG.COMPLIANCE.INTERNAL_CONFIG, CONFIG.COMPLIANCE.EXTERNAL_CONFIG],
+};
+
+export const COMPLIANCE_SETTINGS_READ: SettingGroup = {
+  title: CONFIG_LABELS.COMPLIANCE_READ,
+  settings: [
+    CONFIG.COMPLIANCE.READ_METADATA_ONLY,
+    CONFIG.COMPLIANCE.READ_IGNORED_USERS,
+    CONFIG.COMPLIANCE.READ_WATCHED_FIELDS,
+  ],
+};
+
+export const COMPLIANCE_SETTINGS_WRITE: SettingGroup = {
+  title: CONFIG_LABELS.COMPLIANCE_WRITE,
+  settings: [
+    CONFIG.COMPLIANCE.WRITE_METADATA_ONLY,
+    CONFIG.COMPLIANCE.WRITE_LOG_DIFFS,
+    CONFIG.COMPLIANCE.WRITE_IGNORED_USERS,
+    CONFIG.COMPLIANCE.WRITE_WATCHED_FIELDS,
+  ],
+};
+
 export const SETTING_GROUPS = {
   AUDIT_SETTINGS: {
     settings: [CONFIG.ENABLED],
@@ -197,6 +310,10 @@ export const SETTING_GROUPS = {
   LAYER_SETTINGS,
   ATTRIBUTE_SETTINGS,
   IGNORE_SETTINGS,
+  COMPLIANCE_CONFIG_MODE_SETTINGS,
+  COMPLIANCE_CONFIG_SETTINGS,
+  COMPLIANCE_SETTINGS_READ,
+  COMPLIANCE_SETTINGS_WRITE,
 };
 
 export const SUB_URL_FOR_GENERAL_SETTINGS_EDIT = '/edit/generalSettings';
