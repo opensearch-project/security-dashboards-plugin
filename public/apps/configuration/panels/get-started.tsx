@@ -166,6 +166,29 @@ export function GetStarted(props: AppDependencies) {
       <EuiSpacer size="l" />
 
       <EuiSteps steps={setOfSteps} />
+
+      <EuiTitle size="s">
+        <h3>Optional: Configure audit logs</h3>
+      </EuiTitle>
+
+      <EuiText size="s" color="subdued" grow={false}>
+        <p>
+          Elasticsearch audit logs are records that provide documentary evidence of security
+          activities in a given system. Audit logs let you track user access to your Elasticsearch
+          cluster and are useful for compliance purposes or in the aftermath of a security breach.{' '}
+          <EuiLink external={true} href="/">
+            Learn More
+          </EuiLink>
+        </p>
+        <EuiButton
+          fill
+          onClick={() => {
+            window.location.href = buildHashUrl(ResourceType.auditLogging);
+          }}
+        >
+          Configure Audit Logs
+        </EuiButton>
+      </EuiText>
     </>
   );
 }
