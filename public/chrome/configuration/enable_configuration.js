@@ -140,6 +140,7 @@ export function enableConfiguration($http, $window, systemstate) {
     setupResponseErrorHandler($window);
 
     chromeWrapper.hideNavLink('security-configuration', true);
+    chromeWrapper.hideNavLink('security-audit', true);
 
     const ROOT = chrome.getBasePath();
     const APP_ROOT = `${ROOT}`;
