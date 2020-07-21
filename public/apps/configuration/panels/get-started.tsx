@@ -170,7 +170,7 @@ export function GetStarted(props: AppDependencies) {
       <EuiText size="s" color="subdued" grow={false}>
         <h3>Optional: Configure audit logs</h3>
         <p>
-          Elasticsearch audit logs are records that provide documentary evidance of security
+          Elasticsearch audit logs are records that provide documentary evidence of security
           activities in a given system. Audit logs let you track user access to your Elasticsearch
           cluster and are useful for compliance purposes or in the aftermath of a security breach.{' '}
           <EuiLink external={true} href="/">
