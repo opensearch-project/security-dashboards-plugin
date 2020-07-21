@@ -256,6 +256,14 @@ export default function (kibana) {
                     icon: 'plugins/opendistro_security/assets/opendistro_security.svg',
                     linkToLastSubUrl: false,
                     url: '/app/security-configuration#/'
+                },
+                {
+                    id: 'security-audit',
+                    title: 'Audit',
+                    description: 'Audit logging',
+                    main: 'plugins/opendistro_security/apps/audit/app',
+                    linkToLastSubUrl: false,
+                    url: '/app/security-audit#/'
                 }
             ],
             chromeNavControls: [
