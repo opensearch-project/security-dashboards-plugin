@@ -30,6 +30,7 @@ import {
   EuiText,
   EuiTitle,
   EuiIcon,
+  EuiSearchBarProps,
 } from '@elastic/eui';
 import { difference } from 'lodash';
 import React, { useEffect, useState } from 'react';
@@ -69,6 +70,42 @@ const COLUMNS = [
     render: renderCustomization,
   },
 ];
+
+const SEARCH_OPTIONS: EuiSearchBarProps = {
+  box: { placeholder: 'Search for action group name or permission name' },
+  filters: [
+    {
+      type: 'field_value_selection',
+      field: 'type',
+      name: 'All types',
+      options: [{ value: 'Action group' }, { value: 'Single permission' }],
+    },
+    {
+      type: 'field_value_selection',
+      name: 'All permissions',
+      options: [
+        { field: 'hasClusterPermission', name: 'Cluster permissions', value: true },
+        { field: 'hasIndexPermission', name: 'Index permissions', value: true },
+      ],
+    },
+    {
+      type: 'field_value_selection',
+      field: 'reserved',
+      name: 'Customization',
+      multiSelect: false,
+      options: [
+        {
+          value: true,
+          view: renderCustomization(true),
+        },
+        {
+          value: false,
+          view: renderCustomization(false),
+        },
+      ],
+    },
+  ],
+};
 
 export function PermissionList(props: AppDependencies) {
   const [actionGroups, setActionGroups] = useState<ActionGroupListingItem[]>([]);
@@ -229,9 +266,9 @@ export function PermissionList(props: AppDependencies) {
             items={actionGroups}
             itemId={'name'}
             pagination
-            search={{ box: { placeholder: 'Search for action group name or permission name' } }}
+            search={SEARCH_OPTIONS}
             selection={{ onSelectionChange: setSelection }}
-            sorting
+            sorting={{ sort: { field: 'type', direction: 'asc' } }}
             error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
           />
         </EuiPageBody>
