@@ -15,6 +15,7 @@
 
 import React, { Fragment } from 'react';
 import {
+  EuiCodeBlock,
   EuiComboBox,
   EuiDescribedFormGroup,
   EuiFormRow,
@@ -23,20 +24,37 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 import { get } from 'lodash';
-import { displayBoolean } from '../../utils/display-utils';
+import { displayBoolean, displayObject } from '../../utils/display-utils';
 import { comboBoxOptionToString, stringToComboBoxOption } from '../../utils/combo-box-utils';
 import { AuditLoggingSettings } from './types';
-import { SettingContent, SettingGroup } from './constants';
+import { SettingContent, SettingGroup, SettingMapItem } from './constants';
+import { JsonCodeEditor } from './code-editor';
+
+const renderCodeBlock = (setting: SettingContent) => {
+  return (
+    <>
+      <EuiCodeBlock language="json" paddingSize="none" isCopyable>
+        {setting.code}
+      </EuiCodeBlock>
+    </>
+  );
+};
+
+const displayLabel = (val: string) => {
+  return val.replace(/\./g, ':');
+};
 
 export function EditSettingGroup(props: {
   settingGroup: SettingGroup;
   config: AuditLoggingSettings;
-  handleChange: (setting: SettingContent, val: boolean | string[]) => void;
+  handleChange: (path: string, val: boolean | string[]) => void;
+  handleInvalid?: (path: string, error: boolean) => void;
 }) {
   const renderField = (
     config: AuditLoggingSettings,
     setting: SettingContent,
-    handleChange: (setting: SettingContent, val: boolean | string[]) => void
+    handleChange: (path: string, val: boolean | string[] | SettingMapItem) => void,
+    handleInvalid?: (path: string, error: boolean) => void
   ) => {
     let val = get(config, setting.path);
 
@@ -48,7 +66,7 @@ export function EditSettingGroup(props: {
           label={displayBoolean(val)}
           checked={val}
           onChange={(e) => {
-            handleChange(setting, e.target.checked);
+            handleChange(setting.path, e.target.checked);
           }}
         />
       );
@@ -61,7 +79,7 @@ export function EditSettingGroup(props: {
           options={setting.options.map(stringToComboBoxOption)}
           selectedOptions={val.map(stringToComboBoxOption)}
           onChange={(selectedOptions) => {
-            handleChange(setting, selectedOptions.map(comboBoxOptionToString));
+            handleChange(setting.path, selectedOptions.map(comboBoxOptionToString));
           }}
         />
       );
@@ -74,11 +92,29 @@ export function EditSettingGroup(props: {
           placeholder={setting.title}
           selectedOptions={val.map(stringToComboBoxOption)}
           onChange={(selectedOptions) => {
-            handleChange(setting, selectedOptions.map(comboBoxOptionToString));
+            handleChange(setting.path, selectedOptions.map(comboBoxOptionToString));
           }}
           onCreateOption={(searchValue) => {
-            handleChange(setting, [...val, searchValue]);
+            handleChange(setting.path, [...val, searchValue]);
           }}
+        />
+      );
+    } else if (setting.type === 'map') {
+      const handleCodeChange = (newVal: string) => {
+        const updated: SettingMapItem = JSON.parse(newVal);
+        handleChange(setting.path, updated);
+      };
+
+      const handleCodeInvalid = (error: boolean) => {
+        handleInvalid(setting.path, error);
+      };
+
+      return (
+        <JsonCodeEditor
+          initialValue={displayObject(get(config, setting.path))}
+          errorMessage={setting.error}
+          handleCodeChange={handleCodeChange}
+          handleCodeInvalid={handleCodeInvalid}
         />
       );
     } else {
@@ -100,14 +136,19 @@ export function EditSettingGroup(props: {
       )}
       {settingGroup.settings.map((setting: SettingContent) => {
         return (
-          <Fragment key={setting.key}>
+          <Fragment key={setting.path}>
             <EuiDescribedFormGroup
               title={<h3>{setting.title}</h3>}
-              description={<>{setting.description}</>}
+              description={
+                <>
+                  {setting.description}
+                  {setting.code && renderCodeBlock(setting)}
+                </>
+              }
               fullWidth
             >
-              <EuiFormRow label={setting.key}>
-                {renderField(props.config, setting, props.handleChange)}
+              <EuiFormRow label={displayLabel(setting.path)}>
+                {renderField(props.config, setting, props.handleChange, props.handleInvalid)}
               </EuiFormRow>
             </EuiDescribedFormGroup>
           </Fragment>

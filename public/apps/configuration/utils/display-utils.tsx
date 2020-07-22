@@ -40,7 +40,7 @@ export function displayArray(array: string[] | undefined) {
 }
 
 export function displayObject(object: object | undefined) {
-  return !isEmpty(object) ? JSON.stringify(object) : '--';
+  return !isEmpty(object) ? JSON.stringify(object, null, 2) : '--';
 }
 
 export function renderCustomization(reserved: boolean) {
