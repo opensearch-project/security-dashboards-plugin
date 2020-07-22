@@ -13,17 +13,19 @@
  *   permissions and limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
 import {
   EuiButton,
   EuiFlexGroup,
   EuiFlexItem,
+  EuiGlobalToastList,
   EuiHorizontalRule,
   EuiPanel,
   EuiSpacer,
   EuiTitle,
 } from '@elastic/eui';
+import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 import { AppDependencies } from '../../../types';
 import { API_ENDPOINT_AUDITLOGGING } from '../../constants';
 import {
@@ -34,12 +36,29 @@ import {
 } from '../../utils/audit-logging-view-utils';
 import { AuditLoggingSettings } from './types';
 import {
+  FROM_COMPLIANCE_SAVE_SUCCESS,
+  FROM_GENERAL_SAVE_SUCCESS,
   SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT,
   SUB_URL_FOR_GENERAL_SETTINGS_EDIT,
 } from './constants';
+import { buildHashUrl } from '../../utils/url-builder';
+import { ResourceType } from '../../types';
 
-export function AuditLogging(props: AppDependencies) {
+interface AuditLoggingProps extends AppDependencies {
+  fromType: string;
+}
+
+export function AuditLogging(props: AuditLoggingProps) {
   const [configuration, setConfiguration] = useState<AuditLoggingSettings>({});
+  const [toasts, setToasts] = useState<Toast[]>([]);
+
+  const addToast = useCallback((toastToAdd: Toast) => {
+    setToasts((state) => state.concat(toastToAdd));
+  }, []);
+
+  const removeToast = (toastToDelete: Toast) => {
+    setToasts(toasts.filter((toast) => toast.id !== toastToDelete.id));
+  };
 
   const onSwitchChange = async () => {
     try {
@@ -65,8 +84,30 @@ export function AuditLogging(props: AppDependencies) {
       }
     };
 
+    const addSuccessToast = (text: string) => {
+      const successToast: Toast = {
+        id: 'update-result',
+        color: 'success',
+        iconType: 'check',
+        title: 'Success',
+        text,
+      };
+
+      addToast(successToast);
+    };
+
     fetchData();
-  }, [props.coreStart.http]);
+
+    if (props.fromType) {
+      // Need to display success toast
+
+      if (FROM_GENERAL_SAVE_SUCCESS.endsWith(props.fromType)) {
+        addSuccessToast('General settings saved');
+      } else if (FROM_COMPLIANCE_SAVE_SUCCESS.endsWith(props.fromType)) {
+        addSuccessToast('Compliance settings saved');
+      }
+    }
+  }, [addToast, props.coreStart.http, props.fromType]);
 
   const statusPanel = renderStatusPanel(onSwitchChange, configuration.enabled || false);
 
@@ -90,7 +131,8 @@ export function AuditLogging(props: AppDependencies) {
           <EuiFlexItem grow={false}>
             <EuiButton
               onClick={() => {
-                window.location.href += SUB_URL_FOR_GENERAL_SETTINGS_EDIT;
+                window.location.href =
+                  buildHashUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT;
               }}
             >
               Configure
@@ -113,7 +155,8 @@ export function AuditLogging(props: AppDependencies) {
           <EuiFlexItem grow={false}>
             <EuiButton
               onClick={() => {
-                window.location.href += SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT;
+                window.location.href =
+                  buildHashUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT;
               }}
             >
               Configure
@@ -124,6 +167,8 @@ export function AuditLogging(props: AppDependencies) {
         <EuiHorizontalRule />
         {renderComplianceSettings(configuration.compliance || {})}
       </EuiPanel>
+
+      <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={10000} dismissToast={removeToast} />
     </>
   );
 }

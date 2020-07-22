@@ -30,6 +30,8 @@ import { InternalUserEdit } from './panels/internal-user-edit/internal-user-edit
 import { AuditLogging } from './panels/audit-logging/audit-logging';
 import { AuditLoggingEditSettings } from './panels/audit-logging/audit-logging-edit-settings';
 import {
+  FROM_COMPLIANCE_SAVE_SUCCESS,
+  FROM_GENERAL_SAVE_SUCCESS,
   SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT,
   SUB_URL_FOR_GENERAL_SETTINGS_EDIT,
 } from './panels/audit-logging/constants';
@@ -80,6 +82,8 @@ const ROUTE_LIST = [
 const allNavPanelUrls = ROUTE_LIST.map((route) => route.href).concat([
   buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT,
   buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT,
+  buildUrl(ResourceType.auditLogging) + FROM_GENERAL_SAVE_SUCCESS,
+  buildUrl(ResourceType.auditLogging) + FROM_COMPLIANCE_SAVE_SUCCESS,
 ]);
 
 // url regex pattern for all pages with left nav panel, (/|/roles|/internalusers|...)
@@ -160,9 +164,10 @@ export function AppRouter(props: AppDependencies) {
             >
               <AuditLoggingEditSettings setting={'compliance'} {...props} />
             </Route>
-            <Route path={ROUTE_MAP.auditLogging.href}>
-              <AuditLogging {...props} />
-            </Route>
+            <Route
+              path={ROUTE_MAP.auditLogging.href + '/:fromType?'}
+              render={(match) => <AuditLogging {...{ ...props, ...match.match.params }} />}
+            />
             <Route path={ROUTE_MAP.permissions.href}>
               <PermissionList {...props} />
             </Route>
