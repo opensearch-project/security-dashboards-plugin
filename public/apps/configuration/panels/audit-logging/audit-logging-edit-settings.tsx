@@ -28,7 +28,12 @@ import {
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 import { cloneDeep, set, without } from 'lodash';
 import { AppDependencies } from '../../../types';
-import { SETTING_GROUPS, SettingMapItem } from './constants';
+import {
+  FROM_COMPLIANCE_SAVE_SUCCESS,
+  FROM_GENERAL_SAVE_SUCCESS,
+  SETTING_GROUPS,
+  SettingMapItem,
+} from './constants';
 import { EditSettingGroup } from './edit-setting-group';
 import { AuditLoggingSettings } from './types';
 import { buildHashUrl } from '../../utils/url-builder';
@@ -115,14 +120,9 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
     try {
       await updateAuditLogging(props.coreStart.http, configToUpdate);
 
-      const successToast: Toast = {
-        id: 'update-result',
-        color: 'success',
-        iconType: 'check',
-        title: 'Audit configuration was successfully updated.',
-      };
-
-      addToast(successToast);
+      window.location.href =
+        buildHashUrl(ResourceType.auditLogging) +
+        (props.setting === 'general' ? FROM_GENERAL_SAVE_SUCCESS : FROM_COMPLIANCE_SAVE_SUCCESS);
     } catch (e) {
       const failureToast: Toast = {
         id: 'update-result',
