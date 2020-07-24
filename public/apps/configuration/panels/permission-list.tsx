@@ -202,7 +202,7 @@ export function PermissionList(props: AppDependencies) {
     });
   };
 
-  const COLUMNS = [
+  const columns = [
     {
       field: 'name',
       name: 'Name',
@@ -232,14 +232,13 @@ export function PermissionList(props: AppDependencies) {
       align: RIGHT_ALIGNMENT,
       width: '40px',
       isExpander: true,
-      render: (item: ActionGroupListingItem) =>
-        item.type === 'Action group' && (
-          <EuiButtonIcon
-            onClick={() => toggleRowDetails(item)}
-            aria-label={itemIdToExpandedRowMap[item.name] ? 'Collapse' : 'Expand'}
-            iconType={itemIdToExpandedRowMap[item.name] ? 'arrowUp' : 'arrowDown'}
-          />
-        ),
+      render: (item: ActionGroupListingItem) => (item.type == 'Action group' && 
+        (<EuiButtonIcon
+          onClick={() => toggleRowDetails(item)}
+          aria-label={itemIdToExpandedRowMap[item.name] ? 'Collapse' : 'Expand'}
+          iconType={itemIdToExpandedRowMap[item.name] ? 'arrowUp' : 'arrowDown'}
+        />)
+      ),
     },
   ];
 
@@ -300,7 +299,7 @@ export function PermissionList(props: AppDependencies) {
         <EuiPageBody>
           <EuiInMemoryTable
             loading={actionGroups === [] && !errorFlag}
-            columns={COLUMNS}
+            columns={columns}
             items={actionGroups}
             itemId={'name'}
             pagination
