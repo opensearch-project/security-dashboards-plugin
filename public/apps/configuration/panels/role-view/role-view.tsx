@@ -34,27 +34,25 @@ import {
 import { BreadcrumbsPageDependencies } from '../../../types';
 import { buildHashUrl } from '../../utils/url-builder';
 import { ResourceType, Action } from '../../types';
-import { getRoleMappingDeta, MappedUsersListing } from '../../utils/role-mapping-utils';
+import { getRoleMappingData, MappedUsersListing } from '../../utils/role-mapping-utils';
 
 interface RoleViewProps extends BreadcrumbsPageDependencies {
   roleName: string;
 }
 
-function getmappedUserColumns() {
-  return [
-    {
-      field: 'user_type',
-      name: 'User type',
-      sortable: true,
-    },
-    {
-      field: 'user_name',
-      name: 'User',
-      sortable: true,
-      truncateText: true,
-    },
-  ];
-}
+const mappedUserColumns = [
+  {
+    field: 'user_type',
+    name: 'User type',
+    sortable: true,
+  },
+  {
+    field: 'user_name',
+    name: 'User',
+    sortable: true,
+    truncateText: true,
+  },
+];
 
 export function RoleView(props: RoleViewProps) {
   const duplicateRoleLink = buildHashUrl(ResourceType.roles, Action.duplicate, props.roleName);
@@ -62,7 +60,7 @@ export function RoleView(props: RoleViewProps) {
   const [mappedUsers, setMappedUsers] = useState<MappedUsersListing[]>([]);
   const [errorFlag, setErrorFlag] = useState(false);
   const [selection, setSelection] = useState<MappedUsersListing[]>([]);
-  const [message, setMessage] = useState(
+  const message = (
     <EuiEmptyPrompt
       title={<h2>No user has been mapped to this role</h2>}
       titleSize="s"
@@ -95,7 +93,7 @@ export function RoleView(props: RoleViewProps) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const roleMappingData = await getRoleMappingDeta(props.coreStart.http, props.roleName);
+        const roleMappingData = await getRoleMappingData(props.coreStart.http, props.roleName);
         setMappedUsers(roleMappingData);
       } catch (e) {
         console.log(e);
@@ -150,7 +148,7 @@ export function RoleView(props: RoleViewProps) {
             <EuiPageBody>
               <EuiInMemoryTable
                 loading={mappedUsers === [] && !errorFlag}
-                columns={getmappedUserColumns()}
+                columns={mappedUserColumns}
                 items={mappedUsers}
                 itemId={'user_name'}
                 pagination={true}

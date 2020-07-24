@@ -28,25 +28,26 @@ export enum UserType {
   external = 'External identity',
 }
 
-export async function getRoleMappingDeta(http: HttpStart, roleName: string) {
+export async function getRoleMappingData(http: HttpStart, roleName: string) {
   try {
     const rawData = (await http.get(
       `${API_ENDPOINT_ROLESMAPPING}/${roleName}`
     )) as RoleMappingDetail;
     return transformRoleMappingData(rawData);
   } catch (e) {
-    return [];
+    if (e.response.status === 404) return [];
+    throw e;
   }
 }
 
 export function transformRoleMappingData(rawData: RoleMappingDetail): MappedUsersListing[] {
-  const internalUsers = map(rawData.users, (v) => ({
-    user_name: v,
+  const internalUsers = map(rawData.users, (mappedUser: string) => ({
+    user_name: mappedUser,
     user_type: UserType.internal,
   }));
 
-  const externalIdentity = map(rawData.backend_roles, (v) => ({
-    user_name: v,
+  const externalIdentity = map(rawData.backend_roles, (mappedExternalIdentity: string) => ({
+    user_name: mappedExternalIdentity,
     user_type: UserType.external,
   }));
 
