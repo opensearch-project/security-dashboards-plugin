@@ -233,7 +233,7 @@ export function PermissionList(props: AppDependencies) {
       width: '40px',
       isExpander: true,
       render: (item: ActionGroupListingItem) =>
-        item.type == 'Action group' && (
+        item.type === 'Action group' && (
           <EuiButtonIcon
             onClick={() => toggleRowDetails(item)}
             aria-label={itemIdToExpandedRowMap[item.name] ? 'Collapse' : 'Expand'}
