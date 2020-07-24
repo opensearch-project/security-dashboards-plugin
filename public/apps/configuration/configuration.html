@@ -121,6 +121,17 @@
                                         Purge Cache
                                     </div>
                                 </a>
+
+                                <a id="opendistro_security.link.securityaudit" ng-if="endpointAndMethodEnabled('AUDIT', 'GET')" class="FeaturePanel ng-scope"
+                                   ng-click="goToAuditLogging()"
+                                   tooltip="View and update audit logging configuration">
+                                    <div class="FeaturePanelButton__image">
+                                        <img ng-src="{{auditLogSvgURL}}" width="56" />
+                                    </div>
+                                    <div class="FeaturePanelButton__label">
+                                        Audit logging
+                                    </div>
+                                </a>
                             </div>
                         </div>
                     </div>
