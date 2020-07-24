@@ -135,6 +135,7 @@ export function enableConfiguration($http, $window, systemstate) {
     setupResponseErrorHandler($window);
 
     chrome.getNavLinkById("security-configuration").hidden = true;
+    chrome.getNavLinkById("security-audit").hidden = true;
 
     const ROOT = chrome.getBasePath();
     const APP_ROOT = `${ROOT}`;
