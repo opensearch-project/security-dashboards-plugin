@@ -66,6 +66,15 @@ export interface RoleDetail extends RoleUpdate {
   reserved: boolean;
 }
 
+export interface RoleMappingDetail {
+  reserved: boolean;
+  hidden: boolean;
+  backend_roles: string[];
+  hosts: string[];
+  users: string[];
+  and_backend_roles: string[];
+}
+
 export interface Tenant {
   reserved: boolean;
   description: string;
