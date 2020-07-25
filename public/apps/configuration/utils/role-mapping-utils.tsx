@@ -19,8 +19,8 @@ import { API_ENDPOINT_ROLESMAPPING } from '../constants';
 import { RoleMappingDetail } from '../types';
 
 export interface MappedUsersListing {
-  user_name: string;
-  user_type: string;
+  userName: string;
+  userType: string;
 }
 
 export enum UserType {
@@ -42,13 +42,13 @@ export async function getRoleMappingData(http: HttpStart, roleName: string) {
 
 export function transformRoleMappingData(rawData: RoleMappingDetail): MappedUsersListing[] {
   const internalUsers = map(rawData.users, (mappedUser: string) => ({
-    user_name: mappedUser,
-    user_type: UserType.internal,
+    userName: mappedUser,
+    userType: UserType.internal,
   }));
 
   const externalIdentity = map(rawData.backend_roles, (mappedExternalIdentity: string) => ({
-    user_name: mappedExternalIdentity,
-    user_type: UserType.external,
+    userName: mappedExternalIdentity,
+    userType: UserType.external,
   }));
 
   return internalUsers.concat(externalIdentity);

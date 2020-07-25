@@ -42,12 +42,12 @@ interface RoleViewProps extends BreadcrumbsPageDependencies {
 
 const mappedUserColumns = [
   {
-    field: 'user_type',
+    field: 'userType',
     name: 'User type',
     sortable: true,
   },
   {
-    field: 'user_name',
+    field: 'userName',
     name: 'User',
     sortable: true,
     truncateText: true,
@@ -150,7 +150,7 @@ export function RoleView(props: RoleViewProps) {
                 loading={mappedUsers === [] && !errorFlag}
                 columns={mappedUserColumns}
                 items={mappedUsers}
-                itemId={'user_name'}
+                itemId={'userName'}
                 pagination={true}
                 message={message}
                 selection={{ onSelectionChange: setSelection }}
