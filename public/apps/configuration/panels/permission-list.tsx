@@ -49,7 +49,7 @@ function renderBooleanToCheckMark(value: boolean): React.ReactNode {
   return value ? <EuiIcon type="check" /> : '';
 }
 
-function toggleRowDetails (
+function toggleRowDetails(
   item: ActionGroupListingItem,
   setItemIdToExpandedRowMap: Dispatch<SetStateAction<ExpandedRowMapInterface>>
 ) {
@@ -69,7 +69,7 @@ function toggleRowDetails (
     }
     return itemIdToExpandedRowMapValues;
   });
-};
+}
 
 function getColumns(
   itemIdToExpandedRowMap: ExpandedRowMapInterface,
@@ -106,7 +106,7 @@ function getColumns(
       width: '40px',
       isExpander: true,
       render: (item: ActionGroupListingItem) =>
-        item.type == 'Action group' && (
+        item.type === 'Action group' && (
           <EuiButtonIcon
             onClick={() => toggleRowDetails(item, setItemIdToExpandedRowMap)}
             aria-label={itemIdToExpandedRowMap[item.name] ? 'Collapse' : 'Expand'}
