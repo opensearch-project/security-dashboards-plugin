@@ -14,134 +14,48 @@
  */
 
 import { get } from 'lodash';
-import { SecurityPluginConfigType } from '../../..';
 import {
   SessionStorageFactory,
   IRouter,
   ILegacyClusterClient,
   CoreSetup,
-  AuthenticationHandler,
   Logger,
-} from '../../../../../../src/core/server';
+  KibanaRequest,
+  LifecycleResponseFactory,
+  AuthToolkit,
+  IKibanaResponse,
+  AuthResult,
+} from 'kibana/server';
+import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
-import { SecurityClient } from '../../../backend/opendistro_security_client';
-import { User } from '../../user';
 import { ProxyAuthRoutes } from './routes';
-import { IAuthenticationType } from '../authentication_type';
+import { IAuthenticationType, AuthenticationType } from '../authentication_type';
 
-export class ProxyAuthentication implements IAuthenticationType {
+export class ProxyAuthentication extends AuthenticationType implements IAuthenticationType {
   private static readonly XFF: string = 'x-forwarded-for';
 
   public readonly type: string = 'proxy';
 
   private readonly authType: string = 'proxycache';
-  private readonly securityClient: SecurityClient;
 
   private readonly userHeaderName: string;
   private readonly roleHeaderName: string;
 
   constructor(
-    private readonly config: SecurityPluginConfigType,
-    private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
-    private readonly router: IRouter,
-    private readonly esClient: ILegacyClusterClient,
-    private readonly coreSetup: CoreSetup,
-    private readonly logger: Logger
+    config: SecurityPluginConfigType,
+    sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
+    router: IRouter,
+    esClient: ILegacyClusterClient,
+    coreSetup: CoreSetup,
+    logger: Logger
   ) {
-    this.securityClient = new SecurityClient(this.esClient);
+    super(config, sessionStorageFactory, router, esClient, coreSetup, logger);
 
     this.userHeaderName = this.config.proxycache?.user_header?.toLowerCase() || '';
     this.roleHeaderName = this.config.proxycache?.roles_header?.toLowerCase() || '';
 
     this.setupRoutes();
   }
-
-  authHandler: AuthenticationHandler = async (request, response, toolkit) => {
-    let cookie = await this.sessionStorageFactory.asScoped(request).get();
-    const authHeaders: any = {};
-
-    const customProxyHeader = this.config.proxycache?.proxy_header;
-    if (
-      customProxyHeader &&
-      !request.headers[customProxyHeader] &&
-      this.config.proxycache?.proxy_header_ip
-    ) {
-      // TODO: check how to get remoteIp from KibanaRequest and add remoteIp to this header
-      authHeaders[customProxyHeader] = this.config.proxycache!.proxy_header_ip;
-    }
-
-    if (cookie) {
-      if (get(cookie.credentials, this.userHeaderName)) {
-        authHeaders[this.userHeaderName] = cookie.credentials[this.userHeaderName];
-        if (get(cookie.credentials, this.roleHeaderName)) {
-          authHeaders[this.roleHeaderName] = cookie.credentials[this.roleHeaderName];
-        }
-        if (get(cookie.credentials, ProxyAuthentication.XFF)) {
-          authHeaders[ProxyAuthentication.XFF] = cookie.credentials[ProxyAuthentication.XFF];
-        }
-
-        cookie.expiryTime = Date.now() + this.config.cookie.ttl;
-        this.sessionStorageFactory.asScoped(request).set(cookie);
-        return toolkit.authenticated({
-          requestHeaders: authHeaders,
-        });
-      } else if (get(cookie.credentials, 'authorization')) {
-        authHeaders.authorization = get(cookie.credentials, 'authorization');
-        return toolkit.authenticated({
-          requestHeaders: authHeaders,
-        });
-      }
-    }
-
-    // no credentials in the cookie, fall back to do authentication with header
-    if (request.headers[this.userHeaderName]) {
-      authHeaders[this.userHeaderName] = request.headers[this.userHeaderName];
-    }
-    if (this.roleHeaderName && request.headers[this.roleHeaderName]) {
-      authHeaders[this.roleHeaderName] = request.headers[this.roleHeaderName];
-    }
-    if (request.headers[ProxyAuthentication.XFF]) {
-      authHeaders[ProxyAuthentication.XFF] = request.headers[ProxyAuthentication.XFF];
-    }
-
-    let user: User;
-    try {
-      user = await this.securityClient.authenticateWithHeaders(request, {}, authHeaders);
-      cookie = {
-        username: user.username,
-        credentials: {},
-        authType: this.authType,
-        isAnonymousAuth: false,
-        expiryTime: Date.now() + this.config.cookie.ttl,
-      };
-      if (this.userHeaderName && request.headers[this.userHeaderName]) {
-        cookie.credentials[this.userHeaderName] = request.headers[this.userHeaderName];
-      }
-      if (this.roleHeaderName) {
-        cookie.credentials[this.roleHeaderName] = request.headers[this.roleHeaderName];
-      }
-      if (request.headers[ProxyAuthentication.XFF]) {
-        cookie.credentials[ProxyAuthentication.XFF] = request.headers[ProxyAuthentication.XFF];
-      }
-      if (request.headers.authorization) {
-        cookie.credentials.authorization = request.headers.authorization;
-      }
-      this.sessionStorageFactory.asScoped(request).set(cookie);
-    } catch (error) {
-      const loginEndpoint = this.config.proxycache?.login_endpoint;
-      if (loginEndpoint) {
-        return toolkit.redirected({
-          location: loginEndpoint,
-        });
-      } else {
-        return toolkit.notHandled(); // TODO: redirect to error page?
-      }
-    }
-
-    return toolkit.authenticated({
-      requestHeaders: authHeaders,
-    });
-  };
 
   private setupRoutes() {
     const routes = new ProxyAuthRoutes(
@@ -152,5 +66,89 @@ export class ProxyAuthentication implements IAuthenticationType {
       this.coreSetup
     );
     routes.setupRoutes();
+  }
+
+  requestIncludesAuthInfo(request: KibanaRequest): boolean {
+    return request.headers[ProxyAuthentication.XFF] && request.headers[this.userHeaderName]
+      ? true
+      : false;
+  }
+
+  getAdditionalAuthHeader(request: KibanaRequest): any {
+    const authHeaders: any = {};
+    const customProxyHeader = this.config.proxycache?.proxy_header;
+    if (
+      customProxyHeader &&
+      !request.headers[customProxyHeader] &&
+      this.config.proxycache?.proxy_header_ip
+    ) {
+      // TODO: check how to get remoteIp from KibanaRequest and add remoteIp to this header
+      authHeaders[customProxyHeader] = this.config.proxycache!.proxy_header_ip;
+    }
+    return authHeaders;
+  }
+
+  getCookie(request: KibanaRequest, authInfo: any): SecuritySessionCookie {
+    const cookie: SecuritySessionCookie = {
+      username: authInfo.username,
+      credentials: {},
+      authType: this.authType,
+      isAnonymousAuth: false,
+      expiryTime: Date.now() + this.config.cookie.ttl,
+    };
+    if (this.userHeaderName && request.headers[this.userHeaderName]) {
+      cookie.credentials[this.userHeaderName] = request.headers[this.userHeaderName];
+    }
+    if (this.roleHeaderName) {
+      cookie.credentials[this.roleHeaderName] = request.headers[this.roleHeaderName];
+    }
+    if (request.headers[ProxyAuthentication.XFF]) {
+      cookie.credentials[ProxyAuthentication.XFF] = request.headers[ProxyAuthentication.XFF];
+    }
+    if (request.headers.authorization) {
+      cookie.credentials.authorization = request.headers.authorization;
+    }
+    return cookie;
+  }
+
+  isValidCookie(cookie: SecuritySessionCookie): boolean {
+    return (
+      cookie.authType === this.type &&
+      cookie.username &&
+      cookie.expiryTime &&
+      cookie.credentials[this.userHeaderName]
+    );
+  }
+
+  redirectToAuth(
+    request: KibanaRequest,
+    response: LifecycleResponseFactory,
+    toolkit: AuthToolkit
+  ): IKibanaResponse | AuthResult {
+    const loginEndpoint = this.config.proxycache?.login_endpoint;
+    if (loginEndpoint) {
+      return toolkit.redirected({
+        location: loginEndpoint,
+      });
+    } else {
+      return toolkit.notHandled(); // TODO: redirect to error page?
+    }
+  }
+
+  buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any {
+    const authHeaders: any = {};
+    if (get(cookie.credentials, this.userHeaderName)) {
+      authHeaders[this.userHeaderName] = cookie.credentials[this.userHeaderName];
+      if (get(cookie.credentials, this.roleHeaderName)) {
+        authHeaders[this.roleHeaderName] = cookie.credentials[this.roleHeaderName];
+      }
+      if (get(cookie.credentials, ProxyAuthentication.XFF)) {
+        authHeaders[ProxyAuthentication.XFF] = cookie.credentials[ProxyAuthentication.XFF];
+      }
+      return authHeaders;
+    } else if (get(cookie.credentials, 'authorization')) {
+      authHeaders.authorization = get(cookie.credentials, 'authorization');
+      return authHeaders;
+    }
   }
 }

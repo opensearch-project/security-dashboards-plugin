@@ -15,8 +15,6 @@
 
 import * as fs from 'fs';
 import wreck from '@hapi/wreck';
-import { SecurityPluginConfigType } from '../../..';
-
 import {
   Logger,
   AuthenticationHandler,
@@ -24,11 +22,17 @@ import {
   CoreSetup,
   IRouter,
   ILegacyClusterClient,
-} from '../../../../../../src/core/server';
+  KibanaRequest,
+  LifecycleResponseFactory,
+  AuthToolkit,
+  IKibanaResponse,
+} from 'kibana/server';
+import { SecurityPluginConfigType } from '../../..';
+
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { OpenIdAuthRoutes } from './routes';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
-import { IAuthenticationType } from '../authentication_type';
+import { IAuthenticationType, AuthenticationType } from '../authentication_type';
 
 export interface OpenIdAuthConfig {
   ca?: Buffer | undefined;
@@ -40,22 +44,23 @@ export interface OpenIdAuthConfig {
   authHeaderName?: string;
 }
 
-export class OpenIdAuthentication implements IAuthenticationType {
+export class OpenIdAuthentication extends AuthenticationType implements IAuthenticationType {
   public readonly type: string = 'openid';
 
   private openIdAuthConfig: OpenIdAuthConfig;
   private authHeaderName: string;
   private openIdConnectUrl: string;
-  private securityClient: SecurityClient;
+  // private securityClient: SecurityClient;
 
   constructor(
-    private readonly config: SecurityPluginConfigType,
-    private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
-    private readonly router: IRouter,
-    private readonly esClient: ILegacyClusterClient,
-    private readonly core: CoreSetup,
-    private readonly logger: Logger
+    config: SecurityPluginConfigType,
+    sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
+    router: IRouter,
+    esClient: ILegacyClusterClient,
+    core: CoreSetup,
+    logger: Logger
   ) {
+    super(config, sessionStorageFactory, router, esClient, core, logger);
     this.openIdAuthConfig = {};
 
     if (this.config.openid?.root_ca) {
@@ -69,7 +74,7 @@ export class OpenIdAuthentication implements IAuthenticationType {
     this.openIdAuthConfig.authHeaderName = this.authHeaderName;
 
     this.openIdConnectUrl = this.config.openid?.connect_url || '';
-    this.securityClient = new SecurityClient(this.esClient);
+    // this.securityClient = new SecurityClient(this.esClient);
 
     this.init();
   }
@@ -89,7 +94,7 @@ export class OpenIdAuthentication implements IAuthenticationType {
         this.sessionStorageFactory,
         this.openIdAuthConfig,
         this.securityClient,
-        this.core
+        this.coreSetup
       );
       routes.setupRoutes();
     } catch (error) {
@@ -98,6 +103,7 @@ export class OpenIdAuthentication implements IAuthenticationType {
     }
   }
 
+  /*
   public authHandler: AuthenticationHandler = async (request, response, toolkit) => {
     let cookie: SecuritySessionCookie | null;
     try {
@@ -105,7 +111,7 @@ export class OpenIdAuthentication implements IAuthenticationType {
       if (!cookie) {
         return response.redirected({
           headers: {
-            location: `${this.core.http.basePath.serverBasePath}/auth/openid/login`,
+            location: `${this.coreSetup.http.basePath.serverBasePath}/auth/openid/login`,
           },
         });
       }
@@ -131,4 +137,55 @@ export class OpenIdAuthentication implements IAuthenticationType {
     }
     return toolkit.authenticated();
   };
+  */
+
+  requestIncludesAuthInfo(request: KibanaRequest): boolean {
+    return request.headers.authorization ? true : false;
+  }
+
+  getAdditionalAuthHeader(request: KibanaRequest): any {
+    return {};
+  }
+
+  getCookie(request: KibanaRequest, authInfo: any): SecuritySessionCookie {
+    return {
+      username: authInfo.user_name,
+      credentials: {
+        authHeaderValue: request.headers.authorization,
+      },
+      authType: this.type,
+      expiryTime: Date.now() + this.config.cookie.ttl,
+    };
+  }
+
+  // TODO: Add token expiration check here
+  isValidCookie(cookie: SecuritySessionCookie): boolean {
+    return (
+      cookie.authType === this.type &&
+      cookie.username &&
+      cookie.expiryTime &&
+      cookie.credentials?.authHeaderValue
+    );
+  }
+
+  redirectToAuth(
+    request: KibanaRequest,
+    response: LifecycleResponseFactory,
+    toolkit: AuthToolkit
+  ): IKibanaResponse {
+    return response.redirected({
+      headers: {
+        location: `${this.coreSetup.http.basePath.serverBasePath}/auth/openid/login`,
+      },
+    });
+  }
+
+  buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any {
+    const header: any = {};
+    const authHeaderValue = cookie.credentials?.authHeaderValue;
+    if (authHeaderValue) {
+      header.authorization = authHeaderValue;
+    }
+    return header;
+  }
 }

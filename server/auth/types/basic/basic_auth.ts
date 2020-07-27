@@ -18,20 +18,20 @@ import { cloneDeep } from 'lodash';
 import { format } from 'url';
 import { stringify } from 'querystring';
 import {
-  AuthenticationHandler,
+  CoreSetup,
   SessionStorageFactory,
   IRouter,
   ILegacyClusterClient,
   KibanaRequest,
   Logger,
-} from '../../../../../../src/core/server';
+  LifecycleResponseFactory,
+  AuthToolkit,
+} from 'kibana/server';
+import { KibanaResponse } from 'src/core/server/http/router';
 import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
-import { CoreSetup } from '../../../../../../src/core/server';
-import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { BasicAuthRoutes } from './routes';
-import { isMultitenantPath, resolveTenant } from '../../../multitenancy/tenant_resolver';
-import { IAuthenticationType } from '../authentication_type';
+import { IAuthenticationType, AuthenticationType } from '../authentication_type';
 
 // TODO: change to interface
 export class AuthConfig {
@@ -45,33 +45,25 @@ export class AuthConfig {
   ) {}
 }
 
-export class BasicAuthentication implements IAuthenticationType {
+export class BasicAuthentication extends AuthenticationType implements IAuthenticationType {
   private static readonly AUTH_HEADER_NAME: string = 'authorization';
   private static readonly ALLOWED_ADDITIONAL_AUTH_HEADERS: string[] = ['security_impersonate_as'];
-  private static readonly ROUTES_TO_IGNORE: string[] = [
-    '/bundles/app/security-login/bootstrap.js', // TODO: remove/update the js file path
-    '/bundles/app/security-customerror/bootstrap.js',
-    '/api/core/capabilities', // FIXME: need to figureout how to bypass this API call
-    '/app/login',
-  ];
 
-  // private readonly unauthenticatedRoutes: string[];
-  private readonly securityClient: SecurityClient;
   private readonly authConfig: AuthConfig;
 
   public readonly type: string = 'basicauth';
 
   constructor(
-    private readonly config: SecurityPluginConfigType,
-    private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
-    private readonly router: IRouter,
-    private readonly esClient: ILegacyClusterClient,
-    private readonly coreSetup: CoreSetup,
-    private readonly logger: Logger
+    config: SecurityPluginConfigType,
+    sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
+    router: IRouter,
+    esClient: ILegacyClusterClient,
+    coreSetup: CoreSetup,
+    logger: Logger
   ) {
-    const multitenantEnabled = config.multitenancy?.enabled || false;
+    super(config, sessionStorageFactory, router, esClient, coreSetup, logger);
 
-    this.securityClient = new SecurityClient(this.esClient);
+    const multitenantEnabled = config.multitenancy?.enabled || false;
     this.authConfig = new AuthConfig(
       'basicauth',
       BasicAuthentication.AUTH_HEADER_NAME,
@@ -80,7 +72,6 @@ export class BasicAuthentication implements IAuthenticationType {
       multitenantEnabled,
       true
     );
-    // this.unauthenticatedRoutes = this.config.auth.unauthenticated_routes;
 
     this.init();
   }
@@ -104,74 +95,52 @@ export class BasicAuthentication implements IAuthenticationType {
     return stringify({ nextUrl });
   }
 
-  /**
-   * Basic Authentication auth handler. Registered to core.http if basic authentication is enabled.
-   */
-  authHandler: AuthenticationHandler = async (request, response, toolkit) => {
-    const pathname = request.url.pathname;
-    if (pathname && BasicAuthentication.ROUTES_TO_IGNORE.includes(pathname)) {
-      return toolkit.authenticated();
-    }
+  // override functions inherited from AuthenticationType
+  requestIncludesAuthInfo(request: KibanaRequest<unknown, unknown, unknown, any>): boolean {
+    return request.headers[BasicAuthentication.AUTH_HEADER_NAME] ? true : false;
+  }
 
-    if (pathname && this.config.auth.unauthenticated_routes.indexOf(pathname) > -1) {
-      // TODO: user kibana server user
-      return toolkit.authenticated();
-    }
+  getAdditionalAuthHeader(request: KibanaRequest<unknown, unknown, unknown, any>) {
+    return {};
+  }
 
-    let cookie: SecuritySessionCookie | null;
-    try {
-      cookie = await this.sessionStorageFactory.asScoped(request).get();
-      // TODO: need to do auth for each all?
-      if (!cookie || !cookie.credentials) {
-        if (request.url.pathname === '/' || request.url.pathname?.startsWith('/app')) {
-          // requesting access to an application page, redirect to login
-          const nextUrlParam = this.composeNextUrlQeuryParam(request);
-          const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}/app/login?${nextUrlParam}`;
-          return response.redirected({
-            headers: {
-              location: `${redirectLocation}`,
-            },
-          });
-        }
-        return response.unauthorized();
-      }
+  getCookie(request: KibanaRequest, authInfo: any): SecuritySessionCookie {
+    return {
+      username: authInfo.user_name,
+      credentials: {
+        authHeaderValue: request.headers[BasicAuthentication.AUTH_HEADER_NAME],
+      },
+      authType: this.type,
+      expiryTime: Date.now() + this.config.cookie.ttl,
+    };
+  }
 
-      const headers = {};
+  isValidCookie(cookie: SecuritySessionCookie): boolean {
+    return (
+      cookie.authType === this.type &&
+      cookie.username &&
+      cookie.expiryTime &&
+      cookie.credentials?.authHeaderValue
+    );
+  }
 
-      // set cookie to extend ttl
-      cookie.expiryTime = Date.now() + this.config.cookie.ttl;
-      this.sessionStorageFactory.asScoped(request).set(cookie);
+  redirectToAuth(
+    request: KibanaRequest,
+    response: LifecycleResponseFactory,
+    toolkit: AuthToolkit
+  ): KibanaResponse {
+    const nextUrlParam = this.composeNextUrlQeuryParam(request);
+    const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}/app/login?${nextUrlParam}`;
+    return response.redirected({
+      headers: {
+        location: `${redirectLocation}`,
+      },
+    });
+  }
 
-      // pass credentials to request to Elasticsearch
-      Object.assign(headers, { authorization: cookie.credentials?.authHeaderValue });
-
-      // add tenant to Elasticsearch request headers
-      if (this.config.multitenancy?.enabled && isMultitenantPath(request)) {
-        // TODO: consider move tenant resolution to postAuthHandler?
-        const authInfo = await this.securityClient.authinfo(request, headers);
-        const selectedTenant = resolveTenant(
-          request,
-          authInfo.user_name,
-          authInfo.tenants,
-          this.config,
-          cookie
-        );
-        Object.assign(headers, { securitytenant: selectedTenant });
-
-        if (selectedTenant !== cookie.tenant) {
-          cookie.tenant = selectedTenant;
-          this.sessionStorageFactory.asScoped(request).set(cookie);
-        }
-      }
-
-      return toolkit.authenticated({
-        // state: credentials,
-        requestHeaders: headers,
-      });
-    } catch (error) {
-      this.logger.error(`Failed authentication: ${error}`);
-      return toolkit.notHandled();
-      // TODO: redirect using response?
-    }
-  };
+  buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any {
+    const headers: any = {};
+    Object.assign(headers, { authorization: cookie.credentials?.authHeaderValue });
+    return headers;
+  }
 }

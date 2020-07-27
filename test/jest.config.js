@@ -23,6 +23,7 @@ module.exports = {
     // "\\.(css|less|scss)$": "<rootDir>/test/mocks/styleMock.ts",
     // "^ui/(.*)": "<rootDir>/../../src/legacy/ui/public/$1/",
   },
+  modulePathIgnorePatterns: ['<rootDir>/target/'],
   coverageReporters: ['lcov', 'text', 'cobertura'],
   testMatch: ['**/*.test.js', '**/*.test.jsx', '**/*.test.ts', '**/*.test.tsx'],
   collectCoverageFrom: [

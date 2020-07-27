@@ -14,6 +14,7 @@
  */
 
 import { escape } from 'querystring';
+import { CoreSetup } from 'kibana/server';
 import { SecurityPluginConfigType } from '../../..';
 import {
   AuthenticationHandler,
@@ -23,32 +24,35 @@ import {
   KibanaRequest,
   AuthToolkit,
   Logger,
+  LifecycleResponseFactory,
+  IKibanaResponse,
+  AuthResult,
 } from '../../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
-import { CoreSetup } from '../../../../../../src/core/server';
-import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { SamlAuthRoutes } from './routes';
-import { IAuthenticationType } from '../authentication_type';
+import { IAuthenticationType, AuthenticationType } from '../authentication_type';
 
-export class SamlAuthentication implements IAuthenticationType {
+export class SamlAuthentication extends AuthenticationType implements IAuthenticationType {
   public static readonly AUTH_HEADER_NAME = 'authorization';
 
   public readonly type: string = 'saml';
 
-  private readonly securityClient: SecurityClient;
+  // private readonly securityClient: SecurityClient;
 
   constructor(
-    private readonly config: SecurityPluginConfigType,
-    private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
-    private readonly router: IRouter,
-    private readonly esClient: ILegacyClusterClient,
-    private readonly coreSetup: CoreSetup,
-    private readonly logger: Logger
+    config: SecurityPluginConfigType,
+    sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
+    router: IRouter,
+    esClient: ILegacyClusterClient,
+    coreSetup: CoreSetup,
+    logger: Logger
   ) {
-    this.securityClient = new SecurityClient(esClient);
+    super(config, sessionStorageFactory, router, esClient, coreSetup, logger);
+    // this.securityClient = new SecurityClient(esClient);
     this.setupRoutes();
   }
 
+  /*
   authHandler: AuthenticationHandler = async (request, response, toolkit) => {
     let cookie;
     try {
@@ -106,6 +110,7 @@ export class SamlAuthentication implements IAuthenticationType {
 
     return this.redirectToLoginUri(request, toolkit);
   };
+  */
 
   private generateNextUrl(request: KibanaRequest): string {
     const path = request.url.path || `${this.coreSetup.http.basePath.serverBasePath}/app/kibana`;
@@ -128,5 +133,47 @@ export class SamlAuthentication implements IAuthenticationType {
       this.coreSetup
     );
     samlAuthRoutes.setupRoutes();
+  }
+
+  requestIncludesAuthInfo(request: KibanaRequest): boolean {
+    return request.headers[SamlAuthentication.AUTH_HEADER_NAME] ? true : false;
+  }
+
+  getAdditionalAuthHeader(request: KibanaRequest): any {
+    return {};
+  }
+
+  getCookie(request: KibanaRequest, authInfo: any): SecuritySessionCookie {
+    return {
+      username: authInfo.user_name,
+      credentials: {
+        authHeaderValue: request.headers[SamlAuthentication.AUTH_HEADER_NAME],
+      },
+      authType: this.type,
+      expiryTime: Date.now() + this.config.cookie.ttl,
+    };
+  }
+
+  isValidCookie(cookie: SecuritySessionCookie): boolean {
+    return (
+      cookie.authType === this.type &&
+      cookie.username &&
+      cookie.expiryTime &&
+      cookie.credentials?.authHeaderValue
+    );
+  }
+
+  redirectToAuth(
+    request: KibanaRequest,
+    response: LifecycleResponseFactory,
+    toolkit: AuthToolkit
+  ): IKibanaResponse | AuthResult {
+    return this.redirectToLoginUri(request, toolkit);
+  }
+
+  buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any {
+    const headers: any = {};
+    headers[SamlAuthentication.AUTH_HEADER_NAME] = cookie.credentials?.authHeaderValue;
+    return headers;
   }
 }
