@@ -31,45 +31,91 @@ import {
   EuiTitle,
   EuiIcon,
   EuiSearchBarProps,
+  EuiButtonIcon,
+  RIGHT_ALIGNMENT,
 } from '@elastic/eui';
 import { difference } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import { AppDependencies } from '../../types';
 import { ActionGroupListingItem, getAllPermissionsListing } from '../utils/action-groups-utils';
 import { renderCustomization } from '../utils/display-utils';
 import { requestDeleteUsers } from '../utils/internal-user-list-utils';
 
+interface ExpandedRowMapInterface {
+  [key: string]: React.ReactNode;
+}
+
 function renderBooleanToCheckMark(value: boolean): React.ReactNode {
   return value ? <EuiIcon type="check" /> : '';
 }
 
-const COLUMNS = [
-  {
-    field: 'name',
-    name: 'Name',
-    sortable: true,
-  },
-  {
-    field: 'type',
-    name: 'Type',
-    sortable: true,
-  },
-  {
-    field: 'hasClusterPermission',
-    name: 'Cluster permission',
-    render: renderBooleanToCheckMark,
-  },
-  {
-    field: 'hasIndexPermission',
-    name: 'Index permission',
-    render: renderBooleanToCheckMark,
-  },
-  {
-    field: 'reserved',
-    name: 'Customization',
-    render: renderCustomization,
-  },
-];
+function toggleRowDetails(
+  item: ActionGroupListingItem,
+  setItemIdToExpandedRowMap: Dispatch<SetStateAction<ExpandedRowMapInterface>>
+) {
+  setItemIdToExpandedRowMap((prevState) => {
+    const itemIdToExpandedRowMapValues = { ...prevState };
+    if (itemIdToExpandedRowMapValues[item.name]) {
+      delete itemIdToExpandedRowMapValues[item.name];
+    } else {
+      // TODO: Replace with treeview
+      itemIdToExpandedRowMapValues[item.name] = (
+        <ul>
+          {item.allowedActions.map((action) => (
+            <li>{action}</li>
+          ))}
+        </ul>
+      );
+    }
+    return itemIdToExpandedRowMapValues;
+  });
+}
+
+function getColumns(
+  itemIdToExpandedRowMap: ExpandedRowMapInterface,
+  setItemIdToExpandedRowMap: Dispatch<SetStateAction<ExpandedRowMapInterface>>
+) {
+  return [
+    {
+      field: 'name',
+      name: 'Name',
+      sortable: true,
+    },
+    {
+      field: 'type',
+      name: 'Type',
+      sortable: true,
+    },
+    {
+      field: 'hasClusterPermission',
+      name: 'Cluster permission',
+      render: renderBooleanToCheckMark,
+    },
+    {
+      field: 'hasIndexPermission',
+      name: 'Index permission',
+      render: renderBooleanToCheckMark,
+    },
+    {
+      field: 'reserved',
+      name: 'Customization',
+      render: renderCustomization,
+    },
+    {
+      align: RIGHT_ALIGNMENT,
+      width: '40px',
+      isExpander: true,
+      render: (item: ActionGroupListingItem) =>
+        item.type === 'Action group' && (
+          <EuiButtonIcon
+            onClick={() => toggleRowDetails(item, setItemIdToExpandedRowMap)}
+            aria-label={itemIdToExpandedRowMap[item.name] ? 'Collapse' : 'Expand'}
+            iconType={itemIdToExpandedRowMap[item.name] ? 'arrowUp' : 'arrowDown'}
+          />
+        ),
+    },
+  ];
+}
 
 const SEARCH_OPTIONS: EuiSearchBarProps = {
   box: { placeholder: 'Search for action group name or permission name' },
@@ -113,6 +159,7 @@ export function PermissionList(props: AppDependencies) {
   const [selection, setSelection] = useState<ActionGroupListingItem[]>([]);
   const [isActionsPopoverOpen, setActionsPopoverOpen] = useState(false);
   const [isCreateActionGroupPopoverOpen, setCreateActionGroupPopoverOpen] = useState(false);
+  const [itemIdToExpandedRowMap, setItemIdToExpandedRowMap] = useState<ExpandedRowMapInterface>({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -262,7 +309,7 @@ export function PermissionList(props: AppDependencies) {
         <EuiPageBody>
           <EuiInMemoryTable
             loading={actionGroups === [] && !errorFlag}
-            columns={COLUMNS}
+            columns={getColumns(itemIdToExpandedRowMap, setItemIdToExpandedRowMap)}
             items={actionGroups}
             itemId={'name'}
             pagination
@@ -270,6 +317,8 @@ export function PermissionList(props: AppDependencies) {
             selection={{ onSelectionChange: setSelection }}
             sorting={{ sort: { field: 'type', direction: 'asc' } }}
             error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
+            isExpandable={true}
+            itemIdToExpandedRowMap={itemIdToExpandedRowMap}
           />
         </EuiPageBody>
       </EuiPageContent>
