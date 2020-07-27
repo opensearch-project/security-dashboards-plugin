@@ -116,7 +116,7 @@ export function setGlobalBreadcrumbs(
   resourceType: ResourceType,
   pageTitle?: string
 ) {
-  const breadcrumbs: [{ text: string; href?: string }] = [
+  const breadcrumbs: Array<{ text: string; href?: string }> = [
     {
       text: 'Security',
       href: buildHashUrl(),
