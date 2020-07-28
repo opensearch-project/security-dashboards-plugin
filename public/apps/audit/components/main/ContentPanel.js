@@ -12,7 +12,7 @@ import {
 const ContentPanel = ({ title, children, configureHandler }) => (
   <Fragment>
     <EuiPanel paddingSize="none">
-      <div style={{ padding: 20, paddingBottom: 0 }}>
+      <div style={{ padding: 20, paddingBottom: 12 }}>
         <EuiFlexGroup>
           <EuiFlexItem>
             <EuiTitle>
@@ -27,7 +27,7 @@ const ContentPanel = ({ title, children, configureHandler }) => (
         </EuiFlexGroup>
       </div>
       <EuiHorizontalRule margin="xs" />
-      <div style={{ padding: 32, paddingBottom: 0 }}>{children}</div>
+      <div style={{ padding: 24, paddingBottom: 0 }}>{children}</div>
     </EuiPanel>
   </Fragment>
 );
