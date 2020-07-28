@@ -40,6 +40,12 @@ interface PermissionEditModalDeps {
   handleSave: (groupName: string, allowedActions: string[]) => Promise<void>;
 }
 
+const TITLE_DICT: { [key: string]: string } = {
+  [Action.create]: 'Create new action group',
+  [Action.edit]: 'Edit action group',
+  [Action.duplicate]: 'Duplicate action group',
+};
+
 export function PermissionEditModal(props: PermissionEditModalDeps) {
   const [groupName, setGroupName] = useState<string>(props.groupName);
   const [allowedActions, setAllowedActions] = useState<ComboBoxOptions>(
@@ -57,7 +63,7 @@ export function PermissionEditModal(props: PermissionEditModalDeps) {
     <EuiOverlayMask>
       <EuiModal onClose={props.handleClose}>
         <EuiModalHeader>
-          <EuiModalHeaderTitle>Create new action group</EuiModalHeaderTitle>
+          <EuiModalHeaderTitle>{TITLE_DICT[props.action]}</EuiModalHeaderTitle>
         </EuiModalHeader>
 
         <EuiModalBody>
