@@ -17,7 +17,6 @@ import {
   CONFIG_LABELS,
   SETTING_GROUPS,
   RESPONSE_MESSAGES,
-  CALLOUT_MESSAGES,
   TOAST_MESSAGES,
 } from './config';
 import ContentPanel from './ContentPanel';
@@ -118,19 +117,6 @@ export class Main extends Component {
       });
   };
 
-  renderCallout = messages => {
-    return (
-      <Fragment>
-        <EuiCallOut title="Warning" color="warning">
-          {messages.map((message, index) => {
-            return <p key={index}>{message}</p>;
-          })}
-        </EuiCallOut>
-        <EuiSpacer />
-      </Fragment>
-    );
-  };
-
   renderError = () => {
     const { showError } = this.state;
     return showError ? (
@@ -180,7 +166,6 @@ export class Main extends Component {
         </EuiTitle>
         <EuiSpacer size="m" />
         <EuiPanel>
-          {this.renderCallout(CALLOUT_MESSAGES.AUDIT_SETTINGS)}
           <EditSettingGroup
             settingGroup={SETTING_GROUPS.LAYER_SETTINGS}
             config={editConfig}
@@ -215,14 +200,13 @@ export class Main extends Component {
         <EuiSpacer size="m" />
         <EuiPanel>
           <EditSettingGroup
-            settingGroup={SETTING_GROUPS.COMPLIANCE_MODE_SETTINGS}
+            settingGroup={SETTING_GROUPS.COMPLIANCE_LOGGING_SETTINGS}
             config={editConfig}
             handleChange={this.handleChange}
             readonly={readonly}
           />
           {editConfig.compliance.enabled && (
             <Fragment>
-              {this.renderCallout(CALLOUT_MESSAGES.COMPLIANCE_SETTINGS)}
               <EditSettingGroup
                 settingGroup={SETTING_GROUPS.COMPLIANCE_CONFIG_SETTINGS}
                 config={editConfig}
@@ -230,7 +214,7 @@ export class Main extends Component {
                 readonly={readonly}
                 showPanel={true}
               />
-              <EuiSpacer size="s" />
+              <EuiSpacer />
               <EditSettingGroup
                 settingGroup={SETTING_GROUPS.COMPLIANCE_READ_SETTINGS}
                 config={editConfig}
@@ -239,7 +223,7 @@ export class Main extends Component {
                 readonly={readonly}
                 showPanel={true}
               />
-              <EuiSpacer size="s" />
+              <EuiSpacer />
               <EditSettingGroup
                 settingGroup={SETTING_GROUPS.COMPLIANCE_WRITE_SETTINGS}
                 config={editConfig}
@@ -266,6 +250,7 @@ export class Main extends Component {
             handleChange={this.handleChangeWithSave}
             readonly={readonly}
           />
+          <EuiSpacer size="s" />
         </ContentPanel>
         {config.enabled && (
           <Fragment>
