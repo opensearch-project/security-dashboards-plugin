@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import {
+  EuiCallOut,
   EuiCodeBlock,
   EuiComboBox,
   EuiDescribedFormGroup,
@@ -84,9 +85,8 @@ function EditSettingGroup({
           <EuiTextColor color="subdued">
             <p>
               {setting.content}
-              <br />
               <EuiLink href={setting.url}>
-                Learn more in the documentation
+                Learn more
                 <EuiIcon type="popout" />
               </EuiLink>
             </p>
@@ -104,6 +104,20 @@ function EditSettingGroup({
         <EuiCodeBlock language="json" paddingSize="none" isCopyable>
           {setting.code}
         </EuiCodeBlock>
+      </Fragment>
+    );
+  };
+
+  const renderCallout = message => {
+    return (
+      <Fragment>
+        <EuiCallOut>
+          <EuiText size="s">
+            <EuiTextColor color="default">
+              <p>{message}</p>
+            </EuiTextColor>
+          </EuiText>
+        </EuiCallOut>
       </Fragment>
     );
   };
@@ -129,11 +143,12 @@ function EditSettingGroup({
                   <Fragment>
                     {setting.description}
                     {setting.code && renderCodeBlock(setting)}
+                    {setting.note && renderCallout(setting.note)}
                   </Fragment>
                 }
                 fullWidth
               >
-                <EuiFormRow label={displayLabel(setting.path)}>
+                <EuiFormRow label={setting.hideLabel ? null : displayLabel(setting.path)}>
                   {renderField(config, setting, handleChange, handleInvalid)}
                 </EuiFormRow>
               </EuiDescribedFormGroup>
@@ -146,7 +161,6 @@ function EditSettingGroup({
   return renderedSettings ? (
     <Fragment>
       {showPanel ? <EuiPanel>{renderedSettings}</EuiPanel> : renderedSettings}
-      <EuiSpacer size="xs" />
     </Fragment>
   ) : null;
 }

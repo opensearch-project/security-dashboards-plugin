@@ -1,3 +1,5 @@
+import React, { Fragment } from 'react';
+
 export const AUDIT_API = {
   PUT: '../api/v1/configuration/audit/config',
   GET: '../api/v1/configuration/audit',
@@ -29,28 +31,17 @@ export const RESPONSE_MESSAGES = {
   UPDATE_FAILURE: 'Audit configuration could not be updated. Please check configuration.',
 };
 
-export const CALLOUT_MESSAGES = {
-  AUDIT_SETTINGS: [
-    'Enabling REST and Transport layers (audit:enable_rest, audit:enable_transport) may result in a massive number of logs if AUTHENTICATED and GRANTED_PRIVILEGES are not disabled. We suggest you ignore common requests if doing so.',
-    'Enabling Bulk requests (config:audit:resolve_bulk_requests) will generate one log per request, and may also result in very large log files.',
-  ],
-  COMPLIANCE_SETTINGS: [
-    'Configuring Watched fields and Watched indices (compliance:read_watch_fields, compliance:write_watched_indices) will generate one log per document access, and may result in very large logs files being generated if monitoring commonly accessed indices and fields.',
-  ],
-};
-
 const CONFIG = {
   ENABLED: {
     title: 'Enable audit logging',
     path: 'enabled',
-    description: 'Enable or disable audit logging',
     type: 'bool',
+    hideLabel: true,
   },
   STORAGE: {
-    title: 'Configure Storage',
+    title: 'Storage location',
     path: '',
-    description: 'Where should Elasticsearch store or send audit logs',
-    content: 'Configure the output location and storage types in elasticsearch.yml',
+    content: <Fragment>Configure the output location and storage types in <code>elasticsearch.yml</code> . The default storage location is <code>internal_elasticsearch</code>, which stores the logs in an index on this cluster. </Fragment>,
     url: 'https://opendistro.github.io/for-elasticsearch-docs/docs/security/audit-logs/',
     type: 'text',
   },
@@ -58,48 +49,53 @@ const CONFIG = {
     REST_LAYER: {
       title: 'REST layer',
       path: 'audit.enable_rest',
-      description: 'Enable or disable auditing events that happen on the REST layer',
+      description: 'Enable or disable auditing events that happen on the REST layer.',
       type: 'bool',
     },
     REST_DISABLED_CATEGORIES: {
       title: 'REST disabled categories',
       path: 'audit.disabled_rest_categories',
-      description: 'Specify audit categories which must be ignored on the REST layer',
+      description: 'Specify audit categories which must be ignored on the REST layer.',
       type: 'array',
       options: [
+        'AUTHENTICATED',
         'BAD_HEADERS',
         'FAILED_LOGIN',
-        'MISSING_PRIVILEGES',
         'GRANTED_PRIVILEGES',
-        'SSL_EXCEPTION',
-        'AUTHENTICATED',
+        'MISSING_PRIVILEGES',
+        'SSL_EXCEPTION'
       ],
+      note: <Fragment>We <em>highly</em> recommend excluding GRANTED_PRIVILEGES and AUTHENTICATED. If enabled, these categories can result in a huge number of logs.</Fragment>,
     },
     TRANSPORT_LAYER: {
       title: 'Transport layer',
       path: 'audit.enable_transport',
-      description: 'Enable or disable auditing events that happen on the Transport layer',
+      description: 'Enable or disable auditing events that happen on the Transport layer.',
       type: 'bool',
     },
     TRANSPORT_DISABLED_CATEGORIES: {
       title: 'Transport disabled categories',
       path: 'audit.disabled_transport_categories',
-      description: 'Specify audit categories which must be ignored on the Transport layer',
+      description: 'Specify audit categories which must be ignored on the Transport layer.',
       type: 'array',
       options: [
+        'AUTHENTICATED',
         'BAD_HEADERS',
         'FAILED_LOGIN',
-        'MISSING_PRIVILEGES',
         'GRANTED_PRIVILEGES',
+        'INDEX_EVENT',
+        'MISSING_PRIVILEGES',
+        'OPENDISTRO_SECURITY_INDEX_ATTEMPT',
         'SSL_EXCEPTION',
-        'AUTHENTICATED',
       ],
+      note: <Fragment>We <em>highly</em> recommend excluding GRANTED_PRIVILEGES and AUTHENTICATED. If enabled, these categories can result in a huge number of logs.</Fragment>
     },
     BULK_REQUESTS: {
       title: 'Bulk requests',
       path: 'audit.resolve_bulk_requests',
       description: 'Resolve bulk requests during auditing of requests.',
       type: 'bool',
+      note: 'Enabling bulk requests generates one log per operation in the request. If you enable this setting, a single bulk request that indexes 10,000 documents results in 10,000 logs. If you disable this setting, that same request results in one log.',
     },
     REQUEST_BODY: {
       title: 'Request body',
@@ -116,7 +112,7 @@ const CONFIG = {
     SENSITIVE_HEADERS: {
       title: 'Sensitive headers',
       path: 'audit.exclude_sensitive_headers',
-      description: 'Exclude sensitive headers during auditing. Eg: Authorization header',
+      description: 'Exclude sensitive headers during auditing. Eg: Authorization header.',
       type: 'bool',
     },
     IGNORED_USERS: {
@@ -134,27 +130,33 @@ const CONFIG = {
   },
   COMPLIANCE: {
     ENABLED: {
-      title: 'Enable compliance mode',
+      title: 'Compliance logging',
       path: 'compliance.enabled',
-      description: 'Enable or disable compliance logging',
+      description: 'Enable or disable compliance logging.',
+      type: 'bool',
+      hideLabel: true,
+    },
+    MODE: {
+      title: 'Compliance mode',
+      path: 'compliance.enabled',
       type: 'bool',
     },
     INTERNAL_CONFIG: {
       title: 'Internal config logging',
       path: 'compliance.internal_config',
-      description: 'Enable or disable logging of events on internal security index',
+      description: 'Enable or disable logging of events on internal security index.',
       type: 'bool',
     },
     EXTERNAL_CONFIG: {
       title: 'External config logging',
       path: 'compliance.external_config',
-      description: 'Enable or disable logging of external configuration',
+      description: 'Enable or disable logging of external configuration.',
       type: 'bool',
     },
     READ_METADATA_ONLY: {
       title: 'Read metadata',
       path: 'compliance.read_metadata_only',
-      description: 'Do not log any document fields. Log only metadata of the document',
+      description: 'Do not log any document fields. Log only metadata of the document.',
       type: 'bool',
     },
     READ_IGNORED_USERS: {
@@ -167,7 +169,7 @@ const CONFIG = {
       title: 'Watched fields',
       path: 'compliance.read_watched_fields',
       description:
-        'List the indices and fields to watch during read events. Sample data content is as follows',
+        'List the indices and fields to watch during read events. Sample data content is as follows:',
       type: 'map',
       code: `{
   "index-name-pattern": ["field-name-pattern"],
@@ -175,17 +177,18 @@ const CONFIG = {
   "twitter": ["id", "user*"]
 }`,
       error: 'Invalid content. Please check sample data content.',
+      note: 'Adding watched fields generates one log each time a user accesses a document and could result in a large number of logs. We don\'t recommend adding frequently accessed fields.'
     },
     WRITE_METADATA_ONLY: {
       title: 'Write metadata',
       path: 'compliance.write_metadata_only',
-      description: 'Do not log any document content. Log only metadata of the document',
+      description: 'Do not log any document content. Log only metadata of the document.',
       type: 'bool',
     },
     WRITE_LOG_DIFFS: {
       title: 'Log diffs',
       path: 'compliance.write_log_diffs',
-      description: 'Log only diffs for document updates',
+      description: 'Log only diffs for document updates.',
       type: 'bool',
     },
     WRITE_IGNORED_USERS: {
@@ -199,13 +202,14 @@ const CONFIG = {
       path: 'compliance.write_watched_indices',
       description: 'List the indices to watch during write events.',
       type: 'array',
+      note: 'Adding watched indices generates one log each time a user accesses a document and could result in a large number of logs. We don\'t recommend adding frequently accessed indices.',
     },
   },
 };
 
 export const SETTING_GROUPS = {
   AUDIT_SETTINGS: {
-    settings: [CONFIG.ENABLED, CONFIG.STORAGE],
+    settings: [CONFIG.STORAGE, CONFIG.ENABLED],
   },
   LAYER_SETTINGS: {
     title: CONFIG_LABELS.LAYER_SETTINGS,
@@ -229,9 +233,12 @@ export const SETTING_GROUPS = {
     title: CONFIG_LABELS.IGNORE_SETTINGS,
     settings: [CONFIG.AUDIT.IGNORED_USERS, CONFIG.AUDIT.IGNORED_REQUESTS],
   },
-  COMPLIANCE_MODE_SETTINGS: {
+  COMPLIANCE_LOGGING_SETTINGS: {
     title: CONFIG_LABELS.COMPLIANCE_MODE,
     settings: [CONFIG.COMPLIANCE.ENABLED],
+  },
+  COMPLIANCE_MODE_SETTINGS: {
+    settings: [CONFIG.COMPLIANCE.MODE],
   },
   COMPLIANCE_CONFIG_SETTINGS: {
     title: CONFIG_LABELS.COMPLIANCE_CONFIG_SETTINGS,
