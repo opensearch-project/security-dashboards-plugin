@@ -13,6 +13,10 @@
  *   permissions and limitations under the License.
  */
 
+import { EuiComboBoxOptionOption } from '@elastic/eui';
+
+export type ComboBoxOptions = EuiComboBoxOptionOption[];
+
 export enum ResourceType {
   roles = 'roles',
   users = 'users',
