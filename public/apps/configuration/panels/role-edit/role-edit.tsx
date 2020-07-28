@@ -49,12 +49,11 @@ import {
   unbuildTenantPermissionState,
 } from './tenant-panel';
 import {
-  ComboBoxOptions,
   RoleIndexPermissionStateClass,
   RoleTenantPermissionStateClass,
 } from './types';
 import { buildHashUrl } from '../../utils/url-builder';
-import { ResourceType, Action } from '../../types';
+import { ComboBoxOptions, ResourceType, Action } from '../../types';
 
 interface RoleEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';

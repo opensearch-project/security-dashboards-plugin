@@ -93,7 +93,7 @@ export function PermissionEditModal(props: PermissionEditModalDeps) {
             }}
             fill
           >
-            Save
+            {props.action == Action.create ? 'Create' : 'Save'}
           </EuiButton>
         </EuiModalFooter>
       </EuiModal>
