@@ -30,7 +30,7 @@ import { SecurityPluginConfigType } from '../../..';
 
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { OpenIdAuthRoutes } from './routes';
-import { IAuthenticationType, AuthenticationType } from '../authentication_type';
+import { AuthenticationType } from '../authentication_type';
 
 export interface OpenIdAuthConfig {
   ca?: Buffer | undefined;
@@ -42,13 +42,12 @@ export interface OpenIdAuthConfig {
   authHeaderName?: string;
 }
 
-export class OpenIdAuthentication extends AuthenticationType implements IAuthenticationType {
+export class OpenIdAuthentication extends AuthenticationType {
   public readonly type: string = 'openid';
 
   private openIdAuthConfig: OpenIdAuthConfig;
   private authHeaderName: string;
   private openIdConnectUrl: string;
-  // private securityClient: SecurityClient;
 
   constructor(
     config: SecurityPluginConfigType,
@@ -72,7 +71,6 @@ export class OpenIdAuthentication extends AuthenticationType implements IAuthent
     this.openIdAuthConfig.authHeaderName = this.authHeaderName;
 
     this.openIdConnectUrl = this.config.openid?.connect_url || '';
-    // this.securityClient = new SecurityClient(this.esClient);
 
     this.init();
   }
@@ -100,42 +98,6 @@ export class OpenIdAuthentication extends AuthenticationType implements IAuthent
       throw new Error('Failed when trying to obtain the endpoints from your IdP');
     }
   }
-
-  /*
-  public authHandler: AuthenticationHandler = async (request, response, toolkit) => {
-    let cookie: SecuritySessionCookie | null;
-    try {
-      cookie = await this.sessionStorageFactory.asScoped(request).get();
-      if (!cookie) {
-        return response.redirected({
-          headers: {
-            location: `${this.coreSetup.http.basePath.serverBasePath}/auth/openid/login`,
-          },
-        });
-      }
-      // TODO: make a call to authinfo (securityClient.authenticateWithHeader) to validate credentials
-      cookie.expiryTime = Date.now() + this.config.cookie.ttl;
-      this.sessionStorageFactory.asScoped(request).set(cookie);
-
-      const headers: any = {};
-      if (cookie.credentials?.authHeaderValue) {
-        const authHeaderName: string = this.config.openid?.header.toLowerCase() || 'authorization';
-        headers[authHeaderName] = cookie.credentials.authHeaderValue;
-        // need to implement token refresh when id token is expired
-        return toolkit.authenticated({
-          requestHeaders: headers,
-        });
-      } else {
-        return toolkit.notHandled();
-      }
-
-      // extract credentials from cookie
-    } catch (error) {
-      console.log(error); // FIXME: log and handle properly
-    }
-    return toolkit.authenticated();
-  };
-  */
 
   requestIncludesAuthInfo(request: KibanaRequest): boolean {
     return request.headers.authorization ? true : false;

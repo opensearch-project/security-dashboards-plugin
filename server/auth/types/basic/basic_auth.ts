@@ -31,7 +31,7 @@ import { KibanaResponse } from 'src/core/server/http/router';
 import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { BasicAuthRoutes } from './routes';
-import { IAuthenticationType, AuthenticationType } from '../authentication_type';
+import { AuthenticationType } from '../authentication_type';
 
 // TODO: change to interface
 export class AuthConfig {
@@ -45,7 +45,7 @@ export class AuthConfig {
   ) {}
 }
 
-export class BasicAuthentication extends AuthenticationType implements IAuthenticationType {
+export class BasicAuthentication extends AuthenticationType {
   private static readonly AUTH_HEADER_NAME: string = 'authorization';
   private static readonly ALLOWED_ADDITIONAL_AUTH_HEADERS: string[] = ['security_impersonate_as'];
 

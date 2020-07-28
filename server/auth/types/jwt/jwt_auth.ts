@@ -27,9 +27,9 @@ import {
 } from 'kibana/server';
 import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
-import { IAuthenticationType, AuthenticationType } from '../authentication_type';
+import { AuthenticationType } from '../authentication_type';
 
-export class JwtAuthentication extends AuthenticationType implements IAuthenticationType {
+export class JwtAuthentication extends AuthenticationType {
   public readonly type: string = 'jwt';
 
   private authHeaderName: string;
@@ -85,6 +85,7 @@ export class JwtAuthentication extends AuthenticationType implements IAuthentica
     }
     return {};
   }
+
   protected getCookie(
     request: KibanaRequest<unknown, unknown, unknown, any>,
     authInfo: any

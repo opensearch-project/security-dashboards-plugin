@@ -17,7 +17,6 @@ import { escape } from 'querystring';
 import { CoreSetup } from 'kibana/server';
 import { SecurityPluginConfigType } from '../../..';
 import {
-  AuthenticationHandler,
   SessionStorageFactory,
   IRouter,
   ILegacyClusterClient,
@@ -30,9 +29,9 @@ import {
 } from '../../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SamlAuthRoutes } from './routes';
-import { IAuthenticationType, AuthenticationType } from '../authentication_type';
+import { AuthenticationType } from '../authentication_type';
 
-export class SamlAuthentication extends AuthenticationType implements IAuthenticationType {
+export class SamlAuthentication extends AuthenticationType {
   public static readonly AUTH_HEADER_NAME = 'authorization';
 
   public readonly type: string = 'saml';

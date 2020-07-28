@@ -29,9 +29,9 @@ import {
 import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { ProxyAuthRoutes } from './routes';
-import { IAuthenticationType, AuthenticationType } from '../authentication_type';
+import { AuthenticationType } from '../authentication_type';
 
-export class ProxyAuthentication extends AuthenticationType implements IAuthenticationType {
+export class ProxyAuthentication extends AuthenticationType {
   private static readonly XFF: string = 'x-forwarded-for';
 
   public readonly type: string = 'proxy';
