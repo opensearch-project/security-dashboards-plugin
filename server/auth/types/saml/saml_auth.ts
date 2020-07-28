@@ -52,66 +52,6 @@ export class SamlAuthentication extends AuthenticationType implements IAuthentic
     this.setupRoutes();
   }
 
-  /*
-  authHandler: AuthenticationHandler = async (request, response, toolkit) => {
-    let cookie;
-    try {
-      cookie = await this.sessionStorageFactory.asScoped(request).get();
-    } catch (error) {
-      this.logger.error(`Failed to parse cookie due to: ${error}`);
-      toolkit.notHandled();
-    }
-
-    if (cookie) {
-      // extend session time
-      cookie.expiryTime = Date.now() + this.config.cookie.ttl;
-      this.sessionStorageFactory.asScoped(request).set(cookie);
-
-      const authHeaderValue = cookie.credentials?.authHeaderValue;
-      if (!authHeaderValue) {
-        return this.redirectToLoginUri(request, toolkit);
-      }
-
-      const header: any = {};
-      header[SamlAuthentication.AUTH_HEADER_NAME] = authHeaderValue;
-      return toolkit.authenticated({
-        requestHeaders: header,
-      });
-    }
-
-    // no valid cookie, check auth header
-    const authHeaderValue = request.headers[SamlAuthentication.AUTH_HEADER_NAME];
-    if (authHeaderValue && typeof authHeaderValue === 'string') {
-      try {
-        const user = await this.securityClient.authenticateWithHeader(
-          request,
-          SamlAuthentication.AUTH_HEADER_NAME,
-          authHeaderValue
-        );
-
-        cookie = {
-          username: user.username,
-          credentials: {
-            authHeaderValue,
-          },
-          authType: this.type,
-          expiryTime: Date.now() + this.config.cookie.ttl,
-        };
-        this.sessionStorageFactory.asScoped(request).set(cookie);
-        const header: any = {};
-        header[SamlAuthentication.AUTH_HEADER_NAME] = authHeaderValue;
-        return toolkit.authenticated({
-          requestHeaders: header,
-        });
-      } catch (error) {
-        response.unauthorized();
-      }
-    }
-
-    return this.redirectToLoginUri(request, toolkit);
-  };
-  */
-
   private generateNextUrl(request: KibanaRequest): string {
     const path = request.url.path || `${this.coreSetup.http.basePath.serverBasePath}/app/kibana`;
     return escape(path);

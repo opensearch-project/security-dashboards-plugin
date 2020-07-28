@@ -17,7 +17,6 @@ import * as fs from 'fs';
 import wreck from '@hapi/wreck';
 import {
   Logger,
-  AuthenticationHandler,
   SessionStorageFactory,
   CoreSetup,
   IRouter,
@@ -31,7 +30,6 @@ import { SecurityPluginConfigType } from '../../..';
 
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { OpenIdAuthRoutes } from './routes';
-import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { IAuthenticationType, AuthenticationType } from '../authentication_type';
 
 export interface OpenIdAuthConfig {
