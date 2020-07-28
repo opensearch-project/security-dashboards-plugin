@@ -17,7 +17,6 @@ import {
   CONFIG_LABELS,
   SETTING_GROUPS,
   RESPONSE_MESSAGES,
-  CALLOUT_MESSAGES,
   TOAST_MESSAGES,
 } from './config';
 import ContentPanel from './ContentPanel';
@@ -107,19 +106,6 @@ export function Main(props) {
       });
   };
 
-  const renderCallout = messages => {
-    return (
-      <>
-        <EuiCallOut title="Warning" color="warning">
-          {messages.map((message, index) => {
-            return <p key={index}>{message}</p>;
-          })}
-        </EuiCallOut>
-        <EuiSpacer />
-      </>
-    );
-  };
-
   const renderError = () => {
     return showError ? (
       <EuiCallOut title={RESPONSE_MESSAGES.FETCH_ERROR_TITLE} color="danger" iconType="alert">
@@ -166,7 +152,6 @@ export function Main(props) {
         </EuiTitle>
         <EuiSpacer size="m" />
         <EuiPanel>
-          {renderCallout(CALLOUT_MESSAGES.AUDIT_SETTINGS)}
           <EditSettingGroup
             settingGroup={SETTING_GROUPS.LAYER_SETTINGS}
             config={editConfig}
@@ -200,14 +185,13 @@ export function Main(props) {
         <EuiSpacer size="m" />
         <EuiPanel>
           <EditSettingGroup
-            settingGroup={SETTING_GROUPS.COMPLIANCE_MODE_SETTINGS}
+            settingGroup={SETTING_GROUPS.COMPLIANCE_LOGGING_SETTINGS}
             config={editConfig}
             handleChange={handleChange}
             readonly={readonly}
           ></EditSettingGroup>
           {editConfig.compliance.enabled && (
             <>
-              {renderCallout(CALLOUT_MESSAGES.COMPLIANCE_SETTINGS)}
               <EditSettingGroup
                 settingGroup={SETTING_GROUPS.COMPLIANCE_CONFIG_SETTINGS}
                 config={editConfig}
@@ -215,7 +199,7 @@ export function Main(props) {
                 readonly={readonly}
                 showPanel={true}
               ></EditSettingGroup>
-              <EuiSpacer size="s" />
+              <EuiSpacer />
               <EditSettingGroup
                 settingGroup={SETTING_GROUPS.COMPLIANCE_READ_SETTINGS}
                 config={editConfig}
@@ -224,7 +208,7 @@ export function Main(props) {
                 readonly={readonly}
                 showPanel={true}
               ></EditSettingGroup>
-              <EuiSpacer size="s" />
+              <EuiSpacer />
               <EditSettingGroup
                 settingGroup={SETTING_GROUPS.COMPLIANCE_WRITE_SETTINGS}
                 config={editConfig}
@@ -250,6 +234,7 @@ export function Main(props) {
             handleChange={handleChangeWithSave}
             readonly={readonly}
           ></EditSettingGroup>
+          <EuiSpacer size="s" />
         </ContentPanel>
         {config.enabled && (
           <>

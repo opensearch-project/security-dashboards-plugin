@@ -3,7 +3,7 @@ export function displayBoolean(val) {
 }
 
 export function displayArray(val) {
-  return val && val.length != 0 ? val.join(' , ') : '--';
+  return val && val.length != 0 ? val.join(', ') : '--';
 }
 
 export function displayMap(val) {

@@ -264,7 +264,7 @@ export default function (kibana) {
                 },
                 {
                     id: 'security-audit',
-                    title: 'Audit',
+                    title: 'Audit logs',
                     description: 'Audit logging',
                     main: 'plugins/opendistro_security/apps/audit/app',
                     linkToLastSubUrl: false,
