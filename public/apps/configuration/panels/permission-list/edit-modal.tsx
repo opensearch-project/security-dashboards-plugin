@@ -68,7 +68,6 @@ export function PermissionEditModal(props: PermissionEditModalDeps) {
               helpText="The name must be less than 50 characters."
             >
               <EuiFieldText
-                isInvalid={groupName === ''}
                 disabled={props.action === 'edit'}
                 value={groupName}
                 onChange={handleGroupNameChange}
@@ -93,7 +92,7 @@ export function PermissionEditModal(props: PermissionEditModalDeps) {
             }}
             fill
           >
-            {props.action == Action.create ? 'Create' : 'Save'}
+            {props.action === Action.create ? 'Create' : 'Save'}
           </EuiButton>
         </EuiModalFooter>
       </EuiModal>

@@ -48,10 +48,7 @@ import {
   TenantPanel,
   unbuildTenantPermissionState,
 } from './tenant-panel';
-import {
-  RoleIndexPermissionStateClass,
-  RoleTenantPermissionStateClass,
-} from './types';
+import { RoleIndexPermissionStateClass, RoleTenantPermissionStateClass } from './types';
 import { buildHashUrl } from '../../utils/url-builder';
 import { ComboBoxOptions, ResourceType, Action } from '../../types';
 

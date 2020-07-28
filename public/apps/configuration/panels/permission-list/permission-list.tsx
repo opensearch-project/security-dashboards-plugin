@@ -217,12 +217,16 @@ export function PermissionList(props: AppDependencies) {
     </EuiContextMenuItem>,
   ];
 
-  const showEditModal = (groupName: string, action: Action, allowedAction: string[]) => {
+  const showEditModal = (
+    initialGroupName: string,
+    action: Action,
+    initialAllowedAction: string[]
+  ) => {
     setEditModal(
       <PermissionEditModal
-        groupName={groupName}
+        groupName={initialGroupName}
         action={action}
-        allowedActions={allowedAction}
+        allowedActions={initialAllowedAction}
         optionUniverse={actionGroups.map((group) => stringToComboBoxOption(group.name))}
         handleClose={() => setEditModal(null)}
         // Submit to server
@@ -232,6 +236,7 @@ export function PermissionList(props: AppDependencies) {
       />
     );
   };
+
   const createActionGroupMenuItems = [
     <EuiContextMenuItem
       key="create-from-blank"
