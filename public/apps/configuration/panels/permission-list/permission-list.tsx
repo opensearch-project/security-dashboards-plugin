@@ -229,8 +229,8 @@ export function PermissionList(props: AppDependencies) {
         allowedActions={initialAllowedAction}
         optionUniverse={actionGroups.map((group) => stringToComboBoxOption(group.name))}
         handleClose={() => setEditModal(null)}
-        // Submit to server
         handleSave={async (groupName, allowedAction) => {
+          // TODO: Submit to server
           setEditModal(null);
         }}
       />
