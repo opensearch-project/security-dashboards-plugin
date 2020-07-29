@@ -36,8 +36,6 @@ export class SamlAuthentication extends AuthenticationType {
 
   public readonly type: string = 'saml';
 
-  // private readonly securityClient: SecurityClient;
-
   constructor(
     config: SecurityPluginConfigType,
     sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
@@ -47,7 +45,6 @@ export class SamlAuthentication extends AuthenticationType {
     logger: Logger
   ) {
     super(config, sessionStorageFactory, router, esClient, coreSetup, logger);
-    // this.securityClient = new SecurityClient(esClient);
     this.setupRoutes();
   }
 

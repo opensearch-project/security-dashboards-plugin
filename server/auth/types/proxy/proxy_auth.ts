@@ -99,7 +99,7 @@ export class ProxyAuthentication extends AuthenticationType {
     if (this.userHeaderName && request.headers[this.userHeaderName]) {
       cookie.credentials[this.userHeaderName] = request.headers[this.userHeaderName];
     }
-    if (this.roleHeaderName) {
+    if (this.roleHeaderName && request.headers[this.roleHeaderName]) {
       cookie.credentials[this.roleHeaderName] = request.headers[this.roleHeaderName];
     }
     if (request.headers[ProxyAuthentication.XFF]) {

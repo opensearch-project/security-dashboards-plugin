@@ -46,15 +46,22 @@ export class JwtAuthentication extends AuthenticationType {
     this.authHeaderName = this.config.jwt?.header.toLowerCase() || 'authorization';
   }
 
-  private getBearerToken(request: KibanaRequest): string | undefined {
+  private getTokenFromUrlParam(request: KibanaRequest): string | undefined {
     const urlParamName = this.config.jwt?.url_param;
     if (urlParamName) {
       const token = (request.url.query as ParsedUrlQuery)[urlParamName];
-      if (token) {
-        return `Bearer ${token}`;
-      }
+      return (token as string) || undefined;
+    }
+    return undefined;
+  }
+
+  private getBearerToken(request: KibanaRequest): string | undefined {
+    const token = this.getTokenFromUrlParam(request);
+    if (token) {
+      return `Bearer ${token}`;
     }
 
+    // no token in url parameter, try to get token from header
     return (request.headers[this.authHeaderName] as string) || undefined;
   }
 
@@ -75,15 +82,11 @@ export class JwtAuthentication extends AuthenticationType {
 
   protected getAdditionalAuthHeader(request: KibanaRequest<unknown, unknown, unknown, any>) {
     const header: any = {};
-    const urlParamName = this.config.jwt?.url_param;
-    if (urlParamName) {
-      const token = (request.url.query as ParsedUrlQuery)[urlParamName] as string;
-      if (token) {
-        header[this.authHeaderName] = `Bearer ${token}`;
-        return header;
-      }
+    const token = this.getTokenFromUrlParam(request);
+    if (token) {
+      header[this.authHeaderName] = `Bearer ${token}`;
     }
-    return {};
+    return header;
   }
 
   protected getCookie(

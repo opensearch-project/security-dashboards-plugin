@@ -78,7 +78,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
 
     // if browser request, auth logic is:
     //   1. check if request includes auth header or paramter(e.g. jwt in url params) is present, if so, authenticate with auth header.
-    //   2. if auth header not present, check if auth cookie is present, if no cookie, send to authentiation workflow
+    //   2. if auth header not present, check if auth cookie is present, if no cookie, send to authentication workflow
     //   3. verify whether auth cookie is valid, if not valid, send to authentication workflow
     //   4. if cookie is valid, pass to route handlers
     const authHeaders = {};
@@ -133,7 +133,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
         if (!tenant) {
           return response.badRequest({
             body:
-              'No availabe tenant for current user, please reachout to your system administrator',
+              'No available tenant for current user, please reach out to your system administrator',
           });
         }
         // set tenant in header
@@ -166,21 +166,25 @@ export abstract class AuthenticationType implements IAuthenticationType {
     );
   }
 
-  authNotRequired(request: KibanaRequest) {
+  authNotRequired(request: KibanaRequest): boolean {
     const pathname = request.url.pathname;
+    if (!pathname) {
+      return false;
+    }
     // allow access to assets
-    if (pathname && pathname.startsWith('/bundels/')) {
+    if (pathname!.startsWith('/bundels/')) {
       return true;
     }
     // allow requests to ignored routes
-    if (pathname && AuthenticationType.ROUTES_TO_IGNORE.includes(pathname)) {
+    if (AuthenticationType.ROUTES_TO_IGNORE.includes(pathname!)) {
       return true;
     }
     // allow requests to routes that doesn't require authentication
-    if (pathname && this.config.auth.unauthenticated_routes.indexOf(pathname) > -1) {
+    if (this.config.auth.unauthenticated_routes.indexOf(pathname!) > -1) {
       // TODO: use kibana server user
       return true;
     }
+    return false;
   }
 
   async resolveTenant(
