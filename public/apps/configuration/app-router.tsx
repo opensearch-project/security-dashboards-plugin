@@ -13,10 +13,11 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiPage, EuiPageBody, EuiPageSideBar, EuiBreadcrumbs } from '@elastic/eui';
+import { EuiBreadcrumbs, EuiPage, EuiPageBody, EuiPageSideBar } from '@elastic/eui';
 import React from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { partial } from 'lodash';
+import { CoreStart } from 'kibana/public';
 import { AppDependencies } from '../types';
 import { AuthView } from './panels/auth-view/auth-view';
 import { NavPanel } from './panels/nav-panel';
@@ -24,8 +25,8 @@ import { RoleEdit } from './panels/role-edit/role-edit';
 import { RoleList } from './panels/role-list';
 import { RoleView } from './panels/role-view/role-view';
 import { UserList } from './panels/user-list';
-import { RouteItem, ResourceType, Action } from './types';
-import { buildUrl, buildHashUrl } from './utils/url-builder';
+import { Action, ResourceType, RouteItem } from './types';
+import { buildHashUrl, buildUrl } from './utils/url-builder';
 import { InternalUserEdit } from './panels/internal-user-edit/internal-user-edit';
 import { AuditLogging } from './panels/audit-logging/audit-logging';
 import { AuditLoggingEditSettings } from './panels/audit-logging/audit-logging-edit-settings';
@@ -89,6 +90,7 @@ const allNavPanelUrls = ROUTE_LIST.map((route) => route.href).concat([
 // url regex pattern for all pages with left nav panel, (/|/roles|/internalusers|...)
 const PATTERNS_ROUTES_WITH_NAV_PANEL = '(' + allNavPanelUrls.join('|') + ')';
 
+// TODO: migrate to global Breadcrumbs.
 function Breadcrumbs(resourceType: ResourceType, pageTitle: string) {
   return (
     <EuiBreadcrumbs
@@ -107,6 +109,31 @@ function Breadcrumbs(resourceType: ResourceType, pageTitle: string) {
       ]}
     />
   );
+}
+
+export function setGlobalBreadcrumbs(
+  coreStart: CoreStart,
+  resourceType: ResourceType,
+  pageTitle?: string
+) {
+  const breadcrumbs: Array<{ text: string; href?: string }> = [
+    {
+      text: 'Security',
+      href: buildHashUrl(),
+    },
+    {
+      text: ROUTE_MAP[resourceType].name,
+      href: buildHashUrl(resourceType),
+    },
+  ];
+
+  if (pageTitle) {
+    breadcrumbs.push({
+      text: pageTitle,
+    });
+  }
+
+  coreStart.chrome.setBreadcrumbs(breadcrumbs);
 }
 
 export function AppRouter(props: AppDependencies) {
@@ -156,17 +183,34 @@ export function AppRouter(props: AppDependencies) {
             <Route path={ROUTE_MAP.users.href}>
               <UserList {...props} />
             </Route>
-            <Route path={buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT}>
-              <AuditLoggingEditSettings setting={'general'} {...props} />
-            </Route>
+            <Route
+              path={buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT}
+              render={() => {
+                setGlobalBreadcrumbs(
+                  props.coreStart,
+                  ResourceType.auditLogging,
+                  'General settings'
+                );
+                return <AuditLoggingEditSettings setting={'general'} {...props} />;
+              }}
+            />
             <Route
               path={buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT}
-            >
-              <AuditLoggingEditSettings setting={'compliance'} {...props} />
-            </Route>
+              render={(match) => {
+                setGlobalBreadcrumbs(
+                  props.coreStart,
+                  ResourceType.auditLogging,
+                  'Compliance settings'
+                );
+                return <AuditLoggingEditSettings setting={'compliance'} {...props} />;
+              }}
+            />
             <Route
               path={ROUTE_MAP.auditLogging.href + '/:fromType?'}
-              render={(match) => <AuditLogging {...{ ...props, ...match.match.params }} />}
+              render={(match) => {
+                setGlobalBreadcrumbs(props.coreStart, ResourceType.auditLogging);
+                return <AuditLogging {...{ ...props, ...match.match.params }} />;
+              }}
             />
             <Route path={ROUTE_MAP.permissions.href}>
               <PermissionList {...props} />
