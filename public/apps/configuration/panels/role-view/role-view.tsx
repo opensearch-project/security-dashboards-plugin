@@ -295,8 +295,8 @@ export function RoleView(props: RoleViewProps) {
 
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
 
-  const onTabClick = selectedTab => {
-    setSelectedTab(selectedTab);
+  const onTabClick = (tab) => {
+    setSelectedTab(tab);
   };
 
   const roleView = (
