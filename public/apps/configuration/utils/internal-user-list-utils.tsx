@@ -43,3 +43,7 @@ export async function getUserList(http: HttpStart) {
   const rawData = await getUserListRaw(http);
   return transformUserData(rawData.data);
 }
+
+export async function fetchUserNameList(http: HttpStart): Promise<string[]> {
+  return Object.keys((await getUserListRaw(http)).data);
+}

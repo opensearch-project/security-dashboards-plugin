@@ -29,6 +29,10 @@ export enum Action {
   duplicate = 'duplicate',
 }
 
+export enum SubAction {
+  mapuser = 'mapuser',
+}
+
 export interface RouteItem {
   name: string;
   href: string;
@@ -67,12 +71,9 @@ export interface RoleDetail extends RoleUpdate {
 }
 
 export interface RoleMappingDetail {
-  reserved: boolean;
-  hidden: boolean;
   backend_roles: string[];
   hosts: string[];
   users: string[];
-  and_backend_roles: string[];
 }
 
 export interface Tenant {

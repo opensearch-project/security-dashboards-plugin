@@ -13,15 +13,10 @@
  *   permissions and limitations under the License.
  */
 
-import { AppMountParameters, CoreStart } from '../../../../src/core/public';
-import { AppPluginStartDependencies } from '../types';
+import { EuiComboBoxOptionOption } from '@elastic/eui';
 
-export interface AppDependencies {
-  coreStart: CoreStart;
-  navigation: AppPluginStartDependencies;
-  params: AppMountParameters;
-}
+export type ComboBoxOptions = EuiComboBoxOptionOption[];
 
-export interface BreadcrumbsPageDependencies extends AppDependencies {
-  buildBreadcrumbs: (pageTitle: string, subAction?: string) => React.ReactNode;
+export interface ExternalIdentityStateClass {
+  externalIdentity: string;
 }

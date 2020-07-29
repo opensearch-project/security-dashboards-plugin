@@ -22,12 +22,18 @@ import { ResourceType, Action } from '../types';
  *   buildUrl(ResourceType.roles) => "/roles" (role listing page)
  *   buildUrl(ResourceType.roles, Action.create) => "/roles/create" (role creation page)
  *   buildUrl(ResourceType.roles, Action.view, "someRole") => "/roles/view/someRole" (role detail page)
+ *   buildUrl(ResourceType.roles, Action.view, "someRole", SubAction.mapuser) => "/roles/view/someRole/mapuser" (Map User page)
  * edge case (wrong usage) fallbacks:
  *   buildUrl(undefined, Action.create) => ""
  *   buildUrl(ResourceType.roles, undefined, "someRole") => "/roles"
  */
-export function buildUrl(resouceType?: ResourceType, action?: Action, resourceId?: string) {
-  const rawContents = [resouceType, action, resourceId];
+export function buildUrl(
+  resouceType?: ResourceType,
+  action?: Action,
+  resourceId?: string,
+  subAction?: string
+) {
+  const rawContents = [resouceType, action, resourceId, subAction];
   const contents = [];
   for (const content of rawContents) {
     if (content === undefined) {
@@ -38,6 +44,11 @@ export function buildUrl(resouceType?: ResourceType, action?: Action, resourceId
   return '/' + contents.join('/');
 }
 
-export function buildHashUrl(resouceType?: ResourceType, action?: Action, resourceId?: string) {
-  return '#' + buildUrl(resouceType, action, resourceId);
+export function buildHashUrl(
+  resouceType?: ResourceType,
+  action?: Action,
+  resourceId?: string,
+  subAction?: string
+) {
+  return '#' + buildUrl(resouceType, action, resourceId, subAction);
 }
