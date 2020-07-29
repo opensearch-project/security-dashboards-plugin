@@ -36,7 +36,7 @@ import {
   SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT,
   SUB_URL_FOR_GENERAL_SETTINGS_EDIT,
 } from './panels/audit-logging/constants';
-import { PermissionList } from './panels/permission-list';
+import { PermissionList } from './panels/permission-list/permission-list';
 import { GetStarted } from './panels/get-started';
 
 const ROUTE_MAP: { [key: string]: RouteItem } = {

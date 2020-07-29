@@ -13,9 +13,8 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiComboBoxOptionOption } from '@elastic/eui';
+import { ComboBoxOptions } from '../../types';
 
-export type ComboBoxOptions = EuiComboBoxOptionOption[];
 export type FieldLevelSecurityMethod = 'exclude' | 'include';
 export interface RoleIndexPermissionStateClass {
   indexPatterns: ComboBoxOptions;
