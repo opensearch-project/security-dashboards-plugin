@@ -23,6 +23,7 @@ import {
   EuiSwitch,
   EuiText,
   EuiTitle,
+  EuiLink,
 } from '@elastic/eui';
 
 import React from 'react';
@@ -36,6 +37,10 @@ import {
 } from '../panels/audit-logging/types';
 
 export function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: boolean) {
+  const describedFormGroupStyle = {
+    maxWidth: '1500px',
+  };
+
   return (
     <EuiPanel>
       <EuiTitle>
@@ -46,6 +51,7 @@ export function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnable
         <EuiDescribedFormGroup
           title={<h3>Enable audit logging</h3>}
           description={<>Enable or disable audit logging</>}
+          style={describedFormGroupStyle}
         >
           <EuiFormRow>
             <EuiSwitch
@@ -54,6 +60,20 @@ export function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnable
               checked={auditLoggingEnabled}
               onChange={onSwitchChange}
             />
+          </EuiFormRow>
+        </EuiDescribedFormGroup>
+        <EuiDescribedFormGroup
+          title={<h3>Configure Storage</h3>}
+          description={<>Where should Elasticsearch store or send audit logs</>}
+          style={describedFormGroupStyle}
+        >
+          <EuiFormRow style={{ maxWidth: '800px' }}>
+            <EuiText color="subdued" grow={false}>
+              Configure the output location and storage types in elasticsearch.yml <br />
+              <EuiLink external={true} href="/">
+                Learn more in the documentation
+              </EuiLink>
+            </EuiText>
           </EuiFormRow>
         </EuiDescribedFormGroup>
       </EuiForm>
