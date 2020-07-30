@@ -172,7 +172,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
       return false;
     }
     // allow access to assets
-    if (pathname!.startsWith('/bundels/')) {
+    if (pathname!.startsWith('/bundles/')) {
       return true;
     }
     // allow requests to ignored routes
