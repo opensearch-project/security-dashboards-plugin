@@ -24,7 +24,7 @@ import {
 import { SecurityPluginConfigType } from '..';
 import { SecuritySessionCookie } from '../session/security_cookie';
 
-jest.mock('./types/authentication_type', () => {
+jest.mock('./types', () => {
   return {
     BasicAuthentication: jest.fn().mockImplementation(() => {
       return {

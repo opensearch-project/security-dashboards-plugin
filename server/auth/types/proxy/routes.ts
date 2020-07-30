@@ -39,6 +39,7 @@ export class ProxyAuthRoutes {
           }),
         },
         options: {
+          // TODO: set to false?
           authRequired: 'optional',
         },
       },

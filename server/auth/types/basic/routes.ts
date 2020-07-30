@@ -159,22 +159,6 @@ export class BasicAuthRoutes {
         }
       }
     );
-
-    // renders custom error page
-    this.router.get(
-      {
-        path: `/customerror`,
-        validate: false,
-        options: {
-          authRequired: false,
-        },
-      },
-      async (context, request, response) => {
-        return response.ok({
-          body: '',
-        });
-      }
-    );
   }
 
   // session storage plugin's authenticateWithHeaders() function

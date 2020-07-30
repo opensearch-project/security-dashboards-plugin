@@ -38,7 +38,8 @@ import {
 } from '../../utils/combo-box-utils';
 import { FormRow } from '../../utils/form-row';
 import { PanelWithHeader } from '../../utils/panel-with-header';
-import { ComboBoxOptions, FieldLevelSecurityMethod, RoleIndexPermissionStateClass } from './types';
+import { FieldLevelSecurityMethod, RoleIndexPermissionStateClass } from './types';
+import { ComboBoxOptions } from '../../types';
 
 export function getEmptyIndexPermission(): RoleIndexPermissionStateClass {
   return {

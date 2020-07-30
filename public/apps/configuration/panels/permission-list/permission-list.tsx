@@ -35,11 +35,14 @@ import {
   RIGHT_ALIGNMENT,
 } from '@elastic/eui';
 import { difference } from 'lodash';
-import React, { useEffect, useState, Dispatch, SetStateAction } from 'react';
-import { AppDependencies } from '../../types';
-import { ActionGroupListingItem, getAllPermissionsListing } from '../utils/action-groups-utils';
-import { renderCustomization } from '../utils/display-utils';
-import { requestDeleteUsers } from '../utils/internal-user-list-utils';
+import React, { useEffect, useState, Dispatch, SetStateAction, ReactNode } from 'react';
+import { AppDependencies } from '../../../types';
+import { ActionGroupListingItem, getAllPermissionsListing } from '../../utils/action-groups-utils';
+import { renderCustomization } from '../../utils/display-utils';
+import { requestDeleteUsers } from '../../utils/internal-user-list-utils';
+import { PermissionEditModal } from './edit-modal';
+import { stringToComboBoxOption } from '../../utils/combo-box-utils';
+import { Action } from '../../types';
 
 interface ExpandedRowMapInterface {
   [key: string]: React.ReactNode;
@@ -155,11 +158,16 @@ const SEARCH_OPTIONS: EuiSearchBarProps = {
 
 export function PermissionList(props: AppDependencies) {
   const [actionGroups, setActionGroups] = useState<ActionGroupListingItem[]>([]);
-  const [errorFlag, setErrorFlag] = useState(false);
+  const [errorFlag, setErrorFlag] = useState<boolean>(false);
   const [selection, setSelection] = useState<ActionGroupListingItem[]>([]);
-  const [isActionsPopoverOpen, setActionsPopoverOpen] = useState(false);
-  const [isCreateActionGroupPopoverOpen, setCreateActionGroupPopoverOpen] = useState(false);
+  const [isActionsPopoverOpen, setActionsPopoverOpen] = useState<boolean>(false);
+  const [isCreateActionGroupPopoverOpen, setCreateActionGroupPopoverOpen] = useState<boolean>(
+    false
+  );
   const [itemIdToExpandedRowMap, setItemIdToExpandedRowMap] = useState<ExpandedRowMapInterface>({});
+
+  // Modal state
+  const [editModal, setEditModal] = useState<ReactNode>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -190,17 +198,17 @@ export function PermissionList(props: AppDependencies) {
   const actionsMenuItems = [
     <EuiContextMenuItem
       key="edit"
-      // TODO edit action
-      onClick={() => {}}
-      disabled={selection.length !== 1}
+      onClick={() => showEditModal(selection[0].name, Action.edit, selection[0].allowedActions)}
+      disabled={selection.length !== 1 || selection[0].reserved}
     >
       Edit
     </EuiContextMenuItem>,
     <EuiContextMenuItem
       key="duplicate"
-      // TODO duplicate action
-      onClick={() => {}}
-      disabled={selection.length !== 1}
+      onClick={() =>
+        showEditModal(selection[0].name + '_copy', Action.duplicate, selection[0].allowedActions)
+      }
+      disabled={selection.length !== 1 || selection[0].type !== 'Action group'}
     >
       Duplicate
     </EuiContextMenuItem>,
@@ -209,18 +217,42 @@ export function PermissionList(props: AppDependencies) {
     </EuiContextMenuItem>,
   ];
 
+  const showEditModal = (
+    initialGroupName: string,
+    action: Action,
+    initialAllowedAction: string[]
+  ) => {
+    setEditModal(
+      <PermissionEditModal
+        groupName={initialGroupName}
+        action={action}
+        allowedActions={initialAllowedAction}
+        optionUniverse={actionGroups.map((group) => stringToComboBoxOption(group.name))}
+        handleClose={() => setEditModal(null)}
+        handleSave={async (groupName, allowedAction) => {
+          // TODO: Submit to server
+          setEditModal(null);
+        }}
+      />
+    );
+  };
+
   const createActionGroupMenuItems = [
     <EuiContextMenuItem
       key="create-from-blank"
-      // TODO create empty
-      onClick={() => {}}
+      onClick={() => showEditModal('', Action.create, [])}
     >
       Create from blank
     </EuiContextMenuItem>,
     <EuiContextMenuItem
       key="create-from-selection"
-      // TODO create from selection
-      onClick={() => {}}
+      onClick={() =>
+        showEditModal(
+          '',
+          Action.create,
+          selection.map((item) => item.name)
+        )
+      }
       disabled={selection.length === 0}
     >
       Create from selection
@@ -296,7 +328,7 @@ export function PermissionList(props: AppDependencies) {
                   button={createActionGroupMenuButton}
                   isOpen={isCreateActionGroupPopoverOpen}
                   closePopover={() => {
-                    setActionsPopoverOpen(false);
+                    setCreateActionGroupPopoverOpen(false);
                   }}
                   panelPaddingSize="s"
                 >
@@ -322,6 +354,7 @@ export function PermissionList(props: AppDependencies) {
           />
         </EuiPageBody>
       </EuiPageContent>
+      {editModal}
     </>
   );
 }

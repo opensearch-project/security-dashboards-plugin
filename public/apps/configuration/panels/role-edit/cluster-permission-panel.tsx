@@ -15,7 +15,7 @@
 
 import React, { Dispatch, SetStateAction } from 'react';
 import { EuiForm, EuiFlexGroup, EuiFlexItem, EuiComboBox, EuiButton } from '@elastic/eui';
-import { ComboBoxOptions } from './types';
+import { ComboBoxOptions } from '../../types';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { FormRow } from '../../utils/form-row';
 
