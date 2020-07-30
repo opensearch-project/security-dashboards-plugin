@@ -38,6 +38,7 @@ import {
 } from './panels/audit-logging/constants';
 import { PermissionList } from './panels/permission-list/permission-list';
 import { GetStarted } from './panels/get-started';
+import { RoleEditMappedUser } from './panels/role-mapping/RoleEditMappedUser';
 
 const ROUTE_MAP: { [key: string]: RouteItem } = {
   getStarted: {
@@ -151,11 +152,11 @@ export function AppRouter(props: AppDependencies) {
         <EuiPageBody>
           <Switch>
             <Route
-              path={buildUrl(ResourceType.roles, Action.view, ':roleName', SubAction.mapuser)}
+              path={buildUrl(ResourceType.roles, Action.edit, ':roleName', SubAction.mapuser)}
               render={(match) => (
-                <RoleView
+                <RoleEditMappedUser
                   buildBreadcrumbs={partial(Breadcrumbs, ResourceType.roles)}
-                  {...{ ...props, ...match.match.params, subAction: 'mapuser' }}
+                  {...{ ...props, ...match.match.params }}
                 />
               )}
             />

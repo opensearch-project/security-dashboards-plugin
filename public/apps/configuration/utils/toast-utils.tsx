@@ -12,6 +12,22 @@
  *   express or implied. See the License for the specific language governing
  *   permissions and limitations under the License.
  */
-export interface ExternalIdentityStateClass {
-  externalIdentity: string;
+
+import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
+
+export function createErrorToast(id: string, title: string, text: string): Toast {
+  return {
+    id,
+    color: 'danger',
+    title,
+    text,
+  };
+}
+
+export function createUnknownErrorToast(id: string, failedAction: string): Toast {
+  return createErrorToast(
+    id,
+    `Failed to ${failedAction}`,
+    `Failed to ${failedAction}. You may refresh the page to retry or see browser console for more information.`
+  );
 }

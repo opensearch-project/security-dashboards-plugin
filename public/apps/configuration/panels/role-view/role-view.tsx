@@ -30,11 +30,9 @@ import {
   EuiPageBody,
   EuiInMemoryTable,
   EuiEmptyPrompt,
-  EuiPageHeader,
-  EuiGlobalToastList,
 } from '@elastic/eui';
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
-import { isEmpty } from 'lodash';
+import { difference } from 'lodash';
 import { BreadcrumbsPageDependencies } from '../../../types';
 import { buildHashUrl } from '../../utils/url-builder';
 import { ResourceType, Action, SubAction, RoleMappingDetail } from '../../types';
@@ -43,26 +41,13 @@ import {
   MappedUsersListing,
   updateRoleMapping,
   transformRoleMappingData,
+  UserType,
 } from '../../utils/role-mapping-utils';
-import { InternalUsersPanel } from '../role-mapping/internal-users-panel';
-import { ComboBoxOptions } from '../role-edit/types';
-import { ExternalIdentityStateClass } from '../role-mapping/types';
-import { fetchUserNameList } from '../../utils/internal-user-list-utils';
-import { stringToComboBoxOption, comboBoxOptionToString } from '../../utils/combo-box-utils';
-import {
-  unbuildExternalIdentityState,
-  ExternalIdentitiesPanel,
-  buildExternalIdentityState,
-} from '../role-mapping/external-identities-panel';
+import { createUnknownErrorToast } from '../../utils/toast-utils';
 
 interface RoleViewProps extends BreadcrumbsPageDependencies {
   roleName: string;
-  subAction: string;
 }
-
-const TITLE_TEXT_DICT = {
-  mapuser: 'Map user',
-};
 
 const mappedUserColumns = [
   {
@@ -78,32 +63,12 @@ const mappedUserColumns = [
   },
 ];
 
-function createErrorToast(id: string, title: string, text: string): Toast {
-  return {
-    id,
-    color: 'danger',
-    title,
-    text,
-  };
-}
-
-function createUnknownErrorToast(id: string, failedAction: string): Toast {
-  return createErrorToast(
-    id,
-    `Failed to ${failedAction}`,
-    `Failed to ${failedAction}. You may refresh the page to retry or see browser console for more information.`
-  );
-}
-
 export function RoleView(props: RoleViewProps) {
   const duplicateRoleLink = buildHashUrl(ResourceType.roles, Action.duplicate, props.roleName);
 
   const [mappedUsers, setMappedUsers] = useState<MappedUsersListing[]>([]);
   const [errorFlag, setErrorFlag] = useState(false);
   const [selection, setSelection] = useState<MappedUsersListing[]>([]);
-  const [internalUsers, setInternalUsers] = useState<ComboBoxOptions>([]);
-  const [exterIdentities, setExternalIdentities] = useState<ExternalIdentityStateClass[]>([]);
-  const [userNames, setUserNames] = useState<string[]>([]);
   const [hosts, setHosts] = useState<string[]>([]);
   const [toasts, setToasts] = useState<Toast[]>([]);
   const addToast = useCallback((toastToAdd: Toast) => {
@@ -120,13 +85,8 @@ export function RoleView(props: RoleViewProps) {
           props.coreStart.http,
           props.roleName
         )) as RoleMappingDetail;
-        const roleMappingData = transformRoleMappingData(originalRoleMapData);
-        setMappedUsers(roleMappingData);
-        if (!isEmpty(originalRoleMapData)) {
-          setInternalUsers(originalRoleMapData.users.map(stringToComboBoxOption));
-          setExternalIdentities(buildExternalIdentityState(originalRoleMapData.backend_roles));
-          setHosts(originalRoleMapData.hosts);
-        }
+        setMappedUsers(transformRoleMappingData(originalRoleMapData));
+        setHosts(originalRoleMapData.hosts);
       } catch (e) {
         addToast(createUnknownErrorToast('fetchRoleMappingData', 'load data'));
         console.log(e);
@@ -137,44 +97,26 @@ export function RoleView(props: RoleViewProps) {
     fetchData();
   }, [addToast, props.coreStart.http, props.roleName]);
 
-  useEffect(() => {
-    const fetchInternalUserNames = async () => {
-      try {
-        setUserNames(await fetchUserNameList(props.coreStart.http));
-      } catch (e) {
-        addToast(createUnknownErrorToast('fetchInternalUserNames', 'load data'));
-        console.error(e);
-      }
-    };
-
-    fetchInternalUserNames();
-  }, [addToast, props.coreStart.http]);
-  const internalUserOptions = userNames.map(stringToComboBoxOption);
-
-  const updateRollMappingHandler = async () => {
+  const handleRoleMappingDelete = async () => {
     try {
-      // Remove empty External Identities
-      const validExternalIdentities = exterIdentities.filter(
-        (v: ExternalIdentityStateClass) => v.externalIdentity !== ''
-      );
+      const usersToDelete: string[] = selection.map((r) => r.userName);
+      const internalUsers: string[] = mappedUsers
+        .filter((r) => r.userType === UserType.internal)
+        .map((r) => r.userName);
+      const externalIdentities: string[] = mappedUsers
+        .filter((r) => r.userType === UserType.external)
+        .map((r) => r.userName);
       const updateObject: RoleMappingDetail = {
-        users: internalUsers.map(comboBoxOptionToString),
-        backend_roles: unbuildExternalIdentityState(validExternalIdentities),
+        users: difference(internalUsers, usersToDelete),
+        backend_roles: difference(externalIdentities, usersToDelete),
         hosts,
       };
       await updateRoleMapping(props.coreStart.http, props.roleName, updateObject);
-      addToast({
-        id: 'updateRoleMappingSucceeded',
-        color: 'success',
-        title: props.roleName + ' saved.',
-      });
+
+      setMappedUsers(difference(mappedUsers, selection));
+      setSelection([]);
     } catch (e) {
-      if (e.message) {
-        addToast(createErrorToast('saveRoleMappingFailed', 'save error', e.message));
-      } else {
-        addToast(createUnknownErrorToast('saveRoleMappingFailed', 'save ' + props.roleName));
-        console.error(e);
-      }
+      console.log(e);
     }
   };
 
@@ -206,7 +148,7 @@ export function RoleView(props: RoleViewProps) {
               onClick={() => {
                 window.location.href = buildHashUrl(
                   ResourceType.roles,
-                  Action.view,
+                  Action.edit,
                   props.roleName,
                   SubAction.mapuser
                 );
@@ -253,14 +195,16 @@ export function RoleView(props: RoleViewProps) {
               <EuiPageContentHeaderSection>
                 <EuiFlexGroup>
                   <EuiFlexItem>
-                    <EuiButton disabled={selection.length === 0}>Delete mapping</EuiButton>
+                    <EuiButton onClick={handleRoleMappingDelete} disabled={selection.length === 0}>
+                      Delete mapping
+                    </EuiButton>
                   </EuiFlexItem>
                   <EuiFlexItem>
                     <EuiButton
                       onClick={() => {
                         window.location.href = buildHashUrl(
                           ResourceType.roles,
-                          Action.view,
+                          Action.edit,
                           props.roleName,
                           SubAction.mapuser
                         );
@@ -293,13 +237,7 @@ export function RoleView(props: RoleViewProps) {
     },
   ];
 
-  const [selectedTab, setSelectedTab] = useState(tabs[0]);
-
-  const onTabClick = (tab) => {
-    setSelectedTab(tab);
-  };
-
-  const roleView = (
+  return (
     <>
       {props.buildBreadcrumbs(props.roleName)}
 
@@ -315,63 +253,9 @@ export function RoleView(props: RoleViewProps) {
         </EuiPageContentHeaderSection>
       </EuiPageContentHeader>
 
-      <EuiTabbedContent tabs={tabs} selectedTab={selectedTab} onTabClick={onTabClick} />
+      <EuiTabbedContent tabs={tabs} />
 
       <EuiSpacer />
     </>
   );
-
-  const mapUser = (
-    <>
-      {props.buildBreadcrumbs(props.roleName, TITLE_TEXT_DICT[SubAction.mapuser])}
-      <EuiPageHeader>
-        <EuiText size="xs" color="subdued">
-          <EuiTitle size="m">
-            <h1>Map user</h1>
-          </EuiTitle>
-          Map users to this role to inherit role permissions. Two types of users are supported:
-          internal user, and external identity.{' '}
-          <EuiLink external href="/">
-            Learn More
-          </EuiLink>
-        </EuiText>
-      </EuiPageHeader>
-      <EuiSpacer size="m" />
-      <InternalUsersPanel
-        state={internalUsers}
-        setState={setInternalUsers}
-        optionUniverse={internalUserOptions}
-      />
-      <EuiSpacer size="m" />
-      <ExternalIdentitiesPanel
-        externalIdentities={exterIdentities}
-        setExternalIdentities={setExternalIdentities}
-      />
-      <EuiSpacer size="m" />
-      <EuiFlexGroup justifyContent="flexEnd">
-        <EuiFlexItem grow={false}>
-          <EuiButton
-            onClick={() => {
-              window.location.href = buildHashUrl(ResourceType.roles, Action.view, props.roleName);
-              setSelectedTab(tabs[1]);
-            }}
-          >
-            Cancel
-          </EuiButton>
-        </EuiFlexItem>
-        <EuiFlexItem grow={false}>
-          <EuiButton fill onClick={updateRollMappingHandler}>
-            Map
-          </EuiButton>
-        </EuiFlexItem>
-      </EuiFlexGroup>
-      <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={10000} dismissToast={removeToast} />
-    </>
-  );
-  console.log(props.subAction);
-  if (props.subAction === 'mapuser') {
-    return mapUser;
-  } else {
-    return roleView;
-  }
 }
