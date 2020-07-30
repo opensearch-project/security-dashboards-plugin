@@ -13,136 +13,119 @@
  *   permissions and limitations under the License.
  */
 
-import { parse, format } from 'url';
-import { get } from 'lodash';
 import { ParsedUrlQuery } from 'querystring';
-import { SecurityPluginConfigType } from '../../..';
 import {
   SessionStorageFactory,
   IRouter,
   ILegacyClusterClient,
   CoreSetup,
-  AuthenticationHandler,
   KibanaRequest,
   Logger,
-} from '../../../../../../src/core/server';
+  LifecycleResponseFactory,
+  AuthToolkit,
+  IKibanaResponse,
+} from 'kibana/server';
+import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
-import { SecurityClient } from '../../../backend/opendistro_security_client';
-import { User } from '../../user';
-import { IAuthenticationType } from '../authentication_type';
+import { AuthenticationType } from '../authentication_type';
 
-export class JwtAuthentication implements IAuthenticationType {
+export class JwtAuthentication extends AuthenticationType {
   public readonly type: string = 'jwt';
 
   private authHeaderName: string;
-  private securityClient: SecurityClient;
 
   constructor(
-    private readonly config: SecurityPluginConfigType,
-    private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
-    private readonly router: IRouter,
-    private readonly esClient: ILegacyClusterClient,
-    private readonly coreSetup: CoreSetup,
-    private readonly logger: Logger
+    config: SecurityPluginConfigType,
+    sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
+    router: IRouter,
+    esClient: ILegacyClusterClient,
+    coreSetup: CoreSetup,
+    logger: Logger
   ) {
+    super(config, sessionStorageFactory, router, esClient, coreSetup, logger);
     this.authHeaderName = this.config.jwt?.header.toLowerCase() || 'authorization';
-    this.securityClient = new SecurityClient(esClient);
   }
 
-  authHandler: AuthenticationHandler = async (request, response, tookit) => {
-    const jwtToken = this.getJwtToken(request);
-    if (jwtToken) {
-      const authHeaderValue = `Bearer ${jwtToken}`;
-      let user: User;
-      try {
-        user = await this.securityClient.authenticateWithHeader(
-          request,
-          this.authHeaderName,
-          authHeaderValue
-        );
-      } catch (error) {
-        console.log(error);
-        return response.unauthorized();
-      }
-
-      const header: any = {};
-      header[this.authHeaderName] = authHeaderValue;
-
-      const cookie: SecuritySessionCookie = {
-        username: user.username,
-        credentials: {
-          authHeaderValue,
-        },
-        authType: this.type,
-        expiryTime: Date.now() + this.config.cookie.ttl,
-      };
-      this.sessionStorageFactory.asScoped(request).set(cookie);
-
-      return tookit.authenticated({
-        requestHeaders: header,
-      });
-    }
-
-    // check if credentials present in cookie
-    let cookie;
-    try {
-      cookie = await this.sessionStorageFactory.asScoped(request).get();
-    } catch (error) {
-      console.log(error);
-    }
-
-    if (cookie) {
-      cookie.expiryTime = Date.now() + this.config.cookie.ttl;
-      this.sessionStorageFactory.asScoped(request).set(cookie);
-
-      const authHeaderValue = cookie.credentials.authHeaderValue;
-      if (authHeaderValue) {
-        const header: any = {};
-        header[this.authHeaderName] = authHeaderValue;
-        return tookit.authenticated({
-          requestHeaders: header,
-        });
-      }
-    }
-
-    // no credentials in query parameter, header, or cookie,
-    // redirect to login url if there is one
-    const loginEndpoint = this.config.jwt?.login_endpoint;
-    if (loginEndpoint) {
-      const loginUrl = parse(loginEndpoint, true);
-      let nextUrl: string = get(loginUrl.query, 'nexturl') as string;
-      if (!nextUrl) {
-        nextUrl = format(request.url);
-        nextUrl = encodeURIComponent(nextUrl);
-        Object.assign(loginUrl.query, { nextUrl });
-      }
-      tookit.redirected({
-        location: format(loginUrl),
-      });
-    }
-
-    return tookit.notHandled(); // TODO: need to work with browser side to redirect to error page
-  };
-
-  private getJwtToken(request: KibanaRequest): string | undefined {
-    let token: string | undefined;
-
-    // try to extract JWT token from url query parameters
+  private getTokenFromUrlParam(request: KibanaRequest): string | undefined {
     const urlParamName = this.config.jwt?.url_param;
     if (urlParamName) {
-      token = (request.url.query as ParsedUrlQuery)[urlParamName] as string;
-      if (token) {
-        return token;
-      }
+      const token = (request.url.query as ParsedUrlQuery)[urlParamName];
+      return (token as string) || undefined;
+    }
+    return undefined;
+  }
+
+  private getBearerToken(request: KibanaRequest): string | undefined {
+    const token = this.getTokenFromUrlParam(request);
+    if (token) {
+      return `Bearer ${token}`;
     }
 
-    // fallback to HTTP header
-    const authHeaderValue = request.headers[this.authHeaderName];
-    // authHeaderValue should not be array, to ensure client doesn't pass multiple auth header
-    if (authHeaderValue && !Array.isArray(authHeaderValue)) {
-      return authHeaderValue;
+    // no token in url parameter, try to get token from header
+    return (request.headers[this.authHeaderName] as string) || undefined;
+  }
+
+  protected requestIncludesAuthInfo(
+    request: KibanaRequest<unknown, unknown, unknown, any>
+  ): boolean {
+    if (request.headers[this.authHeaderName]) {
+      return true;
     }
 
-    return token;
+    const urlParamName = this.config.jwt?.url_param;
+    if (urlParamName && (request.url.query as ParsedUrlQuery)[urlParamName]) {
+      return true;
+    }
+
+    return false;
+  }
+
+  protected getAdditionalAuthHeader(request: KibanaRequest<unknown, unknown, unknown, any>) {
+    const header: any = {};
+    const token = this.getTokenFromUrlParam(request);
+    if (token) {
+      header[this.authHeaderName] = `Bearer ${token}`;
+    }
+    return header;
+  }
+
+  protected getCookie(
+    request: KibanaRequest<unknown, unknown, unknown, any>,
+    authInfo: any
+  ): SecuritySessionCookie {
+    return {
+      username: authInfo.user_name,
+      credentials: {
+        authHeaderValue: this.getBearerToken(request),
+      },
+      authType: this.type,
+      expiryTime: Date.now() + this.config.cookie.ttl,
+    };
+  }
+
+  isValidCookie(cookie: SecuritySessionCookie): boolean {
+    return (
+      cookie.authType === this.type &&
+      cookie.username &&
+      cookie.expiryTime &&
+      cookie.credentials?.authHeaderValue
+    );
+  }
+
+  redirectToAuth(
+    request: KibanaRequest,
+    response: LifecycleResponseFactory,
+    toolkit: AuthToolkit
+  ): IKibanaResponse {
+    return response.unauthorized();
+  }
+
+  buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any {
+    const header: any = {};
+    const authHeaderValue = cookie.credentials?.authHeaderValue;
+    if (authHeaderValue) {
+      header[this.authHeaderName] = authHeaderValue;
+    }
+    return header;
   }
 }

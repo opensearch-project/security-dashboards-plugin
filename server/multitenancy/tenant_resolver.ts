@@ -18,9 +18,11 @@ import { KibanaRequest } from '../../../../src/core/server';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { SecurityPluginConfigType } from '..';
 
-export const PRIVATE_TENANT: string = '__user__';
-export const GLOBAL_TENANT: string = '';
+const PRIVATE_TENANT_SYMBOL: string = '__user__';
+const GLOBAL_TENANT_SYMBOL: string = '';
 
+export const PRIVATE_TENANTS: string[] = [PRIVATE_TENANT_SYMBOL, 'private'];
+export const GLOBAL_TENANTS: string[] = ['', GLOBAL_TENANT_SYMBOL];
 /**
  * Resovles the tenant the user is using.
  *
@@ -98,6 +100,7 @@ function resolve(
   }
 
   if (requestedTenant) {
+    requestedTenant = requestedTenant.toLowerCase();
     if (availableTenants[requestedTenant]) {
       return requestedTenant;
     }
@@ -105,16 +108,13 @@ function resolve(
     if (
       privateTenantEnabled &&
       availableTenants[username] &&
-      requestedTenant === PRIVATE_TENANT /* || requestedTenant === 'private'*/
+      PRIVATE_TENANTS.indexOf(requestedTenant) > -1
     ) {
-      return PRIVATE_TENANT;
+      return PRIVATE_TENANT_SYMBOL;
     }
 
-    if (
-      globalTenantEnabled &&
-      requestedTenant === GLOBAL_TENANT /* || requestedTenant === 'global'*/
-    ) {
-      return GLOBAL_TENANT;
+    if (globalTenantEnabled && GLOBAL_TENANTS.indexOf(requestedTenant) > -1) {
+      return GLOBAL_TENANT_SYMBOL;
     }
   }
 
@@ -122,12 +122,16 @@ function resolve(
     for (const element of preferredTenants) {
       const tenant = element.toLowerCase();
 
-      if (tenant === GLOBAL_TENANT && globalTenantEnabled) {
-        return GLOBAL_TENANT;
+      if (globalTenantEnabled && GLOBAL_TENANTS.indexOf(tenant) > -1) {
+        return GLOBAL_TENANT_SYMBOL;
       }
 
-      if (tenant === PRIVATE_TENANT && privateTenantEnabled && availableTenants[username]) {
-        return PRIVATE_TENANT;
+      if (
+        privateTenantEnabled &&
+        PRIVATE_TENANTS.indexOf(tenant) > -1 &&
+        availableTenants[username]
+      ) {
+        return PRIVATE_TENANT_SYMBOL;
       }
 
       if (availableTenants[tenant]) {
@@ -137,11 +141,11 @@ function resolve(
   }
 
   if (globalTenantEnabled) {
-    return GLOBAL_TENANT;
+    return GLOBAL_TENANT_SYMBOL;
   }
 
   if (privateTenantEnabled) {
-    return PRIVATE_TENANT;
+    return PRIVATE_TENANT_SYMBOL;
   }
 
   // fall back to the first tenant in the available tenants

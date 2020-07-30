@@ -27,7 +27,7 @@ import {
   OpenIdAuthentication,
   ProxyAuthentication,
   SamlAuthentication,
-} from './types/authentication_type';
+} from './types';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { IAuthenticationType, IAuthHandlerConstructor } from './types/authentication_type';
 import { SecurityPluginConfigType } from '..';
