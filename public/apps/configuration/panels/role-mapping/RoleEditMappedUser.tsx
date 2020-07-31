@@ -24,8 +24,7 @@ import {
   EuiTitle,
   EuiGlobalToastList,
 } from '@elastic/eui';
-import React, { useState, useEffect, useCallback } from 'react';
-import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
+import React, { useState, useEffect } from 'react';
 import { isEmpty } from 'lodash';
 import { BreadcrumbsPageDependencies } from '../../../types';
 import { InternalUsersPanel } from './internal-users-panel';
@@ -41,7 +40,7 @@ import { buildHashUrl } from '../../utils/url-builder';
 import { ResourceType, RoleMappingDetail, SubAction, Action } from '../../types';
 import { fetchUserNameList } from '../../utils/internal-user-list-utils';
 import { updateRoleMapping, getRoleMappingData } from '../../utils/role-mapping-utils';
-import { createErrorToast, createUnknownErrorToast } from '../../utils/toast-utils';
+import { createErrorToast, createUnknownErrorToast, useToastState } from '../../utils/toast-utils';
 
 interface RoleEditMappedUserProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -56,13 +55,7 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
   const [externalIdentities, setExternalIdentities] = useState<ExternalIdentityStateClass[]>([]);
   const [userNames, setUserNames] = useState<string[]>([]);
   const [hosts, setHosts] = useState<string[]>([]);
-  const [toasts, setToasts] = useState<Toast[]>([]);
-  const addToast = useCallback((toastToAdd: Toast) => {
-    setToasts((state) => state.concat(toastToAdd));
-  }, []);
-  const removeToast = (toastToDelete: Toast) => {
-    setToasts(toasts.filter((toast) => toast.id !== toastToDelete.id));
-  };
+  const [toasts, addToast, removeToast] = useToastState();
 
   useEffect(() => {
     const fetchData = async () => {
