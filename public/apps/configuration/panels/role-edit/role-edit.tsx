@@ -26,8 +26,7 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { isEmpty } from 'lodash';
 import { BreadcrumbsPageDependencies } from '../../../types';
 import { CLUSTER_PERMISSIONS, INDEX_PERMISSIONS } from '../../constants';
@@ -51,6 +50,7 @@ import {
 import { RoleIndexPermissionStateClass, RoleTenantPermissionStateClass } from './types';
 import { buildHashUrl } from '../../utils/url-builder';
 import { ComboBoxOptions, ResourceType, Action } from '../../types';
+import { useToastState, createUnknownErrorToast } from '../../utils/toast-utils';
 
 interface RoleEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -66,15 +66,6 @@ const TITLE_TEXT_DICT = {
   duplicate: 'Duplicate Role',
 };
 
-function createErrorToast(id: string, failedAction: string): Toast {
-  return {
-    id,
-    color: 'danger',
-    title: `Failed to ${failedAction}`,
-    text: `Failed to ${failedAction}. You may refresh the page to retry or see browser console for more information.`,
-  };
-}
-
 export function RoleEdit(props: RoleEditDeps) {
   const [roleName, setRoleName] = useState('');
   const [roleClusterPermission, setRoleClusterPermission] = useState<ComboBoxOptions>([]);
@@ -85,13 +76,7 @@ export function RoleEdit(props: RoleEditDeps) {
     RoleTenantPermissionStateClass[]
   >([]);
 
-  const [toasts, setToasts] = useState<Toast[]>([]);
-  const addToast = useCallback((toastToAdd: Toast) => {
-    setToasts((state) => state.concat(toastToAdd));
-  }, []);
-  const removeToast = (toastToDelete: Toast) => {
-    setToasts(toasts.filter((toast) => toast.id !== toastToDelete.id));
-  };
+  const [toasts, addToast, removeToast] = useToastState();
 
   useEffect(() => {
     const action = props.action;
@@ -109,7 +94,7 @@ export function RoleEdit(props: RoleEditDeps) {
             setRoleName(props.sourceRoleName + '_copy');
           }
         } catch (e) {
-          addToast(createErrorToast('fetchRole', 'load data'));
+          addToast(createUnknownErrorToast('fetchRole', 'load data'));
           console.error(e);
         }
       };
@@ -125,7 +110,7 @@ export function RoleEdit(props: RoleEditDeps) {
         const actionGroupsObject = await fetchActionGroups(props.coreStart.http);
         setActionGroups(Object.keys(actionGroupsObject));
       } catch (e) {
-        addToast(createErrorToast('actionGroup', 'load data'));
+        addToast(createUnknownErrorToast('actionGroup', 'load data'));
         console.error(e);
       }
     };
@@ -139,7 +124,7 @@ export function RoleEdit(props: RoleEditDeps) {
       try {
         setTenantNames(await fetchTenantNameList(props.coreStart.http));
       } catch (e) {
-        addToast(createErrorToast('tenant', 'load data'));
+        addToast(createUnknownErrorToast('tenant', 'load data'));
         console.error(e);
       }
     };
@@ -164,7 +149,7 @@ export function RoleEdit(props: RoleEditDeps) {
       });
       window.location.href = buildHashUrl(ResourceType.roles, Action.view, roleName);
     } catch (e) {
-      addToast(createErrorToast('updateRole', `${props.action} role`));
+      addToast(createUnknownErrorToast('updateRole', `${props.action} role`));
       console.error(e);
     }
   };

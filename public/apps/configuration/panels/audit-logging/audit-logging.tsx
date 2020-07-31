@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   EuiButton,
@@ -43,6 +43,7 @@ import {
 } from './constants';
 import { buildHashUrl } from '../../utils/url-builder';
 import { ResourceType } from '../../types';
+import { useToastState } from '../../utils/toast-utils';
 
 interface AuditLoggingProps extends AppDependencies {
   fromType: string;
@@ -50,15 +51,7 @@ interface AuditLoggingProps extends AppDependencies {
 
 export function AuditLogging(props: AuditLoggingProps) {
   const [configuration, setConfiguration] = useState<AuditLoggingSettings>({});
-  const [toasts, setToasts] = useState<Toast[]>([]);
-
-  const addToast = useCallback((toastToAdd: Toast) => {
-    setToasts((state) => state.concat(toastToAdd));
-  }, []);
-
-  const removeToast = (toastToDelete: Toast) => {
-    setToasts(toasts.filter((toast) => toast.id !== toastToDelete.id));
-  };
+  const [toasts, addToast, removeToast] = useToastState();
 
   const onSwitchChange = async () => {
     try {

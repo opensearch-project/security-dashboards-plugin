@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import React, { Fragment, useState, useEffect, useCallback } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 
 import {
   EuiButton,
@@ -31,7 +31,6 @@ import {
   EuiInMemoryTable,
   EuiEmptyPrompt,
 } from '@elastic/eui';
-import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 import { difference } from 'lodash';
 import { BreadcrumbsPageDependencies } from '../../../types';
 import { buildHashUrl } from '../../utils/url-builder';
@@ -43,7 +42,7 @@ import {
   transformRoleMappingData,
   UserType,
 } from '../../utils/role-mapping-utils';
-import { createUnknownErrorToast } from '../../utils/toast-utils';
+import { createUnknownErrorToast, useToastState } from '../../utils/toast-utils';
 
 interface RoleViewProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -70,13 +69,7 @@ export function RoleView(props: RoleViewProps) {
   const [errorFlag, setErrorFlag] = useState(false);
   const [selection, setSelection] = useState<MappedUsersListing[]>([]);
   const [hosts, setHosts] = useState<string[]>([]);
-  const [toasts, setToasts] = useState<Toast[]>([]);
-  const addToast = useCallback((toastToAdd: Toast) => {
-    setToasts((state) => state.concat(toastToAdd));
-  }, []);
-  const removeToast = (toastToDelete: Toast) => {
-    setToasts(toasts.filter((toast) => toast.id !== toastToDelete.id));
-  };
+  const [toasts, addToast, removeToast] = useToastState();
 
   useEffect(() => {
     const fetchData = async () => {

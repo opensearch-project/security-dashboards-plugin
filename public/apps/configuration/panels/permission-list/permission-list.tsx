@@ -44,7 +44,6 @@ import React, {
   ReactNode,
   useCallback,
 } from 'react';
-import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 import { AppDependencies } from '../../../types';
 import {
   ActionGroupListingItem,
@@ -56,6 +55,7 @@ import { requestDeleteUsers } from '../../utils/internal-user-list-utils';
 import { PermissionEditModal } from './edit-modal';
 import { stringToComboBoxOption } from '../../utils/combo-box-utils';
 import { Action } from '../../types';
+import { useToastState } from '../../utils/toast-utils';
 
 interface ExpandedRowMapInterface {
   [key: string]: React.ReactNode;
@@ -182,13 +182,7 @@ export function PermissionList(props: AppDependencies) {
   // Modal state
   const [editModal, setEditModal] = useState<ReactNode>(null);
 
-  const [toasts, setToasts] = useState<Toast[]>([]);
-  const addToast = useCallback((toastToAdd: Toast) => {
-    setToasts((state) => state.concat(toastToAdd));
-  }, []);
-  const removeToast = (toastToDelete: Toast) => {
-    setToasts(toasts.filter((toast) => toast.id !== toastToDelete.id));
-  };
+  const [toasts, addToast, removeToast] = useToastState();
 
   const fetchData = useCallback(async () => {
     try {

@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   EuiButton,
   EuiFlexGroup,
@@ -39,6 +39,7 @@ import { buildHashUrl } from '../../utils/url-builder';
 import { ResourceType } from '../../types';
 import { updateAuditLogging } from '../../utils/audit-logging-view-utils';
 import { API_ENDPOINT_AUDITLOGGING } from '../../constants';
+import { useToastState } from '../../utils/toast-utils';
 
 interface AuditLoggingEditSettingProps extends AppDependencies {
   setting: 'general' | 'compliance';
@@ -46,7 +47,7 @@ interface AuditLoggingEditSettingProps extends AppDependencies {
 
 export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
   const [editConfig, setEditConfig] = useState<AuditLoggingSettings>({});
-  const [toasts, setToasts] = useState<Toast[]>([]);
+  const [toasts, addToast, removeToast] = useToastState();
   const [invalidSettings, setInvalidSettings] = useState<string[]>([]);
 
   const handleChange = (path: string, val: boolean | string[] | SettingMapItem) => {
@@ -77,14 +78,6 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
 
     fetchConfig();
   }, [props.coreStart.http]);
-
-  const addToast = useCallback((toastToAdd: Toast) => {
-    setToasts((state) => state.concat(toastToAdd));
-  }, []);
-
-  const removeToast = (toastToDelete: Toast) => {
-    setToasts(toasts.filter((toast) => toast.id !== toastToDelete.id));
-  };
 
   const renderSaveAndCancel = () => {
     return (

@@ -14,6 +14,7 @@
  */
 
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
+import { useState, useCallback } from 'react';
 
 export function createErrorToast(id: string, title: string, text: string): Toast {
   return {
@@ -30,4 +31,15 @@ export function createUnknownErrorToast(id: string, failedAction: string): Toast
     `Failed to ${failedAction}`,
     `Failed to ${failedAction}. You may refresh the page to retry or see browser console for more information.`
   );
+}
+
+export function useToastState(): [Toast[], (toAdd: Toast) => void, (toDelete: Toast) => void] {
+  const [toasts, setToasts] = useState<Toast[]>([]);
+  const addToast = useCallback((toastToAdd: Toast) => {
+    setToasts((state) => state.concat(toastToAdd));
+  }, []);
+  const removeToast = (toastToDelete: Toast) => {
+    setToasts(toasts.filter((toast) => toast.id !== toastToDelete.id));
+  };
+  return [toasts, addToast, removeToast];
 }
