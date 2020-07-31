@@ -33,11 +33,24 @@ import {
   EuiSearchBarProps,
   EuiButtonIcon,
   RIGHT_ALIGNMENT,
+  EuiGlobalToastList,
 } from '@elastic/eui';
 import { difference } from 'lodash';
-import React, { useEffect, useState, Dispatch, SetStateAction, ReactNode } from 'react';
+import React, {
+  useEffect,
+  useState,
+  Dispatch,
+  SetStateAction,
+  ReactNode,
+  useCallback,
+} from 'react';
+import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 import { AppDependencies } from '../../../types';
-import { ActionGroupListingItem, getAllPermissionsListing } from '../../utils/action-groups-utils';
+import {
+  ActionGroupListingItem,
+  getAllPermissionsListing,
+  updateActionGroup,
+} from '../../utils/action-groups-utils';
 import { renderCustomization } from '../../utils/display-utils';
 import { requestDeleteUsers } from '../../utils/internal-user-list-utils';
 import { PermissionEditModal } from './edit-modal';
@@ -169,18 +182,26 @@ export function PermissionList(props: AppDependencies) {
   // Modal state
   const [editModal, setEditModal] = useState<ReactNode>(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setActionGroups(await getAllPermissionsListing(props.coreStart.http));
-      } catch (e) {
-        console.log(e);
-        setErrorFlag(true);
-      }
-    };
+  const [toasts, setToasts] = useState<Toast[]>([]);
+  const addToast = useCallback((toastToAdd: Toast) => {
+    setToasts((state) => state.concat(toastToAdd));
+  }, []);
+  const removeToast = (toastToDelete: Toast) => {
+    setToasts(toasts.filter((toast) => toast.id !== toastToDelete.id));
+  };
 
-    fetchData();
+  const fetchData = useCallback(async () => {
+    try {
+      setActionGroups(await getAllPermissionsListing(props.coreStart.http));
+    } catch (e) {
+      console.log(e);
+      setErrorFlag(true);
+    }
   }, [props.coreStart.http]);
+
+  useEffect(() => {
+    fetchData();
+  }, [props.coreStart.http, fetchData]);
 
   const handleDelete = async () => {
     const usersToDelete: string[] = selection.map((r) => r.name);
@@ -230,8 +251,25 @@ export function PermissionList(props: AppDependencies) {
         optionUniverse={actionGroups.map((group) => stringToComboBoxOption(group.name))}
         handleClose={() => setEditModal(null)}
         handleSave={async (groupName, allowedAction) => {
-          // TODO: Submit to server
-          setEditModal(null);
+          try {
+            await updateActionGroup(props.coreStart.http, groupName, {
+              allowed_actions: allowedAction,
+            });
+            setEditModal(null);
+            fetchData();
+            addToast({
+              id: 'saveSucceeded',
+              title: `${groupName} saved.`,
+              color: 'success',
+            });
+          } catch (e) {
+            console.log(e);
+            addToast({
+              id: 'saveFailed',
+              title: `Failed to save ${action} group. You may refresh the page to retry or see browser console for more information.`,
+              color: 'danger',
+            });
+          }
         }}
       />
     );
@@ -355,6 +393,7 @@ export function PermissionList(props: AppDependencies) {
         </EuiPageBody>
       </EuiPageContent>
       {editModal}
+      <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={10000} dismissToast={removeToast} />
     </>
   );
 }
