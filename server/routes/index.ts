@@ -14,6 +14,7 @@
  */
 
 import { schema } from '@kbn/config-schema';
+import { async } from 'rxjs/internal/scheduler/async';
 import {
   IRouter,
   ResponseError,
@@ -21,7 +22,6 @@ import {
   KibanaResponseFactory,
 } from '../../../../src/core/server';
 import { API_PREFIX, CONFIGURATION_API_PREFIX } from '../../common';
-import { async } from 'rxjs/internal/scheduler/async';
 
 // TODO: consider to extract entity CRUD operations and put it into a client class
 export function defineRoutes(router: IRouter) {
@@ -710,7 +710,7 @@ export function defineRoutes(router: IRouter) {
 
   /**
    * Gets all indices, and field mappings.
-   * 
+   *
    * Calls ES API '/_all/_mapping/field/*' under the hood. see
    * https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-get-mapping.html
    */
