@@ -50,11 +50,9 @@ export function defineRoutes(router: IRouter) {
   const actionGroupSchema = schema.object({
     description: schema.maybe(schema.string()),
     allowed_actions: schema.arrayOf(schema.string()),
-    type: schema.oneOf([
-      schema.literal('cluster'),
-      schema.literal('index'),
-      schema.literal('kibana'),
-    ]),
+    type: schema.maybe(
+      schema.oneOf([schema.literal('cluster'), schema.literal('index'), schema.literal('kibana')])
+    ),
   });
 
   const roleMappingSchema = schema.object({
