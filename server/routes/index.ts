@@ -14,61 +14,47 @@
  */
 
 import { schema } from '@kbn/config-schema';
-import { IRouter, ResponseError, IKibanaResponse } from '../../../../src/core/server';
+import {
+  IRouter,
+  ResponseError,
+  IKibanaResponse,
+  KibanaResponseFactory,
+} from '../../../../src/core/server';
 import { API_PREFIX, CONFIGURATION_API_PREFIX } from '../../common';
+import { async } from 'rxjs/internal/scheduler/async';
 
 // TODO: consider to extract entity CRUD operations and put it into a client class
-//
-// TODO: use following approach to put securityClient into context instead of passing
-//       into route handler as parameter
-//       refer to https://github.com/elastic/kibana/blob/master/src/core/MIGRATION.md#use-scoped-services
-// class Plugin {
-//   setup(core: CoreSetup) {
-//     const client = core.elasticsearch.createClient('myClient');
-//     core.http.registerRouteHandlerContext('myPlugin', (context, req, res) => {
-//       return { client: client.asScoped(req) };
-//     });
-
-//     router.get(
-//       { path: '/api/my-plugin/', validate },
-//       async (context, req, res) => {
-//         const data = await context.myPlugin.client.callAsCurrentUser('endpoint');
-//         ...
-//       }
-//     );
-//   }
-
 export function defineRoutes(router: IRouter) {
   const internalUserSchema = schema.object({
     description: schema.maybe(schema.string()),
     password: schema.string(),
-    backend_roles: schema.arrayOf(schema.string()),
-    // opendistro_security_roles: schema.nullable(schema.arrayOf(schema.string())),
-    attributes: schema.any(),
+    backend_roles: schema.arrayOf(schema.string(), { defaultValue: [] }),
+    attributes: schema.any({ defaultValue: {} }),
   });
 
   const actionGroupSchema = schema.object({
     description: schema.maybe(schema.string()),
     allowed_actions: schema.arrayOf(schema.string()),
-    type: schema.oneOf([
-      schema.literal('cluster'),
-      schema.literal('index'),
-      schema.literal('kibana'),
-    ]),
+    // type field is not supported in legacy implementation, comment it out for now.
+    // type: schema.oneOf([
+    //   schema.literal('cluster'),
+    //   schema.literal('index'),
+    //   schema.literal('kibana'),
+    // ]),
   });
 
   const roleMappingSchema = schema.object({
     description: schema.maybe(schema.string()),
-    backend_roles: schema.arrayOf(schema.string()),
-    hosts: schema.arrayOf(schema.string()),
-    users: schema.arrayOf(schema.string()),
+    backend_roles: schema.arrayOf(schema.string(), { defaultValue: [] }),
+    hosts: schema.arrayOf(schema.string(), { defaultValue: [] }),
+    users: schema.arrayOf(schema.string(), { defaultValue: [] }),
   });
 
   const roleSchema = schema.object({
     description: schema.maybe(schema.string()),
-    cluster_permissions: schema.nullable(schema.arrayOf(schema.string())),
-    tenant_permissions: schema.arrayOf(schema.any()),
-    index_permissions: schema.arrayOf(schema.any()),
+    cluster_permissions: schema.arrayOf(schema.string(), { defaultValue: [] }),
+    tenant_permissions: schema.arrayOf(schema.any(), { defaultValue: [] }),
+    index_permissions: schema.arrayOf(schema.any(), { defaultValue: [] }),
   });
 
   const tenantSchema = schema.object({
@@ -109,9 +95,8 @@ export function defineRoutes(router: IRouter) {
    *     ...
    *   }
    * }
-   * Sample response for each resource type:
    *
-   * internal user:
+   * e.g. when listing internal users, response may look like:
    * {
    *   "total": 2,
    *   "data": {
@@ -134,7 +119,7 @@ export function defineRoutes(router: IRouter) {
    *     }
    * }
    *
-   * action group:
+   * when listing action groups, response will look like:
    * {
    *   "total": 2,
    *   "data": {
@@ -264,15 +249,82 @@ export function defineRoutes(router: IRouter) {
           },
         });
       } catch (error) {
-        return response.custom({
-          statusCode: error.statusCode,
-          body: parseEsErrorResponse(error),
-        });
+        return errorResponse(response, error);
       }
     }
   );
 
-  // get resource by resource name and id
+  /**
+   * Gets entity by id.
+   *
+   * the response format differs from different resource types. e.g.
+   *
+   * for internal user, response will look like:
+   * {
+   *   "hash": "",
+   *   "reserved": false,
+   *   "hidden": false,
+   *   "backend_roles": [],
+   *   "attributes": {},
+   *   "static": false
+   * }
+   *
+   * for role, response will look like:
+   * {
+   *   "reserved": true,
+   *   "hidden": false,
+   *   "description": "Allow full access to all indices and all cluster APIs",
+   *   "cluster_permissions": ["*"],
+   *   "index_permissions": [{
+   *     "index_patterns": ["*"],
+   *     "fls": [],
+   *     "masked_fields": [],
+   *     "allowed_actions": ["*"]
+   *   }],
+   *   "tenant_permissions": [{
+   *     "tenant_patterns": ["*"],
+   *     "allowed_actions": ["kibana_all_write"]
+   *   }],
+   *   "static": false
+   * }
+   *
+   * for roles mapping, response will look like:
+   * {
+   *   "reserved": true,
+   *   "hidden": false,
+   *   "description": "Allow full access to all indices and all cluster APIs",
+   *   "cluster_permissions": ["*"],
+   *   "index_permissions": [{
+   *     "index_patterns": ["*"],
+   *     "fls": [],
+   *     "masked_fields": [],
+   *     "allowed_actions": ["*"]
+   *   }],
+   *   "tenant_permissions": [{
+   *     "tenant_patterns": ["*"],
+   *     "allowed_actions": ["kibana_all_write"]
+   *   }],
+   *   "static": false
+   * }
+   *
+   * for action groups, response will look like:
+   * {
+   *   "reserved": true,
+   *   "hidden": false,
+   *   "allowed_actions": ["indices:data/read*", "indices:admin/mappings/fields/get*"],
+   *   "type": "index",
+   *   "description": "Allow all read operations",
+   *   "static": false
+   * }
+   *
+   * for tenant, response will look like:
+   * {
+   *   "reserved": true,
+   *   "hidden": false,
+   *   "description": "Global tenant",
+   *   "static": false
+   * },
+   */
   router.get(
     {
       path: `${API_PREFIX}/${CONFIGURATION_API_PREFIX}/{resourceName}/{id}`,
@@ -293,15 +345,14 @@ export function defineRoutes(router: IRouter) {
         });
         return response.ok({ body: esResp[request.params.id] });
       } catch (error) {
-        return response.custom({
-          statusCode: error.statusCode,
-          body: parseEsErrorResponse(error),
-        });
+        return errorResponse(response, error);
       }
     }
   );
 
-  // delete resource by resource name and id
+  /**
+   * Deletes an entity by id.
+   */
   router.delete(
     {
       path: `${API_PREFIX}/${CONFIGURATION_API_PREFIX}/{resourceName}/{id}`,
@@ -326,15 +377,21 @@ export function defineRoutes(router: IRouter) {
           },
         });
       } catch (error) {
-        return response.custom({
-          statusCode: error.statusCode,
-          body: parseEsErrorResponse(error),
-        });
+        return errorResponse(response, error);
       }
     }
   );
 
-  // create new resource
+  /**
+   * Update object with out Id. Resource identification is expected to computed from headers. Eg: auth headers
+   *
+   * Request sample:
+   * /configuration/account
+   * {
+   *   "password": "new-password",
+   *   "current_password": "old-password"
+   * }
+   */
   router.post(
     {
       path: `${API_PREFIX}/${CONFIGURATION_API_PREFIX}/{resourceName}`,
@@ -364,15 +421,14 @@ export function defineRoutes(router: IRouter) {
           },
         });
       } catch (error) {
-        return response.custom({
-          statusCode: error.statusCode,
-          body: parseEsErrorResponse(error),
-        });
+        return errorResponse(response, error);
       }
     }
   );
 
-  // update resource by Id
+  /**
+   * Update entity by Id.
+   */
   router.post(
     {
       path: `${API_PREFIX}/${CONFIGURATION_API_PREFIX}/{resourceName}/{id}`,
@@ -404,14 +460,35 @@ export function defineRoutes(router: IRouter) {
           },
         });
       } catch (error) {
-        return response.customError({
-          statusCode: error.statusCode,
-          body: parseEsErrorResponse(error),
-        });
+        return errorResponse(response, error);
       }
     }
   );
 
+  /**
+   * Gets authentication info of the user.
+   *
+   * The response looks like:
+   * {
+   *   "user": "User [name=admin, roles=[], requestedTenant=__user__]",
+   *   "user_name": "admin",
+   *   "user_requested_tenant": "__user__",
+   *   "remote_address": "127.0.0.1:35044",
+   *   "backend_roles": [],
+   *   "custom_attribute_names": [],
+   *   "roles": ["all_access", "security_manager"],
+   *   "tenants": {
+   *     "another_tenant": true,
+   *     "admin": true,
+   *     "global_tenant": true,
+   *     "aaaaa": true,
+   *     "test tenant": true
+   *   },
+   *   "principal": null,
+   *   "peer_certificates": "0",
+   *   "sso_logout_url": null
+   * }
+   */
   router.get(
     {
       path: `${API_PREFIX}/auth/authinfo`,
@@ -427,14 +504,66 @@ export function defineRoutes(router: IRouter) {
           body: esResp,
         });
       } catch (error) {
-        return response.custom({
-          statusCode: error.statusCode,
-          body: parseEsErrorResponse(error),
-        });
+        return errorResponse(response, error);
       }
     }
   );
 
+  /**
+   * Update audit log configuration。
+   *
+   * Sample payload:
+   * {
+   *   "enabled":true,
+   *   "audit":{
+   *     "enable_rest":false,
+   *     "disabled_rest_categories":[
+   *       "FAILED_LOGIN",
+   *       "AUTHENTICATED"
+   *     ],
+   *     "enable_transport":true,
+   *     "disabled_transport_categories":[
+   *       "GRANTED_PRIVILEGES"
+   *     ],
+   *     "resolve_bulk_requests":true,
+   *     "log_request_body":false,
+   *     "resolve_indices":true,
+   *     "exclude_sensitive_headers":true,
+   *     "ignore_users":[
+   *       "admin",
+   *     ],
+   *     "ignore_requests":[
+   *       "SearchRequest",
+   *       "indices:data/read/*"
+   *     ]
+   *   },
+   *   "compliance":{
+   *     "enabled":true,
+   *     "internal_config":false,
+   *     "external_config":false,
+   *     "read_metadata_only":false,
+   *     "read_watched_fields":{
+   *       "indexName1":[
+   *         "field1",
+   *         "fields-*"
+   *       ]
+   *     },
+   *     "read_ignore_users":[
+   *       "kibanaserver",
+   *       "operator/*"
+   *     ],
+   *     "write_metadata_only":false,
+   *     "write_log_diffs":false,
+   *     "write_watched_indices":[
+   *       "indexName2",
+   *       "indexPatterns-*"
+   *     ],
+   *     "write_ignore_users":[
+   *       "admin"
+   *     ]
+   *   }
+   * }
+   */
   router.post(
     {
       path: `${API_PREFIX}/configuration/audit/config`,
@@ -455,10 +584,150 @@ export function defineRoutes(router: IRouter) {
           },
         });
       } catch (error) {
-        return response.custom({
-          statusCode: error.statusCode,
-          body: parseEsErrorResponse(error),
+        return errorResponse(response, error);
+      }
+    }
+  );
+
+  /**
+   * Deletes cache.
+   *
+   * Sample response: {"message":"Cache flushed successfully."}
+   */
+  router.delete(
+    {
+      path: `${API_PREFIX}/configuration/cache`,
+      validate: false,
+    },
+    async (context, request, response) => {
+      const client = context.security_plugin.esClient.asScoped(request);
+      let esResponse;
+      try {
+        esResponse = await client.callAsCurrentUser('opendistro_security.clearCache');
+        return response.ok({
+          body: {
+            message: esResponse.message,
+          },
         });
+      } catch (error) {
+        return errorResponse(response, error);
+      }
+    }
+  );
+
+  /**
+   * Gets permission info of current user.
+   *
+   * Sample response:
+   * {
+   *   "user": "User [name=admin, roles=[], requestedTenant=__user__]",
+   *   "user_name": "admin",
+   *   "has_api_access": true,
+   *   "disabled_endpoints": {}
+   * }
+   */
+  router.get(
+    {
+      path: `${API_PREFIX}/restapiinfo`,
+      validate: false,
+    },
+    async (context, request, response) => {
+      const client = context.security_plugin.esClient.asScoped(request);
+      try {
+        const esResponse = await client.callAsCurrentUser('opendistro_security.restapiinfo');
+        return response.ok({
+          body: esResponse,
+        });
+      } catch (error) {
+        return errorResponse(response, error);
+      }
+    }
+  );
+
+  /**
+   * Validates DLS (document level security) query.
+   *
+   * Request payload is an ES query.
+   */
+  router.post(
+    {
+      path: `${API_PREFIX}/${CONFIGURATION_API_PREFIX}/validatedls/{indexName}`,
+      validate: {
+        params: schema.object({
+          // in legacy plugin implmentation, indexName is not used when calling ES API.
+          indexName: schema.maybe(schema.string()),
+        }),
+        body: schema.any(),
+      },
+    },
+    async (context, request, response) => {
+      const client = context.security_plugin.esClient.asScoped(request);
+      try {
+        const esResponse = await client.callAsCurrentUser('opendistro_security.validateDls', {
+          body: request.body,
+        });
+        return response.ok({
+          body: esResponse,
+        });
+      } catch (error) {
+        return errorResponse(response, error);
+      }
+    }
+  );
+
+  /**
+   * Gets index mapping.
+   *
+   * Calling ES _mapping API under the hood. see
+   * https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-get-mapping.html
+   */
+  router.post(
+    {
+      path: `${API_PREFIX}/${CONFIGURATION_API_PREFIX}/index_mappings`,
+      validate: {
+        body: schema.object({
+          index: schema.arrayOf(schema.string()),
+        }),
+      },
+    },
+    async (context, request, response) => {
+      const client = context.security_plugin.esClient.asScoped(request);
+      try {
+        const esResponse = await client.callAsCurrentUser('opendistro_security.getIndexMappings', {
+          index: request.body.index.join(','),
+          ignore_unavailable: true,
+          allow_no_indices: true,
+          body: request.body,
+        });
+        return response.ok({
+          body: esResponse,
+        });
+      } catch (error) {
+        return errorResponse(response, error);
+      }
+    }
+  );
+
+  /**
+   * Gets all indices, and field mappings.
+   * 
+   * Calls ES API '/_all/_mapping/field/*' under the hood. see
+   * https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-get-mapping.html
+   */
+  router.get(
+    {
+      path: `${API_PREFIX}/${CONFIGURATION_API_PREFIX}/indices`,
+      validate: false,
+    },
+    async (context, request, response) => {
+      const client = context.security_plugin.esClient.asScoped(request);
+      try {
+        const esResponse = await client.callAsCurrentUser('opendistro_security.indices');
+        return response.ok({
+          body: esResponse,
+        });
+      } catch (error) {
+        return errorResponse(response, error);
       }
     }
   );
@@ -474,4 +743,11 @@ function parseEsErrorResponse(error: any) {
     }
   }
   return error.message;
+}
+
+function errorResponse(response: KibanaResponseFactory, error: any) {
+  return response.custom({
+    statusCode: error.statusCode,
+    body: parseEsErrorResponse(error),
+  });
 }
