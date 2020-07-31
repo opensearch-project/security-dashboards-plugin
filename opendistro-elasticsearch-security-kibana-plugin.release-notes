@@ -1,4 +1,9 @@
-## 2020-01-27, Version 1.1.0.5 (Current)
+## 2020-07-31, Version 1.1.0.6 (Current)
+
+- UI to update Audit logging configuration
+- Fixed bug in redirecting to error page
+
+## 2020-01-27, Version 1.1.0.5
 
 - New account details UI page with support for users to change own password configured through basicauth internal user
 
