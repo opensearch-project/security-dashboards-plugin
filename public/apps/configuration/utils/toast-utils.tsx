@@ -13,15 +13,21 @@
  *   permissions and limitations under the License.
  */
 
-import { AppMountParameters, CoreStart } from '../../../../src/core/public';
-import { AppPluginStartDependencies } from '../types';
+import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 
-export interface AppDependencies {
-  coreStart: CoreStart;
-  navigation: AppPluginStartDependencies;
-  params: AppMountParameters;
+export function createErrorToast(id: string, title: string, text: string): Toast {
+  return {
+    id,
+    color: 'danger',
+    title,
+    text,
+  };
 }
 
-export interface BreadcrumbsPageDependencies extends AppDependencies {
-  buildBreadcrumbs: (pageTitle: string, subAction?: string) => React.ReactNode;
+export function createUnknownErrorToast(id: string, failedAction: string): Toast {
+  return createErrorToast(
+    id,
+    `Failed to ${failedAction}`,
+    `Failed to ${failedAction}. You may refresh the page to retry or see browser console for more information.`
+  );
 }

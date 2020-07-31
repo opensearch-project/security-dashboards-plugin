@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState, useEffect, useCallback } from 'react';
 
 import {
   EuiButton,
@@ -31,10 +31,19 @@ import {
   EuiInMemoryTable,
   EuiEmptyPrompt,
 } from '@elastic/eui';
+import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
+import { difference } from 'lodash';
 import { BreadcrumbsPageDependencies } from '../../../types';
 import { buildHashUrl } from '../../utils/url-builder';
-import { ResourceType, Action } from '../../types';
-import { getRoleMappingData, MappedUsersListing } from '../../utils/role-mapping-utils';
+import { ResourceType, Action, SubAction, RoleMappingDetail } from '../../types';
+import {
+  getRoleMappingData,
+  MappedUsersListing,
+  updateRoleMapping,
+  transformRoleMappingData,
+  UserType,
+} from '../../utils/role-mapping-utils';
+import { createUnknownErrorToast } from '../../utils/toast-utils';
 
 interface RoleViewProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -60,6 +69,57 @@ export function RoleView(props: RoleViewProps) {
   const [mappedUsers, setMappedUsers] = useState<MappedUsersListing[]>([]);
   const [errorFlag, setErrorFlag] = useState(false);
   const [selection, setSelection] = useState<MappedUsersListing[]>([]);
+  const [hosts, setHosts] = useState<string[]>([]);
+  const [toasts, setToasts] = useState<Toast[]>([]);
+  const addToast = useCallback((toastToAdd: Toast) => {
+    setToasts((state) => state.concat(toastToAdd));
+  }, []);
+  const removeToast = (toastToDelete: Toast) => {
+    setToasts(toasts.filter((toast) => toast.id !== toastToDelete.id));
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const originalRoleMapData = (await getRoleMappingData(
+          props.coreStart.http,
+          props.roleName
+        )) as RoleMappingDetail;
+        setMappedUsers(transformRoleMappingData(originalRoleMapData));
+        setHosts(originalRoleMapData.hosts);
+      } catch (e) {
+        addToast(createUnknownErrorToast('fetchRoleMappingData', 'load data'));
+        console.log(e);
+        setErrorFlag(true);
+      }
+    };
+
+    fetchData();
+  }, [addToast, props.coreStart.http, props.roleName]);
+
+  const handleRoleMappingDelete = async () => {
+    try {
+      const usersToDelete: string[] = selection.map((r) => r.userName);
+      const internalUsers: string[] = mappedUsers
+        .filter((r) => r.userType === UserType.internal)
+        .map((r) => r.userName);
+      const externalIdentities: string[] = mappedUsers
+        .filter((r) => r.userType === UserType.external)
+        .map((r) => r.userName);
+      const updateObject: RoleMappingDetail = {
+        users: difference(internalUsers, usersToDelete),
+        backend_roles: difference(externalIdentities, usersToDelete),
+        hosts,
+      };
+      await updateRoleMapping(props.coreStart.http, props.roleName, updateObject);
+
+      setMappedUsers(difference(mappedUsers, selection));
+      setSelection([]);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const message = (
     <EuiEmptyPrompt
       title={<h2>No user has been mapped to this role</h2>}
@@ -83,26 +143,24 @@ export function RoleView(props: RoleViewProps) {
             </EuiButton>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton fill>Map users</EuiButton>
+            <EuiButton
+              fill
+              onClick={() => {
+                window.location.href = buildHashUrl(
+                  ResourceType.roles,
+                  Action.edit,
+                  props.roleName,
+                  SubAction.mapuser
+                );
+              }}
+            >
+              Map users
+            </EuiButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       }
     />
   );
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const roleMappingData = await getRoleMappingData(props.coreStart.http, props.roleName);
-        setMappedUsers(roleMappingData);
-      } catch (e) {
-        console.log(e);
-        setErrorFlag(true);
-      }
-    };
-
-    fetchData();
-  }, [props.coreStart.http, props.roleName]);
 
   const tabs = [
     {
@@ -137,10 +195,23 @@ export function RoleView(props: RoleViewProps) {
               <EuiPageContentHeaderSection>
                 <EuiFlexGroup>
                   <EuiFlexItem>
-                    <EuiButton isDisabled>Delete mapping</EuiButton>
+                    <EuiButton onClick={handleRoleMappingDelete} disabled={selection.length === 0}>
+                      Delete mapping
+                    </EuiButton>
                   </EuiFlexItem>
                   <EuiFlexItem>
-                    <EuiButton>Manage mapping</EuiButton>
+                    <EuiButton
+                      onClick={() => {
+                        window.location.href = buildHashUrl(
+                          ResourceType.roles,
+                          Action.edit,
+                          props.roleName,
+                          SubAction.mapuser
+                        );
+                      }}
+                    >
+                      Manage mapping
+                    </EuiButton>
                   </EuiFlexItem>
                 </EuiFlexGroup>
               </EuiPageContentHeaderSection>

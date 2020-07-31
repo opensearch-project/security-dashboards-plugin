@@ -25,7 +25,7 @@ import { RoleEdit } from './panels/role-edit/role-edit';
 import { RoleList } from './panels/role-list';
 import { RoleView } from './panels/role-view/role-view';
 import { UserList } from './panels/user-list';
-import { Action, ResourceType, RouteItem } from './types';
+import { Action, ResourceType, RouteItem, SubAction } from './types';
 import { buildHashUrl, buildUrl } from './utils/url-builder';
 import { InternalUserEdit } from './panels/internal-user-edit/internal-user-edit';
 import { AuditLogging } from './panels/audit-logging/audit-logging';
@@ -38,6 +38,7 @@ import {
 } from './panels/audit-logging/constants';
 import { PermissionList } from './panels/permission-list/permission-list';
 import { GetStarted } from './panels/get-started';
+import { RoleEditMappedUser } from './panels/role-mapping/RoleEditMappedUser';
 
 const ROUTE_MAP: { [key: string]: RouteItem } = {
   getStarted: {
@@ -91,7 +92,7 @@ const allNavPanelUrls = ROUTE_LIST.map((route) => route.href).concat([
 const PATTERNS_ROUTES_WITH_NAV_PANEL = '(' + allNavPanelUrls.join('|') + ')';
 
 // TODO: migrate to global Breadcrumbs.
-function Breadcrumbs(resourceType: ResourceType, pageTitle: string) {
+function Breadcrumbs(resourceType: ResourceType, pageTitle: string, subAction?: string) {
   return (
     <EuiBreadcrumbs
       breadcrumbs={[
@@ -105,6 +106,9 @@ function Breadcrumbs(resourceType: ResourceType, pageTitle: string) {
         },
         {
           text: pageTitle,
+        },
+        {
+          text: subAction,
         },
       ]}
     />
@@ -147,6 +151,15 @@ export function AppRouter(props: AppDependencies) {
         </Route>
         <EuiPageBody>
           <Switch>
+            <Route
+              path={buildUrl(ResourceType.roles, Action.edit, ':roleName', SubAction.mapuser)}
+              render={(match) => (
+                <RoleEditMappedUser
+                  buildBreadcrumbs={partial(Breadcrumbs, ResourceType.roles)}
+                  {...{ ...props, ...match.match.params }}
+                />
+              )}
+            />
             <Route
               path={buildUrl(ResourceType.roles, Action.view, ':roleName')}
               render={(match) => (
