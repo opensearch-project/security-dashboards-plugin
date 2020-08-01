@@ -70,7 +70,7 @@ export function AuditLogging(props: AuditLoggingProps) {
     const fetchData = async () => {
       try {
         const rawConfiguration = await props.coreStart.http.get(API_ENDPOINT_AUDITLOGGING);
-        setConfiguration(rawConfiguration.data.config);
+        setConfiguration(rawConfiguration.config);
       } catch (e) {
         // TODO: switch to better error handling.
         console.log(e);

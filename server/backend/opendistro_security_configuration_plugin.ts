@@ -246,9 +246,19 @@ export default function (Client: any, config: any, components: any) {
   });
 
   /**
+   * Gets audit log configuration.
+   */
+  Client.prototype.opendistro_security.prototype.getAudit = ca({
+    method: 'GET',
+    url: {
+      fmt: '/_opendistro/_security/api/audit',
+    },
+  });
+
+  /**
    * Updates audit log configuration.
    */
-  Client.prototype.opendistro_security.prototype.audit = ca({
+  Client.prototype.opendistro_security.prototype.saveAudit = ca({
     method: 'PUT',
     needBody: true,
     url: {
