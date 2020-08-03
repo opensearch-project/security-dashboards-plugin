@@ -26,6 +26,7 @@ export function transformUserData(rawData: DataObject<InternalUser>): InternalUs
   return map(rawData, (value: InternalUser, key?: string) => ({
     username: key || '',
     attributes: value.attributes,
+    backend_roles: value.backend_roles,
   }));
 }
 

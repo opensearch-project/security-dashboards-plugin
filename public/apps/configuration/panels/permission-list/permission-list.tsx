@@ -14,11 +14,15 @@
  */
 
 import {
+  EuiBasicTableColumn,
   EuiButton,
+  EuiButtonIcon,
   EuiContextMenuItem,
   EuiContextMenuPanel,
   EuiFlexGroup,
   EuiFlexItem,
+  EuiGlobalToastList,
+  EuiIcon,
   EuiInMemoryTable,
   EuiLink,
   EuiPageBody,
@@ -27,35 +31,32 @@ import {
   EuiPageContentHeaderSection,
   EuiPageHeader,
   EuiPopover,
+  EuiSearchBarProps,
   EuiText,
   EuiTitle,
-  EuiIcon,
-  EuiSearchBarProps,
-  EuiButtonIcon,
   RIGHT_ALIGNMENT,
-  EuiGlobalToastList,
 } from '@elastic/eui';
 import { difference } from 'lodash';
 import React, {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useCallback,
   useEffect,
   useState,
-  Dispatch,
-  SetStateAction,
-  ReactNode,
-  useCallback,
 } from 'react';
 import { AppDependencies } from '../../../types';
+import { Action } from '../../types';
 import {
   ActionGroupListingItem,
   getAllPermissionsListing,
+  requestDeleteActionGroups,
   updateActionGroup,
 } from '../../utils/action-groups-utils';
-import { renderCustomization } from '../../utils/display-utils';
-import { requestDeleteUsers } from '../../utils/internal-user-list-utils';
-import { PermissionEditModal } from './edit-modal';
 import { stringToComboBoxOption } from '../../utils/combo-box-utils';
-import { Action } from '../../types';
+import { renderCustomization } from '../../utils/display-utils';
 import { useToastState } from '../../utils/toast-utils';
+import { PermissionEditModal } from './edit-modal';
 
 interface ExpandedRowMapInterface {
   [key: string]: React.ReactNode;
@@ -90,7 +91,7 @@ function toggleRowDetails(
 function getColumns(
   itemIdToExpandedRowMap: ExpandedRowMapInterface,
   setItemIdToExpandedRowMap: Dispatch<SetStateAction<ExpandedRowMapInterface>>
-) {
+): Array<EuiBasicTableColumn<ActionGroupListingItem>> {
   return [
     {
       field: 'name',
@@ -198,9 +199,9 @@ export function PermissionList(props: AppDependencies) {
   }, [props.coreStart.http, fetchData]);
 
   const handleDelete = async () => {
-    const usersToDelete: string[] = selection.map((r) => r.name);
+    const groupsToDelete: string[] = selection.map((r) => r.name);
     try {
-      await requestDeleteUsers(props.coreStart.http, usersToDelete);
+      await requestDeleteActionGroups(props.coreStart.http, groupsToDelete);
       setActionGroups(difference(actionGroups, selection));
       setSelection([]);
     } catch (e) {
@@ -227,7 +228,11 @@ export function PermissionList(props: AppDependencies) {
     >
       Duplicate
     </EuiContextMenuItem>,
-    <EuiContextMenuItem key="delete" onClick={handleDelete} disabled={selection.length === 0}>
+    <EuiContextMenuItem
+      key="delete"
+      onClick={handleDelete}
+      disabled={selection.length === 0 || selection.some((group) => group.reserved)}
+    >
       Delete
     </EuiContextMenuItem>,
   ];
