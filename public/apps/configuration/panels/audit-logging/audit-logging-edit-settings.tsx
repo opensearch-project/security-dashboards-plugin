@@ -13,10 +13,9 @@
  *   permissions and limitations under the License.
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   EuiButton,
-  EuiCallOut,
   EuiFlexGroup,
   EuiFlexItem,
   EuiGlobalToastList,
@@ -40,6 +39,7 @@ import { buildHashUrl } from '../../utils/url-builder';
 import { ResourceType } from '../../types';
 import { updateAuditLogging } from '../../utils/audit-logging-view-utils';
 import { API_ENDPOINT_AUDITLOGGING } from '../../constants';
+import { useToastState } from '../../utils/toast-utils';
 
 interface AuditLoggingEditSettingProps extends AppDependencies {
   setting: 'general' | 'compliance';
@@ -47,7 +47,7 @@ interface AuditLoggingEditSettingProps extends AppDependencies {
 
 export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
   const [editConfig, setEditConfig] = useState<AuditLoggingSettings>({});
-  const [toasts, setToasts] = useState<Toast[]>([]);
+  const [toasts, addToast, removeToast] = useToastState();
   const [invalidSettings, setInvalidSettings] = useState<string[]>([]);
 
   const handleChange = (path: string, val: boolean | string[] | SettingMapItem) => {
@@ -78,14 +78,6 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
 
     fetchConfig();
   }, [props.coreStart.http]);
-
-  const addToast = useCallback((toastToAdd: Toast) => {
-    setToasts((state) => state.concat(toastToAdd));
-  }, []);
-
-  const removeToast = (toastToDelete: Toast) => {
-    setToasts(toasts.filter((toast) => toast.id !== toastToDelete.id));
-  };
 
   const renderSaveAndCancel = () => {
     return (
@@ -154,18 +146,6 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
           />
           {editConfig.compliance && editConfig.compliance.enabled && (
             <>
-              <EuiCallOut title="Warning" color="warning">
-                <p>
-                  Configuring Watched fields and Watched indices (compliance:read_watch_fields,
-                  compliance:write_watched_indices) will <br />
-                  generate one log per documented access, and may result in very large log files
-                  being generated if monitoring commonly <br />
-                  accessed indices and fields.
-                </p>
-              </EuiCallOut>
-
-              <EuiSpacer />
-
               <EditSettingGroup
                 settingGroup={SETTING_GROUPS.COMPLIANCE_CONFIG_SETTINGS}
                 config={editConfig}
@@ -210,21 +190,6 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
         </EuiPageHeader>
 
         <EuiPanel>
-          <EuiCallOut title="Warning" color="warning">
-            <p>
-              Enabling REST and Transport layers (config:enable_rest, config:enable_transport) may
-              result in a massive number of logs if AUTHENTICATED and GRANTED_PRIVILEGES are not
-              disabled. We suggest you ignore common requests if doing so.
-            </p>
-
-            <p>
-              Enabling Bulk requests (config:resolve_bulk_requests) will generate one log per
-              request, and may also result in very large log files.
-            </p>
-          </EuiCallOut>
-
-          <EuiSpacer />
-
           <EditSettingGroup
             settingGroup={SETTING_GROUPS.LAYER_SETTINGS}
             config={editConfig}

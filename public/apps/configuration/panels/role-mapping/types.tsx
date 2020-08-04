@@ -12,16 +12,6 @@
  *   express or implied. See the License for the specific language governing
  *   permissions and limitations under the License.
  */
-
-import { AppMountParameters, CoreStart } from '../../../../src/core/public';
-import { AppPluginStartDependencies } from '../types';
-
-export interface AppDependencies {
-  coreStart: CoreStart;
-  navigation: AppPluginStartDependencies;
-  params: AppMountParameters;
-}
-
-export interface BreadcrumbsPageDependencies extends AppDependencies {
-  buildBreadcrumbs: (pageTitle: string, subAction?: string) => React.ReactNode;
+export interface ExternalIdentityStateClass {
+  externalIdentity: string;
 }

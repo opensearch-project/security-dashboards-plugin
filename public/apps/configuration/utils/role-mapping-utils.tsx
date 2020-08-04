@@ -30,10 +30,7 @@ export enum UserType {
 
 export async function getRoleMappingData(http: HttpStart, roleName: string) {
   try {
-    const rawData = (await http.get(
-      `${API_ENDPOINT_ROLESMAPPING}/${roleName}`
-    )) as RoleMappingDetail;
-    return transformRoleMappingData(rawData);
+    return (await http.get(`${API_ENDPOINT_ROLESMAPPING}/${roleName}`)) as RoleMappingDetail;
   } catch (e) {
     if (e.response.status === 404) return [];
     throw e;
@@ -52,4 +49,14 @@ export function transformRoleMappingData(rawData: RoleMappingDetail): MappedUser
   }));
 
   return internalUsers.concat(externalIdentity);
+}
+
+export async function updateRoleMapping(
+  http: HttpStart,
+  roleName: string,
+  updateObject: RoleMappingDetail
+) {
+  return await http.post(`${API_ENDPOINT_ROLESMAPPING}/${roleName}`, {
+    body: JSON.stringify(updateObject),
+  });
 }

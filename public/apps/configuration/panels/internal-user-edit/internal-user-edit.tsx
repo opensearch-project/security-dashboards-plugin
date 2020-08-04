@@ -26,14 +26,14 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BreadcrumbsPageDependencies } from '../../../types';
 import { InternalUserUpdate, ResourceType } from '../../types';
 import { FormRow } from '../../utils/form-row';
 import { getUserDetail, updateUser } from '../../utils/internal-user-detail-utils';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { PasswordEditPanel } from '../../utils/password-edit-panel';
+import { createErrorToast, createUnknownErrorToast, useToastState } from '../../utils/toast-utils';
 import { buildHashUrl } from '../../utils/url-builder';
 import { AttributePanel, buildAttributeState, unbuildAttributeState } from './attribute-panel';
 import { UserAttributeStateClass } from './types';
@@ -58,23 +58,6 @@ const UPDATE_TEXT_DICT = {
   duplicate: 'User successfully duplicated',
 };
 
-function createErrorToast(id: string, title: string, text: string): Toast {
-  return {
-    id,
-    color: 'danger',
-    title,
-    text,
-  };
-}
-
-function createUnknownErrorToast(id: string, failedAction: string): Toast {
-  return createErrorToast(
-    id,
-    `Failed to ${failedAction}`,
-    `Failed to ${failedAction}. You may refresh the page to retry or see browser console for more information.`
-  );
-}
-
 export function InternalUserEdit(props: InternalUserEditDeps) {
   const [userName, setUserName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -82,13 +65,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
   const [attributes, setAttributes] = useState<UserAttributeStateClass[]>([]);
   const [backendRoles, setBackendRoles] = useState<string[]>([]);
 
-  const [toasts, setToasts] = useState<Toast[]>([]);
-  const addToast = useCallback((toastToAdd: Toast) => {
-    setToasts((state) => state.concat(toastToAdd));
-  }, []);
-  const removeToast = (toastToDelete: Toast) => {
-    setToasts(toasts.filter((toast) => toast.id !== toastToDelete.id));
-  };
+  const [toasts, addToast, removeToast] = useToastState();
 
   useEffect(() => {
     const action = props.action;
