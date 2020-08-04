@@ -21,7 +21,11 @@ import { AppMountParameters, CoreStart } from '../../../../../src/core/public';
 import { LoginPage } from './login-page';
 import { ClientConfigType } from '../../types';
 
-export function renderApp(coreStart: CoreStart, params: AppMountParameters, config: ClientConfigType['ui']['basicauth']['login']) {
+export function renderApp(
+  coreStart: CoreStart,
+  params: AppMountParameters,
+  config: ClientConfigType['ui']['basicauth']['login']
+) {
   ReactDOM.render(<LoginPage http={coreStart.http} config={config} />, params.element);
   return () => ReactDOM.unmountComponentAtNode(params.element);
 }

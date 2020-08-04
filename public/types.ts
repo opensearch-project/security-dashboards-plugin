@@ -35,12 +35,12 @@ export interface ClientConfigType {
   ui: {
     basicauth: {
       login: {
-        title: string,
-        subtitle: string,
-        showbrandimage: boolean,
-        brandImage: string,
-        buttonstyle: string,
-      }
-    }
-  }
+        title: string;
+        subtitle: string;
+        showbrandimage: boolean;
+        brandimage: string;
+        buttonstyle: string;
+      };
+    };
+  };
 }

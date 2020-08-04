@@ -93,14 +93,17 @@ export function LoginPage(props: LoginPageDeps) {
   // TODO: Get brand image from server config
   return (
     <EuiListGroup className="login-wrapper">
-      { props.config.showbrandimage && <EuiImage alt="" url={props.config.brandImage || defaultBrandImage} /> }
+      {props.config.showbrandimage && (
+        <EuiImage alt="" url={props.config.brandimage || defaultBrandImage} />
+      )}
       <EuiSpacer size="s" />
       <EuiText size="m" textAlign="center">
-        {props.config.title || 'Please login to Kibana'} 
+        {props.config.title || 'Please login to Kibana'}
       </EuiText>
       <EuiSpacer size="s" />
       <EuiText size="s" textAlign="center">
-        {props.config.subtitle || 'If you have forgotten your username or password, please ask your system administrator'}
+        {props.config.subtitle ||
+          'If you have forgotten your username or password, please ask your system administrator'}
       </EuiText>
       <EuiSpacer size="s" />
       <EuiForm>
@@ -124,7 +127,13 @@ export function LoginPage(props: LoginPageDeps) {
           />
         </EuiFormRow>
         <EuiFormRow>
-          <EuiButton fill size="s" type="submit" className={props.config.buttonstyle || 'btn-login'} onClick={handleSubmit}>
+          <EuiButton
+            fill
+            size="s"
+            type="submit"
+            className={props.config.buttonstyle || 'btn-login'}
+            onClick={handleSubmit}
+          >
             Log In
           </EuiButton>
         </EuiFormRow>

@@ -194,7 +194,7 @@ export const config: PluginConfigDescriptor<SecurityPluginConfigType> = {
   deprecations: ({ rename, unused }) => [
     rename('basicauth.login.title', 'ui.basicauth.login.title'),
     rename('basicauth.login.subtitle', 'ui.basicauth.login.subtitle'),
-    rename('basicauth.login.titshowbrandimagele', 'ui.basicauth.login.showbrandimage'),
+    rename('basicauth.login.showbrandimage', 'ui.basicauth.login.showbrandimage'),
     rename('basicauth.login.brandimage', 'ui.basicauth.login.brandimage'),
     rename('basicauth.login.buttonstyle', 'ui.basicauth.login.buttonstyle'),
   ],
