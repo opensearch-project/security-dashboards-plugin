@@ -85,3 +85,9 @@ export async function updateActionGroup(
     body: JSON.stringify(updateObject),
   });
 }
+
+export async function requestDeleteActionGroups(http: HttpStart, groups: string[]) {
+  for (const group of groups) {
+    await http.delete(`${API_ENDPOINT_ACTIONGROUPS}/${group}`);
+  }
+}
