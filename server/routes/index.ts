@@ -509,6 +509,85 @@ export function defineRoutes(router: IRouter) {
   );
 
   /**
+   * Gets audit log configuration。
+   *
+   * Sample payload:
+   * {
+   *   "enabled":true,
+   *   "audit":{
+   *     "enable_rest":false,
+   *     "disabled_rest_categories":[
+   *       "FAILED_LOGIN",
+   *       "AUTHENTICATED"
+   *     ],
+   *     "enable_transport":true,
+   *     "disabled_transport_categories":[
+   *       "GRANTED_PRIVILEGES"
+   *     ],
+   *     "resolve_bulk_requests":true,
+   *     "log_request_body":false,
+   *     "resolve_indices":true,
+   *     "exclude_sensitive_headers":true,
+   *     "ignore_users":[
+   *       "admin",
+   *     ],
+   *     "ignore_requests":[
+   *       "SearchRequest",
+   *       "indices:data/read/*"
+   *     ]
+   *   },
+   *   "compliance":{
+   *     "enabled":true,
+   *     "internal_config":false,
+   *     "external_config":false,
+   *     "read_metadata_only":false,
+   *     "read_watched_fields":{
+   *       "indexName1":[
+   *         "field1",
+   *         "fields-*"
+   *       ]
+   *     },
+   *     "read_ignore_users":[
+   *       "kibanaserver",
+   *       "operator/*"
+   *     ],
+   *     "write_metadata_only":false,
+   *     "write_log_diffs":false,
+   *     "write_watched_indices":[
+   *       "indexName2",
+   *       "indexPatterns-*"
+   *     ],
+   *     "write_ignore_users":[
+   *       "admin"
+   *     ]
+   *   }
+   * }
+   */
+  router.get(
+    {
+      path: `${API_PREFIX}/configuration/audit`,
+      validate: false,
+    },
+    async (context, request, response): Promise<IKibanaResponse<any | ResponseError>> => {
+      const client = context.security_plugin.esClient.asScoped(request);
+
+      let esResp;
+      try {
+        esResp = await client.callAsCurrentUser('opendistro_security.getAudit');
+
+        return response.ok({
+          body: esResp,
+        });
+      } catch (error) {
+        return response.custom({
+          statusCode: error.statusCode,
+          body: parseEsErrorResponse(error),
+        });
+      }
+    }
+  );
+
+  /**
    * Update audit log configuration。
    *
    * Sample payload:
@@ -574,7 +653,7 @@ export function defineRoutes(router: IRouter) {
       const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opendistro_security.audit', {
+        esResp = await client.callAsCurrentUser('opendistro_security.saveAudit', {
           body: request.body,
         });
         return response.ok({

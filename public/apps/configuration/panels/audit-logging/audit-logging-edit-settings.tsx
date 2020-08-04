@@ -69,7 +69,7 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
     const fetchConfig = async () => {
       try {
         const rawConfig = await props.coreStart.http.get(API_ENDPOINT_AUDITLOGGING);
-        const fetchedConfig = rawConfig.data.config;
+        const fetchedConfig = rawConfig.config;
         setEditConfig(fetchedConfig);
       } catch (e) {
         console.log(e);
