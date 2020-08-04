@@ -28,9 +28,12 @@ import {
   EuiFormRow,
 } from '@elastic/eui';
 import { CoreStart } from '../../../../../src/core/public';
+import { ClientConfigType } from '../../types';
+import defaultBrandImage from '../../assets/open_distro_for_elasticsearch_logo_h.svg';
 
 interface LoginPageDeps {
   http: CoreStart['http'];
+  config: ClientConfigType['ui']['basicauth']['login'];
 }
 
 export function LoginPage(props: LoginPageDeps) {
@@ -90,14 +93,14 @@ export function LoginPage(props: LoginPageDeps) {
   // TODO: Get brand image from server config
   return (
     <EuiListGroup className="login-wrapper">
-      <EuiImage alt="" url="" />
+      { props.config.showbrandimage && <EuiImage alt="" url={props.config.brandImage || defaultBrandImage} /> }
       <EuiSpacer size="s" />
       <EuiText size="m" textAlign="center">
-        Please login to Kibana
+        {props.config.title || 'Please login to Kibana'} 
       </EuiText>
       <EuiSpacer size="s" />
       <EuiText size="s" textAlign="center">
-        If you have forgotten your username or password, please ask your system administrator
+        {props.config.subtitle || 'If you have forgotten your username or password, please ask your system administrator'}
       </EuiText>
       <EuiSpacer size="s" />
       <EuiForm>
@@ -121,7 +124,7 @@ export function LoginPage(props: LoginPageDeps) {
           />
         </EuiFormRow>
         <EuiFormRow>
-          <EuiButton fill size="s" type="submit" className="btn-login" onClick={handleSubmit}>
+          <EuiButton fill size="s" type="submit" className={props.config.buttonstyle || 'btn-login'} onClick={handleSubmit}>
             Log In
           </EuiButton>
         </EuiFormRow>

@@ -24,6 +24,7 @@ import {
   OpendistroSecurityPluginSetup,
   OpendistroSecurityPluginStart,
   AppPluginStartDependencies,
+  ClientConfigType,
 } from './types';
 import { PLUGIN_NAME } from '../common';
 
@@ -33,6 +34,7 @@ export class OpendistroSecurityPlugin
   constructor(private readonly initializerContext: PluginInitializerContext) {}
 
   public setup(core: CoreSetup): OpendistroSecurityPluginSetup {
+    const config = this.initializerContext.config.get<ClientConfigType>();
     core.application.register({
       id: PLUGIN_NAME,
       title: 'Security',
@@ -53,7 +55,7 @@ export class OpendistroSecurityPlugin
         const { renderApp } = await import('./apps/login/login-app');
         // @ts-ignore depsStart not used.
         const [coreStart, depsStart] = await core.getStartServices();
-        return renderApp(coreStart, params);
+        return renderApp(coreStart, params, config.ui.basicauth.login);
       },
     });
 

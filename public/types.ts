@@ -30,3 +30,17 @@ export interface AuthInfo {
     [tenant: string]: boolean;
   };
 }
+
+export interface ClientConfigType {
+  ui: {
+    basicauth: {
+      login: {
+        title: string,
+        subtitle: string,
+        showbrandimage: boolean,
+        brandImage: string,
+        buttonstyle: string,
+      }
+    }
+  }
+}
