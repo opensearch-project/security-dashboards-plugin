@@ -19,8 +19,13 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { AppMountParameters, CoreStart } from '../../../../../src/core/public';
 import { LoginPage } from './login-page';
+import { ClientConfigType } from '../../types';
 
-export function renderApp(coreStart: CoreStart, params: AppMountParameters) {
-  ReactDOM.render(<LoginPage http={coreStart.http} />, params.element);
+export function renderApp(
+  coreStart: CoreStart,
+  params: AppMountParameters,
+  config: ClientConfigType['ui']['basicauth']['login']
+) {
+  ReactDOM.render(<LoginPage http={coreStart.http} config={config} />, params.element);
   return () => ReactDOM.unmountComponentAtNode(params.element);
 }
