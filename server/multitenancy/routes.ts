@@ -25,7 +25,9 @@ export function setupMultitenantRoutes(
 ) {
   const PREFIX: string = '/api/v1';
 
-  // Updates selected tenant in cookie
+  /**
+   * Updates selected tenant.
+   */
   router.post(
     {
       path: `${PREFIX}/multitenancy/tenant`,
@@ -55,7 +57,9 @@ export function setupMultitenantRoutes(
     }
   );
 
-  // Gets preferred tenant from cookie
+  /**
+   * Gets current selected tenant from session.
+   */
   router.get(
     {
       path: `${PREFIX}/multitenancy/tenant`,
@@ -74,6 +78,18 @@ export function setupMultitenantRoutes(
     }
   );
 
+  /**
+   * Gets multitenant info of current user.
+   *
+   * Sample response of this API:
+   * {
+   *   "user_name": "admin",
+   *   "not_fail_on_forbidden_enabled": false,
+   *   "kibana_mt_enabled": true,
+   *   "kibana_index": ".kibana",
+   *   "kibana_server_user": "kibanaserver"
+   * }
+   */
   router.get(
     {
       path: `${PREFIX}/multitenancy/info`,
@@ -83,7 +99,7 @@ export function setupMultitenantRoutes(
       try {
         const esResponse = await securityClient.getMultitenancyInfo(request);
         return response.ok({
-          body: esResponse.body,
+          body: esResponse,
           headers: {
             'content-type': 'application/json',
           },

@@ -25,11 +25,15 @@ export default function (Client: any, config: any, components: any) {
     },
   });
 
+  /**
+   * list all field mappings for all indices.
+   */
   Client.prototype.opendistro_security.prototype.indices = ca({
     url: {
       fmt: '/_all/_mapping/field/*',
     },
   });
+
   /**
    * Returns a Security resource configuration.
    *
@@ -166,6 +170,9 @@ export default function (Client: any, config: any, components: any) {
     },
   });
 
+  /**
+   * Validate query.
+   */
   Client.prototype.opendistro_security.prototype.validateDls = ca({
     method: 'POST',
     needBody: true,
@@ -174,6 +181,9 @@ export default function (Client: any, config: any, components: any) {
     },
   });
 
+  /**
+   * Gets index mapping.
+   */
   Client.prototype.opendistro_security.prototype.getIndexMappings = ca({
     method: 'GET',
     needBody: true,
@@ -188,25 +198,45 @@ export default function (Client: any, config: any, components: any) {
     },
   });
 
-  /////
+  /**
+   * Gets auth info.
+   */
   Client.prototype.opendistro_security.prototype.authinfo = ca({
     url: {
       fmt: '/_opendistro/_security/authinfo',
     },
   });
 
+  /**
+   * Gets tenant info and kibana server info.
+   *
+   * e.g.
+   * {
+   *   "user_name": "admin",
+   *   "not_fail_on_forbidden_enabled": false,
+   *   "kibana_mt_enabled": true,
+   *   "kibana_index": ".kibana",
+   *   "kibana_server_user": "kibanaserver"
+   * }
+   */
   Client.prototype.opendistro_security.prototype.multitenancyinfo = ca({
     url: {
       fmt: '/_opendistro/_security/kibanainfo',
     },
   });
 
+  /**
+   * Gets tenant info of current user.
+   */
   Client.prototype.opendistro_security.prototype.tenantinfo = ca({
     url: {
       fmt: '/_opendistro/_security/tenantinfo',
     },
   });
 
+  /**
+   * Gets SAML token.
+   */
   Client.prototype.opendistro_security.prototype.authtoken = ca({
     method: 'POST',
     needBody: true,
@@ -215,6 +245,9 @@ export default function (Client: any, config: any, components: any) {
     },
   });
 
+  /**
+   * Updates audit log configuration.
+   */
   Client.prototype.opendistro_security.prototype.audit = ca({
     method: 'PUT',
     needBody: true,
