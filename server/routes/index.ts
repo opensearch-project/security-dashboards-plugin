@@ -14,7 +14,6 @@
  */
 
 import { schema } from '@kbn/config-schema';
-import { async } from 'rxjs/internal/scheduler/async';
 import {
   IRouter,
   ResponseError,
