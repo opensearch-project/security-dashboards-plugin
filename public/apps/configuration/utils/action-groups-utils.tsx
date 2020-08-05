@@ -18,7 +18,7 @@ import { map } from 'lodash';
 import { API_ENDPOINT_ACTIONGROUPS, CLUSTER_PERMISSIONS, INDEX_PERMISSIONS } from '../constants';
 import { DataObject, ActionGroupItem, ActionGroupUpdate } from '../types';
 
-export interface ActionGroupListingItem {
+export interface PermissionListingItem {
   name: string;
   type: 'Action group' | 'Single permission';
   reserved: boolean;
@@ -34,7 +34,7 @@ export async function fetchActionGroups(http: HttpStart): Promise<DataObject<Act
 
 function tranformActionGroupsToListingFormat(
   rawData: DataObject<ActionGroupItem>
-): ActionGroupListingItem[] {
+): PermissionListingItem[] {
   return map(rawData, (value: ActionGroupItem, key?: string) => ({
     name: key || '',
     type: 'Action group',
@@ -45,11 +45,11 @@ function tranformActionGroupsToListingFormat(
   }));
 }
 
-export async function fetchActionGroupListing(http: HttpStart): Promise<ActionGroupListingItem[]> {
+export async function fetchActionGroupListing(http: HttpStart): Promise<PermissionListingItem[]> {
   return tranformActionGroupsToListingFormat(await fetchActionGroups(http));
 }
 
-function getClusterSinglePermissions(): ActionGroupListingItem[] {
+function getClusterSinglePermissions(): PermissionListingItem[] {
   return CLUSTER_PERMISSIONS.map((permission) => ({
     name: permission,
     type: 'Single permission',
@@ -60,7 +60,7 @@ function getClusterSinglePermissions(): ActionGroupListingItem[] {
   }));
 }
 
-function getIndexSinglePermissions(): ActionGroupListingItem[] {
+function getIndexSinglePermissions(): PermissionListingItem[] {
   return INDEX_PERMISSIONS.map((permission) => ({
     name: permission,
     type: 'Single permission',
@@ -71,9 +71,16 @@ function getIndexSinglePermissions(): ActionGroupListingItem[] {
   }));
 }
 
-export async function getAllPermissionsListing(http: HttpStart): Promise<ActionGroupListingItem[]> {
-  const actionGroups = await fetchActionGroupListing(http);
-  return actionGroups.concat(getClusterSinglePermissions()).concat(getIndexSinglePermissions());
+export async function getAllPermissionsListing(http: HttpStart): Promise<PermissionListingItem[]> {
+  return mergeAllPermissions(await fetchActionGroups(http));
+}
+
+export async function mergeAllPermissions(
+  actionGroups: DataObject<ActionGroupItem>
+): Promise<PermissionListingItem[]> {
+  return tranformActionGroupsToListingFormat(actionGroups)
+    .concat(getClusterSinglePermissions())
+    .concat(getIndexSinglePermissions());
 }
 
 export async function updateActionGroup(
