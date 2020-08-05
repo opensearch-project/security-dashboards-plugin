@@ -52,7 +52,7 @@ import {
   requestDeleteActionGroups,
   updateActionGroup,
   fetchActionGroups,
-  getAllPermissionsListingLocal,
+  mergeAllPermissions,
 } from '../../utils/action-groups-utils';
 import { stringToComboBoxOption } from '../../utils/combo-box-utils';
 import { renderCustomization } from '../../utils/display-utils';
@@ -189,7 +189,7 @@ export function PermissionList(props: AppDependencies) {
     try {
       const actionGroups = await fetchActionGroups(props.coreStart.http);
       setActionGroupDict(actionGroups);
-      setPermissionList(await getAllPermissionsListingLocal(actionGroups));
+      setPermissionList(await mergeAllPermissions(actionGroups));
     } catch (e) {
       console.log(e);
       setErrorFlag(true);

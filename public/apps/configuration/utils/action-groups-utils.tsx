@@ -72,10 +72,10 @@ function getIndexSinglePermissions(): PermissionListingItem[] {
 }
 
 export async function getAllPermissionsListing(http: HttpStart): Promise<PermissionListingItem[]> {
-  return getAllPermissionsListingLocal(await fetchActionGroups(http));
+  return mergeAllPermissions(await fetchActionGroups(http));
 }
 
-export async function getAllPermissionsListingLocal(
+export async function mergeAllPermissions(
   actionGroups: DataObject<ActionGroupItem>
 ): Promise<PermissionListingItem[]> {
   return tranformActionGroupsToListingFormat(actionGroups)
