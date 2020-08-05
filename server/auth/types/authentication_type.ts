@@ -72,6 +72,12 @@ export abstract class AuthenticationType implements IAuthenticationType {
   }
 
   public authHandler: AuthenticationHandler = async (request, response, toolkit) => {
+    // allow access to assets
+    if (request.url.pathname && request.url.pathname.startsWith('/bundles/')) {
+      return toolkit.notHandled();
+    }
+
+    // skip auth for APIs that do not require auth
     if (this.authNotRequired(request)) {
       return toolkit.authenticated();
     }
@@ -170,10 +176,6 @@ export abstract class AuthenticationType implements IAuthenticationType {
     const pathname = request.url.pathname;
     if (!pathname) {
       return false;
-    }
-    // allow access to assets
-    if (pathname!.startsWith('/bundles/')) {
-      return true;
     }
     // allow requests to ignored routes
     if (AuthenticationType.ROUTES_TO_IGNORE.includes(pathname!)) {

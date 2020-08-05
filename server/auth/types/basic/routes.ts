@@ -22,6 +22,7 @@ import { filterAuthHeaders } from '../../../utils/filter_auth_headers';
 import { User } from '../../user';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { CoreSetup } from '../../../../../../src/core/server';
+import { LOGIN_PAGE_URI } from '../../../../common';
 
 export class BasicAuthRoutes {
   constructor(
@@ -36,6 +37,21 @@ export class BasicAuthRoutes {
   ) {}
 
   public setupRoutes() {
+    // bootstrap an empty page so that browser app can render the login page
+    // using client side routing.
+    this.coreSetup.http.resources.register(
+      {
+        path: `${LOGIN_PAGE_URI}`,
+        validate: false,
+        options: {
+          authRequired: false,
+        },
+      },
+      async (context, request, response) => {
+        return response.renderAnonymousCoreApp();
+      }
+    );
+
     // login using username and password
     this.router.post(
       {
