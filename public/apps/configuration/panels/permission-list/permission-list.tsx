@@ -48,7 +48,7 @@ import React, {
 import { AppDependencies } from '../../../types';
 import { Action, DataObject, ActionGroupItem } from '../../types';
 import {
-  ActionGroupListingItem,
+  PermissionListingItem,
   requestDeleteActionGroups,
   updateActionGroup,
   fetchActionGroups,
@@ -69,7 +69,7 @@ function renderBooleanToCheckMark(value: boolean): React.ReactNode {
 }
 
 function toggleRowDetails(
-  item: ActionGroupListingItem,
+  item: PermissionListingItem,
   actionGroupDict: DataObject<ActionGroupItem>,
   setItemIdToExpandedRowMap: Dispatch<SetStateAction<ExpandedRowMapInterface>>
 ) {
@@ -78,7 +78,9 @@ function toggleRowDetails(
     if (itemIdToExpandedRowMapValues[item.name]) {
       delete itemIdToExpandedRowMapValues[item.name];
     } else {
-      itemIdToExpandedRowMapValues[item.name] = (<PermissionTree permissions={item.allowedActions} actionGroups={actionGroupDict} />)
+      itemIdToExpandedRowMapValues[item.name] = (
+        <PermissionTree permissions={item.allowedActions} actionGroups={actionGroupDict} />
+      );
     }
     return itemIdToExpandedRowMapValues;
   });
@@ -88,7 +90,7 @@ function getColumns(
   itemIdToExpandedRowMap: ExpandedRowMapInterface,
   actionGroupDict: DataObject<ActionGroupItem>,
   setItemIdToExpandedRowMap: Dispatch<SetStateAction<ExpandedRowMapInterface>>
-): Array<EuiBasicTableColumn<ActionGroupListingItem>> {
+): Array<EuiBasicTableColumn<PermissionListingItem>> {
   return [
     {
       field: 'name',
@@ -119,7 +121,7 @@ function getColumns(
       align: RIGHT_ALIGNMENT,
       width: '40px',
       isExpander: true,
-      render: (item: ActionGroupListingItem) =>
+      render: (item: PermissionListingItem) =>
         item.type === 'Action group' && (
           <EuiButtonIcon
             onClick={() => toggleRowDetails(item, actionGroupDict, setItemIdToExpandedRowMap)}
@@ -168,10 +170,10 @@ const SEARCH_OPTIONS: EuiSearchBarProps = {
 };
 
 export function PermissionList(props: AppDependencies) {
-  const [actionGroups, setActionGroups] = useState<ActionGroupListingItem[]>([]);
+  const [permissionList, setPermissionList] = useState<PermissionListingItem[]>([]);
   const [actionGroupDict, setActionGroupDict] = useState<DataObject<ActionGroupItem>>({});
   const [errorFlag, setErrorFlag] = useState<boolean>(false);
-  const [selection, setSelection] = useState<ActionGroupListingItem[]>([]);
+  const [selection, setSelection] = useState<PermissionListingItem[]>([]);
   const [isActionsPopoverOpen, setActionsPopoverOpen] = useState<boolean>(false);
   const [isCreateActionGroupPopoverOpen, setCreateActionGroupPopoverOpen] = useState<boolean>(
     false
@@ -187,7 +189,7 @@ export function PermissionList(props: AppDependencies) {
     try {
       const actionGroups = await fetchActionGroups(props.coreStart.http);
       setActionGroupDict(actionGroups);
-      setActionGroups(await getAllPermissionsListingLocal(actionGroups));
+      setPermissionList(await getAllPermissionsListingLocal(actionGroups));
     } catch (e) {
       console.log(e);
       setErrorFlag(true);
@@ -202,7 +204,7 @@ export function PermissionList(props: AppDependencies) {
     const groupsToDelete: string[] = selection.map((r) => r.name);
     try {
       await requestDeleteActionGroups(props.coreStart.http, groupsToDelete);
-      setActionGroups(difference(actionGroups, selection));
+      setPermissionList(difference(permissionList, selection));
       setSelection([]);
     } catch (e) {
       console.log(e);
@@ -247,7 +249,7 @@ export function PermissionList(props: AppDependencies) {
         groupName={initialGroupName}
         action={action}
         allowedActions={initialAllowedAction}
-        optionUniverse={actionGroups.map((group) => stringToComboBoxOption(group.name))}
+        optionUniverse={permissionList.map((group) => stringToComboBoxOption(group.name))}
         handleClose={() => setEditModal(null)}
         handleSave={async (groupName, allowedAction) => {
           try {
@@ -332,7 +334,7 @@ export function PermissionList(props: AppDependencies) {
         <EuiPageContentHeader>
           <EuiPageContentHeaderSection>
             <EuiTitle size="s">
-              <h3>Permissions ({actionGroups.length})</h3>
+              <h3>Permissions ({permissionList.length})</h3>
             </EuiTitle>
             <EuiText size="xs" color="subdued">
               Permissions defines type of access to the cluster or the specified indices. An action
@@ -377,9 +379,9 @@ export function PermissionList(props: AppDependencies) {
         </EuiPageContentHeader>
         <EuiPageBody>
           <EuiInMemoryTable
-            loading={actionGroups === [] && !errorFlag}
+            loading={permissionList === [] && !errorFlag}
             columns={getColumns(itemIdToExpandedRowMap, actionGroupDict, setItemIdToExpandedRowMap)}
-            items={actionGroups}
+            items={permissionList}
             itemId={'name'}
             pagination
             search={SEARCH_OPTIONS}
