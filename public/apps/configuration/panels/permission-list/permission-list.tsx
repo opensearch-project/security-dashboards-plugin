@@ -46,17 +46,19 @@ import React, {
   useState,
 } from 'react';
 import { AppDependencies } from '../../../types';
-import { Action } from '../../types';
+import { Action, DataObject, ActionGroupItem } from '../../types';
 import {
   ActionGroupListingItem,
-  getAllPermissionsListing,
   requestDeleteActionGroups,
   updateActionGroup,
+  fetchActionGroups,
+  getAllPermissionsListingLocal,
 } from '../../utils/action-groups-utils';
 import { stringToComboBoxOption } from '../../utils/combo-box-utils';
 import { renderCustomization } from '../../utils/display-utils';
 import { useToastState } from '../../utils/toast-utils';
 import { PermissionEditModal } from './edit-modal';
+import { PermissionTree } from '../permission-tree';
 
 interface ExpandedRowMapInterface {
   [key: string]: React.ReactNode;
@@ -68,6 +70,7 @@ function renderBooleanToCheckMark(value: boolean): React.ReactNode {
 
 function toggleRowDetails(
   item: ActionGroupListingItem,
+  actionGroupDict: DataObject<ActionGroupItem>,
   setItemIdToExpandedRowMap: Dispatch<SetStateAction<ExpandedRowMapInterface>>
 ) {
   setItemIdToExpandedRowMap((prevState) => {
@@ -75,14 +78,7 @@ function toggleRowDetails(
     if (itemIdToExpandedRowMapValues[item.name]) {
       delete itemIdToExpandedRowMapValues[item.name];
     } else {
-      // TODO: Replace with treeview
-      itemIdToExpandedRowMapValues[item.name] = (
-        <ul>
-          {item.allowedActions.map((action) => (
-            <li>{action}</li>
-          ))}
-        </ul>
-      );
+      itemIdToExpandedRowMapValues[item.name] = (<PermissionTree permissions={item.allowedActions} actionGroups={actionGroupDict} />)
     }
     return itemIdToExpandedRowMapValues;
   });
@@ -90,6 +86,7 @@ function toggleRowDetails(
 
 function getColumns(
   itemIdToExpandedRowMap: ExpandedRowMapInterface,
+  actionGroupDict: DataObject<ActionGroupItem>,
   setItemIdToExpandedRowMap: Dispatch<SetStateAction<ExpandedRowMapInterface>>
 ): Array<EuiBasicTableColumn<ActionGroupListingItem>> {
   return [
@@ -125,7 +122,7 @@ function getColumns(
       render: (item: ActionGroupListingItem) =>
         item.type === 'Action group' && (
           <EuiButtonIcon
-            onClick={() => toggleRowDetails(item, setItemIdToExpandedRowMap)}
+            onClick={() => toggleRowDetails(item, actionGroupDict, setItemIdToExpandedRowMap)}
             aria-label={itemIdToExpandedRowMap[item.name] ? 'Collapse' : 'Expand'}
             iconType={itemIdToExpandedRowMap[item.name] ? 'arrowUp' : 'arrowDown'}
           />
@@ -172,6 +169,7 @@ const SEARCH_OPTIONS: EuiSearchBarProps = {
 
 export function PermissionList(props: AppDependencies) {
   const [actionGroups, setActionGroups] = useState<ActionGroupListingItem[]>([]);
+  const [actionGroupDict, setActionGroupDict] = useState<DataObject<ActionGroupItem>>({});
   const [errorFlag, setErrorFlag] = useState<boolean>(false);
   const [selection, setSelection] = useState<ActionGroupListingItem[]>([]);
   const [isActionsPopoverOpen, setActionsPopoverOpen] = useState<boolean>(false);
@@ -187,7 +185,9 @@ export function PermissionList(props: AppDependencies) {
 
   const fetchData = useCallback(async () => {
     try {
-      setActionGroups(await getAllPermissionsListing(props.coreStart.http));
+      const actionGroups = await fetchActionGroups(props.coreStart.http);
+      setActionGroupDict(actionGroups);
+      setActionGroups(await getAllPermissionsListingLocal(actionGroups));
     } catch (e) {
       console.log(e);
       setErrorFlag(true);
@@ -378,7 +378,7 @@ export function PermissionList(props: AppDependencies) {
         <EuiPageBody>
           <EuiInMemoryTable
             loading={actionGroups === [] && !errorFlag}
-            columns={getColumns(itemIdToExpandedRowMap, setItemIdToExpandedRowMap)}
+            columns={getColumns(itemIdToExpandedRowMap, actionGroupDict, setItemIdToExpandedRowMap)}
             items={actionGroups}
             itemId={'name'}
             pagination

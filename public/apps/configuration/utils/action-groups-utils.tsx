@@ -72,8 +72,15 @@ function getIndexSinglePermissions(): ActionGroupListingItem[] {
 }
 
 export async function getAllPermissionsListing(http: HttpStart): Promise<ActionGroupListingItem[]> {
-  const actionGroups = await fetchActionGroupListing(http);
-  return actionGroups.concat(getClusterSinglePermissions()).concat(getIndexSinglePermissions());
+  return getAllPermissionsListingLocal(await fetchActionGroups(http));
+}
+
+export async function getAllPermissionsListingLocal(
+  actionGroups: DataObject<ActionGroupItem>
+): Promise<ActionGroupListingItem[]> {
+  return tranformActionGroupsToListingFormat(actionGroups)
+    .concat(getClusterSinglePermissions())
+    .concat(getIndexSinglePermissions());
 }
 
 export async function updateActionGroup(
