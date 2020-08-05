@@ -32,6 +32,7 @@ import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { BasicAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
+import { LOGIN_PAGE_URI } from '../../../../common';
 
 // TODO: change to interface
 export class AuthConfig {
@@ -130,7 +131,7 @@ export class BasicAuthentication extends AuthenticationType {
     toolkit: AuthToolkit
   ): KibanaResponse {
     const nextUrlParam = this.composeNextUrlQeuryParam(request);
-    const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}/app/login?${nextUrlParam}`;
+    const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`;
     return response.redirected({
       headers: {
         location: `${redirectLocation}`,

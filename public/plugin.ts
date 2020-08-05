@@ -26,7 +26,7 @@ import {
   AppPluginStartDependencies,
   ClientConfigType,
 } from './types';
-import { PLUGIN_NAME } from '../common';
+import { LOGIN_PAGE_URI, PLUGIN_NAME } from '../common';
 
 export class OpendistroSecurityPlugin
   implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
@@ -50,7 +50,7 @@ export class OpendistroSecurityPlugin
       id: 'login',
       title: 'Security',
       chromeless: true,
-      appRoute: '/app/login',
+      appRoute: `${LOGIN_PAGE_URI}`,
       mount: async (params: AppMountParameters) => {
         const { renderApp } = await import('./apps/login/login-app');
         // @ts-ignore depsStart not used.
