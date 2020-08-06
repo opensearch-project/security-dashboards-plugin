@@ -49,7 +49,7 @@ export function resolveTenant(
     selectedTenant = request.headers.securitytenant
       ? (request.headers.securitytenant as string)
       : (request.headers.security_tenant as string);
-  } else if (cookie.tenant) {
+  } else if (isValidTenent(cookie.tenant)) {
     selectedTenant = cookie.tenant;
   } else {
     selectedTenant = undefined;
@@ -99,8 +99,8 @@ function resolve(
     return undefined;
   }
 
-  if (requestedTenant) {
-    requestedTenant = requestedTenant.toLowerCase();
+  if (isValidTenent(requestedTenant)) {
+    requestedTenant = requestedTenant!.toLowerCase();
     if (availableTenants[requestedTenant]) {
       return requestedTenant;
     }
@@ -150,4 +150,15 @@ function resolve(
 
   // fall back to the first tenant in the available tenants
   return findKey(availableTenantsClone, (value: boolean) => value);
+}
+
+/**
+ * Return true if tenant parameter is a valid tenent.
+ *
+ * Note: empty string '' is valid, which means global tenant.
+ *
+ * @param tenant
+ */
+export function isValidTenent(tenant: string | undefined | null): boolean {
+  return tenant !== undefined && tenant !== null;
 }

@@ -50,7 +50,7 @@ export function setupMultitenantRoutes(
         });
       }
       cookie.tenant = tenant;
-      sessionStroageFactory.asScoped(request);
+      sessionStroageFactory.asScoped(request).set(cookie);
       return response.ok({
         body: tenant,
       });

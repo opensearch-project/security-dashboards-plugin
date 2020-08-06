@@ -29,7 +29,11 @@ import {
 import { SecurityPluginConfigType } from '../..';
 import { SecuritySessionCookie } from '../../session/security_cookie';
 import { SecurityClient } from '../../backend/opendistro_security_client';
-import { isMultitenantPath, resolveTenant } from '../../multitenancy/tenant_resolver';
+import {
+  isMultitenantPath,
+  resolveTenant,
+  isValidTenent,
+} from '../../multitenancy/tenant_resolver';
 import { UnauthenticatedError } from '../../errors';
 
 export interface IAuthenticationType {
@@ -92,7 +96,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
     let authInfo: any | undefined;
     // if this is an REST API call, suppose the request includes necessary auth header
     // see https://www.elastic.co/guide/en/kibana/master/using-api.html
-    if (this.isRestApiCall(request) || this.requestIncludesAuthInfo(request)) {
+    if (this.requestIncludesAuthInfo(request)) {
       try {
         const additonalAuthHeader = this.getAdditionalAuthHeader(request);
         authInfo = await this.securityClient.authinfo(request, additonalAuthHeader);
@@ -136,7 +140,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
       try {
         const tenant = await this.resolveTenant(request, cookie!, authHeaders, authInfo);
         // return 401 if no tenant available
-        if (!tenant) {
+        if (!isValidTenent(tenant)) {
           return response.badRequest({
             body:
               'No available tenant for current user, please reach out to your system administrator',
@@ -163,14 +167,6 @@ export abstract class AuthenticationType implements IAuthenticationType {
       requestHeaders: authHeaders,
     });
   };
-
-  isRestApiCall(request: KibanaRequest) {
-    return (
-      request.headers[AuthenticationType.REST_API_CALL_HEADER] &&
-      (request.headers[AuthenticationType.REST_API_CALL_HEADER] as string).toLocaleLowerCase() ===
-        'true'
-    );
-  }
 
   authNotRequired(request: KibanaRequest): boolean {
     const pathname = request.url.pathname;
