@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import {
   EuiFlexGrid,
   EuiFlexItem,
-  EuiPanel,
   EuiSpacer,
   EuiText,
   EuiTextColor,
@@ -12,7 +11,7 @@ import {
 import { displaySettingType, filterReadonly } from './utils';
 import { get } from 'lodash';
 
-function DisplaySettingGroup({ settingGroup, config, readonly, showPanel }) {
+function DisplaySettingGroup({ settingGroup, config, readonly }) {
   const settingGroupFiltered = filterReadonly(readonly, settingGroup);
   const renderedSettings =
     settingGroupFiltered.settings.length != 0 ? (
@@ -48,7 +47,7 @@ function DisplaySettingGroup({ settingGroup, config, readonly, showPanel }) {
 
   return renderedSettings ? (
     <>
-      {showPanel ? <EuiPanel>{renderedSettings}</EuiPanel> : renderedSettings}
+      {renderedSettings}
       <EuiSpacer />
     </>
   ) : null;
@@ -58,7 +57,6 @@ DisplaySettingGroup.propTypes = {
   settingGroup: PropTypes.object,
   config: PropTypes.object,
   readonly: PropTypes.array,
-  showPanel: PropTypes.bool,
 };
 
 export default DisplaySettingGroup;

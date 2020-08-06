@@ -12,7 +12,6 @@ export const CONFIG_LABELS = {
   ATTRIBUTE_SETTINGS: 'Attribute settings',
   IGNORE_SETTINGS: 'Ignore settings',
   COMPLIANCE_SETTINGS: 'Compliance settings',
-  COMPLIANCE_MODE: 'Compliance mode',
   COMPLIANCE_CONFIG_SETTINGS: 'Config',
   COMPLIANCE_READ: 'Read',
   COMPLIANCE_WRITE: 'Write',
@@ -55,7 +54,7 @@ const CONFIG = {
     REST_DISABLED_CATEGORIES: {
       title: 'REST disabled categories',
       path: 'audit.disabled_rest_categories',
-      description: 'Specify audit categories which must be ignored on the REST layer.',
+      description: 'Specify audit categories which must be ignored on the REST layer. Modifying these could result in significant overhead.',
       type: 'array',
       options: [
         'AUTHENTICATED',
@@ -65,18 +64,17 @@ const CONFIG = {
         'MISSING_PRIVILEGES',
         'SSL_EXCEPTION'
       ],
-      note: <>We <em>highly</em> recommend excluding GRANTED_PRIVILEGES and AUTHENTICATED. If enabled, these categories can result in a huge number of logs.</>,
     },
     TRANSPORT_LAYER: {
       title: 'Transport layer',
       path: 'audit.enable_transport',
-      description: 'Enable or disable auditing events that happen on the Transport layer.',
+      description: 'Enable or disable auditing events that happen on the transport layer.',
       type: 'bool',
     },
     TRANSPORT_DISABLED_CATEGORIES: {
       title: 'Transport disabled categories',
       path: 'audit.disabled_transport_categories',
-      description: 'Specify audit categories which must be ignored on the Transport layer.',
+      description: 'Specify audit categories which must be ignored on the transport layer. Modifying these could result in significant overhead.',
       type: 'array',
       options: [
         'AUTHENTICATED',
@@ -88,14 +86,12 @@ const CONFIG = {
         'OPENDISTRO_SECURITY_INDEX_ATTEMPT',
         'SSL_EXCEPTION',
       ],
-      note: <>We <em>highly</em> recommend excluding GRANTED_PRIVILEGES and AUTHENTICATED. If enabled, these categories can result in a huge number of logs.</>
     },
     BULK_REQUESTS: {
       title: 'Bulk requests',
       path: 'audit.resolve_bulk_requests',
-      description: 'Resolve bulk requests during auditing of requests.',
+      description: 'Resolve bulk requests during auditing of requests. Enabling this will generate a log for each document request which could result in significant overhead.',
       type: 'bool',
-      note: 'Enabling bulk requests generates one log per operation in the request. If you enable this setting, a single bulk request that indexes 10,000 documents results in 10,000 logs. If you disable this setting, that same request results in one log.',
     },
     REQUEST_BODY: {
       title: 'Request body',
@@ -120,12 +116,14 @@ const CONFIG = {
       path: 'audit.ignore_users',
       description: 'Users to ignore during auditing.',
       type: 'array',
+      helpText: 'User or user pattern.',
     },
     IGNORED_REQUESTS: {
       title: 'Ignored requests',
       path: 'audit.ignore_requests',
       description: 'Request patterns to ignore during auditing.',
       type: 'array',
+      helpText: 'Request or request pattern.',
     },
   },
   COMPLIANCE: {
@@ -135,11 +133,6 @@ const CONFIG = {
       description: 'Enable or disable compliance logging.',
       type: 'bool',
       hideLabel: true,
-    },
-    MODE: {
-      title: 'Compliance mode',
-      path: 'compliance.enabled',
-      type: 'bool',
     },
     INTERNAL_CONFIG: {
       title: 'Internal config logging',
@@ -156,7 +149,7 @@ const CONFIG = {
     READ_METADATA_ONLY: {
       title: 'Read metadata',
       path: 'compliance.read_metadata_only',
-      description: 'Do not log any document fields. Log only metadata of the document.',
+      description: 'Log only metadata of the document. Do not log any document fields.',
       type: 'bool',
     },
     READ_IGNORED_USERS: {
@@ -164,12 +157,13 @@ const CONFIG = {
       path: 'compliance.read_ignore_users',
       description: 'Users to ignore during auditing.',
       type: 'array',
+      helpText: 'User or user pattern.',
     },
     READ_WATCHED_FIELDS: {
       title: 'Watched fields',
       path: 'compliance.read_watched_fields',
       description:
-        'List the indices and fields to watch during read events. Sample data content is as follows:',
+        'List the indices and fields to watch during read events. Adding watched fields will generate one log per document access and could result in significant overhead. Sample data content:',
       type: 'map',
       code: `{
   "index-name-pattern": ["field-name-pattern"],
@@ -177,12 +171,11 @@ const CONFIG = {
   "twitter": ["id", "user*"]
 }`,
       error: 'Invalid content. Please check sample data content.',
-      note: 'Adding watched fields generates one log each time a user accesses a document and could result in a large number of logs. We don\'t recommend adding frequently accessed fields.'
     },
     WRITE_METADATA_ONLY: {
       title: 'Write metadata',
       path: 'compliance.write_metadata_only',
-      description: 'Do not log any document content. Log only metadata of the document.',
+      description: 'Log only metadata of the document. Do not log any document content.',
       type: 'bool',
     },
     WRITE_LOG_DIFFS: {
@@ -196,13 +189,14 @@ const CONFIG = {
       path: 'compliance.write_ignore_users',
       description: 'Users to ignore during auditing.',
       type: 'array',
+      helpText: 'User or user pattern.',
     },
     WRITE_WATCHED_FIELDS: {
       title: 'Watch indices',
       path: 'compliance.write_watched_indices',
-      description: 'List the indices to watch during write events.',
+      description: 'List the indices to watch during write events. Adding watched indices will generate one log per document access and could result in significant overhead.',
       type: 'array',
-      note: 'Adding watched indices generates one log each time a user accesses a document and could result in a large number of logs. We don\'t recommend adding frequently accessed indices.',
+      helpText: 'Index name or index pattern.',
     },
   },
 };
@@ -234,11 +228,7 @@ export const SETTING_GROUPS = {
     settings: [CONFIG.AUDIT.IGNORED_USERS, CONFIG.AUDIT.IGNORED_REQUESTS],
   },
   COMPLIANCE_LOGGING_SETTINGS: {
-    title: CONFIG_LABELS.COMPLIANCE_MODE,
     settings: [CONFIG.COMPLIANCE.ENABLED],
-  },
-  COMPLIANCE_MODE_SETTINGS: {
-    settings: [CONFIG.COMPLIANCE.MODE],
   },
   COMPLIANCE_CONFIG_SETTINGS: {
     title: CONFIG_LABELS.COMPLIANCE_CONFIG_SETTINGS,
