@@ -27,24 +27,30 @@ import {
   ClientConfigType,
 } from './types';
 import { LOGIN_PAGE_URI, PLUGIN_NAME } from '../common';
+import { API_ENDPOINT_PERMISSIONS_INFO } from './apps/configuration/constants';
 
 export class OpendistroSecurityPlugin
   implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
   // @ts-ignore : initializerContext not used
   constructor(private readonly initializerContext: PluginInitializerContext) {}
 
-  public setup(core: CoreSetup): OpendistroSecurityPluginSetup {
+  public async setup(core: CoreSetup): Promise<OpendistroSecurityPluginSetup> {
+    const permissions = await core.http.get(API_ENDPOINT_PERMISSIONS_INFO);
+
+    if (permissions?.data?.has_api_access) {
+      core.application.register({
+        id: PLUGIN_NAME,
+        title: 'Security',
+        order: 1,
+        mount: async (params: AppMountParameters) => {
+          const { renderApp } = await import('./apps/configuration/configuration-app');
+          const [coreStart, depsStart] = await core.getStartServices();
+          return renderApp(coreStart, depsStart as AppPluginStartDependencies, params);
+        },
+      });
+    }
+
     const config = this.initializerContext.config.get<ClientConfigType>();
-    core.application.register({
-      id: PLUGIN_NAME,
-      title: 'Security',
-      order: 1,
-      mount: async (params: AppMountParameters) => {
-        const { renderApp } = await import('./apps/configuration/configuration-app');
-        const [coreStart, depsStart] = await core.getStartServices();
-        return renderApp(coreStart, depsStart as AppPluginStartDependencies, params);
-      },
-    });
 
     core.application.register({
       id: 'login',

@@ -25,6 +25,7 @@ export const API_ENDPOINT_SECURITYCONFIG = API_ENDPOINT + '/securityconfig';
 export const API_ENDPOINT_INTERNALUSERS = API_ENDPOINT + '/internalusers';
 export const API_ENDPOINT_AUDITLOGGING = API_ENDPOINT + '/audit';
 export const API_ENDPOINT_AUDITLOGGING_UPDATE = API_ENDPOINT_AUDITLOGGING + '/config';
+export const API_ENDPOINT_PERMISSIONS_INFO = API_ENDPOINT + '/permissionsinfo';
 
 export const CLUSTER_PERMISSIONS = [
   'cluster:admin/ingest/pipeline/delete',

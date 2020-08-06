@@ -120,7 +120,7 @@ export class ProxyAuthentication extends AuthenticationType {
     );
   }
 
-  redirectToAuth(
+  handleUnauthedRequest(
     request: KibanaRequest,
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
