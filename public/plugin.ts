@@ -29,15 +29,27 @@ import {
 import { LOGIN_PAGE_URI, PLUGIN_NAME } from '../common';
 import { API_ENDPOINT_PERMISSIONS_INFO } from './apps/configuration/constants';
 
+async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
+  try {
+    const permissions = await core.http.get(API_ENDPOINT_PERMISSIONS_INFO);
+    return permissions?.data?.has_api_access || false;
+  } catch (e) {
+    // ignore 401 and continue to login page.
+    if (e?.body.statusCode !== 401) {
+      throw e;
+    }
+  }
+}
+
 export class OpendistroSecurityPlugin
   implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
   // @ts-ignore : initializerContext not used
   constructor(private readonly initializerContext: PluginInitializerContext) {}
 
   public async setup(core: CoreSetup): Promise<OpendistroSecurityPluginSetup> {
-    const permissions = await core.http.get(API_ENDPOINT_PERMISSIONS_INFO);
+    const apiPermission = await hasApiPermission(core);
 
-    if (permissions?.data?.has_api_access) {
+    if (apiPermission) {
       core.application.register({
         id: PLUGIN_NAME,
         title: 'Security',
