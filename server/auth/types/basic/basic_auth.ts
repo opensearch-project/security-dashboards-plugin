@@ -125,18 +125,28 @@ export class BasicAuthentication extends AuthenticationType {
     );
   }
 
-  redirectToAuth(
+  handleUnauthedRequest(
     request: KibanaRequest,
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
   ): KibanaResponse {
-    const nextUrlParam = this.composeNextUrlQeuryParam(request);
-    const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`;
-    return response.redirected({
-      headers: {
-        location: `${redirectLocation}`,
-      },
-    });
+    // TODO: do the samething for other auth types? 
+    // return 302 for /app
+    const pathname = request.url.pathname || '';
+    if (pathname.startsWith('/app/') || pathname === '/') {
+      const nextUrlParam = this.composeNextUrlQeuryParam(request);
+      const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`;
+      return response.redirected({
+        headers: {
+          location: `${redirectLocation}`,
+        },
+      });
+    } else {
+      return response.unauthorized({
+        body: `Authentication required`,
+      })
+    }
+
   }
 
   buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any {

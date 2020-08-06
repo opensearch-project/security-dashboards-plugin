@@ -99,7 +99,7 @@ export class SamlAuthentication extends AuthenticationType {
     );
   }
 
-  redirectToAuth(
+  handleUnauthedRequest(
     request: KibanaRequest,
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit

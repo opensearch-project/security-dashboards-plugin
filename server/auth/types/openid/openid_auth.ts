@@ -128,7 +128,7 @@ export class OpenIdAuthentication extends AuthenticationType {
     );
   }
 
-  redirectToAuth(
+  handleUnauthedRequest(
     request: KibanaRequest,
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
