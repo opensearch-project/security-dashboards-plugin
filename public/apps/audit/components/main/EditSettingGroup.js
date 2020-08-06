@@ -1,14 +1,12 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import {
-  EuiCallOut,
   EuiCodeBlock,
   EuiComboBox,
   EuiDescribedFormGroup,
   EuiFormRow,
   EuiIcon,
   EuiLink,
-  EuiPanel,
   EuiSpacer,
   EuiSwitch,
   EuiText,
@@ -25,14 +23,7 @@ import {
 } from './utils';
 import EditorBox from './EditorBox';
 
-function EditSettingGroup({
-  settingGroup,
-  config,
-  handleChange,
-  handleInvalid,
-  readonly,
-  showPanel,
-}) {
+function EditSettingGroup({ settingGroup, config, handleChange, handleInvalid, readonly }) {
   const renderField = (config, setting, handleChange, handleInvalid) => {
     const val = get(config, setting.path);
     if (setting.type === 'bool') {
@@ -101,23 +92,9 @@ function EditSettingGroup({
   const renderCodeBlock = setting => {
     return (
       <Fragment>
-        <EuiCodeBlock language="json" paddingSize="none">
+        <EuiCodeBlock paddingSize="none" style={{opacity: 0.6}} isCopyable>
           {setting.code}
         </EuiCodeBlock>
-      </Fragment>
-    );
-  };
-
-  const renderCallout = message => {
-    return (
-      <Fragment>
-        <EuiCallOut>
-          <EuiText size="s">
-            <EuiTextColor color="default">
-              <p>{message}</p>
-            </EuiTextColor>
-          </EuiText>
-        </EuiCallOut>
       </Fragment>
     );
   };
@@ -143,12 +120,11 @@ function EditSettingGroup({
                   <Fragment>
                     {setting.description}
                     {setting.code && renderCodeBlock(setting)}
-                    {setting.note && renderCallout(setting.note)}
                   </Fragment>
                 }
                 fullWidth
               >
-                <EuiFormRow label={setting.hideLabel ? null : displayLabel(setting.path)}>
+                <EuiFormRow label={setting.hideLabel ? null : displayLabel(setting.path)} helpText={setting.helpText}>
                   {renderField(config, setting, handleChange, handleInvalid)}
                 </EuiFormRow>
               </EuiDescribedFormGroup>
@@ -160,7 +136,8 @@ function EditSettingGroup({
 
   return renderedSettings ? (
     <Fragment>
-      {showPanel ? <EuiPanel>{renderedSettings}</EuiPanel> : renderedSettings}
+      {renderedSettings}
+      <EuiSpacer size="m"/>
     </Fragment>
   ) : null;
 }
@@ -171,7 +148,6 @@ EditSettingGroup.propTypes = {
   handleChange: PropTypes.func,
   handleInvalid: PropTypes.func,
   readonly: PropTypes.array,
-  showPanel: PropTypes.bool,
 };
 
 export default EditSettingGroup;
