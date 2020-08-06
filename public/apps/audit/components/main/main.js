@@ -184,6 +184,7 @@ export function Main(props) {
         </EuiTitle>
         <EuiSpacer size="m" />
         <EuiPanel>
+          <EuiSpacer size="m" />
           <EditSettingGroup
             settingGroup={SETTING_GROUPS.COMPLIANCE_LOGGING_SETTINGS}
             config={editConfig}
@@ -197,24 +198,19 @@ export function Main(props) {
                 config={editConfig}
                 handleChange={handleChange}
                 readonly={readonly}
-                showPanel={true}
               ></EditSettingGroup>
-              <EuiSpacer />
               <EditSettingGroup
                 settingGroup={SETTING_GROUPS.COMPLIANCE_READ_SETTINGS}
                 config={editConfig}
                 handleChange={handleChange}
                 handleInvalid={handleInvalid}
                 readonly={readonly}
-                showPanel={true}
               ></EditSettingGroup>
-              <EuiSpacer />
               <EditSettingGroup
                 settingGroup={SETTING_GROUPS.COMPLIANCE_WRITE_SETTINGS}
                 config={editConfig}
                 handleChange={handleChange}
                 readonly={readonly}
-                showPanel={true}
               ></EditSettingGroup>
             </>
           )}
@@ -276,26 +272,23 @@ export function Main(props) {
                 >
                   <DisplaySettingGroup
                     config={config}
-                    settingGroup={SETTING_GROUPS.COMPLIANCE_MODE_SETTINGS}
+                    settingGroup={SETTING_GROUPS.COMPLIANCE_LOGGING_SETTINGS}
                     readonly={readonly}
                   />
                   <DisplaySettingGroup
                     config={config}
                     settingGroup={SETTING_GROUPS.COMPLIANCE_CONFIG_SETTINGS}
                     readonly={readonly}
-                    showPanel={true}
                   />
                   <DisplaySettingGroup
                     settingGroup={SETTING_GROUPS.COMPLIANCE_READ_SETTINGS}
                     config={config}
                     readonly={readonly}
-                    showPanel={true}
                   />
                   <DisplaySettingGroup
                     settingGroup={SETTING_GROUPS.COMPLIANCE_WRITE_SETTINGS}
                     config={config}
                     readonly={readonly}
-                    showPanel={true}
                   />
                 </ContentPanel>
               </>
