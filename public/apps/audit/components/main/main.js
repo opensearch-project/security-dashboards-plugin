@@ -199,6 +199,7 @@ export class Main extends Component {
         </EuiTitle>
         <EuiSpacer size="m" />
         <EuiPanel>
+          <EuiSpacer size="m" />
           <EditSettingGroup
             settingGroup={SETTING_GROUPS.COMPLIANCE_LOGGING_SETTINGS}
             config={editConfig}
@@ -212,25 +213,20 @@ export class Main extends Component {
                 config={editConfig}
                 handleChange={this.handleChange}
                 readonly={readonly}
-                showPanel={true}
-              />
-              <EuiSpacer />
+              ></EditSettingGroup>
               <EditSettingGroup
                 settingGroup={SETTING_GROUPS.COMPLIANCE_READ_SETTINGS}
                 config={editConfig}
                 handleChange={this.handleChange}
                 handleInvalid={this.handleInvalid}
                 readonly={readonly}
-                showPanel={true}
-              />
-              <EuiSpacer />
+              ></EditSettingGroup>
               <EditSettingGroup
                 settingGroup={SETTING_GROUPS.COMPLIANCE_WRITE_SETTINGS}
                 config={editConfig}
                 handleChange={this.handleChange}
                 readonly={readonly}
-                showPanel={true}
-              />
+              ></EditSettingGroup>
             </Fragment>
           )}
         </EuiPanel>
@@ -292,26 +288,23 @@ export class Main extends Component {
                 >
                   <DisplaySettingGroup
                     config={config}
-                    settingGroup={SETTING_GROUPS.COMPLIANCE_MODE_SETTINGS}
+                    settingGroup={SETTING_GROUPS.COMPLIANCE_LOGGING_SETTINGS}
                     readonly={readonly}
                   />
                   <DisplaySettingGroup
                     config={config}
                     settingGroup={SETTING_GROUPS.COMPLIANCE_CONFIG_SETTINGS}
                     readonly={readonly}
-                    showPanel={true}
                   />
                   <DisplaySettingGroup
                     settingGroup={SETTING_GROUPS.COMPLIANCE_READ_SETTINGS}
                     config={config}
                     readonly={readonly}
-                    showPanel={true}
                   />
                   <DisplaySettingGroup
                     settingGroup={SETTING_GROUPS.COMPLIANCE_WRITE_SETTINGS}
                     config={config}
                     readonly={readonly}
-                    showPanel={true}
                   />
                 </ContentPanel>
               </Fragment>
