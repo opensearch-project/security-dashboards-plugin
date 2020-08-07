@@ -28,6 +28,7 @@ import {
 } from './types';
 import { LOGIN_PAGE_URI, PLUGIN_NAME } from '../common';
 import { API_ENDPOINT_PERMISSIONS_INFO } from './apps/configuration/constants';
+import { setupTopNavButton } from './apps/account/account-app';
 
 async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
   try {
@@ -82,6 +83,8 @@ export class OpendistroSecurityPlugin
   }
 
   public start(core: CoreStart): OpendistroSecurityPluginStart {
+    setupTopNavButton(core);
+
     return {};
   }
 
