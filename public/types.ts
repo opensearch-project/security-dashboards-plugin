@@ -43,4 +43,10 @@ export interface ClientConfigType {
       };
     };
   };
+  multitenancy: {
+    enabled: boolean;
+    tenants: {
+      enable_private: boolean;
+    };
+  };
 }

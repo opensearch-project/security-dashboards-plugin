@@ -18,15 +18,16 @@ import './_index.scss';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppMountParameters, CoreStart } from '../../../../../src/core/public';
-import { AppPluginStartDependencies } from '../../types';
+import { AppPluginStartDependencies, ClientConfigType } from '../../types';
 import { AppRouter } from './app-router';
 
 export function renderApp(
   coreStart: CoreStart,
   navigation: AppPluginStartDependencies,
-  params: AppMountParameters
+  params: AppMountParameters,
+  config: ClientConfigType
 ) {
-  const deps = { coreStart, navigation, params };
+  const deps = { coreStart, navigation, params, config };
   ReactDOM.render(<AppRouter {...deps} />, params.element);
   return () => ReactDOM.unmountComponentAtNode(params.element);
 }

@@ -51,12 +51,12 @@ import {
 } from '../../utils/tenant-utils';
 import { getNavLinkById } from '../../../../services/chrome_wrapper';
 import { TenantEditModal } from './edit-modal';
-import { useToastState } from '../../utils/toast-utils';
+import { useToastState, createUnknownErrorToast } from '../../utils/toast-utils';
 
-const PAGEID_DICT: { [key: string]: string } = {
-  DashboardId: 'dashboards',
-  VisualizationId: 'visualize',
-};
+enum PageId {
+  dashboardId = 'dashboards',
+  visualizationId = 'visualize',
+}
 
 export function TenantList(props: AppDependencies) {
   const [tenantData, setTenantData] = useState<Tenant[]>([]);
@@ -68,28 +68,29 @@ export function TenantList(props: AppDependencies) {
   // Modal state
   const [editModal, setEditModal] = useState<ReactNode>(null);
   const [toasts, addToast, removeToast] = useToastState();
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const closeModal = () => setIsModalVisible(false);
-  const showModal = () => setIsModalVisible(true);
+  const [isDeleteConfirmModalVisible, setIsDeleteConfirmModalVisible] = useState(false);
+  const closeDeleteConfirmModal = () => setIsDeleteConfirmModalVisible(false);
+  const showDeleteConfirmModal = () => setIsDeleteConfirmModalVisible(true);
+
+  // Configuration
+  const isPrivateEnabled = props.config.multitenancy.tenants.enable_private;
 
   const fetchData = useCallback(async () => {
     try {
       const rawTenantData = await fetchTenants(props.coreStart.http);
-      const processedTenantData = transformTenantData(rawTenantData);
+      const processedTenantData = transformTenantData(rawTenantData, isPrivateEnabled);
       const activeTenant = await fetchCurrentTenant(props.coreStart.http);
-      setCurrentTenant(resolveTenantName(activeTenant, currentUsername));
+      const currentUser = (await getAuthInfo(props.coreStart.http)).user_name;
+      setCurrentUsername(currentUser);
+      setCurrentTenant(resolveTenantName(activeTenant, currentUser));
       setTenantData(processedTenantData);
     } catch (e) {
       console.log(e);
       setErrorFlag(true);
     }
-  }, [currentUsername, props.coreStart.http]);
+  }, [isPrivateEnabled, props.coreStart.http]);
 
   useEffect(() => {
-    const fetchCurrentUser = async () => {
-      setCurrentUsername((await getAuthInfo(props.coreStart.http)).user_name);
-    };
-    fetchCurrentUser();
     fetchData();
   }, [props.coreStart.http, fetchData]);
 
@@ -99,7 +100,7 @@ export function TenantList(props: AppDependencies) {
       await requestDeleteTenant(props.coreStart.http, tenantsToDelete);
       setTenantData(difference(tenantData, selection));
       setSelection([]);
-      closeModal();
+      closeDeleteConfirmModal();
     } catch (e) {
       console.log(e);
     } finally {
@@ -107,32 +108,50 @@ export function TenantList(props: AppDependencies) {
     }
   };
 
-  const handleTenantSelection = async (tenantname: string, redirectPageId: string) => {
+  const changeTenant = async (tenantName: string) => {
+    const selectedTenant = await selectTenant(props.coreStart.http, {
+      tenant: tenantName,
+      username: currentUsername,
+    });
+    setCurrentTenant(resolveTenantName(selectedTenant, currentUsername));
+  };
+
+  const switchToSelectedTenant = async (tenantName: string) => {
     try {
-      const selectedTenant = await selectTenant(props.coreStart.http, {
-        tenant: tenantname,
-        username: currentUsername,
-      });
-      setCurrentTenant(resolveTenantName(selectedTenant, currentUsername));
+      await changeTenant(tenantName);
       setSelection([]);
-      if (redirectPageId) {
-        window.location.href = getNavLinkById(props.coreStart, redirectPageId);
-      } else {
-        addToast({
-          id: 'selectSucceeded',
-          title: `Selected tenant is now ${tenantname}`,
-          color: 'success',
-        });
-      }
+      addToast({
+        id: 'selectSucceeded',
+        title: `Selected tenant is now ${tenantName}`,
+        color: 'success',
+      });
     } catch (e) {
       console.log(e);
-      addToast({
-        id: 'selectFailed',
-        title: `Failed to selet ${tenantname} tenant. You may refresh the page to retry or see browser console for more information.`,
-        color: 'danger',
-      });
+      addToast(createUnknownErrorToast('selectFailed', `selet ${tenantName} tenant`));
     } finally {
       setActionsPopoverOpen(false);
+    }
+  };
+
+  const viewDashboard = async (tenantName: string) => {
+    try {
+      await changeTenant(tenantName);
+      window.location.href = getNavLinkById(props.coreStart, PageId.dashboardId);
+    } catch (e) {
+      console.log(e);
+      addToast(createUnknownErrorToast('viewDashboard', `view dashboard for ${tenantName} tenant`));
+    }
+  };
+
+  const viewVisualization = async (tenantName: string) => {
+    try {
+      await changeTenant(tenantName);
+      window.location.href = getNavLinkById(props.coreStart, PageId.visualizationId);
+    } catch (e) {
+      console.log(e);
+      addToast(
+        createUnknownErrorToast('viewVisualization', `view visualization for ${tenantName} tenant`)
+      );
     }
   };
 
@@ -160,23 +179,19 @@ export function TenantList(props: AppDependencies) {
     },
     {
       field: 'tenantValue',
-      name: 'View Dashboard',
+      name: 'Dashboard',
       render: (tenant: string) => (
         <>
-          <EuiLink onClick={() => handleTenantSelection(tenant, PAGEID_DICT.DashboardId)}>
-            View Dashboard
-          </EuiLink>
+          <EuiLink onClick={() => viewDashboard(tenant)}>View dashboard</EuiLink>
         </>
       ),
     },
     {
       field: 'tenantValue',
-      name: 'View Visualizations',
+      name: 'Visualizations',
       render: (tenant: string) => (
         <>
-          <EuiLink onClick={() => handleTenantSelection(tenant, PAGEID_DICT.VisualizationId)}>
-            View Visualizations
-          </EuiLink>
+          <EuiLink onClick={() => viewVisualization(tenant)}>View visualizations</EuiLink>
         </>
       ),
     },
@@ -189,12 +204,12 @@ export function TenantList(props: AppDependencies) {
 
   let deleteConfirmModal;
 
-  if (isModalVisible) {
+  if (isDeleteConfirmModalVisible) {
     deleteConfirmModal = (
       <EuiOverlayMask>
         <EuiConfirmModal
           title="Confirm Delete"
-          onCancel={closeModal}
+          onCancel={closeDeleteConfirmModal}
           onConfirm={handleDelete}
           cancelButtonText="Cancel"
           confirmButtonText="Confirm"
@@ -210,7 +225,7 @@ export function TenantList(props: AppDependencies) {
     <EuiContextMenuItem
       key="switchTenant"
       disabled={selection.length !== 1}
-      onClick={() => handleTenantSelection(selection[0].tenantValue, '')}
+      onClick={() => switchToSelectedTenant(selection[0].tenantValue)}
     >
       Switch to selected tenant
     </EuiContextMenuItem>,
@@ -233,20 +248,20 @@ export function TenantList(props: AppDependencies) {
     <EuiContextMenuItem
       key="createDashboard"
       disabled={selection.length !== 1}
-      onClick={() => handleTenantSelection(selection[0].tenantValue, PAGEID_DICT.DashboardId)}
+      onClick={() => viewDashboard(selection[0].tenantValue)}
     >
       Create dashboard
     </EuiContextMenuItem>,
     <EuiContextMenuItem
       key="createVisualizations"
       disabled={selection.length !== 1}
-      onClick={() => handleTenantSelection(selection[0].tenantValue, PAGEID_DICT.VisualizationId)}
+      onClick={() => viewVisualization(selection[0].tenantValue)}
     >
       Create visualizations
     </EuiContextMenuItem>,
     <EuiContextMenuItem
       key="delete"
-      onClick={showModal}
+      onClick={showDeleteConfirmModal}
       disabled={selection.length === 0 || selection.some((tenant) => tenant.reserved)}
     >
       Delete
@@ -290,11 +305,7 @@ export function TenantList(props: AppDependencies) {
             });
           } catch (e) {
             console.log(e);
-            addToast({
-              id: 'saveFailed',
-              title: `Failed to save ${action} tenant. You may refresh the page to retry or see browser console for more information.`,
-              color: 'danger',
-            });
+            addToast(createUnknownErrorToast('saveFailed', `save ${action} tenant`));
           }
         }}
       />

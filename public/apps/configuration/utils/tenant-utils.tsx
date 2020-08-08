@@ -18,6 +18,7 @@ import { map } from 'lodash';
 import { API_ENDPOINT_TENANTS, API_ENDPOINT_MULTITENANCY } from '../constants';
 import { DataObject, ObjectsMessage, Tenant, TenantUpdate, TenantSelect } from '../types';
 
+const globalTenantName = 'global_tenant';
 const GLOBAL_USER_DICT: { [key: string]: string } = {
   Label: 'Global',
   Value: '',
@@ -38,20 +39,22 @@ export async function fetchTenantNameList(http: HttpStart): Promise<string[]> {
   return Object.keys(await fetchTenants(http));
 }
 
-export function transformTenantData(rawTenantData: any) {
+export function transformTenantData(rawTenantData: DataObject<Tenant>, isPrivateEnabled: boolean) {
   const tenantList = map(rawTenantData, (v: any, k: string) => ({
-    tenant: k.startsWith('global') ? GLOBAL_USER_DICT.Label : k,
+    tenant: k === globalTenantName ? GLOBAL_USER_DICT.Label : k,
     reserved: v.reserved,
-    description: k.startsWith('global') ? GLOBAL_USER_DICT.Description : v.description,
-    tenantValue: k.startsWith('global') ? GLOBAL_USER_DICT.Value : k,
+    description: k === globalTenantName ? GLOBAL_USER_DICT.Description : v.description,
+    tenantValue: k === globalTenantName ? GLOBAL_USER_DICT.Value : k,
   }));
-  // Insert Private Tenant in List
-  tenantList.splice(1, 0, {
-    tenant: PRIVATE_USER_DICT.Label,
-    reserved: true,
-    description: PRIVATE_USER_DICT.Description,
-    tenantValue: PRIVATE_USER_DICT.Value,
-  });
+  if (isPrivateEnabled) {
+    // Insert Private Tenant in List
+    tenantList.splice(1, 0, {
+      tenant: PRIVATE_USER_DICT.Label,
+      reserved: true,
+      description: PRIVATE_USER_DICT.Description,
+      tenantValue: PRIVATE_USER_DICT.Value,
+    });
+  }
   return tenantList;
 }
 

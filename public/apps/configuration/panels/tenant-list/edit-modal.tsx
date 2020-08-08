@@ -24,6 +24,8 @@ import {
   EuiOverlayMask,
   EuiForm,
   EuiFieldText,
+  EuiTextArea,
+  EuiHorizontalRule,
 } from '@elastic/eui';
 import React, { useState } from 'react';
 import { Action } from '../../types';
@@ -51,7 +53,7 @@ export function TenantEditModal(props: TenantEditModalDeps) {
     setTenantName(e.target.value);
   };
 
-  const handleTenantDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTenantDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setTenantDescription(e.target.value);
   };
 
@@ -66,7 +68,7 @@ export function TenantEditModal(props: TenantEditModalDeps) {
           <EuiForm>
             <FormRow
               headerText="Name"
-              headerSubText="Specify a descriptive and unique role name that is easy to recognize. You cannot edit the name once the tenant is created."
+              headerSubText="Specify a descriptive and unique tenant name that is easy to recognize. You cannot edit the name once the tenant is created."
               helpText="The tenant name must contain from m to n characters. Valid characters are lowercase a-z, 0-9, and -(hyphen)."
             >
               <EuiFieldText
@@ -76,10 +78,11 @@ export function TenantEditModal(props: TenantEditModalDeps) {
               />
             </FormRow>
             <FormRow
-              headerText="Description - optional"
+              headerText="Description"
               headerSubText="Describe the purpose of the tenant."
+              optional
             >
-              <EuiFieldText
+              <EuiTextArea
                 placeholder="Describe the tenant"
                 value={tenantDescription}
                 onChange={handleTenantDescriptionChange}
@@ -87,7 +90,7 @@ export function TenantEditModal(props: TenantEditModalDeps) {
             </FormRow>
           </EuiForm>
         </EuiModalBody>
-
+        <EuiHorizontalRule margin="xs" />
         <EuiModalFooter>
           <EuiButtonEmpty onClick={props.handleClose}>Cancel</EuiButtonEmpty>
 
