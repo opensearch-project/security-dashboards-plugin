@@ -23,6 +23,7 @@ export async function setupTopNavButton(coreStart: CoreStart) {
   const accountInfo = (await fetchAccountInfoSafe(coreStart))?.data;
   if (accountInfo) {
     coreStart.chrome.navControls.registerRight({
+      // Pin to rightmost, since newsfeed plugin is using 1000, here needs a number > 1000
       order: 2000,
       mount: (element: HTMLElement) => {
         ReactDOM.render(
