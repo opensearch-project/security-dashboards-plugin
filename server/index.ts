@@ -189,6 +189,7 @@ export const config: PluginConfigDescriptor<SecurityPluginConfigType> = {
   exposeToBrowser: {
     enabled: true,
     ui: true,
+    multitenancy: true,
   },
   schema: configSchema,
   deprecations: ({ rename, unused }) => [

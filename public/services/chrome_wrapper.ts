@@ -13,16 +13,10 @@
  *   permissions and limitations under the License.
  */
 
-import { AppMountParameters, CoreStart } from '../../../../src/core/public';
-import { AppPluginStartDependencies, ClientConfigType } from '../types';
+import { CoreStart } from 'kibana/public';
 
-export interface AppDependencies {
-  coreStart: CoreStart;
-  navigation: AppPluginStartDependencies;
-  params: AppMountParameters;
-  config: ClientConfigType;
-}
-
-export interface BreadcrumbsPageDependencies extends AppDependencies {
-  buildBreadcrumbs: (pageTitle: string, subAction?: string) => React.ReactNode;
+export function getNavLinkById(coreStart: CoreStart, id: string) {
+  const navLink = coreStart.chrome.navLinks.get(id);
+  if (navLink) return navLink.baseUrl;
+  else return '/';
 }

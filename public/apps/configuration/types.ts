@@ -80,9 +80,21 @@ export interface RoleMappingDetail {
   users: string[];
 }
 
-export interface Tenant {
-  reserved: boolean;
+export interface TenantUpdate {
   description: string;
+}
+
+export interface TenantName {
+  tenant: string;
+}
+
+export interface Tenant extends TenantUpdate, TenantName {
+  reserved: boolean;
+  tenantValue: string;
+}
+
+export interface TenantSelect extends TenantName {
+  username: string;
 }
 
 export interface UserAttributes {

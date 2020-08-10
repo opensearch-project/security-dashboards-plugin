@@ -39,6 +39,7 @@ import {
 import { PermissionList } from './panels/permission-list/permission-list';
 import { GetStarted } from './panels/get-started';
 import { RoleEditMappedUser } from './panels/role-mapping/RoleEditMappedUser';
+import { TenantList } from './panels/tenant-list/tenant-list';
 
 const ROUTE_MAP: { [key: string]: RouteItem } = {
   getStarted: {
@@ -227,6 +228,9 @@ export function AppRouter(props: AppDependencies) {
             />
             <Route path={ROUTE_MAP.permissions.href}>
               <PermissionList {...props} />
+            </Route>
+            <Route path={ROUTE_MAP.tenants.href}>
+              <TenantList {...props} />
             </Route>
             <Route path={ROUTE_MAP.getStarted.href}>
               <GetStarted {...props} />

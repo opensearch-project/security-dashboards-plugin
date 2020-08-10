@@ -50,6 +50,8 @@ export class OpendistroSecurityPlugin
   public async setup(core: CoreSetup): Promise<OpendistroSecurityPluginSetup> {
     const apiPermission = await hasApiPermission(core);
 
+    const config = this.initializerContext.config.get<ClientConfigType>();
+
     if (apiPermission) {
       core.application.register({
         id: PLUGIN_NAME,
@@ -58,12 +60,10 @@ export class OpendistroSecurityPlugin
         mount: async (params: AppMountParameters) => {
           const { renderApp } = await import('./apps/configuration/configuration-app');
           const [coreStart, depsStart] = await core.getStartServices();
-          return renderApp(coreStart, depsStart as AppPluginStartDependencies, params);
+          return renderApp(coreStart, depsStart as AppPluginStartDependencies, params, config);
         },
       });
     }
-
-    const config = this.initializerContext.config.get<ClientConfigType>();
 
     core.application.register({
       id: 'login',
