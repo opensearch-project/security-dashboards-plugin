@@ -21,15 +21,14 @@ export function fetchAccountInfo(core: CoreStart): Promise<AccountInfo> {
   return core.http.get(API_ENDPOINT_ACCOUNT_INFO);
 }
 
-export async function checkInternalUser(core: CoreStart): Promise<boolean> {
+export async function fetchAccountInfoSafe(core: CoreStart): Promise<AccountInfo | undefined> {
   try {
     const accountInfo = await fetchAccountInfo(core);
-    return accountInfo?.data?.is_internal_user;
+    return accountInfo;
   } catch (e) {
     // ignore 401 and continue to login page.
     if (e?.body.statusCode !== 401) {
       throw e;
     }
   }
-  return false;
 }

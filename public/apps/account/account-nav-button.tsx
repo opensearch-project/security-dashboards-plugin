@@ -20,38 +20,73 @@ import {
   EuiIcon,
   EuiPopover,
   EuiButtonEmpty,
-  EuiSpacer,
+  EuiAvatar,
+  EuiHorizontalRule,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiTitle,
+  EuiText,
+  EuiListGroupItem,
+  EuiListGroup,
 } from '@elastic/eui';
 import React, { useState } from 'react';
 
-export function AccountNavButton(props: { isInternalUser: boolean }) {
+export function AccountNavButton(props: {
+  isInternalUser: boolean;
+  username: string;
+  tenant?: string;
+}) {
   const [isPopoverOpen, setPopoverOpen] = useState<boolean>(false);
-  const contextMenuItems = [
-    <>
-      {/* // TODO: show view roles modal */}
-      <EuiButtonEmpty>View roles</EuiButtonEmpty>
-      <EuiSpacer size="xs" />
+  const horizontalRule = <EuiHorizontalRule margin="xs" />;
+  const username = props.username;
+  const contextMenuPanel = (
+    <div style={{ maxWidth: '256px' }}>
+      <EuiFlexGroup gutterSize="s">
+        <EuiFlexItem grow={null}>
+          <EuiAvatar name={username} />
+        </EuiFlexItem>
+        <EuiFlexItem>
+          <EuiListGroup gutterSize="none">
+            <EuiListGroupItem
+              wrapText
+              label={
+                <EuiText size="s">
+                  <h5>{username}</h5>
+                </EuiText>
+              }
+            />
+          </EuiListGroup>
+          {/* Resolve global and private tenant name. */}
+          <EuiListGroupItem label={<EuiText size="xs">{props.tenant || ''}</EuiText>} />
+        </EuiFlexItem>
+      </EuiFlexGroup>
+
+      {horizontalRule}
+      {/* TODO: show view roles modal */}
+      <EuiButtonEmpty size="xs">View roles</EuiButtonEmpty>
+      {horizontalRule}
       {
         // TODO: show switch tenants modal
       }
-      <EuiButtonEmpty>Switch tenants</EuiButtonEmpty>
-      <EuiSpacer size="xs" />
+      <EuiButtonEmpty size="xs">Switch tenants</EuiButtonEmpty>
+      {horizontalRule}
       {
         // TODO: show reset-password modal
       }
       {props.isInternalUser && (
         <>
-          <EuiButtonEmpty>Reset password</EuiButtonEmpty>
-          <EuiSpacer size="xs" />
+          <EuiButtonEmpty size="xs">Reset password</EuiButtonEmpty>
+          {horizontalRule}
         </>
       )}
       {
         // TODO: redirect to log out page
       }
-      <EuiButtonEmpty color="danger">Log out</EuiButtonEmpty>
-    </>,
-  ];
-
+      <EuiButtonEmpty color="danger" size="xs">
+        Log out
+      </EuiButtonEmpty>
+    </div>
+  );
   return (
     <EuiHeaderSectionItemButton
       onClick={() => {
@@ -60,14 +95,14 @@ export function AccountNavButton(props: { isInternalUser: boolean }) {
     >
       <EuiPopover
         id="actionsMenu"
-        button={<EuiIcon type="user" size="l" />}
+        button={<EuiAvatar name={username} />}
         isOpen={isPopoverOpen}
         closePopover={() => {
           setPopoverOpen(false);
         }}
         panelPaddingSize="s"
       >
-        <EuiContextMenuPanel items={contextMenuItems} />
+        <EuiContextMenuPanel>{contextMenuPanel}</EuiContextMenuPanel>
       </EuiPopover>
     </EuiHeaderSectionItemButton>
   );

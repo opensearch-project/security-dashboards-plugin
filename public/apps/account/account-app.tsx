@@ -17,15 +17,24 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { CoreStart } from '../../../../../src/core/public';
 import { AccountNavButton } from './account-nav-button';
-import { checkInternalUser } from './utils';
+import { fetchAccountInfoSafe } from './utils';
 
 export async function setupTopNavButton(coreStart: CoreStart) {
-  const isInternalUser = await checkInternalUser(coreStart);
-  coreStart.chrome.navControls.registerRight({
-    order: 2000,
-    mount: (element: HTMLElement) => {
-      ReactDOM.render(<AccountNavButton isInternalUser={isInternalUser} />, element);
-      return () => ReactDOM.unmountComponentAtNode(element);
-    },
-  });
+  const accountInfo = (await fetchAccountInfoSafe(coreStart))?.data;
+  if (accountInfo) {
+    coreStart.chrome.navControls.registerRight({
+      order: 2000,
+      mount: (element: HTMLElement) => {
+        ReactDOM.render(
+          <AccountNavButton
+            isInternalUser={accountInfo.is_internal_user}
+            username={accountInfo.user_name}
+            tenant={accountInfo.user_requested_tenants}
+          />,
+          element
+        );
+        return () => ReactDOM.unmountComponentAtNode(element);
+      },
+    });
+  }
 }
