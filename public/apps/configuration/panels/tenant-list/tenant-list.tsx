@@ -159,10 +159,10 @@ export function TenantList(props: AppDependencies) {
     {
       field: 'tenant',
       name: 'Name',
-      render: (tenantname: string) => (
+      render: (tenantName: string) => (
         <>
-          {tenantname}
-          {tenantname === currentTenant && (
+          {tenantName}
+          {tenantName === currentTenant && (
             <>
               &nbsp;
               <EuiBadge>Current</EuiBadge>
