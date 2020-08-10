@@ -63,7 +63,7 @@ export function transformRoleData(rawRoleData: any, rawRoleMappingData: any) {
     reserved: v.reserved,
     cluster_permissions: v.cluster_permissions,
     index_permissions: chain(v.index_permissions).map('index_patterns').flatten().compact().value(),
-    tenant_permissions: chain(v.index_permissions)
+    tenant_permissions: chain(v.tenant_permissions)
       .map('tenant_patterns')
       .flatten()
       .compact()
