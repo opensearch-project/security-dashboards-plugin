@@ -13,11 +13,9 @@
  *   permissions and limitations under the License.
  */
 import {
-  EuiListGroup,
   EuiModal,
   EuiModalBody,
   EuiOverlayMask,
-  EuiPanel,
   EuiText,
   EuiTitle,
   EuiHorizontalRule,
@@ -58,7 +56,7 @@ export function RoleInfoPanel(props: { coreStart: CoreStart; handleClose: () => 
           </EuiText>
           <EuiSpacer />
           {roles.map((item) => (
-            <EuiText>
+            <EuiText key={item}>
               {item}
               <br />
             </EuiText>
@@ -71,14 +69,12 @@ export function RoleInfoPanel(props: { coreStart: CoreStart; handleClose: () => 
             External identities you are currently mapped to by your administrator.
           </EuiText>
           <EuiSpacer />
-          <EuiListGroup>
-            {backendRoles.map((item) => (
-              <EuiText>
-                {item}
-                <br />
-              </EuiText>
-            ))}
-          </EuiListGroup>
+          {backendRoles.map((item) => (
+            <EuiText key={item}>
+              {item}
+              <br />
+            </EuiText>
+          ))}
         </EuiModalBody>
       </EuiModal>
     </EuiOverlayMask>
