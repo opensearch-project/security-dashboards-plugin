@@ -13,17 +13,17 @@
  *   permissions and limitations under the License.
  */
 
-import { CoreStart } from 'kibana/public';
+import { HttpStart } from 'kibana/public';
 import { API_ENDPOINT_ACCOUNT_INFO } from './constants';
 import { AccountInfo } from './types';
 
-export function fetchAccountInfo(core: CoreStart): Promise<AccountInfo> {
-  return core.http.get(API_ENDPOINT_ACCOUNT_INFO);
+export function fetchAccountInfo(http: HttpStart): Promise<AccountInfo> {
+  return http.get(API_ENDPOINT_ACCOUNT_INFO);
 }
 
-export async function fetchAccountInfoSafe(core: CoreStart): Promise<AccountInfo | undefined> {
+export async function fetchAccountInfoSafe(http: HttpStart): Promise<AccountInfo | undefined> {
   try {
-    const accountInfo = await fetchAccountInfo(core);
+    const accountInfo = await fetchAccountInfo(http);
     return accountInfo;
   } catch (e) {
     // ignore 401 and continue to login page.

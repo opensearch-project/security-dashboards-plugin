@@ -14,29 +14,30 @@
  */
 
 import {
-  EuiContextMenuItem,
-  EuiContextMenuPanel,
-  EuiHeaderSectionItemButton,
-  EuiIcon,
-  EuiPopover,
-  EuiButtonEmpty,
   EuiAvatar,
-  EuiHorizontalRule,
+  EuiButtonEmpty,
+  EuiContextMenuPanel,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiTitle,
-  EuiText,
-  EuiListGroupItem,
+  EuiHeaderSectionItemButton,
+  EuiHorizontalRule,
   EuiListGroup,
+  EuiListGroupItem,
+  EuiPopover,
+  EuiText,
 } from '@elastic/eui';
+import { CoreStart } from 'kibana/public';
 import React, { useState } from 'react';
+import { RoleInfoPanel } from './role-info-panel';
 
 export function AccountNavButton(props: {
+  coreStart: CoreStart;
   isInternalUser: boolean;
   username: string;
   tenant?: string;
 }) {
   const [isPopoverOpen, setPopoverOpen] = useState<boolean>(false);
+  const [modal, setModal] = useState<React.ReactNode>(null);
   const horizontalRule = <EuiHorizontalRule margin="xs" />;
   const username = props.username;
   const contextMenuPanel = (
@@ -48,6 +49,7 @@ export function AccountNavButton(props: {
         <EuiFlexItem>
           <EuiListGroup gutterSize="none">
             <EuiListGroupItem
+              key="username"
               wrapText
               label={
                 <EuiText size="s">
@@ -57,13 +59,20 @@ export function AccountNavButton(props: {
             />
           </EuiListGroup>
           {/* Resolve global and private tenant name. */}
-          <EuiListGroupItem label={<EuiText size="xs">{props.tenant || ''}</EuiText>} />
+          <EuiListGroupItem
+            key="tenant"
+            label={<EuiText size="xs">{props.tenant || ''}</EuiText>}
+          />
         </EuiFlexItem>
       </EuiFlexGroup>
 
       {horizontalRule}
-      {/* TODO: show view roles modal */}
-      <EuiButtonEmpty size="xs">View roles</EuiButtonEmpty>
+      <EuiButtonEmpty
+        size="xs"
+        onClick={() => setModal(<RoleInfoPanel {...props} handleClose={() => setModal(null)} />)}
+      >
+        View roles
+      </EuiButtonEmpty>
       {horizontalRule}
       {
         // TODO: show switch tenants modal
@@ -104,6 +113,7 @@ export function AccountNavButton(props: {
       >
         <EuiContextMenuPanel>{contextMenuPanel}</EuiContextMenuPanel>
       </EuiPopover>
+      {modal}
     </EuiHeaderSectionItemButton>
   );
 }

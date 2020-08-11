@@ -15,12 +15,12 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { CoreStart } from '../../../../../src/core/public';
+import { CoreStart } from 'kibana/public';
 import { AccountNavButton } from './account-nav-button';
 import { fetchAccountInfoSafe } from './utils';
 
 export async function setupTopNavButton(coreStart: CoreStart) {
-  const accountInfo = (await fetchAccountInfoSafe(coreStart))?.data;
+  const accountInfo = (await fetchAccountInfoSafe(coreStart.http))?.data;
   if (accountInfo) {
     coreStart.chrome.navControls.registerRight({
       // Pin to rightmost, since newsfeed plugin is using 1000, here needs a number > 1000
@@ -28,6 +28,7 @@ export async function setupTopNavButton(coreStart: CoreStart) {
       mount: (element: HTMLElement) => {
         ReactDOM.render(
           <AccountNavButton
+            coreStart={coreStart}
             isInternalUser={accountInfo.is_internal_user}
             username={accountInfo.user_name}
             tenant={accountInfo.user_requested_tenants}
