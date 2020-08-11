@@ -53,7 +53,9 @@ export function RoleInfoPanel(props: { coreStart: CoreStart; handleClose: () => 
           <EuiTitle>
             <h4>Roles ({roles.length})</h4>
           </EuiTitle>
-          <EuiText color="subdued">Roles you are currently mapped to by your administrator.</EuiText>
+          <EuiText color="subdued">
+            Roles you are currently mapped to by your administrator.
+          </EuiText>
           <EuiSpacer />
           {roles.map((item) => (
             <EuiText>
