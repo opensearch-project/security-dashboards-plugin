@@ -43,7 +43,7 @@ export function ExpressionModal(props: { title: string; expression: string }) {
 
           <EuiModalBody>
             <EuiCodeBlock fontSize="m" paddingSize="m" color="dark" overflowHeight={300} isCopyable>
-              {JSON.stringify(props.expression, null, 2)}
+              {JSON.stringify(JSON.parse(props.expression), null, 2)}
             </EuiCodeBlock>
           </EuiModalBody>
         </EuiModal>

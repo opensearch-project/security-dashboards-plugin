@@ -132,3 +132,6 @@ export const INDEX_PERMISSIONS = [
   'indices:monitor/stats',
   'indices:monitor/upgrade',
 ];
+
+export const TENANT_READ_PERMISSION = 'kibana_all_read';
+export const TENANT_WRITE_PERMISSION = 'kibana_all_write';

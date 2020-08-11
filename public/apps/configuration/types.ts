@@ -59,9 +59,20 @@ export interface RoleIndexPermission {
   allowed_actions: string[];
 }
 
-export interface RoleTenantPermission {
+export interface RoleIndexPermissionView extends RoleIndexPermission {
+  id: number;
+}
+
+export interface RoleTenantPatterns {
   tenant_patterns: string[];
+}
+
+export interface RoleTenantPermission extends RoleTenantPatterns {
   allowed_actions: string[];
+}
+
+export interface RoleTenantPermissionView extends RoleTenantPatterns {
+  permissionType: string;
 }
 
 export interface RoleUpdate {
@@ -117,4 +128,8 @@ export interface ActionGroupUpdate {
 export interface ActionGroupItem extends ActionGroupUpdate {
   reserved: boolean;
   type: 'cluster' | 'index' | 'all' | 'kibana' | undefined;
+}
+
+export interface ExpandedRowMapInterface {
+  [key: string]: React.ReactNode;
 }

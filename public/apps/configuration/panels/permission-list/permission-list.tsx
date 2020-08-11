@@ -46,7 +46,7 @@ import React, {
   useState,
 } from 'react';
 import { AppDependencies } from '../../../types';
-import { Action, DataObject, ActionGroupItem } from '../../types';
+import { Action, DataObject, ActionGroupItem, ExpandedRowMapInterface } from '../../types';
 import {
   PermissionListingItem,
   requestDeleteActionGroups,
@@ -59,10 +59,6 @@ import { renderCustomization } from '../../utils/display-utils';
 import { useToastState } from '../../utils/toast-utils';
 import { PermissionEditModal } from './edit-modal';
 import { PermissionTree } from '../permission-tree';
-
-interface ExpandedRowMapInterface {
-  [key: string]: React.ReactNode;
-}
 
 function renderBooleanToCheckMark(value: boolean): React.ReactNode {
   return value ? <EuiIcon type="check" /> : '';

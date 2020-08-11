@@ -30,9 +30,7 @@ import {
 import { FormRow } from '../../utils/form-row';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { ComboBoxOptions, RoleTenantPermissionStateClass, TenantPermissionType } from './types';
-
-const TENANT_READ_PERMISSION = 'kibana_all_read';
-const TENANT_WRITE_PERMISSION = 'kibana_all_write';
+import { TENANT_READ_PERMISSION, TENANT_WRITE_PERMISSION } from '../../constants';
 
 export function buildTenantPermissionState(
   permissions: RoleTenantPermission[]

@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
   EuiButton,
@@ -30,11 +30,22 @@ import {
   EuiPageBody,
   EuiInMemoryTable,
   EuiEmptyPrompt,
+  EuiCallOut,
+  EuiGlobalToastList,
 } from '@elastic/eui';
 import { difference } from 'lodash';
 import { BreadcrumbsPageDependencies } from '../../../types';
 import { buildHashUrl } from '../../utils/url-builder';
-import { ResourceType, Action, SubAction, RoleMappingDetail } from '../../types';
+import {
+  ResourceType,
+  Action,
+  SubAction,
+  RoleMappingDetail,
+  DataObject,
+  ActionGroupItem,
+  RoleIndexPermissionView,
+  RoleTenantPermissionView,
+} from '../../types';
 import {
   getRoleMappingData,
   MappedUsersListing,
@@ -43,6 +54,15 @@ import {
   UserType,
 } from '../../utils/role-mapping-utils';
 import { createUnknownErrorToast, useToastState } from '../../utils/toast-utils';
+import { fetchActionGroups } from '../../utils/action-groups-utils';
+import { getRoleDetail } from '../../utils/role-detail-utils';
+import { ClusterPermissionPanel } from '../role-view/cluster-permission-panel';
+import { IndexPermissionPanel } from './index-permission-panel';
+import { TenantsPanel } from './tenants-panel';
+import {
+  transformRoleIndexPermissions,
+  transformRoleTenantPermissions,
+} from '../../utils/index-permission-utils';
 
 interface RoleViewProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -69,7 +89,12 @@ export function RoleView(props: RoleViewProps) {
   const [errorFlag, setErrorFlag] = useState(false);
   const [selection, setSelection] = useState<MappedUsersListing[]>([]);
   const [hosts, setHosts] = useState<string[]>([]);
+  const [actionGroupDict, setActionGroupDict] = useState<DataObject<ActionGroupItem>>({});
+  const [roleClusterPermission, setRoleClusterPermission] = useState<string[]>([]);
+  const [roleIndexPermission, setRoleIndexPermission] = useState<RoleIndexPermissionView[]>([]);
+  const [roleTenantPermission, setRoleTenantPermission] = useState<RoleTenantPermissionView[]>([]);
   const [toasts, addToast, removeToast] = useToastState();
+  const [isReserved, setIsReserved] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -80,6 +105,14 @@ export function RoleView(props: RoleViewProps) {
         )) as RoleMappingDetail;
         setMappedUsers(transformRoleMappingData(originalRoleMapData));
         setHosts(originalRoleMapData.hosts);
+
+        const actionGroups = await fetchActionGroups(props.coreStart.http);
+        setActionGroupDict(actionGroups);
+        const roleData = await getRoleDetail(props.coreStart.http, props.roleName);
+        setIsReserved(roleData.reserved);
+        setRoleClusterPermission(roleData.cluster_permissions);
+        setRoleIndexPermission(transformRoleIndexPermissions(roleData.index_permissions));
+        setRoleTenantPermission(transformRoleTenantPermissions(roleData.tenant_permissions));
       } catch (e) {
         addToast(createUnknownErrorToast('fetchRoleMappingData', 'load data'));
         console.log(e);
@@ -160,7 +193,47 @@ export function RoleView(props: RoleViewProps) {
       id: 'permissions',
       name: 'Permissions',
       disabled: false,
-      content: <Fragment>Permission working in progress</Fragment>,
+      content: (
+        <>
+          <EuiSpacer size="m" />
+
+          {isReserved && (
+            <EuiCallOut
+              title="This role is reserved for the Security plugin environment. Reserved roles are restricted for any permission customizations."
+              iconType="lock"
+              size="s"
+            >
+              <p>
+                Make use of this role by mapping users. You can also{' '}
+                <EuiLink href={buildHashUrl(ResourceType.roles, Action.create)}>
+                  create your own role
+                </EuiLink>{' '}
+                or <EuiLink href={duplicateRoleLink}>duplicate</EuiLink> this one for further
+                customization.
+              </p>
+            </EuiCallOut>
+          )}
+
+          <EuiSpacer size="m" />
+
+          <ClusterPermissionPanel
+            clusterPermissions={roleClusterPermission}
+            actionGroups={actionGroupDict}
+          />
+
+          <EuiSpacer size="m" />
+
+          <IndexPermissionPanel
+            indexPermissions={roleIndexPermission}
+            actionGroups={actionGroupDict}
+            errorFlag={errorFlag}
+          />
+
+          <EuiSpacer size="m" />
+
+          <TenantsPanel tenantPermissions={roleTenantPermission} errorFlag={errorFlag} />
+        </>
+      ),
     },
     {
       id: 'users',
@@ -249,6 +322,7 @@ export function RoleView(props: RoleViewProps) {
       <EuiTabbedContent tabs={tabs} />
 
       <EuiSpacer />
+      <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={10000} dismissToast={removeToast} />
     </>
   );
 }

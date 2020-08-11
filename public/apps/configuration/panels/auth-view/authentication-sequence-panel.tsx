@@ -15,20 +15,9 @@
 
 import React from 'react';
 import { EuiInMemoryTable } from '@elastic/eui';
-import { isEmpty, keys, map, get } from 'lodash';
+import { keys, map, get } from 'lodash';
 import { PanelWithHeader } from '../../utils/panel-with-header';
-
-import { ExpressionModal } from './expression-modal';
-
-const renderExpression = (title: string) => {
-  return (expression: string) => {
-    if (isEmpty(expression)) {
-      return '-';
-    }
-
-    return <ExpressionModal title={title} expression={expression} />;
-  };
-};
+import { renderExpression } from '../../utils/display-utils';
 
 const columns = [
   {
