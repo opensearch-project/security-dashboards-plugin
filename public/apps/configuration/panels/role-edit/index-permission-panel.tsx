@@ -90,11 +90,11 @@ export function buildIndexPermissionState(
 ): RoleIndexPermissionStateClass[] {
   return indexPerm.map((perm) => ({
     indexPatterns: perm.index_patterns.map(stringToComboBoxOption),
-    allowedActions: [],
+    allowedActions: perm.allowed_actions.map(stringToComboBoxOption),
     docLevelSecurity: perm.dls,
     fieldLevelSecurityMethod: getFieldLevelSecurityMethod(perm.fls),
     fieldLevelSecurityFields: getFieldLevelSecurityFields(perm.fls),
-    maskedFields: [],
+    maskedFields: perm.masked_fields.map(stringToComboBoxOption),
   }));
 }
 
