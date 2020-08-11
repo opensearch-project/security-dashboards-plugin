@@ -22,6 +22,8 @@ interface FormRowDeps {
   headerSubText?: string;
   helpLink?: string;
   helpText?: string;
+  isInvalid?: boolean;
+  error?: string[];
   children: React.ReactElement;
 }
 
@@ -47,6 +49,8 @@ export function FormRow(props: FormRowDeps) {
         </EuiText>
       }
       helpText={props.helpText}
+      isInvalid={props.isInvalid}
+      error={props.error}
     >
       {props.children}
     </EuiFormRow>
