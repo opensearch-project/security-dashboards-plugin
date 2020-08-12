@@ -120,7 +120,11 @@ export function transformRoleTenantPermissionData(
   tenantList: Tenant[]
 ): RoleTenantPermissionDetail[] {
   return map(tenantPermissions, (tenantPermission: RoleTenantPermissionView) => {
-    const tenantNames: string[] = tenantList.map((t: Tenant) => t.tenant); // Global
+    const tenantNames: string[] = tenantList.map((t: Tenant) => t.tenant);
+    /**
+     * Here we only consider the case that containing one tenant and
+     * for other case (multiple tenants, tenant pattern) we return N/A.
+     */
     let tenantItem = null;
     if (
       tenantPermission.tenant_patterns.length === 1 &&
@@ -133,9 +137,9 @@ export function transformRoleTenantPermissionData(
     return {
       tenant_patterns: tenantPermission.tenant_patterns,
       permissionType: tenantPermission.permissionType,
-      tenant: tenantItem ? tenantItem.tenant : RoleViewTenantInvalidText,
-      reserved: tenantItem ? tenantItem.reserved : false,
-      description: tenantItem ? tenantItem.description : RoleViewTenantInvalidText,
+      tenant: tenantItem?.tenant || RoleViewTenantInvalidText,
+      reserved: tenantItem?.reserved || false,
+      description: tenantItem?.description || RoleViewTenantInvalidText,
       tenantValue: tenantItem ? tenantItem.tenantValue : RoleViewTenantInvalidText,
     };
   });
@@ -158,11 +162,8 @@ export function getTenantPermissionType(tenantPermissions: string[]) {
 export function transformRoleTenantPermissions(
   roleTenantPermission: RoleTenantPermission[]
 ): RoleTenantPermissionView[] {
-  return roleTenantPermission.map((tenantPermission) => {
-    const permissionType = getTenantPermissionType(tenantPermission.allowed_actions);
-    return {
-      tenant_patterns: tenantPermission.tenant_patterns,
-      permissionType,
-    };
-  });
+  return roleTenantPermission.map((tenantPermission) => ({
+    tenant_patterns: tenantPermission.tenant_patterns,
+    permissionType: getTenantPermissionType(tenantPermission.allowed_actions),
+  }));
 }
