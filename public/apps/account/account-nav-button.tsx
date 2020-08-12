@@ -89,7 +89,7 @@ export function AccountNavButton(props: {
           {horizontalRule}
         </>
       )}
-      <EuiButtonEmpty color="danger" size="xs" onClick={() => logout(props.coreStart.http)} >
+      <EuiButtonEmpty color="danger" size="xs" onClick={() => logout(props.coreStart.http)}>
         Log out
       </EuiButtonEmpty>
     </div>
