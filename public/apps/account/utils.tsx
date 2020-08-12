@@ -14,7 +14,7 @@
  */
 
 import { HttpStart } from 'kibana/public';
-import { API_AUTH_LOGOUT } from 'plugins/security-kibana-plugin/common';
+import { API_AUTH_LOGOUT } from '../../../common';
 import { API_ENDPOINT_ACCOUNT_INFO } from './constants';
 import { AccountInfo } from './types';
 

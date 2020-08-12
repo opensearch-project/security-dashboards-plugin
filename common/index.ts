@@ -23,7 +23,6 @@ export const LOGIN_PAGE_URI = '/app/login';
 export const API_AUTH_LOGIN = '/auth/login';
 export const API_AUTH_LOGOUT = '/auth/logout';
 
-
 export enum AuthType {
   BASIC = 'basicauth',
   OPEN_ID = 'openid',
