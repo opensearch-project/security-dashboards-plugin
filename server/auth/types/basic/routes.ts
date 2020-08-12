@@ -22,7 +22,7 @@ import { filterAuthHeaders } from '../../../utils/filter_auth_headers';
 import { User } from '../../user';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { CoreSetup } from '../../../../../../src/core/server';
-import { LOGIN_PAGE_URI } from '../../../../common';
+import { API_AUTH_LOGIN, API_AUTH_LOGOUT, LOGIN_PAGE_URI } from '../../../../common';
 
 export class BasicAuthRoutes {
   constructor(
@@ -41,7 +41,7 @@ export class BasicAuthRoutes {
     // using client side routing.
     this.coreSetup.http.resources.register(
       {
-        path: `${LOGIN_PAGE_URI}`,
+        path: LOGIN_PAGE_URI,
         validate: false,
         options: {
           authRequired: false,
@@ -55,7 +55,7 @@ export class BasicAuthRoutes {
     // login using username and password
     this.router.post(
       {
-        path: `/auth/login`, // TODO: move the API endpoints to common to share with browser app
+        path: API_AUTH_LOGIN,
         validate: {
           body: schema.object({
             username: schema.string(),
@@ -141,7 +141,7 @@ export class BasicAuthRoutes {
     // logout
     this.router.post(
       {
-        path: `/auth/logout`,
+        path: API_AUTH_LOGOUT,
         validate: false,
         options: {
           authRequired: false,

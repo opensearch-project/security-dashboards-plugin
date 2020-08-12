@@ -14,6 +14,7 @@
  */
 
 import { HttpStart } from 'kibana/public';
+import { API_AUTH_LOGOUT } from '../../../common';
 import { API_ENDPOINT_ACCOUNT_INFO } from './constants';
 import { AccountInfo } from './types';
 
@@ -31,4 +32,9 @@ export async function fetchAccountInfoSafe(http: HttpStart): Promise<AccountInfo
       throw e;
     }
   }
+}
+
+export async function logout(http: HttpStart): Promise<void> {
+  await http.post(API_AUTH_LOGOUT);
+  window.location.href = http.basePath.serverBasePath;
 }

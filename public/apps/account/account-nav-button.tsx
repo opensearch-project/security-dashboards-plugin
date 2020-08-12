@@ -29,6 +29,7 @@ import {
 import { CoreStart } from 'kibana/public';
 import React, { useState } from 'react';
 import { RoleInfoPanel } from './role-info-panel';
+import { logout } from './utils';
 
 export function AccountNavButton(props: {
   coreStart: CoreStart;
@@ -88,10 +89,7 @@ export function AccountNavButton(props: {
           {horizontalRule}
         </>
       )}
-      {
-        // TODO: redirect to log out page
-      }
-      <EuiButtonEmpty color="danger" size="xs">
+      <EuiButtonEmpty color="danger" size="xs" onClick={() => logout(props.coreStart.http)}>
         Log out
       </EuiButtonEmpty>
     </div>
