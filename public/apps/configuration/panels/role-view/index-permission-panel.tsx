@@ -126,11 +126,13 @@ function getColumns(
   ];
 }
 
-export function IndexPermissionPanel(props: {
+interface IndexPermissionPanelProps {
   indexPermissions: RoleIndexPermissionView[];
   actionGroups: DataObject<ActionGroupItem>;
   errorFlag: boolean;
-}) {
+}
+
+export function IndexPermissionPanel(props: IndexPermissionPanelProps) {
   const [itemIdToExpandedRowMap, setItemIdToExpandedRowMap] = useState<ExpandedRowMapInterface>({});
 
   const headerText = 'Index permissions (' + props.indexPermissions.length + ')';

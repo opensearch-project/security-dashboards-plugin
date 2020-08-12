@@ -59,10 +59,8 @@ import { getRoleDetail } from '../../utils/role-detail-utils';
 import { ClusterPermissionPanel } from '../role-view/cluster-permission-panel';
 import { IndexPermissionPanel } from './index-permission-panel';
 import { TenantsPanel } from './tenants-panel';
-import {
-  transformRoleIndexPermissions,
-  transformRoleTenantPermissions,
-} from '../../utils/index-permission-utils';
+import { transformRoleIndexPermissions } from '../../utils/index-permission-utils';
+import { transformRoleTenantPermissions } from '../../utils/tenant-utils';
 
 interface RoleViewProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -231,7 +229,11 @@ export function RoleView(props: RoleViewProps) {
 
           <EuiSpacer size="m" />
 
-          <TenantsPanel tenantPermissions={roleTenantPermission} errorFlag={errorFlag} />
+          <TenantsPanel
+            tenantPermissions={roleTenantPermission}
+            errorFlag={errorFlag}
+            coreStart={props.coreStart}
+          />
         </>
       ),
     },

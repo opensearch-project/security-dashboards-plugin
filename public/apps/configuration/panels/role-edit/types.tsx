@@ -13,9 +13,8 @@
  *   permissions and limitations under the License.
  */
 
-import { ComboBoxOptions } from '../../types';
+import { ComboBoxOptions, FieldLevelSecurityMethod, TenantPermissionType } from '../../types';
 
-export type FieldLevelSecurityMethod = 'exclude' | 'include';
 export interface RoleIndexPermissionStateClass {
   indexPatterns: ComboBoxOptions;
   docLevelSecurity: string;
@@ -23,13 +22,6 @@ export interface RoleIndexPermissionStateClass {
   fieldLevelSecurityFields: ComboBoxOptions;
   maskedFields: ComboBoxOptions;
   allowedActions: ComboBoxOptions;
-}
-
-export enum TenantPermissionType {
-  None = '',
-  Read = 'r',
-  Write = 'w',
-  Full = 'rw',
 }
 
 export interface RoleTenantPermissionStateClass {

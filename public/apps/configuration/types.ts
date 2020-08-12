@@ -17,6 +17,8 @@ import { EuiComboBoxOptionOption } from '@elastic/eui';
 
 export type ComboBoxOptions = EuiComboBoxOptionOption[];
 
+export type FieldLevelSecurityMethod = 'exclude' | 'include';
+
 export enum ResourceType {
   roles = 'roles',
   users = 'users',
@@ -35,6 +37,18 @@ export enum Action {
 
 export enum SubAction {
   mapuser = 'mapuser',
+}
+
+export enum PageId {
+  dashboardId = 'dashboards',
+  visualizationId = 'visualize',
+}
+
+export enum TenantPermissionType {
+  None = '',
+  Read = 'Read only',
+  Write = 'Write only',
+  Full = 'Read and Write',
 }
 
 export interface RouteItem {
@@ -107,6 +121,8 @@ export interface Tenant extends TenantUpdate, TenantName {
 export interface TenantSelect extends TenantName {
   username: string;
 }
+
+export interface RoleTenantPermissionDetail extends RoleTenantPermissionView, Tenant {}
 
 export interface UserAttributes {
   [key: string]: string;

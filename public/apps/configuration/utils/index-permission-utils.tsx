@@ -14,14 +14,7 @@
  */
 
 import { map } from 'lodash';
-import { FieldLevelSecurityMethod, TenantPermissionType } from '../panels/role-edit/types';
-import {
-  RoleIndexPermission,
-  RoleIndexPermissionView,
-  RoleTenantPermission,
-  RoleTenantPermissionView,
-} from '../types';
-import { TENANT_READ_PERMISSION, TENANT_WRITE_PERMISSION } from '../constants';
+import { RoleIndexPermission, RoleIndexPermissionView, FieldLevelSecurityMethod } from '../types';
 
 /**
  * Identify the method is whether exclude or include.
@@ -41,38 +34,6 @@ export function transformRoleIndexPermissions(
 ): RoleIndexPermissionView[] {
   return map(roleIndexPermission, (indexPermission: RoleIndexPermission, arrayIndex: number) => ({
     id: arrayIndex,
-    index_patterns: indexPermission.index_patterns,
-    dls: indexPermission.dls,
-    fls: indexPermission.fls,
-    masked_fields: indexPermission.masked_fields,
-    allowed_actions: indexPermission.allowed_actions,
+    ...indexPermission,
   }));
-}
-
-const PermissionTypeDisplay = {
-  rw: 'Read and Write',
-  r: 'Read only',
-  w: 'Write only',
-  '': '',
-};
-
-export function transformRoleTenantPermissions(
-  roleTenantPermission: RoleTenantPermission[]
-): RoleTenantPermissionView[] {
-  return roleTenantPermission.map((tenantPermission) => {
-    const readable = tenantPermission.allowed_actions.includes(TENANT_READ_PERMISSION);
-    const writable = tenantPermission.allowed_actions.includes(TENANT_WRITE_PERMISSION);
-    let permissionType = TenantPermissionType.None;
-    if (readable && writable) {
-      permissionType = TenantPermissionType.Full;
-    } else if (readable) {
-      permissionType = TenantPermissionType.Read;
-    } else if (writable) {
-      permissionType = TenantPermissionType.Write;
-    }
-    return {
-      tenant_patterns: tenantPermission.tenant_patterns,
-      permissionType: PermissionTypeDisplay[permissionType],
-    };
-  });
 }
