@@ -29,6 +29,8 @@ import {
 import { CoreStart } from 'kibana/public';
 import React, { useState } from 'react';
 import { RoleInfoPanel } from './role-info-panel';
+import { logout } from './utils';
+import { PasswordResetPanel } from './password-reset-panel';
 
 export function AccountNavButton(props: {
   coreStart: CoreStart;
@@ -84,14 +86,24 @@ export function AccountNavButton(props: {
       }
       {props.isInternalUser && (
         <>
-          <EuiButtonEmpty size="xs">Reset password</EuiButtonEmpty>
+          <EuiButtonEmpty
+            size="xs"
+            onClick={() =>
+              setModal(
+                <PasswordResetPanel
+                  {...props}
+                  username={props.username}
+                  handleClose={() => setModal(null)}
+                />
+              )
+            }
+          >
+            Reset password
+          </EuiButtonEmpty>
           {horizontalRule}
         </>
       )}
-      {
-        // TODO: redirect to log out page
-      }
-      <EuiButtonEmpty color="danger" size="xs">
+      <EuiButtonEmpty color="danger" size="xs" onClick={() => logout(props.coreStart.http)}>
         Log out
       </EuiButtonEmpty>
     </div>
