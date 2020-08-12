@@ -41,38 +41,7 @@ import {
 import { API_ENDPOINT_ROLES, API_ENDPOINT_ROLESMAPPING } from '../constants';
 import { ResourceType, Action } from '../types';
 import { buildHashUrl } from '../utils/url-builder';
-import { renderCustomization } from '../utils/display-utils';
-
-function truncatedListView(limit = 3) {
-  return (items: string[]) => {
-    // Show - to indicate empty
-    if (items === undefined || items.length === 0) {
-      return (
-        <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
-          <EuiText key={'-'} size="xs">
-            -
-          </EuiText>
-        </EuiFlexGroup>
-      );
-    }
-
-    // If number of items over than limit, truncate and show ...
-    return (
-      <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
-        {items.slice(0, limit).map((item) => (
-          <EuiText key={item} size="xs">
-            {item}
-          </EuiText>
-        ))}
-        {items.length > limit && (
-          <EuiText key={'...'} size="xs">
-            ...
-          </EuiText>
-        )}
-      </EuiFlexGroup>
-    );
-  };
-}
+import { renderCustomization, truncatedListView } from '../utils/display-utils';
 
 const columns = [
   {

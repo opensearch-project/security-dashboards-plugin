@@ -15,10 +15,11 @@
 
 // TODO: call the util functions from wherever applicable.
 
-import { EuiFlexItem, EuiText, EuiIcon } from '@elastic/eui';
+import { EuiFlexItem, EuiText, EuiIcon, EuiFlexGroup } from '@elastic/eui';
 import { isEmpty } from 'lodash';
 
 import React from 'react';
+import { ExpressionModal } from '../panels/expression-modal';
 
 export function renderTextFlexItem(header: string, value: string) {
   return (
@@ -51,3 +52,44 @@ export function renderCustomization(reserved: boolean) {
     </EuiText>
   );
 }
+
+export function truncatedListView(limit = 3) {
+  return (items: string[]) => {
+    // Show - to indicate empty
+    if (items === undefined || items.length === 0) {
+      return (
+        <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
+          <EuiText key={'-'} size="xs">
+            -
+          </EuiText>
+        </EuiFlexGroup>
+      );
+    }
+
+    // If number of items over than limit, truncate and show ...
+    return (
+      <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
+        {items.slice(0, limit).map((item) => (
+          <EuiText key={item} size="xs">
+            {item}
+          </EuiText>
+        ))}
+        {items.length > limit && (
+          <EuiText key={'...'} size="xs">
+            ...
+          </EuiText>
+        )}
+      </EuiFlexGroup>
+    );
+  };
+}
+
+export const renderExpression = (title: string) => {
+  return (expression: string) => {
+    if (isEmpty(expression)) {
+      return '-';
+    }
+
+    return <ExpressionModal title={title} expression={expression} />;
+  };
+};

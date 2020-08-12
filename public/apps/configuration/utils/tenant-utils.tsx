@@ -15,8 +15,23 @@
 
 import { HttpStart } from 'kibana/public';
 import { map } from 'lodash';
-import { API_ENDPOINT_TENANTS, API_ENDPOINT_MULTITENANCY } from '../constants';
-import { DataObject, ObjectsMessage, Tenant, TenantUpdate, TenantSelect } from '../types';
+import {
+  API_ENDPOINT_TENANTS,
+  API_ENDPOINT_MULTITENANCY,
+  RoleViewTenantInvalidText,
+} from '../constants';
+import {
+  DataObject,
+  ObjectsMessage,
+  Tenant,
+  TenantUpdate,
+  TenantSelect,
+  RoleTenantPermissionView,
+  RoleTenantPermissionDetail,
+  TenantPermissionType,
+  RoleTenantPermission,
+} from '../types';
+import { TENANT_READ_PERMISSION, TENANT_WRITE_PERMISSION } from '../constants';
 
 const globalTenantName = 'global_tenant';
 const GLOBAL_USER_DICT: { [key: string]: string } = {
@@ -93,4 +108,62 @@ export function resolveTenantName(tenant: string, userName: string) {
   } else {
     return tenant;
   }
+}
+
+function formatTenantName(tenantName: string): string {
+  if (tenantName === globalTenantName) return GLOBAL_USER_DICT.Label;
+  return tenantName;
+}
+
+export function transformRoleTenantPermissionData(
+  tenantPermissions: RoleTenantPermissionView[],
+  tenantList: Tenant[]
+): RoleTenantPermissionDetail[] {
+  return map(tenantPermissions, (tenantPermission: RoleTenantPermissionView) => {
+    const tenantNames: string[] = tenantList.map((t: Tenant) => t.tenant);
+    /**
+     * Here we only consider the case that containing one tenant and
+     * for other case (multiple tenants, tenant pattern) we return N/A.
+     */
+    let tenantItem = null;
+    if (
+      tenantPermission.tenant_patterns.length === 1 &&
+      tenantNames.includes(formatTenantName(tenantPermission.tenant_patterns[0]))
+    ) {
+      tenantItem = tenantList.filter((t) => {
+        return t.tenant === formatTenantName(tenantPermission.tenant_patterns[0]);
+      })[0];
+    }
+    return {
+      tenant_patterns: tenantPermission.tenant_patterns,
+      permissionType: tenantPermission.permissionType,
+      tenant: tenantItem?.tenant || RoleViewTenantInvalidText,
+      reserved: tenantItem?.reserved || false,
+      description: tenantItem?.description || RoleViewTenantInvalidText,
+      tenantValue: tenantItem ? tenantItem.tenantValue : RoleViewTenantInvalidText,
+    };
+  });
+}
+
+export function getTenantPermissionType(tenantPermissions: string[]) {
+  const readable = tenantPermissions.includes(TENANT_READ_PERMISSION);
+  const writable = tenantPermissions.includes(TENANT_WRITE_PERMISSION);
+  let permissionType = TenantPermissionType.None;
+  if (readable && writable) {
+    permissionType = TenantPermissionType.Full;
+  } else if (readable) {
+    permissionType = TenantPermissionType.Read;
+  } else if (writable) {
+    permissionType = TenantPermissionType.Write;
+  }
+  return permissionType;
+}
+
+export function transformRoleTenantPermissions(
+  roleTenantPermission: RoleTenantPermission[]
+): RoleTenantPermissionView[] {
+  return roleTenantPermission.map((tenantPermission) => ({
+    tenant_patterns: tenantPermission.tenant_patterns,
+    permissionType: getTenantPermissionType(tenantPermission.allowed_actions),
+  }));
 }

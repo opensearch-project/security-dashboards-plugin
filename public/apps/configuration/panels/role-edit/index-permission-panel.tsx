@@ -38,8 +38,9 @@ import {
 } from '../../utils/combo-box-utils';
 import { FormRow } from '../../utils/form-row';
 import { PanelWithHeader } from '../../utils/panel-with-header';
-import { FieldLevelSecurityMethod, RoleIndexPermissionStateClass } from './types';
-import { ComboBoxOptions } from '../../types';
+import { RoleIndexPermissionStateClass } from './types';
+import { FieldLevelSecurityMethod, ComboBoxOptions } from '../../types';
+import { getFieldLevelSecurityMethod } from '../../utils/index-permission-utils';
 
 export function getEmptyIndexPermission(): RoleIndexPermissionStateClass {
   return {
@@ -50,19 +51,6 @@ export function getEmptyIndexPermission(): RoleIndexPermissionStateClass {
     fieldLevelSecurityFields: [],
     maskedFields: [],
   };
-}
-
-/**
- * Identify the method is whether exclude or include.
- * @param fieldLevelSecurityRawFields fields fetched from backend
- * ["~field1", "~field2"] => exclude
- * ["field1", "field2"] => include
- */
-function getFieldLevelSecurityMethod(
-  fieldLevelSecurityRawFields: string[]
-): FieldLevelSecurityMethod {
-  // Leading ~ indicates exclude.
-  return fieldLevelSecurityRawFields.some((s: string) => s.startsWith('~')) ? 'exclude' : 'include';
 }
 
 /**

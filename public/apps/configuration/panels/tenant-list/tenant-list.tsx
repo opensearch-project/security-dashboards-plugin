@@ -52,11 +52,7 @@ import {
 import { getNavLinkById } from '../../../../services/chrome_wrapper';
 import { TenantEditModal } from './edit-modal';
 import { useToastState, createUnknownErrorToast } from '../../utils/toast-utils';
-
-enum PageId {
-  dashboardId = 'dashboards',
-  visualizationId = 'visualize',
-}
+import { PageId } from '../../types';
 
 export function TenantList(props: AppDependencies) {
   const [tenantData, setTenantData] = useState<Tenant[]>([]);

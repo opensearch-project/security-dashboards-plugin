@@ -17,6 +17,8 @@ import { EuiComboBoxOptionOption } from '@elastic/eui';
 
 export type ComboBoxOptions = EuiComboBoxOptionOption[];
 
+export type FieldLevelSecurityMethod = 'exclude' | 'include';
+
 export enum ResourceType {
   roles = 'roles',
   users = 'users',
@@ -35,6 +37,18 @@ export enum Action {
 
 export enum SubAction {
   mapuser = 'mapuser',
+}
+
+export enum PageId {
+  dashboardId = 'dashboards',
+  visualizationId = 'visualize',
+}
+
+export enum TenantPermissionType {
+  None = '',
+  Read = 'Read only',
+  Write = 'Write only',
+  Full = 'Read and Write',
 }
 
 export interface RouteItem {
@@ -59,9 +73,20 @@ export interface RoleIndexPermission {
   allowed_actions: string[];
 }
 
-export interface RoleTenantPermission {
+export interface RoleIndexPermissionView extends RoleIndexPermission {
+  id: number;
+}
+
+export interface RoleTenantPatterns {
   tenant_patterns: string[];
+}
+
+export interface RoleTenantPermission extends RoleTenantPatterns {
   allowed_actions: string[];
+}
+
+export interface RoleTenantPermissionView extends RoleTenantPatterns {
+  permissionType: string;
 }
 
 export interface RoleUpdate {
@@ -97,6 +122,8 @@ export interface TenantSelect extends TenantName {
   username: string;
 }
 
+export interface RoleTenantPermissionDetail extends RoleTenantPermissionView, Tenant {}
+
 export interface UserAttributes {
   [key: string]: string;
 }
@@ -117,4 +144,8 @@ export interface ActionGroupUpdate {
 export interface ActionGroupItem extends ActionGroupUpdate {
   reserved: boolean;
   type: 'cluster' | 'index' | 'all' | 'kibana' | undefined;
+}
+
+export interface ExpandedRowMapInterface {
+  [key: string]: React.ReactNode;
 }

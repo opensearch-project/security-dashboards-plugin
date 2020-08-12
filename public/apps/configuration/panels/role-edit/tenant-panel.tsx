@@ -16,7 +16,7 @@
 import { EuiButton, EuiComboBox, EuiFlexGroup, EuiFlexItem, EuiSuperSelect } from '@elastic/eui';
 import React, { Dispatch, Fragment, SetStateAction } from 'react';
 import { isEmpty } from 'lodash';
-import { RoleTenantPermission } from '../../types';
+import { RoleTenantPermission, TenantPermissionType } from '../../types';
 import {
   appendElementToArray,
   removeElementFromArray,
@@ -29,25 +29,15 @@ import {
 } from '../../utils/combo-box-utils';
 import { FormRow } from '../../utils/form-row';
 import { PanelWithHeader } from '../../utils/panel-with-header';
-import { ComboBoxOptions, RoleTenantPermissionStateClass, TenantPermissionType } from './types';
-
-const TENANT_READ_PERMISSION = 'kibana_all_read';
-const TENANT_WRITE_PERMISSION = 'kibana_all_write';
+import { ComboBoxOptions, RoleTenantPermissionStateClass } from './types';
+import { TENANT_READ_PERMISSION, TENANT_WRITE_PERMISSION } from '../../constants';
+import { getTenantPermissionType } from '../../utils/tenant-utils';
 
 export function buildTenantPermissionState(
   permissions: RoleTenantPermission[]
 ): RoleTenantPermissionStateClass[] {
   return permissions.map((permission) => {
-    const readable = permission.allowed_actions.includes(TENANT_READ_PERMISSION);
-    const writable = permission.allowed_actions.includes(TENANT_WRITE_PERMISSION);
-    let permissionType = TenantPermissionType.None;
-    if (readable && writable) {
-      permissionType = TenantPermissionType.Full;
-    } else if (readable) {
-      permissionType = TenantPermissionType.Read;
-    } else if (writable) {
-      permissionType = TenantPermissionType.Write;
-    }
+    const permissionType = getTenantPermissionType(permission.allowed_actions);
     return {
       tenantPatterns: permission.tenant_patterns.map(stringToComboBoxOption),
       permissionType,
@@ -111,9 +101,9 @@ function generateTenantPermissionPanels(
               valueOfSelected={tenantPermission.permissionType}
               onChange={onValueChangeHandler('permissionType')}
               options={[
-                { inputDisplay: 'Read only', value: TenantPermissionType.Read },
-                { inputDisplay: 'Write only', value: TenantPermissionType.Write },
-                { inputDisplay: 'Read and Write', value: TenantPermissionType.Full },
+                { inputDisplay: TenantPermissionType.Read, value: TenantPermissionType.Read },
+                { inputDisplay: TenantPermissionType.Write, value: TenantPermissionType.Write },
+                { inputDisplay: TenantPermissionType.Full, value: TenantPermissionType.Full },
               ]}
             />
           </EuiFlexItem>
