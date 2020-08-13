@@ -31,25 +31,36 @@ import { AppDependencies } from '../../types';
 import securityStepsDiagram from '../../../assets/get_started.png';
 import { buildHashUrl } from '../utils/url-builder';
 import { Action, ResourceType } from '../types';
+import { DocLinks } from '../constants';
 
 const setOfSteps = [
   {
-    title: 'Secure your backends (authc & authz)',
+    title: 'Add backends',
     children: (
       <>
         <EuiText size="s" color="subdued" grow={false}>
-          In order to use Security plugin, you must decide on authentication
-          <EuiCode>authc</EuiCode> and authorization backends <EuiCode>authz</EuiCode>.<br />
-          Use <EuiCode>plugins/opendistro_security/securityconfig/config.yml</EuiCode>
-          to define how to retrieve and verify the user credentials, and how to fetch additional
-          roles from backend system if needed.
+          Add authentication<EuiCode>(authc)</EuiCode>and authorization<EuiCode>(authz)</EuiCode>
+          information to<EuiCode>plugins/opendistro_security/securityconfig/config.yml</EuiCode>.
+          The <EuiCode>authc</EuiCode> section contains the backends to check user credentials
+          against. The <EuiCode>authz</EuiCode>
+          section contains any backends to fetch external identities from. The most common example
+          of an external identity is an LDAP group.{' '}
+          <EuiLink external={true} href={DocLinks.AuthenticationFlowDoc} target="_blank">
+            Learn More
+          </EuiLink>
         </EuiText>
 
         <EuiSpacer />
 
         <EuiFlexGroup gutterSize="s">
           <EuiFlexItem grow={false}>
-            <EuiButton fill iconType="popout" iconSide="right">
+            <EuiButton
+              fill
+              iconType="popout"
+              iconSide="right"
+              href={DocLinks.BackendConfigurationDoc}
+              target="_blank"
+            >
               Create config.yml
             </EuiButton>
           </EuiFlexItem>
@@ -67,14 +78,13 @@ const setOfSteps = [
     ),
   },
   {
-    title: 'Find a role that satisfies your security needs',
+    title: 'Create roles',
     children: (
       <>
         <EuiText size="s" color="subdued" grow={false}>
-          A role defines cluster permissions, index permissions, and read/write access to a tenant.
-          <br />
-          You can make use of a build-in role, or create a custom role based on your needs.{' '}
-          <EuiLink external={true} href="/">
+          Roles are reusable collections of permissions. The default roles are a great starting
+          point, but you might need to create custom roles that meet your exact needs.{' '}
+          <EuiLink external={true} href={DocLinks.CreateRolesDoc} target="_blank">
             Learn More
           </EuiLink>
         </EuiText>
@@ -106,14 +116,13 @@ const setOfSteps = [
     ),
   },
   {
-    title: 'Map internal users or external identities to your role',
+    title: 'Map roles',
     children: (
       <>
         <EuiText size="s" color="subdued" grow={false}>
-          Map users to a role to uptake its role settings. You can build an internal user database
-          within this plugin, or use a external entities to directly map to a role through an
-          external authentication system.{' '}
-          <EuiLink external={true} href="/">
+          After a user successfully authenticates, the security plugin retrieves that user’s roles.
+          You can map roles directly to users, but you can also map them to external identities.{' '}
+          <EuiLink external={true} href={DocLinks.MapUsersToRolesDoc} target="_blank">
             Learn More
           </EuiLink>
         </EuiText>
@@ -122,7 +131,14 @@ const setOfSteps = [
 
         <EuiFlexGroup gutterSize="s">
           <EuiFlexItem grow={false}>
-            <EuiButton fill>Map users to a role</EuiButton>
+            <EuiButton
+              fill
+              onClick={() => {
+                window.location.href = buildHashUrl(ResourceType.users);
+              }}
+            >
+              Map users to a role
+            </EuiButton>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <EuiButton
@@ -153,9 +169,9 @@ export function GetStarted(props: AppDependencies) {
 
       <EuiText size="s" color="subdued" grow={false}>
         <p>
-          Security allows you to design your own security roles and authenticate your users in
-          flexible ways, regardless whether you have an external authentication system set up or
-          not. Set up your security by following three steps:
+          The Open Distro for Elasticsearch security plugin lets you define the API calls that users
+          can make and the data they can access. The most basic configuration consists of three
+          steps.
         </p>
       </EuiText>
 
@@ -176,7 +192,7 @@ export function GetStarted(props: AppDependencies) {
           Elasticsearch audit logs are records that provide documentary evidence of security
           activities in a given system. Audit logs let you track user access to your Elasticsearch
           cluster and are useful for compliance purposes or in the aftermath of a security breach.{' '}
-          <EuiLink external={true} href="/">
+          <EuiLink external={true} href={DocLinks.AuditLogsDoc} target="_blank">
             Learn More
           </EuiLink>
         </p>
