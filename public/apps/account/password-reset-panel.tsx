@@ -25,12 +25,13 @@ import {
   EuiSpacer,
   EuiTitle,
 } from '@elastic/eui';
+import { CoreStart } from 'kibana/public';
 import { FormRow } from '../configuration/utils/form-row';
-import { AppDependencies } from '../types';
 import { API_ENDPOINT_ACCOUNT_INFO } from './constants';
 import { logout } from './utils';
 
-interface PasswordResetPanelProps extends AppDependencies {
+interface PasswordResetPanelProps {
+  coreStart: CoreStart;
   username: string;
   handleClose: () => void;
 }
