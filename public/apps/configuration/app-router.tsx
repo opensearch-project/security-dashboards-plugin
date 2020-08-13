@@ -13,21 +13,11 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiBreadcrumbs, EuiPage, EuiPageBody, EuiPageSideBar } from '@elastic/eui';
+import { EuiBreadcrumb, EuiPage, EuiPageBody, EuiPageSideBar } from '@elastic/eui';
+import { flow, partial } from 'lodash';
 import React from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
-import { partial } from 'lodash';
-import { CoreStart } from 'kibana/public';
 import { AppDependencies } from '../types';
-import { AuthView } from './panels/auth-view/auth-view';
-import { NavPanel } from './panels/nav-panel';
-import { RoleEdit } from './panels/role-edit/role-edit';
-import { RoleList } from './panels/role-list';
-import { RoleView } from './panels/role-view/role-view';
-import { UserList } from './panels/user-list';
-import { Action, ResourceType, RouteItem, SubAction } from './types';
-import { buildHashUrl, buildUrl } from './utils/url-builder';
-import { InternalUserEdit } from './panels/internal-user-edit/internal-user-edit';
 import { AuditLogging } from './panels/audit-logging/audit-logging';
 import { AuditLoggingEditSettings } from './panels/audit-logging/audit-logging-edit-settings';
 import {
@@ -36,10 +26,19 @@ import {
   SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT,
   SUB_URL_FOR_GENERAL_SETTINGS_EDIT,
 } from './panels/audit-logging/constants';
-import { PermissionList } from './panels/permission-list/permission-list';
+import { AuthView } from './panels/auth-view/auth-view';
 import { GetStarted } from './panels/get-started';
+import { InternalUserEdit } from './panels/internal-user-edit/internal-user-edit';
+import { NavPanel } from './panels/nav-panel';
+import { PermissionList } from './panels/permission-list/permission-list';
+import { RoleEdit } from './panels/role-edit/role-edit';
+import { RoleList } from './panels/role-list';
 import { RoleEditMappedUser } from './panels/role-mapping/RoleEditMappedUser';
+import { RoleView } from './panels/role-view/role-view';
 import { TenantList } from './panels/tenant-list/tenant-list';
+import { UserList } from './panels/user-list';
+import { Action, ResourceType, RouteItem, SubAction } from './types';
+import { buildHashUrl, buildUrl } from './utils/url-builder';
 
 const ROUTE_MAP: { [key: string]: RouteItem } = {
   getStarted: {
@@ -92,45 +91,24 @@ const allNavPanelUrls = ROUTE_LIST.map((route) => route.href).concat([
 // url regex pattern for all pages with left nav panel, (/|/roles|/internalusers|...)
 const PATTERNS_ROUTES_WITH_NAV_PANEL = '(' + allNavPanelUrls.join('|') + ')';
 
-// TODO: migrate to global Breadcrumbs.
-function Breadcrumbs(resourceType: ResourceType, pageTitle: string, subAction?: string) {
-  return (
-    <EuiBreadcrumbs
-      breadcrumbs={[
-        {
-          text: 'Security',
-          href: buildHashUrl(),
-        },
-        {
-          text: ROUTE_MAP[resourceType].name,
-          href: buildHashUrl(resourceType),
-        },
-        {
-          text: pageTitle,
-        },
-        {
-          text: subAction,
-        },
-      ]}
-    />
-  );
-}
-
-export function setGlobalBreadcrumbs(
-  coreStart: CoreStart,
-  resourceType: ResourceType,
-  pageTitle?: string
-) {
-  const breadcrumbs: Array<{ text: string; href?: string }> = [
+export function getBreadcrumbs(
+  resourceType?: ResourceType,
+  pageTitle?: string,
+  subAction?: string
+): EuiBreadcrumb[] {
+  const breadcrumbs: EuiBreadcrumb[] = [
     {
       text: 'Security',
       href: buildHashUrl(),
     },
-    {
+  ];
+
+  if (resourceType) {
+    breadcrumbs.push({
       text: ROUTE_MAP[resourceType].name,
       href: buildHashUrl(resourceType),
-    },
-  ];
+    });
+  }
 
   if (pageTitle) {
     breadcrumbs.push({
@@ -138,10 +116,17 @@ export function setGlobalBreadcrumbs(
     });
   }
 
-  coreStart.chrome.setBreadcrumbs(breadcrumbs);
+  if (subAction) {
+    breadcrumbs.push({
+      text: subAction,
+    });
+  }
+  return breadcrumbs;
 }
 
 export function AppRouter(props: AppDependencies) {
+  const setGlobalBreadcrumbs = flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs);
+
   return (
     <Router basename={props.params.appBasePath}>
       <EuiPage>
@@ -156,7 +141,7 @@ export function AppRouter(props: AppDependencies) {
               path={buildUrl(ResourceType.roles, Action.edit, ':roleName', SubAction.mapuser)}
               render={(match) => (
                 <RoleEditMappedUser
-                  buildBreadcrumbs={partial(Breadcrumbs, ResourceType.roles)}
+                  buildBreadcrumbs={partial(setGlobalBreadcrumbs, ResourceType.roles)}
                   {...{ ...props, ...match.match.params }}
                 />
               )}
@@ -165,7 +150,7 @@ export function AppRouter(props: AppDependencies) {
               path={buildUrl(ResourceType.roles, Action.view, ':roleName')}
               render={(match) => (
                 <RoleView
-                  buildBreadcrumbs={partial(Breadcrumbs, ResourceType.roles)}
+                  buildBreadcrumbs={partial(setGlobalBreadcrumbs, ResourceType.roles)}
                   {...{ ...props, ...match.match.params }}
                 />
               )}
@@ -174,67 +159,83 @@ export function AppRouter(props: AppDependencies) {
               path={buildUrl(ResourceType.roles) + '/:action/:sourceRoleName?'}
               render={(match) => (
                 <RoleEdit
-                  buildBreadcrumbs={partial(Breadcrumbs, ResourceType.roles)}
+                  buildBreadcrumbs={partial(setGlobalBreadcrumbs, ResourceType.roles)}
                   {...{ ...props, ...match.match.params }}
                 />
               )}
             />
-            <Route path={ROUTE_MAP.roles.href}>
-              <RoleList {...props} />
-            </Route>
-            <Route path={ROUTE_MAP.auth.href}>
-              <AuthView {...props} />
-            </Route>
+            <Route
+              path={ROUTE_MAP.roles.href}
+              render={() => {
+                setGlobalBreadcrumbs(ResourceType.roles);
+                return <RoleList {...props} />;
+              }}
+            />
+            <Route
+              path={ROUTE_MAP.auth.href}
+              render={() => {
+                setGlobalBreadcrumbs(ResourceType.auth);
+                return <AuthView {...props} />;
+              }}
+            />
             <Route
               path={buildUrl(ResourceType.users) + '/:action/:sourceUserName?'}
               render={(match) => (
                 <InternalUserEdit
-                  buildBreadcrumbs={partial(Breadcrumbs, ResourceType.users)}
+                  buildBreadcrumbs={partial(setGlobalBreadcrumbs, ResourceType.users)}
                   {...{ ...props, ...match.match.params }}
                 />
               )}
             />
-            <Route path={ROUTE_MAP.users.href}>
-              <UserList {...props} />
-            </Route>
+            <Route
+              path={ROUTE_MAP.users.href}
+              render={() => {
+                setGlobalBreadcrumbs(ResourceType.users);
+                return <UserList {...props} />;
+              }}
+            />
             <Route
               path={buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT}
               render={() => {
-                setGlobalBreadcrumbs(
-                  props.coreStart,
-                  ResourceType.auditLogging,
-                  'General settings'
-                );
+                setGlobalBreadcrumbs(ResourceType.auditLogging, 'General settings');
                 return <AuditLoggingEditSettings setting={'general'} {...props} />;
               }}
             />
             <Route
               path={buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT}
-              render={(match) => {
-                setGlobalBreadcrumbs(
-                  props.coreStart,
-                  ResourceType.auditLogging,
-                  'Compliance settings'
-                );
+              render={() => {
+                setGlobalBreadcrumbs(ResourceType.auditLogging, 'Compliance settings');
                 return <AuditLoggingEditSettings setting={'compliance'} {...props} />;
               }}
             />
             <Route
               path={ROUTE_MAP.auditLogging.href + '/:fromType?'}
               render={(match) => {
-                setGlobalBreadcrumbs(props.coreStart, ResourceType.auditLogging);
+                setGlobalBreadcrumbs(ResourceType.auditLogging);
                 return <AuditLogging {...{ ...props, ...match.match.params }} />;
               }}
             />
-            <Route path={ROUTE_MAP.permissions.href}>
-              <PermissionList {...props} />
-            </Route>
-            <Route path={ROUTE_MAP.tenants.href}>
-              <TenantList {...props} />
-            </Route>
-            <Route path={ROUTE_MAP.getStarted.href}>
-              <GetStarted {...props} />
-            </Route>
+            <Route
+              path={ROUTE_MAP.permissions.href}
+              render={() => {
+                setGlobalBreadcrumbs(ResourceType.permissions);
+                return <PermissionList {...props} />;
+              }}
+            />
+            <Route
+              path={ROUTE_MAP.tenants.href}
+              render={() => {
+                setGlobalBreadcrumbs(ResourceType.tenants);
+                return <TenantList {...props} />;
+              }}
+            />
+            <Route
+              path={ROUTE_MAP.getStarted.href}
+              render={() => {
+                setGlobalBreadcrumbs();
+                return <GetStarted {...props} />;
+              }}
+            />
           </Switch>
         </EuiPageBody>
       </EuiPage>
