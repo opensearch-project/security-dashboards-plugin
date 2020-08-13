@@ -17,6 +17,16 @@ import { map, chain } from 'lodash';
 import { HttpStart } from '../../../../../../src/core/public';
 import { API_ENDPOINT_ROLES } from '../constants';
 
+export interface RoleListing {
+  roleName: string;
+  reserved: boolean;
+  clusterPermissions: string[];
+  indexPermissions: string[];
+  tenantPermissions: string[];
+  internalUsers: string[];
+  backendRoles: string[];
+}
+
 /* 
 Input[0] - Role Schema: {
   data: {
@@ -57,24 +67,24 @@ Output schema: [{
   backend_roles: [""]
 }]
 */
-export function transformRoleData(rawRoleData: any, rawRoleMappingData: any) {
+export function transformRoleData(rawRoleData: any, rawRoleMappingData: any): RoleListing[] {
   return map(rawRoleData.data, (v: any, k: string) => ({
-    role_name: k,
+    roleName: k,
     reserved: v.reserved,
-    cluster_permissions: v.cluster_permissions,
-    index_permissions: chain(v.index_permissions).map('index_patterns').flatten().compact().value(),
-    tenant_permissions: chain(v.tenant_permissions)
+    clusterPermissions: v.cluster_permissions,
+    indexPermissions: chain(v.index_permissions).map('index_patterns').flatten().compact().value(),
+    tenantPermissions: chain(v.tenant_permissions)
       .map('tenant_patterns')
       .flatten()
       .compact()
       .value(),
-    internal_users: rawRoleMappingData.data[k]?.users || [],
-    backend_roles: rawRoleMappingData.data[k]?.backend_roles || [],
+    internalUsers: rawRoleMappingData.data[k]?.users || [],
+    backendRoles: rawRoleMappingData.data[k]?.backend_roles || [],
   }));
 }
 
 // Flatten list, remove duplicate and null, sort
-export function buildSearchFilterOptions(roleList: any[], attrName: string) {
+export function buildSearchFilterOptions(roleList: RoleListing[], attrName: string) {
   return chain(roleList)
     .map(attrName)
     .flatten()
