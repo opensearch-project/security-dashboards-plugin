@@ -162,7 +162,7 @@ export function GetStarted(props: AppDependencies) {
         <EuiTitle size="l">
           <h1>Get started</h1>
         </EuiTitle>
-        <EuiButton iconType="popout" iconSide="right">
+        <EuiButton iconType="popout" iconSide="right" href={buildHashUrl()} target="_blank">
           Open in new window
         </EuiButton>
       </EuiPageHeader>
