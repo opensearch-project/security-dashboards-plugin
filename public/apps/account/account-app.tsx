@@ -18,8 +18,9 @@ import ReactDOM from 'react-dom';
 import { CoreStart } from 'kibana/public';
 import { AccountNavButton } from './account-nav-button';
 import { fetchAccountInfoSafe } from './utils';
+import { ClientConfigType } from '../../types';
 
-export async function setupTopNavButton(coreStart: CoreStart) {
+export async function setupTopNavButton(coreStart: CoreStart, config: ClientConfigType) {
   const accountInfo = (await fetchAccountInfoSafe(coreStart.http))?.data;
   if (accountInfo) {
     coreStart.chrome.navControls.registerRight({
@@ -32,6 +33,7 @@ export async function setupTopNavButton(coreStart: CoreStart) {
             isInternalUser={accountInfo.is_internal_user}
             username={accountInfo.user_name}
             tenant={accountInfo.user_requested_tenants}
+            config={config}
           />,
           element
         );

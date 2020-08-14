@@ -83,7 +83,9 @@ export class OpendistroSecurityPlugin
   }
 
   public start(core: CoreStart): OpendistroSecurityPluginStart {
-    setupTopNavButton(core);
+    const config = this.initializerContext.config.get<ClientConfigType>();
+
+    setupTopNavButton(core, config);
 
     return {};
   }
