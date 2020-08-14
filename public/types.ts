@@ -47,6 +47,7 @@ export interface ClientConfigType {
     enabled: boolean;
     tenants: {
       enable_private: boolean;
+      enable_global: boolean;
     };
   };
 }

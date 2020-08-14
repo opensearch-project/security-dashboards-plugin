@@ -31,12 +31,15 @@ import React, { useState } from 'react';
 import { RoleInfoPanel } from './role-info-panel';
 import { logout } from './utils';
 import { PasswordResetPanel } from './password-reset-panel';
+import { TenantSwitchPanel } from './tenant-switch-panel';
+import { ClientConfigType } from '../../types';
 
 export function AccountNavButton(props: {
   coreStart: CoreStart;
   isInternalUser: boolean;
   username: string;
   tenant?: string;
+  config?: ClientConfigType;
 }) {
   const [isPopoverOpen, setPopoverOpen] = useState<boolean>(false);
   const [modal, setModal] = useState<React.ReactNode>(null);
@@ -76,14 +79,21 @@ export function AccountNavButton(props: {
         View roles
       </EuiButtonEmpty>
       {horizontalRule}
-      {
-        // TODO: show switch tenants modal
-      }
-      <EuiButtonEmpty size="xs">Switch tenants</EuiButtonEmpty>
+      <EuiButtonEmpty
+        size="xs"
+        onClick={() =>
+          setModal(
+            <TenantSwitchPanel
+              {...props}
+              username={props.username}
+              handleClose={() => setModal(null)}
+            />
+          )
+        }
+      >
+        Switch tenants
+      </EuiButtonEmpty>
       {horizontalRule}
-      {
-        // TODO: show reset-password modal
-      }
       {props.isInternalUser && (
         <>
           <EuiButtonEmpty
