@@ -74,7 +74,7 @@ export function transformRoleData(rawRoleData: any, rawRoleMappingData: any): Ro
 }
 
 // Flatten list, remove duplicate and null, sort
-export function buildSearchFilterOptions(roleList: RoleListing[], attrName: string) {
+export function buildSearchFilterOptions(roleList: any[], attrName: string): Array<{ value: any }> {
   return chain(roleList)
     .map(attrName)
     .flatten()

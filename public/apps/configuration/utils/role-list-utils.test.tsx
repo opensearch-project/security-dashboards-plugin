@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { transformRoleData } from './role-list-utils';
+import { transformRoleData, buildSearchFilterOptions } from './role-list-utils';
 
 describe('Role list utils', () => {
   describe('transform to listing data', () => {
@@ -162,6 +162,39 @@ describe('Role list utils', () => {
       expect(result[1].roleName).toBe('role2');
       expect(result[1]).toMatchObject(expectedRoleListing2);
       expect(result[1]).toMatchObject(expectedRoleListingEmptyMapping);
+    });
+  });
+
+  describe('build search filter options', () => {
+    it('', () => {
+      const sampleUser1 = 'user1';
+      const sampleUser2 = 'user2';
+      const sampleUser3 = 'user3';
+      const roleListing = [
+        {
+          internalUsers: [sampleUser3, sampleUser2],
+        },
+        {
+          internalUsers: [''],
+        },
+        {
+          internalUsers: [sampleUser3, sampleUser1],
+        },
+      ];
+
+      const result = buildSearchFilterOptions(roleListing, 'internalUsers');
+
+      /* The result should:
+      1. contain no empty value
+      2. be unique
+      3. be sorted 
+      */
+
+      expect(result).toStrictEqual([
+        { value: sampleUser1 },
+        { value: sampleUser2 },
+        { value: sampleUser3 },
+      ]);
     });
   });
 });
