@@ -25,6 +25,8 @@ import {
   EuiFlexItem,
   EuiFlexGroup,
   EuiLink,
+  EuiPanel,
+  EuiButtonEmpty,
 } from '@elastic/eui';
 import React from 'react';
 import { AppDependencies } from '../../types';
@@ -38,7 +40,7 @@ const setOfSteps = [
     title: 'Add backends',
     children: (
       <>
-        <EuiText size="s" color="subdued" grow={false}>
+        <EuiText size="s" color="subdued">
           Add authentication<EuiCode>(authc)</EuiCode>and authorization<EuiCode>(authz)</EuiCode>
           information to<EuiCode>plugins/opendistro_security/securityconfig/config.yml</EuiCode>.
           The <EuiCode>authc</EuiCode> section contains the backends to check user credentials
@@ -65,13 +67,13 @@ const setOfSteps = [
             </EuiButton>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton
+            <EuiButtonEmpty
               onClick={() => {
                 window.location.href = buildHashUrl(ResourceType.auth);
               }}
             >
               Review authentication and authorization
-            </EuiButton>
+            </EuiButtonEmpty>
           </EuiFlexItem>
         </EuiFlexGroup>
       </>
@@ -81,7 +83,7 @@ const setOfSteps = [
     title: 'Create roles',
     children: (
       <>
-        <EuiText size="s" color="subdued" grow={false}>
+        <EuiText size="s" color="subdued">
           Roles are reusable collections of permissions. The default roles are a great starting
           point, but you might need to create custom roles that meet your exact needs.{' '}
           <EuiLink external={true} href={DocLinks.CreateRolesDoc} target="_blank">
@@ -103,13 +105,13 @@ const setOfSteps = [
             </EuiButton>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton
+            <EuiButtonEmpty
               onClick={() => {
                 window.location.href = buildHashUrl(ResourceType.roles, Action.create);
               }}
             >
               Create new role
-            </EuiButton>
+            </EuiButtonEmpty>
           </EuiFlexItem>
         </EuiFlexGroup>
       </>
@@ -119,7 +121,7 @@ const setOfSteps = [
     title: 'Map roles',
     children: (
       <>
-        <EuiText size="s" color="subdued" grow={false}>
+        <EuiText size="s" color="subdued">
           After a user successfully authenticates, the security plugin retrieves that user’s roles.
           You can map roles directly to users, but you can also map them to external identities.{' '}
           <EuiLink external={true} href={DocLinks.MapUsersToRolesDoc} target="_blank">
@@ -141,13 +143,13 @@ const setOfSteps = [
             </EuiButton>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton
+            <EuiButtonEmpty
               onClick={() => {
                 window.location.href = buildHashUrl(ResourceType.users, Action.create);
               }}
             >
               Create internal user
-            </EuiButton>
+            </EuiButtonEmpty>
           </EuiFlexItem>
         </EuiFlexGroup>
       </>
@@ -156,55 +158,61 @@ const setOfSteps = [
 ];
 
 export function GetStarted(props: AppDependencies) {
+  const panelMaxWidth = 850;
   return (
     <>
       <EuiPageHeader>
         <EuiTitle size="l">
           <h1>Get started</h1>
         </EuiTitle>
-        <EuiButton iconType="popout" iconSide="right" href={buildHashUrl()} target="_blank">
+        <EuiButtonEmpty iconType="popout" iconSide="right" href={buildHashUrl()} target="_blank">
           Open in new window
-        </EuiButton>
+        </EuiButtonEmpty>
       </EuiPageHeader>
 
-      <EuiText size="s" color="subdued" grow={false}>
-        <p>
-          The Open Distro for Elasticsearch security plugin lets you define the API calls that users
-          can make and the data they can access. The most basic configuration consists of three
-          steps.
-        </p>
-      </EuiText>
+      <EuiPanel paddingSize="l" style={{ maxWidth: panelMaxWidth }}>
+        <EuiText size="s" color="subdued">
+          <p>
+            The Open Distro for Elasticsearch security plugin lets you define the API calls that
+            users can make and the data they can access. The most basic configuration consists of
+            three steps.
+          </p>
+        </EuiText>
+
+        <EuiSpacer size="l" />
+
+        <EuiImage size="xl" alt="Three steps to set up your security" url={securityStepsDiagram} />
+
+        <EuiSpacer size="l" />
+
+        <EuiSteps steps={setOfSteps} />
+      </EuiPanel>
 
       <EuiSpacer size="l" />
 
-      <EuiImage size="xl" alt="Three steps to set up your security" url={securityStepsDiagram} />
-
-      <EuiSpacer size="l" />
-
-      <EuiSteps steps={setOfSteps} />
-
-      <EuiTitle size="s">
-        <h3>Optional: Configure audit logs</h3>
-      </EuiTitle>
-
-      <EuiText size="s" color="subdued" grow={false}>
-        <p>
-          Audit logs let you track user access to your Elasticsearch cluster and are useful for
-          compliance purposes. If you enable this feature, Amazon Elasticsearch Service publishes
-          the audit logs to CloudWatch Logs, where you can monitor and search them.{' '}
-          <EuiLink external={true} href={DocLinks.AuditLogsDoc} target="_blank">
-            Learn More
-          </EuiLink>
-        </p>
-        <EuiButton
-          fill
-          onClick={() => {
-            window.location.href = buildHashUrl(ResourceType.auditLogging);
-          }}
-        >
-          Configure Audit Logs
-        </EuiButton>
-      </EuiText>
+      <EuiPanel paddingSize="l" style={{ maxWidth: panelMaxWidth }}>
+        <EuiTitle size="s">
+          <h3>Optional: Configure audit logs</h3>
+        </EuiTitle>
+        <EuiText size="s" color="subdued">
+          <p>
+            Audit logs let you track user access to your Elasticsearch cluster and are useful for
+            compliance purposes. If you enable this feature, Amazon Elasticsearch Service publishes
+            the audit logs to CloudWatch Logs, where you can monitor and search them.{' '}
+            <EuiLink external={true} href={DocLinks.AuditLogsDoc} target="_blank">
+              Learn More
+            </EuiLink>
+          </p>
+          <EuiButton
+            fill
+            onClick={() => {
+              window.location.href = buildHashUrl(ResourceType.auditLogging);
+            }}
+          >
+            Configure Audit Logs
+          </EuiButton>
+        </EuiText>
+      </EuiPanel>
     </>
   );
 }
