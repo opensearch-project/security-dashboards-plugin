@@ -16,5 +16,5 @@
 import { downloadElasticsearch, installEsSecurityPlugin } from './elasticsearch_helper';
 
 console.log('Preparing Elasticsearch for testing');
-downloadElasticsearch('7.8.0');
-installEsSecurityPlugin('1.9.0.0');
+downloadElasticsearch();
+installEsSecurityPlugin();
