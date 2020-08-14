@@ -5,3 +5,5 @@ target
 .eslintcache
 yarn.lock
 /coverage/
+.es/
+yarn-error.log

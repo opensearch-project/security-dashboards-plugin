@@ -13,38 +13,21 @@
  * permissions and limitations under the License.
  */
 
-module.exports = {
-  rootDir: '../',
-  setupFiles: ['<rootDir>/test/setupTests.ts'],
-  // setupFilesAfterEnv: ["<rootDir>/test/setup.jest.ts"],
-  roots: ['<rootDir>'],
-  coverageDirectory: './coverage',
-  moduleNameMapper: {
-    // "\\.(css|less|scss)$": "<rootDir>/test/mocks/styleMock.ts",
-    // "^ui/(.*)": "<rootDir>/../../src/legacy/ui/public/$1/",
-  },
-  modulePathIgnorePatterns: ['<rootDir>/target/'],
-  coverageReporters: ['lcov', 'text', 'cobertura'],
-  testMatch: ['**/*.test.js', '**/*.test.jsx', '**/*.test.ts', '**/*.test.tsx'],
-  collectCoverageFrom: [
-    '**/*.ts',
-    '**/*.tsx',
-    '**/*.js',
-    '**/*.jsx',
-    '!**/models/**',
-    '!**/node_modules/**',
-    // "!**/index.ts",
-    // "!<rootDir>/index.js",
-    // "!<rootDir>/public/app.js",
-    // "!<rootDir>/public/temporary/**",
-    '!<rootDir>/babel.config.js',
-    '!<rootDir>/test/**',
-    // "!<rootDir>/server/**",
-    '!<rootDir>/coverage/**',
-    '!<rootDir>/scripts/**',
-    '!<rootDir>/build/**',
-    '!**/vendor/**',
+import config from '../../../src/dev/jest/config';
+
+export default {
+  ...config,
+  roots: ['<rootDir>/plugins/opendistro_security'],
+  testMatch: ['**/test/jest_integration/**/*.test.ts'],
+  testPathIgnorePatterns: config.testPathIgnorePatterns.filter(
+    (pattern) => !pattern.includes('integration_tests')
+  ),
+  reporters: [
+    'default',
+    ['<rootDir>/src/dev/jest/junit_reporter.js', { reportName: 'Jest Integration Tests' }],
   ],
-  clearMocks: true,
-  testPathIgnorePatterns: ['<rootDir>/build/', '<rootDir>/node_modules/'],
+  setupFilesAfterEnv: [
+    '<rootDir>/src/dev/jest/setup/after_env.integration.js',
+    '<rootDir>/plugins/opendistro_security/test/es/setup_es.js',
+  ],
 };
