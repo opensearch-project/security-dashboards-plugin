@@ -77,7 +77,7 @@ const columns = [
   },
   {
     field: 'tenantPermissions',
-    name: 'Tenant permission',
+    name: 'Tenants',
     render: truncatedListView(),
   },
   {
