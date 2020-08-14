@@ -32,6 +32,8 @@ import {
   EuiEmptyPrompt,
   EuiCallOut,
   EuiGlobalToastList,
+  EuiOverlayMask,
+  EuiConfirmModal,
 } from '@elastic/eui';
 import { difference } from 'lodash';
 import { BreadcrumbsPageDependencies } from '../../../types';
@@ -61,9 +63,11 @@ import { IndexPermissionPanel } from './index-permission-panel';
 import { TenantsPanel } from './tenants-panel';
 import { transformRoleIndexPermissions } from '../../utils/index-permission-utils';
 import { transformRoleTenantPermissions } from '../../utils/tenant-utils';
+import { DocLinks } from '../../constants';
 
 interface RoleViewProps extends BreadcrumbsPageDependencies {
   roleName: string;
+  prevAction: string;
 }
 
 const mappedUserColumns = [
@@ -93,6 +97,9 @@ export function RoleView(props: RoleViewProps) {
   const [roleTenantPermission, setRoleTenantPermission] = useState<RoleTenantPermissionView[]>([]);
   const [toasts, addToast, removeToast] = useToastState();
   const [isReserved, setIsReserved] = useState(false);
+  const [isDeleteConfirmModalVisible, setIsDeleteConfirmModalVisible] = useState(false);
+  const closeDeleteConfirmModal = () => setIsDeleteConfirmModalVisible(false);
+  const showDeleteConfirmModal = () => setIsDeleteConfirmModalVisible(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -118,8 +125,20 @@ export function RoleView(props: RoleViewProps) {
       }
     };
 
+    const addSuccessToast = () => {
+      addToast({
+        id: 'updateRoleMappingSucceeded',
+        color: 'success',
+        title: props.roleName + ' saved.',
+      });
+    };
+
     fetchData();
-  }, [addToast, props.coreStart.http, props.roleName]);
+
+    if (props.prevAction === SubAction.mapuser) {
+      addSuccessToast();
+    }
+  }, [addToast, props.coreStart.http, props.roleName, props.prevAction]);
 
   const handleRoleMappingDelete = async () => {
     try {
@@ -139,10 +158,30 @@ export function RoleView(props: RoleViewProps) {
 
       setMappedUsers(difference(mappedUsers, selection));
       setSelection([]);
+      closeDeleteConfirmModal();
     } catch (e) {
       console.log(e);
     }
   };
+
+  let deleteConfirmModal;
+
+  if (isDeleteConfirmModalVisible) {
+    deleteConfirmModal = (
+      <EuiOverlayMask>
+        <EuiConfirmModal
+          title="Confirm Delete"
+          onCancel={closeDeleteConfirmModal}
+          onConfirm={handleRoleMappingDelete}
+          cancelButtonText="Cancel"
+          confirmButtonText="Confirm"
+          defaultFocusedButton="confirm"
+        >
+          <p>Do you really want to delete selected {selection.length} mappings?</p>
+        </EuiConfirmModal>
+      </EuiOverlayMask>
+    );
+  }
 
   const message = (
     <EuiEmptyPrompt
@@ -255,7 +294,7 @@ export function RoleView(props: RoleViewProps) {
                   internal user can have its own backend role and host for an external
                   authentication and authorization. 2. External identity, which directly maps to
                   roles through an external authentication system.{' '}
-                  <EuiLink external={true} href="/">
+                  <EuiLink external={true} href={DocLinks.MapUsersToRolesDoc} target="_blank">
                     Learn More
                   </EuiLink>
                 </EuiText>
@@ -263,7 +302,7 @@ export function RoleView(props: RoleViewProps) {
               <EuiPageContentHeaderSection>
                 <EuiFlexGroup>
                   <EuiFlexItem>
-                    <EuiButton onClick={handleRoleMappingDelete} disabled={selection.length === 0}>
+                    <EuiButton onClick={showDeleteConfirmModal} disabled={selection.length === 0}>
                       Delete mapping
                     </EuiButton>
                   </EuiFlexItem>
@@ -321,10 +360,14 @@ export function RoleView(props: RoleViewProps) {
         </EuiPageContentHeaderSection>
       </EuiPageContentHeader>
 
-      <EuiTabbedContent tabs={tabs} />
+      <EuiTabbedContent
+        tabs={tabs}
+        initialSelectedTab={props.prevAction === SubAction.mapuser ? tabs[1] : tabs[0]}
+      />
 
       <EuiSpacer />
       <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={10000} dismissToast={removeToast} />
+      {deleteConfirmModal}
     </>
   );
 }

@@ -41,6 +41,7 @@ import { ResourceType, RoleMappingDetail, SubAction, Action } from '../../types'
 import { fetchUserNameList } from '../../utils/internal-user-list-utils';
 import { updateRoleMapping, getRoleMappingData } from '../../utils/role-mapping-utils';
 import { createErrorToast, createUnknownErrorToast, useToastState } from '../../utils/toast-utils';
+import { DocLinks } from '../../constants';
 
 interface RoleEditMappedUserProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -104,11 +105,12 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
         hosts,
       };
       await updateRoleMapping(props.coreStart.http, props.roleName, updateObject);
-      addToast({
-        id: 'updateRoleMappingSucceeded',
-        color: 'success',
-        title: props.roleName + ' saved.',
-      });
+      window.location.href = buildHashUrl(
+        ResourceType.roles,
+        Action.view,
+        props.roleName,
+        SubAction.mapuser
+      );
     } catch (e) {
       if (e.message) {
         addToast(createErrorToast('saveRoleMappingFailed', 'save error', e.message));
@@ -129,7 +131,7 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
           </EuiTitle>
           Map users to this role to inherit role permissions. Two types of users are supported:
           internal user, and external identity.{' '}
-          <EuiLink external href="/">
+          <EuiLink external href={DocLinks.MapUsersToRolesDoc} target="_blank">
             Learn More
           </EuiLink>
         </EuiText>

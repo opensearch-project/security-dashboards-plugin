@@ -147,7 +147,7 @@ export function AppRouter(props: AppDependencies) {
               )}
             />
             <Route
-              path={buildUrl(ResourceType.roles, Action.view, ':roleName')}
+              path={buildUrl(ResourceType.roles, Action.view, ':roleName', ':prevAction?')}
               render={(match) => (
                 <RoleView
                   buildBreadcrumbs={partial(setGlobalBreadcrumbs, ResourceType.roles)}
