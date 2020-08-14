@@ -37,6 +37,7 @@ import {
   transformRoleData,
   buildSearchFilterOptions,
   requestDeleteRoles,
+  RoleListing,
 } from '../utils/role-list-utils';
 import { API_ENDPOINT_ROLES, API_ENDPOINT_ROLESMAPPING } from '../constants';
 import { ResourceType, Action } from '../types';
@@ -45,7 +46,7 @@ import { renderCustomization, truncatedListView } from '../utils/display-utils';
 
 const columns = [
   {
-    field: 'role_name',
+    field: 'roleName',
     name: 'Role',
     render: (text: string) => (
       <a href={buildHashUrl(ResourceType.roles, Action.view, text)}>{text}</a>
@@ -53,30 +54,30 @@ const columns = [
     sortable: true,
   },
   {
-    field: 'cluster_permissions',
+    field: 'clusterPermissions',
     name: 'Cluster permissions',
     render: truncatedListView(),
     truncateText: true,
   },
   {
-    field: 'index_permissions',
-    name: 'Index patterns',
+    field: 'indexPermissions',
+    name: 'Index permissions',
     render: truncatedListView(),
     truncateText: true,
   },
   {
-    field: 'internal_users',
-    name: 'Internal Users',
+    field: 'internalUsers',
+    name: 'Internal users',
     render: truncatedListView(),
   },
   {
-    field: 'backend_roles',
-    name: 'Backend Roles',
+    field: 'backendRoles',
+    name: 'External indentities',
     render: truncatedListView(),
   },
   {
-    field: 'tenant_permissions',
-    name: 'Tenant patterns',
+    field: 'tenantPermissions',
+    name: 'Tenants',
     render: truncatedListView(),
   },
   {
@@ -87,9 +88,9 @@ const columns = [
 ];
 
 export function RoleList(props: AppDependencies) {
-  const [roleData, setRoleData] = useState([]);
+  const [roleData, setRoleData] = useState<RoleListing[]>([]);
   const [errorFlag, setErrorFlag] = useState(false);
-  const [selection, setSelection] = useState([]);
+  const [selection, setSelection] = useState<RoleListing[]>([]);
   const [isActionsPopoverOpen, setActionsPopoverOpen] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
@@ -108,7 +109,7 @@ export function RoleList(props: AppDependencies) {
   }, [props.coreStart.http]);
 
   const handleDelete = async () => {
-    const rolesToDelete: string[] = selection.map((r) => r.role_name);
+    const rolesToDelete: string[] = selection.map((r) => r.roleName);
     try {
       await requestDeleteRoles(props.coreStart.http, rolesToDelete);
       // Refresh from server (calling fetchData) does not work here, the server still return the roles
@@ -127,11 +128,7 @@ export function RoleList(props: AppDependencies) {
     <EuiContextMenuItem
       key="edit"
       onClick={() => {
-        window.location.href = buildHashUrl(
-          ResourceType.roles,
-          Action.edit,
-          selection[0].role_name
-        );
+        window.location.href = buildHashUrl(ResourceType.roles, Action.edit, selection[0].roleName);
       }}
       disabled={selection.length !== 1 || selection[0].reserved}
     >
@@ -144,7 +141,7 @@ export function RoleList(props: AppDependencies) {
         window.location.href = buildHashUrl(
           ResourceType.roles,
           Action.duplicate,
-          selection[0].role_name
+          selection[0].roleName
         );
       }}
       disabled={selection.length !== 1}
@@ -178,33 +175,33 @@ export function RoleList(props: AppDependencies) {
       filters: [
         {
           type: 'field_value_selection',
-          field: 'cluster_permissions',
-          name: 'Cluster Permissions',
-          options: buildSearchFilterOptions(roleData, 'cluster_permissions'),
+          field: 'clusterPermissions',
+          name: 'Cluster permissions',
+          options: buildSearchFilterOptions(roleData, 'clusterPermissions'),
         },
         {
           type: 'field_value_selection',
-          field: 'index_permissions',
-          name: 'Index Permissions',
-          options: buildSearchFilterOptions(roleData, 'index_permissions'),
+          field: 'indexPermissions',
+          name: 'Index permissions',
+          options: buildSearchFilterOptions(roleData, 'indexPermissions'),
         },
         {
           type: 'field_value_selection',
-          field: 'internal_users',
-          name: 'Internal Users',
-          options: buildSearchFilterOptions(roleData, 'internal_users'),
+          field: 'internalUsers',
+          name: 'Internal users',
+          options: buildSearchFilterOptions(roleData, 'internalUsers'),
         },
         {
           type: 'field_value_selection',
-          field: 'backend_roles',
-          name: 'External Identities',
-          options: buildSearchFilterOptions(roleData, 'backend_roles'),
+          field: 'backendRoles',
+          name: 'External identities',
+          options: buildSearchFilterOptions(roleData, 'backendRoles'),
         },
         {
           type: 'field_value_selection',
-          field: 'tenant_permissions',
+          field: 'tenantPermissions',
           name: 'Tenants',
-          options: buildSearchFilterOptions(roleData, 'tenant_permissions'),
+          options: buildSearchFilterOptions(roleData, 'tenantPermissions'),
         },
         {
           type: 'field_value_selection',
@@ -279,7 +276,7 @@ export function RoleList(props: AppDependencies) {
             loading={roleData === [] && !errorFlag}
             columns={columns}
             items={roleData}
-            itemId={'role_name'}
+            itemId={'roleName'}
             pagination={true}
             selection={{ onSelectionChange: setSelection }}
             sorting={true}
