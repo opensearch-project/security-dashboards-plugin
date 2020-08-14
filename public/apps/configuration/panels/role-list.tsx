@@ -61,23 +61,23 @@ const columns = [
   },
   {
     field: 'indexPermissions',
-    name: 'Index patterns',
+    name: 'Index permissions',
     render: truncatedListView(),
     truncateText: true,
   },
   {
     field: 'internalUsers',
-    name: 'Internal Users',
+    name: 'Internal users',
     render: truncatedListView(),
   },
   {
     field: 'backendRoles',
-    name: 'Backend Roles',
+    name: 'External indentities',
     render: truncatedListView(),
   },
   {
     field: 'tenantPermissions',
-    name: 'Tenant patterns',
+    name: 'Tenant permission',
     render: truncatedListView(),
   },
   {
@@ -176,25 +176,25 @@ export function RoleList(props: AppDependencies) {
         {
           type: 'field_value_selection',
           field: 'clusterPermissions',
-          name: 'Cluster Permissions',
+          name: 'Cluster permissions',
           options: buildSearchFilterOptions(roleData, 'clusterPermissions'),
         },
         {
           type: 'field_value_selection',
           field: 'indexPermissions',
-          name: 'Index Permissions',
+          name: 'Index permissions',
           options: buildSearchFilterOptions(roleData, 'indexPermissions'),
         },
         {
           type: 'field_value_selection',
           field: 'internalUsers',
-          name: 'Internal Users',
+          name: 'Internal users',
           options: buildSearchFilterOptions(roleData, 'internalUsers'),
         },
         {
           type: 'field_value_selection',
           field: 'backendRoles',
-          name: 'External Identities',
+          name: 'External identities',
           options: buildSearchFilterOptions(roleData, 'backendRoles'),
         },
         {

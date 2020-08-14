@@ -56,16 +56,6 @@ Input[1] - RoleMapping schema: {
     }
   }
 }
-
-Output schema: [{
-  role_name: ""
-  reserved: bool,
-  cluster_permissions: [""],
-  index_permissions: [""],
-  tenant_permissions: [""],
-  internal_users: [""],
-  backend_roles: [""]
-}]
 */
 export function transformRoleData(rawRoleData: any, rawRoleMappingData: any): RoleListing[] {
   return map(rawRoleData.data, (v: any, k: string) => ({
