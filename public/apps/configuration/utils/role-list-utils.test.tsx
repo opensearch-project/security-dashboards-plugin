@@ -77,7 +77,7 @@ describe('Role list utils', () => {
       backend_roles: backendRoles,
       users: internalUsers,
     };
-    const expextedRoleListingMapping1 = {
+    const expectedRoleListingMapping1 = {
       backendRoles,
       internalUsers,
     };
@@ -104,7 +104,7 @@ describe('Role list utils', () => {
       expect(result.length).toBe(1);
       expect(result[0].roleName).toBe('role1');
       expect(result[0]).toMatchObject(expectedRoleListing1);
-      expect(result[0]).toMatchObject(expextedRoleListingMapping1);
+      expect(result[0]).toMatchObject(expectedRoleListingMapping1);
     });
 
     it('handle role without mapping', () => {
@@ -158,7 +158,7 @@ describe('Role list utils', () => {
       expect(result.length).toBe(2);
       expect(result[0].roleName).toBe('role1');
       expect(result[0]).toMatchObject(expectedRoleListing1);
-      expect(result[0]).toMatchObject(expextedRoleListingMapping1);
+      expect(result[0]).toMatchObject(expectedRoleListingMapping1);
       expect(result[1].roleName).toBe('role2');
       expect(result[1]).toMatchObject(expectedRoleListing2);
       expect(result[1]).toMatchObject(expectedRoleListingEmptyMapping);
