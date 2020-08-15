@@ -30,6 +30,7 @@ import {
 import { CoreStart } from '../../../../../src/core/public';
 import { ClientConfigType } from '../../types';
 import defaultBrandImage from '../../assets/open_distro_for_elasticsearch_logo_h.svg';
+import { SELECT_TENANT_PAGE_URI } from '../../../common';
 
 interface LoginPageDeps {
   http: CoreStart['http'];
@@ -80,9 +81,9 @@ export function LoginPage(props: LoginPageDeps) {
           password,
         }),
       });
-      const urlParams = new URLSearchParams(window.location.search);
-      const nextUrl = urlParams.get('nextUrl') || props.http.basePath.serverBasePath;
-      window.location.href = nextUrl;
+      // Forward search to keep nextUrl argument
+      window.location.href =
+        props.http.basePath.serverBasePath + SELECT_TENANT_PAGE_URI + window.location.search;
     } catch (error) {
       console.log(error);
       setloginFailed(true);
