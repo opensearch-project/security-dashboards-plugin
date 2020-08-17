@@ -64,6 +64,7 @@ import { TenantsPanel } from './tenants-panel';
 import { transformRoleIndexPermissions } from '../../utils/index-permission-utils';
 import { transformRoleTenantPermissions } from '../../utils/tenant-utils';
 import { DocLinks } from '../../constants';
+import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 
 interface RoleViewProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -97,9 +98,9 @@ export function RoleView(props: RoleViewProps) {
   const [roleTenantPermission, setRoleTenantPermission] = useState<RoleTenantPermissionView[]>([]);
   const [toasts, addToast, removeToast] = useToastState();
   const [isReserved, setIsReserved] = useState(false);
-  const [isDeleteConfirmModalVisible, setIsDeleteConfirmModalVisible] = useState(false);
-  const closeDeleteConfirmModal = () => setIsDeleteConfirmModalVisible(false);
-  const showDeleteConfirmModal = () => setIsDeleteConfirmModalVisible(true);
+
+  const PERMISSIONS_TAB_INDEX = 0;
+  const MAP_USER_TAB_INDEX = 1;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -164,24 +165,11 @@ export function RoleView(props: RoleViewProps) {
     }
   };
 
-  let deleteConfirmModal;
-
-  if (isDeleteConfirmModalVisible) {
-    deleteConfirmModal = (
-      <EuiOverlayMask>
-        <EuiConfirmModal
-          title="Confirm Delete"
-          onCancel={closeDeleteConfirmModal}
-          onConfirm={handleRoleMappingDelete}
-          cancelButtonText="Cancel"
-          confirmButtonText="Confirm"
-          defaultFocusedButton="confirm"
-        >
-          <p>Do you really want to delete selected {selection.length} mappings?</p>
-        </EuiConfirmModal>
-      </EuiOverlayMask>
-    );
-  }
+  const [
+    closeDeleteConfirmModal,
+    showDeleteConfirmModal,
+    deleteConfirmModal,
+  ] = useDeleteConfirmState(handleRoleMappingDelete, selection, 'mappings');
 
   const message = (
     <EuiEmptyPrompt
@@ -362,7 +350,11 @@ export function RoleView(props: RoleViewProps) {
 
       <EuiTabbedContent
         tabs={tabs}
-        initialSelectedTab={props.prevAction === SubAction.mapuser ? tabs[1] : tabs[0]}
+        initialSelectedTab={
+          props.prevAction === SubAction.mapuser
+            ? tabs[MAP_USER_TAB_INDEX]
+            : tabs[PERMISSIONS_TAB_INDEX]
+        }
       />
 
       <EuiSpacer />
