@@ -13,8 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react';
-import { CoreStart } from 'kibana/public';
 import {
   EuiButton,
   EuiButtonEmpty,
@@ -29,14 +27,18 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
+import { CoreStart } from 'kibana/public';
 import { keys } from 'lodash';
+import React, { useEffect, useState } from 'react';
+import { ClientConfigType } from '../../types';
+import { GENERIC_ERROR_INSTRUCTION } from '../apps-constants';
 import { selectTenant } from '../configuration/utils/tenant-utils';
 import { fetchAccountInfo } from './utils';
-import { GENERIC_ERROR_INSTRUCTION } from '../apps-constants';
 
 interface TenantSwitchPanelProps {
   coreStart: CoreStart;
   handleClose: () => void;
+  config: ClientConfigType;
 }
 
 const GLOBAL_TENANT_KEY_NAME = 'global_tenant';
@@ -46,13 +48,16 @@ const CUSTOM_TENANT_RADIO_ID = 'custom';
 
 export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
   const [tenants, setTenants] = useState<string[]>([]);
-  const [errorCallOut, setErrorCallOut] = useState<string>();
+  const [username, setUsername] = useState<string>('');
+  const [errorCallOut, setErrorCallOut] = useState<string>('');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const tenantsInfo = (await fetchAccountInfo(props.coreStart.http)).data.tenants || {};
+        const accountInfo = await fetchAccountInfo(props.coreStart.http);
+        const tenantsInfo = accountInfo.data.tenants || {};
         setTenants(keys(tenantsInfo).filter((tenantName) => tenantsInfo[tenantName]));
+        setUsername(accountInfo.data.user_name);
       } catch (e) {
         // TODO: switch to better error display.
         console.error(e);
@@ -69,7 +74,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
     setErrorCallOut('');
   };
   const customTenantOptions = tenants.filter((tenant) => {
-    return tenant !== GLOBAL_TENANT_KEY_NAME && tenant !== props.username;
+    return tenant !== GLOBAL_TENANT_KEY_NAME && tenant !== username;
   });
 
   const isMultiTenancyEnabled = props.config.multitenancy.enabled;
@@ -88,13 +93,13 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
   };
 
   // The key for private tenant is the user name.
-  const shouldDisablePrivate = !isPrivateEnabled || !tenants.includes(props.username);
+  const shouldDisablePrivate = !isPrivateEnabled || !tenants.includes(username);
   const getPrivateDisabledInstruction = () => {
     if (!isPrivateEnabled) {
       return 'Contact the administrator to enable private tenant.';
     }
 
-    if (!tenants.includes(props.username)) {
+    if (!tenants.includes(username)) {
       return 'Contact the administrator to get access to private tenant.';
     }
   };
@@ -157,7 +162,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
   const changeTenant = async (tenantName: string) => {
     await selectTenant(props.coreStart.http, {
       tenant: tenantName,
-      username: props.username,
+      username,
     });
   };
 

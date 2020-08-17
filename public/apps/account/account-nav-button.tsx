@@ -39,7 +39,7 @@ export function AccountNavButton(props: {
   isInternalUser: boolean;
   username: string;
   tenant?: string;
-  config?: ClientConfigType;
+  config: ClientConfigType;
 }) {
   const [isPopoverOpen, setPopoverOpen] = useState<boolean>(false);
   const [modal, setModal] = useState<React.ReactNode>(null);
@@ -84,8 +84,8 @@ export function AccountNavButton(props: {
         onClick={() =>
           setModal(
             <TenantSwitchPanel
-              {...props}
-              username={props.username}
+              coreStart={props.coreStart}
+              config={props.config}
               handleClose={() => setModal(null)}
             />
           )
@@ -101,7 +101,7 @@ export function AccountNavButton(props: {
             onClick={() =>
               setModal(
                 <PasswordResetPanel
-                  {...props}
+                  coreStart={props.coreStart}
                   username={props.username}
                   handleClose={() => setModal(null)}
                 />

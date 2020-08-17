@@ -26,7 +26,7 @@ import {
   AppPluginStartDependencies,
   ClientConfigType,
 } from './types';
-import { LOGIN_PAGE_URI, PLUGIN_NAME } from '../common';
+import { LOGIN_PAGE_URI, PLUGIN_NAME, SELECT_TENANT_PAGE_URI } from '../common';
 import { API_ENDPOINT_PERMISSIONS_INFO } from './apps/configuration/constants';
 import { setupTopNavButton } from './apps/account/account-app';
 
@@ -69,12 +69,23 @@ export class OpendistroSecurityPlugin
       id: 'login',
       title: 'Security',
       chromeless: true,
-      appRoute: `${LOGIN_PAGE_URI}`,
+      appRoute: LOGIN_PAGE_URI,
       mount: async (params: AppMountParameters) => {
         const { renderApp } = await import('./apps/login/login-app');
         // @ts-ignore depsStart not used.
         const [coreStart, depsStart] = await core.getStartServices();
         return renderApp(coreStart, params, config.ui.basicauth.login);
+      },
+    });
+
+    core.application.register({
+      id: 'multitenancy',
+      title: 'Security',
+      appRoute: SELECT_TENANT_PAGE_URI,
+      mount: async (params: AppMountParameters) => {
+        const { renderPage } = await import('./apps/account/tenant-selection-page');
+        const [coreStart] = await core.getStartServices();
+        return renderPage(coreStart, params, config, apiPermission);
       },
     });
 
