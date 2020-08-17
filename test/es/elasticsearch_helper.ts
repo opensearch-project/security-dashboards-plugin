@@ -13,9 +13,9 @@
  *   permissions and limitations under the License.
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
-import * as childProcess from 'child_process';
+import { existsSync, mkdirSync } from 'fs';
+import { resolve } from 'path';
+import { ChildProcess, exec, execSync } from 'child_process';
 import wreck from '@hapi/wreck';
 import { sleep } from '../helper/sleep';
 import {
@@ -25,68 +25,64 @@ import {
   SECURITY_ES_PLUGIN_VERSION,
 } from '../constant';
 
-const PLUGIN_ROOT_DIR = path.resolve(__dirname, '../..');
-const ES_INSTALL_DIR = path.resolve(PLUGIN_ROOT_DIR, '.es');
+const PLUGIN_ROOT_DIR = resolve(__dirname, '../..');
+const ES_INSTALL_DIR = resolve(PLUGIN_ROOT_DIR, '.es');
 let esRootDir: string;
 
 export function downloadElasticsearch(): string {
-  if (fs.existsSync(ES_INSTALL_DIR)) {
-    childProcess.execSync(`rm -rf .es`, { cwd: PLUGIN_ROOT_DIR });
+  if (existsSync(ES_INSTALL_DIR)) {
+    execSync('rm -rf .es', { cwd: PLUGIN_ROOT_DIR });
   }
-  fs.mkdirSync(ES_INSTALL_DIR);
+  mkdirSync(ES_INSTALL_DIR);
 
-  console.log(`Downloading Elasticsearch...`);
+  console.log('Downloading Elasticsearch...');
   const esDownloadURL = `https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-${ELASTICSEARCH_VERSION}-darwin-x86_64.tar.gz`;
-  // https://d3g5vo6xdbdb9a.cloudfront.net/tarball/opendistro-elasticsearch/opendistroforelasticsearch-1.9.0.tar.gz`;
-  childProcess.execSync(
-    `curl -o elasticsearch-oss-${ELASTICSEARCH_VERSION}.tar.gz ${esDownloadURL}`,
-    {
-      cwd: ES_INSTALL_DIR,
-    }
-  );
-  childProcess.execSync(`tar -zxvf elasticsearch-oss-${ELASTICSEARCH_VERSION}.tar.gz`, {
+  execSync(`curl -o elasticsearch-oss-${ELASTICSEARCH_VERSION}.tar.gz ${esDownloadURL}`, {
     cwd: ES_INSTALL_DIR,
   });
-  esRootDir = path.resolve(ES_INSTALL_DIR, `elasticsearch-${ELASTICSEARCH_VERSION}`);
+  execSync(`tar -zxvf elasticsearch-oss-${ELASTICSEARCH_VERSION}.tar.gz`, {
+    cwd: ES_INSTALL_DIR,
+  });
+  esRootDir = resolve(ES_INSTALL_DIR, `elasticsearch-${ELASTICSEARCH_VERSION}`);
   return esRootDir;
 }
 
 export function installEsSecurityPlugin() {
-  const pluginDir = path.resolve(esRootDir, 'plugins');
+  const pluginDir = resolve(esRootDir, 'plugins');
 
-  if (!fs.existsSync(pluginDir)) {
-    fs.mkdirSync(pluginDir);
+  if (!existsSync(pluginDir)) {
+    mkdirSync(pluginDir);
   }
-  childProcess.execSync(
+  execSync(
     `yes | bin/elasticsearch-plugin install https://d3g5vo6xdbdb9a.cloudfront.net/downloads/elasticsearch-plugins/opendistro-security/opendistro_security-${SECURITY_ES_PLUGIN_VERSION}.zip`,
     {
-      cwd: path.resolve(esRootDir),
+      cwd: resolve(esRootDir),
     }
   );
-  const installDemoScript = path.resolve(
+  const installDemoScript = resolve(
     pluginDir,
     'opendistro_security/tools/install_demo_configuration.sh'
   );
-  childProcess.execSync(`chmod a+x ${installDemoScript}`, { cwd: esRootDir });
-  childProcess.execSync(`yes | ${installDemoScript}`, { cwd: esRootDir });
+  execSync(`chmod a+x ${installDemoScript}`, { cwd: esRootDir });
+  execSync(`yes | ${installDemoScript}`, { cwd: esRootDir });
 }
 
 export async function startElasticsearch() {
   // start ES process
   if (!esRootDir) {
-    esRootDir = path.resolve(ES_INSTALL_DIR, `elasticsearch-${ELASTICSEARCH_VERSION}`);
+    esRootDir = resolve(ES_INSTALL_DIR, `elasticsearch-${ELASTICSEARCH_VERSION}`);
     console.log(`Using esRootDir: ${esRootDir}`);
   }
 
-  console.log(`Starting Elasticsearch...`);
-  const esCmd = path.resolve(esRootDir, 'bin/elasticsearch');
-  const esProcess = childProcess.exec(esCmd);
+  console.log('Starting Elasticsearch...');
+  const esCmd = resolve(esRootDir, 'bin/elasticsearch');
+  const esProcess = exec(esCmd);
   console.log(`Elasticsearch pid: ${esProcess.pid}`);
 
   // ping ES to make sure ES is up
   let countdown = 30;
   let pingError;
-  console.log(`Waiting for Elasticsearch to start`);
+  console.log('Waiting for Elasticsearch to start...');
   const kbnServerCredentials = Buffer.from(`${KIBANA_SERVER_USER}:${KIBANA_SERVER_PASSWORD}`);
   while (countdown > 0) {
     countdown = countdown - 1;
@@ -94,7 +90,6 @@ export async function startElasticsearch() {
     try {
       console.log('pinging ES');
       const response = await wreck.get('https://localhost:9200', {
-        // agent: false,
         rejectUnauthorized: false,
         headers: {
           authorization: `Basic ${kbnServerCredentials.toString('base64')}`,
@@ -115,7 +110,7 @@ export async function startElasticsearch() {
   throw new Error(`Failed to launch Elasticsearch process. Error: ${pingError}`);
 }
 
-export async function stopElasticsearch(process: childProcess.ChildProcess) {
+export async function stopElasticsearch(process: ChildProcess) {
   console.log('Stopping Elasticsearch');
   process.kill('SIGTERM');
   let countdown = 5;
@@ -127,6 +122,6 @@ export async function stopElasticsearch(process: childProcess.ChildProcess) {
       return;
     }
   }
-  console.log(`Force killing Elasticsearch process`);
+  console.log('Force killing Elasticsearch process');
   process.kill('SIGINT');
 }

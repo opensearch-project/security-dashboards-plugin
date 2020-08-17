@@ -21,7 +21,7 @@ import { sleep } from '../helper/sleep';
 import { startElasticsearch, stopElasticsearch } from '../es/elasticsearch_helper';
 import { ChildProcess } from 'child_process';
 
-describe(`start kibana server`, () => {
+describe('start kibana server', () => {
   let root: Root;
   let esProcess: ChildProcess;
 
@@ -60,12 +60,12 @@ describe(`start kibana server`, () => {
     await stopElasticsearch(esProcess);
   });
 
-  it(`can access login page without credentials`, async () => {
+  it('can access login page without credentials', async () => {
     const response = await kbnTestServer.request.get(root, '/app/login');
     expect(response.status).toEqual(200);
   });
 
-  it(`call authinfo API as admin`, async () => {
+  it('call authinfo API as admin', async () => {
     const testUserCredentials = Buffer.from(`admin:admin`);
     const response = await kbnTestServer.request
       .get(root, '/api/v1/auth/authinfo')
@@ -73,7 +73,7 @@ describe(`start kibana server`, () => {
     expect(response.status).toEqual(200);
   });
 
-  it(`call authinfo API without credentials`, async () => {
+  it('call authinfo API without credentials', async () => {
     const testUserCredentials = Buffer.from(`admin:admin`);
     const response = await kbnTestServer.request
       .get(root, '/api/v1/auth/authinfo')
