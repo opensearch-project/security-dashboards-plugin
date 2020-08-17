@@ -14,7 +14,8 @@
     "lint:es": "node ../../scripts/eslint",
     "lint:sass": "node ../../scripts/sasslint",
     "lint": "yarn run lint:es && yarn run lint:sass",
-    "test:jest": "NODE_PATH=../../node_modules ../../node_modules/.bin/jest --config ./test/jest.config.js"
+    "test:jest": "NODE_PATH=../../node_modules ../../node_modules/.bin/jest --config ./test/jest.config.js",
+    "test:jest_integ": "node ./test/jest_integ_test.js"
   },
   "devDependencies": {
     "typescript": "3.9.5"
