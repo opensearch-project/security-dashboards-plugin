@@ -31,8 +31,6 @@ import {
   EuiText,
   EuiTitle,
   EuiGlobalToastList,
-  EuiOverlayMask,
-  EuiConfirmModal,
 } from '@elastic/eui';
 import React, { ReactNode, useEffect, useState, useCallback } from 'react';
 import { difference } from 'lodash';
@@ -53,6 +51,7 @@ import { getNavLinkById } from '../../../../services/chrome_wrapper';
 import { TenantEditModal } from './edit-modal';
 import { useToastState, createUnknownErrorToast } from '../../utils/toast-utils';
 import { PageId } from '../../types';
+import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 
 export function TenantList(props: AppDependencies) {
   const [tenantData, setTenantData] = useState<Tenant[]>([]);
@@ -64,9 +63,6 @@ export function TenantList(props: AppDependencies) {
   // Modal state
   const [editModal, setEditModal] = useState<ReactNode>(null);
   const [toasts, addToast, removeToast] = useToastState();
-  const [isDeleteConfirmModalVisible, setIsDeleteConfirmModalVisible] = useState(false);
-  const closeDeleteConfirmModal = () => setIsDeleteConfirmModalVisible(false);
-  const showDeleteConfirmModal = () => setIsDeleteConfirmModalVisible(true);
 
   // Configuration
   const isPrivateEnabled = props.config.multitenancy.tenants.enable_private;
@@ -103,6 +99,11 @@ export function TenantList(props: AppDependencies) {
       setActionsPopoverOpen(false);
     }
   };
+  const [
+    closeDeleteConfirmModal,
+    showDeleteConfirmModal,
+    deleteConfirmModal,
+  ] = useDeleteConfirmState(handleDelete, selection.length, 'tenants');
 
   const changeTenant = async (tenantName: string) => {
     const selectedTenant = await selectTenant(props.coreStart.http, {
@@ -197,25 +198,6 @@ export function TenantList(props: AppDependencies) {
       render: renderCustomization,
     },
   ];
-
-  let deleteConfirmModal;
-
-  if (isDeleteConfirmModalVisible) {
-    deleteConfirmModal = (
-      <EuiOverlayMask>
-        <EuiConfirmModal
-          title="Confirm Delete"
-          onCancel={closeDeleteConfirmModal}
-          onConfirm={handleDelete}
-          cancelButtonText="Cancel"
-          confirmButtonText="Confirm"
-          defaultFocusedButton="confirm"
-        >
-          <p>Do you really want to delete selected {selection.length} tenants?</p>
-        </EuiConfirmModal>
-      </EuiOverlayMask>
-    );
-  }
 
   const actionsMenuItems = [
     <EuiContextMenuItem
