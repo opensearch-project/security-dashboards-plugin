@@ -22,7 +22,6 @@ import {
   EuiSpacer,
   EuiSwitch,
   EuiTitle,
-  EuiCallOut,
 } from '@elastic/eui';
 import { get } from 'lodash';
 import { displayBoolean, displayObject } from '../../utils/display-utils';
@@ -39,10 +38,6 @@ const renderCodeBlock = (setting: SettingContent) => {
       </EuiCodeBlock>
     </>
   );
-};
-
-const renderCallOut = (setting: SettingContent) => {
-  return <EuiCallOut size={'s'}>{setting.callOut}</EuiCallOut>;
 };
 
 const displayLabel = (val: string) => {
@@ -148,7 +143,6 @@ export function EditSettingGroup(props: {
                 <div style={{ maxWidth: '450px' }}>
                   {setting.description}
                   {setting.code && renderCodeBlock(setting)}
-                  {setting.callOut && renderCallOut(setting)}
                 </div>
               }
               fullWidth

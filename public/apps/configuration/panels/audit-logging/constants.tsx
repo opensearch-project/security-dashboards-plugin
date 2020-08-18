@@ -13,9 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiText } from '@elastic/eui';
-import React from 'react';
-
 export const CONFIG_LABELS = {
   AUDIT_LOGGING: 'Audit logging',
   GENERAL_SETTINGS: 'General settings',
@@ -49,7 +46,6 @@ export interface SettingContent {
   options?: string[];
   code?: string;
   error?: string;
-  callOut?: React.ReactNode;
 }
 
 const REST_LAYER: SettingContent = {
@@ -72,12 +68,6 @@ const REST_DISABLED_CATEGORIES: SettingContent = {
     'SSL_EXCEPTION',
     'AUTHENTICATED',
   ],
-  callOut: (
-    <EuiText>
-      We <i>highly</i> recommend excluding GRANTED_PRIVILEGES and AUTHENTICATED. <br />
-      If enabled, these categories can result in a hugh number of logs.
-    </EuiText>
-  ),
 };
 
 const TRANSPORT_LAYER: SettingContent = {
@@ -100,12 +90,6 @@ const TRANSPORT_DISABLED_CATEGORIES: SettingContent = {
     'SSL_EXCEPTION',
     'AUTHENTICATED',
   ],
-  callOut: (
-    <EuiText>
-      We <i>highly</i> recommend excluding GRANTED_PRIVILEGES and AUTHENTICATED. <br />
-      If enabled, these categories can result in a hugh number of logs.
-    </EuiText>
-  ),
 };
 
 const BULK_REQUESTS: SettingContent = {
@@ -113,13 +97,6 @@ const BULK_REQUESTS: SettingContent = {
   path: 'audit.resolve_bulk_requests',
   description: 'Resolve bulk requests during auditing of requests.',
   type: 'bool',
-  callOut: (
-    <EuiText>
-      Enabling bulk requests generates one log per operation in the request. <br />
-      If you enable this setting, a single bulk request that indexes 10,000 documents results in
-      10,000 logs. If you disable this setting, that same request results in one log.
-    </EuiText>
-  ),
 };
 
 const REQUEST_BODY: SettingContent = {
@@ -204,12 +181,6 @@ const READ_WATCHED_FIELDS: SettingContent = {
   "twitter": ["id", "user*"]
 }`,
   error: 'Invalid content. Please check sample data content.',
-  callOut: (
-    <EuiText>
-      Adding watched fields generates one log each time a user accesses a document and could result
-      in a large number of logs. We don&apos;t recommend adding frequently accessed fields.
-    </EuiText>
-  ),
 };
 
 const WRITE_METADATA_ONLY: SettingContent = {
@@ -238,12 +209,6 @@ const WRITE_WATCHED_FIELDS: SettingContent = {
   path: 'compliance.write_watched_indices',
   description: 'List the indices to watch during write events.',
   type: 'array',
-  callOut: (
-    <EuiText>
-      Adding watched indices generates one log each time a user accesses a document and could result
-      in a large number of logs. We don&apos;t recommend adding frequently accessed indices.
-    </EuiText>
-  ),
 };
 
 const CONFIG = {
