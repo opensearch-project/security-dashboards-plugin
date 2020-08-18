@@ -32,8 +32,6 @@ import {
   EuiEmptyPrompt,
   EuiCallOut,
   EuiGlobalToastList,
-  EuiOverlayMask,
-  EuiConfirmModal,
 } from '@elastic/eui';
 import { difference } from 'lodash';
 import { BreadcrumbsPageDependencies } from '../../../types';
@@ -169,7 +167,7 @@ export function RoleView(props: RoleViewProps) {
     closeDeleteConfirmModal,
     showDeleteConfirmModal,
     deleteConfirmModal,
-  ] = useDeleteConfirmState(handleRoleMappingDelete, selection, 'mappings');
+  ] = useDeleteConfirmState(handleRoleMappingDelete, selection.length, 'mappings');
 
   const message = (
     <EuiEmptyPrompt

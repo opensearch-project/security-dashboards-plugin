@@ -19,16 +19,16 @@ import { EuiOverlayMask, EuiConfirmModal } from '@elastic/eui';
 /**
  *
  * @param handleDelete: [Type: func] delete function which needs to be execute on click of confirm button.
- * @param selection: Selected list of items.
+ * @param noOfSelectedItems: Count of selected Items for deletion.
  * @param entity: e.g. roles, tenants, users, mapping etc. This will display in confirmation text before deletion.
- * @param customText: If you want other than default confirm message, pass it as customText.
+ * @param customConfirmationText: If you want other than default confirm message, pass it as customConfirmationText.
  */
 export function useDeleteConfirmState(
   handleDelete: () => Promise<void>,
-  selection: any[],
+  noOfSelectedItems: number,
   entity: string,
-  customText = null
-): [() => void, () => void, any] {
+  customConfirmationText?: React.ReactNode
+): [() => void, () => void, React.ReactNode] {
   const [isDeleteConfirmModalVisible, setIsDeleteConfirmModalVisible] = useState(false);
   const closeDeleteConfirmModal = () => setIsDeleteConfirmModalVisible(false);
   const showDeleteConfirmModal = () => setIsDeleteConfirmModalVisible(true);
@@ -45,11 +45,13 @@ export function useDeleteConfirmState(
           confirmButtonText="Confirm"
           defaultFocusedButton="confirm"
         >
-          <p>
-            {customText !== null
-              ? customText
-              : `Do you really want to delete selected ${selection.length} mappings?`}
-          </p>
+          {customConfirmationText ? (
+            customConfirmationText
+          ) : (
+            <p>
+              Do you really want to delete selected {noOfSelectedItems} {entity}?
+            </p>
+          )}
         </EuiConfirmModal>
       </EuiOverlayMask>
     );
