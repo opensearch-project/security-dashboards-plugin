@@ -61,9 +61,12 @@ import { IndexPermissionPanel } from './index-permission-panel';
 import { TenantsPanel } from './tenants-panel';
 import { transformRoleIndexPermissions } from '../../utils/index-permission-utils';
 import { transformRoleTenantPermissions } from '../../utils/tenant-utils';
+import { DocLinks } from '../../constants';
+import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 
 interface RoleViewProps extends BreadcrumbsPageDependencies {
   roleName: string;
+  prevAction: string;
 }
 
 const mappedUserColumns = [
@@ -94,6 +97,9 @@ export function RoleView(props: RoleViewProps) {
   const [toasts, addToast, removeToast] = useToastState();
   const [isReserved, setIsReserved] = useState(false);
 
+  const PERMISSIONS_TAB_INDEX = 0;
+  const MAP_USER_TAB_INDEX = 1;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -118,8 +124,20 @@ export function RoleView(props: RoleViewProps) {
       }
     };
 
+    const addSuccessToast = () => {
+      addToast({
+        id: 'updateRoleMappingSucceeded',
+        color: 'success',
+        title: props.roleName + ' saved.',
+      });
+    };
+
     fetchData();
-  }, [addToast, props.coreStart.http, props.roleName]);
+
+    if (props.prevAction === SubAction.mapuser) {
+      addSuccessToast();
+    }
+  }, [addToast, props.coreStart.http, props.roleName, props.prevAction]);
 
   const handleRoleMappingDelete = async () => {
     try {
@@ -139,10 +157,17 @@ export function RoleView(props: RoleViewProps) {
 
       setMappedUsers(difference(mappedUsers, selection));
       setSelection([]);
+      closeDeleteConfirmModal();
     } catch (e) {
       console.log(e);
     }
   };
+
+  const [
+    closeDeleteConfirmModal,
+    showDeleteConfirmModal,
+    deleteConfirmModal,
+  ] = useDeleteConfirmState(handleRoleMappingDelete, selection.length, 'mappings');
 
   const message = (
     <EuiEmptyPrompt
@@ -255,7 +280,7 @@ export function RoleView(props: RoleViewProps) {
                   internal user can have its own backend role and host for an external
                   authentication and authorization. 2. External identity, which directly maps to
                   roles through an external authentication system.{' '}
-                  <EuiLink external={true} href="/">
+                  <EuiLink external={true} href={DocLinks.MapUsersToRolesDoc} target="_blank">
                     Learn More
                   </EuiLink>
                 </EuiText>
@@ -263,7 +288,7 @@ export function RoleView(props: RoleViewProps) {
               <EuiPageContentHeaderSection>
                 <EuiFlexGroup>
                   <EuiFlexItem>
-                    <EuiButton onClick={handleRoleMappingDelete} disabled={selection.length === 0}>
+                    <EuiButton onClick={showDeleteConfirmModal} disabled={selection.length === 0}>
                       Delete mapping
                     </EuiButton>
                   </EuiFlexItem>
@@ -321,10 +346,18 @@ export function RoleView(props: RoleViewProps) {
         </EuiPageContentHeaderSection>
       </EuiPageContentHeader>
 
-      <EuiTabbedContent tabs={tabs} />
+      <EuiTabbedContent
+        tabs={tabs}
+        initialSelectedTab={
+          props.prevAction === SubAction.mapuser
+            ? tabs[MAP_USER_TAB_INDEX]
+            : tabs[PERMISSIONS_TAB_INDEX]
+        }
+      />
 
       <EuiSpacer />
       <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={10000} dismissToast={removeToast} />
+      {deleteConfirmModal}
     </>
   );
 }
