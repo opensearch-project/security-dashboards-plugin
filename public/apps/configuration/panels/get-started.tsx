@@ -26,7 +26,6 @@ import {
   EuiFlexGroup,
   EuiLink,
   EuiPanel,
-  EuiButtonEmpty,
 } from '@elastic/eui';
 import React from 'react';
 import { AppDependencies } from '../../types';
@@ -52,7 +51,7 @@ const setOfSteps = [
           </EuiLink>
         </EuiText>
 
-        <EuiSpacer />
+        <EuiSpacer size="m" />
 
         <EuiFlexGroup gutterSize="s">
           <EuiFlexItem grow={false}>
@@ -67,15 +66,17 @@ const setOfSteps = [
             </EuiButton>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButtonEmpty
+            <EuiButton
               onClick={() => {
                 window.location.href = buildHashUrl(ResourceType.auth);
               }}
             >
               Review authentication and authorization
-            </EuiButtonEmpty>
+            </EuiButton>
           </EuiFlexItem>
         </EuiFlexGroup>
+
+        <EuiSpacer size="l" />
       </>
     ),
   },
@@ -91,7 +92,7 @@ const setOfSteps = [
           </EuiLink>
         </EuiText>
 
-        <EuiSpacer />
+        <EuiSpacer size="m" />
 
         <EuiFlexGroup gutterSize="s">
           <EuiFlexItem grow={false}>
@@ -105,15 +106,17 @@ const setOfSteps = [
             </EuiButton>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButtonEmpty
+            <EuiButton
               onClick={() => {
                 window.location.href = buildHashUrl(ResourceType.roles, Action.create);
               }}
             >
               Create new role
-            </EuiButtonEmpty>
+            </EuiButton>
           </EuiFlexItem>
         </EuiFlexGroup>
+
+        <EuiSpacer size="l" />
       </>
     ),
   },
@@ -129,7 +132,7 @@ const setOfSteps = [
           </EuiLink>
         </EuiText>
 
-        <EuiSpacer />
+        <EuiSpacer size="m" />
 
         <EuiFlexGroup gutterSize="s">
           <EuiFlexItem grow={false}>
@@ -143,13 +146,13 @@ const setOfSteps = [
             </EuiButton>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButtonEmpty
+            <EuiButton
               onClick={() => {
                 window.location.href = buildHashUrl(ResourceType.users, Action.create);
               }}
             >
               Create internal user
-            </EuiButtonEmpty>
+            </EuiButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       </>
@@ -165,9 +168,9 @@ export function GetStarted(props: AppDependencies) {
         <EuiTitle size="l">
           <h1>Get started</h1>
         </EuiTitle>
-        <EuiButtonEmpty iconType="popout" iconSide="right" href={buildHashUrl()} target="_blank">
+        <EuiButton iconType="popout" iconSide="right" href={buildHashUrl()} target="_blank">
           Open in new window
-        </EuiButtonEmpty>
+        </EuiButton>
       </EuiPageHeader>
 
       <EuiPanel paddingSize="l" style={{ maxWidth: panelMaxWidth }}>
