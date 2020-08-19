@@ -24,7 +24,7 @@ import {
   EuiOverlayMask,
 } from '@elastic/eui';
 
-export function ExpressionModal(props: { title: string; expression: string }) {
+export function ExpressionModal(props: { title: string; expression: object }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const closeModal = () => setIsModalVisible(false);
@@ -43,7 +43,7 @@ export function ExpressionModal(props: { title: string; expression: string }) {
 
           <EuiModalBody>
             <EuiCodeBlock fontSize="m" paddingSize="m" color="dark" overflowHeight={300} isCopyable>
-              {JSON.stringify(JSON.parse(props.expression), null, 2)}
+              {JSON.stringify(props.expression, null, 2)}
             </EuiCodeBlock>
           </EuiModalBody>
         </EuiModal>

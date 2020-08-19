@@ -48,7 +48,7 @@ const columns = [
   {
     field: 'http_configuration',
     name: 'HTTP configuration',
-    render: renderExpression('HTTP configuration'),
+    render: (config: object) => renderExpression('HTTP configuration', config),
   },
   {
     field: 'backend_type',
@@ -57,7 +57,7 @@ const columns = [
   {
     field: 'backend_configuration',
     name: 'Backend configuration',
-    render: renderExpression('Backend configuration'),
+    render: (config: object) => renderExpression('Backend configuration', config),
   },
 ];
 

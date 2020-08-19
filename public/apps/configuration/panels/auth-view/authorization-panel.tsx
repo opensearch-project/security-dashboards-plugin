@@ -39,7 +39,7 @@ const columns = [
   {
     field: 'backend_configuration',
     name: 'Backend configuration',
-    render: renderExpression('Backend configuration'),
+    render: (config: object) => renderExpression('Backend configuration', config),
   },
 ];
 

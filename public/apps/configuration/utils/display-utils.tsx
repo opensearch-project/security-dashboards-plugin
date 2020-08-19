@@ -84,12 +84,10 @@ export function truncatedListView(limit = 3) {
   };
 }
 
-export const renderExpression = (title: string) => {
-  return (expression: string) => {
-    if (isEmpty(expression)) {
-      return '-';
-    }
+export const renderExpression = (title: string, expression: object) => {
+  if (isEmpty(expression)) {
+    return '-';
+  }
 
-    return <ExpressionModal title={title} expression={expression} />;
-  };
+  return <ExpressionModal title={title} expression={expression} />;
 };
