@@ -98,7 +98,13 @@ function getColumns(
     {
       field: 'dls',
       name: 'Document-level security',
-      render: renderExpression('Document-level security'),
+      render: (dls: string) => {
+        if (!dls) {
+          return '-';
+        }
+
+        return renderExpression('Document-level security', JSON.parse(dls));
+      },
     },
     {
       field: 'fls',
@@ -139,8 +145,8 @@ export function IndexPermissionPanel(props: IndexPermissionPanelProps) {
   return (
     <PanelWithHeader
       headerText={headerText}
-      headerSubText="Index permissions allow you to specify how users in this role can access the indices. You can restrict a role to a subset of documents in an index, 
-      and which document fields a user can see as well. If you use field-level security in conjunction with document-level security, 
+      headerSubText="Index permissions allow you to specify how users in this role can access the indices. You can restrict a role to a subset of documents in an index,
+      and which document fields a user can see as well. If you use field-level security in conjunction with document-level security,
       make sure you don't restrict access to the fields that document-level security uses."
       helpLink="/"
     >
