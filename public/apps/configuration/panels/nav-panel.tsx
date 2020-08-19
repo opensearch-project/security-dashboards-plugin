@@ -22,10 +22,11 @@ function buildTreeItems(items: RouteItem[]) {
     {
       name: 'Security',
       id: 'security',
-      items: items.map((e) => ({
+      items: items.map((e: RouteItem) => ({
         id: e.name,
         name: e.name,
         href: '#' + e.href,
+        isSelected: window.location.hash.includes(e.href),
       })),
     },
   ];

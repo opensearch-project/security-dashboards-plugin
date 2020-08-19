@@ -16,7 +16,7 @@
 import { EuiBreadcrumb, EuiPage, EuiPageBody, EuiPageSideBar } from '@elastic/eui';
 import { flow, partial } from 'lodash';
 import React from 'react';
-import { HashRouter as Router, Route, Switch } from 'react-router-dom';
+import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { AppDependencies } from '../types';
 import { AuditLogging } from './panels/audit-logging/audit-logging';
 import { AuditLoggingEditSettings } from './panels/audit-logging/audit-logging-edit-settings';
@@ -40,10 +40,12 @@ import { UserList } from './panels/user-list';
 import { Action, ResourceType, RouteItem, SubAction } from './types';
 import { buildHashUrl, buildUrl } from './utils/url-builder';
 
+const LANDING_PAGE_URL = '/getstarted';
+
 const ROUTE_MAP: { [key: string]: RouteItem } = {
   getStarted: {
     name: 'Get Started',
-    href: buildUrl(),
+    href: LANDING_PAGE_URL,
   },
   [ResourceType.roles]: {
     name: 'Roles',
@@ -88,9 +90,6 @@ const allNavPanelUrls = ROUTE_LIST.map((route) => route.href).concat([
   buildUrl(ResourceType.auditLogging) + FROM_COMPLIANCE_SAVE_SUCCESS,
 ]);
 
-// url regex pattern for all pages with left nav panel, (/|/roles|/internalusers|...)
-const PATTERNS_ROUTES_WITH_NAV_PANEL = '(' + allNavPanelUrls.join('|') + ')';
-
 export function getBreadcrumbs(
   resourceType?: ResourceType,
   pageTitle?: string,
@@ -130,11 +129,14 @@ export function AppRouter(props: AppDependencies) {
   return (
     <Router basename={props.params.appBasePath}>
       <EuiPage>
-        <Route path={PATTERNS_ROUTES_WITH_NAV_PANEL} exact>
-          <EuiPageSideBar>
-            <NavPanel items={ROUTE_LIST} />
-          </EuiPageSideBar>
-        </Route>
+        {allNavPanelUrls.map((route) => (
+          // Create different routes to update the 'selected' nav item .
+          <Route path={route} exact>
+            <EuiPageSideBar>
+              <NavPanel items={ROUTE_LIST} />
+            </EuiPageSideBar>
+          </Route>
+        ))}
         <EuiPageBody>
           <Switch>
             <Route
@@ -236,6 +238,7 @@ export function AppRouter(props: AppDependencies) {
                 return <GetStarted {...props} />;
               }}
             />
+            <Redirect exact from="/" to={LANDING_PAGE_URL} />
           </Switch>
         </EuiPageBody>
       </EuiPage>
