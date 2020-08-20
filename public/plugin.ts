@@ -35,10 +35,9 @@ async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
     const permissions = await core.http.get(API_ENDPOINT_PERMISSIONS_INFO);
     return permissions?.data?.has_api_access || false;
   } catch (e) {
-    // ignore 401 and continue to login page.
-    if (e?.body.statusCode !== 401) {
-      throw e;
-    }
+    console.error(e);
+    // ignore exceptions and default to no security related access.
+    return false;
   }
 }
 
