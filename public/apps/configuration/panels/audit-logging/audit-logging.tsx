@@ -17,36 +17,126 @@ import React, { useEffect, useState } from 'react';
 
 import {
   EuiButton,
+  EuiCode,
+  EuiDescribedFormGroup,
   EuiFlexGroup,
   EuiFlexItem,
+  EuiForm,
+  EuiFormRow,
   EuiGlobalToastList,
   EuiHorizontalRule,
+  EuiLink,
   EuiPanel,
   EuiSpacer,
+  EuiSwitch,
+  EuiText,
   EuiTitle,
 } from '@elastic/eui';
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 import { AppDependencies } from '../../../types';
 import { API_ENDPOINT_AUDITLOGGING } from '../../constants';
-import {
-  renderComplianceSettings,
-  renderGeneralSettings,
-  renderStatusPanel,
-  updateAuditLogging,
-} from '../../utils/audit-logging-view-utils';
 import { AuditLoggingSettings } from './types';
 import {
   FROM_COMPLIANCE_SAVE_SUCCESS,
   FROM_GENERAL_SAVE_SUCCESS,
+  SETTING_GROUPS,
   SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT,
   SUB_URL_FOR_GENERAL_SETTINGS_EDIT,
 } from './constants';
 import { buildHashUrl } from '../../utils/url-builder';
 import { ResourceType } from '../../types';
 import { useToastState } from '../../utils/toast-utils';
+import { displayBoolean } from '../../utils/display-utils';
+import { ViewSettingGroup } from './view-setting-group';
+import { updateAuditLogging } from '../../utils/audit-logging-utils';
 
 interface AuditLoggingProps extends AppDependencies {
   fromType: string;
+}
+
+function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: boolean) {
+  const describedFormGroupStyle = {
+    maxWidth: '1500px',
+  };
+
+  return (
+    <EuiPanel>
+      <EuiTitle>
+        <h3>Audit logging</h3>
+      </EuiTitle>
+      <EuiHorizontalRule />
+      <EuiForm>
+        <EuiDescribedFormGroup title={<h3>Storage location</h3>} style={describedFormGroupStyle}>
+          <EuiFormRow style={{ maxWidth: '800px' }}>
+            <EuiText color="subdued" grow={false}>
+              Configure the output location and storage types in{' '}
+              <EuiCode>elasticsearch.yml</EuiCode>. The default storage location is{' '}
+              <EuiCode>internal_elasticsearch</EuiCode>, which stores the logs in an index on this
+              cluster.{' '}
+              <EuiLink external={true} href="/">
+                Learn more
+              </EuiLink>
+            </EuiText>
+          </EuiFormRow>
+        </EuiDescribedFormGroup>
+
+        <EuiDescribedFormGroup
+          title={<h3>Enable audit logging</h3>}
+          style={describedFormGroupStyle}
+        >
+          <EuiFormRow>
+            <EuiSwitch
+              name="auditLoggingEnabledSwitch"
+              label={displayBoolean(auditLoggingEnabled)}
+              checked={auditLoggingEnabled}
+              onChange={onSwitchChange}
+            />
+          </EuiFormRow>
+        </EuiDescribedFormGroup>
+      </EuiForm>
+    </EuiPanel>
+  );
+}
+
+function renderGeneralSettings(config: AuditLoggingSettings) {
+  return (
+    <>
+      <ViewSettingGroup config={config} settingGroup={SETTING_GROUPS.LAYER_SETTINGS} />
+
+      <EuiSpacer />
+
+      <ViewSettingGroup config={config} settingGroup={SETTING_GROUPS.ATTRIBUTE_SETTINGS} />
+
+      <EuiSpacer />
+
+      <ViewSettingGroup config={config} settingGroup={SETTING_GROUPS.IGNORE_SETTINGS} />
+    </>
+  );
+}
+
+function renderComplianceSettings(config: AuditLoggingSettings) {
+  return (
+    <>
+      <ViewSettingGroup
+        config={config}
+        settingGroup={SETTING_GROUPS.COMPLIANCE_CONFIG_MODE_SETTINGS}
+      />
+
+      <EuiSpacer />
+
+      <ViewSettingGroup config={config} settingGroup={SETTING_GROUPS.COMPLIANCE_CONFIG_SETTINGS} />
+
+      <EuiSpacer />
+
+      <ViewSettingGroup config={config} settingGroup={SETTING_GROUPS.COMPLIANCE_SETTINGS_READ} />
+
+      <EuiSpacer />
+
+      <ViewSettingGroup config={config} settingGroup={SETTING_GROUPS.COMPLIANCE_SETTINGS_WRITE} />
+
+      <EuiSpacer />
+    </>
+  );
 }
 
 export function AuditLogging(props: AuditLoggingProps) {
@@ -133,7 +223,7 @@ export function AuditLogging(props: AuditLoggingProps) {
           </EuiFlexItem>
         </EuiFlexGroup>
         <EuiHorizontalRule />
-        {renderGeneralSettings(configuration.audit || {})}
+        {renderGeneralSettings(configuration)}
       </EuiPanel>
 
       <EuiSpacer />
@@ -158,7 +248,7 @@ export function AuditLogging(props: AuditLoggingProps) {
         </EuiFlexGroup>
 
         <EuiHorizontalRule />
-        {renderComplianceSettings(configuration.compliance || {})}
+        {renderComplianceSettings(configuration)}
       </EuiPanel>
 
       <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={10000} dismissToast={removeToast} />

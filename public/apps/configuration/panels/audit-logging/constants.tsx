@@ -20,7 +20,8 @@ export const CONFIG_LABELS = {
   ATTRIBUTE_SETTINGS: 'Attribute settings',
   IGNORE_SETTINGS: 'Ignore settings',
   COMPLIANCE_SETTINGS: 'Compliance settings',
-  COMPLIANCE_CONFIG_SETTINGS: 'Config settings',
+  COMPLIANCE_MODE: 'Compliance mode',
+  COMPLIANCE_CONFIG_SETTINGS: 'Config',
   COMPLIANCE_READ: 'Read',
   COMPLIANCE_WRITE: 'Write',
 };
@@ -135,21 +136,21 @@ const IGNORED_REQUESTS: SettingContent = {
 };
 
 const ENABLED: SettingContent = {
-  title: 'Enable compliance mode',
+  title: 'Compliance logging',
   path: 'compliance.enabled',
   description: 'Enable or disable compliance logging',
   type: 'bool',
 };
 
 const INTERNAL_CONFIG: SettingContent = {
-  title: 'Enable internal config logging',
+  title: 'Internal config logging',
   path: 'compliance.internal_config',
   description: 'Enable or disable logging of events on internal security index',
   type: 'bool',
 };
 
 const EXTERNAL_CONFIG: SettingContent = {
-  title: 'Enable external config logging',
+  title: 'External config logging',
   path: 'compliance.external_config',
   description: 'Enable or disable logging of external configuration',
   type: 'bool',
@@ -275,7 +276,7 @@ export const IGNORE_SETTINGS: SettingGroup = {
 };
 
 export const COMPLIANCE_CONFIG_MODE_SETTINGS: SettingGroup = {
-  title: CONFIG_LABELS.COMPLIANCE,
+  title: CONFIG_LABELS.COMPLIANCE_MODE,
   settings: [CONFIG.COMPLIANCE.ENABLED],
 };
 
