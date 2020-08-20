@@ -22,12 +22,13 @@ export default {
   testPathIgnorePatterns: config.testPathIgnorePatterns.filter(
     (pattern) => !pattern.includes('integration_tests')
   ),
-  reporters: [
-    'default',
-    ['<rootDir>/src/dev/jest/junit_reporter.js', { reportName: 'Jest Integration Tests' }],
-  ],
   setupFilesAfterEnv: [
     '<rootDir>/src/dev/jest/setup/after_env.integration.js',
-    '<rootDir>/plugins/opendistro_security/test/es/setup_es.js',
+    // '<rootDir>/plugins/opendistro_security/test/es/setup_es.js',
   ],
+  collectCoverageFrom: [
+    '<rootDir>/plugins/opendistro_security/server/**/*.{ts,tsx}',
+    '!<rootDir>/plugins/opendistro_security/server/**/*.test.{ts,tsx}',
+  ],
+  coverageDirectory: '<rootDir>/plugins/opendistro_security/kibana-coverage/jest',
 };
