@@ -32,6 +32,7 @@ import {
   EuiEmptyPrompt,
   EuiCallOut,
   EuiGlobalToastList,
+  EuiHorizontalRule,
 } from '@elastic/eui';
 import { difference } from 'lodash';
 import { BreadcrumbsPageDependencies } from '../../../types';
@@ -61,7 +62,7 @@ import { IndexPermissionPanel } from './index-permission-panel';
 import { TenantsPanel } from './tenants-panel';
 import { transformRoleIndexPermissions } from '../../utils/index-permission-utils';
 import { transformRoleTenantPermissions } from '../../utils/tenant-utils';
-import { DocLinks } from '../../constants';
+import { DocLinks, Widths } from '../../constants';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 
 interface RoleViewProps extends BreadcrumbsPageDependencies {
@@ -273,9 +274,15 @@ export function RoleView(props: RoleViewProps) {
             <EuiPageContentHeader>
               <EuiPageContentHeaderSection>
                 <EuiTitle size="s">
-                  <h3>Mapped users ({mappedUsers.length})</h3>
+                  <h3>
+                    Mapped users
+                    <span style={{ color: '#687078', fontWeight: 'normal' }}>
+                      {' '}
+                      ({mappedUsers.length})
+                    </span>
+                  </h3>
                 </EuiTitle>
-                <EuiText size="xs" color="subdued">
+                <EuiText size="xs" color="subdued" style={{ maxWidth: Widths.width75 }}>
                   You can map two types of users: 1. Internal users within the Security plugin. An
                   internal user can have its own backend role and host for an external
                   authentication and authorization. 2. External identity, which directly maps to
@@ -309,6 +316,7 @@ export function RoleView(props: RoleViewProps) {
                 </EuiFlexGroup>
               </EuiPageContentHeaderSection>
             </EuiPageContentHeader>
+            <EuiHorizontalRule margin="s" />
             <EuiPageBody>
               <EuiInMemoryTable
                 loading={mappedUsers === [] && !errorFlag}
