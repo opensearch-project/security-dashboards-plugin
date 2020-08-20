@@ -323,7 +323,7 @@ describe('start kibana server', () => {
         users: [testUsername],
       });
     } else {
-      let readAllRoleMapping = getReadAllRoleMappingResponse.body;
+      const readAllRoleMapping = getReadAllRoleMappingResponse.body;
       const updatedUsers = readAllRoleMapping.users.push(testUsername);
       createOrUpdateEntityAsAdmin(root, 'rolesmapping', readAllRole, {
         backend_roles: [],

@@ -19,9 +19,9 @@ import * as kbnTestServer from '../../../../src/test_utils/kbn_server';
 import { AUTHORIZATION_HEADER_NAME } from '../constant';
 
 export function extractAuthCookie(response: Response) {
-  const setCookieHeaders = response.header['set-cookie'] as Array<string>;
+  const setCookieHeaders = response.header['set-cookie'] as string[];
   let securityAuthCookie: string;
-  for (let setCookie of setCookieHeaders) {
+  for (const setCookie of setCookieHeaders) {
     if (setCookie.startsWith('security_authentication=')) {
       securityAuthCookie = setCookie.split(';')[0];
       break;
