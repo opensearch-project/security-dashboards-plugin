@@ -21,8 +21,6 @@ import {
   EuiButtonIcon,
   EuiText,
   EuiFlexGroup,
-  EuiIcon,
-  EuiToolTip,
 } from '@elastic/eui';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import {
@@ -34,7 +32,7 @@ import {
 import { truncatedListView, displayArray } from '../../utils/display-utils';
 import { PermissionTree } from '../permission-tree';
 import { getFieldLevelSecurityMethod } from '../../utils/index-permission-utils';
-import { renderExpression } from '../../utils/display-utils';
+import { renderExpression, displayHeaderWithTooltip } from '../../utils/display-utils';
 import { ToolTipContent } from '../../constants';
 
 function toggleRowDetails(
@@ -100,13 +98,9 @@ function getColumns(
     },
     {
       field: 'dls',
-      name: (
-        <EuiToolTip content={ToolTipContent.DocumentLevelSecurity}>
-          <span>
-            Document-level security{' '}
-            <EuiIcon size="s" color="subdued" type="questionInCircle" className="eui-alignTop" />
-          </span>
-        </EuiToolTip>
+      name: displayHeaderWithTooltip(
+        'Document-level security',
+        ToolTipContent.DocumentLevelSecurity
       ),
       render: (dls: string) => {
         if (!dls) {
@@ -118,14 +112,7 @@ function getColumns(
     },
     {
       field: 'fls',
-      name: (
-        <EuiToolTip content={ToolTipContent.FieldLevelSecurity}>
-          <span>
-            Field-level security{' '}
-            <EuiIcon size="s" color="subdued" type="questionInCircle" className="eui-alignTop" />
-          </span>
-        </EuiToolTip>
-      ),
+      name: displayHeaderWithTooltip('Field-level security', ToolTipContent.FieldLevelSecurity),
       render: renderFieldLevelSecurity(),
     },
     {
