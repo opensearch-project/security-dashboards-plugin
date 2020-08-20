@@ -146,3 +146,12 @@ export enum DocLinks {
   MapUsersToRolesDoc = 'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/users-roles/#map-users-to-roles',
   AuditLogsDoc = 'https://opendistro.github.io/for-elasticsearch-docs/docs/security/audit-logs/',
 }
+
+export enum ToolTipContent {
+  DocumentLevelSecurity = 'Document-level security lets you restrict a role to a subset of documents in an index.',
+  FieldLevelSecurity = 'Field-level security lets you control which document fields a user can see.',
+}
+
+export enum Widths {
+  width75 = '75%',
+}

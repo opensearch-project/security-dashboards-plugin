@@ -147,7 +147,7 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
     },
   ];
 
-  const headerText = 'Tenants (' + tenantPermissionDetail.length + ')';
+  const headerText = 'Tenant permissions';
   return (
     <>
       <PanelWithHeader
@@ -156,6 +156,7 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
         Tenants are useful for safely sharing your work with other Kibana users. 
         You can control which roles have access to a tenant and whether those roles have read or write access."
         helpLink="/"
+        count={tenantPermissionDetail.length}
       >
         <EuiInMemoryTable
           loading={tenantPermissionDetail === [] && !errorFlag}

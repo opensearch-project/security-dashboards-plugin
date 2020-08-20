@@ -22,7 +22,7 @@ export function ClusterPermissionPanel(props: {
   clusterPermissions: string[];
   actionGroups: DataObject<ActionGroupItem>;
 }) {
-  const headerText = 'Cluster permissions (' + props.clusterPermissions.length + ')';
+  const headerText = 'Cluster permissions';
 
   return (
     <PanelWithHeader
@@ -31,6 +31,7 @@ export function ClusterPermissionPanel(props: {
       specify permissions using both action groups or single permissions. An action
       group is a list of single permissions."
       helpLink="/"
+      count={props.clusterPermissions.length}
     >
       <PermissionTree permissions={props.clusterPermissions} actionGroups={props.actionGroups} />
     </PanelWithHeader>

@@ -15,6 +15,7 @@
 
 import React from 'react';
 import { EuiPanel, EuiTitle, EuiText, EuiLink, EuiHorizontalRule } from '@elastic/eui';
+import { Widths } from '../constants';
 
 interface PanelWithHeaderDeps {
   headerText: string;
@@ -22,6 +23,7 @@ interface PanelWithHeaderDeps {
   helpLink?: string;
   children?: React.ReactNode;
   optional?: boolean;
+  count?: number;
 }
 
 export function PanelWithHeader(props: PanelWithHeaderDeps) {
@@ -31,14 +33,17 @@ export function PanelWithHeader(props: PanelWithHeaderDeps) {
         <h3>
           {props.headerText}
           {props.optional && <i> - optional</i>}
+          {props.count?.toString() && (
+            <span style={{ color: '#687078', fontWeight: 'normal' }}> ({props.count})</span>
+          )}
         </h3>
       </EuiTitle>
-      <EuiText size="xs" color="subdued">
+      <EuiText size="xs" color="subdued" style={{ maxWidth: Widths.width75 }}>
         {props.headerSubText}
         {props.helpLink && (
           <>
             {' '}
-            <EuiLink href="{props.helpLink}" external>
+            <EuiLink href={props.helpLink} external>
               Learn more
             </EuiLink>
           </>
