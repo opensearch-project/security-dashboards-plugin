@@ -49,16 +49,13 @@ import { useToastState } from '../../utils/toast-utils';
 import { displayBoolean } from '../../utils/display-utils';
 import { ViewSettingGroup } from './view-setting-group';
 import { updateAuditLogging } from '../../utils/audit-logging-utils';
+import './_index.scss';
 
 interface AuditLoggingProps extends AppDependencies {
   fromType: string;
 }
 
 function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: boolean) {
-  const describedFormGroupStyle = {
-    maxWidth: '1500px',
-  };
-
   return (
     <EuiPanel>
       <EuiTitle>
@@ -66,8 +63,8 @@ function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: bool
       </EuiTitle>
       <EuiHorizontalRule />
       <EuiForm>
-        <EuiDescribedFormGroup title={<h3>Storage location</h3>} style={describedFormGroupStyle}>
-          <EuiFormRow style={{ maxWidth: '800px' }}>
+        <EuiDescribedFormGroup title={<h3>Storage location</h3>} className="described-form-group">
+          <EuiFormRow className="form-row">
             <EuiText color="subdued" grow={false}>
               Configure the output location and storage types in{' '}
               <EuiCode>elasticsearch.yml</EuiCode>. The default storage location is{' '}
@@ -82,7 +79,7 @@ function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: bool
 
         <EuiDescribedFormGroup
           title={<h3>Enable audit logging</h3>}
-          style={describedFormGroupStyle}
+          className="described-form-group"
         >
           <EuiFormRow>
             <EuiSwitch
