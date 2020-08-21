@@ -32,7 +32,12 @@ import { keys } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { ClientConfigType } from '../../types';
 import { GENERIC_ERROR_INSTRUCTION } from '../apps-constants';
-import { selectTenant } from '../configuration/utils/tenant-utils';
+import {
+  RESOLVED_GLOBAL_TENANT,
+  RESOLVED_PRIVATE_TENANT,
+  resolveTenantName,
+  selectTenant,
+} from '../configuration/utils/tenant-utils';
 import { fetchAccountInfo } from './utils';
 
 interface TenantSwitchPanelProps {
@@ -51,13 +56,31 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
   const [username, setUsername] = useState<string>('');
   const [errorCallOut, setErrorCallOut] = useState<string>('');
 
+  const setCurrentTenant = (currentRawTenantName: string, currentUserName: string) => {
+    const resolvedTenantName = resolveTenantName(currentRawTenantName, currentUserName);
+
+    if (resolvedTenantName === RESOLVED_GLOBAL_TENANT) {
+      setTenantSwitchRadioIdSelected(GLOBAL_TENANT_RADIO_ID);
+    } else if (resolvedTenantName === RESOLVED_PRIVATE_TENANT) {
+      setTenantSwitchRadioIdSelected(PRIVATE_TENANT_RADIO_ID);
+    } else {
+      setTenantSwitchRadioIdSelected(CUSTOM_TENANT_RADIO_ID);
+      setSelectedCustomTenantOption(resolvedTenantName);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const accountInfo = await fetchAccountInfo(props.coreStart.http);
         const tenantsInfo = accountInfo.data.tenants || {};
         setTenants(keys(tenantsInfo).filter((tenantName) => tenantsInfo[tenantName]));
-        setUsername(accountInfo.data.user_name);
+
+        const currentUserName = accountInfo.data.user_name;
+        setUsername(currentUserName);
+
+        const currentRawTenantName = accountInfo.data.user_requested_tenant;
+        setCurrentTenant(currentRawTenantName, currentUserName);
       } catch (e) {
         // TODO: switch to better error display.
         console.error(e);
