@@ -29,7 +29,7 @@ import {
 } from '@elastic/eui';
 import React from 'react';
 import { AppDependencies } from '../../types';
-import securityStepsDiagram from '../../../assets/get_started.png';
+import securityStepsDiagram from '../../../assets/get_started.svg';
 import { buildHashUrl } from '../utils/url-builder';
 import { Action, ResourceType } from '../types';
 import { DocLinks } from '../constants';
@@ -121,7 +121,7 @@ const setOfSteps = [
     ),
   },
   {
-    title: 'Map roles',
+    title: 'Map users',
     children: (
       <>
         <EuiText size="s" color="subdued">
