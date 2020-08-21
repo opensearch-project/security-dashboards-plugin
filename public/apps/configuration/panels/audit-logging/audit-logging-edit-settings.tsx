@@ -37,7 +37,7 @@ import { EditSettingGroup } from './edit-setting-group';
 import { AuditLoggingSettings } from './types';
 import { buildHashUrl } from '../../utils/url-builder';
 import { ResourceType } from '../../types';
-import { updateAuditLogging } from '../../utils/audit-logging-view-utils';
+import { updateAuditLogging } from '../../utils/audit-logging-utils';
 import { API_ENDPOINT_AUDITLOGGING } from '../../constants';
 import { useToastState } from '../../utils/toast-utils';
 
