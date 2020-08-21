@@ -19,19 +19,22 @@ import { EuiOverlayMask, EuiConfirmModal } from '@elastic/eui';
 /**
  *
  * @param handleDelete: [Type: func] delete function which needs to be execute on click of confirm button.
- * @param noOfSelectedItems: Count of selected Items for deletion.
- * @param entity: e.g. roles, tenants, users, mapping etc. This will display in confirmation text before deletion.
+ * @param entity: e.g. role(s), tenant(s), user(s), mapping etc. This will display in confirmation text before deletion.
  * @param customConfirmationText: If you want other than default confirm message, pass it as customConfirmationText.
  */
 export function useDeleteConfirmState(
   handleDelete: () => Promise<void>,
-  noOfSelectedItems: number,
   entity: string,
   customConfirmationText?: React.ReactNode
-): [() => void, () => void, React.ReactNode] {
+): [() => void, React.ReactNode] {
   const [isDeleteConfirmModalVisible, setIsDeleteConfirmModalVisible] = useState(false);
   const closeDeleteConfirmModal = () => setIsDeleteConfirmModalVisible(false);
   const showDeleteConfirmModal = () => setIsDeleteConfirmModalVisible(true);
+
+  const handleConfirm = async () => {
+    await handleDelete();
+    closeDeleteConfirmModal();
+  };
 
   let deleteConfirmModal;
   if (isDeleteConfirmModalVisible) {
@@ -40,7 +43,7 @@ export function useDeleteConfirmState(
         <EuiConfirmModal
           title="Confirm Delete"
           onCancel={closeDeleteConfirmModal}
-          onConfirm={handleDelete}
+          onConfirm={handleConfirm}
           cancelButtonText="Cancel"
           confirmButtonText="Confirm"
           defaultFocusedButton="confirm"
@@ -48,13 +51,11 @@ export function useDeleteConfirmState(
           {customConfirmationText ? (
             customConfirmationText
           ) : (
-            <p>
-              Do you really want to delete selected {noOfSelectedItems} {entity}?
-            </p>
+            <p>Do you really want to delete selected {entity}?</p>
           )}
         </EuiConfirmModal>
       </EuiOverlayMask>
     );
   }
-  return [closeDeleteConfirmModal, showDeleteConfirmModal, deleteConfirmModal];
+  return [showDeleteConfirmModal, deleteConfirmModal];
 }

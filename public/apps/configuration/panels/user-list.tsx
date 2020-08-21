@@ -43,6 +43,7 @@ import {
 } from '../utils/internal-user-list-utils';
 import { buildHashUrl } from '../utils/url-builder';
 import { API_ENDPOINT_INTERNALUSERS } from '../constants';
+import { useDeleteConfirmState } from '../utils/delete-confirm-modal-utils';
 
 function dictView() {
   return (items: Dictionary<string>) => {
@@ -126,6 +127,11 @@ export function UserList(props: AppDependencies) {
     }
   };
 
+  const [showDeleteConfirmModal, deleteConfirmModal] = useDeleteConfirmState(
+    handleDelete,
+    'user(s)'
+  );
+
   const actionsMenuItems = [
     <EuiContextMenuItem
       key="edit"
@@ -163,7 +169,7 @@ export function UserList(props: AppDependencies) {
     </EuiContextMenuItem>,
     <EuiContextMenuItem
       key="delete"
-      onClick={handleDelete}
+      onClick={showDeleteConfirmModal}
       disabled={selection.length === 0 || selection.some((e) => e.username === currentUsername)}
     >
       Delete
@@ -254,6 +260,7 @@ export function UserList(props: AppDependencies) {
             error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
           />
         </EuiPageBody>
+        {deleteConfirmModal}
       </EuiPageContent>
     </>
   );
