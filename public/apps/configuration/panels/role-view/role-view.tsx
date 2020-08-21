@@ -32,6 +32,7 @@ import {
   EuiEmptyPrompt,
   EuiCallOut,
   EuiGlobalToastList,
+  EuiHorizontalRule,
 } from '@elastic/eui';
 import { difference } from 'lodash';
 import { BreadcrumbsPageDependencies } from '../../../types';
@@ -273,9 +274,12 @@ export function RoleView(props: RoleViewProps) {
             <EuiPageContentHeader>
               <EuiPageContentHeaderSection>
                 <EuiTitle size="s">
-                  <h3>Mapped users ({mappedUsers.length})</h3>
+                  <h3>
+                    Mapped users
+                    <span className="panel-header-count"> ({mappedUsers.length})</span>
+                  </h3>
                 </EuiTitle>
-                <EuiText size="xs" color="subdued">
+                <EuiText size="xs" color="subdued" className="panel-header-subtext">
                   You can map two types of users: 1. Internal users within the Security plugin. An
                   internal user can have its own backend role and host for an external
                   authentication and authorization. 2. External identity, which directly maps to
@@ -309,6 +313,7 @@ export function RoleView(props: RoleViewProps) {
                 </EuiFlexGroup>
               </EuiPageContentHeaderSection>
             </EuiPageContentHeader>
+            <EuiHorizontalRule margin="s" />
             <EuiPageBody>
               <EuiInMemoryTable
                 loading={mappedUsers === [] && !errorFlag}

@@ -22,6 +22,7 @@ interface PanelWithHeaderDeps {
   helpLink?: string;
   children?: React.ReactNode;
   optional?: boolean;
+  count?: number;
 }
 
 export function PanelWithHeader(props: PanelWithHeaderDeps) {
@@ -31,14 +32,15 @@ export function PanelWithHeader(props: PanelWithHeaderDeps) {
         <h3>
           {props.headerText}
           {props.optional && <i> - optional</i>}
+          {props.count?.toString() && <span className="panel-header-count"> ({props.count})</span>}
         </h3>
       </EuiTitle>
-      <EuiText size="xs" color="subdued">
+      <EuiText size="xs" color="subdued" className="panel-header-subtext">
         {props.headerSubText}
         {props.helpLink && (
           <>
             {' '}
-            <EuiLink href="{props.helpLink}" external>
+            <EuiLink href={props.helpLink} external>
               Learn more
             </EuiLink>
           </>

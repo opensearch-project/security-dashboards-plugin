@@ -15,7 +15,7 @@
 
 // TODO: call the util functions from wherever applicable.
 
-import { EuiFlexItem, EuiText, EuiIcon, EuiFlexGroup } from '@elastic/eui';
+import { EuiFlexItem, EuiText, EuiIcon, EuiFlexGroup, EuiToolTip } from '@elastic/eui';
 import { isEmpty } from 'lodash';
 
 import React from 'react';
@@ -90,4 +90,15 @@ export const renderExpression = (title: string, expression: object) => {
   }
 
   return <ExpressionModal title={title} expression={expression} />;
+};
+
+export const displayHeaderWithTooltip = (columnHeader: string, tooltipText: string) => {
+  return (
+    <EuiToolTip content={tooltipText}>
+      <span>
+        {columnHeader}{' '}
+        <EuiIcon size="s" color="subdued" type="questionInCircle" className="eui-alignTop" />
+      </span>
+    </EuiToolTip>
+  );
 };

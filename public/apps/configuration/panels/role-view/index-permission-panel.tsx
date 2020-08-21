@@ -32,7 +32,8 @@ import {
 import { truncatedListView, displayArray } from '../../utils/display-utils';
 import { PermissionTree } from '../permission-tree';
 import { getFieldLevelSecurityMethod } from '../../utils/index-permission-utils';
-import { renderExpression } from '../../utils/display-utils';
+import { renderExpression, displayHeaderWithTooltip } from '../../utils/display-utils';
+import { ToolTipContent } from '../../constants';
 
 function toggleRowDetails(
   item: RoleIndexPermissionView,
@@ -97,7 +98,10 @@ function getColumns(
     },
     {
       field: 'dls',
-      name: 'Document-level security',
+      name: displayHeaderWithTooltip(
+        'Document-level security',
+        ToolTipContent.DocumentLevelSecurity
+      ),
       render: (dls: string) => {
         if (!dls) {
           return '-';
@@ -108,7 +112,7 @@ function getColumns(
     },
     {
       field: 'fls',
-      name: 'Field-level security',
+      name: displayHeaderWithTooltip('Field-level security', ToolTipContent.FieldLevelSecurity),
       render: renderFieldLevelSecurity(),
     },
     {
@@ -141,7 +145,7 @@ interface IndexPermissionPanelProps {
 export function IndexPermissionPanel(props: IndexPermissionPanelProps) {
   const [itemIdToExpandedRowMap, setItemIdToExpandedRowMap] = useState<ExpandedRowMapInterface>({});
 
-  const headerText = 'Index permissions (' + props.indexPermissions.length + ')';
+  const headerText = 'Index permissions';
   return (
     <PanelWithHeader
       headerText={headerText}
@@ -149,6 +153,7 @@ export function IndexPermissionPanel(props: IndexPermissionPanelProps) {
       and which document fields a user can see as well. If you use field-level security in conjunction with document-level security,
       make sure you don't restrict access to the fields that document-level security uses."
       helpLink="/"
+      count={props.indexPermissions.length}
     >
       <EuiInMemoryTable
         loading={props.indexPermissions === [] && !props.errorFlag}
