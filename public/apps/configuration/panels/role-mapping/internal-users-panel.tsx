@@ -20,6 +20,7 @@ import { PanelWithHeader } from '../../utils/panel-with-header';
 import { FormRow } from '../../utils/form-row';
 import { buildHashUrl } from '../../utils/url-builder';
 import { ResourceType, Action } from '../../types';
+import { ExternalLinkButton } from '../../utils/display-utils';
 
 export function InternalUsersPanel(props: {
   state: ComboBoxOptions;
@@ -45,15 +46,10 @@ export function InternalUsersPanel(props: {
               <EuiComboBox options={optionUniverse} selectedOptions={state} onChange={setState} />
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiButton
-                iconType="popout"
-                iconSide="right"
-                onClick={() => {
-                  window.location.href = buildHashUrl(ResourceType.users, Action.create);
-                }}
-              >
-                Create new internal user
-              </EuiButton>
+              <ExternalLinkButton
+                text="Create new internal user"
+                href={buildHashUrl(ResourceType.users, Action.create)}
+              />
             </EuiFlexItem>
           </EuiFlexGroup>
         </FormRow>

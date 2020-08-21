@@ -13,11 +13,15 @@
  *   permissions and limitations under the License.
  */
 
+import './_index.scss';
 import React, { Dispatch, SetStateAction } from 'react';
-import { EuiForm, EuiFlexGroup, EuiFlexItem, EuiComboBox, EuiButton } from '@elastic/eui';
-import { ComboBoxOptions } from '../../types';
+import { EuiForm, EuiFlexGroup, EuiFlexItem, EuiComboBox } from '@elastic/eui';
+import { ComboBoxOptions, ResourceType, Action } from '../../types';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { FormRow } from '../../utils/form-row';
+import { LIMIT_WIDTH_INPUT_CLASS } from './constant';
+import { ExternalLinkButton } from '../../utils/display-utils';
+import { buildHashUrl } from '../../utils/url-builder';
 
 export function ClusterPermissionPanel(props: {
   state: ComboBoxOptions;
@@ -39,16 +43,15 @@ export function ClusterPermissionPanel(props: {
         also create your own reusable permission groups."
         >
           <EuiFlexGroup>
-            <EuiFlexItem style={{ maxWidth: '400px' }}>
+            <EuiFlexItem className={LIMIT_WIDTH_INPUT_CLASS}>
               <EuiComboBox options={optionUniverse} selectedOptions={state} onChange={setState} />
             </EuiFlexItem>
+            {/* TODO: 'Browse and select' button with a pop-up modal for selection */}
             <EuiFlexItem grow={false}>
-              <EuiButton>Browse and select</EuiButton>
-            </EuiFlexItem>
-            <EuiFlexItem grow={false}>
-              <EuiButton iconType="popout" iconSide="right">
-                Create new action group
-              </EuiButton>
+              <ExternalLinkButton
+                href={buildHashUrl(ResourceType.permissions, Action.create)}
+                text="Create new permission group"
+              />
             </EuiFlexItem>
           </EuiFlexGroup>
         </FormRow>

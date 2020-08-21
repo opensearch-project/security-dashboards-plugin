@@ -13,6 +13,7 @@
  *   permissions and limitations under the License.
  */
 
+import './_index.scss';
 import {
   EuiAccordion,
   EuiButton,
@@ -25,7 +26,7 @@ import {
 } from '@elastic/eui';
 import React, { Dispatch, Fragment, SetStateAction } from 'react';
 import { isEmpty } from 'lodash';
-import { RoleIndexPermission } from '../../types';
+import { RoleIndexPermission, ResourceType, Action } from '../../types';
 import {
   appendElementToArray,
   removeElementFromArray,
@@ -41,6 +42,9 @@ import { PanelWithHeader } from '../../utils/panel-with-header';
 import { RoleIndexPermissionStateClass } from './types';
 import { FieldLevelSecurityMethod, ComboBoxOptions } from '../../types';
 import { getFieldLevelSecurityMethod } from '../../utils/index-permission-utils';
+import { LIMIT_WIDTH_INPUT_CLASS } from './constant';
+import { buildHashUrl } from '../../utils/url-builder';
+import { ExternalLinkButton } from '../../utils/display-utils';
 
 export function getEmptyIndexPermission(): RoleIndexPermissionStateClass {
   return {
@@ -140,7 +144,7 @@ function IndexPermissionRow(props: {
         You can also create your own reusable permission groups."
     >
       <EuiFlexGroup>
-        <EuiFlexItem style={{ maxWidth: '400px' }}>
+        <EuiFlexItem className={LIMIT_WIDTH_INPUT_CLASS}>
           <EuiComboBox
             placeholder="Search for action group name or permission name"
             options={props.permisionOptionsSet}
@@ -148,13 +152,12 @@ function IndexPermissionRow(props: {
             onChange={props.onChangeHandler}
           />
         </EuiFlexItem>
+        {/* TODO: 'Browse and select' button with a pop-up modal for selection */}
         <EuiFlexItem grow={false}>
-          <EuiButton>Browse and select</EuiButton>
-        </EuiFlexItem>
-        <EuiFlexItem grow={false}>
-          <EuiButton iconType="popout" iconSide="right">
-            Create new permission group
-          </EuiButton>
+          <ExternalLinkButton
+            href={buildHashUrl(ResourceType.permissions, Action.create)}
+            text="Create new permission group"
+          />
         </EuiFlexItem>
       </EuiFlexGroup>
     </FormRow>

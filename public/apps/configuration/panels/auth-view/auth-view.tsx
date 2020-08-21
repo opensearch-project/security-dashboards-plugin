@@ -14,11 +14,12 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { EuiButton, EuiCode, EuiPageHeader, EuiSpacer, EuiText, EuiTitle } from '@elastic/eui';
+import { EuiCode, EuiPageHeader, EuiSpacer, EuiText, EuiTitle } from '@elastic/eui';
 import { AuthenticationSequencePanel } from './authentication-sequence-panel';
 import { AuthorizationPanel } from './authorization-panel';
 import { API_ENDPOINT_SECURITYCONFIG } from '../../constants';
 import { AppDependencies } from '../../../types';
+import { ExternalLinkButton } from '../../utils/display-utils';
 
 function renderInstructionView() {
   return (
@@ -49,9 +50,7 @@ function renderInstructionView() {
       <EuiSpacer />
 
       <div style={{ textAlign: 'center' }}>
-        <EuiButton iconType="popout" iconSide="right" fill size="s" fullWidth={false}>
-          Create config.yml
-        </EuiButton>
+        <ExternalLinkButton fill size="s" href="" text="Create config.yml" />
       </div>
     </>
   );
@@ -87,9 +86,7 @@ export function AuthView(props: AppDependencies) {
         <EuiTitle size="l">
           <h1>Authentication and authorization</h1>
         </EuiTitle>
-        <EuiButton iconType="popout" iconSide="right">
-          Manage via config.yml
-        </EuiButton>
+        <ExternalLinkButton href="" text="Manage via config.yml" />
       </EuiPageHeader>
       <AuthenticationSequencePanel authc={authentication} />
       <EuiSpacer size="m" />
