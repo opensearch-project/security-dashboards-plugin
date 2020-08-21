@@ -16,7 +16,7 @@
 import { EuiButton, EuiComboBox, EuiFlexGroup, EuiFlexItem, EuiSuperSelect } from '@elastic/eui';
 import React, { Dispatch, Fragment, SetStateAction } from 'react';
 import { isEmpty } from 'lodash';
-import { RoleTenantPermission, TenantPermissionType } from '../../types';
+import { RoleTenantPermission, TenantPermissionType, ComboBoxOptions } from '../../types';
 import {
   appendElementToArray,
   removeElementFromArray,
@@ -29,7 +29,7 @@ import {
 } from '../../utils/combo-box-utils';
 import { FormRow } from '../../utils/form-row';
 import { PanelWithHeader } from '../../utils/panel-with-header';
-import { ComboBoxOptions, RoleTenantPermissionStateClass } from './types';
+import { RoleTenantPermissionStateClass } from './types';
 import { TENANT_READ_PERMISSION, TENANT_WRITE_PERMISSION } from '../../constants';
 import { getTenantPermissionType } from '../../utils/tenant-utils';
 
@@ -68,7 +68,7 @@ export function unbuildTenantPermissionState(
 function getEmptyTenantPermission(): RoleTenantPermissionStateClass {
   return {
     tenantPatterns: [],
-    permissionType: TenantPermissionType.None,
+    permissionType: TenantPermissionType.Full,
   };
 }
 
@@ -134,7 +134,7 @@ export function TenantPanel(props: {
   }
   return (
     <PanelWithHeader
-      headerText="Tenants"
+      headerText="Tenant permissions"
       headerSubText="Tenants are useful for safely sharing your work with other Kibana users. You can control which roles have access to a tenant and whether those roles have read or write access."
       helpLink="/"
     >
@@ -147,7 +147,7 @@ export function TenantPanel(props: {
           appendElementToArray(setState, [], getEmptyTenantPermission());
         }}
       >
-        Add another tenant
+        Add another tenant permission
       </EuiButton>
     </PanelWithHeader>
   );

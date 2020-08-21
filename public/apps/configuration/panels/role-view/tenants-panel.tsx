@@ -14,7 +14,13 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { EuiInMemoryTable, EuiLink, EuiText, EuiGlobalToastList } from '@elastic/eui';
+import {
+  EuiInMemoryTable,
+  EuiLink,
+  EuiText,
+  EuiGlobalToastList,
+  EuiBasicTableColumn,
+} from '@elastic/eui';
 import { CoreStart } from 'kibana/public';
 import { getAuthInfo } from '../../../../utils/auth-info-utils';
 import { PanelWithHeader } from '../../utils/panel-with-header';
@@ -92,7 +98,7 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
     }
   };
 
-  const columns = [
+  const columns: Array<EuiBasicTableColumn<RoleTenantPermissionDetail>> = [
     {
       field: 'tenant_patterns',
       name: 'Name',

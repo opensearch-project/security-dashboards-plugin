@@ -99,12 +99,15 @@ export async function selectTenant(http: HttpStart, selectObject: TenantSelect) 
   });
 }
 
+export const RESOLVED_GLOBAL_TENANT = 'Global';
+export const RESOLVED_PRIVATE_TENANT = 'Private';
+
 export function resolveTenantName(tenant: string, userName: string) {
   if (!tenant || tenant === 'undefined') {
-    return 'Global';
+    return RESOLVED_GLOBAL_TENANT;
   }
   if (tenant === userName || tenant === '__user__') {
-    return 'Private';
+    return RESOLVED_PRIVATE_TENANT;
   } else {
     return tenant;
   }
