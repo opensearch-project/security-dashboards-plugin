@@ -98,7 +98,7 @@ export function renderExpression(title: string, expression: object) {
   }
 
   return <ExpressionModal title={title} expression={expression} />;
-};
+}
 
 export const displayHeaderWithTooltip = (columnHeader: string, tooltipText: string) => {
   return (
