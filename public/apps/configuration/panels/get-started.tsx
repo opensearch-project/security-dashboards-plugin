@@ -33,6 +33,7 @@ import securityStepsDiagram from '../../../assets/get_started.svg';
 import { buildHashUrl } from '../utils/url-builder';
 import { Action, ResourceType } from '../types';
 import { DocLinks } from '../constants';
+import { ExternalLinkButton } from '../utils/display-utils';
 
 const setOfSteps = [
   {
@@ -55,15 +56,11 @@ const setOfSteps = [
 
         <EuiFlexGroup gutterSize="s">
           <EuiFlexItem grow={false}>
-            <EuiButton
+            <ExternalLinkButton
               fill
-              iconType="popout"
-              iconSide="right"
               href={DocLinks.BackendConfigurationDoc}
-              target="_blank"
-            >
-              Create config.yml
-            </EuiButton>
+              text="Create config.yml"
+            />
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <EuiButton
@@ -168,9 +165,7 @@ export function GetStarted(props: AppDependencies) {
         <EuiTitle size="l">
           <h1>Get started</h1>
         </EuiTitle>
-        <EuiButton iconType="popout" iconSide="right" href={buildHashUrl()} target="_blank">
-          Open in new window
-        </EuiButton>
+        <ExternalLinkButton text="Open in new window" href={buildHashUrl()} />
       </EuiPageHeader>
 
       <EuiPanel paddingSize="l" style={{ maxWidth: panelMaxWidth }}>

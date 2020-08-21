@@ -15,7 +15,15 @@
 
 // TODO: call the util functions from wherever applicable.
 
-import { EuiFlexItem, EuiText, EuiIcon, EuiFlexGroup, EuiToolTip } from '@elastic/eui';
+import {
+  EuiFlexItem,
+  EuiText,
+  EuiIcon,
+  EuiFlexGroup,
+  EuiButton,
+  EuiButtonProps,
+  EuiToolTip,
+} from '@elastic/eui';
 import { isEmpty } from 'lodash';
 
 import React from 'react';
@@ -84,13 +92,13 @@ export function truncatedListView(limit = 3) {
   };
 }
 
-export const renderExpression = (title: string, expression: object) => {
+export function renderExpression(title: string, expression: object) {
   if (isEmpty(expression)) {
     return '-';
   }
 
   return <ExpressionModal title={title} expression={expression} />;
-};
+}
 
 export const displayHeaderWithTooltip = (columnHeader: string, tooltipText: string) => {
   return (
@@ -102,3 +110,12 @@ export const displayHeaderWithTooltip = (columnHeader: string, tooltipText: stri
     </EuiToolTip>
   );
 };
+
+export function ExternalLinkButton(props: { text: string; href: string } & EuiButtonProps) {
+  const { text, ...buttonProps } = props;
+  return (
+    <EuiButton iconType="popout" iconSide="right" target="_blank" {...buttonProps}>
+      {props.text}
+    </EuiButton>
+  );
+}

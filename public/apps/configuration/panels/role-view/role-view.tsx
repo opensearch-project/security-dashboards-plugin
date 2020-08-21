@@ -64,6 +64,7 @@ import { transformRoleIndexPermissions } from '../../utils/index-permission-util
 import { transformRoleTenantPermissions } from '../../utils/tenant-utils';
 import { DocLinks } from '../../constants';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
+import { ExternalLinkButton } from '../../utils/display-utils';
 
 interface RoleViewProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -182,15 +183,10 @@ export function RoleView(props: RoleViewProps) {
       actions={
         <EuiFlexGroup gutterSize="s">
           <EuiFlexItem grow={false}>
-            <EuiButton
-              iconType="popout"
-              iconSide="right"
-              onClick={() => {
-                window.location.href = buildHashUrl(ResourceType.users, Action.create);
-              }}
-            >
-              Create internal user
-            </EuiButton>
+            <ExternalLinkButton
+              text="Create internal user"
+              href={buildHashUrl(ResourceType.users, Action.create)}
+            />
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <EuiButton
