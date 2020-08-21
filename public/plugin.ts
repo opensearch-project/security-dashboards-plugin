@@ -80,6 +80,7 @@ export class OpendistroSecurityPlugin
     core.application.register({
       id: 'multitenancy',
       title: 'Security',
+      chromeless: true,
       appRoute: SELECT_TENANT_PAGE_URI,
       mount: async (params: AppMountParameters) => {
         const { renderPage } = await import('./apps/account/tenant-selection-page');
