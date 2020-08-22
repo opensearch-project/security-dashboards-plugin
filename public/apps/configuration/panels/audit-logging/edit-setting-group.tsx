@@ -29,11 +29,12 @@ import { comboBoxOptionToString, stringToComboBoxOption } from '../../utils/comb
 import { AuditLoggingSettings } from './types';
 import { SettingContent, SettingGroup, SettingMapItem } from './constants';
 import { JsonCodeEditor } from './code-editor';
+import './_index.scss';
 
 const renderCodeBlock = (setting: SettingContent) => {
   return (
     <>
-      <EuiCodeBlock language="json" paddingSize="none" isCopyable>
+      <EuiCodeBlock paddingSize="none" isCopyable className={'sample-code'}>
         {setting.code}
       </EuiCodeBlock>
     </>
