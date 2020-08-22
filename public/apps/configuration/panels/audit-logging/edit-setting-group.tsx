@@ -34,7 +34,7 @@ import './_index.scss';
 const renderCodeBlock = (setting: SettingContent) => {
   return (
     <>
-      <EuiCodeBlock paddingSize="none" isCopyable className={'sample-code'}>
+      <EuiCodeBlock paddingSize="none" isCopyable>
         {setting.code}
       </EuiCodeBlock>
     </>
