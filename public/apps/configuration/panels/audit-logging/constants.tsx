@@ -45,6 +45,7 @@ export interface SettingContent {
   description: string;
   type: string;
   options?: string[];
+  placeHolder?: string;
   code?: string;
   error?: string;
 }
@@ -52,14 +53,16 @@ export interface SettingContent {
 const REST_LAYER: SettingContent = {
   title: 'REST layer',
   path: 'audit.enable_rest',
-  description: 'Enable or disable auditing events that happen on the REST layer',
+  description: 'Enable or disable auditing events that happen on the REST layer.',
   type: 'bool',
 };
 
 const REST_DISABLED_CATEGORIES: SettingContent = {
   title: 'REST disabled categories',
   path: 'audit.disabled_rest_categories',
-  description: 'Specify audit categories which must be ignored on the REST layer',
+  description:
+    'Specify audit categories which must be ignored on the REST layer. Modifying these could result in ' +
+    'significant overhead.',
   type: 'array',
   options: [
     'BAD_HEADERS',
@@ -69,19 +72,22 @@ const REST_DISABLED_CATEGORIES: SettingContent = {
     'SSL_EXCEPTION',
     'AUTHENTICATED',
   ],
+  placeHolder: 'Select categories',
 };
 
 const TRANSPORT_LAYER: SettingContent = {
   title: 'Transport layer',
   path: 'audit.enable_transport',
-  description: 'Enable or disable auditing events that happen on the Transport layer',
+  description: 'Enable or disable auditing events that happen on the transport layer.',
   type: 'bool',
 };
 
 const TRANSPORT_DISABLED_CATEGORIES: SettingContent = {
   title: 'Transport disabled categories',
   path: 'audit.disabled_transport_categories',
-  description: 'Specify audit categories which must be ignored on the Transport layer',
+  description:
+    'Specify audit categories which must be ignored on the transport layer. Modifying these could result ' +
+    'in significant overhead.',
   type: 'array',
   options: [
     'BAD_HEADERS',
@@ -91,12 +97,15 @@ const TRANSPORT_DISABLED_CATEGORIES: SettingContent = {
     'SSL_EXCEPTION',
     'AUTHENTICATED',
   ],
+  placeHolder: 'Select categories',
 };
 
 const BULK_REQUESTS: SettingContent = {
   title: 'Bulk requests',
   path: 'audit.resolve_bulk_requests',
-  description: 'Resolve bulk requests during auditing of requests.',
+  description:
+    'Resolve bulk requests during auditing of requests. Enabling this will generate a log for each ' +
+    'document request which could result in significant overhead.',
   type: 'bool',
 };
 
@@ -117,15 +126,17 @@ const RESOLVE_INDICES: SettingContent = {
 const SENSITIVE_HEADERS: SettingContent = {
   title: 'Sensitive headers',
   path: 'audit.exclude_sensitive_headers',
-  description: 'Exclude sensitive headers during auditing. Eg: Authorization header',
+  description: 'Exclude sensitive headers during auditing. Eg: Authorization header.',
   type: 'bool',
 };
 
 const IGNORED_USERS: SettingContent = {
   title: 'Ignored users',
   path: 'audit.ignore_users',
-  description: 'Users to ignore during auditing.',
+  description:
+    'Users to ignore during auditing. Changing the defaults could result in significant overhead.',
   type: 'array',
+  placeHolder: 'Add users or user patterns',
 };
 
 const IGNORED_REQUESTS: SettingContent = {
@@ -133,33 +144,34 @@ const IGNORED_REQUESTS: SettingContent = {
   path: 'audit.ignore_requests',
   description: 'Request patterns to ignore during auditing.',
   type: 'array',
+  placeHolder: 'Add request patterns',
 };
 
 const ENABLED: SettingContent = {
   title: 'Compliance logging',
   path: 'compliance.enabled',
-  description: 'Enable or disable compliance logging',
+  description: 'Enable or disable compliance logging.',
   type: 'bool',
 };
 
 const INTERNAL_CONFIG: SettingContent = {
   title: 'Internal config logging',
   path: 'compliance.internal_config',
-  description: 'Enable or disable logging of events on internal security index',
+  description: 'Enable or disable logging of events on internal security index.',
   type: 'bool',
 };
 
 const EXTERNAL_CONFIG: SettingContent = {
   title: 'External config logging',
   path: 'compliance.external_config',
-  description: 'Enable or disable logging of external configuration',
+  description: 'Enable or disable logging of external configuration.',
   type: 'bool',
 };
 
 const READ_METADATA_ONLY: SettingContent = {
   title: 'Read metadata',
   path: 'compliance.read_metadata_only',
-  description: 'Do not log any document fields. Log only metadata of the document',
+  description: 'Do not log any document fields. Log only metadata of the document.',
   type: 'bool',
 };
 
@@ -168,13 +180,15 @@ const READ_IGNORED_USERS: SettingContent = {
   path: 'compliance.read_ignore_users',
   description: 'Users to ignore during auditing.',
   type: 'array',
+  placeHolder: 'Add users or user patterns',
 };
 
 const READ_WATCHED_FIELDS: SettingContent = {
   title: 'Watched fields',
   path: 'compliance.read_watched_fields',
   description:
-    'List the indices and fields to watch during read events. Sample data content is as follows',
+    'List the indices and fields to watch during read events. Adding watched fields will generate one log per document' +
+    'access and could result in significant overhead. Sample data content:',
   type: 'map',
   code: `{
   "index-name-pattern": ["field-name-pattern"],
@@ -187,14 +201,14 @@ const READ_WATCHED_FIELDS: SettingContent = {
 const WRITE_METADATA_ONLY: SettingContent = {
   title: 'Write metadata',
   path: 'compliance.write_metadata_only',
-  description: 'Do not log any document content. Log only metadata of the document',
+  description: 'Do not log any document content. Log only metadata of the document.',
   type: 'bool',
 };
 
 const WRITE_LOG_DIFFS: SettingContent = {
   title: 'Log diffs',
   path: 'compliance.write_log_diffs',
-  description: 'Log only diffs for document updates',
+  description: 'Log only diffs for document updates.',
   type: 'bool',
 };
 
@@ -203,13 +217,17 @@ const WRITE_IGNORED_USERS: SettingContent = {
   path: 'compliance.write_ignore_users',
   description: 'Users to ignore during auditing.',
   type: 'array',
+  placeHolder: 'Add users or user patterns',
 };
 
 const WRITE_WATCHED_FIELDS: SettingContent = {
   title: 'Watch indices',
   path: 'compliance.write_watched_indices',
-  description: 'List the indices to watch during write events.',
+  description:
+    'List the indices to watch during write events. Adding watched indices will generate one log per ' +
+    'document access and could result in significant overhead.',
   type: 'array',
+  placeHolder: 'Add indices',
 };
 
 const CONFIG = {

@@ -151,22 +151,23 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
                 config={editConfig}
                 handleChange={handleChange}
               />
-              <EuiPanel>
-                <EditSettingGroup
-                  settingGroup={SETTING_GROUPS.COMPLIANCE_SETTINGS_READ}
-                  config={editConfig}
-                  handleChange={handleChange}
-                  handleInvalid={handleInvalid}
-                />
-              </EuiPanel>
+
               <EuiSpacer />
-              <EuiPanel>
-                <EditSettingGroup
-                  settingGroup={SETTING_GROUPS.COMPLIANCE_SETTINGS_WRITE}
-                  config={editConfig}
-                  handleChange={handleChange}
-                />
-              </EuiPanel>
+
+              <EditSettingGroup
+                settingGroup={SETTING_GROUPS.COMPLIANCE_SETTINGS_READ}
+                config={editConfig}
+                handleChange={handleChange}
+                handleInvalid={handleInvalid}
+              />
+
+              <EuiSpacer />
+
+              <EditSettingGroup
+                settingGroup={SETTING_GROUPS.COMPLIANCE_SETTINGS_WRITE}
+                config={editConfig}
+                handleChange={handleChange}
+              />
             </>
           )}
         </EuiPanel>
