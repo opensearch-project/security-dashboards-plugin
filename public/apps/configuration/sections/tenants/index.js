@@ -4,7 +4,7 @@ import editTemplate from './views/edit.html';
 import './controller';
 import '../../directives/directives';
 
-import 'ui/autoload/styles';
+// import 'ui/autoload/styles';
 import 'plugins/opendistro_security/apps/configuration/configuration.less';
 
 uiRoutes

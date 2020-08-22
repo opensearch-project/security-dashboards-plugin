@@ -30,7 +30,7 @@
  */
 
 import chrome from 'ui/chrome';
-import 'ui/autoload/styles';
+// import 'ui/autoload/styles';
 /**
  * Reusing the login styles
  */
