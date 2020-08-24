@@ -65,6 +65,7 @@ import { transformRoleTenantPermissions } from '../../utils/tenant-utils';
 import { DocLinks } from '../../constants';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 import { ExternalLinkButton } from '../../utils/display-utils';
+import { loadingSpinner } from '../../utils/loading-spinner-utils';
 
 interface RoleViewProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -98,6 +99,7 @@ export function RoleView(props: RoleViewProps) {
   const [roleTenantPermission, setRoleTenantPermission] = useState<RoleTenantPermissionView[]>([]);
   const [toasts, addToast, removeToast] = useToastState();
   const [isReserved, setIsReserved] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const PERMISSIONS_TAB_INDEX = 0;
   const MAP_USER_TAB_INDEX = 1;
@@ -105,6 +107,7 @@ export function RoleView(props: RoleViewProps) {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const originalRoleMapData = (await getRoleMappingData(
           props.coreStart.http,
           props.roleName
@@ -123,6 +126,8 @@ export function RoleView(props: RoleViewProps) {
         addToast(createUnknownErrorToast('fetchRoleMappingData', 'load data'));
         console.log(e);
         setErrorFlag(true);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -247,6 +252,7 @@ export function RoleView(props: RoleViewProps) {
             indexPermissions={roleIndexPermission}
             actionGroups={actionGroupDict}
             errorFlag={errorFlag}
+            loading={loading}
           />
 
           <EuiSpacer size="m" />
@@ -255,6 +261,7 @@ export function RoleView(props: RoleViewProps) {
             tenantPermissions={roleTenantPermission}
             errorFlag={errorFlag}
             coreStart={props.coreStart}
+            loading={loading}
           />
         </>
       ),
@@ -317,7 +324,7 @@ export function RoleView(props: RoleViewProps) {
                 items={mappedUsers}
                 itemId={'userName'}
                 pagination={true}
-                message={message}
+                message={loading ? loadingSpinner : mappedUsers.length === 0 && message}
                 selection={{ onSelectionChange: setSelection }}
                 sorting={true}
                 error={

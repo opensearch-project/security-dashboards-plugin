@@ -52,6 +52,7 @@ import { TenantEditModal } from './edit-modal';
 import { useToastState, createUnknownErrorToast } from '../../utils/toast-utils';
 import { PageId } from '../../types';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
+import { loadingSpinner, noItemsFoundMsg } from '../../utils/loading-spinner-utils';
 
 export function TenantList(props: AppDependencies) {
   const [tenantData, setTenantData] = useState<Tenant[]>([]);
@@ -63,12 +64,14 @@ export function TenantList(props: AppDependencies) {
   // Modal state
   const [editModal, setEditModal] = useState<ReactNode>(null);
   const [toasts, addToast, removeToast] = useToastState();
+  const [loading, setLoading] = useState(false);
 
   // Configuration
   const isPrivateEnabled = props.config.multitenancy.tenants.enable_private;
 
   const fetchData = useCallback(async () => {
     try {
+      setLoading(true);
       const rawTenantData = await fetchTenants(props.coreStart.http);
       const processedTenantData = transformTenantData(rawTenantData, isPrivateEnabled);
       const activeTenant = await fetchCurrentTenant(props.coreStart.http);
@@ -79,6 +82,8 @@ export function TenantList(props: AppDependencies) {
     } catch (e) {
       console.log(e);
       setErrorFlag(true);
+    } finally {
+      setLoading(false);
     }
   }, [isPrivateEnabled, props.coreStart.http]);
 
@@ -349,6 +354,7 @@ export function TenantList(props: AppDependencies) {
             selection={{ onSelectionChange: setSelection }}
             sorting
             error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
+            message={loading ? loadingSpinner : tenantData.length === 0 && noItemsFoundMsg}
           />
         </EuiPageBody>
       </EuiPageContent>

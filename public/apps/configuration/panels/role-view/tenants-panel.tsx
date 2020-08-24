@@ -36,11 +36,13 @@ import { RoleViewTenantInvalidText } from '../../constants';
 import { PageId } from '../../types';
 import { getNavLinkById } from '../../../../services/chrome_wrapper';
 import { useToastState, createUnknownErrorToast } from '../../utils/toast-utils';
+import { loadingSpinner, noItemsFoundMsg } from '../../utils/loading-spinner-utils';
 
 interface RoleViewTenantsPanelProps {
   tenantPermissions: RoleTenantPermissionView[];
   errorFlag: boolean;
   coreStart: CoreStart;
+  loading: boolean;
 }
 
 export function TenantsPanel(props: RoleViewTenantsPanelProps) {
@@ -170,6 +172,9 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
           items={tenantPermissionDetail}
           sorting={{ sort: { field: 'type', direction: 'asc' } }}
           error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
+          message={
+            props.loading ? loadingSpinner : tenantPermissionDetail.length === 0 && noItemsFoundMsg
+          }
         />
       </PanelWithHeader>
       <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={10000} dismissToast={removeToast} />

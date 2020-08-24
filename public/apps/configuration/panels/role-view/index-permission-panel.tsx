@@ -34,6 +34,7 @@ import { PermissionTree } from '../permission-tree';
 import { getFieldLevelSecurityMethod } from '../../utils/index-permission-utils';
 import { renderExpression, displayHeaderWithTooltip } from '../../utils/display-utils';
 import { ToolTipContent } from '../../constants';
+import { loadingSpinner, noItemsFoundMsg } from '../../utils/loading-spinner-utils';
 
 function toggleRowDetails(
   item: RoleIndexPermissionView,
@@ -140,6 +141,7 @@ interface IndexPermissionPanelProps {
   indexPermissions: RoleIndexPermissionView[];
   actionGroups: DataObject<ActionGroupItem>;
   errorFlag: boolean;
+  loading: boolean;
 }
 
 export function IndexPermissionPanel(props: IndexPermissionPanelProps) {
@@ -164,6 +166,9 @@ export function IndexPermissionPanel(props: IndexPermissionPanelProps) {
         error={props.errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
         isExpandable={true}
         itemIdToExpandedRowMap={itemIdToExpandedRowMap}
+        message={
+          props.loading ? loadingSpinner : props.indexPermissions.length === 0 && noItemsFoundMsg
+        }
       />
     </PanelWithHeader>
   );
