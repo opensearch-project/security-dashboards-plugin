@@ -212,7 +212,7 @@ export function PermissionList(props: AppDependencies) {
 
   const [showDeleteConfirmModal, deleteConfirmModal] = useDeleteConfirmState(
     handleDelete,
-    'user(s)'
+    'action group(s)'
   );
 
   const actionsMenuItems = [
