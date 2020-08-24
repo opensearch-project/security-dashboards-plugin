@@ -18,3 +18,9 @@ export const KIBANA_SERVER_PASSWORD: string = 'kibanaserver';
 
 export const ELASTICSEARCH_VERSION: string = '7.8.0';
 export const SECURITY_ES_PLUGIN_VERSION: string = '1.9.0.0';
+
+export const ADMIN_USER: string = 'admin';
+export const ADMIN_PASSWORD: string = 'admin';
+const ADMIN_USER_PASS: string = `${ADMIN_USER}:${ADMIN_PASSWORD}`;
+export const ADMIN_CREDENTIALS: string = `Basic ${Buffer.from(ADMIN_USER_PASS).toString('base64')}`;
+export const AUTHORIZATION_HEADER_NAME: string = 'Authorization';

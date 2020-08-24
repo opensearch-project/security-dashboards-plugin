@@ -7,3 +7,4 @@ yarn.lock
 /coverage/
 .es/
 yarn-error.log
+kibana-coverage/

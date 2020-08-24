@@ -248,6 +248,7 @@ export function defineRoutes(router: IRouter) {
           },
         });
       } catch (error) {
+        console.log(JSON.stringify(error));
         return errorResponse(response, error);
       }
     }
@@ -775,8 +776,8 @@ export function defineRoutes(router: IRouter) {
           index: request.body.index.join(','),
           ignore_unavailable: true,
           allow_no_indices: true,
-          body: request.body,
         });
+
         return response.ok({
           body: esResponse,
         });
