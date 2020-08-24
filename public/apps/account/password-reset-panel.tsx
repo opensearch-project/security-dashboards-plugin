@@ -29,6 +29,7 @@ import { CoreStart } from 'kibana/public';
 import { FormRow } from '../configuration/utils/form-row';
 import { API_ENDPOINT_ACCOUNT_INFO } from './constants';
 import { logout } from './utils';
+import { PASSWORD_INSTRUCTION } from '../apps-constants';
 
 interface PasswordResetPanelProps {
   coreStart: CoreStart;
@@ -111,8 +112,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
 
           <FormRow
             headerText="New password"
-            helpText="The password must contain from m to n characters. Valid characters are [for example lowercase a-z
-            , 0-9, and - (hyphen)]"
+            helpText={PASSWORD_INSTRUCTION}
             isInvalid={isNewPasswordInvalid}
             error={newPasswordError}
           >
