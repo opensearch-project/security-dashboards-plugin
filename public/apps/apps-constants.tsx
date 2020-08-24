@@ -16,3 +16,7 @@
 // TODO: use this constant for wherever the generic error instruction is used.
 export const GENERIC_ERROR_INSTRUCTION =
   'You may refresh the page to retry or see browser console for more information.';
+
+export const PASSWORD_INSTRUCTION =
+  'Password should be at least 8 characters long and contain at least one uppercase ' +
+  'letter, one lowercase letter, one digit, and one special character.';

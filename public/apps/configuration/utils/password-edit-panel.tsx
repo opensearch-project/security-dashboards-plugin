@@ -16,6 +16,7 @@
 import React, { useState, useEffect } from 'react';
 import { EuiFieldText, EuiIcon } from '@elastic/eui';
 import { FormRow } from './form-row';
+import { PASSWORD_INSTRUCTION } from '../../apps-constants';
 
 export function PasswordEditPanel(props: {
   updatePassword: (p: string) => void;
@@ -42,10 +43,7 @@ export function PasswordEditPanel(props: {
 
   return (
     <>
-      <FormRow
-        headerText="Password"
-        helpText="A good password will be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character."
-      >
+      <FormRow headerText="Password" helpText={PASSWORD_INSTRUCTION}>
         <EuiFieldText
           prepend={<EuiIcon type="lock" />}
           type="password"
