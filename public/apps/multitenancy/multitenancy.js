@@ -33,7 +33,6 @@ import { toastNotifications } from 'ui/notify';
 import chrome from 'ui/chrome';
 import uiRoutes from 'ui/routes';
 import { uiModules } from 'ui/modules';
-// import 'ui/autoload/styles';
 import 'plugins/opendistro_security/apps/configuration/configuration.less';
 import tenantTemplate from './multitenancy.html';
 import { chromeWrapper } from "../../services/chrome_wrapper";
