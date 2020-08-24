@@ -41,7 +41,6 @@ import roles from './sections/roles';
 import tenants from './sections/tenants';
 import securityconfiguration from './sections/securityconfiguration';
 
-import 'ui/autoload/styles';
 import '@elastic/eui/dist/eui_theme_light.css';
 import 'plugins/opendistro_security/apps/configuration/configuration.less';
 
