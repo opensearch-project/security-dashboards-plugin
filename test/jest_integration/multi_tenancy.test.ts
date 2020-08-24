@@ -22,12 +22,10 @@ import { ChildProcess } from 'child_process';
 import {
   KIBANA_SERVER_USER,
   KIBANA_SERVER_PASSWORD,
-  ADMIN_CREDENTIALS,
   ADMIN_USER,
   ADMIN_PASSWORD,
   AUTHORIZATION_HEADER_NAME,
 } from '../constant';
-import { sleep } from '../helper/sleep';
 import { extractAuthCookie, getAuthCookie } from '../helper/cookie';
 import { createOrUpdateEntityAsAdmin } from '../helper/entity_operation';
 
@@ -75,47 +73,50 @@ describe('start kibana server', () => {
     await stopElasticsearch(esProcess);
   });
 
-  it('has access to tenant', async () => {
-    const testUserName = `test_user_${Date.now()}`;
-    const testUserPassword = 'Test_123';
+  async function createTestUser(username: string = undefined, password: string = undefined) {
+    const testUserName = username || `test_user_${Date.now()}`;
+    const testUserPassword = password || 'Test_123';
 
     await createOrUpdateEntityAsAdmin(root, 'internalusers', testUserName, {
       password: testUserPassword,
     });
+    return { username: testUserName, password: testUserPassword };
+  }
 
-    const authCookie = await getAuthCookie(root, testUserName, testUserPassword);
-    const getTenantResponse = await kbnTestServer.request
+  async function getTenant(authCookie: string) {
+    return await kbnTestServer.request
       .get(root, '/api/v1/multitenancy/tenant')
       .unset(AUTHORIZATION_HEADER_NAME)
       .set('Cookie', authCookie);
+  }
+
+  it('has access to tenant', async () => {
+    const { username, password } = await createTestUser();
+    const authCookie = await getAuthCookie(root, username, password);
+    const getTenantResponse = await getTenant(authCookie);
     expect(getTenantResponse.status).toEqual(200);
   });
 
   it('change tenant', async () => {
-    const testUserName = `test_user_${Date.now()}`;
-    const testUserPassword = 'Test_123';
-
-    await createOrUpdateEntityAsAdmin(root, 'internalusers', testUserName, {
-      password: testUserPassword,
+    const { username, password } = await createTestUser();
+    await createOrUpdateEntityAsAdmin(root, 'internalusers', username, {
+      password,
     });
 
-    let authCookie = await getAuthCookie(root, testUserName, testUserPassword);
+    let authCookie = await getAuthCookie(root, username, password);
     const usePrivateTenantResponse = await kbnTestServer.request
       .post(root, '/api/v1/multitenancy/tenant')
       .unset(AUTHORIZATION_HEADER_NAME)
       .set('Cookie', authCookie)
       .send({
-        username: testUserName,
+        username,
         tenant: '__user__',
       });
     expect(usePrivateTenantResponse.status).toEqual(200);
     expect(usePrivateTenantResponse.text).toEqual('__user__');
 
     authCookie = extractAuthCookie(usePrivateTenantResponse);
-    let getTenantResponse = await kbnTestServer.request
-      .get(root, '/api/v1/multitenancy/tenant')
-      .unset(AUTHORIZATION_HEADER_NAME)
-      .set('Cookie', authCookie);
+    let getTenantResponse = await getTenant(authCookie);
     expect(getTenantResponse.status).toEqual(200);
     expect(getTenantResponse.text).toEqual('__user__');
 
@@ -125,45 +126,31 @@ describe('start kibana server', () => {
       .unset(AUTHORIZATION_HEADER_NAME)
       .set('Cookie', authCookie)
       .send({
-        username: testUserName,
+        username,
         tenant: '',
       });
     expect(useGlobalTenantResponse.status).toEqual(200);
     expect(useGlobalTenantResponse.text).toEqual('');
 
     authCookie = extractAuthCookie(useGlobalTenantResponse);
-    getTenantResponse = await kbnTestServer.request
-      .get(root, '/api/v1/multitenancy/tenant')
-      .unset(AUTHORIZATION_HEADER_NAME)
-      .set('Cookie', authCookie);
+    getTenantResponse = await getTenant(authCookie);
     expect(getTenantResponse.status).toEqual(200);
     expect(getTenantResponse.text).toEqual('');
   });
 
   it('call multitenancy info API as admin', async () => {
     const authCookie = await getAuthCookie(root, ADMIN_USER, ADMIN_PASSWORD);
-    const multitenancyInfoResponse = await kbnTestServer.request
-      .get(root, '/api/v1/multitenancy/info')
-      .unset(AUTHORIZATION_HEADER_NAME)
-      .set('Cookie', authCookie);
+    const multitenancyInfoResponse = await getTenant(authCookie);
     expect(multitenancyInfoResponse.status).toEqual(200);
     expect(multitenancyInfoResponse.body.user_name).toEqual(ADMIN_USER);
   });
 
   it('call multitenancy info API as common user', async () => {
-    const testUserName = `test_user_${Date.now()}`;
-    const testUserPassword = 'Test_123';
+    const { username, password } = await createTestUser();
 
-    await createOrUpdateEntityAsAdmin(root, 'internalusers', testUserName, {
-      password: testUserPassword,
-    });
-
-    const authCookie = await getAuthCookie(root, testUserName, testUserPassword);
-    const multitenancyInfoResponse = await kbnTestServer.request
-      .get(root, '/api/v1/multitenancy/info')
-      .unset(AUTHORIZATION_HEADER_NAME)
-      .set('Cookie', authCookie);
+    const authCookie = await getAuthCookie(root, username, password);
+    const multitenancyInfoResponse = await getTenant(authCookie);
     expect(multitenancyInfoResponse.status).toEqual(200);
-    expect(multitenancyInfoResponse.body.user_name).toEqual(testUserName);
+    expect(multitenancyInfoResponse.body.user_name).toEqual(username);
   });
 });

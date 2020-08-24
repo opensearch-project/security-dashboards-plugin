@@ -248,6 +248,7 @@ export function defineRoutes(router: IRouter) {
           },
         });
       } catch (error) {
+        console.log(JSON.stringify(error));
         return errorResponse(response, error);
       }
     }
