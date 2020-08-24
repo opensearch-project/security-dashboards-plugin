@@ -107,7 +107,7 @@ export function AuthenticationSequencePanel(props: { authc: [] }) {
         items={items}
         itemId={'domain_name'}
         pagination={true}
-        sorting={true}
+        sorting={{ sort: { field: 'order', direction: 'desc' } }}
         search={search}
       />
     </PanelWithHeader>
