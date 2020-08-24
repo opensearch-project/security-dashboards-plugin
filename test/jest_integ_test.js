@@ -17,7 +17,6 @@ const resolve = require('path').resolve;
 
 process.argv.push('--config', resolve(__dirname, './jest.config.integration.js'));
 process.argv.push('--runInBand');
-// process.argv.push('--no-cache');
 
 require('../../../src/setup_node_env');
 require('../../../src/dev/jest/cli');
