@@ -14,10 +14,11 @@
  */
 
 import React from 'react';
-import { EuiInMemoryTable } from '@elastic/eui';
+import { EuiInMemoryTable, EuiEmptyPrompt } from '@elastic/eui';
 import { keys, map, get } from 'lodash';
 import { PanelWithHeader } from '../../utils/panel-with-header';
-import { renderExpression } from '../../utils/display-utils';
+import { renderExpression, ExternalLinkButton } from '../../utils/display-utils';
+import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 
 const columns = [
   {
@@ -46,7 +47,15 @@ const columns = [
 const ENABLED_STRING = 'Enabled';
 const DISABLED_STRING = 'Disabled';
 
-export function AuthorizationPanel(props: { authz: [] }) {
+const emptyListMessage = (
+  <EuiEmptyPrompt
+    title={<h3>No authorization</h3>}
+    titleSize="s"
+    actions={<ExternalLinkButton href="" text="Manage via config.yml" />}
+  />
+);
+
+export function AuthorizationPanel(props: { authz: []; loading: boolean }) {
   const domains = keys(props.authz);
 
   const items = map(domains, function (domain: string) {
@@ -83,6 +92,7 @@ export function AuthorizationPanel(props: { authz: [] }) {
         pagination={true}
         sorting={true}
         search={search}
+        message={showTableStatusMessage(props.loading, items, emptyListMessage)}
       />
     </PanelWithHeader>
   );

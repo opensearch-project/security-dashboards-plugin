@@ -20,11 +20,18 @@ import {
   EuiText,
   EuiGlobalToastList,
   EuiBasicTableColumn,
+  EuiEmptyPrompt,
+  EuiButton,
 } from '@elastic/eui';
 import { CoreStart } from 'kibana/public';
 import { getAuthInfo } from '../../../../utils/auth-info-utils';
 import { PanelWithHeader } from '../../utils/panel-with-header';
-import { RoleTenantPermissionView, RoleTenantPermissionDetail } from '../../types';
+import {
+  RoleTenantPermissionView,
+  RoleTenantPermissionDetail,
+  ResourceType,
+  Action,
+} from '../../types';
 import { truncatedListView } from '../../utils/display-utils';
 import {
   fetchTenants,
@@ -36,11 +43,16 @@ import { RoleViewTenantInvalidText } from '../../constants';
 import { PageId } from '../../types';
 import { getNavLinkById } from '../../../../services/chrome_wrapper';
 import { useToastState, createUnknownErrorToast } from '../../utils/toast-utils';
+import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
+import { buildHashUrl } from '../../utils/url-builder';
 
 interface RoleViewTenantsPanelProps {
+  roleName: string;
   tenantPermissions: RoleTenantPermissionView[];
   errorFlag: boolean;
   coreStart: CoreStart;
+  loading: boolean;
+  isReserved: boolean;
 }
 
 export function TenantsPanel(props: RoleViewTenantsPanelProps) {
@@ -153,6 +165,23 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
     },
   ];
 
+  const emptyListMessage = (
+    <EuiEmptyPrompt
+      title={<h3>No tenant permission</h3>}
+      titleSize="s"
+      actions={
+        <EuiButton
+          disabled={props.isReserved}
+          onClick={() => {
+            window.location.href = buildHashUrl(ResourceType.roles, Action.edit, props.roleName);
+          }}
+        >
+          Add tenant permission
+        </EuiButton>
+      }
+    />
+  );
+
   const headerText = 'Tenant permissions';
   return (
     <>
@@ -170,6 +199,7 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
           items={tenantPermissionDetail}
           sorting={{ sort: { field: 'type', direction: 'asc' } }}
           error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
+          message={showTableStatusMessage(props.loading, props.tenantPermissions, emptyListMessage)}
         />
       </PanelWithHeader>
       <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={10000} dismissToast={removeToast} />

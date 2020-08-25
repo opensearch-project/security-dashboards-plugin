@@ -65,6 +65,7 @@ import { transformRoleTenantPermissions } from '../../utils/tenant-utils';
 import { DocLinks } from '../../constants';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 import { ExternalLinkButton } from '../../utils/display-utils';
+import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 
 interface RoleViewProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -98,6 +99,7 @@ export function RoleView(props: RoleViewProps) {
   const [roleTenantPermission, setRoleTenantPermission] = useState<RoleTenantPermissionView[]>([]);
   const [toasts, addToast, removeToast] = useToastState();
   const [isReserved, setIsReserved] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const PERMISSIONS_TAB_INDEX = 0;
   const MAP_USER_TAB_INDEX = 1;
@@ -105,6 +107,7 @@ export function RoleView(props: RoleViewProps) {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const originalRoleMapData = (await getRoleMappingData(
           props.coreStart.http,
           props.roleName
@@ -123,6 +126,8 @@ export function RoleView(props: RoleViewProps) {
         addToast(createUnknownErrorToast('fetchRoleMappingData', 'load data'));
         console.log(e);
         setErrorFlag(true);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -169,7 +174,7 @@ export function RoleView(props: RoleViewProps) {
     'mapping(s)'
   );
 
-  const message = (
+  const emptyListMessage = (
     <EuiEmptyPrompt
       title={<h2>No user has been mapped to this role</h2>}
       titleSize="s"
@@ -235,24 +240,33 @@ export function RoleView(props: RoleViewProps) {
           <EuiSpacer size="m" />
 
           <ClusterPermissionPanel
+            roleName={props.roleName}
             clusterPermissions={roleClusterPermission}
             actionGroups={actionGroupDict}
+            loading={loading}
+            isReserved={isReserved}
           />
 
           <EuiSpacer size="m" />
 
           <IndexPermissionPanel
+            roleName={props.roleName}
             indexPermissions={roleIndexPermission}
             actionGroups={actionGroupDict}
             errorFlag={errorFlag}
+            loading={loading}
+            isReserved={isReserved}
           />
 
           <EuiSpacer size="m" />
 
           <TenantsPanel
+            roleName={props.roleName}
             tenantPermissions={roleTenantPermission}
             errorFlag={errorFlag}
             coreStart={props.coreStart}
+            loading={loading}
+            isReserved={isReserved}
           />
         </>
       ),
@@ -315,7 +329,7 @@ export function RoleView(props: RoleViewProps) {
                 items={mappedUsers}
                 itemId={'userName'}
                 pagination={true}
-                message={message}
+                message={showTableStatusMessage(loading, mappedUsers, emptyListMessage)}
                 selection={{ onSelectionChange: setSelection }}
                 sorting={true}
                 error={

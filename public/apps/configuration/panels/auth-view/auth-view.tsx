@@ -59,10 +59,12 @@ function renderInstructionView() {
 export function AuthView(props: AppDependencies) {
   const [authentication, setAuthentication] = useState([]);
   const [authorization, setAuthorization] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const rawSecurityConfig = await props.coreStart.http.get(API_ENDPOINT_SECURITYCONFIG);
         const dynamic = rawSecurityConfig.data.config.dynamic;
 
@@ -70,6 +72,8 @@ export function AuthView(props: AppDependencies) {
         setAuthorization(dynamic.authz);
       } catch (e) {
         console.log(e);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -88,9 +92,9 @@ export function AuthView(props: AppDependencies) {
         </EuiTitle>
         <ExternalLinkButton href="" text="Manage via config.yml" />
       </EuiPageHeader>
-      <AuthenticationSequencePanel authc={authentication} />
+      <AuthenticationSequencePanel authc={authentication} loading={loading} />
       <EuiSpacer size="m" />
-      <AuthorizationPanel authz={authorization} />
+      <AuthorizationPanel authz={authorization} loading={loading} />
     </>
   );
 }

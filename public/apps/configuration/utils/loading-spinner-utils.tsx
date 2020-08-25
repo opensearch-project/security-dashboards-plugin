@@ -13,15 +13,17 @@
  *   permissions and limitations under the License.
  */
 
- .panel-header-count {
-    color: #687078;
-    font-weight: normal;
-}
+import React from 'react';
+import { EuiLoadingSpinner } from '@elastic/eui';
 
-.panel-header-subtext {
-    width: 75%;
-}
+const NO_ITEMS_FOUND_MESSAGE = 'No items found';
 
-.text-center {
-    text-align: 'center'
+export const loadingSpinner = <EuiLoadingSpinner size="l" />;
+
+export function showTableStatusMessage(
+  loading: boolean,
+  items: any[],
+  customMessage?: React.ReactNode
+) {
+  return loading ? loadingSpinner : items.length === 0 && (customMessage || NO_ITEMS_FOUND_MESSAGE);
 }

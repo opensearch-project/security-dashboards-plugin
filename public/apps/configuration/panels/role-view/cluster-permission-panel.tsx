@@ -14,14 +14,39 @@
  */
 
 import React from 'react';
+import { EuiEmptyPrompt, EuiButton } from '@elastic/eui';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { PermissionTree } from '../permission-tree';
-import { ActionGroupItem, DataObject } from '../../types';
+import { ActionGroupItem, DataObject, ResourceType, Action } from '../../types';
+import { buildHashUrl } from '../../utils/url-builder';
+import { loadingSpinner } from '../../utils/loading-spinner-utils';
 
-export function ClusterPermissionPanel(props: {
+interface ClusterPermissionPanelProps {
+  roleName: string;
   clusterPermissions: string[];
   actionGroups: DataObject<ActionGroupItem>;
-}) {
+  loading: boolean;
+  isReserved: boolean;
+}
+
+export function ClusterPermissionPanel(props: ClusterPermissionPanelProps) {
+  const noClusterPermissions = (
+    <EuiEmptyPrompt
+      title={<h3>No cluster permission</h3>}
+      titleSize="s"
+      actions={
+        <EuiButton
+          disabled={props.isReserved}
+          onClick={() => {
+            window.location.href = buildHashUrl(ResourceType.roles, Action.edit, props.roleName);
+          }}
+        >
+          Add cluster permission
+        </EuiButton>
+      }
+    />
+  );
+
   const headerText = 'Cluster permissions';
 
   return (
@@ -33,7 +58,13 @@ export function ClusterPermissionPanel(props: {
       helpLink="/"
       count={props.clusterPermissions.length}
     >
-      <PermissionTree permissions={props.clusterPermissions} actionGroups={props.actionGroups} />
+      {props.loading ? (
+        <div className="text-center">{loadingSpinner}</div>
+      ) : props.clusterPermissions.length === 0 ? (
+        noClusterPermissions
+      ) : (
+        <PermissionTree permissions={props.clusterPermissions} actionGroups={props.actionGroups} />
+      )}
     </PanelWithHeader>
   );
 }

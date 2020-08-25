@@ -59,6 +59,7 @@ import { renderCustomization } from '../../utils/display-utils';
 import { useToastState } from '../../utils/toast-utils';
 import { PermissionEditModal } from './edit-modal';
 import { PermissionTree } from '../permission-tree';
+import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 
 function renderBooleanToCheckMark(value: boolean): React.ReactNode {
@@ -182,14 +183,19 @@ export function PermissionList(props: AppDependencies) {
 
   const [toasts, addToast, removeToast] = useToastState();
 
+  const [loading, setLoading] = useState(false);
+
   const fetchData = useCallback(async () => {
     try {
+      setLoading(true);
       const actionGroups = await fetchActionGroups(props.coreStart.http);
       setActionGroupDict(actionGroups);
       setPermissionList(await mergeAllPermissions(actionGroups));
     } catch (e) {
       console.log(e);
       setErrorFlag(true);
+    } finally {
+      setLoading(false);
     }
   }, [props.coreStart.http]);
 
@@ -392,6 +398,7 @@ export function PermissionList(props: AppDependencies) {
             error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
             isExpandable={true}
             itemIdToExpandedRowMap={itemIdToExpandedRowMap}
+            message={showTableStatusMessage(loading, permissionList)}
           />
         </EuiPageBody>
       </EuiPageContent>

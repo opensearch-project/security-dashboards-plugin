@@ -44,6 +44,7 @@ import { API_ENDPOINT_ROLES, API_ENDPOINT_ROLESMAPPING } from '../constants';
 import { ResourceType, Action } from '../types';
 import { buildHashUrl } from '../utils/url-builder';
 import { renderCustomization, truncatedListView } from '../utils/display-utils';
+import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { useDeleteConfirmState } from '../utils/delete-confirm-modal-utils';
 
 const columns: Array<EuiBasicTableColumn<RoleListing>> = [
@@ -94,10 +95,12 @@ export function RoleList(props: AppDependencies) {
   const [errorFlag, setErrorFlag] = useState(false);
   const [selection, setSelection] = useState<RoleListing[]>([]);
   const [isActionsPopoverOpen, setActionsPopoverOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const rawRoleData = await props.coreStart.http.get(API_ENDPOINT_ROLES);
         const rawRoleMappingData = await props.coreStart.http.get(API_ENDPOINT_ROLESMAPPING);
         const processedData = transformRoleData(rawRoleData, rawRoleMappingData);
@@ -105,6 +108,8 @@ export function RoleList(props: AppDependencies) {
       } catch (e) {
         console.log(e);
         setErrorFlag(true);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -285,6 +290,7 @@ export function RoleList(props: AppDependencies) {
             sorting={true}
             search={searchOptions}
             error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
+            message={showTableStatusMessage(loading, roleData)}
           />
         </EuiPageBody>
         {deleteConfirmModal}

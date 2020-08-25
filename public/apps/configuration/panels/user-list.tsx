@@ -43,6 +43,7 @@ import {
 } from '../utils/internal-user-list-utils';
 import { buildHashUrl } from '../utils/url-builder';
 import { API_ENDPOINT_INTERNALUSERS } from '../constants';
+import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { useDeleteConfirmState } from '../utils/delete-confirm-modal-utils';
 
 function dictView() {
@@ -95,16 +96,20 @@ export function UserList(props: AppDependencies) {
   const [selection, setSelection] = useState<InternalUsersListing[]>([]);
   const [isActionsPopoverOpen, setActionsPopoverOpen] = useState(false);
   const [currentUsername, setCurrentUsername] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const userDataPromise = getUserList(props.coreStart.http);
         setCurrentUsername((await getAuthInfo(props.coreStart.http)).user_name);
         setUserData(await userDataPromise);
       } catch (e) {
         console.log(e);
         setErrorFlag(true);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -258,6 +263,7 @@ export function UserList(props: AppDependencies) {
             selection={{ onSelectionChange: setSelection }}
             sorting
             error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
+            message={showTableStatusMessage(loading, userData)}
           />
         </EuiPageBody>
         {deleteConfirmModal}
