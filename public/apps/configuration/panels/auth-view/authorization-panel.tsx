@@ -18,7 +18,7 @@ import { EuiInMemoryTable, EuiEmptyPrompt } from '@elastic/eui';
 import { keys, map, get } from 'lodash';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { renderExpression, ExternalLinkButton } from '../../utils/display-utils';
-import { showMessage } from '../../utils/loading-spinner-utils';
+import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 
 const columns = [
   {
@@ -47,7 +47,7 @@ const columns = [
 const ENABLED_STRING = 'Enabled';
 const DISABLED_STRING = 'Disabled';
 
-const emptyListmessage = (
+const emptyListMessage = (
   <EuiEmptyPrompt
     title={<h3>No authorization</h3>}
     titleSize="s"
@@ -92,7 +92,7 @@ export function AuthorizationPanel(props: { authz: []; loading: boolean }) {
         pagination={true}
         sorting={true}
         search={search}
-        message={showMessage(props.loading, items, emptyListmessage)}
+        message={showTableStatusMessage(props.loading, items, emptyListMessage)}
       />
     </PanelWithHeader>
   );

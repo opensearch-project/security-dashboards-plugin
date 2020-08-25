@@ -52,7 +52,7 @@ import { TenantEditModal } from './edit-modal';
 import { useToastState, createUnknownErrorToast } from '../../utils/toast-utils';
 import { PageId } from '../../types';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
-import { showMessage } from '../../utils/loading-spinner-utils';
+import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 
 export function TenantList(props: AppDependencies) {
   const [tenantData, setTenantData] = useState<Tenant[]>([]);
@@ -352,7 +352,7 @@ export function TenantList(props: AppDependencies) {
             selection={{ onSelectionChange: setSelection }}
             sorting
             error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
-            message={showMessage(loading, tenantData)}
+            message={showTableStatusMessage(loading, tenantData)}
           />
         </EuiPageBody>
       </EuiPageContent>

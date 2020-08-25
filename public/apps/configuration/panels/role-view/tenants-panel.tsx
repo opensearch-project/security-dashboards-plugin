@@ -43,7 +43,7 @@ import { RoleViewTenantInvalidText } from '../../constants';
 import { PageId } from '../../types';
 import { getNavLinkById } from '../../../../services/chrome_wrapper';
 import { useToastState, createUnknownErrorToast } from '../../utils/toast-utils';
-import { showMessage } from '../../utils/loading-spinner-utils';
+import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { buildHashUrl } from '../../utils/url-builder';
 
 interface RoleViewTenantsPanelProps {
@@ -165,7 +165,7 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
     },
   ];
 
-  const emptyListmessage = (
+  const emptyListMessage = (
     <EuiEmptyPrompt
       title={<h3>No tenant permission</h3>}
       titleSize="s"
@@ -199,7 +199,7 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
           items={tenantPermissionDetail}
           sorting={{ sort: { field: 'type', direction: 'asc' } }}
           error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
-          message={showMessage(props.loading, props.tenantPermissions, emptyListmessage)}
+          message={showTableStatusMessage(props.loading, props.tenantPermissions, emptyListMessage)}
         />
       </PanelWithHeader>
       <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={10000} dismissToast={removeToast} />

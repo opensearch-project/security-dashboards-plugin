@@ -43,7 +43,7 @@ import {
 } from '../utils/internal-user-list-utils';
 import { buildHashUrl } from '../utils/url-builder';
 import { API_ENDPOINT_INTERNALUSERS } from '../constants';
-import { showMessage } from '../utils/loading-spinner-utils';
+import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { useDeleteConfirmState } from '../utils/delete-confirm-modal-utils';
 
 function dictView() {
@@ -263,7 +263,7 @@ export function UserList(props: AppDependencies) {
             selection={{ onSelectionChange: setSelection }}
             sorting
             error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
-            message={showMessage(loading, userData)}
+            message={showTableStatusMessage(loading, userData)}
           />
         </EuiPageBody>
         {deleteConfirmModal}

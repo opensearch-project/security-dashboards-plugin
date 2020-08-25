@@ -44,7 +44,7 @@ import { API_ENDPOINT_ROLES, API_ENDPOINT_ROLESMAPPING } from '../constants';
 import { ResourceType, Action } from '../types';
 import { buildHashUrl } from '../utils/url-builder';
 import { renderCustomization, truncatedListView } from '../utils/display-utils';
-import { showMessage } from '../utils/loading-spinner-utils';
+import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { useDeleteConfirmState } from '../utils/delete-confirm-modal-utils';
 
 const columns: Array<EuiBasicTableColumn<RoleListing>> = [
@@ -290,7 +290,7 @@ export function RoleList(props: AppDependencies) {
             sorting={true}
             search={searchOptions}
             error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
-            message={showMessage(loading, roleData)}
+            message={showTableStatusMessage(loading, roleData)}
           />
         </EuiPageBody>
         {deleteConfirmModal}

@@ -65,7 +65,7 @@ import { transformRoleTenantPermissions } from '../../utils/tenant-utils';
 import { DocLinks } from '../../constants';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 import { ExternalLinkButton } from '../../utils/display-utils';
-import { showMessage } from '../../utils/loading-spinner-utils';
+import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 
 interface RoleViewProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -174,7 +174,7 @@ export function RoleView(props: RoleViewProps) {
     'mapping(s)'
   );
 
-  const emptyListmessage = (
+  const emptyListMessage = (
     <EuiEmptyPrompt
       title={<h2>No user has been mapped to this role</h2>}
       titleSize="s"
@@ -329,7 +329,7 @@ export function RoleView(props: RoleViewProps) {
                 items={mappedUsers}
                 itemId={'userName'}
                 pagination={true}
-                message={showMessage(loading, mappedUsers, emptyListmessage)}
+                message={showTableStatusMessage(loading, mappedUsers, emptyListMessage)}
                 selection={{ onSelectionChange: setSelection }}
                 sorting={true}
                 error={

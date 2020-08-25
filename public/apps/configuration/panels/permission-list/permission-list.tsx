@@ -59,7 +59,7 @@ import { renderCustomization } from '../../utils/display-utils';
 import { useToastState } from '../../utils/toast-utils';
 import { PermissionEditModal } from './edit-modal';
 import { PermissionTree } from '../permission-tree';
-import { showMessage } from '../../utils/loading-spinner-utils';
+import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 
 function renderBooleanToCheckMark(value: boolean): React.ReactNode {
@@ -398,7 +398,7 @@ export function PermissionList(props: AppDependencies) {
             error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
             isExpandable={true}
             itemIdToExpandedRowMap={itemIdToExpandedRowMap}
-            message={showMessage(loading, permissionList)}
+            message={showTableStatusMessage(loading, permissionList)}
           />
         </EuiPageBody>
       </EuiPageContent>

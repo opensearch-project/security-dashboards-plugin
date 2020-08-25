@@ -30,7 +30,7 @@ interface ClusterPermissionPanelProps {
 }
 
 export function ClusterPermissionPanel(props: ClusterPermissionPanelProps) {
-  const noClusterpermissions = (
+  const noClusterPermissions = (
     <EuiEmptyPrompt
       title={<h3>No cluster permission</h3>}
       titleSize="s"
@@ -61,7 +61,7 @@ export function ClusterPermissionPanel(props: ClusterPermissionPanelProps) {
       {props.loading ? (
         <div className="text-center">{loadingSpinner}</div>
       ) : props.clusterPermissions.length === 0 ? (
-        noClusterpermissions
+        noClusterPermissions
       ) : (
         <PermissionTree permissions={props.clusterPermissions} actionGroups={props.actionGroups} />
       )}

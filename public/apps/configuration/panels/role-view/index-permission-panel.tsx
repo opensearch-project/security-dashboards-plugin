@@ -38,7 +38,7 @@ import { PermissionTree } from '../permission-tree';
 import { getFieldLevelSecurityMethod } from '../../utils/index-permission-utils';
 import { renderExpression, displayHeaderWithTooltip } from '../../utils/display-utils';
 import { ToolTipContent } from '../../constants';
-import { showMessage } from '../../utils/loading-spinner-utils';
+import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { buildHashUrl } from '../../utils/url-builder';
 
 function toggleRowDetails(
@@ -154,7 +154,7 @@ interface IndexPermissionPanelProps {
 export function IndexPermissionPanel(props: IndexPermissionPanelProps) {
   const [itemIdToExpandedRowMap, setItemIdToExpandedRowMap] = useState<ExpandedRowMapInterface>({});
 
-  const emptyListmessage = (
+  const emptyListMessage = (
     <EuiEmptyPrompt
       title={<h3>No index permission</h3>}
       titleSize="s"
@@ -190,7 +190,7 @@ export function IndexPermissionPanel(props: IndexPermissionPanelProps) {
         error={props.errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
         isExpandable={true}
         itemIdToExpandedRowMap={itemIdToExpandedRowMap}
-        message={showMessage(props.loading, props.indexPermissions, emptyListmessage)}
+        message={showTableStatusMessage(props.loading, props.indexPermissions, emptyListMessage)}
       />
     </PanelWithHeader>
   );
