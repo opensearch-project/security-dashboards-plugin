@@ -204,7 +204,10 @@ export function UserList(props: AppDependencies) {
         <EuiPageContentHeader>
           <EuiPageContentHeaderSection>
             <EuiTitle size="s">
-              <h3>Internal users ({userData.length})</h3>
+              <h3>
+                Internal users
+                <span className="panel-header-count"> ({userData.length})</span>
+              </h3>
             </EuiTitle>
             <EuiText size="xs" color="subdued">
               The Security plugin includes an internal user database. Use this database in place of

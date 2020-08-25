@@ -76,7 +76,7 @@ export function AuthorizationPanel(props: { authz: []; loading: boolean }) {
     },
   };
 
-  const headerText = 'Authorization (' + domains.length + ')';
+  const headerText = 'Authorization';
 
   return (
     <PanelWithHeader
@@ -84,6 +84,7 @@ export function AuthorizationPanel(props: { authz: []; loading: boolean }) {
       headerSubText="After the user has been authenticated, authorization allows optional user collection from backend systems.
       There is no execution order among multiple authorization domains."
       helpLink="/"
+      count={domains.length}
     >
       <EuiInMemoryTable
         columns={columns}

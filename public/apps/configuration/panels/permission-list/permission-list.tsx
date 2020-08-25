@@ -342,7 +342,10 @@ export function PermissionList(props: AppDependencies) {
         <EuiPageContentHeader>
           <EuiPageContentHeaderSection>
             <EuiTitle size="s">
-              <h3>Permissions ({permissionList.length})</h3>
+              <h3>
+                Permissions
+                <span className="panel-header-count"> ({permissionList.length})</span>
+              </h3>
             </EuiTitle>
             <EuiText size="xs" color="subdued">
               Permissions defines type of access to the cluster or the specified indices. An action

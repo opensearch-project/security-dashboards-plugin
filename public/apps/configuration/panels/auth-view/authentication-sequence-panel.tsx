@@ -93,7 +93,7 @@ export function AuthenticationSequencePanel(props: { authc: []; loading: boolean
     },
   };
 
-  const headerText = 'Authentication sequences (' + domains.length + ')';
+  const headerText = 'Authentication sequences';
 
   return (
     <PanelWithHeader
@@ -102,6 +102,7 @@ export function AuthenticationSequencePanel(props: { authc: []; loading: boolean
       backend they should be authenticated. When there are multiple authentication domains, the plugin will authenticate
       the user sequentially against each backend until one succeeds."
       helpLink="/"
+      count={domains.length}
     >
       <EuiInMemoryTable
         columns={columns}

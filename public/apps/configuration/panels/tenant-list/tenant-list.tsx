@@ -320,7 +320,10 @@ export function TenantList(props: AppDependencies) {
         <EuiPageContentHeader>
           <EuiPageContentHeaderSection>
             <EuiTitle size="s">
-              <h3>Tenants ({tenantData.length})</h3>
+              <h3>
+                Tenants
+                <span className="panel-header-count"> ({tenantData.length})</span>
+              </h3>
             </EuiTitle>
             <EuiText size="xs" color="subdued">
               Tenants in Kibana are spaces for saving index patterns, visualizations, dashboards,
