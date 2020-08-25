@@ -128,13 +128,13 @@ export function TenantList(props: AppDependencies) {
       });
     } catch (e) {
       console.log(e);
-      addToast(createUnknownErrorToast('selectFailed', `selet ${tenantName} tenant`));
+      addToast(createUnknownErrorToast('selectFailed', `select ${tenantName} tenant`));
     } finally {
       setActionsPopoverOpen(false);
     }
   };
 
-  const viewDashboard = async (tenantValue: string, action: string) => {
+  const viewOrCreateDashboard = async (tenantValue: string, action: string) => {
     try {
       await changeTenant(tenantValue);
       window.location.href = getNavLinkById(props.coreStart, PageId.dashboardId);
@@ -142,14 +142,14 @@ export function TenantList(props: AppDependencies) {
       console.log(e);
       addToast(
         createUnknownErrorToast(
-          'viewDashboard',
+          `${action}Dashboard`,
           `${action} dashboard for ${getTenantName(tenantValue)} tenant`
         )
       );
     }
   };
 
-  const viewVisualization = async (tenantValue: string, action: string) => {
+  const viewOrCreateVisualization = async (tenantValue: string, action: string) => {
     try {
       await changeTenant(tenantValue);
       window.location.href = getNavLinkById(props.coreStart, PageId.visualizationId);
@@ -157,7 +157,7 @@ export function TenantList(props: AppDependencies) {
       console.log(e);
       addToast(
         createUnknownErrorToast(
-          'viewVisualization',
+          `${action}Visualization`,
           `${action} visualization for ${getTenantName(tenantValue)} tenant`
         )
       );
@@ -191,7 +191,9 @@ export function TenantList(props: AppDependencies) {
       name: 'Dashboard',
       render: (tenant: string) => (
         <>
-          <EuiLink onClick={() => viewDashboard(tenant, Action.view)}>View dashboard</EuiLink>
+          <EuiLink onClick={() => viewOrCreateDashboard(tenant, Action.view)}>
+            View dashboard
+          </EuiLink>
         </>
       ),
     },
@@ -200,7 +202,7 @@ export function TenantList(props: AppDependencies) {
       name: 'Visualizations',
       render: (tenant: string) => (
         <>
-          <EuiLink onClick={() => viewVisualization(tenant, Action.view)}>
+          <EuiLink onClick={() => viewOrCreateVisualization(tenant, Action.view)}>
             View visualizations
           </EuiLink>
         </>
@@ -240,14 +242,14 @@ export function TenantList(props: AppDependencies) {
     <EuiContextMenuItem
       key="createDashboard"
       disabled={selection.length !== 1}
-      onClick={() => viewDashboard(selection[0].tenantValue, Action.create)}
+      onClick={() => viewOrCreateDashboard(selection[0].tenantValue, Action.create)}
     >
       Create dashboard
     </EuiContextMenuItem>,
     <EuiContextMenuItem
       key="createVisualizations"
       disabled={selection.length !== 1}
-      onClick={() => viewVisualization(selection[0].tenantValue, Action.create)}
+      onClick={() => viewOrCreateVisualization(selection[0].tenantValue, Action.create)}
     >
       Create visualizations
     </EuiContextMenuItem>,
