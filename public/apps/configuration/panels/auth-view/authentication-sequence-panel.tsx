@@ -100,7 +100,7 @@ export function AuthenticationSequencePanel(props: { authc: []; loading: boolean
       headerText={headerText}
       headerSubText="An authentication module specifies where to get the user credentials from, and against which
       backend they should be authenticated. When there are multiple authentication domains, the plugin will authenticate
-      the user sequentially against each backend until one succeeds"
+      the user sequentially against each backend until one succeeds."
       helpLink="/"
     >
       <EuiInMemoryTable
@@ -108,7 +108,7 @@ export function AuthenticationSequencePanel(props: { authc: []; loading: boolean
         items={items}
         itemId={'domain_name'}
         pagination={true}
-        sorting={true}
+        sorting={{ sort: { field: 'order', direction: 'desc' } }}
         search={search}
         message={showMessage(props.loading, items)}
       />

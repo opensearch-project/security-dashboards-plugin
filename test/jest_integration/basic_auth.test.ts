@@ -17,9 +17,14 @@ import * as kbnTestServer from '../../../../src/test_utils/kbn_server';
 import { Root } from '../../../../src/core/server/root';
 import { resolve } from 'path';
 import { describe, expect, it, beforeAll, afterAll } from '@jest/globals';
-import { sleep } from '../helper/sleep';
 import { startElasticsearch, stopElasticsearch } from '../es/elasticsearch_helper';
 import { ChildProcess } from 'child_process';
+import {
+  ADMIN_CREDENTIALS,
+  KIBANA_SERVER_USER,
+  KIBANA_SERVER_PASSWORD,
+  AUTHORIZATION_HEADER_NAME,
+} from '../constant';
 
 describe('start kibana server', () => {
   let root: Root;
@@ -38,8 +43,8 @@ describe('start kibana server', () => {
           hosts: ['https://localhost:9200'],
           ignoreVersionMismatch: true,
           ssl: { verificationMode: 'none' },
-          username: 'kibanaserver',
-          password: 'kibanaserver',
+          username: KIBANA_SERVER_USER,
+          password: KIBANA_SERVER_PASSWORD,
         },
       },
       {
@@ -49,8 +54,10 @@ describe('start kibana server', () => {
       }
     );
 
+    console.log('Starting Kibana server..');
     await root.setup();
     await root.start();
+    console.log('Started Kibana server');
   });
 
   afterAll(async () => {
@@ -66,15 +73,14 @@ describe('start kibana server', () => {
   });
 
   it('call authinfo API as admin', async () => {
-    const testUserCredentials = Buffer.from(`admin:admin`);
+    const testUserCredentials = Buffer.from(ADMIN_CREDENTIALS);
     const response = await kbnTestServer.request
       .get(root, '/api/v1/auth/authinfo')
-      .set('Authorization', `Basic ${testUserCredentials.toString('base64')}`);
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
     expect(response.status).toEqual(200);
   });
 
   it('call authinfo API without credentials', async () => {
-    const testUserCredentials = Buffer.from(`admin:admin`);
     const response = await kbnTestServer.request
       .get(root, '/api/v1/auth/authinfo')
       .unset('Authorization');

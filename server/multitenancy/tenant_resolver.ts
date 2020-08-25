@@ -100,7 +100,7 @@ function resolve(
   }
 
   if (isValidTenent(requestedTenant)) {
-    requestedTenant = requestedTenant!.toLowerCase();
+    requestedTenant = requestedTenant!;
     if (availableTenants[requestedTenant]) {
       return requestedTenant;
     }

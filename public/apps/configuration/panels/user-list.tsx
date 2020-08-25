@@ -44,6 +44,7 @@ import {
 import { buildHashUrl } from '../utils/url-builder';
 import { API_ENDPOINT_INTERNALUSERS } from '../constants';
 import { showMessage } from '../utils/loading-spinner-utils';
+import { useDeleteConfirmState } from '../utils/delete-confirm-modal-utils';
 
 function dictView() {
   return (items: Dictionary<string>) => {
@@ -131,6 +132,11 @@ export function UserList(props: AppDependencies) {
     }
   };
 
+  const [showDeleteConfirmModal, deleteConfirmModal] = useDeleteConfirmState(
+    handleDelete,
+    'user(s)'
+  );
+
   const actionsMenuItems = [
     <EuiContextMenuItem
       key="edit"
@@ -168,7 +174,7 @@ export function UserList(props: AppDependencies) {
     </EuiContextMenuItem>,
     <EuiContextMenuItem
       key="delete"
-      onClick={handleDelete}
+      onClick={showDeleteConfirmModal}
       disabled={selection.length === 0 || selection.some((e) => e.username === currentUsername)}
     >
       Delete
@@ -260,6 +266,7 @@ export function UserList(props: AppDependencies) {
             message={showMessage(loading, userData)}
           />
         </EuiPageBody>
+        {deleteConfirmModal}
       </EuiPageContent>
     </>
   );

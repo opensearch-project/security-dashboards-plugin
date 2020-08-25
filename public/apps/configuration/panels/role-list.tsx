@@ -30,6 +30,7 @@ import {
   EuiContextMenuItem,
   EuiPopover,
   EuiContextMenuPanel,
+  EuiBasicTableColumn,
 } from '@elastic/eui';
 import { difference } from 'lodash';
 import { AppDependencies } from '../../types';
@@ -44,8 +45,9 @@ import { ResourceType, Action } from '../types';
 import { buildHashUrl } from '../utils/url-builder';
 import { renderCustomization, truncatedListView } from '../utils/display-utils';
 import { showMessage } from '../utils/loading-spinner-utils';
+import { useDeleteConfirmState } from '../utils/delete-confirm-modal-utils';
 
-const columns = [
+const columns: Array<EuiBasicTableColumn<RoleListing>> = [
   {
     field: 'roleName',
     name: 'Role',
@@ -94,6 +96,7 @@ export function RoleList(props: AppDependencies) {
   const [selection, setSelection] = useState<RoleListing[]>([]);
   const [isActionsPopoverOpen, setActionsPopoverOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -129,6 +132,11 @@ export function RoleList(props: AppDependencies) {
     }
   };
 
+  const [showDeleteConfirmModal, deleteConfirmModal] = useDeleteConfirmState(
+    handleDelete,
+    'role(s)'
+  );
+
   const actionsMenuItems = [
     <EuiContextMenuItem
       key="edit"
@@ -155,7 +163,7 @@ export function RoleList(props: AppDependencies) {
     </EuiContextMenuItem>,
     <EuiContextMenuItem
       key="delete"
-      onClick={handleDelete}
+      onClick={showDeleteConfirmModal}
       disabled={selection.length === 0 || selection.some((e) => e.reserved)}
     >
       Delete
@@ -264,12 +272,7 @@ export function RoleList(props: AppDependencies) {
                 </EuiPopover>
               </EuiFlexItem>
               <EuiFlexItem>
-                <EuiButton
-                  fill
-                  onClick={() => {
-                    window.location.href = buildHashUrl(ResourceType.roles, Action.create);
-                  }}
-                >
+                <EuiButton fill href={buildHashUrl(ResourceType.roles, Action.create)}>
                   Create role
                 </EuiButton>
               </EuiFlexItem>
@@ -290,6 +293,7 @@ export function RoleList(props: AppDependencies) {
             message={showMessage(loading, roleData)}
           />
         </EuiPageBody>
+        {deleteConfirmModal}
       </EuiPageContent>
     </>
   );

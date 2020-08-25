@@ -97,18 +97,16 @@ export function TenantList(props: AppDependencies) {
       await requestDeleteTenant(props.coreStart.http, tenantsToDelete);
       setTenantData(difference(tenantData, selection));
       setSelection([]);
-      closeDeleteConfirmModal();
     } catch (e) {
       console.log(e);
     } finally {
       setActionsPopoverOpen(false);
     }
   };
-  const [
-    closeDeleteConfirmModal,
-    showDeleteConfirmModal,
-    deleteConfirmModal,
-  ] = useDeleteConfirmState(handleDelete, selection.length, 'tenants');
+  const [showDeleteConfirmModal, deleteConfirmModal] = useDeleteConfirmState(
+    handleDelete,
+    'tenant(s)'
+  );
 
   const changeTenant = async (tenantName: string) => {
     const selectedTenant = await selectTenant(props.coreStart.http, {

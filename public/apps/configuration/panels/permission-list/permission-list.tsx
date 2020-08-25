@@ -60,6 +60,7 @@ import { useToastState } from '../../utils/toast-utils';
 import { PermissionEditModal } from './edit-modal';
 import { PermissionTree } from '../permission-tree';
 import { showMessage } from '../../utils/loading-spinner-utils';
+import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 
 function renderBooleanToCheckMark(value: boolean): React.ReactNode {
   return value ? <EuiIcon type="check" /> : '';
@@ -215,6 +216,11 @@ export function PermissionList(props: AppDependencies) {
     }
   };
 
+  const [showDeleteConfirmModal, deleteConfirmModal] = useDeleteConfirmState(
+    handleDelete,
+    'action group(s)'
+  );
+
   const actionsMenuItems = [
     <EuiContextMenuItem
       key="edit"
@@ -234,7 +240,7 @@ export function PermissionList(props: AppDependencies) {
     </EuiContextMenuItem>,
     <EuiContextMenuItem
       key="delete"
-      onClick={handleDelete}
+      onClick={showDeleteConfirmModal}
       disabled={selection.length === 0 || selection.some((group) => group.reserved)}
     >
       Delete
@@ -397,6 +403,7 @@ export function PermissionList(props: AppDependencies) {
         </EuiPageBody>
       </EuiPageContent>
       {editModal}
+      {deleteConfirmModal}
       <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={10000} dismissToast={removeToast} />
     </>
   );

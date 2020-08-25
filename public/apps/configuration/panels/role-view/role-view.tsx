@@ -164,17 +164,15 @@ export function RoleView(props: RoleViewProps) {
 
       setMappedUsers(difference(mappedUsers, selection));
       setSelection([]);
-      closeDeleteConfirmModal();
     } catch (e) {
       console.log(e);
     }
   };
 
-  const [
-    closeDeleteConfirmModal,
-    showDeleteConfirmModal,
-    deleteConfirmModal,
-  ] = useDeleteConfirmState(handleRoleMappingDelete, selection.length, 'mappings');
+  const [showDeleteConfirmModal, deleteConfirmModal] = useDeleteConfirmState(
+    handleRoleMappingDelete,
+    'mapping(s)'
+  );
 
   const emptyListmessage = (
     <EuiEmptyPrompt
