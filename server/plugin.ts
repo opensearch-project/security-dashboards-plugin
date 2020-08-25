@@ -30,7 +30,7 @@ import { OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart } from './
 import { defineRoutes } from './routes';
 import { SecurityPluginConfigType } from '.';
 import opendistroSecurityConfiguratoinPlugin from './backend/opendistro_security_configuration_plugin';
-import opendistro_security_plugin from './backend/opendistro_security_plugin';
+import opendistroSecurityPlugin from './backend/opendistro_security_plugin';
 import { SecuritySessionCookie, getSecurityCookieOptions } from './session/security_cookie';
 import { SecurityClient } from './backend/opendistro_security_client';
 import {
@@ -87,7 +87,7 @@ export class OpendistroSecurityPlugin
     const esClient: ILegacyClusterClient = core.elasticsearch.legacy.createClient(
       'opendistro_security',
       {
-        plugins: [opendistroSecurityConfiguratoinPlugin, opendistro_security_plugin],
+        plugins: [opendistroSecurityConfiguratoinPlugin, opendistroSecurityPlugin],
       }
     );
 
