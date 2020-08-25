@@ -89,7 +89,7 @@ function generateTenantPermissionPanels(
         <EuiFlexGroup>
           <EuiFlexItem style={{ maxWidth: '400px' }}>
             <EuiComboBox
-              placeholder="Search tenant name"
+              placeholder="Search tenant name or add a tenant pattern"
               selectedOptions={tenantPermission.tenantPatterns}
               onChange={onValueChangeHandler('tenantPatterns')}
               onCreateOption={onCreateOptionHandler('tenantPatterns')}
