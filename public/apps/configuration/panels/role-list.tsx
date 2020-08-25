@@ -96,7 +96,7 @@ export function RoleList(props: AppDependencies) {
   const [selection, setSelection] = useState<RoleListing[]>([]);
   const [isActionsPopoverOpen, setActionsPopoverOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
