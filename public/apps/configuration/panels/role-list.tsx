@@ -27,12 +27,8 @@ import {
   EuiButton,
   EuiPageBody,
   EuiInMemoryTable,
-  EuiContextMenuItem,
-  EuiPopover,
-  EuiContextMenuPanel,
   EuiBasicTableColumn,
   EuiButtonEmpty,
-  EuiSpacer,
 } from '@elastic/eui';
 import { difference } from 'lodash';
 import { AppDependencies } from '../../types';

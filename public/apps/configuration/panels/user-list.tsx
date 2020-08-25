@@ -17,7 +17,6 @@ import {
   EuiBadge,
   EuiButton,
   EuiContextMenuItem,
-  EuiContextMenuPanel,
   EuiFlexGroup,
   EuiFlexItem,
   EuiInMemoryTable,
@@ -27,7 +26,6 @@ import {
   EuiPageContentHeader,
   EuiPageContentHeaderSection,
   EuiPageHeader,
-  EuiPopover,
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
