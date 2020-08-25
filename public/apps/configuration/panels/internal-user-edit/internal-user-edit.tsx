@@ -34,9 +34,10 @@ import { getUserDetail, updateUser } from '../../utils/internal-user-detail-util
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { PasswordEditPanel } from '../../utils/password-edit-panel';
 import { createErrorToast, createUnknownErrorToast, useToastState } from '../../utils/toast-utils';
-import { buildHashUrl } from '../../utils/url-builder';
+import { buildHashUrl, buildUrl } from '../../utils/url-builder';
 import { AttributePanel, buildAttributeState, unbuildAttributeState } from './attribute-panel';
 import { UserAttributeStateClass } from './types';
+import { setCrossPageToast } from '../../utils/storage-utils';
 
 interface InternalUserEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -107,12 +108,13 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
       };
       await updateUser(props.coreStart.http, userName, updateObject);
 
-      addToast({
+      setCrossPageToast(buildUrl(ResourceType.users), {
         id: 'updateUserSucceeded',
         color: 'success',
         title: UPDATE_TEXT_DICT[props.action],
       });
-      // TODO: redirect to somewhere?
+      // Redirect to user listing
+      window.location.href = buildHashUrl(ResourceType.users);
     } catch (e) {
       if (e.message) {
         addToast(createErrorToast('updateUserFailed', 'Update error', e.message));

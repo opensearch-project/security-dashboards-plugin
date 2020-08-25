@@ -21,8 +21,6 @@ import { AppDependencies } from '../types';
 import { AuditLogging } from './panels/audit-logging/audit-logging';
 import { AuditLoggingEditSettings } from './panels/audit-logging/audit-logging-edit-settings';
 import {
-  FROM_COMPLIANCE_SAVE_SUCCESS,
-  FROM_GENERAL_SAVE_SUCCESS,
   SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT,
   SUB_URL_FOR_GENERAL_SETTINGS_EDIT,
 } from './panels/audit-logging/constants';
@@ -39,6 +37,7 @@ import { TenantList } from './panels/tenant-list/tenant-list';
 import { UserList } from './panels/user-list';
 import { Action, ResourceType, RouteItem, SubAction } from './types';
 import { buildHashUrl, buildUrl } from './utils/url-builder';
+import { CrossPageToast } from './cross-page-toast';
 
 const LANDING_PAGE_URL = '/getstarted';
 
@@ -86,8 +85,6 @@ const ROUTE_LIST = [
 const allNavPanelUrls = ROUTE_LIST.map((route) => route.href).concat([
   buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT,
   buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT,
-  buildUrl(ResourceType.auditLogging) + FROM_GENERAL_SAVE_SUCCESS,
-  buildUrl(ResourceType.auditLogging) + FROM_COMPLIANCE_SAVE_SUCCESS,
 ]);
 
 export function getBreadcrumbs(
@@ -241,6 +238,7 @@ export function AppRouter(props: AppDependencies) {
             <Redirect exact from="/" to={LANDING_PAGE_URL} />
           </Switch>
         </EuiPageBody>
+        <CrossPageToast />
       </EuiPage>
     </Router>
   );

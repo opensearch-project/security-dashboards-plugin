@@ -337,6 +337,3 @@ export const SETTING_GROUPS = {
 
 export const SUB_URL_FOR_GENERAL_SETTINGS_EDIT = '/edit/generalSettings';
 export const SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT = '/edit/complianceSettings';
-
-export const FROM_GENERAL_SAVE_SUCCESS = '/generalSuccess';
-export const FROM_COMPLIANCE_SAVE_SUCCESS = '/complianceSuccess';
