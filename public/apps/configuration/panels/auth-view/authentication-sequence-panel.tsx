@@ -18,7 +18,7 @@ import { EuiInMemoryTable } from '@elastic/eui';
 import { keys, map, get } from 'lodash';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { renderExpression } from '../../utils/display-utils';
-import { loadingSpinner, noItemsFoundMsg } from '../../utils/loading-spinner-utils';
+import { showMessage } from '../../utils/loading-spinner-utils';
 
 const columns = [
   {
@@ -110,7 +110,7 @@ export function AuthenticationSequencePanel(props: { authc: []; loading: boolean
         pagination={true}
         sorting={true}
         search={search}
-        message={props.loading ? loadingSpinner : items.length === 0 && noItemsFoundMsg}
+        message={showMessage(props.loading, items)}
       />
     </PanelWithHeader>
   );

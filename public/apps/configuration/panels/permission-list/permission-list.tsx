@@ -59,7 +59,7 @@ import { renderCustomization } from '../../utils/display-utils';
 import { useToastState } from '../../utils/toast-utils';
 import { PermissionEditModal } from './edit-modal';
 import { PermissionTree } from '../permission-tree';
-import { loadingSpinner, noItemsFoundMsg } from '../../utils/loading-spinner-utils';
+import { showMessage } from '../../utils/loading-spinner-utils';
 
 function renderBooleanToCheckMark(value: boolean): React.ReactNode {
   return value ? <EuiIcon type="check" /> : '';
@@ -392,7 +392,7 @@ export function PermissionList(props: AppDependencies) {
             error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
             isExpandable={true}
             itemIdToExpandedRowMap={itemIdToExpandedRowMap}
-            message={loading ? loadingSpinner : permissionList.length === 0 && noItemsFoundMsg}
+            message={showMessage(loading, permissionList)}
           />
         </EuiPageBody>
       </EuiPageContent>

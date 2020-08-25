@@ -21,6 +21,8 @@ import {
   EuiButtonIcon,
   EuiText,
   EuiFlexGroup,
+  EuiEmptyPrompt,
+  EuiButton,
 } from '@elastic/eui';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import {
@@ -28,13 +30,16 @@ import {
   ActionGroupItem,
   ExpandedRowMapInterface,
   RoleIndexPermissionView,
+  ResourceType,
+  Action,
 } from '../../types';
 import { truncatedListView, displayArray } from '../../utils/display-utils';
 import { PermissionTree } from '../permission-tree';
 import { getFieldLevelSecurityMethod } from '../../utils/index-permission-utils';
 import { renderExpression, displayHeaderWithTooltip } from '../../utils/display-utils';
 import { ToolTipContent } from '../../constants';
-import { loadingSpinner, noItemsFoundMsg } from '../../utils/loading-spinner-utils';
+import { showMessage } from '../../utils/loading-spinner-utils';
+import { buildHashUrl } from '../../utils/url-builder';
 
 function toggleRowDetails(
   item: RoleIndexPermissionView,
@@ -138,14 +143,33 @@ function getColumns(
 }
 
 interface IndexPermissionPanelProps {
+  roleName: string;
   indexPermissions: RoleIndexPermissionView[];
   actionGroups: DataObject<ActionGroupItem>;
   errorFlag: boolean;
   loading: boolean;
+  isReserved: boolean;
 }
 
 export function IndexPermissionPanel(props: IndexPermissionPanelProps) {
   const [itemIdToExpandedRowMap, setItemIdToExpandedRowMap] = useState<ExpandedRowMapInterface>({});
+
+  const emptyListmessage = (
+    <EuiEmptyPrompt
+      title={<h3>No index permission</h3>}
+      titleSize="s"
+      actions={
+        <EuiButton
+          disabled={props.isReserved}
+          onClick={() => {
+            window.location.href = buildHashUrl(ResourceType.roles, Action.edit, props.roleName);
+          }}
+        >
+          Add index permission
+        </EuiButton>
+      }
+    />
+  );
 
   const headerText = 'Index permissions';
   return (
@@ -166,9 +190,7 @@ export function IndexPermissionPanel(props: IndexPermissionPanelProps) {
         error={props.errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
         isExpandable={true}
         itemIdToExpandedRowMap={itemIdToExpandedRowMap}
-        message={
-          props.loading ? loadingSpinner : props.indexPermissions.length === 0 && noItemsFoundMsg
-        }
+        message={showMessage(props.loading, props.indexPermissions, emptyListmessage)}
       />
     </PanelWithHeader>
   );

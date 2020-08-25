@@ -16,6 +16,10 @@
 import React from 'react';
 import { EuiLoadingSpinner } from '@elastic/eui';
 
-export const noItemsFoundMsg = 'No items found';
+const noItemsFoundMsg = 'No items found';
 
 export const loadingSpinner = <EuiLoadingSpinner size="l" />;
+
+export function showMessage(loading: boolean, items: any[], customMessage?: React.ReactNode) {
+  return loading ? loadingSpinner : items.length === 0 && (customMessage || noItemsFoundMsg);
+}

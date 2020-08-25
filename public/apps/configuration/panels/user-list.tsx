@@ -43,7 +43,7 @@ import {
 } from '../utils/internal-user-list-utils';
 import { buildHashUrl } from '../utils/url-builder';
 import { API_ENDPOINT_INTERNALUSERS } from '../constants';
-import { loadingSpinner, noItemsFoundMsg } from '../utils/loading-spinner-utils';
+import { showMessage } from '../utils/loading-spinner-utils';
 
 function dictView() {
   return (items: Dictionary<string>) => {
@@ -257,7 +257,7 @@ export function UserList(props: AppDependencies) {
             selection={{ onSelectionChange: setSelection }}
             sorting
             error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
-            message={loading ? loadingSpinner : userData.length === 0 && noItemsFoundMsg}
+            message={showMessage(loading, userData)}
           />
         </EuiPageBody>
       </EuiPageContent>

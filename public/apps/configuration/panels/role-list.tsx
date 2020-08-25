@@ -43,7 +43,7 @@ import { API_ENDPOINT_ROLES, API_ENDPOINT_ROLESMAPPING } from '../constants';
 import { ResourceType, Action } from '../types';
 import { buildHashUrl } from '../utils/url-builder';
 import { renderCustomization, truncatedListView } from '../utils/display-utils';
-import { loadingSpinner, noItemsFoundMsg } from '../utils/loading-spinner-utils';
+import { showMessage } from '../utils/loading-spinner-utils';
 
 const columns = [
   {
@@ -287,7 +287,7 @@ export function RoleList(props: AppDependencies) {
             sorting={true}
             search={searchOptions}
             error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
-            message={loading ? loadingSpinner : roleData.length === 0 && noItemsFoundMsg}
+            message={showMessage(loading, roleData)}
           />
         </EuiPageBody>
       </EuiPageContent>
