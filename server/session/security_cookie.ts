@@ -63,15 +63,11 @@ export function getSecurityCookieOptions(
         return { isValid: true, path: '/' };
       }
 
-      if (sessionStorage.username === undefined || sessionStorage.credentials === undefined) {
-        return { isValid: false, path: '/' };
-      }
-
       if (sessionStorage.expiryTime === undefined || sessionStorage.expiryTime < Date.now()) {
         return { isValid: false, path: '/' };
       }
       return { isValid: true, path: '/' };
     },
-    isSecure: false, // TODO: config.cookie.secure,
+    isSecure: config.cookie.secure,
   };
 }

@@ -52,7 +52,6 @@ export type IAuthHandlerConstructor = new (
 
 export abstract class AuthenticationType implements IAuthenticationType {
   protected static readonly ROUTES_TO_IGNORE: string[] = [
-    // TODO: Use regular expression?
     '/api/core/capabilities', // FIXME: need to figureout how to bypass this API call
     '/app/login',
   ];

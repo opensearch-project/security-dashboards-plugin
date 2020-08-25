@@ -35,7 +35,7 @@ export class SecurityClient {
         username: credentials.username,
         roles: esResponse.roles,
         backendRoles: esResponse.backend_roles,
-        tenants: esResponse.teanats,
+        tenants: esResponse.tenants,
         selectedTenant: esResponse.user_requested_tenant,
         credentials,
         proxyCredentials: credentials,
@@ -84,7 +84,6 @@ export class SecurityClient {
 
   public async authenticateWithHeaders(
     request: KibanaRequest,
-    headerscredentials: any = {}, // TODO: not used, remove it
     additionalAuthHeaders: any = {}
   ): Promise<User> {
     try {

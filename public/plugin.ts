@@ -33,7 +33,7 @@ import { setupTopNavButton } from './apps/account/account-app';
 async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
   try {
     const permissions = await core.http.get(API_ENDPOINT_PERMISSIONS_INFO);
-    return permissions?.data?.has_api_access || false;
+    return permissions.has_api_access || false;
   } catch (e) {
     console.error(e);
     // ignore exceptions and default to no security related access.

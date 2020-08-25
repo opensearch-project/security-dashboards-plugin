@@ -24,7 +24,7 @@ export default {
   ),
   setupFilesAfterEnv: [
     '<rootDir>/src/dev/jest/setup/after_env.integration.js',
-    '<rootDir>/plugins/opendistro_security/test/es/setup_es.js',
+    // '<rootDir>/plugins/opendistro_security/test/es/setup_es.js',
   ],
   collectCoverageFrom: [
     '<rootDir>/plugins/opendistro_security/server/**/*.{ts,tsx}',
