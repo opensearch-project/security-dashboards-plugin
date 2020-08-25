@@ -16,7 +16,6 @@
 import {
   EuiBadge,
   EuiButton,
-  EuiContextMenuItem,
   EuiFlexGroup,
   EuiFlexItem,
   EuiInMemoryTable,
@@ -28,6 +27,7 @@ import {
   EuiPageHeader,
   EuiText,
   EuiTitle,
+  EuiButtonEmpty,
 } from '@elastic/eui';
 import { Dictionary, difference, map, isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
@@ -136,7 +136,7 @@ export function UserList(props: AppDependencies) {
   );
 
   const actionsMenuItems = [
-    <EuiContextMenuItem
+    <EuiButtonEmpty
       key="edit"
       onClick={() => {
         window.location.href = buildHashUrl(ResourceType.users, Action.edit, selection[0].username);
@@ -144,8 +144,8 @@ export function UserList(props: AppDependencies) {
       disabled={selection.length !== 1}
     >
       Edit
-    </EuiContextMenuItem>,
-    <EuiContextMenuItem
+    </EuiButtonEmpty>,
+    <EuiButtonEmpty
       key="duplicate"
       onClick={() => {
         window.location.href = buildHashUrl(
@@ -157,8 +157,8 @@ export function UserList(props: AppDependencies) {
       disabled={selection.length !== 1}
     >
       Duplicate
-    </EuiContextMenuItem>,
-    <EuiContextMenuItem
+    </EuiButtonEmpty>,
+    <EuiButtonEmpty
       key="export"
       disabled={selection.length !== 1}
       href={
@@ -169,14 +169,15 @@ export function UserList(props: AppDependencies) {
       target="_blank"
     >
       Export JSON
-    </EuiContextMenuItem>,
-    <EuiContextMenuItem
+    </EuiButtonEmpty>,
+    <EuiButtonEmpty
       key="delete"
+      color="danger"
       onClick={showDeleteConfirmModal}
       disabled={selection.length === 0 || selection.some((e) => e.username === currentUsername)}
     >
       Delete
-    </EuiContextMenuItem>,
+    </EuiButtonEmpty>,
   ];
 
   const [actionsMenu, closeActionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);
