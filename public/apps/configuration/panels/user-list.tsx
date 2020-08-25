@@ -45,6 +45,7 @@ import { buildHashUrl } from '../utils/url-builder';
 import { API_ENDPOINT_INTERNALUSERS } from '../constants';
 import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { useDeleteConfirmState } from '../utils/delete-confirm-modal-utils';
+import { useContextMenuState } from '../utils/context-menu';
 
 function dictView() {
   return (items: Dictionary<string>) => {
@@ -94,7 +95,6 @@ export function UserList(props: AppDependencies) {
   const [userData, setUserData] = useState<InternalUsersListing[]>([]);
   const [errorFlag, setErrorFlag] = useState(false);
   const [selection, setSelection] = useState<InternalUsersListing[]>([]);
-  const [isActionsPopoverOpen, setActionsPopoverOpen] = useState(false);
   const [currentUsername, setCurrentUsername] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -128,7 +128,7 @@ export function UserList(props: AppDependencies) {
     } catch (e) {
       console.log(e);
     } finally {
-      setActionsPopoverOpen(false);
+      closeActionsMenu();
     }
   };
 
@@ -181,17 +181,7 @@ export function UserList(props: AppDependencies) {
     </EuiContextMenuItem>,
   ];
 
-  const actionsButton = (
-    <EuiButton
-      iconType="arrowDown"
-      iconSide="right"
-      onClick={() => {
-        setActionsPopoverOpen(true);
-      }}
-    >
-      Actions
-    </EuiButton>
-  );
+  const [actionsMenu, closeActionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);
 
   return (
     <>
@@ -229,19 +219,7 @@ export function UserList(props: AppDependencies) {
           </EuiPageContentHeaderSection>
           <EuiPageContentHeaderSection>
             <EuiFlexGroup>
-              <EuiFlexItem>
-                <EuiPopover
-                  id="actionsMenu"
-                  button={actionsButton}
-                  isOpen={isActionsPopoverOpen}
-                  closePopover={() => {
-                    setActionsPopoverOpen(false);
-                  }}
-                  panelPaddingSize="s"
-                >
-                  <EuiContextMenuPanel items={actionsMenuItems} />
-                </EuiPopover>
-              </EuiFlexItem>
+              <EuiFlexItem>{actionsMenu}</EuiFlexItem>
               <EuiFlexItem>
                 <EuiButton
                   fill

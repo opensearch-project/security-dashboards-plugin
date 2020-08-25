@@ -16,8 +16,7 @@
 import {
   EuiBadge,
   EuiButton,
-  EuiContextMenuItem,
-  EuiContextMenuPanel,
+  EuiButtonEmpty,
   EuiFlexGroup,
   EuiFlexItem,
   EuiInMemoryTable,
@@ -27,7 +26,6 @@ import {
   EuiPageContentHeader,
   EuiPageContentHeaderSection,
   EuiPageHeader,
-  EuiPopover,
   EuiText,
   EuiTitle,
   EuiGlobalToastList,
@@ -53,12 +51,12 @@ import { useToastState, createUnknownErrorToast } from '../../utils/toast-utils'
 import { PageId } from '../../types';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
+import { useContextMenuState } from '../../utils/context-menu';
 
 export function TenantList(props: AppDependencies) {
   const [tenantData, setTenantData] = useState<Tenant[]>([]);
   const [errorFlag, setErrorFlag] = useState(false);
   const [selection, setSelection] = useState<Tenant[]>([]);
-  const [isActionsPopoverOpen, setActionsPopoverOpen] = useState(false);
   const [currentTenant, setCurrentTenant] = useState('');
   const [currentUsername, setCurrentUsername] = useState('');
   // Modal state
@@ -100,7 +98,7 @@ export function TenantList(props: AppDependencies) {
     } catch (e) {
       console.log(e);
     } finally {
-      setActionsPopoverOpen(false);
+      closeActionsMenu();
     }
   };
   const [showDeleteConfirmModal, deleteConfirmModal] = useDeleteConfirmState(
@@ -133,7 +131,7 @@ export function TenantList(props: AppDependencies) {
       console.log(e);
       addToast(createUnknownErrorToast('selectFailed', `select ${tenantName} tenant`));
     } finally {
-      setActionsPopoverOpen(false);
+      closeActionsMenu();
     }
   };
 
@@ -219,21 +217,21 @@ export function TenantList(props: AppDependencies) {
   ];
 
   const actionsMenuItems = [
-    <EuiContextMenuItem
+    <EuiButtonEmpty
       key="switchTenant"
       disabled={selection.length !== 1}
       onClick={() => switchToSelectedTenant(selection[0].tenantValue, selection[0].tenant)}
     >
       Switch to selected tenant
-    </EuiContextMenuItem>,
-    <EuiContextMenuItem
+    </EuiButtonEmpty>,
+    <EuiButtonEmpty
       key="edit"
       disabled={selection.length !== 1 || selection[0].reserved}
       onClick={() => showEditModal(selection[0].tenant, Action.edit, selection[0].description)}
     >
       Edit
-    </EuiContextMenuItem>,
-    <EuiContextMenuItem
+    </EuiButtonEmpty>,
+    <EuiButtonEmpty
       key="duplicate"
       disabled={selection.length !== 1}
       onClick={() =>
@@ -241,41 +239,32 @@ export function TenantList(props: AppDependencies) {
       }
     >
       Duplicate
-    </EuiContextMenuItem>,
-    <EuiContextMenuItem
+    </EuiButtonEmpty>,
+    <EuiButtonEmpty
       key="createDashboard"
       disabled={selection.length !== 1}
       onClick={() => viewOrCreateDashboard(selection[0].tenantValue, Action.create)}
     >
       Create dashboard
-    </EuiContextMenuItem>,
-    <EuiContextMenuItem
+    </EuiButtonEmpty>,
+    <EuiButtonEmpty
       key="createVisualizations"
       disabled={selection.length !== 1}
       onClick={() => viewOrCreateVisualization(selection[0].tenantValue, Action.create)}
     >
       Create visualizations
-    </EuiContextMenuItem>,
-    <EuiContextMenuItem
+    </EuiButtonEmpty>,
+    <EuiButtonEmpty
       key="delete"
+      color="danger"
       onClick={showDeleteConfirmModal}
       disabled={selection.length === 0 || selection.some((tenant) => tenant.reserved)}
     >
       Delete
-    </EuiContextMenuItem>,
+    </EuiButtonEmpty>,
   ];
 
-  const actionsButton = (
-    <EuiButton
-      iconType="arrowDown"
-      iconSide="right"
-      onClick={() => {
-        setActionsPopoverOpen(true);
-      }}
-    >
-      Actions
-    </EuiButton>
-  );
+  const [actionsMenu, closeActionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);
 
   const showEditModal = (
     initialTenantName: string,
@@ -339,19 +328,7 @@ export function TenantList(props: AppDependencies) {
           </EuiPageContentHeaderSection>
           <EuiPageContentHeaderSection>
             <EuiFlexGroup>
-              <EuiFlexItem>
-                <EuiPopover
-                  id="actionsMenu"
-                  button={actionsButton}
-                  isOpen={isActionsPopoverOpen}
-                  closePopover={() => {
-                    setActionsPopoverOpen(false);
-                  }}
-                  panelPaddingSize="s"
-                >
-                  <EuiContextMenuPanel items={actionsMenuItems} />
-                </EuiPopover>
-              </EuiFlexItem>
+              <EuiFlexItem>{actionsMenu}</EuiFlexItem>
               <EuiFlexItem>
                 <EuiButton fill onClick={() => showEditModal('', Action.create, '')}>
                   Create tenant

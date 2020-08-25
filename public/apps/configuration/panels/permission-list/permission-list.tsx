@@ -35,6 +35,7 @@ import {
   EuiText,
   EuiTitle,
   RIGHT_ALIGNMENT,
+  EuiButtonEmpty,
 } from '@elastic/eui';
 import { difference } from 'lodash';
 import React, {
@@ -61,6 +62,7 @@ import { PermissionEditModal } from './edit-modal';
 import { PermissionTree } from '../permission-tree';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
+import { useContextMenuState } from '../../utils/context-menu';
 
 function renderBooleanToCheckMark(value: boolean): React.ReactNode {
   return value ? <EuiIcon type="check" /> : '';
@@ -172,10 +174,6 @@ export function PermissionList(props: AppDependencies) {
   const [actionGroupDict, setActionGroupDict] = useState<DataObject<ActionGroupItem>>({});
   const [errorFlag, setErrorFlag] = useState<boolean>(false);
   const [selection, setSelection] = useState<PermissionListingItem[]>([]);
-  const [isActionsPopoverOpen, setActionsPopoverOpen] = useState<boolean>(false);
-  const [isCreateActionGroupPopoverOpen, setCreateActionGroupPopoverOpen] = useState<boolean>(
-    false
-  );
   const [itemIdToExpandedRowMap, setItemIdToExpandedRowMap] = useState<ExpandedRowMapInterface>({});
 
   // Modal state
@@ -212,7 +210,7 @@ export function PermissionList(props: AppDependencies) {
     } catch (e) {
       console.log(e);
     } finally {
-      setActionsPopoverOpen(false);
+      closeActionsMenu();
     }
   };
 
@@ -222,14 +220,14 @@ export function PermissionList(props: AppDependencies) {
   );
 
   const actionsMenuItems = [
-    <EuiContextMenuItem
+    <EuiButtonEmpty
       key="edit"
       onClick={() => showEditModal(selection[0].name, Action.edit, selection[0].allowedActions)}
       disabled={selection.length !== 1 || selection[0].reserved}
     >
       Edit
-    </EuiContextMenuItem>,
-    <EuiContextMenuItem
+    </EuiButtonEmpty>,
+    <EuiButtonEmpty
       key="duplicate"
       onClick={() =>
         showEditModal(selection[0].name + '_copy', Action.duplicate, selection[0].allowedActions)
@@ -237,15 +235,18 @@ export function PermissionList(props: AppDependencies) {
       disabled={selection.length !== 1 || selection[0].type !== 'Action group'}
     >
       Duplicate
-    </EuiContextMenuItem>,
-    <EuiContextMenuItem
+    </EuiButtonEmpty>,
+    <EuiButtonEmpty
       key="delete"
+      color="danger"
       onClick={showDeleteConfirmModal}
       disabled={selection.length === 0 || selection.some((group) => group.reserved)}
     >
       Delete
-    </EuiContextMenuItem>,
+    </EuiButtonEmpty>,
   ];
+
+  const [actionsMenu, closeActionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);
 
   const showEditModal = (
     initialGroupName: string,
@@ -285,13 +286,10 @@ export function PermissionList(props: AppDependencies) {
   };
 
   const createActionGroupMenuItems = [
-    <EuiContextMenuItem
-      key="create-from-blank"
-      onClick={() => showEditModal('', Action.create, [])}
-    >
+    <EuiButtonEmpty key="create-from-blank" onClick={() => showEditModal('', Action.create, [])}>
       Create from blank
-    </EuiContextMenuItem>,
-    <EuiContextMenuItem
+    </EuiButtonEmpty>,
+    <EuiButtonEmpty
       key="create-from-selection"
       onClick={() =>
         showEditModal(
@@ -303,32 +301,13 @@ export function PermissionList(props: AppDependencies) {
       disabled={selection.length === 0}
     >
       Create from selection
-    </EuiContextMenuItem>,
+    </EuiButtonEmpty>,
   ];
 
-  const actionsButton = (
-    <EuiButton
-      iconType="arrowDown"
-      iconSide="right"
-      onClick={() => {
-        setActionsPopoverOpen((prevState) => !prevState);
-      }}
-    >
-      Actions
-    </EuiButton>
-  );
-
-  const createActionGroupMenuButton = (
-    <EuiButton
-      iconType="arrowDown"
-      iconSide="right"
-      onClick={() => {
-        setCreateActionGroupPopoverOpen((prevState) => !prevState);
-      }}
-      fill
-    >
-      Create action group
-    </EuiButton>
+  const [createActionGroupMenu, closeCreateActionGroupMenu] = useContextMenuState(
+    'Create action group',
+    { fill: true },
+    createActionGroupMenuItems
   );
 
   return (
@@ -359,32 +338,8 @@ export function PermissionList(props: AppDependencies) {
           </EuiPageContentHeaderSection>
           <EuiPageContentHeaderSection>
             <EuiFlexGroup>
-              <EuiFlexItem>
-                <EuiPopover
-                  id="actionsMenu"
-                  button={actionsButton}
-                  isOpen={isActionsPopoverOpen}
-                  closePopover={() => {
-                    setActionsPopoverOpen(false);
-                  }}
-                  panelPaddingSize="s"
-                >
-                  <EuiContextMenuPanel items={actionsMenuItems} />
-                </EuiPopover>
-              </EuiFlexItem>
-              <EuiFlexItem>
-                <EuiPopover
-                  id="createActionsGroupMenu"
-                  button={createActionGroupMenuButton}
-                  isOpen={isCreateActionGroupPopoverOpen}
-                  closePopover={() => {
-                    setCreateActionGroupPopoverOpen(false);
-                  }}
-                  panelPaddingSize="s"
-                >
-                  <EuiContextMenuPanel items={createActionGroupMenuItems} />
-                </EuiPopover>
-              </EuiFlexItem>
+              <EuiFlexItem>{actionsMenu}</EuiFlexItem>
+              <EuiFlexItem>{createActionGroupMenu}</EuiFlexItem>
             </EuiFlexGroup>
           </EuiPageContentHeaderSection>
         </EuiPageContentHeader>
