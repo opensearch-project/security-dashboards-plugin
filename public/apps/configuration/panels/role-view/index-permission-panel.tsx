@@ -23,6 +23,7 @@ import {
   EuiFlexGroup,
   EuiEmptyPrompt,
   EuiButton,
+  CENTER_ALIGNMENT,
 } from '@elastic/eui';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import {
@@ -115,6 +116,7 @@ function getColumns(
 
         return renderExpression('Document-level security', JSON.parse(dls));
       },
+      align: CENTER_ALIGNMENT,
     },
     {
       field: 'fls',

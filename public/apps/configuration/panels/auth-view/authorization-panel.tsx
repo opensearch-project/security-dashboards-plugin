@@ -14,7 +14,7 @@
  */
 
 import React from 'react';
-import { EuiInMemoryTable, EuiEmptyPrompt } from '@elastic/eui';
+import { EuiInMemoryTable, EuiEmptyPrompt, CENTER_ALIGNMENT } from '@elastic/eui';
 import { keys, map, get } from 'lodash';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { renderExpression, ExternalLinkButton } from '../../utils/display-utils';
@@ -41,6 +41,7 @@ const columns = [
     field: 'backend_configuration',
     name: 'Backend configuration',
     render: (config: object) => renderExpression('Backend configuration', config),
+    align: CENTER_ALIGNMENT,
   },
 ];
 

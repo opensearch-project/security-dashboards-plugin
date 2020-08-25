@@ -14,7 +14,7 @@
  */
 
 import React from 'react';
-import { EuiInMemoryTable } from '@elastic/eui';
+import { EuiInMemoryTable, CENTER_ALIGNMENT } from '@elastic/eui';
 import { keys, map, get } from 'lodash';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { renderExpression } from '../../utils/display-utils';
@@ -50,6 +50,7 @@ const columns = [
     field: 'http_configuration',
     name: 'HTTP configuration',
     render: (config: object) => renderExpression('HTTP configuration', config),
+    align: CENTER_ALIGNMENT,
   },
   {
     field: 'backend_type',
@@ -59,6 +60,7 @@ const columns = [
     field: 'backend_configuration',
     name: 'Backend configuration',
     render: (config: object) => renderExpression('Backend configuration', config),
+    align: CENTER_ALIGNMENT,
   },
 ];
 
