@@ -44,7 +44,12 @@ export function ClusterPermissionPanel(props: {
         >
           <EuiFlexGroup>
             <EuiFlexItem className={LIMIT_WIDTH_INPUT_CLASS}>
-              <EuiComboBox options={optionUniverse} selectedOptions={state} onChange={setState} />
+              <EuiComboBox
+                placeholder="Search for action group name or permission name"
+                options={optionUniverse}
+                selectedOptions={state}
+                onChange={setState}
+              />
             </EuiFlexItem>
             {/* TODO: 'Browse and select' button with a pop-up modal for selection */}
             <EuiFlexItem grow={false}>

@@ -256,6 +256,7 @@ export function generateIndexPermissionPanels(
       <Fragment key={`index-permission-${arrayIndex}`}>
         <EuiAccordion
           id={`index-permission-${arrayIndex}`}
+          initialIsOpen={arrayIndex === 0}
           buttonContent={
             permission.indexPatterns.map(comboBoxOptionToString).join(', ') ||
             'Add index permission'

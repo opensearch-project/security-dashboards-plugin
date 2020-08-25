@@ -175,7 +175,7 @@ export function RoleEdit(props: RoleEditDeps) {
     <>
       {props.buildBreadcrumbs(TITLE_TEXT_DICT[props.action])}
       <EuiPageHeader>
-        <EuiText size="xs" color="subdued">
+        <EuiText size="xs" color="subdued" className="panel-header-subtext">
           <EuiTitle size="m">
             <h1>{TITLE_TEXT_DICT[props.action]}</h1>
           </EuiTitle>
