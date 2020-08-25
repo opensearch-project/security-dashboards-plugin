@@ -13,7 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-// eslint-disable-next-line max-classes-per-file
 import { cloneDeep } from 'lodash';
 import { format } from 'url';
 import { stringify } from 'querystring';
@@ -34,24 +33,8 @@ import { BasicAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
 import { LOGIN_PAGE_URI } from '../../../../common';
 
-// TODO: change to interface
-export class AuthConfig {
-  constructor(
-    public readonly authType: string,
-    public readonly authHeaderName: string,
-    public readonly allowedAdditionalAuthHeaders: string[],
-    public readonly authenticateFunction: () => void,
-    public readonly validateAvailableTenants: boolean,
-    public readonly validateAvailableRoles: boolean
-  ) {}
-}
-
 export class BasicAuthentication extends AuthenticationType {
   private static readonly AUTH_HEADER_NAME: string = 'authorization';
-  private static readonly ALLOWED_ADDITIONAL_AUTH_HEADERS: string[] = ['security_impersonate_as'];
-
-  private readonly authConfig: AuthConfig;
-
   public readonly type: string = 'basicauth';
 
   constructor(
@@ -64,16 +47,6 @@ export class BasicAuthentication extends AuthenticationType {
   ) {
     super(config, sessionStorageFactory, router, esClient, coreSetup, logger);
 
-    const multitenantEnabled = config.multitenancy?.enabled || false;
-    this.authConfig = new AuthConfig(
-      'basicauth',
-      BasicAuthentication.AUTH_HEADER_NAME,
-      BasicAuthentication.ALLOWED_ADDITIONAL_AUTH_HEADERS,
-      async () => {},
-      multitenantEnabled,
-      true
-    );
-
     this.init();
   }
 
@@ -83,7 +56,6 @@ export class BasicAuthentication extends AuthenticationType {
       this.config,
       this.sessionStorageFactory,
       this.securityClient,
-      this.authConfig,
       this.coreSetup
     );
     routes.setupRoutes();
@@ -106,6 +78,17 @@ export class BasicAuthentication extends AuthenticationType {
   }
 
   getCookie(request: KibanaRequest, authInfo: any): SecuritySessionCookie {
+    if (
+      this.config.auth.anonymous_auth_enabled &&
+      authInfo.user_name === 'opendistro_security_anonymous'
+    ) {
+      return {
+        username: authInfo.user_name,
+        authType: this.type,
+        expiryTime: Date.now() + this.config.cookie.ttl,
+        isAnonymousAuth: true,
+      };
+    }
     return {
       username: authInfo.user_name,
       credentials: {
@@ -119,9 +102,9 @@ export class BasicAuthentication extends AuthenticationType {
   isValidCookie(cookie: SecuritySessionCookie): boolean {
     return (
       cookie.authType === this.type &&
-      cookie.username &&
       cookie.expiryTime &&
-      cookie.credentials?.authHeaderValue
+      ((cookie.username && cookie.credentials?.authHeaderValue) ||
+        (this.config.auth.anonymous_auth_enabled && cookie.isAnonymousAuth))
     );
   }
 
@@ -149,6 +132,9 @@ export class BasicAuthentication extends AuthenticationType {
   }
 
   buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any {
+    if (this.config.auth.anonymous_auth_enabled && cookie.isAnonymousAuth) {
+      return {};
+    }
     const headers: any = {};
     Object.assign(headers, { authorization: cookie.credentials?.authHeaderValue });
     return headers;

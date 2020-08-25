@@ -24,7 +24,10 @@ import {
   KIBANA_SERVER_USER,
   KIBANA_SERVER_PASSWORD,
   AUTHORIZATION_HEADER_NAME,
+  ADMIN_USER,
+  ADMIN_PASSWORD,
 } from '../constant';
+import { getAuthCookie, extractAuthCookie } from '../helper/cookie';
 
 describe('start kibana server', () => {
   let root: Root;
@@ -85,5 +88,52 @@ describe('start kibana server', () => {
       .get(root, '/api/v1/auth/authinfo')
       .unset('Authorization');
     expect(response.status).toEqual(401);
+  });
+
+  it('call authinfo API with cookie', async () => {
+    const authCookie = await getAuthCookie(root, ADMIN_USER, ADMIN_PASSWORD);
+
+    const response = await kbnTestServer.request
+      .get(root, '/api/v1/auth/authinfo')
+      .unset(AUTHORIZATION_HEADER_NAME)
+      .set('Cookie', authCookie);
+    expect(response.status).toEqual(200);
+  });
+
+  it('login with user name and password', async () => {
+    const response = await kbnTestServer.request
+      .post(root, '/auth/login')
+      .unset(AUTHORIZATION_HEADER_NAME)
+      .send({
+        username: ADMIN_USER,
+        password: ADMIN_PASSWORD,
+      });
+    expect(response.status).toEqual(200);
+    const authCookie = extractAuthCookie(response);
+    // cookie is like security_authentication=<cookie>, verify there are actual cookie value
+    expect(authCookie.split('=')[1]).toBeTruthy();
+  });
+
+  it('login fails with invalid credentials', async () => {
+    const response = await kbnTestServer.request
+      .post(root, '/auth/login')
+      .unset(AUTHORIZATION_HEADER_NAME)
+      .send({
+        username: ADMIN_USER,
+        password: 'invalid',
+      });
+    expect(response.status).toEqual(401);
+  });
+
+  it('log out', async () => {
+    const authCookie = await getAuthCookie(root, ADMIN_USER, ADMIN_PASSWORD);
+
+    const response = await kbnTestServer.request
+      .post(root, '/auth/logout')
+      .unset(AUTHORIZATION_HEADER_NAME)
+      .set('Cookie', authCookie);
+    expect(response.status).toEqual(200);
+    const cookie = extractAuthCookie(response);
+    expect(cookie.split('=')[1]).toBeFalsy();
   });
 });
