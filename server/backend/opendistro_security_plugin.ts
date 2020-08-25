@@ -49,7 +49,14 @@ export default function (Client: any, config: any, components: any) {
   });
 
   /**
-   * Gets tenant info of current user.
+   * Gets tenant info of current user. The output looks like:
+   * {
+   *   "user_name": "admin",
+   *   "not_fail_on_forbidden_enabled": false,
+   *   "kibana_mt_enabled": true,
+   *   "kibana_index": ".kibana",
+   *   "kibana_server_user": "kibanaserver"
+   * }
    */
   Client.prototype.opendistro_security.prototype.tenantinfo = ca({
     url: {

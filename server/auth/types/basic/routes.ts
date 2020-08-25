@@ -203,7 +203,7 @@ export class BasicAuthRoutes {
           });
         } else {
           return response.badRequest({
-            body: 'Anonymouse auth is disabled.',
+            body: 'Anonymous auth is disabled.',
           });
         }
       }

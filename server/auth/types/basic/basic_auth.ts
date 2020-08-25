@@ -13,7 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-// eslint-disable-next-line max-classes-per-file
 import { cloneDeep } from 'lodash';
 import { format } from 'url';
 import { stringify } from 'querystring';

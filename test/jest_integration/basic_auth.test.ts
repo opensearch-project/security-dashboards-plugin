@@ -34,7 +34,7 @@ describe('start kibana server', () => {
   let esProcess: ChildProcess;
 
   beforeAll(async () => {
-    // esProcess = await startElasticsearch();
+    esProcess = await startElasticsearch();
     console.log('Started Elasticsearch');
 
     root = kbnTestServer.createRootWithSettings(
@@ -67,7 +67,7 @@ describe('start kibana server', () => {
     // shutdown Kibana server
     root.shutdown();
     // shutdown Elasticsearch
-    // await stopElasticsearch(esProcess);
+    await stopElasticsearch(esProcess);
   });
 
   it('can access login page without credentials', async () => {
