@@ -160,7 +160,7 @@ export function RoleEdit(props: RoleEditDeps) {
         color: 'success',
         title: UPDATE_TEXT_DICT[props.action],
       });
-      // Redirect to user listing
+      // Redirect to role view
       window.location.href = buildHashUrl(ResourceType.roles, Action.view, roleName);
     } catch (e) {
       addToast(createUnknownErrorToast('updateRole', `${props.action} role`));
