@@ -108,17 +108,21 @@ export function TenantList(props: AppDependencies) {
     'tenant(s)'
   );
 
-  const changeTenant = async (tenantName: string) => {
+  const changeTenant = async (tenantValue: string) => {
     const selectedTenant = await selectTenant(props.coreStart.http, {
-      tenant: tenantName,
+      tenant: tenantValue,
       username: currentUsername,
     });
     setCurrentTenant(resolveTenantName(selectedTenant, currentUsername));
   };
 
-  const switchToSelectedTenant = async (tenantName: string) => {
+  const getTenantName = (tenantValue: string) => {
+    return tenantData.find((tenant: Tenant) => tenant.tenantValue === tenantValue)?.tenant;
+  };
+
+  const switchToSelectedTenant = async (tenantValue: string, tenantName: string) => {
     try {
-      await changeTenant(tenantName);
+      await changeTenant(tenantValue);
       setSelection([]);
       addToast({
         id: 'selectSucceeded',
@@ -127,30 +131,38 @@ export function TenantList(props: AppDependencies) {
       });
     } catch (e) {
       console.log(e);
-      addToast(createUnknownErrorToast('selectFailed', `selet ${tenantName} tenant`));
+      addToast(createUnknownErrorToast('selectFailed', `select ${tenantName} tenant`));
     } finally {
       setActionsPopoverOpen(false);
     }
   };
 
-  const viewDashboard = async (tenantName: string) => {
+  const viewOrCreateDashboard = async (tenantValue: string, action: string) => {
     try {
-      await changeTenant(tenantName);
+      await changeTenant(tenantValue);
       window.location.href = getNavLinkById(props.coreStart, PageId.dashboardId);
     } catch (e) {
       console.log(e);
-      addToast(createUnknownErrorToast('viewDashboard', `view dashboard for ${tenantName} tenant`));
+      addToast(
+        createUnknownErrorToast(
+          `${action}Dashboard`,
+          `${action} dashboard for ${getTenantName(tenantValue)} tenant`
+        )
+      );
     }
   };
 
-  const viewVisualization = async (tenantName: string) => {
+  const viewOrCreateVisualization = async (tenantValue: string, action: string) => {
     try {
-      await changeTenant(tenantName);
+      await changeTenant(tenantValue);
       window.location.href = getNavLinkById(props.coreStart, PageId.visualizationId);
     } catch (e) {
       console.log(e);
       addToast(
-        createUnknownErrorToast('viewVisualization', `view visualization for ${tenantName} tenant`)
+        createUnknownErrorToast(
+          `${action}Visualization`,
+          `${action} visualization for ${getTenantName(tenantValue)} tenant`
+        )
       );
     }
   };
@@ -182,7 +194,9 @@ export function TenantList(props: AppDependencies) {
       name: 'Dashboard',
       render: (tenant: string) => (
         <>
-          <EuiLink onClick={() => viewDashboard(tenant)}>View dashboard</EuiLink>
+          <EuiLink onClick={() => viewOrCreateDashboard(tenant, Action.view)}>
+            View dashboard
+          </EuiLink>
         </>
       ),
     },
@@ -191,7 +205,9 @@ export function TenantList(props: AppDependencies) {
       name: 'Visualizations',
       render: (tenant: string) => (
         <>
-          <EuiLink onClick={() => viewVisualization(tenant)}>View visualizations</EuiLink>
+          <EuiLink onClick={() => viewOrCreateVisualization(tenant, Action.view)}>
+            View visualizations
+          </EuiLink>
         </>
       ),
     },
@@ -206,7 +222,7 @@ export function TenantList(props: AppDependencies) {
     <EuiContextMenuItem
       key="switchTenant"
       disabled={selection.length !== 1}
-      onClick={() => switchToSelectedTenant(selection[0].tenantValue)}
+      onClick={() => switchToSelectedTenant(selection[0].tenantValue, selection[0].tenant)}
     >
       Switch to selected tenant
     </EuiContextMenuItem>,
@@ -229,14 +245,14 @@ export function TenantList(props: AppDependencies) {
     <EuiContextMenuItem
       key="createDashboard"
       disabled={selection.length !== 1}
-      onClick={() => viewDashboard(selection[0].tenantValue)}
+      onClick={() => viewOrCreateDashboard(selection[0].tenantValue, Action.create)}
     >
       Create dashboard
     </EuiContextMenuItem>,
     <EuiContextMenuItem
       key="createVisualizations"
       disabled={selection.length !== 1}
-      onClick={() => viewVisualization(selection[0].tenantValue)}
+      onClick={() => viewOrCreateVisualization(selection[0].tenantValue, Action.create)}
     >
       Create visualizations
     </EuiContextMenuItem>,
