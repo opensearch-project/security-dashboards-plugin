@@ -70,7 +70,7 @@ describe('start kibana server', () => {
 
   afterAll(async () => {
     // shutdown Kibana server
-    root.shutdown();
+    await root.shutdown();
     // shutdown Elasticsearch
     await stopElasticsearch(esProcess);
   });
