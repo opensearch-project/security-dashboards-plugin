@@ -15,10 +15,7 @@
 
 import {
   EuiBasicTableColumn,
-  EuiButton,
   EuiButtonIcon,
-  EuiContextMenuItem,
-  EuiContextMenuPanel,
   EuiFlexGroup,
   EuiFlexItem,
   EuiGlobalToastList,
@@ -30,7 +27,6 @@ import {
   EuiPageContentHeader,
   EuiPageContentHeaderSection,
   EuiPageHeader,
-  EuiPopover,
   EuiSearchBarProps,
   EuiText,
   EuiTitle,

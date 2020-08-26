@@ -145,7 +145,6 @@ export function RoleList(props: AppDependencies) {
     >
       Edit
     </EuiButtonEmpty>,
-    // <EuiSpacer size='xs' />,
     // TODO: Change duplication to a popup window
     <EuiButtonEmpty
       key="duplicate"
@@ -160,7 +159,6 @@ export function RoleList(props: AppDependencies) {
     >
       Duplicate
     </EuiButtonEmpty>,
-    // <EuiSpacer size='xs' />,
     <EuiButtonEmpty
       key="delete"
       color="danger"
