@@ -54,10 +54,14 @@ export function displayObject(object: object | undefined) {
 
 export function renderCustomization(reserved: boolean) {
   return (
-    <EuiText size="xs">
-      <EuiIcon type={reserved ? 'lock' : 'pencil'} />
-      {reserved ? 'Reserved' : 'Custom'}
-    </EuiText>
+    <EuiFlexGroup alignItems="center" gutterSize="xs">
+      <EuiFlexItem grow={false}>
+        <EuiIcon type={reserved ? 'lock' : 'pencil'} />
+      </EuiFlexItem>
+      <EuiFlexItem grow={false}>
+        <EuiText size="xs">{reserved ? 'Reserved' : 'Custom'}</EuiText>
+      </EuiFlexItem>
+    </EuiFlexGroup>
   );
 }
 
