@@ -33,7 +33,7 @@
   <groupId>com.amazon.opendistroforelasticsearch</groupId>
   <artifactId>opendistro_security_kibana_plugin</artifactId>
   <packaging>pom</packaging>
-  <version>1.9.0.0</version>
+  <version>1.9.0.1/version>
   <name>Open Distro Security for Elasticsearch Kibana Plugin</name>
   <description>Open Distro Security for Elasticsearch Kibana Plugin</description>
   <url>https://github.com/opendistro-for-elasticsearch/security-kibana-plugin</url>
