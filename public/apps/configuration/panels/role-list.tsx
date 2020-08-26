@@ -27,10 +27,8 @@ import {
   EuiButton,
   EuiPageBody,
   EuiInMemoryTable,
-  EuiContextMenuItem,
-  EuiPopover,
-  EuiContextMenuPanel,
   EuiBasicTableColumn,
+  EuiButtonEmpty,
 } from '@elastic/eui';
 import { difference } from 'lodash';
 import { AppDependencies } from '../../types';
@@ -46,6 +44,7 @@ import { buildHashUrl } from '../utils/url-builder';
 import { renderCustomization, truncatedListView } from '../utils/display-utils';
 import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { useDeleteConfirmState } from '../utils/delete-confirm-modal-utils';
+import { useContextMenuState } from '../utils/context-menu';
 
 const columns: Array<EuiBasicTableColumn<RoleListing>> = [
   {
@@ -94,7 +93,6 @@ export function RoleList(props: AppDependencies) {
   const [roleData, setRoleData] = useState<RoleListing[]>([]);
   const [errorFlag, setErrorFlag] = useState(false);
   const [selection, setSelection] = useState<RoleListing[]>([]);
-  const [isActionsPopoverOpen, setActionsPopoverOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -128,7 +126,7 @@ export function RoleList(props: AppDependencies) {
     } catch (e) {
       console.log(e);
     } finally {
-      setActionsPopoverOpen(false);
+      closeActionsMenu();
     }
   };
 
@@ -138,7 +136,7 @@ export function RoleList(props: AppDependencies) {
   );
 
   const actionsMenuItems = [
-    <EuiContextMenuItem
+    <EuiButtonEmpty
       key="edit"
       onClick={() => {
         window.location.href = buildHashUrl(ResourceType.roles, Action.edit, selection[0].roleName);
@@ -146,9 +144,9 @@ export function RoleList(props: AppDependencies) {
       disabled={selection.length !== 1 || selection[0].reserved}
     >
       Edit
-    </EuiContextMenuItem>,
+    </EuiButtonEmpty>,
     // TODO: Change duplication to a popup window
-    <EuiContextMenuItem
+    <EuiButtonEmpty
       key="duplicate"
       onClick={() => {
         window.location.href = buildHashUrl(
@@ -160,27 +158,18 @@ export function RoleList(props: AppDependencies) {
       disabled={selection.length !== 1}
     >
       Duplicate
-    </EuiContextMenuItem>,
-    <EuiContextMenuItem
+    </EuiButtonEmpty>,
+    <EuiButtonEmpty
       key="delete"
+      color="danger"
       onClick={showDeleteConfirmModal}
       disabled={selection.length === 0 || selection.some((e) => e.reserved)}
     >
       Delete
-    </EuiContextMenuItem>,
+    </EuiButtonEmpty>,
   ];
 
-  const actionsButton = (
-    <EuiButton
-      iconType="arrowDown"
-      iconSide="right"
-      onClick={() => {
-        setActionsPopoverOpen(true);
-      }}
-    >
-      Actions
-    </EuiButton>
-  );
+  const [actionsMenu, closeActionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);
 
   const [searchOptions, setSearchOptions] = useState({});
   useEffect(() => {
@@ -264,19 +253,7 @@ export function RoleList(props: AppDependencies) {
           </EuiPageContentHeaderSection>
           <EuiPageContentHeaderSection>
             <EuiFlexGroup>
-              <EuiFlexItem>
-                <EuiPopover
-                  id="actionsMenu"
-                  button={actionsButton}
-                  isOpen={isActionsPopoverOpen}
-                  closePopover={() => {
-                    setActionsPopoverOpen(false);
-                  }}
-                  panelPaddingSize="s"
-                >
-                  <EuiContextMenuPanel items={actionsMenuItems} />
-                </EuiPopover>
-              </EuiFlexItem>
+              <EuiFlexItem>{actionsMenu}</EuiFlexItem>
               <EuiFlexItem>
                 <EuiButton fill href={buildHashUrl(ResourceType.roles, Action.create)}>
                   Create role
