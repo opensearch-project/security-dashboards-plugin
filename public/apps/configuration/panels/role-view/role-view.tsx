@@ -177,13 +177,13 @@ export function RoleView(props: RoleViewProps) {
       }
       actions={
         <EuiFlexGroup gutterSize="s">
-          <EuiFlexItem grow={false} key="createUserButton">
+          <EuiFlexItem grow={false}>
             <ExternalLinkButton
               text="Create internal user"
               href={buildHashUrl(ResourceType.users, Action.create)}
             />
           </EuiFlexItem>
-          <EuiFlexItem grow={false} key="mapUserButton">
+          <EuiFlexItem grow={false}>
             <EuiButton
               fill
               onClick={() => {
@@ -291,12 +291,12 @@ export function RoleView(props: RoleViewProps) {
               </EuiPageContentHeaderSection>
               <EuiPageContentHeaderSection>
                 <EuiFlexGroup>
-                  <EuiFlexItem key="deleteMapping">
+                  <EuiFlexItem>
                     <EuiButton onClick={showDeleteConfirmModal} disabled={selection.length === 0}>
                       Delete mapping
                     </EuiButton>
                   </EuiFlexItem>
-                  <EuiFlexItem key="manageMapping">
+                  <EuiFlexItem>
                     <EuiButton
                       onClick={() => {
                         window.location.href = buildHashUrl(
@@ -336,7 +336,7 @@ export function RoleView(props: RoleViewProps) {
   ];
 
   let pageActions;
-  let actionsMenuItems: React.ReactElement[] = [
+  const actionsMenuItems: React.ReactElement[] = [
     <EuiButtonEmpty key="duplicate" href={duplicateRoleLink}>
       duplicate
     </EuiButtonEmpty>,
@@ -367,8 +367,8 @@ export function RoleView(props: RoleViewProps) {
   } else {
     pageActions = (
       <EuiFlexGroup gutterSize="s">
-        <EuiFlexItem key="actions">{actionsMenu}</EuiFlexItem>
-        <EuiFlexItem key="edit">
+        <EuiFlexItem>{actionsMenu}</EuiFlexItem>
+        <EuiFlexItem>
           <EuiButton href={buildHashUrl(ResourceType.roles, Action.edit, props.roleName)}>
             Edit role
           </EuiButton>
