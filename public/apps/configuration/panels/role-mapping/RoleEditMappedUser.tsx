@@ -36,12 +36,13 @@ import {
 import { ExternalIdentityStateClass } from './types';
 import { ComboBoxOptions } from '../../types';
 import { stringToComboBoxOption, comboBoxOptionToString } from '../../utils/combo-box-utils';
-import { buildHashUrl } from '../../utils/url-builder';
+import { buildHashUrl, buildUrl } from '../../utils/url-builder';
 import { ResourceType, RoleMappingDetail, SubAction, Action } from '../../types';
 import { fetchUserNameList } from '../../utils/internal-user-list-utils';
 import { updateRoleMapping, getRoleMappingData } from '../../utils/role-mapping-utils';
 import { createErrorToast, createUnknownErrorToast, useToastState } from '../../utils/toast-utils';
 import { DocLinks } from '../../constants';
+import { setCrossPageToast } from '../../utils/storage-utils';
 
 interface RoleEditMappedUserProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -104,13 +105,14 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
         backend_roles: unbuildExternalIdentityState(validExternalIdentities),
         hosts,
       };
+
       await updateRoleMapping(props.coreStart.http, props.roleName, updateObject);
-      window.location.href = buildHashUrl(
-        ResourceType.roles,
-        Action.view,
-        props.roleName,
-        SubAction.mapuser
-      );
+      setCrossPageToast(buildUrl(ResourceType.roles, Action.view, props.roleName), {
+        id: 'updateRoleMappingSucceeded',
+        color: 'success',
+        title: props.roleName + ' saved.',
+      });
+      window.location.href = buildHashUrl(ResourceType.roles, Action.view, props.roleName);
     } catch (e) {
       if (e.message) {
         addToast(createErrorToast('saveRoleMappingFailed', 'save error', e.message));

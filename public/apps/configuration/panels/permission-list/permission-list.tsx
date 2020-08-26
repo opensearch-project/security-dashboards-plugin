@@ -273,6 +273,7 @@ export function PermissionList(props: AppDependencies) {
             });
           } catch (e) {
             console.log(e);
+            setEditModal(null);
             addToast({
               id: 'saveFailed',
               title: `Failed to save ${action} group. You may refresh the page to retry or see browser console for more information.`,

@@ -48,9 +48,10 @@ import {
   unbuildTenantPermissionState,
 } from './tenant-panel';
 import { RoleIndexPermissionStateClass, RoleTenantPermissionStateClass } from './types';
-import { buildHashUrl } from '../../utils/url-builder';
+import { buildHashUrl, buildUrl } from '../../utils/url-builder';
 import { ComboBoxOptions, ResourceType, Action } from '../../types';
 import { useToastState, createUnknownErrorToast } from '../../utils/toast-utils';
+import { setCrossPageToast } from '../../utils/storage-utils';
 
 interface RoleEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -64,6 +65,12 @@ const TITLE_TEXT_DICT = {
   create: 'Create Role',
   edit: 'Edit Role',
   duplicate: 'Duplicate Role',
+};
+
+const UPDATE_TEXT_DICT = {
+  create: 'Role successfully created',
+  edit: 'Role successfully updated',
+  duplicate: 'Role successfully duplicated',
 };
 
 export function RoleEdit(props: RoleEditDeps) {
@@ -147,6 +154,13 @@ export function RoleEdit(props: RoleEditDeps) {
         index_permissions: unbuildIndexPermissionState(validIndexPermission),
         tenant_permissions: unbuildTenantPermissionState(validTenantPermission),
       });
+
+      setCrossPageToast(buildUrl(ResourceType.roles, Action.view, roleName), {
+        id: 'updateRoleSucceeded',
+        color: 'success',
+        title: UPDATE_TEXT_DICT[props.action],
+      });
+      // Redirect to role view
       window.location.href = buildHashUrl(ResourceType.roles, Action.view, roleName);
     } catch (e) {
       addToast(createUnknownErrorToast('updateRole', `${props.action} role`));

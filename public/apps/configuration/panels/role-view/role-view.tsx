@@ -131,19 +131,7 @@ export function RoleView(props: RoleViewProps) {
       }
     };
 
-    const addSuccessToast = () => {
-      addToast({
-        id: 'updateRoleMappingSucceeded',
-        color: 'success',
-        title: props.roleName + ' saved.',
-      });
-    };
-
     fetchData();
-
-    if (props.prevAction === SubAction.mapuser) {
-      addSuccessToast();
-    }
   }, [addToast, props.coreStart.http, props.roleName, props.prevAction]);
 
   const handleRoleMappingDelete = async () => {

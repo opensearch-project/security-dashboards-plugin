@@ -27,19 +27,15 @@ import {
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 import { cloneDeep, set, without } from 'lodash';
 import { AppDependencies } from '../../../types';
-import {
-  FROM_COMPLIANCE_SAVE_SUCCESS,
-  FROM_GENERAL_SAVE_SUCCESS,
-  SETTING_GROUPS,
-  SettingMapItem,
-} from './constants';
+import { SETTING_GROUPS, SettingMapItem } from './constants';
 import { EditSettingGroup } from './edit-setting-group';
 import { AuditLoggingSettings } from './types';
-import { buildHashUrl } from '../../utils/url-builder';
+import { buildHashUrl, buildUrl } from '../../utils/url-builder';
 import { ResourceType } from '../../types';
 import { updateAuditLogging } from '../../utils/audit-logging-utils';
 import { API_ENDPOINT_AUDITLOGGING } from '../../constants';
 import { useToastState } from '../../utils/toast-utils';
+import { setCrossPageToast } from '../../utils/storage-utils';
 
 interface AuditLoggingEditSettingProps extends AppDependencies {
   setting: 'general' | 'compliance';
@@ -112,9 +108,25 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
     try {
       await updateAuditLogging(props.coreStart.http, configToUpdate);
 
-      window.location.href =
-        buildHashUrl(ResourceType.auditLogging) +
-        (props.setting === 'general' ? FROM_GENERAL_SAVE_SUCCESS : FROM_COMPLIANCE_SAVE_SUCCESS);
+      const addSuccessToast = (text: string) => {
+        const successToast: Toast = {
+          id: 'update-result',
+          color: 'success',
+          iconType: 'check',
+          title: 'Success',
+          text,
+        };
+
+        setCrossPageToast(buildUrl(ResourceType.auditLogging), successToast);
+      };
+
+      if (props.setting === 'general') {
+        addSuccessToast('General settings saved');
+      } else {
+        addSuccessToast('Compliance settings saved');
+      }
+
+      window.location.href = buildHashUrl(ResourceType.auditLogging);
     } catch (e) {
       const failureToast: Toast = {
         id: 'update-result',
