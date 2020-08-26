@@ -47,8 +47,8 @@ export function useContextMenuState(
 
   const items = [
     <EuiFlexGroup direction="column" alignItems="flexStart" gutterSize="s">
-      {children.map((child) => (
-        <EuiFlexItem>{child}</EuiFlexItem>
+      {children.map((child, index) => (
+        <EuiFlexItem key={index}>{child}</EuiFlexItem>
       ))}
     </EuiFlexGroup>,
   ];

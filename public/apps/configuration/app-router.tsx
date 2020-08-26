@@ -128,7 +128,7 @@ export function AppRouter(props: AppDependencies) {
       <EuiPage>
         {allNavPanelUrls.map((route) => (
           // Create different routes to update the 'selected' nav item .
-          <Route path={route} exact>
+          <Route key={route} path={route} exact>
             <EuiPageSideBar>
               <NavPanel items={ROUTE_LIST} />
             </EuiPageSideBar>

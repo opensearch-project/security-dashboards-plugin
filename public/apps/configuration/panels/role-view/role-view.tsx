@@ -33,10 +33,11 @@ import {
   EuiCallOut,
   EuiGlobalToastList,
   EuiHorizontalRule,
+  EuiButtonEmpty,
 } from '@elastic/eui';
 import { difference } from 'lodash';
 import { BreadcrumbsPageDependencies } from '../../../types';
-import { buildHashUrl } from '../../utils/url-builder';
+import { buildHashUrl, buildUrl } from '../../utils/url-builder';
 import {
   ResourceType,
   Action,
@@ -66,6 +67,9 @@ import { DocLinks } from '../../constants';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 import { ExternalLinkButton } from '../../utils/display-utils';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
+import { useContextMenuState } from '../../utils/context-menu';
+import { requestDeleteRoles } from '../../utils/role-list-utils';
+import { setCrossPageToast } from '../../utils/storage-utils';
 
 interface RoleViewProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -173,13 +177,13 @@ export function RoleView(props: RoleViewProps) {
       }
       actions={
         <EuiFlexGroup gutterSize="s">
-          <EuiFlexItem grow={false}>
+          <EuiFlexItem grow={false} key="createUserButton">
             <ExternalLinkButton
               text="Create internal user"
               href={buildHashUrl(ResourceType.users, Action.create)}
             />
           </EuiFlexItem>
-          <EuiFlexItem grow={false}>
+          <EuiFlexItem grow={false} key="mapUserButton">
             <EuiButton
               fill
               onClick={() => {
@@ -287,12 +291,12 @@ export function RoleView(props: RoleViewProps) {
               </EuiPageContentHeaderSection>
               <EuiPageContentHeaderSection>
                 <EuiFlexGroup>
-                  <EuiFlexItem>
+                  <EuiFlexItem key="deleteMapping">
                     <EuiButton onClick={showDeleteConfirmModal} disabled={selection.length === 0}>
                       Delete mapping
                     </EuiButton>
                   </EuiFlexItem>
-                  <EuiFlexItem>
+                  <EuiFlexItem key="manageMapping">
                     <EuiButton
                       onClick={() => {
                         window.location.href = buildHashUrl(
@@ -331,6 +335,48 @@ export function RoleView(props: RoleViewProps) {
     },
   ];
 
+  let pageActions;
+  let actionsMenuItems: React.ReactElement[] = [
+    <EuiButtonEmpty key="duplicate" href={duplicateRoleLink}>
+      duplicate
+    </EuiButtonEmpty>,
+    <EuiButtonEmpty
+      key="delete"
+      color="danger"
+      onClick={async () => {
+        try {
+          await requestDeleteRoles(props.coreStart.http, [props.roleName]);
+          setCrossPageToast(buildUrl(ResourceType.roles), {
+            id: 'deleteRole',
+            color: 'success',
+            title: props.roleName + ' deleted.',
+          });
+          window.location.href = buildHashUrl(ResourceType.roles);
+        } catch (e) {
+          addToast(createUnknownErrorToast('deleteRole', 'delete role'));
+        }
+      }}
+    >
+      delete
+    </EuiButtonEmpty>,
+  ];
+  const [actionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);
+
+  if (isReserved) {
+    pageActions = <EuiButton href={duplicateRoleLink}>Duplicate role</EuiButton>;
+  } else {
+    pageActions = (
+      <EuiFlexGroup gutterSize="s">
+        <EuiFlexItem key="actions">{actionsMenu}</EuiFlexItem>
+        <EuiFlexItem key="edit">
+          <EuiButton href={buildHashUrl(ResourceType.roles, Action.edit, props.roleName)}>
+            Edit role
+          </EuiButton>
+        </EuiFlexItem>
+      </EuiFlexGroup>
+    );
+  }
+
   return (
     <>
       {props.buildBreadcrumbs(props.roleName)}
@@ -342,9 +388,7 @@ export function RoleView(props: RoleViewProps) {
           </EuiTitle>
         </EuiPageContentHeaderSection>
 
-        <EuiPageContentHeaderSection>
-          <EuiButton href={duplicateRoleLink}>Duplicate role</EuiButton>
-        </EuiPageContentHeaderSection>
+        <EuiPageContentHeaderSection>{pageActions}</EuiPageContentHeaderSection>
       </EuiPageContentHeader>
 
       <EuiTabbedContent
