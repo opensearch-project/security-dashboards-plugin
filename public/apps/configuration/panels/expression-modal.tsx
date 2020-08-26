@@ -15,7 +15,7 @@
 
 import React, { useState } from 'react';
 import {
-  EuiButtonEmpty,
+  EuiLink,
   EuiCodeBlock,
   EuiModal,
   EuiModalBody,
@@ -53,9 +53,7 @@ export function ExpressionModal(props: { title: string; expression: object }) {
 
   return (
     <div>
-      <EuiButtonEmpty size="xs" onClick={showModal}>
-        View expression
-      </EuiButtonEmpty>
+      <EuiLink onClick={showModal}>View expression</EuiLink>
       {modal}
     </div>
   );
