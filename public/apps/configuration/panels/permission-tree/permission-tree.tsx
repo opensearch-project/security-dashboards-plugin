@@ -13,10 +13,12 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiTreeView, EuiIcon } from '@elastic/eui';
+import { EuiTreeView, EuiText } from '@elastic/eui';
 import { Node } from '@elastic/eui/src/components/tree_view/tree_view';
 import React from 'react';
-import { ActionGroupItem, DataObject } from '../types';
+import { ActionGroupItem, DataObject } from '../../types';
+
+import './_index.scss';
 
 const MAX_DEPTH = 5;
 
@@ -31,7 +33,7 @@ function buildTreeItem(
   return {
     label: name,
     id: name,
-    icon: <EuiIcon type="dot" />,
+    icon: <EuiText size="xs">•</EuiText>,
     children: children?.map((child) => buildTreeItem(child, depth + 1, actionGroups)),
   };
 }
@@ -41,13 +43,15 @@ export function PermissionTree(props: {
   actionGroups: DataObject<ActionGroupItem>;
 }) {
   return (
-    <EuiTreeView
-      display="compressed"
-      aria-label="Permission tree"
-      showExpansionArrows
-      items={props.permissions.map((permission) =>
-        buildTreeItem(permission, 0, props.actionGroups)
-      )}
-    />
+    <div className="permission-tree-container">
+      <EuiTreeView
+        display="compressed"
+        aria-label="Permission tree"
+        showExpansionArrows
+        items={props.permissions.map((permission) =>
+          buildTreeItem(permission, 0, props.actionGroups)
+        )}
+      />
+    </div>
   );
 }
