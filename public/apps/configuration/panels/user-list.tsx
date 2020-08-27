@@ -44,11 +44,12 @@ import { API_ENDPOINT_INTERNALUSERS } from '../constants';
 import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { useDeleteConfirmState } from '../utils/delete-confirm-modal-utils';
 import { useContextMenuState } from '../utils/context-menu';
+import { EMPTY_FIELD_VALUE } from '../ui-constants';
 
 function dictView() {
   return (items: Dictionary<string>) => {
     if (isEmpty(items)) {
-      return <span>&mdash;</span>;
+      return EMPTY_FIELD_VALUE;
     }
     return (
       <EuiFlexGroup direction="column" style={{ margin: '1px' }}>

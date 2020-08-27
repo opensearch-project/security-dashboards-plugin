@@ -28,6 +28,7 @@ import { isEmpty } from 'lodash';
 
 import React from 'react';
 import { ExpressionModal } from '../panels/expression-modal';
+import { EMPTY_FIELD_VALUE } from '../ui-constants';
 
 export function renderTextFlexItem(header: string, value: string) {
   return (
@@ -45,11 +46,11 @@ export function displayBoolean(bool: boolean | undefined) {
 }
 
 export function displayArray(array: string[] | undefined) {
-  return array?.join(', ') || <span>&mdash;</span>;
+  return array?.join(', ') || EMPTY_FIELD_VALUE;
 }
 
 export function displayObject(object: object | undefined) {
-  return !isEmpty(object) ? JSON.stringify(object, null, 2) : <span>&mdash;</span>;
+  return !isEmpty(object) ? JSON.stringify(object, null, 2) : EMPTY_FIELD_VALUE;
 }
 
 export function renderCustomization(reserved: boolean) {
@@ -72,7 +73,7 @@ export function truncatedListView(limit = 3) {
       return (
         <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
           <EuiText key={'-'} size="xs">
-            &mdash;
+            {EMPTY_FIELD_VALUE}
           </EuiText>
         </EuiFlexGroup>
       );
@@ -98,7 +99,7 @@ export function truncatedListView(limit = 3) {
 
 export function renderExpression(title: string, expression: object) {
   if (isEmpty(expression)) {
-    return <span>&mdash;</span>;
+    return EMPTY_FIELD_VALUE;
   }
 
   return <ExpressionModal title={title} expression={expression} />;
