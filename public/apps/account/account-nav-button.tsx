@@ -76,7 +76,7 @@ export function AccountNavButton(props: {
         size="xs"
         onClick={() => setModal(<RoleInfoPanel {...props} handleClose={() => setModal(null)} />)}
       >
-        View roles
+        View roles and identities
       </EuiButtonEmpty>
       {horizontalRule}
       <EuiButtonEmpty
