@@ -183,6 +183,7 @@ export function IndexPermissionPanel(props: IndexPermissionPanelProps) {
       count={props.indexPermissions.length}
     >
       <EuiInMemoryTable
+        tableLayout={'auto'}
         loading={props.indexPermissions === [] && !props.errorFlag}
         columns={getColumns(itemIdToExpandedRowMap, props.actionGroups, setItemIdToExpandedRowMap)}
         items={props.indexPermissions}

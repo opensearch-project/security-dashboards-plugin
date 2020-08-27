@@ -316,6 +316,7 @@ export function RoleView(props: RoleViewProps) {
             <EuiHorizontalRule margin="s" />
             <EuiPageBody>
               <EuiInMemoryTable
+                tableLayout={'auto'}
                 loading={mappedUsers === [] && !errorFlag}
                 columns={mappedUserColumns}
                 items={mappedUsers}

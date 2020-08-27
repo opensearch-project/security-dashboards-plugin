@@ -264,6 +264,7 @@ export function RoleList(props: AppDependencies) {
         </EuiPageContentHeader>
         <EuiPageBody>
           <EuiInMemoryTable
+            tableLayout={'auto'}
             loading={roleData === [] && !errorFlag}
             columns={columns}
             items={roleData}

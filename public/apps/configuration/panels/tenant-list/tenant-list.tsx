@@ -351,6 +351,7 @@ export function TenantList(props: AppDependencies) {
         </EuiPageContentHeader>
         <EuiPageBody>
           <EuiInMemoryTable
+            tableLayout={'auto'}
             loading={tenantData === [] && !errorFlag}
             columns={columns}
             items={tenantData}
