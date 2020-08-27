@@ -14,13 +14,20 @@
  */
 import { schema } from '@kbn/config-schema';
 import { randomString } from '@hapi/cryptiles';
-import { parse, stringify } from 'querystring';
-import wreck from '@hapi/wreck';
-import { IRouter, SessionStorageFactory, CoreSetup } from '../../../../../../src/core/server';
+import { stringify } from 'querystring';
+import {
+  IRouter,
+  SessionStorageFactory,
+  CoreSetup,
+  KibanaResponseFactory,
+  KibanaRequest,
+} from '../../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
 import { OpenIdAuthConfig } from './openid_auth';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
+import { getBaseRedirectUrl, callTokenEndpoint } from './helper';
+import { composeNextUrlQeuryParam } from '../../../utils/next_url';
 
 export class OpenIdAuthRoutes {
   private static readonly NONCE_LENGTH: number = 22;
@@ -33,6 +40,27 @@ export class OpenIdAuthRoutes {
     private readonly securityClient: SecurityClient,
     private readonly core: CoreSetup
   ) {}
+
+  private redirectToLogin(request: KibanaRequest, response: KibanaResponseFactory) {
+    this.sessionStorageFactory.asScoped(request).clear();
+    return response.redirected({
+      headers: {
+        location: `${this.core.http.basePath.serverBasePath}/auth/openid/login`,
+      },
+    });
+  }
+
+  private async isValidState(request: KibanaRequest): Promise<boolean> {
+    try {
+      const cookie = await this.sessionStorageFactory.asScoped(request).get();
+      if (!cookie || !cookie.oidc?.state || cookie.oidc.state !== (request.query as any).state) {
+        return false;
+      }
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
 
   public setupRoutes() {
     this.router.get(
@@ -59,20 +87,17 @@ export class OpenIdAuthRoutes {
           const query: any = {
             client_id: this.config.openid?.client_id,
             response_type: 'code',
-            redirect_uri: `${this.getBaseRedirectUrl()}`,
+            redirect_uri: `${getBaseRedirectUrl(this.config, this.core)}`,
             state: nonce,
+            scope: this.openIdAuthConfig.scope,
           };
-
-          const scope = this.config.openid?.scope || '';
-          if (scope) {
-            query.scope = scope;
-          }
 
           const queryString = stringify(query);
           const location = `${this.openIdAuthConfig.authorizationEndpoint}?${queryString}`;
           const cookie: SecuritySessionCookie = {
             oidc: {
-              oidcState: nonce,
+              state: nonce,
+              nextUrl: request.query.nextUrl || '/',
             },
           };
           this.sessionStorageFactory.asScoped(request).set(cookie);
@@ -84,57 +109,52 @@ export class OpenIdAuthRoutes {
         }
 
         // Authentication callback
-        // TODO: figure out a decent way to validate the state from cookie
+
+        // validate state first
+        let cookie;
+        try {
+          cookie = await this.sessionStorageFactory.asScoped(request).get();
+          if (
+            !cookie ||
+            !cookie.oidc?.state ||
+            cookie.oidc.state !== (request.query as any).state
+          ) {
+            return this.redirectToLogin(request, response);
+          }
+        } catch (error) {
+          return this.redirectToLogin(request, response);
+        }
+        const nextUrl: string = cookie.oidc.nextUrl;
+
         const clientId = this.config.openid?.client_id;
         const clientSecret = this.config.openid?.client_secret;
         const query: any = {
           grant_type: 'authorization_code',
           code: request.query.code,
-          redirect_uri: `${this.getBaseRedirectUrl()}`,
+          redirect_uri: `${getBaseRedirectUrl(this.config, this.core)}`,
           client_id: clientId,
           client_secret: clientSecret,
         };
 
-        const requestOptions: any = {
-          payload: stringify(query),
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        };
-
         try {
-          const tokenResponse = await wreck.post(
-            this.openIdAuthConfig.tokenEndpoint as string,
-            requestOptions
+          const tokenResponse = await callTokenEndpoint(
+            this.openIdAuthConfig.tokenEndpoint!,
+            query
           );
-          if (
-            !tokenResponse.res.statusCode ||
-            tokenResponse.res.statusCode < 200 ||
-            tokenResponse.res.statusCode > 299
-          ) {
-            return response.unauthorized();
-          }
-
-          const tokenPayload: any = this.parseTokenResponse(tokenResponse.payload as Buffer);
-
-          const idToken: string = tokenPayload.id_token;
-          const accessToken: string = tokenPayload.access_token;
-          const refreshToken: string = tokenPayload.refresh_token;
-          const expiresIn: number = tokenPayload.expires_in;
 
           const user = await this.securityClient.authenticateWithHeader(
             request,
             this.openIdAuthConfig.authHeaderName as string,
-            `Bearer ${idToken}`
+            `Bearer ${tokenResponse.idToken}`
           );
 
           // set to cookie
           const sessionStorage: SecuritySessionCookie = {
             username: user.username,
             credentials: {
-              authHeaderValue: `Bearer ${idToken}`,
-              refresh_token: refreshToken,
-              expires_at: Date.now() + expiresIn * 1000, // expiresIn is in second
+              authHeaderValue: `Bearer ${tokenResponse.idToken}`,
+              refresh_token: tokenResponse.refreshToken,
+              expires_at: Date.now() + tokenResponse.expiresIn! * 1000, // expiresIn is in second
             },
             authType: 'openid',
             expiryTime: Date.now() + this.config.cookie.ttl,
@@ -142,12 +162,13 @@ export class OpenIdAuthRoutes {
           this.sessionStorageFactory.asScoped(request).set(sessionStorage);
           return response.redirected({
             headers: {
-              location: `${this.core.http.basePath.serverBasePath}/app/kibana`,
+              location: nextUrl,
             },
           });
         } catch (error) {
           context.security_plugin.logger.error(`OpenId authentication failed: ${error}`);
-          return response.unauthorized();
+          // redirect to login
+          return this.redirectToLogin(request, response);
         }
       }
     );
@@ -163,7 +184,10 @@ export class OpenIdAuthRoutes {
 
         // authHeaderValue is the bearer header, e.g. "Bearer <auth_token>"
         const token = cookie?.credentials.authHeaderValue.split(' ')[1]; // get auth token
-        const requestQueryParameters = `?post_logout_redirect_uri=${this.getBaseRedirectUrl()}/app/kibana`;
+        const requestQueryParameters = `?post_logout_redirect_uri=${getBaseRedirectUrl(
+          this.config,
+          this.core
+        )}/app/kibana`;
 
         let endSessionUrl = '/';
         const customLogoutUrl = this.config.openid?.logout_url;
@@ -183,32 +207,5 @@ export class OpenIdAuthRoutes {
         });
       }
     );
-  }
-
-  private parseTokenResponse(payload: Buffer) {
-    const payloadString = payload.toString();
-    if (payloadString.trim()[0] === '{') {
-      try {
-        return JSON.parse(payloadString);
-      } catch (error) {
-        throw Error(`Invalid JSON payload: ${error}`);
-      }
-    }
-    return parse(payloadString);
-  }
-
-  private getBaseRedirectUrl(): string {
-    if (this.config.openid?.base_redirect_url) {
-      const baseRedirectUrl = this.config.openid.base_redirect_url;
-      return baseRedirectUrl.endsWith('/') ? baseRedirectUrl.slice(0, -1) : baseRedirectUrl;
-    }
-
-    const host = this.core.http.getServerInfo().hostname;
-    const port = this.core.http.getServerInfo().port;
-    const protocol = this.core.http.getServerInfo().protocol;
-    if (this.core.http.basePath.serverBasePath) {
-      return `${protocol}://${host}:${port}${this.core.http.basePath.serverBasePath}`;
-    }
-    return `${protocol}://${host}:${port}`;
   }
 }

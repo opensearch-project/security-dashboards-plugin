@@ -26,11 +26,13 @@ import {
   AuthToolkit,
   IKibanaResponse,
 } from 'kibana/server';
+import { stringify } from 'querystring';
 import { SecurityPluginConfigType } from '../../..';
-
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { OpenIdAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
+import { parseTokenResponse, callTokenEndpoint } from './helper';
+import { composeNextUrlQeuryParam } from '../../../utils/next_url';
 
 export interface OpenIdAuthConfig {
   ca?: Buffer | undefined;
@@ -38,6 +40,7 @@ export interface OpenIdAuthConfig {
   authorizationEndpoint?: string;
   tokenEndpoint?: string;
   endSessionEndpoint?: string;
+  scope?: string;
 
   authHeaderName?: string;
 }
@@ -71,6 +74,11 @@ export class OpenIdAuthentication extends AuthenticationType {
     this.openIdAuthConfig.authHeaderName = this.authHeaderName;
 
     this.openIdConnectUrl = this.config.openid?.connect_url || '';
+    let scope = this.config.openid!.scope;
+    if (scope.indexOf('openid') < 0) {
+      scope = `openid ${scope}`;
+    }
+    this.openIdAuthConfig.scope = scope;
 
     this.init();
   }
@@ -119,13 +127,53 @@ export class OpenIdAuthentication extends AuthenticationType {
   }
 
   // TODO: Add token expiration check here
-  isValidCookie(cookie: SecuritySessionCookie): boolean {
-    return (
-      cookie.authType === this.type &&
-      cookie.username &&
-      cookie.expiryTime &&
-      cookie.credentials?.authHeaderValue
-    );
+  async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean> {
+    if (
+      cookie.authType !== this.type ||
+      !cookie.username ||
+      !cookie.expiryTime ||
+      !cookie.credentials?.authHeaderValue ||
+      !cookie.credentials?.expires_at
+    ) {
+      return false;
+    }
+    if (cookie.credentials?.expires_at > Date.now()) {
+      return true;
+    }
+
+    // need to renew id token
+    if (cookie.credentials.refresh_token) {
+      try {
+        const query: any = {
+          grant_type: 'refresh_token',
+          client_id: this.config.openid?.client_id,
+          client_secret: this.config.openid?.client_secret,
+          refresh_token: cookie.credentials.refresh_token,
+        };
+        const refreshTokenResposne = await callTokenEndpoint(
+          this.openIdAuthConfig.tokenEndpoint!,
+          query
+        );
+
+        // if no id_token from refresh token call, maybe the Idp doesn't allow refresh id_token
+        if (refreshTokenResposne.idToken) {
+          cookie.credentials = {
+            authHeaderValue: `Bearer ${refreshTokenResposne.idToken}`,
+            refresh_token: refreshTokenResposne.refreshToken,
+            expires_at: Date.now() + refreshTokenResposne.expiresIn! * 1000, // expiresIn is in second
+          };
+          return true;
+        } else {
+          return false;
+        }
+      } catch (error) {
+        this.logger.error(error);
+        return false;
+      }
+    } else {
+      // no refresh token, and current token is expired
+      return false;
+    }
   }
 
   handleUnauthedRequest(
@@ -133,9 +181,12 @@ export class OpenIdAuthentication extends AuthenticationType {
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
   ): IKibanaResponse {
+    this.sessionStorageFactory.asScoped(request).clear();
+    // nextUrl is a key value pair
+    const nextUrl = composeNextUrlQeuryParam(request, this.coreSetup.http.basePath.serverBasePath);
     return response.redirected({
       headers: {
-        location: `${this.coreSetup.http.basePath.serverBasePath}/auth/openid/login`,
+        location: `${this.coreSetup.http.basePath.serverBasePath}/auth/openid/login?${nextUrl}`,
       },
     });
   }

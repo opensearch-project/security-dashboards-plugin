@@ -90,7 +90,7 @@ export class SamlAuthentication extends AuthenticationType {
     };
   }
 
-  isValidCookie(cookie: SecuritySessionCookie): boolean {
+  async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean> {
     return (
       cookie.authType === this.type &&
       cookie.username &&
