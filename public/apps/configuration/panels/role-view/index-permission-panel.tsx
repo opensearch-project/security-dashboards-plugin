@@ -40,6 +40,7 @@ import { renderExpression, displayHeaderWithTooltip } from '../../utils/display-
 import { ToolTipContent } from '../../constants';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { buildHashUrl } from '../../utils/url-builder';
+import { EMPTY_FIELD_VALUE } from '../../ui-constants';
 
 function toggleRowDetails(
   item: RoleIndexPermissionView,
@@ -66,7 +67,7 @@ export function renderFieldLevelSecurity() {
       return (
         <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
           <EuiText key={'-'} size="xs">
-            -
+            {EMPTY_FIELD_VALUE}
           </EuiText>
         </EuiFlexGroup>
       );
@@ -110,7 +111,7 @@ function getColumns(
       ),
       render: (dls: string) => {
         if (!dls) {
-          return '-';
+          return EMPTY_FIELD_VALUE;
         }
 
         return renderExpression('Document-level security', JSON.parse(dls));

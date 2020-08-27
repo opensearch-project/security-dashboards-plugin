@@ -176,14 +176,14 @@ export function RoleView(props: RoleViewProps) {
         </EuiText>
       }
       actions={
-        <EuiFlexGroup gutterSize="s">
-          <EuiFlexItem grow={false}>
+        <EuiFlexGroup gutterSize="s" alignItems="center">
+          <EuiFlexItem>
             <ExternalLinkButton
               text="Create internal user"
               href={buildHashUrl(ResourceType.users, Action.create)}
             />
           </EuiFlexItem>
-          <EuiFlexItem grow={false}>
+          <EuiFlexItem>
             <EuiButton
               fill
               onClick={() => {
@@ -280,10 +280,10 @@ export function RoleView(props: RoleViewProps) {
                   </h3>
                 </EuiTitle>
                 <EuiText size="xs" color="subdued" className="panel-header-subtext">
-                  You can map two types of users: 1. Internal users within the Security plugin. An
+                  You can map two types of users: internal users and external identities. An
                   internal user can have its own backend role and host for an external
-                  authentication and authorization. 2. External identity, which directly maps to
-                  roles through an external authentication system.{' '}
+                  authentication and authorization. An external identity directly maps to roles
+                  through an external authentication system.{' '}
                   <EuiLink external={true} href={DocLinks.MapUsersToRolesDoc} target="_blank">
                     Learn More
                   </EuiLink>
