@@ -53,7 +53,7 @@ export function PasswordEditPanel(props: {
 
       <FormRow
         headerText="Re-enter password"
-        helpText="The password must be identical to what you entered above"
+        helpText="The password must be identical to what you entered above."
       >
         <EuiFieldText
           prepend={<EuiIcon type="lock" />}

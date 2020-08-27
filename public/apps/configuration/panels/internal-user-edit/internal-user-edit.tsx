@@ -139,7 +139,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
           <EuiFlexItem>
             <EuiText size="xs" color="subdued">
               The security plugin includes an internal user database. Use this database in place of
-              or in addtion to an external authentication system such as LDAP or Active Directory{' '}
+              or in addtion to an external authentication system such as LDAP or Active Directory.{' '}
               <EuiLink external href="/">
                 Learn More
               </EuiLink>
@@ -147,7 +147,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiPageHeader>
-      <PanelWithHeader headerText="Credendtials">
+      <PanelWithHeader headerText="Credentials">
         <EuiForm>
           <FormRow
             headerText="Username"

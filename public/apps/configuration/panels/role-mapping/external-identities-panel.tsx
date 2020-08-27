@@ -96,7 +96,7 @@ export function ExternalIdentitiesPanel(props: {
   return (
     <PanelWithHeader
       headerText="External identities"
-      headerSubText="Use an external identity to directly map to roles through an external authentication system"
+      headerSubText="Use an external identity to directly map to roles through an external authentication system."
       helpLink="/"
     >
       {panel}

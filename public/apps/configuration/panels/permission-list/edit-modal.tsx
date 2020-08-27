@@ -70,7 +70,7 @@ export function PermissionEditModal(props: PermissionEditModalDeps) {
           <EuiForm>
             <FormRow
               headerText="Name"
-              headerSubText="Enter a unique name to describe the purpose of this group. You cannot change the name after creation"
+              headerSubText="Enter a unique name to describe the purpose of this group. You cannot change the name after creation."
               helpText="The name must be less than 50 characters."
             >
               <EuiFieldText
