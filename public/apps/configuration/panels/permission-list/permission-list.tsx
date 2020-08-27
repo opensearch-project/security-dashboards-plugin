@@ -165,6 +165,18 @@ const SEARCH_OPTIONS: EuiSearchBarProps = {
   ],
 };
 
+function getSuccessToastMessage(action: string, groupName: string): string {
+  switch (action) {
+    case 'create':
+    case 'duplicate':
+      return `Action group "${groupName}" successfully created`;
+    case 'edit':
+      return `Action group "${groupName}" successfully updated`;
+    default:
+      return '';
+  }
+}
+
 export function PermissionList(props: AppDependencies) {
   const [permissionList, setPermissionList] = useState<PermissionListingItem[]>([]);
   const [actionGroupDict, setActionGroupDict] = useState<DataObject<ActionGroupItem>>({});
@@ -265,7 +277,7 @@ export function PermissionList(props: AppDependencies) {
             fetchData();
             addToast({
               id: 'saveSucceeded',
-              title: `${groupName} saved.`,
+              title: getSuccessToastMessage(action, groupName),
               color: 'success',
             });
           } catch (e) {

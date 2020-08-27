@@ -67,11 +67,17 @@ const TITLE_TEXT_DICT = {
   duplicate: 'Duplicate Role',
 };
 
-const UPDATE_TEXT_DICT = {
-  create: 'Role successfully created',
-  edit: 'Role successfully updated',
-  duplicate: 'Role successfully duplicated',
-};
+function getSuccessToastMessage(action: string, roleName: string): string {
+  switch (action) {
+    case 'create':
+    case 'duplicate':
+      return `Role "${roleName}" successfully created`;
+    case 'edit':
+      return `Role "${roleName}" successfully updated`;
+    default:
+      return '';
+  }
+}
 
 export function RoleEdit(props: RoleEditDeps) {
   const [roleName, setRoleName] = useState('');
@@ -158,7 +164,7 @@ export function RoleEdit(props: RoleEditDeps) {
       setCrossPageToast(buildUrl(ResourceType.roles, Action.view, roleName), {
         id: 'updateRoleSucceeded',
         color: 'success',
-        title: UPDATE_TEXT_DICT[props.action],
+        title: getSuccessToastMessage(props.action, roleName),
       });
       // Redirect to role view
       window.location.href = buildHashUrl(ResourceType.roles, Action.view, roleName);

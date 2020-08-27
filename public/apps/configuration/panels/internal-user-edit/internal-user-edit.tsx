@@ -53,11 +53,17 @@ const TITLE_TEXT_DICT = {
   duplicate: 'Duplicate internal user',
 };
 
-const UPDATE_TEXT_DICT = {
-  create: 'User successfully created',
-  edit: 'User successfully updated',
-  duplicate: 'User successfully duplicated',
-};
+function getSuccessToastMessage(action: string, userName: string): string {
+  switch (action) {
+    case 'create':
+    case 'duplicate':
+      return `User "${userName}" successfully created`;
+    case 'edit':
+      return `User "${userName}" successfully updated`;
+    default:
+      return '';
+  }
+}
 
 export function InternalUserEdit(props: InternalUserEditDeps) {
   const [userName, setUserName] = useState<string>('');
@@ -111,7 +117,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
       setCrossPageToast(buildUrl(ResourceType.users), {
         id: 'updateUserSucceeded',
         color: 'success',
-        title: UPDATE_TEXT_DICT[props.action],
+        title: getSuccessToastMessage(props.action, userName),
       });
       // Redirect to user listing
       window.location.href = buildHashUrl(ResourceType.users);
