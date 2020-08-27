@@ -15,7 +15,6 @@
 
 import {
   EuiButton,
-  EuiPageHeader,
   EuiText,
   EuiTitle,
   EuiSteps,
@@ -26,6 +25,7 @@ import {
   EuiFlexGroup,
   EuiLink,
   EuiPanel,
+  EuiPageHeader,
 } from '@elastic/eui';
 import React from 'react';
 import { AppDependencies } from '../../types';
@@ -158,59 +158,64 @@ const setOfSteps = [
 ];
 
 export function GetStarted(props: AppDependencies) {
-  const panelMaxWidth = 850;
   return (
     <>
-      <EuiPageHeader>
-        <EuiTitle size="l">
-          <h1>Get started</h1>
-        </EuiTitle>
-        <ExternalLinkButton text="Open in new window" href={buildHashUrl()} />
-      </EuiPageHeader>
+      <div className="landing-page-maxwidth">
+        <EuiPageHeader>
+          <EuiTitle size="l">
+            <h1>Get started</h1>
+          </EuiTitle>
+          <ExternalLinkButton text="Open in new window" href={buildHashUrl()} />
+        </EuiPageHeader>
 
-      <EuiPanel paddingSize="l" style={{ maxWidth: panelMaxWidth }}>
-        <EuiText size="s" color="subdued">
-          <p>
-            The Open Distro for Elasticsearch security plugin lets you define the API calls that
-            users can make and the data they can access. The most basic configuration consists of
-            three steps.
-          </p>
-        </EuiText>
+        <EuiPanel paddingSize="l">
+          <EuiText size="s" color="subdued">
+            <p>
+              The Open Distro for Elasticsearch security plugin lets you define the API calls that
+              users can make and the data they can access. The most basic configuration consists of
+              three steps.
+            </p>
+          </EuiText>
+
+          <EuiSpacer size="l" />
+
+          <EuiImage
+            size="xl"
+            alt="Three steps to set up your security"
+            url={securityStepsDiagram}
+          />
+
+          <EuiSpacer size="l" />
+
+          <EuiSteps steps={setOfSteps} />
+        </EuiPanel>
 
         <EuiSpacer size="l" />
 
-        <EuiImage size="xl" alt="Three steps to set up your security" url={securityStepsDiagram} />
-
-        <EuiSpacer size="l" />
-
-        <EuiSteps steps={setOfSteps} />
-      </EuiPanel>
-
-      <EuiSpacer size="l" />
-
-      <EuiPanel paddingSize="l" style={{ maxWidth: panelMaxWidth }}>
-        <EuiTitle size="s">
-          <h3>Optional: Configure audit logs</h3>
-        </EuiTitle>
-        <EuiText size="s" color="subdued">
-          <p>
-            Audit logs let you track user access to your Elasticsearch cluster and are useful for
-            compliance purposes. If you enable this feature, Amazon Elasticsearch Service publishes
-            the audit logs to CloudWatch Logs, where you can monitor and search them.{' '}
-            <EuiLink external={true} href={DocLinks.AuditLogsDoc} target="_blank">
-              Learn More
-            </EuiLink>
-          </p>
-          <EuiButton
-            fill
-            onClick={() => {
-              window.location.href = buildHashUrl(ResourceType.auditLogging);
-            }}
-          >
-            Configure Audit Logs
-          </EuiButton>
-        </EuiText>
-      </EuiPanel>
+        <EuiPanel paddingSize="l">
+          <EuiTitle size="s">
+            <h3>Optional: Configure audit logs</h3>
+          </EuiTitle>
+          <EuiText size="s" color="subdued">
+            <p>
+              Audit logs let you track user access to your Elasticsearch cluster and are useful for
+              compliance purposes. If you enable this feature, Amazon Elasticsearch Service
+              publishes the audit logs to CloudWatch Logs, where you can monitor and search them.{' '}
+              <EuiLink external={true} href={DocLinks.AuditLogsDoc} target="_blank">
+                Learn More
+              </EuiLink>
+            </p>
+            <EuiButton
+              fill
+              onClick={() => {
+                window.location.href = buildHashUrl(ResourceType.auditLogging);
+              }}
+            >
+              Configure Audit Logs
+            </EuiButton>
+          </EuiText>
+        </EuiPanel>
+      </div>
     </>
   );
 }
