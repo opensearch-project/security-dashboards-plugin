@@ -63,7 +63,7 @@ const ROUTE_MAP: { [key: string]: RouteItem } = {
     href: buildUrl(ResourceType.tenants),
   },
   [ResourceType.auth]: {
-    name: 'Authentication and authorization',
+    name: 'Authc & authz',
     href: buildUrl(ResourceType.auth),
   },
   [ResourceType.auditLogging]: {
