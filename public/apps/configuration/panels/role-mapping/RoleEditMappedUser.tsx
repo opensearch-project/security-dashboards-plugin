@@ -107,12 +107,12 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
       };
 
       await updateRoleMapping(props.coreStart.http, props.roleName, updateObject);
-      setCrossPageToast(buildUrl(ResourceType.roles, Action.view, props.roleName), {
+      setCrossPageToast(buildUrl(ResourceType.roles, Action.view, props.roleName, SubAction.mapuser), {
         id: 'updateRoleMappingSucceeded',
         color: 'success',
         title: props.roleName + ' saved.',
       });
-      window.location.href = buildHashUrl(ResourceType.roles, Action.view, props.roleName);
+      window.location.href = buildHashUrl(ResourceType.roles, Action.view, props.roleName, SubAction.mapuser);
     } catch (e) {
       if (e.message) {
         addToast(createErrorToast('saveRoleMappingFailed', 'save error', e.message));
