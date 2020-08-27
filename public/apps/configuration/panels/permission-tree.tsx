@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiTreeView, EuiIcon } from '@elastic/eui';
+import { EuiTreeView, EuiText } from '@elastic/eui';
 import { Node } from '@elastic/eui/src/components/tree_view/tree_view';
 import React from 'react';
 import { ActionGroupItem, DataObject } from '../types';
@@ -31,7 +31,7 @@ function buildTreeItem(
   return {
     label: name,
     id: name,
-    icon: <EuiIcon type="dot" />,
+    icon: <EuiText size="xs">•</EuiText>,
     children: children?.map((child) => buildTreeItem(child, depth + 1, actionGroups)),
   };
 }
