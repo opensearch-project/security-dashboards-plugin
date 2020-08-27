@@ -147,7 +147,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiPageHeader>
-      <PanelWithHeader headerText="Credendtials">
+      <PanelWithHeader headerText="Credentials">
         <EuiForm>
           <FormRow
             headerText="Username"

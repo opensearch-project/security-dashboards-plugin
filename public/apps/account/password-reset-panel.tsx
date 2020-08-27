@@ -97,7 +97,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
 
           <FormRow
             headerText="Current password"
-            helpText="Verify your account by entering your current password"
+            helpText="Verify your account by entering your current password."
             isInvalid={isCurrentPasswordInvalid}
             error={currentPasswordError}
           >
@@ -128,7 +128,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
 
           <FormRow
             headerText="Re-enter new password"
-            helpText="The password must be identical to what you entered above"
+            helpText="The password must be identical to what you entered above."
           >
             <EuiFieldPassword
               isInvalid={isRepeatNewPasswordInvalid}
