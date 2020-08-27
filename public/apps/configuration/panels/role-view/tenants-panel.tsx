@@ -194,6 +194,7 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
         count={tenantPermissionDetail.length}
       >
         <EuiInMemoryTable
+          tableLayout={'auto'}
           loading={tenantPermissionDetail === [] && !errorFlag}
           columns={columns}
           items={tenantPermissionDetail}

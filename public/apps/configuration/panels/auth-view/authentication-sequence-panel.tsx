@@ -105,6 +105,7 @@ export function AuthenticationSequencePanel(props: { authc: []; loading: boolean
       count={domains.length}
     >
       <EuiInMemoryTable
+        tableLayout={'auto'}
         columns={columns}
         items={items}
         itemId={'domain_name'}

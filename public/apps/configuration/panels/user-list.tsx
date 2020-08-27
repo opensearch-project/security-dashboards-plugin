@@ -235,6 +235,7 @@ export function UserList(props: AppDependencies) {
         </EuiPageContentHeader>
         <EuiPageBody>
           <EuiInMemoryTable
+            tableLayout={'auto'}
             loading={userData === [] && !errorFlag}
             columns={getColumns(currentUsername)}
             items={userData}

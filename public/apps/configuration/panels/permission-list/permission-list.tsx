@@ -354,6 +354,7 @@ export function PermissionList(props: AppDependencies) {
         </EuiPageContentHeader>
         <EuiPageBody>
           <EuiInMemoryTable
+            tableLayout={'auto'}
             loading={permissionList === [] && !errorFlag}
             columns={getColumns(itemIdToExpandedRowMap, actionGroupDict, setItemIdToExpandedRowMap)}
             items={permissionList}
