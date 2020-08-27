@@ -32,21 +32,23 @@ export function FormRow(props: FormRowDeps) {
     <EuiFormRow
       fullWidth
       label={
-        <EuiText size="xs" color="subdued">
-          <p>
+        <>
+          <EuiText size="xs">
             <b>{props.headerText}</b>
             <i>{props.optional && ' - optional'}</i>
-          </p>
-          {props.headerSubText}
-          {props.helpLink && (
-            <>
-              {' '}
-              <EuiLink href="{props.helpLink}" external>
-                Learn more
-              </EuiLink>
-            </>
-          )}
-        </EuiText>
+          </EuiText>
+          <EuiText color="subdued" size="xs">
+            {props.headerSubText}
+            {props.helpLink && (
+              <>
+                {' '}
+                <EuiLink href="{props.helpLink}" external>
+                  Learn more
+                </EuiLink>
+              </>
+            )}
+          </EuiText>
+        </>
       }
       helpText={props.helpText}
       isInvalid={props.isInvalid}
