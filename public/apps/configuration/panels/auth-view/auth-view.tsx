@@ -20,7 +20,6 @@ import { AuthorizationPanel } from './authorization-panel';
 import { API_ENDPOINT_SECURITYCONFIG } from '../../constants';
 import { AppDependencies } from '../../../types';
 import { ExternalLinkButton } from '../../utils/display-utils';
-import './_index.scss';
 
 function renderInstructionView() {
   return (
