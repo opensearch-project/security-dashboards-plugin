@@ -72,6 +72,7 @@ export function TenantEditModal(props: TenantEditModalDeps) {
               helpText="The tenant name must contain from m to n characters. Valid characters are lowercase a-z, 0-9, and -(hyphen)."
             >
               <EuiFieldText
+                fullWidth
                 disabled={props.action === 'edit'}
                 value={tenantName}
                 onChange={handleTenantNameChange}
@@ -83,6 +84,7 @@ export function TenantEditModal(props: TenantEditModalDeps) {
               optional
             >
               <EuiTextArea
+                fullWidth
                 placeholder="Describe the tenant"
                 value={tenantDescription}
                 onChange={handleTenantDescriptionChange}

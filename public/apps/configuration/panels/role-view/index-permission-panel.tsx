@@ -66,7 +66,7 @@ export function renderFieldLevelSecurity() {
       return (
         <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
           <EuiText key={'-'} size="xs">
-            -
+            &mdash;
           </EuiText>
         </EuiFlexGroup>
       );
@@ -110,7 +110,7 @@ function getColumns(
       ),
       render: (dls: string) => {
         if (!dls) {
-          return '-';
+          return <span>&mdash;</span>;
         }
 
         return renderExpression('Document-level security', JSON.parse(dls));

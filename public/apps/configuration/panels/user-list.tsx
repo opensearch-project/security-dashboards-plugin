@@ -48,7 +48,7 @@ import { useContextMenuState } from '../utils/context-menu';
 function dictView() {
   return (items: Dictionary<string>) => {
     if (isEmpty(items)) {
-      return '-';
+      return <span>&mdash;</span>;
     }
     return (
       <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
