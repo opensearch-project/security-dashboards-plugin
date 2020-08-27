@@ -112,7 +112,7 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
         {
           id: 'updateRoleMappingSucceeded',
           color: 'success',
-          title: props.roleName + ' saved.',
+          title: 'Role "' + props.roleName + '" successfully updated.',
         }
       );
       window.location.href = buildHashUrl(

@@ -53,6 +53,18 @@ import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { useContextMenuState } from '../../utils/context-menu';
 
+function getSuccessToastMessage(action: string, tenantName: string): string {
+  switch (action) {
+    case 'create':
+    case 'duplicate':
+      return `Tenant "${tenantName}" successfully created`;
+    case 'edit':
+      return `Tenant "${tenantName}" successfully updated`;
+    default:
+      return '';
+  }
+}
+
 export function TenantList(props: AppDependencies) {
   const [tenantData, setTenantData] = useState<Tenant[]>([]);
   const [errorFlag, setErrorFlag] = useState(false);
@@ -286,7 +298,7 @@ export function TenantList(props: AppDependencies) {
             fetchData();
             addToast({
               id: 'saveSucceeded',
-              title: `${tenantName} saved.`,
+              title: getSuccessToastMessage(action, tenantName),
               color: 'success',
             });
           } catch (e) {
