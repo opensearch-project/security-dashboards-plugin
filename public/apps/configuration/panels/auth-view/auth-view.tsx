@@ -34,12 +34,7 @@ function renderInstructionView() {
         <h2>You have not set up authentication and authorization</h2>
       </EuiText>
 
-      <EuiText
-        textAlign="center"
-        size="xs"
-        color="subdued"
-        style={{ marginLeft: 500, marginRight: 500 }}
-      >
+      <EuiText textAlign="center" size="xs" color="subdued" className="instruction-text">
         In order to use Security plugin, you must decide on authentication <EuiCode>authc</EuiCode>{' '}
         and authorization backends <EuiCode>authz</EuiCode>. Use{' '}
         <EuiCode>plugins/opendistro_security/securityconfig/config.yml</EuiCode> to define how to
