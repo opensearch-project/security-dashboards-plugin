@@ -160,7 +160,7 @@ const setOfSteps = [
 export function GetStarted(props: AppDependencies) {
   return (
     <>
-      <div className="landing-page-maxwidth">
+      <div className="panel-restrict-width">
         <EuiPageHeader>
           <EuiTitle size="l">
             <h1>Get started</h1>

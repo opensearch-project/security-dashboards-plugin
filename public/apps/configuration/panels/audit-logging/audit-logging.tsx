@@ -55,7 +55,7 @@ function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: bool
       <EuiTitle>
         <h3>Audit logging</h3>
       </EuiTitle>
-      <EuiHorizontalRule />
+      <EuiHorizontalRule margin={'m'} />
       <EuiForm>
         <EuiDescribedFormGroup title={<h3>Storage location</h3>} className="described-form-group">
           <EuiFormRow className="form-row">
@@ -162,62 +162,69 @@ export function AuditLogging(props: AuditLoggingProps) {
 
   const statusPanel = renderStatusPanel(onSwitchChange, configuration.enabled || false);
 
+  let content;
+
   if (!configuration.enabled) {
-    return statusPanel;
+    content = statusPanel;
+  } else {
+    content = (
+      <>
+        {statusPanel}
+        <EuiSpacer />
+
+        <EuiPanel>
+          <EuiFlexGroup>
+            <EuiFlexItem>
+              <EuiTitle>
+                <h3>General settings</h3>
+              </EuiTitle>
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <EuiButton
+                onClick={() => {
+                  window.location.href =
+                    buildHashUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT;
+                }}
+              >
+                Configure
+              </EuiButton>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+          <EuiHorizontalRule margin={'m'} />
+          {renderGeneralSettings(configuration)}
+        </EuiPanel>
+
+        <EuiSpacer />
+
+        <EuiPanel>
+          <EuiFlexGroup>
+            <EuiFlexItem>
+              <EuiTitle>
+                <h3>Compliance settings</h3>
+              </EuiTitle>
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <EuiButton
+                onClick={() => {
+                  window.location.href =
+                    buildHashUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT;
+                }}
+              >
+                Configure
+              </EuiButton>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+
+          <EuiHorizontalRule margin={'m'} />
+          {renderComplianceSettings(configuration)}
+        </EuiPanel>
+      </>
+    );
   }
 
   return (
     <>
-      {statusPanel}
-
-      <EuiSpacer />
-
-      <EuiPanel>
-        <EuiFlexGroup>
-          <EuiFlexItem>
-            <EuiTitle>
-              <h3>General settings</h3>
-            </EuiTitle>
-          </EuiFlexItem>
-          <EuiFlexItem grow={false}>
-            <EuiButton
-              onClick={() => {
-                window.location.href =
-                  buildHashUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT;
-              }}
-            >
-              Configure
-            </EuiButton>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-        <EuiHorizontalRule />
-        {renderGeneralSettings(configuration)}
-      </EuiPanel>
-
-      <EuiSpacer />
-
-      <EuiPanel>
-        <EuiFlexGroup>
-          <EuiFlexItem>
-            <EuiTitle>
-              <h3>Compliance settings</h3>
-            </EuiTitle>
-          </EuiFlexItem>
-          <EuiFlexItem grow={false}>
-            <EuiButton
-              onClick={() => {
-                window.location.href =
-                  buildHashUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT;
-              }}
-            >
-              Configure
-            </EuiButton>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-
-        <EuiHorizontalRule />
-        {renderComplianceSettings(configuration)}
-      </EuiPanel>
+      <div className="panel-restrict-width">{content}</div>
     </>
   );
 }

@@ -229,9 +229,17 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
     );
   };
 
+  let content;
+
   if (props.setting === 'general') {
-    return renderGeneralSettings();
+    content = renderGeneralSettings();
+  } else {
+    content = renderComplianceSetting();
   }
 
-  return renderComplianceSetting();
+  return (
+    <>
+      <div className="panel-restrict-width">{content}</div>
+    </>
+  );
 }

@@ -23,7 +23,7 @@ import {
   EuiSwitch,
   EuiTitle,
 } from '@elastic/eui';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { displayBoolean, displayObject } from '../../utils/display-utils';
 import { comboBoxOptionToString, stringToComboBoxOption } from '../../utils/combo-box-utils';
 import { AuditLoggingSettings } from './types';
@@ -110,9 +110,18 @@ export function EditSettingGroup(props: {
         handleInvalid(setting.path, error);
       };
 
+      const codeMap = get(config, setting.path);
+      let codeString;
+
+      if (isEmpty(codeMap)) {
+        codeString = '{}';
+      } else {
+        codeString = displayObject(codeMap);
+      }
+
       return (
         <JsonCodeEditor
-          initialValue={displayObject(get(config, setting.path))}
+          initialValue={codeString}
           errorMessage={setting.error}
           handleCodeChange={handleCodeChange}
           handleCodeInvalid={handleCodeInvalid}
