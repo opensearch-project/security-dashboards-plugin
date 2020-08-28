@@ -63,8 +63,15 @@ export function installEsSecurityPlugin() {
     pluginDir,
     'opendistro_security/tools/install_demo_configuration.sh'
   );
+
   execSync(`chmod a+x ${installDemoScript}`, { cwd: esRootDir });
   execSync(`yes | ${installDemoScript}`, { cwd: esRootDir });
+
+  // allow updating ES security plugin auth configs via API
+  execSync(
+    `echo 'opendistro_security.unsupported.restapi.allow_securityconfig_modification: true' >> config/elasticsearch.yml`,
+    { cwd: esRootDir }
+  );
 }
 
 export async function startElasticsearch() {

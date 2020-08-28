@@ -28,6 +28,7 @@ import {
   ADMIN_PASSWORD,
 } from '../constant';
 import { getAuthCookie, extractAuthCookie } from '../helper/cookie';
+import wreck from '@hapi/wreck';
 
 describe('start kibana server', () => {
   let root: Root;
@@ -49,6 +50,11 @@ describe('start kibana server', () => {
           username: KIBANA_SERVER_USER,
           password: KIBANA_SERVER_PASSWORD,
         },
+        opendistro_security: {
+          auth: {
+            anonymous_auth_enabled: true,
+          },
+        },
       },
       {
         // to make ignoreVersionMismatch setting work
@@ -61,11 +67,40 @@ describe('start kibana server', () => {
     await root.setup();
     await root.start();
     console.log('Started Kibana server');
+
+    // update ES security config to enable anonymous auth
+    const getConfigResponse = await wreck.get(
+      'https://localhost:9200/_opendistro/_security/api/securityconfig',
+      {
+        rejectUnauthorized: false,
+        headers: {
+          authorization: ADMIN_CREDENTIALS,
+        },
+      }
+    );
+    const responseBody = (getConfigResponse.payload as Buffer).toString();
+    const config = JSON.parse(responseBody).config;
+    try {
+      config.dynamic!.http!.anonymous_auth_enabled = true;
+      const updateConfigResponse = await wreck.put(
+        'https://localhost:9200/_opendistro/_security/api/securityconfig/config',
+        {
+          payload: config,
+          rejectUnauthorized: false,
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: ADMIN_CREDENTIALS,
+          },
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
   });
 
   afterAll(async () => {
     // shutdown Kibana server
-    root.shutdown();
+    await root.shutdown();
     // shutdown Elasticsearch
     await stopElasticsearch(esProcess);
   });
@@ -135,5 +170,47 @@ describe('start kibana server', () => {
     expect(response.status).toEqual(200);
     const cookie = extractAuthCookie(response);
     expect(cookie.split('=')[1]).toBeFalsy();
+  });
+
+  it('anonymous auth', async () => {
+    const response = await kbnTestServer.request
+      .get(root, '/auth/anonymous')
+      .unset(AUTHORIZATION_HEADER_NAME);
+    expect(response.status).toEqual(200);
+    expect(response.body.username).toEqual('opendistro_security_anonymous');
+  });
+
+  it('anonymous disabled', async () => {
+    const anonymousDisabledRoot = kbnTestServer.createRootWithSettings(
+      {
+        plugins: {
+          scanDirs: [resolve(__dirname, '../..')],
+        },
+        elasticsearch: {
+          hosts: ['https://localhost:9200'],
+          ignoreVersionMismatch: true,
+          ssl: { verificationMode: 'none' },
+          username: KIBANA_SERVER_USER,
+          password: KIBANA_SERVER_PASSWORD,
+        },
+        opendistro_security: {
+          auth: {
+            anonymous_auth_enabled: false,
+          },
+        },
+      },
+      {
+        // to make ignoreVersionMismatch setting work
+        // can be removed when we have corresponding ES version
+        dev: true,
+      }
+    );
+    await anonymousDisabledRoot.setup();
+    await anonymousDisabledRoot.start();
+    const response = await kbnTestServer.request
+      .get(anonymousDisabledRoot, '/auth/anonymous')
+      .unset(AUTHORIZATION_HEADER_NAME);
+    expect(response.status).toEqual(400);
+    await anonymousDisabledRoot.shutdown();
   });
 });

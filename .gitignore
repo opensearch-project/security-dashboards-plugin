@@ -8,3 +8,4 @@ yarn.lock
 .es/
 yarn-error.log
 kibana-coverage/
+.DS_Store

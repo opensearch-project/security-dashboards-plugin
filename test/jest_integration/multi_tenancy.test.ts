@@ -68,7 +68,7 @@ describe('start kibana server', () => {
 
   afterAll(async () => {
     // shutdown Kibana server
-    root.shutdown();
+    await root.shutdown();
     // shutdown Elasticsearch
     await stopElasticsearch(esProcess);
   });
@@ -140,7 +140,10 @@ describe('start kibana server', () => {
 
   it('call multitenancy info API as admin', async () => {
     const authCookie = await getAuthCookie(root, ADMIN_USER, ADMIN_PASSWORD);
-    const multitenancyInfoResponse = await getTenant(authCookie);
+    const multitenancyInfoResponse = await kbnTestServer.request
+      .get(root, '/api/v1/multitenancy/info')
+      .unset(AUTHORIZATION_HEADER_NAME)
+      .set('Cookie', authCookie);
     expect(multitenancyInfoResponse.status).toEqual(200);
     expect(multitenancyInfoResponse.body.user_name).toEqual(ADMIN_USER);
   });
@@ -149,7 +152,10 @@ describe('start kibana server', () => {
     const { username, password } = await createTestUser();
 
     const authCookie = await getAuthCookie(root, username, password);
-    const multitenancyInfoResponse = await getTenant(authCookie);
+    const multitenancyInfoResponse = await kbnTestServer.request
+      .get(root, '/api/v1/multitenancy/info')
+      .unset(AUTHORIZATION_HEADER_NAME)
+      .set('Cookie', authCookie);
     expect(multitenancyInfoResponse.status).toEqual(200);
     expect(multitenancyInfoResponse.body.user_name).toEqual(username);
   });
