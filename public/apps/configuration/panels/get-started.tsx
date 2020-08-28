@@ -199,8 +199,7 @@ export function GetStarted(props: AppDependencies) {
           <EuiText size="s" color="subdued">
             <p>
               Audit logs let you track user access to your Elasticsearch cluster and are useful for
-              compliance purposes. If you enable this feature, Amazon Elasticsearch Service
-              publishes the audit logs to CloudWatch Logs, where you can monitor and search them.{' '}
+              compliance purposes.{' '}
               <EuiLink external={true} href={DocLinks.AuditLogsDoc} target="_blank">
                 Learn More
               </EuiLink>
