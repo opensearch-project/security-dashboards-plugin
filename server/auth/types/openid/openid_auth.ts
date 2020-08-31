@@ -182,13 +182,22 @@ export class OpenIdAuthentication extends AuthenticationType {
     toolkit: AuthToolkit
   ): IKibanaResponse {
     this.sessionStorageFactory.asScoped(request).clear();
-    // nextUrl is a key value pair
-    const nextUrl = composeNextUrlQeuryParam(request, this.coreSetup.http.basePath.serverBasePath);
-    return response.redirected({
-      headers: {
-        location: `${this.coreSetup.http.basePath.serverBasePath}/auth/openid/login?${nextUrl}`,
-      },
-    });
+    if (request.url.pathname!.startsWith('/app/')) {
+      // nextUrl is a key value pair
+      const nextUrl = composeNextUrlQeuryParam(
+        request,
+        this.coreSetup.http.basePath.serverBasePath
+      );
+      return response.redirected({
+        headers: {
+          location: `${this.coreSetup.http.basePath.serverBasePath}/auth/openid/login?${nextUrl}`,
+        },
+      });
+    } else {
+      return response.forbidden({
+        body: 'Request failed authentication.',
+      });
+    }
   }
 
   buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any {

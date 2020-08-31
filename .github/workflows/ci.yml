@@ -23,12 +23,6 @@ jobs:
       with:
         path: kibana
         repository: elastic/kibana
-    - name: Use specific Kibana commit
-      # use specific Kibana commit to avoid lint/build errors in CI workflow
-      # TODO: switch code to stable release versions. e.g. 7.9
-      run: |
-        cd ./kibana
-        git checkout d1f45b89767c350c0dc37ffdf435f13bc0a3afde
     - name: Get node and yarn versions
       id: versions
       run: |
