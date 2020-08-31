@@ -150,17 +150,17 @@ export class OpenIdAuthentication extends AuthenticationType {
           client_secret: this.config.openid?.client_secret,
           refresh_token: cookie.credentials.refresh_token,
         };
-        const refreshTokenResposne = await callTokenEndpoint(
+        const refreshTokenResponse = await callTokenEndpoint(
           this.openIdAuthConfig.tokenEndpoint!,
           query
         );
 
         // if no id_token from refresh token call, maybe the Idp doesn't allow refresh id_token
-        if (refreshTokenResposne.idToken) {
+        if (refreshTokenResponse.idToken) {
           cookie.credentials = {
-            authHeaderValue: `Bearer ${refreshTokenResposne.idToken}`,
-            refresh_token: refreshTokenResposne.refreshToken,
-            expires_at: Date.now() + refreshTokenResposne.expiresIn! * 1000, // expiresIn is in second
+            authHeaderValue: `Bearer ${refreshTokenResponse.idToken}`,
+            refresh_token: refreshTokenResponse.refreshToken,
+            expires_at: Date.now() + refreshTokenResponse.expiresIn! * 1000, // expiresIn is in second
           };
           return true;
         } else {

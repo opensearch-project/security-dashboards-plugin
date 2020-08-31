@@ -187,7 +187,7 @@ export class OpenIdAuthRoutes {
         const requestQueryParameters = `?post_logout_redirect_uri=${getBaseRedirectUrl(
           this.config,
           this.core
-        )}/app/kibana`;
+        )}`;
 
         let endSessionUrl = '/';
         const customLogoutUrl = this.config.openid?.logout_url;
