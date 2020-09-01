@@ -188,7 +188,7 @@ const READ_WATCHED_FIELDS: SettingContent = {
   path: 'compliance.read_watched_fields',
   description:
     'List the indices and fields to watch during read events. Adding watched fields will generate one log per document' +
-    'access and could result in significant overhead. Sample data content:',
+    ' access and could result in significant overhead. Sample data content:',
   type: 'map',
   code: `{
   "index-name-pattern": ["field-name-pattern"],

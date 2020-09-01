@@ -237,9 +237,5 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
     content = renderComplianceSetting();
   }
 
-  return (
-    <>
-      <div className="panel-restrict-width">{content}</div>
-    </>
-  );
+  return <div className="panel-restrict-width">{content}</div>;
 }

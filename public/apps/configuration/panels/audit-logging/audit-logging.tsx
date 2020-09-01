@@ -55,7 +55,7 @@ function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: bool
       <EuiTitle>
         <h3>Audit logging</h3>
       </EuiTitle>
-      <EuiHorizontalRule margin={'m'} />
+      <EuiHorizontalRule margin="m" />
       <EuiForm>
         <EuiDescribedFormGroup title={<h3>Storage location</h3>} className="described-form-group">
           <EuiFormRow className="form-row">
@@ -190,7 +190,7 @@ export function AuditLogging(props: AuditLoggingProps) {
               </EuiButton>
             </EuiFlexItem>
           </EuiFlexGroup>
-          <EuiHorizontalRule margin={'m'} />
+          <EuiHorizontalRule margin="m" />
           {renderGeneralSettings(configuration)}
         </EuiPanel>
 
@@ -215,16 +215,12 @@ export function AuditLogging(props: AuditLoggingProps) {
             </EuiFlexItem>
           </EuiFlexGroup>
 
-          <EuiHorizontalRule margin={'m'} />
+          <EuiHorizontalRule margin="m" />
           {renderComplianceSettings(configuration)}
         </EuiPanel>
       </>
     );
   }
 
-  return (
-    <>
-      <div className="panel-restrict-width">{content}</div>
-    </>
-  );
+  return <div className="panel-restrict-width">{content}</div>;
 }
