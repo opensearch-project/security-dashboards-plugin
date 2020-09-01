@@ -83,18 +83,12 @@ describe('Tenant list utils', () => {
     it('transform global tenant', () => {
       const result = transformTenantData({ global_tenant: globalTenant }, false);
       expect(result.length).toBe(1);
-      expect(result[0].tenant).toBe(GLOBAL_USER_DICT.Label);
-      expect(result[0].tenantValue).toBe(GLOBAL_USER_DICT.Value);
-      expect(result[0].description).toBe(GLOBAL_USER_DICT.Description);
       expect(result[0]).toEqual(expectedGlobalTenantListing);
     });
 
     it('transform private tenant', () => {
       const result = transformTenantData({}, true);
       expect(result.length).toBe(1);
-      expect(result[0].tenant).toBe(PRIVATE_USER_DICT.Label);
-      expect(result[0].tenantValue).toBe(PRIVATE_USER_DICT.Value);
-      expect(result[0].description).toBe(PRIVATE_USER_DICT.Description);
       expect(result[0]).toEqual(expectedPrivateTenantListing);
     });
 
@@ -105,8 +99,6 @@ describe('Tenant list utils', () => {
       );
       expect(result.length).toBe(2);
       expect(result[0]).toEqual(expectedGlobalTenantListing);
-      expect(result[1].tenant).toBe('dummy');
-      expect(result[1].tenantValue).toBe('dummy');
       expect(result[1]).toMatchObject(expectedTenantListing);
     });
 
@@ -118,8 +110,6 @@ describe('Tenant list utils', () => {
       expect(result.length).toBe(3);
       expect(result[0]).toEqual(expectedGlobalTenantListing);
       expect(result[1]).toEqual(expectedPrivateTenantListing);
-      expect(result[2].tenant).toBe('dummy');
-      expect(result[2].tenantValue).toBe('dummy');
       expect(result[2]).toMatchObject(expectedTenantListing);
     });
   });
