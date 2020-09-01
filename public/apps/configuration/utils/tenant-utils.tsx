@@ -33,14 +33,14 @@ import {
 } from '../types';
 import { TENANT_READ_PERMISSION, TENANT_WRITE_PERMISSION } from '../constants';
 
-const globalTenantName = 'global_tenant';
-const GLOBAL_USER_DICT: { [key: string]: string } = {
+export const globalTenantName = 'global_tenant';
+export const GLOBAL_USER_DICT: { [key: string]: string } = {
   Label: 'Global',
   Value: '',
   Description: 'Everyone can see it',
 };
 
-const PRIVATE_USER_DICT: { [key: string]: string } = {
+export const PRIVATE_USER_DICT: { [key: string]: string } = {
   Label: 'Private',
   Value: '__user__',
   Description: 'Only visible to the current logged in user',
@@ -113,7 +113,7 @@ export function resolveTenantName(tenant: string, userName: string) {
   }
 }
 
-function formatTenantName(tenantName: string): string {
+export function formatTenantName(tenantName: string): string {
   if (tenantName === globalTenantName) return GLOBAL_USER_DICT.Label;
   return tenantName;
 }
