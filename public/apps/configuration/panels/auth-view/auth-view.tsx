@@ -87,8 +87,10 @@ export function AuthView(props: AppDependencies) {
         </EuiTitle>
         <ExternalLinkButton href="" text="Manage via config.yml" />
       </EuiPageHeader>
+      {/* @ts-ignore */}
       <AuthenticationSequencePanel authc={authentication} loading={loading} />
       <EuiSpacer size="m" />
+      {/* @ts-ignore */}
       <AuthorizationPanel authz={authorization} loading={loading} />
     </>
   );

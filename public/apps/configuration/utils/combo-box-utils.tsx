@@ -15,7 +15,7 @@
 
 import { EuiComboBoxOptionOption } from '@elastic/eui';
 import { Dispatch, SetStateAction } from 'react';
-import { StringRepresentable, curry } from 'lodash';
+import { PropertyName, curry } from 'lodash';
 import { appendElementToArray } from './array-state-utils';
 
 // Build an option object for EuiComboBox
@@ -55,7 +55,7 @@ export function comboBoxOptionToString(option: EuiComboBoxOptionOption): string 
  */
 export function appendOptionToComboBox(
   setStateFunc: Dispatch<SetStateAction<any[]>>,
-  path: StringRepresentable | StringRepresentable[],
+  path: PropertyName | PropertyName[],
   newValue: string
 ) {
   appendElementToArray(setStateFunc, path, { label: newValue });

@@ -38,11 +38,11 @@ export function ViewSettingGroup(props: {
       return renderTextFlexItem(setting.title, displayBoolean(val));
     } else if (setting.type === 'array') {
       val = val || [];
-
+      // @ts-ignore
       return renderTextFlexItem(setting.title, displayArray(val));
     } else if (setting.type === 'map') {
       val = val || {};
-
+      // @ts-ignore
       return renderTextFlexItem(setting.title, displayObject(val));
     } else {
       return <></>;
