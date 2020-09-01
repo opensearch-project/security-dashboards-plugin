@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { get, set, curry, StringRepresentable } from 'lodash';
+import { get, set, curry, PropertyName } from 'lodash';
 import { Dispatch, SetStateAction } from 'react';
 
 function resolveValue<T>(value: T | (() => T)) {
@@ -34,7 +34,7 @@ function resolveValue<T>(value: T | (() => T)) {
  */
 export function updateElementInArray<T>(
   setStateCallback: Dispatch<SetStateAction<any[]>>,
-  path: StringRepresentable | StringRepresentable[],
+  path: PropertyName | PropertyName[],
   newValue: T | (() => T)
 ) {
   setStateCallback((prevState) => {
@@ -67,12 +67,12 @@ export const updateElementInArrayHandler = curry(updateElementInArray);
  */
 export function appendElementToArray<T>(
   setStateCallback: Dispatch<SetStateAction<any[]>>,
-  path: StringRepresentable | StringRepresentable[],
+  path: PropertyName | PropertyName[],
   newValue: T | (() => T)
 ) {
   const resolvedNewValue = resolveValue(newValue);
   setStateCallback((prevState) => {
-    if ((path as StringRepresentable[]).length === 0) {
+    if ((path as PropertyName[]).length === 0) {
       return [...prevState, resolvedNewValue];
     } else {
       const newArray = [...(get(prevState, path) as T[]), resolvedNewValue];
@@ -104,11 +104,11 @@ export function appendElementToArray<T>(
  */
 export function removeElementFromArray<T>(
   setStateCallback: Dispatch<SetStateAction<any[]>>,
-  path: StringRepresentable | StringRepresentable[],
+  path: PropertyName | PropertyName[],
   index: number
 ) {
   setStateCallback((prevState) => {
-    if ((path as StringRepresentable[]).length === 0) {
+    if ((path as PropertyName[]).length === 0) {
       const newState = [...prevState];
       newState.splice(index, 1);
       return newState;

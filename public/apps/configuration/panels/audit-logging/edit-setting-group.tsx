@@ -93,6 +93,7 @@ export function EditSettingGroup(props: {
           placeholder={setting.title}
           selectedOptions={val.map(stringToComboBoxOption)}
           onChange={(selectedOptions) => {
+            // @ts-ignore
             handleChange(setting.path, selectedOptions.map(comboBoxOptionToString));
           }}
           onCreateOption={(searchValue) => {
@@ -107,6 +108,7 @@ export function EditSettingGroup(props: {
       };
 
       const handleCodeInvalid = (error: boolean) => {
+        // @ts-ignore
         handleInvalid(setting.path, error);
       };
 
@@ -121,7 +123,9 @@ export function EditSettingGroup(props: {
 
       return (
         <JsonCodeEditor
+          // @ts-ignore
           initialValue={codeString}
+          // @ts-ignore
           errorMessage={setting.error}
           handleCodeChange={handleCodeChange}
           handleCodeInvalid={handleCodeInvalid}
@@ -157,7 +161,9 @@ export function EditSettingGroup(props: {
               }
               fullWidth
             >
+              {/*@ts-ignore*/}
               <EuiFormRow label={displayLabel(setting.path)}>
+                {/*@ts-ignore*/}
                 {renderField(props.config, setting, props.handleChange, props.handleInvalid)}
               </EuiFormRow>
             </EuiDescribedFormGroup>
