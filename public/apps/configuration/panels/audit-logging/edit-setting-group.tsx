@@ -161,9 +161,9 @@ export function EditSettingGroup(props: {
               }
               fullWidth
             >
-              {/*@ts-ignore*/}
+              {/* @ts-ignore*/}
               <EuiFormRow label={displayLabel(setting.path)}>
-                {/*@ts-ignore*/}
+                {/* @ts-ignore*/}
                 {renderField(props.config, setting, props.handleChange, props.handleInvalid)}
               </EuiFormRow>
             </EuiDescribedFormGroup>
