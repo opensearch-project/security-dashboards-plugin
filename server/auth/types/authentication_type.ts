@@ -115,7 +115,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
         cookie = undefined;
       }
 
-      if (!cookie || !this.isValidCookie(cookie)) {
+      if (!cookie || !(await this.isValidCookie(cookie))) {
         // clear cookie
         this.sessionStorageFactory.asScoped(request).clear();
         // send to auth workflow
@@ -212,7 +212,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
   protected abstract requestIncludesAuthInfo(request: KibanaRequest): boolean;
   protected abstract getAdditionalAuthHeader(request: KibanaRequest): any;
   protected abstract getCookie(request: KibanaRequest, authInfo: any): SecuritySessionCookie;
-  protected abstract isValidCookie(cookie: SecuritySessionCookie): boolean;
+  protected abstract async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean>;
   protected abstract handleUnauthedRequest(
     request: KibanaRequest,
     response: LifecycleResponseFactory,

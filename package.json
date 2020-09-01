@@ -18,7 +18,8 @@
     "test:jest_integ": "node ./test/jest_integ_test.js"
   },
   "devDependencies": {
-    "typescript": "3.9.5"
+    "typescript": "3.9.5",
+    "gulp-rename": "2.0.0"
   },
   "dependencies": {
     "@hapi/wreck": "17.0.0",

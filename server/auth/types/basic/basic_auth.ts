@@ -13,9 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-import { cloneDeep } from 'lodash';
-import { format } from 'url';
-import { stringify } from 'querystring';
 import {
   CoreSetup,
   SessionStorageFactory,
@@ -32,6 +29,7 @@ import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { BasicAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
 import { LOGIN_PAGE_URI } from '../../../../common';
+import { composeNextUrlQeuryParam } from '../../../utils/next_url';
 
 export class BasicAuthentication extends AuthenticationType {
   private static readonly AUTH_HEADER_NAME: string = 'authorization';
@@ -59,13 +57,6 @@ export class BasicAuthentication extends AuthenticationType {
       this.coreSetup
     );
     routes.setupRoutes();
-  }
-
-  private composeNextUrlQeuryParam(request: KibanaRequest): string {
-    const url = cloneDeep(request.url);
-    url.pathname = `${this.coreSetup.http.basePath.serverBasePath}${url.pathname}`;
-    const nextUrl = format(url);
-    return stringify({ nextUrl });
   }
 
   // override functions inherited from AuthenticationType
@@ -99,7 +90,7 @@ export class BasicAuthentication extends AuthenticationType {
     };
   }
 
-  isValidCookie(cookie: SecuritySessionCookie): boolean {
+  async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean> {
     return (
       cookie.authType === this.type &&
       cookie.expiryTime &&
@@ -117,7 +108,10 @@ export class BasicAuthentication extends AuthenticationType {
     // return 302 for /app
     const pathname = request.url.pathname || '';
     if (pathname.startsWith('/app/') || pathname === '/') {
-      const nextUrlParam = this.composeNextUrlQeuryParam(request);
+      const nextUrlParam = composeNextUrlQeuryParam(
+        request,
+        this.coreSetup.http.basePath.serverBasePath
+      );
       const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`;
       return response.redirected({
         headers: {

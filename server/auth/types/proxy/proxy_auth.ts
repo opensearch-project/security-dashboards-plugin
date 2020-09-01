@@ -111,7 +111,7 @@ export class ProxyAuthentication extends AuthenticationType {
     return cookie;
   }
 
-  isValidCookie(cookie: SecuritySessionCookie): boolean {
+  async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean> {
     return (
       cookie.authType === this.type &&
       cookie.username &&
