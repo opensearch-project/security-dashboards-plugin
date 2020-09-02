@@ -34,11 +34,12 @@ import { difference } from 'lodash';
 import { AppDependencies } from '../../types';
 import {
   transformRoleData,
-  buildSearchFilterOptions,
   requestDeleteRoles,
   RoleListing,
+  fetchRole,
+  fetchRoleMapping,
+  buildSearchFilterOptions,
 } from '../utils/role-list-utils';
-import { API_ENDPOINT_ROLES, API_ENDPOINT_ROLESMAPPING } from '../constants';
 import { ResourceType, Action } from '../types';
 import { buildHashUrl } from '../utils/url-builder';
 import { renderCustomization, truncatedListView } from '../utils/display-utils';
@@ -90,17 +91,17 @@ const columns: Array<EuiBasicTableColumn<RoleListing>> = [
 ];
 
 export function RoleList(props: AppDependencies) {
-  const [roleData, setRoleData] = useState<RoleListing[]>([]);
-  const [errorFlag, setErrorFlag] = useState(false);
+  const [roleData, setRoleData] = React.useState<RoleListing[]>([]);
+  const [errorFlag, setErrorFlag] = React.useState(false);
   const [selection, setSelection] = useState<RoleListing[]>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const rawRoleData = await props.coreStart.http.get(API_ENDPOINT_ROLES);
-        const rawRoleMappingData = await props.coreStart.http.get(API_ENDPOINT_ROLESMAPPING);
+        const rawRoleData = await fetchRole(props.coreStart.http);
+        const rawRoleMappingData = await fetchRoleMapping(props.coreStart.http);
         const processedData = transformRoleData(rawRoleData, rawRoleMappingData);
         setRoleData(processedData);
       } catch (e) {
