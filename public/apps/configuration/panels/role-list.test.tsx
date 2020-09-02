@@ -66,7 +66,7 @@ describe('Role list', () => {
     // Hide the error message
     jest.spyOn(console, 'log').mockImplementationOnce(() => {});
     mockRoleListUtils.fetchRole.mockImplementationOnce(() => {
-      throw 'error';
+      throw Error();
     });
 
     shallow(
