@@ -19,7 +19,8 @@
   },
   "devDependencies": {
     "typescript": "3.9.5",
-    "gulp-rename": "2.0.0"
+    "gulp-rename": "2.0.0",
+    "@testing-library/react-hooks": "^3.4.1"
   },
   "dependencies": {
     "@hapi/wreck": "17.0.0",
