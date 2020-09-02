@@ -55,7 +55,7 @@
     <url>https://github.com/opendistro-for-elasticsearch/security-kibana-plugin</url>
     <connection>scm:git:git@github.com:mauve-hedgehog/opendistro-elasticsearch-security-kibana-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:mauve-hedgehog/opendistro-elasticsearch-security-kibana-plugin.git</developerConnection>
-    <tag>v1.8.1.0</tag>
+    <tag>v1.9.0.1</tag>
   </scm>
 
   <issueManagement>
