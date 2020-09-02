@@ -111,7 +111,6 @@ describe('Role list', () => {
       />
     );
 
-    process.nextTick(() => {});
     process.nextTick(() => {
       expect(mockRoleListUtils.fetchRole).toHaveBeenCalledTimes(1);
       expect(mockRoleListUtils.fetchRoleMapping).toHaveBeenCalledTimes(1);
