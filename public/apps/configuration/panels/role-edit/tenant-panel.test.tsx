@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { RoleTenantPermission, TenantPermissionType, ComboBoxOptions } from '../../types';
+import { RoleTenantPermission, TenantPermissionType } from '../../types';
 import { TENANT_READ_PERMISSION, TENANT_WRITE_PERMISSION } from '../../constants';
 import { RoleTenantPermissionStateClass } from './types';
 import {
@@ -26,7 +26,6 @@ import React from 'react';
 import { EuiComboBox, EuiButton, EuiSuperSelect } from '@elastic/eui';
 
 jest.mock('../../utils/array-state-utils');
-const arrayStateUtils = require('../../utils/array-state-utils');
 
 describe('Role edit - tenant panel', () => {
   const tenantName1 = 'tenant1';
@@ -67,30 +66,6 @@ describe('Role edit - tenant panel', () => {
     ];
 
     expect(result).toEqual(expected);
-  });
-
-  describe('TenantPanel', () => {
-    const tenantName2 = 'tenant2';
-    const state: RoleTenantPermissionStateClass[] = [
-      {
-        tenantPatterns: [{ label: tenantName1 }],
-        permissionType: TenantPermissionType.Full,
-      },
-      {
-        tenantPatterns: [{ label: tenantName2 }],
-        permissionType: TenantPermissionType.Read,
-      },
-    ];
-    const optionUniverse = [{ label: tenantName1 }, { label: tenantName2 }];
-    const setState = jest.fn();
-
-    const component = shallow(
-      <TenantPanel state={state} optionUniverse={optionUniverse} setState={setState} />
-    );
-
-    const comboBoxArray = component.find(EuiComboBox);
-    expect(comboBoxArray.length).toEqual(2);
-    expect(comboBoxArray.at(0).prop('selectedOptions')).toBe(state[0].tenantPatterns);
   });
 
   describe('TenantPanel', () => {
