@@ -45,22 +45,20 @@ export function buildTenantPermissionState(
   });
 }
 
+const TENANT_PERMISSION_TYPE_DICT: Record<string, string[]> = {
+  [TenantPermissionType.Full]: [TENANT_READ_PERMISSION, TENANT_WRITE_PERMISSION],
+  [TenantPermissionType.Read]: [TENANT_READ_PERMISSION],
+  [TenantPermissionType.Write]: [TENANT_WRITE_PERMISSION],
+  [TenantPermissionType.None]: [],
+} 
+
 export function unbuildTenantPermissionState(
   permissions: RoleTenantPermissionStateClass[]
 ): RoleTenantPermission[] {
   return permissions.map((permission) => {
-    const permissionType = permission.permissionType;
-    let allowedActions: string[] = [];
-    if (permissionType === TenantPermissionType.Full) {
-      allowedActions = [TENANT_READ_PERMISSION, TENANT_WRITE_PERMISSION];
-    } else if (permissionType === TenantPermissionType.Read) {
-      allowedActions = [TENANT_READ_PERMISSION];
-    } else if (permissionType === TenantPermissionType.Write) {
-      allowedActions = [TENANT_WRITE_PERMISSION];
-    }
     return {
       tenant_patterns: permission.tenantPatterns.map(comboBoxOptionToString),
-      allowed_actions: allowedActions,
+      allowed_actions: TENANT_PERMISSION_TYPE_DICT[permission.permissionType],
     };
   });
 }
