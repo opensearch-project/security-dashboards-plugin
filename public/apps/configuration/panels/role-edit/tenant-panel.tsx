@@ -50,7 +50,7 @@ const TENANT_PERMISSION_TYPE_DICT: Record<string, string[]> = {
   [TenantPermissionType.Read]: [TENANT_READ_PERMISSION],
   [TenantPermissionType.Write]: [TENANT_WRITE_PERMISSION],
   [TenantPermissionType.None]: [],
-} 
+};
 
 export function unbuildTenantPermissionState(
   permissions: RoleTenantPermissionStateClass[]

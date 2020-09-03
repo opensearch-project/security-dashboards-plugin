@@ -26,6 +26,7 @@ import React from 'react';
 import { EuiComboBox, EuiButton, EuiSuperSelect } from '@elastic/eui';
 
 jest.mock('../../utils/array-state-utils');
+// eslint-disable-next-line
 const arrayStateUtils = require('../../utils/array-state-utils');
 
 describe('Role edit - tenant panel', () => {
@@ -128,7 +129,7 @@ describe('Role edit - tenant panel', () => {
           permissionType: TenantPermissionType.Full,
         },
       ];
-      
+
       const component = shallow(
         <TenantPanel state={state} optionUniverse={optionUniverse} setState={setState} />
       );
