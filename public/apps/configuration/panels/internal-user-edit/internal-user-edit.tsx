@@ -38,6 +38,7 @@ import { buildHashUrl, buildUrl } from '../../utils/url-builder';
 import { AttributePanel, buildAttributeState, unbuildAttributeState } from './attribute-panel';
 import { UserAttributeStateClass } from './types';
 import { setCrossPageToast } from '../../utils/storage-utils';
+import { LEARN_MORE } from '../../constants';
 
 interface InternalUserEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -147,7 +148,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
               The security plugin includes an internal user database. Use this database in place of
               or in addtion to an external authentication system such as LDAP or Active Directory.{' '}
               <EuiLink external href="/">
-                Learn More
+                {LEARN_MORE}
               </EuiLink>
             </EuiText>
           </EuiFlexItem>
@@ -158,7 +159,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
           <FormRow
             headerText="Username"
             headerSubText="Specify a descriptive and unique user name. You cannot edit the name once the user is created."
-            helpText="The username must contain from m to n characters. Valid characters are 
+            helpText="The username must contain from m to n characters. Valid characters are
             lowercase a-z, 0-9 and (-) hyphen."
           >
             <EuiFieldText

@@ -31,7 +31,7 @@ import {
 } from '@elastic/eui';
 import React, { useEffect, useState } from 'react';
 import { AppDependencies } from '../../../types';
-import { API_ENDPOINT_AUDITLOGGING } from '../../constants';
+import { API_ENDPOINT_AUDITLOGGING, DocLinks, LEARN_MORE } from '../../constants';
 import { ResourceType } from '../../types';
 import { updateAuditLogging } from '../../utils/audit-logging-utils';
 import { displayBoolean } from '../../utils/display-utils';
@@ -64,8 +64,8 @@ function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: bool
               <EuiCode>elasticsearch.yml</EuiCode>. The default storage location is{' '}
               <EuiCode>internal_elasticsearch</EuiCode>, which stores the logs in an index on this
               cluster.{' '}
-              <EuiLink external={true} href="/">
-                Learn more
+              <EuiLink external={true} href={DocLinks.AuditLogsStorageDoc} target="_blank">
+                {LEARN_MORE}
               </EuiLink>
             </EuiText>
           </EuiFormRow>

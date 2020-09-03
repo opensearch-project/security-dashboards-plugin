@@ -63,7 +63,7 @@ import { IndexPermissionPanel } from './index-permission-panel';
 import { TenantsPanel } from './tenants-panel';
 import { transformRoleIndexPermissions } from '../../utils/index-permission-utils';
 import { transformRoleTenantPermissions } from '../../utils/tenant-utils';
-import { DocLinks } from '../../constants';
+import { DocLinks, LEARN_MORE } from '../../constants';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 import { ExternalLinkButton } from '../../utils/display-utils';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
@@ -285,7 +285,7 @@ export function RoleView(props: RoleViewProps) {
                   authentication and authorization. An external identity directly maps to roles
                   through an external authentication system.{' '}
                   <EuiLink external={true} href={DocLinks.MapUsersToRolesDoc} target="_blank">
-                    Learn More
+                    {LEARN_MORE}
                   </EuiLink>
                 </EuiText>
               </EuiPageContentHeaderSection>

@@ -29,7 +29,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { isEmpty } from 'lodash';
 import { BreadcrumbsPageDependencies } from '../../../types';
-import { CLUSTER_PERMISSIONS, INDEX_PERMISSIONS } from '../../constants';
+import { CLUSTER_PERMISSIONS, INDEX_PERMISSIONS, LEARN_MORE } from '../../constants';
 import { fetchActionGroups } from '../../utils/action-groups-utils';
 import { comboBoxOptionToString, stringToComboBoxOption } from '../../utils/combo-box-utils';
 import { FormRow } from '../../utils/form-row';
@@ -204,7 +204,7 @@ export function RoleEdit(props: RoleEditDeps) {
           field-level security, and tenants. Once you&apos;ve created the role, you can map users to
           the roles so that users gain those permissions.{' '}
           <EuiLink external href="/">
-            Learn More
+            {LEARN_MORE}
           </EuiLink>
         </EuiText>
       </EuiPageHeader>
@@ -213,7 +213,7 @@ export function RoleEdit(props: RoleEditDeps) {
           <FormRow
             headerText="Name"
             headerSubText="Specify a descriptive and unique role name. You cannot edit the name once the role is created."
-            helpText="The Role name must contain from m to n characters. Valid characters are 
+            helpText="The Role name must contain from m to n characters. Valid characters are
             lowercase a-z, 0-9 and (-) hyphen."
           >
             <EuiFieldText

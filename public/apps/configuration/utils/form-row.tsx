@@ -15,6 +15,7 @@
 
 import { EuiFormRow, EuiLink, EuiText } from '@elastic/eui';
 import React from 'react';
+import { LEARN_MORE } from '../constants';
 
 interface FormRowDeps {
   headerText: string;
@@ -43,7 +44,7 @@ export function FormRow(props: FormRowDeps) {
               <>
                 {' '}
                 <EuiLink href="{props.helpLink}" external>
-                  Learn more
+                  {LEARN_MORE}
                 </EuiLink>
               </>
             )}
