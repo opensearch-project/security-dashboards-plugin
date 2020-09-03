@@ -139,7 +139,7 @@ function IndexPermissionRow(props: {
     <FormRow
       headerText="Index permissions"
       headerSubText="You can specify permissions using both action groups or single permissions. 
-        An permission group is a list of single permissions.
+        A permission group is a list of single permissions.
         You can often achieve your desired security posture using some combination of the default permission groups. 
         You can also create your own reusable permission groups."
     >
@@ -192,7 +192,7 @@ function FieldLevelSecurityRow(props: {
   return (
     <FormRow
       headerText="Field level security"
-      headerSubText="You can restrict what document fields that user can see. If you use field-level security in conjunction with document-level security, make sure you don't restrict access to the field that document-level security uses."
+      headerSubText="You can restrict what document fields a user can see. If you use field-level security in conjunction with document-level security, make sure you don't restrict access to the field that document-level security uses."
       optional
     >
       <EuiFlexGroup>
@@ -227,7 +227,7 @@ function AnonymizationRow(props: {
   return (
     <FormRow
       headerText="Anonymization"
-      headerSubText="Masks any sensitive fields with random value to protect your data security."
+      headerSubText="Masks any sensitive fields with a random value to protect your data security."
       optional
     >
       <EuiComboBox

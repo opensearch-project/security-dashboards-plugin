@@ -337,10 +337,10 @@ export function PermissionList(props: AppDependencies) {
               </h3>
             </EuiTitle>
             <EuiText size="xs" color="subdued">
-              Permissions defines type of access to the cluster or the specified indices. An action
-              group is a set of predefined single permissions and/or another set of action groups.
-              You can often achieve your desired security posture using some combination of the
-              default action groups. Or you can create your own group.{' '}
+              Permissions define the type of access to the cluster or the specified indices. An
+              action group is a set of predefined single permissions and/or another set of action
+              groups. You can often achieve your desired security posture using some combination of
+              the default action groups. Or you can create your own group.{' '}
               <EuiLink external={true} href="/">
                 {LEARN_MORE}
               </EuiLink>
