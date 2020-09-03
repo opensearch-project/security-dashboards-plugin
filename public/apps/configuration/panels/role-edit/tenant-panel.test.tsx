@@ -26,6 +26,7 @@ import React from 'react';
 import { EuiComboBox, EuiButton, EuiSuperSelect } from '@elastic/eui';
 
 jest.mock('../../utils/array-state-utils');
+const arrayStateUtils = require('../../utils/array-state-utils');
 
 describe('Role edit - tenant panel', () => {
   const tenantName1 = 'tenant1';
@@ -74,14 +75,14 @@ describe('Role edit - tenant panel', () => {
     const setState = jest.fn();
 
     it('render an empty row if data is empty', () => {
-      shallow(
-        <TenantPanel state={[]} optionUniverse={optionUniverse} setState={setState} />
-      );
+      shallow(<TenantPanel state={[]} optionUniverse={optionUniverse} setState={setState} />);
 
-      expect(setState).toHaveBeenCalledWith([{
-        tenantPatterns: [],
-        permissionType: TenantPermissionType.Full,
-      }]);
+      expect(setState).toHaveBeenCalledWith([
+        {
+          tenantPatterns: [],
+          permissionType: TenantPermissionType.Full,
+        },
+      ]);
     });
 
     it('render data', () => {
@@ -117,7 +118,24 @@ describe('Role edit - tenant panel', () => {
 
       const addRowButton = component.find(EuiButton).last();
       addRowButton.simulate('click');
-      expect(setState).toHaveBeenCalled();
+      expect(arrayStateUtils.appendElementToArray).toHaveBeenCalled();
+    });
+
+    it('remove row', () => {
+      const state: RoleTenantPermissionStateClass[] = [
+        {
+          tenantPatterns: [{ label: tenantName1 }],
+          permissionType: TenantPermissionType.Full,
+        },
+      ];
+      
+      const component = shallow(
+        <TenantPanel state={state} optionUniverse={optionUniverse} setState={setState} />
+      );
+
+      const removeRowButton = component.find(EuiButton).first();
+      removeRowButton.simulate('click');
+      expect(arrayStateUtils.removeElementFromArray).toHaveBeenCalled();
     });
   });
 });
