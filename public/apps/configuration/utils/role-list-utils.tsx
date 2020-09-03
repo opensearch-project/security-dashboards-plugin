@@ -15,7 +15,7 @@
 
 import { map, chain } from 'lodash';
 import { HttpStart } from '../../../../../../src/core/public';
-import { API_ENDPOINT_ROLES } from '../constants';
+import { API_ENDPOINT_ROLES, API_ENDPOINT_ROLESMAPPING } from '../constants';
 
 export interface RoleListing {
   roleName: string;
@@ -90,4 +90,14 @@ export async function requestDeleteRoles(http: HttpStart, roles: string[]) {
   for (const role of roles) {
     await http.delete(`${API_ENDPOINT_ROLES}/${role}`);
   }
+}
+
+// TODO: have a type definition for it
+export function fetchRole(http: HttpStart): Promise<any> {
+  return http.get(API_ENDPOINT_ROLES);
+}
+
+// TODO: have a type definition for it
+export function fetchRoleMapping(http: HttpStart): Promise<any> {
+  return http.get(API_ENDPOINT_ROLESMAPPING);
 }
