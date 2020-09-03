@@ -193,7 +193,7 @@ export class SecurityClient {
       acsEndpoint,
     };
     try {
-      return await this.esClient.callAsInternalUser('opendistro_security.authtoken', {
+      return await this.esClient.asScoped().callAsCurrentUser('opendistro_security.authtoken', {
         body,
       });
     } catch (error) {
