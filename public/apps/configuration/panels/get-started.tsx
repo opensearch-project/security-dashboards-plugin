@@ -210,7 +210,7 @@ export function GetStarted(props: AppDependencies) {
                 window.location.href = buildHashUrl(ResourceType.auditLogging);
               }}
             >
-              Configure Audit Logs
+              Review Audit Log Configuration
             </EuiButton>
           </EuiText>
         </EuiPanel>
