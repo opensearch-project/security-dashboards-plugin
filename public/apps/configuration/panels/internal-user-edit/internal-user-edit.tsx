@@ -160,7 +160,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
             headerText="Username"
             headerSubText="Specify a descriptive and unique user name. You cannot edit the name once the user is created."
             helpText="The username must contain from m to n characters. Valid characters are
-            lowercase a-z, 0-9 and (-) hyphen."
+             lowercase a-z, 0-9 and (-) hyphen."
           >
             <EuiFieldText
               value={userName}
