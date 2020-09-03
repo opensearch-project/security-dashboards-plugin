@@ -40,7 +40,7 @@ import {
   requestDeleteUsers,
 } from '../utils/internal-user-list-utils';
 import { buildHashUrl } from '../utils/url-builder';
-import { API_ENDPOINT_INTERNALUSERS } from '../constants';
+import { API_ENDPOINT_INTERNALUSERS, LEARN_MORE } from '../constants';
 import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { useDeleteConfirmState } from '../utils/delete-confirm-modal-utils';
 import { useContextMenuState } from '../utils/context-menu';
@@ -213,7 +213,7 @@ export function UserList(props: AppDependencies) {
               . First, click into the detail page of the role. Then under “Mapped users”, click
               “Manage mapping”.{' '}
               <EuiLink external={true} href="/">
-                Learn More
+                {LEARN_MORE}
               </EuiLink>
             </EuiText>
           </EuiPageContentHeaderSection>

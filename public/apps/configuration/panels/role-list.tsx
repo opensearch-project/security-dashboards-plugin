@@ -46,6 +46,7 @@ import { renderCustomization, truncatedListView } from '../utils/display-utils';
 import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { useDeleteConfirmState } from '../utils/delete-confirm-modal-utils';
 import { useContextMenuState } from '../utils/context-menu';
+import { LEARN_MORE } from '../constants';
 
 const columns: Array<EuiBasicTableColumn<RoleListing>> = [
   {
@@ -248,7 +249,7 @@ export function RoleList(props: AppDependencies) {
               field-level security, and tenants. Then you map users to these roles so that users
               gain those permissions.{' '}
               <EuiLink external={true} href="/">
-                Learn More
+                {LEARN_MORE}
               </EuiLink>
             </EuiText>
           </EuiPageContentHeaderSection>

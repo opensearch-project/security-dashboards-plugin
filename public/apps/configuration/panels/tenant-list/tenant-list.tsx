@@ -52,6 +52,7 @@ import { PageId } from '../../types';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { useContextMenuState } from '../../utils/context-menu';
+import { LEARN_MORE } from '../../constants';
 
 function getSuccessToastMessage(action: string, tenantName: string): string {
   switch (action) {
@@ -334,7 +335,7 @@ export function TenantList(props: AppDependencies) {
               now. Switch to another tenant anytime from your user profile, which is located on the
               top right of the screen.{' '}
               <EuiLink external={true} href="/">
-                Learn More
+                {LEARN_MORE}
               </EuiLink>
             </EuiText>
           </EuiPageContentHeaderSection>

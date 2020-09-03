@@ -59,6 +59,7 @@ import { PermissionTree } from '../permission-tree';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 import { useContextMenuState } from '../../utils/context-menu';
+import { LEARN_MORE } from '../../constants';
 
 function renderBooleanToCheckMark(value: boolean): React.ReactNode {
   return value ? <EuiIcon type="check" /> : '';
@@ -341,7 +342,7 @@ export function PermissionList(props: AppDependencies) {
               You can often achieve your desired security posture using some combination of the
               default action groups. Or you can create your own group.{' '}
               <EuiLink external={true} href="/">
-                Learn More
+                {LEARN_MORE}
               </EuiLink>
             </EuiText>
           </EuiPageContentHeaderSection>

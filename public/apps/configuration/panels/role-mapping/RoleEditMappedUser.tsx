@@ -41,7 +41,7 @@ import { ResourceType, RoleMappingDetail, SubAction, Action } from '../../types'
 import { fetchUserNameList } from '../../utils/internal-user-list-utils';
 import { updateRoleMapping, getRoleMappingData } from '../../utils/role-mapping-utils';
 import { createErrorToast, createUnknownErrorToast, useToastState } from '../../utils/toast-utils';
-import { DocLinks } from '../../constants';
+import { DocLinks, LEARN_MORE } from '../../constants';
 import { setCrossPageToast } from '../../utils/storage-utils';
 
 interface RoleEditMappedUserProps extends BreadcrumbsPageDependencies {
@@ -142,7 +142,7 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
           Map users to this role to inherit role permissions. Two types of users are supported:
           internal user, and external identity.{' '}
           <EuiLink external href={DocLinks.MapUsersToRolesDoc} target="_blank">
-            Learn More
+            {LEARN_MORE}
           </EuiLink>
         </EuiText>
       </EuiPageHeader>

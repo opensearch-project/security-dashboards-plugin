@@ -15,6 +15,7 @@
 
 import React from 'react';
 import { EuiPanel, EuiTitle, EuiText, EuiLink, EuiHorizontalRule } from '@elastic/eui';
+import { LEARN_MORE } from '../constants';
 
 interface PanelWithHeaderDeps {
   headerText: string;
@@ -41,7 +42,7 @@ export function PanelWithHeader(props: PanelWithHeaderDeps) {
           <>
             {' '}
             <EuiLink href={props.helpLink} external>
-              Learn more
+              {LEARN_MORE}
             </EuiLink>
           </>
         )}

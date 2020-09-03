@@ -136,6 +136,9 @@ export const INDEX_PERMISSIONS = [
 export const TENANT_READ_PERMISSION = 'kibana_all_read';
 export const TENANT_WRITE_PERMISSION = 'kibana_all_write';
 
+// TODO: create a component called ExternalLink which wraps up this const and takes only a href prop.
+export const LEARN_MORE = 'Learn more';
+
 export const RoleViewTenantInvalidText = 'N/A';
 
 // External Links
@@ -145,6 +148,7 @@ export enum DocLinks {
   CreateRolesDoc = 'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/users-roles/#create-roles',
   MapUsersToRolesDoc = 'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/users-roles/#map-users-to-roles',
   AuditLogsDoc = 'https://opendistro.github.io/for-elasticsearch-docs/docs/security/audit-logs/',
+  AuditLogsStorageDoc = 'https://opendistro.github.io/for-elasticsearch-docs/docs/security/audit-logs/storage-types/',
 }
 
 export enum ToolTipContent {

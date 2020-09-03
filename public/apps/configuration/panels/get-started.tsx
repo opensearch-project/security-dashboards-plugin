@@ -32,7 +32,7 @@ import { AppDependencies } from '../../types';
 import securityStepsDiagram from '../../../assets/get_started.svg';
 import { buildHashUrl } from '../utils/url-builder';
 import { Action, ResourceType } from '../types';
-import { DocLinks } from '../constants';
+import { DocLinks, LEARN_MORE } from '../constants';
 import { ExternalLinkButton } from '../utils/display-utils';
 
 const setOfSteps = [
@@ -48,7 +48,7 @@ const setOfSteps = [
           section contains any backends to fetch external identities from. The most common example
           of an external identity is an LDAP group.{' '}
           <EuiLink external={true} href={DocLinks.AuthenticationFlowDoc} target="_blank">
-            Learn More
+            {LEARN_MORE}
           </EuiLink>
         </EuiText>
 
@@ -85,7 +85,7 @@ const setOfSteps = [
           Roles are reusable collections of permissions. The default roles are a great starting
           point, but you might need to create custom roles that meet your exact needs.{' '}
           <EuiLink external={true} href={DocLinks.CreateRolesDoc} target="_blank">
-            Learn More
+            {LEARN_MORE}
           </EuiLink>
         </EuiText>
 
@@ -125,7 +125,7 @@ const setOfSteps = [
           After a user successfully authenticates, the security plugin retrieves that user’s roles.
           You can map roles directly to users, but you can also map them to external identities.{' '}
           <EuiLink external={true} href={DocLinks.MapUsersToRolesDoc} target="_blank">
-            Learn More
+            {LEARN_MORE}
           </EuiLink>
         </EuiText>
 
@@ -201,7 +201,7 @@ export function GetStarted(props: AppDependencies) {
               Audit logs let you track user access to your Elasticsearch cluster and are useful for
               compliance purposes.{' '}
               <EuiLink external={true} href={DocLinks.AuditLogsDoc} target="_blank">
-                Learn More
+                {LEARN_MORE}
               </EuiLink>
             </p>
             <EuiButton
