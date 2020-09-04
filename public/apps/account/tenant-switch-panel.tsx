@@ -95,6 +95,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
   const [selectedCustomTenantOption, setSelectedCustomTenantOption] = useState<string>('');
   const onCustomTenantChange = (selectedOption: string) => {
     setSelectedCustomTenantOption(selectedOption);
+    setTenantSwitchRadioIdSelected(CUSTOM_TENANT_RADIO_ID);
     setErrorCallOut('');
   };
   const customTenantOptions = tenants.filter((tenant) => {
