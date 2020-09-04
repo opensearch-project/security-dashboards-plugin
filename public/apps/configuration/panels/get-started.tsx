@@ -23,7 +23,6 @@ import {
   EuiImage,
   EuiFlexItem,
   EuiFlexGroup,
-  EuiLink,
   EuiPanel,
   EuiPageHeader,
 } from '@elastic/eui';
@@ -32,8 +31,8 @@ import { AppDependencies } from '../../types';
 import securityStepsDiagram from '../../../assets/get_started.svg';
 import { buildHashUrl } from '../utils/url-builder';
 import { Action, ResourceType } from '../types';
-import { DocLinks, LEARN_MORE } from '../constants';
-import { ExternalLinkButton } from '../utils/display-utils';
+import { DocLinks } from '../constants';
+import { ExternalLink, ExternalLinkButton } from '../utils/display-utils';
 
 const setOfSteps = [
   {
@@ -47,9 +46,7 @@ const setOfSteps = [
           against. The <EuiCode>authz</EuiCode>
           section contains any backends to fetch external identities from. The most common example
           of an external identity is an LDAP group.{' '}
-          <EuiLink external={true} href={DocLinks.AuthenticationFlowDoc} target="_blank">
-            {LEARN_MORE}
-          </EuiLink>
+          <ExternalLink href={DocLinks.AuthenticationFlowDoc} />
         </EuiText>
 
         <EuiSpacer size="m" />
@@ -84,9 +81,7 @@ const setOfSteps = [
         <EuiText size="s" color="subdued">
           Roles are reusable collections of permissions. The default roles are a great starting
           point, but you might need to create custom roles that meet your exact needs.{' '}
-          <EuiLink external={true} href={DocLinks.CreateRolesDoc} target="_blank">
-            {LEARN_MORE}
-          </EuiLink>
+          <ExternalLink href={DocLinks.CreateRolesDoc} />
         </EuiText>
 
         <EuiSpacer size="m" />
@@ -124,9 +119,7 @@ const setOfSteps = [
         <EuiText size="s" color="subdued">
           After a user successfully authenticates, the security plugin retrieves that user’s roles.
           You can map roles directly to users, but you can also map them to external identities.{' '}
-          <EuiLink external={true} href={DocLinks.MapUsersToRolesDoc} target="_blank">
-            {LEARN_MORE}
-          </EuiLink>
+          <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
         </EuiText>
 
         <EuiSpacer size="m" />
@@ -199,10 +192,7 @@ export function GetStarted(props: AppDependencies) {
           <EuiText size="s" color="subdued">
             <p>
               Audit logs let you track user access to your Elasticsearch cluster and are useful for
-              compliance purposes.{' '}
-              <EuiLink external={true} href={DocLinks.AuditLogsDoc} target="_blank">
-                {LEARN_MORE}
-              </EuiLink>
+              compliance purposes. <ExternalLink href={DocLinks.AuditLogsDoc} />
             </p>
             <EuiButton
               fill

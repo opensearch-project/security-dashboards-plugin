@@ -19,6 +19,7 @@ import { keys, map, get } from 'lodash';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { renderExpression } from '../../utils/display-utils';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
+import { DocLinks } from '../../constants';
 
 const columns = [
   {
@@ -101,7 +102,7 @@ export function AuthenticationSequencePanel(props: { authc: []; loading: boolean
       headerSubText="An authentication module specifies where to get the user credentials from, and against which
       backend they should be authenticated. When there are multiple authentication domains, the plugin will authenticate
       the user sequentially against each backend until one succeeds."
-      helpLink="/"
+      helpLink={DocLinks.BackendConfigurationAuthenticationDoc}
       count={domains.length}
     >
       <EuiInMemoryTable

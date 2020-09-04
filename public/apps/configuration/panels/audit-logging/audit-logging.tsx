@@ -22,7 +22,6 @@ import {
   EuiForm,
   EuiFormRow,
   EuiHorizontalRule,
-  EuiLink,
   EuiPanel,
   EuiSpacer,
   EuiSwitch,
@@ -31,10 +30,10 @@ import {
 } from '@elastic/eui';
 import React, { useEffect, useState } from 'react';
 import { AppDependencies } from '../../../types';
-import { API_ENDPOINT_AUDITLOGGING, DocLinks, LEARN_MORE } from '../../constants';
+import { API_ENDPOINT_AUDITLOGGING, DocLinks } from '../../constants';
 import { ResourceType } from '../../types';
 import { updateAuditLogging } from '../../utils/audit-logging-utils';
-import { displayBoolean } from '../../utils/display-utils';
+import { displayBoolean, ExternalLink } from '../../utils/display-utils';
 import { buildHashUrl } from '../../utils/url-builder';
 import {
   SETTING_GROUPS,
@@ -63,10 +62,7 @@ function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: bool
               Configure the output location and storage types in{' '}
               <EuiCode>elasticsearch.yml</EuiCode>. The default storage location is{' '}
               <EuiCode>internal_elasticsearch</EuiCode>, which stores the logs in an index on this
-              cluster.{' '}
-              <EuiLink external={true} href={DocLinks.AuditLogsStorageDoc} target="_blank">
-                {LEARN_MORE}
-              </EuiLink>
+              cluster. <ExternalLink href={DocLinks.AuditLogsStorageDoc} />
             </EuiText>
           </EuiFormRow>
         </EuiDescribedFormGroup>

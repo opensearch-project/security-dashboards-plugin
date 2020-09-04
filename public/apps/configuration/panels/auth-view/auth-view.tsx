@@ -17,7 +17,7 @@ import React, { useEffect, useState } from 'react';
 import { EuiCode, EuiPageHeader, EuiSpacer, EuiText, EuiTitle } from '@elastic/eui';
 import { AuthenticationSequencePanel } from './authentication-sequence-panel';
 import { AuthorizationPanel } from './authorization-panel';
-import { API_ENDPOINT_SECURITYCONFIG } from '../../constants';
+import { API_ENDPOINT_SECURITYCONFIG, DocLinks } from '../../constants';
 import { AppDependencies } from '../../../types';
 import { ExternalLinkButton } from '../../utils/display-utils';
 
@@ -45,7 +45,12 @@ function renderInstructionView() {
       <EuiSpacer />
 
       <div style={{ textAlign: 'center' }}>
-        <ExternalLinkButton fill size="s" href="" text="Create config.yml" />
+        <ExternalLinkButton
+          fill
+          size="s"
+          href={DocLinks.BackendConfigurationDoc}
+          text="Create config.yml"
+        />
       </div>
     </>
   );
@@ -85,7 +90,7 @@ export function AuthView(props: AppDependencies) {
         <EuiTitle size="l">
           <h1>Authentication and authorization</h1>
         </EuiTitle>
-        <ExternalLinkButton href="" text="Manage via config.yml" />
+        <ExternalLinkButton href={DocLinks.BackendConfigurationDoc} text="Manage via config.yml" />
       </EuiPageHeader>
       {/* @ts-ignore */}
       <AuthenticationSequencePanel authc={authentication} loading={loading} />

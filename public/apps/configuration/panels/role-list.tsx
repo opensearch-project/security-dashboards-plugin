@@ -42,11 +42,10 @@ import {
 } from '../utils/role-list-utils';
 import { ResourceType, Action } from '../types';
 import { buildHashUrl } from '../utils/url-builder';
-import { renderCustomization, truncatedListView } from '../utils/display-utils';
+import { ExternalLink, renderCustomization, truncatedListView } from '../utils/display-utils';
 import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { useDeleteConfirmState } from '../utils/delete-confirm-modal-utils';
 import { useContextMenuState } from '../utils/context-menu';
-import { LEARN_MORE } from '../constants';
 
 const columns: Array<EuiBasicTableColumn<RoleListing>> = [
   {
@@ -247,10 +246,7 @@ export function RoleList(props: AppDependencies) {
               Roles are the core way of controlling access to your cluster. Roles contain any
               combination of cluster-wide permission, index-specific permissions, document- and
               field-level security, and tenants. Then you map users to these roles so that users
-              gain those permissions.{' '}
-              <EuiLink external={true} href="/">
-                {LEARN_MORE}
-              </EuiLink>
+              gain those permissions. <ExternalLink href="/" />
             </EuiText>
           </EuiPageContentHeaderSection>
           <EuiPageContentHeaderSection>

@@ -20,7 +20,6 @@ import {
   EuiFlexItem,
   EuiForm,
   EuiGlobalToastList,
-  EuiLink,
   EuiPageHeader,
   EuiSpacer,
   EuiText,
@@ -38,7 +37,7 @@ import { buildHashUrl, buildUrl } from '../../utils/url-builder';
 import { AttributePanel, buildAttributeState, unbuildAttributeState } from './attribute-panel';
 import { UserAttributeStateClass } from './types';
 import { setCrossPageToast } from '../../utils/storage-utils';
-import { LEARN_MORE } from '../../constants';
+import { ExternalLink } from '../../utils/display-utils';
 
 interface InternalUserEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -147,9 +146,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
             <EuiText size="xs" color="subdued">
               The security plugin includes an internal user database. Use this database in place of,
               or in addtion to an external authentication system such as LDAP or Active Directory.{' '}
-              <EuiLink external href="/">
-                {LEARN_MORE}
-              </EuiLink>
+              <ExternalLink href="/" />
             </EuiText>
           </EuiFlexItem>
         </EuiFlexGroup>

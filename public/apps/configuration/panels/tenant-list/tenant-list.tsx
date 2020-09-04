@@ -35,7 +35,7 @@ import { difference } from 'lodash';
 import { getAuthInfo } from '../../../../utils/auth-info-utils';
 import { AppDependencies } from '../../../types';
 import { Action, Tenant } from '../../types';
-import { renderCustomization } from '../../utils/display-utils';
+import { ExternalLink, renderCustomization } from '../../utils/display-utils';
 import {
   fetchTenants,
   transformTenantData,
@@ -52,7 +52,6 @@ import { PageId } from '../../types';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { useContextMenuState } from '../../utils/context-menu';
-import { LEARN_MORE } from '../../constants';
 
 function getSuccessToastMessage(action: string, tenantName: string): string {
   switch (action) {
@@ -333,10 +332,7 @@ export function TenantList(props: AppDependencies) {
               users. You can control which roles have access to a tenant and whether those roles
               have read or write access. The “Current” label indicates which tenant you are using
               now. Switch to another tenant anytime from your user profile, which is located on the
-              top right of the screen.{' '}
-              <EuiLink external={true} href="/">
-                {LEARN_MORE}
-              </EuiLink>
+              top right of the screen. <ExternalLink href="/" />
             </EuiText>
           </EuiPageContentHeaderSection>
           <EuiPageContentHeaderSection>

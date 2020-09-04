@@ -19,6 +19,7 @@ import { keys, map, get } from 'lodash';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { renderExpression, ExternalLinkButton } from '../../utils/display-utils';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
+import { DocLinks } from '../../constants';
 
 const columns = [
   {
@@ -51,7 +52,12 @@ const emptyListMessage = (
   <EuiEmptyPrompt
     title={<h3>No authorization</h3>}
     titleSize="s"
-    actions={<ExternalLinkButton href="" text="Manage via config.yml" />}
+    actions={
+      <ExternalLinkButton
+        href={DocLinks.BackendConfigurationAuthorizationDoc}
+        text="Manage via config.yml"
+      />
+    }
   />
 );
 
@@ -83,7 +89,7 @@ export function AuthorizationPanel(props: { authz: []; loading: boolean }) {
       headerText={headerText}
       headerSubText="After the user has been authenticated, authorization allows optional user collection from backend systems.
       There is no execution order among multiple authorization domains."
-      helpLink="/"
+      helpLink={DocLinks.BackendConfigurationAuthorizationDoc}
       count={domains.length}
     >
       <EuiInMemoryTable

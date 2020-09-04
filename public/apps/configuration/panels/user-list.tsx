@@ -40,11 +40,12 @@ import {
   requestDeleteUsers,
 } from '../utils/internal-user-list-utils';
 import { buildHashUrl } from '../utils/url-builder';
-import { API_ENDPOINT_INTERNALUSERS, LEARN_MORE } from '../constants';
+import { API_ENDPOINT_INTERNALUSERS } from '../constants';
 import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { useDeleteConfirmState } from '../utils/delete-confirm-modal-utils';
 import { useContextMenuState } from '../utils/context-menu';
 import { EMPTY_FIELD_VALUE } from '../ui-constants';
+import { ExternalLink } from '../utils/display-utils';
 
 function dictView() {
   return (items: Dictionary<string>) => {
@@ -211,10 +212,7 @@ export function UserList(props: AppDependencies) {
                 Roles
               </EuiLink>
               . First, click into the detail page of the role. Then, under “Mapped users”, click
-              “Manage mapping”.{' '}
-              <EuiLink external={true} href="/">
-                {LEARN_MORE}
-              </EuiLink>
+              “Manage mapping” <ExternalLink href="/" />
             </EuiText>
           </EuiPageContentHeaderSection>
           <EuiPageContentHeaderSection>

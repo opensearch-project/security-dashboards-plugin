@@ -13,9 +13,9 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiFormRow, EuiLink, EuiText } from '@elastic/eui';
+import { EuiFormRow, EuiText } from '@elastic/eui';
 import React from 'react';
-import { LEARN_MORE } from '../constants';
+import { ExternalLink } from './display-utils';
 
 interface FormRowDeps {
   headerText: string;
@@ -43,9 +43,7 @@ export function FormRow(props: FormRowDeps) {
             {props.helpLink && (
               <>
                 {' '}
-                <EuiLink href="{props.helpLink}" external>
-                  {LEARN_MORE}
-                </EuiLink>
+                <ExternalLink href="{props.helpLink}" />
               </>
             )}
           </EuiText>
