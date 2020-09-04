@@ -98,6 +98,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
     if (this.requestIncludesAuthInfo(request)) {
       try {
         const additonalAuthHeader = this.getAdditionalAuthHeader(request);
+        Object.assign(authHeaders, additonalAuthHeader);
         authInfo = await this.securityClient.authinfo(request, additonalAuthHeader);
         cookie = this.getCookie(request, authInfo);
         this.sessionStorageFactory.asScoped(request).set(cookie);

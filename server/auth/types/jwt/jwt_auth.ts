@@ -28,6 +28,7 @@ import {
 import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { AuthenticationType } from '../authentication_type';
+import { JwtAuthRoutes } from './routes';
 
 export class JwtAuthentication extends AuthenticationType {
   public readonly type: string = 'jwt';
@@ -44,6 +45,13 @@ export class JwtAuthentication extends AuthenticationType {
   ) {
     super(config, sessionStorageFactory, router, esClient, coreSetup, logger);
     this.authHeaderName = this.config.jwt?.header.toLowerCase() || 'authorization';
+
+    this.init();
+  }
+
+  private async init() {
+    const routes = new JwtAuthRoutes(this.router, this.sessionStorageFactory);
+    routes.setupRoutes();
   }
 
   private getTokenFromUrlParam(request: KibanaRequest): string | undefined {
