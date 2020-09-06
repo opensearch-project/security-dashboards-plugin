@@ -33,6 +33,7 @@ import { logout } from './utils';
 import { PasswordResetPanel } from './password-reset-panel';
 import { TenantSwitchPanel } from './tenant-switch-panel';
 import { ClientConfigType } from '../../types';
+import { LogoutButton } from './log-out-button';
 
 export function AccountNavButton(props: {
   coreStart: CoreStart;
@@ -113,9 +114,7 @@ export function AccountNavButton(props: {
           {horizontalRule}
         </>
       )}
-      <EuiButtonEmpty color="danger" size="xs" onClick={() => logout(props.coreStart.http)}>
-        Log out
-      </EuiButtonEmpty>
+      <LogoutButton authType={props.config.auth.type} http={props.coreStart.http} />
     </div>
   );
   return (

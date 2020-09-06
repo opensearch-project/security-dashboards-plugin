@@ -27,7 +27,6 @@ import { SecurityPluginConfigType } from '../../..';
 import { OpenIdAuthConfig } from './openid_auth';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { getBaseRedirectUrl, callTokenEndpoint } from './helper';
-import { composeNextUrlQeuryParam } from '../../../utils/next_url';
 
 export class OpenIdAuthRoutes {
   private static readonly NONCE_LENGTH: number = 22;
@@ -48,18 +47,6 @@ export class OpenIdAuthRoutes {
         location: `${this.core.http.basePath.serverBasePath}/auth/openid/login`,
       },
     });
-  }
-
-  private async isValidState(request: KibanaRequest): Promise<boolean> {
-    try {
-      const cookie = await this.sessionStorageFactory.asScoped(request).get();
-      if (!cookie || !cookie.oidc?.state || cookie.oidc.state !== (request.query as any).state) {
-        return false;
-      }
-    } catch (error) {
-      return false;
-    }
-    return true;
   }
 
   public setupRoutes() {
@@ -87,7 +74,7 @@ export class OpenIdAuthRoutes {
           const query: any = {
             client_id: this.config.openid?.client_id,
             response_type: 'code',
-            redirect_uri: `${getBaseRedirectUrl(this.config, this.core)}`,
+            redirect_uri: `${getBaseRedirectUrl(this.config, this.core)}/auth/openid/login`,
             state: nonce,
             scope: this.openIdAuthConfig.scope,
           };
@@ -131,7 +118,7 @@ export class OpenIdAuthRoutes {
         const query: any = {
           grant_type: 'authorization_code',
           code: request.query.code,
-          redirect_uri: `${getBaseRedirectUrl(this.config, this.core)}`,
+          redirect_uri: `${getBaseRedirectUrl(this.config, this.core)}/auth/openid/login`,
           client_id: clientId,
           client_secret: clientSecret,
         };
@@ -173,7 +160,7 @@ export class OpenIdAuthRoutes {
       }
     );
 
-    this.router.post(
+    this.router.get(
       {
         path: `/auth/logout`,
         validate: false,
@@ -184,22 +171,15 @@ export class OpenIdAuthRoutes {
 
         // authHeaderValue is the bearer header, e.g. "Bearer <auth_token>"
         const token = cookie?.credentials.authHeaderValue.split(' ')[1]; // get auth token
-        const requestQueryParameters = `?post_logout_redirect_uri=${getBaseRedirectUrl(
-          this.config,
-          this.core
-        )}`;
+        const logoutQueryParams = {
+          post_logout_redirect_uri: getBaseRedirectUrl(this.config, this.core),
+          id_token_hint: token,
+        };
 
-        let endSessionUrl = '/';
-        const customLogoutUrl = this.config.openid?.logout_url;
-        if (customLogoutUrl) {
-          endSessionUrl = customLogoutUrl + requestQueryParameters;
-        } else if (this.openIdAuthConfig.endSessionEndpoint) {
-          endSessionUrl =
-            this.openIdAuthConfig.endSessionEndpoint +
-            requestQueryParameters +
-            '&id_token_hint=' +
-            token;
-        }
+        const logoutBaseUri =
+          this.config.openid?.logout_url || this.openIdAuthConfig.endSessionEndpoint;
+        const endSessionUrl = `${logoutBaseUri}?${stringify(logoutQueryParams)}`;
+
         return response.redirected({
           headers: {
             location: endSessionUrl,
