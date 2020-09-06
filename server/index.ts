@@ -188,6 +188,7 @@ export type SecurityPluginConfigType = TypeOf<typeof configSchema>;
 export const config: PluginConfigDescriptor<SecurityPluginConfigType> = {
   exposeToBrowser: {
     enabled: true,
+    auth: true,
     ui: true,
     multitenancy: true,
   },

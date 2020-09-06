@@ -50,4 +50,7 @@ export interface ClientConfigType {
       enable_global: boolean;
     };
   };
+  auth: {
+    type: string;
+  };
 }

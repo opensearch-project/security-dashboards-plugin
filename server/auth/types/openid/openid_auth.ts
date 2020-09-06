@@ -26,12 +26,11 @@ import {
   AuthToolkit,
   IKibanaResponse,
 } from 'kibana/server';
-import { stringify } from 'querystring';
 import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { OpenIdAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
-import { parseTokenResponse, callTokenEndpoint } from './helper';
+import { callTokenEndpoint } from './helper';
 import { composeNextUrlQeuryParam } from '../../../utils/next_url';
 
 export interface OpenIdAuthConfig {
@@ -182,7 +181,7 @@ export class OpenIdAuthentication extends AuthenticationType {
     toolkit: AuthToolkit
   ): IKibanaResponse {
     this.sessionStorageFactory.asScoped(request).clear();
-    if (request.url.pathname!.startsWith('/app/')) {
+    if (request.url.pathname!.startsWith('/app/') || request.url.pathname === '/') {
       // nextUrl is a key value pair
       const nextUrl = composeNextUrlQeuryParam(
         request,
