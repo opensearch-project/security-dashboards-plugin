@@ -119,7 +119,7 @@ describe('Role edit - tenant panel', () => {
 
       const addRowButton = component.find(EuiButton).last();
       addRowButton.simulate('click');
-      expect(arrayStateUtils.appendElementToArray).toHaveBeenCalled();
+      expect(arrayStateUtils.appendElementToArray).toHaveBeenCalledTimes(1);
     });
 
     it('remove row', () => {
@@ -136,7 +136,7 @@ describe('Role edit - tenant panel', () => {
 
       const removeRowButton = component.find(EuiButton).first();
       removeRowButton.simulate('click');
-      expect(arrayStateUtils.removeElementFromArray).toHaveBeenCalled();
+      expect(arrayStateUtils.removeElementFromArray).toHaveBeenCalledTimes(1);
     });
   });
 });

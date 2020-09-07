@@ -13,7 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-import './_index.scss';
 import React, { Dispatch, SetStateAction } from 'react';
 import { EuiForm, EuiFlexGroup, EuiFlexItem, EuiComboBox } from '@elastic/eui';
 import { ComboBoxOptions, ResourceType, Action } from '../../types';

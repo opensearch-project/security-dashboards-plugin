@@ -13,7 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-import './_index.scss';
 import {
   EuiAccordion,
   EuiButton,
@@ -112,7 +111,7 @@ const FIELD_LEVEL_SECURITY_PLACEHOLDER = `{
     }
 }`;
 
-function IndexPatternRow(props: {
+export function IndexPatternRow(props: {
   value: ComboBoxOptions;
   onChangeHandler: (s: ComboBoxOptions) => void;
   onCreateHandler: (s: string) => void;
@@ -130,7 +129,7 @@ function IndexPatternRow(props: {
   );
 }
 
-function IndexPermissionRow(props: {
+export function IndexPermissionRow(props: {
   value: ComboBoxOptions;
   permisionOptionsSet: ComboBoxOptions;
   onChangeHandler: (s: ComboBoxOptions) => void;
@@ -163,7 +162,8 @@ function IndexPermissionRow(props: {
     </FormRow>
   );
 }
-function DocLevelSecurityRow(props: {
+
+export function DocLevelSecurityRow(props: {
   value: string;
   onChangeHandler: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }) {
@@ -182,7 +182,8 @@ function DocLevelSecurityRow(props: {
     </FormRow>
   );
 }
-function FieldLevelSecurityRow(props: {
+
+export function FieldLevelSecurityRow(props: {
   method: FieldLevelSecurityMethod;
   fields: ComboBoxOptions;
   onMethodChangeHandler: (s: string) => void;
@@ -219,7 +220,8 @@ function FieldLevelSecurityRow(props: {
     </FormRow>
   );
 }
-function AnonymizationRow(props: {
+
+export function AnonymizationRow(props: {
   value: ComboBoxOptions;
   onChangeHandler: (s: ComboBoxOptions) => void;
   onCreateHandler: (s: string) => void;
@@ -240,6 +242,7 @@ function AnonymizationRow(props: {
     </FormRow>
   );
 }
+
 export function generateIndexPermissionPanels(
   indexPermissions: RoleIndexPermissionStateClass[],
   permisionOptionsSet: ComboBoxOptions,

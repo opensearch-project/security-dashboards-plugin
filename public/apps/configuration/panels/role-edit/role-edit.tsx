@@ -67,7 +67,7 @@ const TITLE_TEXT_DICT = {
   duplicate: 'Duplicate Role',
 };
 
-function getSuccessToastMessage(action: string, roleName: string): string {
+export function getSuccessToastMessage(action: string, roleName: string): string {
   switch (action) {
     case 'create':
     case 'duplicate':
@@ -80,7 +80,7 @@ function getSuccessToastMessage(action: string, roleName: string): string {
 }
 
 export function RoleEdit(props: RoleEditDeps) {
-  const [roleName, setRoleName] = useState('');
+  const [roleName, setRoleName] = React.useState('');
   const [roleClusterPermission, setRoleClusterPermission] = useState<ComboBoxOptions>([]);
   const [roleIndexPermission, setRoleIndexPermission] = useState<RoleIndexPermissionStateClass[]>(
     []
@@ -91,7 +91,7 @@ export function RoleEdit(props: RoleEditDeps) {
 
   const [toasts, addToast, removeToast] = useToastState();
 
-  useEffect(() => {
+  React.useEffect(() => {
     const action = props.action;
     if (action === 'edit' || action === 'duplicate') {
       const fetchData = async () => {
@@ -117,7 +117,7 @@ export function RoleEdit(props: RoleEditDeps) {
   }, [addToast, props.action, props.coreStart.http, props.sourceRoleName]);
 
   const [actionGroups, setActionGroups] = useState<string[]>([]);
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchActionGroupNames = async () => {
       try {
         const actionGroupsObject = await fetchActionGroups(props.coreStart.http);
@@ -131,8 +131,8 @@ export function RoleEdit(props: RoleEditDeps) {
     fetchActionGroupNames();
   }, [addToast, props.coreStart.http]);
 
-  const [tenantNames, setTenantNames] = useState<string[]>([]);
-  useEffect(() => {
+  const [tenantNames, setTenantNames] = React.useState<string[]>([]);
+  React.useEffect(() => {
     const fetchTenantNames = async () => {
       try {
         setTenantNames(await fetchTenantNameList(props.coreStart.http));
