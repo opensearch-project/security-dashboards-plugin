@@ -19,7 +19,7 @@ import { HttpStart } from 'kibana/public';
 import { logout } from './utils';
 
 export function LogoutButton(props: { authType: string; http: HttpStart }) {
-  if (props.authType === 'openid') {
+  if (props.authType === 'openid' || props.authType === 'saml') {
     return (
       <EuiButtonEmpty color="danger" size="xs" href="/auth/logout">
         Log out
