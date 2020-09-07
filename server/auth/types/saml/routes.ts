@@ -184,7 +184,7 @@ export class SamlAuthRoutes {
       }
     );
 
-    this.router.post(
+    this.router.get(
       {
         path: `/auth/logout`,
         validate: false,
