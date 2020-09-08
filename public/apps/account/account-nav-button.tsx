@@ -111,10 +111,13 @@ export function AccountNavButton(props: {
           >
             Reset password
           </EuiButtonEmpty>
-          {horizontalRule}
         </>
       )}
-      <LogoutButton authType={props.config.auth.type} http={props.coreStart.http} />
+      <LogoutButton
+        authType={props.config.auth.type}
+        http={props.coreStart.http}
+        divider={horizontalRule}
+      />
     </div>
   );
   return (
