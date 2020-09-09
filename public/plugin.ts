@@ -13,6 +13,7 @@
  *   permissions and limitations under the License.
  */
 
+import { BehaviorSubject } from 'rxjs';
 import {
   AppMountParameters,
   CoreSetup,
@@ -31,7 +32,6 @@ import {
 import { LOGIN_PAGE_URI, PLUGIN_NAME, SELECT_TENANT_PAGE_URI } from '../common';
 import { API_ENDPOINT_PERMISSIONS_INFO } from './apps/configuration/constants';
 import { setupTopNavButton } from './apps/account/account-app';
-import { BehaviorSubject } from 'rxjs';
 import { fetchAccountInfoSafe } from './apps/account/utils';
 
 async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
