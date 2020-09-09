@@ -20,8 +20,8 @@ module.exports = {
   roots: ['<rootDir>'],
   coverageDirectory: './coverage',
   moduleNameMapper: {
-    "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
-    "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
+    '\\.(css|less|sass|scss)$': '<rootDir>/__mocks__/styleMock.js',
+    '\\.(gif|ttf|eot|svg)$': '<rootDir>/__mocks__/fileMock.js',
   },
   modulePathIgnorePatterns: ['<rootDir>/target/'],
   coverageReporters: ['lcov', 'text', 'cobertura'],

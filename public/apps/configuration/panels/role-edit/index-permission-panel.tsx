@@ -26,7 +26,7 @@ import {
 } from '@elastic/eui';
 import React, { Dispatch, Fragment, SetStateAction } from 'react';
 import { isEmpty } from 'lodash';
-import { RoleIndexPermission, ResourceType, Action } from '../../types';
+import { RoleIndexPermission, ResourceType } from '../../types';
 import {
   appendElementToArray,
   removeElementFromArray,

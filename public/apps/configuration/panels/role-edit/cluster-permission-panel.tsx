@@ -16,7 +16,7 @@
 import './_index.scss';
 import React, { Dispatch, SetStateAction } from 'react';
 import { EuiForm, EuiFlexGroup, EuiFlexItem, EuiComboBox } from '@elastic/eui';
-import { ComboBoxOptions, ResourceType, Action } from '../../types';
+import { ComboBoxOptions, ResourceType } from '../../types';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { FormRow } from '../../utils/form-row';
 import { LIMIT_WIDTH_INPUT_CLASS } from './constant';

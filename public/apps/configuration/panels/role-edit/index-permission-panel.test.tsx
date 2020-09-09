@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { shallow, CommonWrapper, ShallowWrapper } from 'enzyme';
+import { shallow } from 'enzyme';
 import React from 'react';
 import { RoleIndexPermission, ComboBoxOptions, FieldLevelSecurityMethod } from '../../types';
 import { stringToComboBoxOption } from '../../utils/combo-box-utils';
@@ -28,7 +28,7 @@ import {
   AnonymizationRow,
 } from './index-permission-panel';
 import { RoleIndexPermissionStateClass } from './types';
-import { EuiComboBox, EuiSuperSelect, EuiButton, EuiTextArea, EuiAccordion } from '@elastic/eui';
+import { EuiComboBox, EuiSuperSelect, EuiButton, EuiTextArea } from '@elastic/eui';
 
 jest.mock('../../utils/array-state-utils');
 // eslint-disable-next-line
