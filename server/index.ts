@@ -191,6 +191,7 @@ export const config: PluginConfigDescriptor<SecurityPluginConfigType> = {
     auth: true,
     ui: true,
     multitenancy: true,
+    readonly_mode: true,
   },
   schema: configSchema,
   deprecations: ({ rename, unused }) => [

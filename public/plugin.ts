@@ -13,12 +13,15 @@
  *   permissions and limitations under the License.
  */
 
+import { BehaviorSubject } from 'rxjs';
 import {
   AppMountParameters,
   CoreSetup,
   CoreStart,
   Plugin,
   PluginInitializerContext,
+  AppUpdater,
+  AppStatus,
 } from '../../../src/core/public';
 import {
   OpendistroSecurityPluginSetup,
@@ -29,6 +32,7 @@ import {
 import { LOGIN_PAGE_URI, PLUGIN_NAME, SELECT_TENANT_PAGE_URI } from '../common';
 import { API_ENDPOINT_PERMISSIONS_INFO } from './apps/configuration/constants';
 import { setupTopNavButton } from './apps/account/account-app';
+import { fetchAccountInfoSafe } from './apps/account/utils';
 
 async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
   try {
@@ -41,6 +45,8 @@ async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
   }
 }
 
+const DEFAULT_READONLY_ROLES = ['kibana_read_only'];
+
 export class OpendistroSecurityPlugin
   implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
   // @ts-ignore : initializerContext not used
@@ -50,6 +56,11 @@ export class OpendistroSecurityPlugin
     const apiPermission = await hasApiPermission(core);
 
     const config = this.initializerContext.config.get<ClientConfigType>();
+
+    const accountInfo = (await fetchAccountInfoSafe(core.http))?.data;
+    const isReadonly = accountInfo?.roles.some((role) =>
+      (config.readonly_mode?.roles || DEFAULT_READONLY_ROLES).includes(role)
+    );
 
     if (apiPermission) {
       core.application.register({
@@ -88,6 +99,16 @@ export class OpendistroSecurityPlugin
         return renderPage(coreStart, params, config, apiPermission);
       },
     });
+
+    core.application.registerAppUpdater(
+      new BehaviorSubject<AppUpdater>((app) => {
+        if (!apiPermission && isReadonly && app.id !== 'dashboards' && app.id !== 'home') {
+          return {
+            status: AppStatus.inaccessible,
+          };
+        }
+      })
+    );
 
     // Return methods that should be available to other plugins
     return {};
