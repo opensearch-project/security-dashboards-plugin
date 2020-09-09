@@ -13,6 +13,7 @@
  *   permissions and limitations under the License.
  */
 
+import './_index.scss';
 import {
   EuiAccordion,
   EuiButton,
@@ -154,7 +155,7 @@ export function IndexPermissionRow(props: {
         {/* TODO: 'Browse and select' button with a pop-up modal for selection */}
         <EuiFlexItem grow={false}>
           <ExternalLinkButton
-            href={buildHashUrl(ResourceType.permissions, Action.create)}
+            href={buildHashUrl(ResourceType.permissions)}
             text="Create new permission group"
           />
         </EuiFlexItem>
