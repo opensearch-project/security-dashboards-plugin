@@ -102,7 +102,6 @@ export class OpendistroSecurityPlugin
 
     core.application.registerAppUpdater(
       new BehaviorSubject<AppUpdater>((app) => {
-        console.log(app);
         if (!apiPermission && isReadonly && app.id !== 'dashboards' && app.id !== 'home') {
           return {
             status: AppStatus.inaccessible,
