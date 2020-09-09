@@ -126,7 +126,7 @@ const RESOLVE_INDICES: SettingContent = {
 const SENSITIVE_HEADERS: SettingContent = {
   title: 'Sensitive headers',
   path: 'audit.exclude_sensitive_headers',
-  description: 'Exclude sensitive headers during auditing. Eg: Authorization header.',
+  description: 'Exclude sensitive headers during auditing. (e.g. authorization header)',
   type: 'bool',
 };
 
@@ -208,7 +208,7 @@ const WRITE_METADATA_ONLY: SettingContent = {
 const WRITE_LOG_DIFFS: SettingContent = {
   title: 'Log diffs',
   path: 'compliance.write_log_diffs',
-  description: 'Log only diffs for document updates.',
+  description: '',
   type: 'bool',
 };
 
