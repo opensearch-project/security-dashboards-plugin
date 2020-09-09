@@ -30,7 +30,7 @@ import { isEmpty } from 'lodash';
 import React from 'react';
 import { ExpressionModal } from '../panels/expression-modal';
 import { EMPTY_FIELD_VALUE } from '../ui-constants';
-import { DocLinks, LEARN_MORE } from '../constants';
+import { LEARN_MORE } from '../constants';
 
 export function renderTextFlexItem(header: string, value: string) {
   return (
@@ -129,7 +129,12 @@ export function ExternalLinkButton(props: { text: string; href: string } & EuiBu
 
 export function ExternalLink(props: { href: string }) {
   return (
-    <EuiLink external={true} href={props.href} target="_blank">
+    <EuiLink
+      external={true}
+      href={props.href}
+      target="_blank"
+      className="external-link-inline-block"
+    >
       {LEARN_MORE}
     </EuiLink>
   );
