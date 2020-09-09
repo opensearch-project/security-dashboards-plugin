@@ -32,6 +32,9 @@ export interface AuthInfo {
 }
 
 export interface ClientConfigType {
+  readonly_mode: {
+    roles: string[];
+  }
   ui: {
     basicauth: {
       login: {
