@@ -23,12 +23,14 @@ import {
   EuiButton,
   EuiButtonProps,
   EuiToolTip,
+  EuiLink,
 } from '@elastic/eui';
 import { isEmpty } from 'lodash';
 
 import React from 'react';
 import { ExpressionModal } from '../panels/expression-modal';
 import { EMPTY_FIELD_VALUE } from '../ui-constants';
+import { LEARN_MORE } from '../constants';
 
 export function renderTextFlexItem(header: string, value: string) {
   return (
@@ -122,5 +124,18 @@ export function ExternalLinkButton(props: { text: string; href: string } & EuiBu
     <EuiButton iconType="popout" iconSide="right" target="_blank" {...buttonProps}>
       {props.text}
     </EuiButton>
+  );
+}
+
+export function ExternalLink(props: { href: string }) {
+  return (
+    <EuiLink
+      external={true}
+      href={props.href}
+      target="_blank"
+      className="external-link-inline-block"
+    >
+      {LEARN_MORE}
+    </EuiLink>
   );
 }

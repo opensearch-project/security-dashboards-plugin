@@ -20,7 +20,6 @@ import {
   EuiFlexItem,
   EuiForm,
   EuiGlobalToastList,
-  EuiLink,
   EuiPageHeader,
   EuiSpacer,
   EuiText,
@@ -29,7 +28,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { isEmpty } from 'lodash';
 import { BreadcrumbsPageDependencies } from '../../../types';
-import { CLUSTER_PERMISSIONS, INDEX_PERMISSIONS, LEARN_MORE } from '../../constants';
+import { CLUSTER_PERMISSIONS, INDEX_PERMISSIONS } from '../../constants';
 import { fetchActionGroups } from '../../utils/action-groups-utils';
 import { comboBoxOptionToString, stringToComboBoxOption } from '../../utils/combo-box-utils';
 import { FormRow } from '../../utils/form-row';
@@ -52,6 +51,7 @@ import { buildHashUrl, buildUrl } from '../../utils/url-builder';
 import { ComboBoxOptions, ResourceType, Action } from '../../types';
 import { useToastState, createUnknownErrorToast } from '../../utils/toast-utils';
 import { setCrossPageToast } from '../../utils/storage-utils';
+import { ExternalLink } from '../../utils/display-utils';
 
 interface RoleEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -202,10 +202,7 @@ export function RoleEdit(props: RoleEditDeps) {
           Roles are the core way of controlling access to your cluster. Roles contain any
           combination of cluster-wide permission, index-specific permissions, document- and
           field-level security, and tenants. Once you&apos;ve created the role, you can map users to
-          the roles so that users gain those permissions.{' '}
-          <EuiLink external href="/">
-            {LEARN_MORE}
-          </EuiLink>
+          the roles so that users gain those permissions. <ExternalLink href="/" />
         </EuiText>
       </EuiPageHeader>
       <PanelWithHeader headerText="Name">

@@ -21,7 +21,6 @@ import {
   EuiGlobalToastList,
   EuiIcon,
   EuiInMemoryTable,
-  EuiLink,
   EuiPageBody,
   EuiPageContent,
   EuiPageContentHeader,
@@ -52,14 +51,13 @@ import {
   mergeAllPermissions,
 } from '../../utils/action-groups-utils';
 import { stringToComboBoxOption } from '../../utils/combo-box-utils';
-import { renderCustomization } from '../../utils/display-utils';
+import { ExternalLink, renderCustomization } from '../../utils/display-utils';
 import { useToastState } from '../../utils/toast-utils';
 import { PermissionEditModal } from './edit-modal';
 import { PermissionTree } from '../permission-tree';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 import { useContextMenuState } from '../../utils/context-menu';
-import { LEARN_MORE } from '../../constants';
 
 function renderBooleanToCheckMark(value: boolean): React.ReactNode {
   return value ? <EuiIcon type="check" /> : '';
@@ -340,10 +338,7 @@ export function PermissionList(props: AppDependencies) {
               Permissions define the type of access to the cluster or the specified indices. An
               action group is a set of predefined single permissions and/or another set of action
               groups. You can often achieve your desired security posture using some combination of
-              the default action groups. Or you can create your own group.{' '}
-              <EuiLink external={true} href="/">
-                {LEARN_MORE}
-              </EuiLink>
+              the default action groups. Or you can create your own group. <ExternalLink href="/" />
             </EuiText>
           </EuiPageContentHeaderSection>
           <EuiPageContentHeaderSection>

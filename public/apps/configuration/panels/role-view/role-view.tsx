@@ -63,9 +63,9 @@ import { IndexPermissionPanel } from './index-permission-panel';
 import { TenantsPanel } from './tenants-panel';
 import { transformRoleIndexPermissions } from '../../utils/index-permission-utils';
 import { transformRoleTenantPermissions } from '../../utils/tenant-utils';
-import { DocLinks, LEARN_MORE } from '../../constants';
+import { DocLinks } from '../../constants';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
-import { ExternalLinkButton } from '../../utils/display-utils';
+import { ExternalLink, ExternalLinkButton } from '../../utils/display-utils';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { useContextMenuState } from '../../utils/context-menu';
 import { requestDeleteRoles } from '../../utils/role-list-utils';
@@ -284,9 +284,7 @@ export function RoleView(props: RoleViewProps) {
                   internal user can have its own backend role and host for an external
                   authentication and authorization. An external identity directly maps to roles
                   through an external authentication system.{' '}
-                  <EuiLink external={true} href={DocLinks.MapUsersToRolesDoc} target="_blank">
-                    {LEARN_MORE}
-                  </EuiLink>
+                  <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
                 </EuiText>
               </EuiPageContentHeaderSection>
               <EuiPageContentHeaderSection>
