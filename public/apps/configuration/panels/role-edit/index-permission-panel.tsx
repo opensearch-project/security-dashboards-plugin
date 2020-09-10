@@ -26,7 +26,7 @@ import {
 } from '@elastic/eui';
 import React, { Dispatch, Fragment, SetStateAction } from 'react';
 import { isEmpty } from 'lodash';
-import { RoleIndexPermission, ResourceType, Action } from '../../types';
+import { RoleIndexPermission, ResourceType } from '../../types';
 import {
   appendElementToArray,
   removeElementFromArray,
@@ -112,7 +112,7 @@ const FIELD_LEVEL_SECURITY_PLACEHOLDER = `{
     }
 }`;
 
-function IndexPatternRow(props: {
+export function IndexPatternRow(props: {
   value: ComboBoxOptions;
   onChangeHandler: (s: ComboBoxOptions) => void;
   onCreateHandler: (s: string) => void;
@@ -130,7 +130,7 @@ function IndexPatternRow(props: {
   );
 }
 
-function IndexPermissionRow(props: {
+export function IndexPermissionRow(props: {
   value: ComboBoxOptions;
   permisionOptionsSet: ComboBoxOptions;
   onChangeHandler: (s: ComboBoxOptions) => void;
@@ -155,7 +155,7 @@ function IndexPermissionRow(props: {
         {/* TODO: 'Browse and select' button with a pop-up modal for selection */}
         <EuiFlexItem grow={false}>
           <ExternalLinkButton
-            href={buildHashUrl(ResourceType.permissions, Action.create)}
+            href={buildHashUrl(ResourceType.permissions)}
             text="Create new permission group"
           />
         </EuiFlexItem>
@@ -163,7 +163,8 @@ function IndexPermissionRow(props: {
     </FormRow>
   );
 }
-function DocLevelSecurityRow(props: {
+
+export function DocLevelSecurityRow(props: {
   value: string;
   onChangeHandler: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }) {
@@ -182,7 +183,8 @@ function DocLevelSecurityRow(props: {
     </FormRow>
   );
 }
-function FieldLevelSecurityRow(props: {
+
+export function FieldLevelSecurityRow(props: {
   method: FieldLevelSecurityMethod;
   fields: ComboBoxOptions;
   onMethodChangeHandler: (s: string) => void;
@@ -219,7 +221,8 @@ function FieldLevelSecurityRow(props: {
     </FormRow>
   );
 }
-function AnonymizationRow(props: {
+
+export function AnonymizationRow(props: {
   value: ComboBoxOptions;
   onChangeHandler: (s: ComboBoxOptions) => void;
   onCreateHandler: (s: string) => void;
@@ -240,6 +243,7 @@ function AnonymizationRow(props: {
     </FormRow>
   );
 }
+
 export function generateIndexPermissionPanels(
   indexPermissions: RoleIndexPermissionStateClass[],
   permisionOptionsSet: ComboBoxOptions,
