@@ -163,7 +163,7 @@ export function UserList(props: AppDependencies) {
       disabled={selection.length !== 1}
       href={
         selection.length === 1
-          ? `${props.coreStart.http.basePath.serverBasePath}${API_ENDPOINT_INTERNALUSERS}/${selection[0]?.username}`
+          ? `${props.coreStart.http.basePath.serverBasePath}${API_ENDPOINT_INTERNALUSERS}/${selection[0].username}`
           : ''
       }
       target="_blank"
