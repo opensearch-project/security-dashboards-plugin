@@ -137,7 +137,7 @@ export function UserList(props: AppDependencies) {
 
   const actionsMenuItems = [
     <EuiButtonEmpty
-      id="edit"
+      key="edit"
       onClick={() => {
         window.location.href = buildHashUrl(ResourceType.users, Action.edit, selection[0].username);
       }}
@@ -161,9 +161,11 @@ export function UserList(props: AppDependencies) {
     <EuiButtonEmpty
       key="export"
       disabled={selection.length !== 1}
-      onClick={() => {
-        window.location.href = `${props.coreStart.http.basePath.serverBasePath}${API_ENDPOINT_INTERNALUSERS}/${selection[0].username}`;
-      }}
+      href={
+        selection.length === 1
+          ? `${props.coreStart.http.basePath.serverBasePath}${API_ENDPOINT_INTERNALUSERS}/${selection[0]?.username}`
+          : ''
+      }
       target="_blank"
     >
       Export JSON
