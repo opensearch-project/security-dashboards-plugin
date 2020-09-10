@@ -16,6 +16,7 @@
 import {
   EuiBadge,
   EuiButton,
+  EuiButtonEmpty,
   EuiFlexGroup,
   EuiFlexItem,
   EuiInMemoryTable,
@@ -27,44 +28,41 @@ import {
   EuiPageHeader,
   EuiText,
   EuiTitle,
-  EuiButtonEmpty,
 } from '@elastic/eui';
-import { Dictionary, difference, map, isEmpty } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import { Dictionary, difference, isEmpty, map } from 'lodash';
+import React, { useState } from 'react';
 import { getAuthInfo } from '../../../utils/auth-info-utils';
 import { AppDependencies } from '../../types';
+import { API_ENDPOINT_INTERNALUSERS } from '../constants';
 import { Action, ResourceType } from '../types';
+import { EMPTY_FIELD_VALUE } from '../ui-constants';
+import { useContextMenuState } from '../utils/context-menu';
+import { useDeleteConfirmState } from '../utils/delete-confirm-modal-utils';
+import { ExternalLink } from '../utils/display-utils';
 import {
   getUserList,
   InternalUsersListing,
   requestDeleteUsers,
 } from '../utils/internal-user-list-utils';
-import { buildHashUrl } from '../utils/url-builder';
-import { API_ENDPOINT_INTERNALUSERS } from '../constants';
 import { showTableStatusMessage } from '../utils/loading-spinner-utils';
-import { useDeleteConfirmState } from '../utils/delete-confirm-modal-utils';
-import { useContextMenuState } from '../utils/context-menu';
-import { EMPTY_FIELD_VALUE } from '../ui-constants';
-import { ExternalLink } from '../utils/display-utils';
+import { buildHashUrl } from '../utils/url-builder';
 
-function dictView() {
-  return (items: Dictionary<string>) => {
-    if (isEmpty(items)) {
-      return EMPTY_FIELD_VALUE;
-    }
-    return (
-      <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
-        {map(items, (v, k) => (
-          <EuiText key={k} size="xs">
-            {k}: {`"${v}"`}
-          </EuiText>
-        ))}
-      </EuiFlexGroup>
-    );
-  };
+export function dictView(items: Dictionary<string>) {
+  if (isEmpty(items)) {
+    return EMPTY_FIELD_VALUE;
+  }
+  return (
+    <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
+      {map(items, (v, k) => (
+        <EuiText key={k} size="xs">
+          {k}: {`"${v}"`}
+        </EuiText>
+      ))}
+    </EuiFlexGroup>
+  );
 }
 
-function getColumns(currentUsername: string) {
+export function getColumns(currentUsername: string) {
   return [
     {
       field: 'username',
@@ -85,20 +83,20 @@ function getColumns(currentUsername: string) {
     {
       field: 'attributes',
       name: 'Attributes',
-      render: dictView(),
+      render: dictView,
       truncateText: true,
     },
   ];
 }
 
 export function UserList(props: AppDependencies) {
-  const [userData, setUserData] = useState<InternalUsersListing[]>([]);
-  const [errorFlag, setErrorFlag] = useState(false);
+  const [userData, setUserData] = React.useState<InternalUsersListing[]>([]);
+  const [errorFlag, setErrorFlag] = React.useState(false);
   const [selection, setSelection] = useState<InternalUsersListing[]>([]);
   const [currentUsername, setCurrentUsername] = useState('');
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
@@ -139,7 +137,7 @@ export function UserList(props: AppDependencies) {
 
   const actionsMenuItems = [
     <EuiButtonEmpty
-      key="edit"
+      id="edit"
       onClick={() => {
         window.location.href = buildHashUrl(ResourceType.users, Action.edit, selection[0].username);
       }}
@@ -163,11 +161,9 @@ export function UserList(props: AppDependencies) {
     <EuiButtonEmpty
       key="export"
       disabled={selection.length !== 1}
-      href={
-        selection.length === 1
-          ? `${props.coreStart.http.basePath.serverBasePath}${API_ENDPOINT_INTERNALUSERS}/${selection[0].username}`
-          : ''
-      }
+      onClick={() => {
+        window.location.href = `${props.coreStart.http.basePath.serverBasePath}${API_ENDPOINT_INTERNALUSERS}/${selection[0].username}`;
+      }}
       target="_blank"
     >
       Export JSON
@@ -204,13 +200,7 @@ export function UserList(props: AppDependencies) {
               The Security plugin includes an internal user database. Use this database in place of,
               or in addition to an external authentication system such as LDAP or Active Directory.
               You can map an internal user to a role from{' '}
-              <EuiLink
-                onClick={() => {
-                  window.location.href = buildHashUrl(ResourceType.roles);
-                }}
-              >
-                Roles
-              </EuiLink>
+              <EuiLink href={buildHashUrl(ResourceType.roles)}>Roles</EuiLink>
               . First, click into the detail page of the role. Then, under “Mapped users”, click
               “Manage mapping” <ExternalLink href="/" />
             </EuiText>
@@ -219,12 +209,7 @@ export function UserList(props: AppDependencies) {
             <EuiFlexGroup>
               <EuiFlexItem>{actionsMenu}</EuiFlexItem>
               <EuiFlexItem>
-                <EuiButton
-                  fill
-                  onClick={() => {
-                    window.location.href = buildHashUrl(ResourceType.users, Action.create);
-                  }}
-                >
+                <EuiButton fill href={buildHashUrl(ResourceType.users, Action.create)}>
                   Create internal user
                 </EuiButton>
               </EuiFlexItem>
