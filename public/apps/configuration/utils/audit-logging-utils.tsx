@@ -15,10 +15,15 @@
 
 import { HttpStart } from 'kibana/public';
 import { AuditLoggingSettings } from '../panels/audit-logging/types';
-import { API_ENDPOINT_AUDITLOGGING_UPDATE } from '../constants';
+import { API_ENDPOINT_AUDITLOGGING, API_ENDPOINT_AUDITLOGGING_UPDATE } from '../constants';
 
 export async function updateAuditLogging(http: HttpStart, updateObject: AuditLoggingSettings) {
   return await http.post(`${API_ENDPOINT_AUDITLOGGING_UPDATE}`, {
     body: JSON.stringify(updateObject),
   });
+}
+
+export async function getAuditLogging(http: HttpStart): Promise<AuditLoggingSettings> {
+  const rawConfiguration = await http.get(API_ENDPOINT_AUDITLOGGING);
+  return rawConfiguration?.config;
 }

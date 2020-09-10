@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   EuiButton,
   EuiFlexGroup,
@@ -32,8 +32,7 @@ import { EditSettingGroup } from './edit-setting-group';
 import { AuditLoggingSettings } from './types';
 import { buildHashUrl, buildUrl } from '../../utils/url-builder';
 import { ResourceType } from '../../types';
-import { updateAuditLogging } from '../../utils/audit-logging-utils';
-import { API_ENDPOINT_AUDITLOGGING } from '../../constants';
+import { getAuditLogging, updateAuditLogging } from '../../utils/audit-logging-utils';
 import { useToastState } from '../../utils/toast-utils';
 import { setCrossPageToast } from '../../utils/storage-utils';
 
@@ -42,9 +41,9 @@ interface AuditLoggingEditSettingProps extends AppDependencies {
 }
 
 export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
-  const [editConfig, setEditConfig] = useState<AuditLoggingSettings>({});
+  const [editConfig, setEditConfig] = React.useState<AuditLoggingSettings>({});
   const [toasts, addToast, removeToast] = useToastState();
-  const [invalidSettings, setInvalidSettings] = useState<string[]>([]);
+  const [invalidSettings, setInvalidSettings] = React.useState<string[]>([]);
 
   const handleChange = (path: string, val: boolean | string[] | SettingMapItem) => {
     setEditConfig((previousEditedConfig) => {
@@ -61,11 +60,10 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
     setInvalidSettings(invalid);
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchConfig = async () => {
       try {
-        const rawConfig = await props.coreStart.http.get(API_ENDPOINT_AUDITLOGGING);
-        const fetchedConfig = rawConfig.config;
+        const fetchedConfig = await getAuditLogging(props.coreStart.http);
         setEditConfig(fetchedConfig);
       } catch (e) {
         console.log(e);

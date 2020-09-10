@@ -28,11 +28,10 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { AppDependencies } from '../../../types';
-import { API_ENDPOINT_AUDITLOGGING, DocLinks } from '../../constants';
 import { ResourceType } from '../../types';
-import { updateAuditLogging } from '../../utils/audit-logging-utils';
+import { getAuditLogging, updateAuditLogging } from '../../utils/audit-logging-utils';
 import { displayBoolean, ExternalLink } from '../../utils/display-utils';
 import { buildHashUrl } from '../../utils/url-builder';
 import {
@@ -42,7 +41,7 @@ import {
 } from './constants';
 import { AuditLoggingSettings } from './types';
 import { ViewSettingGroup } from './view-setting-group';
-import './_index.scss';
+import { DocLinks } from '../../constants';
 
 interface AuditLoggingProps extends AppDependencies {
   fromType: string;
@@ -127,7 +126,7 @@ function renderComplianceSettings(config: AuditLoggingSettings) {
 }
 
 export function AuditLogging(props: AuditLoggingProps) {
-  const [configuration, setConfiguration] = useState<AuditLoggingSettings>({});
+  const [configuration, setConfiguration] = React.useState<AuditLoggingSettings>({});
 
   const onSwitchChange = async () => {
     try {
@@ -142,11 +141,11 @@ export function AuditLogging(props: AuditLoggingProps) {
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const rawConfiguration = await props.coreStart.http.get(API_ENDPOINT_AUDITLOGGING);
-        setConfiguration(rawConfiguration.config);
+        const auditLogging = await getAuditLogging(props.coreStart.http);
+        setConfiguration(auditLogging);
       } catch (e) {
         // TODO: switch to better error handling.
         console.log(e);

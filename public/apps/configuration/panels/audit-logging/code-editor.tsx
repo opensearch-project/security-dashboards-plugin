@@ -14,7 +14,7 @@
  */
 
 import { EuiCodeEditor, EuiText, EuiTextColor } from '@elastic/eui';
-import React, { useState } from 'react';
+import React from 'react';
 import 'brace/theme/textmate';
 import 'brace/mode/json';
 
@@ -24,8 +24,8 @@ export function JsonCodeEditor(props: {
   handleCodeChange: (val: string) => void;
   handleCodeInvalid: (error: boolean) => void;
 }) {
-  const [value, setValue] = useState<string>(props.initialValue);
-  const [invalid, setInvalid] = useState<boolean>(false);
+  const [value, setValue] = React.useState<string>(props.initialValue);
+  const [invalid, setInvalid] = React.useState<boolean>(false);
 
   const onChange = (newValue: string) => {
     setValue(newValue);
