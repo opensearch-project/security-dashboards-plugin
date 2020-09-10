@@ -4,21 +4,3 @@ figure {
     flex-grow: 0;
     flex-shrink: 0;
 }
-.euiBadge--default {
-    background-color: #D3DAE6;
-    color: #000;
-}
-.euiBadge {
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 18px;
-    display: inline-block;
-    text-decoration: none;
-    box-sizing: content-box;
-    border-radius: 2px;
-    border: solid 1px transparent;
-    padding: 0 8px;
-    vertical-align: middle;
-    text-align: center;
-    overflow: hidden;
-}
