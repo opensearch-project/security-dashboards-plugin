@@ -14,7 +14,7 @@
  */
 
 import { renderHook, act } from '@testing-library/react-hooks';
-import { useToastState, createUnknownErrorToast } from './toast-utils';
+import { useToastState, createUnknownErrorToast, getSuccessToastMessage } from './toast-utils';
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 
 describe('Toast utils', () => {
@@ -95,6 +95,26 @@ describe('Toast utils', () => {
           'Failed to dummy_action. You may refresh the page to retry or see browser console for more information.',
       };
       expect(result).toEqual(expectedUnknownErrorToast);
+    });
+  });
+
+  describe('getSuccessToastMessage', () => {
+    it('should return successful create message', () => {
+      const result = getSuccessToastMessage('User', 'create', 'user1');
+
+      expect(result).toEqual('User "user1" successfully created');
+    });
+
+    it('should return successful update message', () => {
+      const result = getSuccessToastMessage('Role', 'edit', 'role1');
+
+      expect(result).toEqual('Role "role1" successfully updated');
+    });
+
+    it('should return empty message for unknown action', () => {
+      const result = getSuccessToastMessage('User', '', 'user1');
+
+      expect(result).toEqual('');
     });
   });
 });

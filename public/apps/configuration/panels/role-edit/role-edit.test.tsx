@@ -94,27 +94,6 @@ describe('Role edit', () => {
     expect(fetchTenantNameList).toBeCalledTimes(1);
   });
 
-  describe('getSuccessToastMessage', () => {
-    it('message for creation', () => {
-      const result = getSuccessToastMessage('create', 'role1');
-
-      // No explicit assertion on result since it might migration to i18n in the future.
-      expect(result).toBeTruthy();
-    });
-
-    it('message for editing', () => {
-      const result = getSuccessToastMessage('edit', 'role1');
-
-      // No explicit assertion on result since it might migration to i18n in the future.
-      expect(result).toBeTruthy();
-    });
-    it('message for unexpected action', () => {
-      const result = getSuccessToastMessage('foo', 'role1');
-
-      expect(result).toBeFalsy();
-    });
-  });
-
   it('submit update', (done) => {
     useEffect.mockImplementationOnce((f) => f());
     useEffect.mockImplementationOnce((f) => f());

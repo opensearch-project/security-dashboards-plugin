@@ -52,6 +52,7 @@ import { PageId } from '../../types';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { useContextMenuState } from '../../utils/context-menu';
+import { generateResourceName } from '../../utils/resource-utils';
 
 function getSuccessToastMessage(action: string, tenantName: string): string {
   switch (action) {
@@ -247,7 +248,11 @@ export function TenantList(props: AppDependencies) {
       key="duplicate"
       disabled={selection.length !== 1}
       onClick={() =>
-        showEditModal(selection[0].tenant + '_copy', Action.duplicate, selection[0].description)
+        showEditModal(
+          generateResourceName(Action.duplicate, selection[0].tenant),
+          Action.duplicate,
+          selection[0].description
+        )
       }
     >
       Duplicate

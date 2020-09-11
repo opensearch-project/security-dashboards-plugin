@@ -49,9 +49,14 @@ import {
 import { RoleIndexPermissionStateClass, RoleTenantPermissionStateClass } from './types';
 import { buildHashUrl, buildUrl } from '../../utils/url-builder';
 import { ComboBoxOptions, ResourceType, Action } from '../../types';
-import { useToastState, createUnknownErrorToast } from '../../utils/toast-utils';
+import {
+  useToastState,
+  createUnknownErrorToast,
+  getSuccessToastMessage,
+} from '../../utils/toast-utils';
 import { setCrossPageToast } from '../../utils/storage-utils';
 import { ExternalLink } from '../../utils/display-utils';
+import { generateResourceName } from '../../utils/resource-utils';
 
 interface RoleEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -66,18 +71,6 @@ const TITLE_TEXT_DICT = {
   edit: 'Edit Role',
   duplicate: 'Duplicate Role',
 };
-
-export function getSuccessToastMessage(action: string, roleName: string): string {
-  switch (action) {
-    case 'create':
-    case 'duplicate':
-      return `Role "${roleName}" successfully created`;
-    case 'edit':
-      return `Role "${roleName}" successfully updated`;
-    default:
-      return '';
-  }
-}
 
 export function RoleEdit(props: RoleEditDeps) {
   const [roleName, setRoleName] = React.useState('');
@@ -101,11 +94,7 @@ export function RoleEdit(props: RoleEditDeps) {
           setRoleIndexPermission(buildIndexPermissionState(roleData.index_permissions));
           setRoleTenantPermission(buildTenantPermissionState(roleData.tenant_permissions));
 
-          if (action === 'edit') {
-            setRoleName(props.sourceRoleName);
-          } else {
-            setRoleName(props.sourceRoleName + '_copy');
-          }
+          setRoleName(generateResourceName(action, props.sourceRoleName));
         } catch (e) {
           addToast(createUnknownErrorToast('fetchRole', 'load data'));
           console.error(e);
@@ -164,7 +153,7 @@ export function RoleEdit(props: RoleEditDeps) {
       setCrossPageToast(buildUrl(ResourceType.roles, Action.view, roleName), {
         id: 'updateRoleSucceeded',
         color: 'success',
-        title: getSuccessToastMessage(props.action, roleName),
+        title: getSuccessToastMessage('Role', props.action, roleName),
       });
       // Redirect to role view
       window.location.href = buildHashUrl(ResourceType.roles, Action.view, roleName);

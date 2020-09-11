@@ -43,3 +43,19 @@ export function useToastState(): [Toast[], (toAdd: Toast) => void, (toDelete: To
   };
   return [toasts, addToast, removeToast];
 }
+
+export function getSuccessToastMessage(
+  resourceType: string,
+  action: string,
+  userName: string
+): string {
+  switch (action) {
+    case 'create':
+    case 'duplicate':
+      return `${resourceType} "${userName}" successfully created`;
+    case 'edit':
+      return `${resourceType} "${userName}" successfully updated`;
+    default:
+      return '';
+  }
+}
