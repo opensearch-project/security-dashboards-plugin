@@ -25,19 +25,25 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { BreadcrumbsPageDependencies } from '../../../types';
 import { InternalUserUpdate, ResourceType } from '../../types';
 import { FormRow } from '../../utils/form-row';
 import { getUserDetail, updateUser } from '../../utils/internal-user-detail-utils';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { PasswordEditPanel } from '../../utils/password-edit-panel';
-import { createErrorToast, createUnknownErrorToast, useToastState } from '../../utils/toast-utils';
+import {
+  createErrorToast,
+  createUnknownErrorToast,
+  useToastState,
+  getSuccessToastMessage,
+} from '../../utils/toast-utils';
 import { buildHashUrl, buildUrl } from '../../utils/url-builder';
 import { AttributePanel, buildAttributeState, unbuildAttributeState } from './attribute-panel';
 import { UserAttributeStateClass } from './types';
 import { setCrossPageToast } from '../../utils/storage-utils';
 import { ExternalLink } from '../../utils/display-utils';
+import { generateResourceName } from '../../utils/resource-utils';
 
 interface InternalUserEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -53,28 +59,16 @@ const TITLE_TEXT_DICT = {
   duplicate: 'Duplicate internal user',
 };
 
-function getSuccessToastMessage(action: string, userName: string): string {
-  switch (action) {
-    case 'create':
-    case 'duplicate':
-      return `User "${userName}" successfully created`;
-    case 'edit':
-      return `User "${userName}" successfully updated`;
-    default:
-      return '';
-  }
-}
-
 export function InternalUserEdit(props: InternalUserEditDeps) {
   const [userName, setUserName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [isPasswordInvalid, setIsPasswordInvalid] = useState<boolean>(false);
+  const [isPasswordInvalid, setIsPasswordInvalid] = React.useState<boolean>(false);
   const [attributes, setAttributes] = useState<UserAttributeStateClass[]>([]);
   const [backendRoles, setBackendRoles] = useState<string[]>([]);
 
   const [toasts, addToast, removeToast] = useToastState();
 
-  useEffect(() => {
+  React.useEffect(() => {
     const action = props.action;
     if (action === 'edit' || action === 'duplicate') {
       const fetchData = async () => {
@@ -82,11 +76,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
           const user = await getUserDetail(props.coreStart.http, props.sourceUserName);
           setAttributes(buildAttributeState(user.attributes));
           setBackendRoles(user.backend_roles);
-          if (action === 'edit') {
-            setUserName(props.sourceUserName);
-          } else {
-            setUserName(props.sourceUserName + '_copy');
-          }
+          setUserName(generateResourceName(action, props.sourceUserName));
         } catch (e) {
           addToast(createUnknownErrorToast('fetchUser', 'load data'));
           console.error(e);
@@ -117,7 +107,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
       setCrossPageToast(buildUrl(ResourceType.users), {
         id: 'updateUserSucceeded',
         color: 'success',
-        title: getSuccessToastMessage(props.action, userName),
+        title: getSuccessToastMessage('User', props.action, userName),
       });
       // Redirect to user listing
       window.location.href = buildHashUrl(ResourceType.users);
@@ -184,7 +174,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
           </EuiButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton fill onClick={updateUserHandler}>
+          <EuiButton id="submit" fill onClick={updateUserHandler}>
             {props.action === 'edit' ? 'Save changes' : 'Create'}
           </EuiButton>
         </EuiFlexItem>

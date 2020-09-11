@@ -35,7 +35,7 @@ import { FormRow } from '../../utils/form-row';
 
 export function buildAttributeState(attributesDict: UserAttributes): UserAttributeStateClass[] {
   return map(attributesDict, (v, k) => ({
-    key: k || '',
+    key: k.toString(),
     value: v,
   }));
 }
@@ -68,6 +68,7 @@ function generateAttributesPanels(
           <EuiFlexItem grow={false}>
             <FormRow headerText={arrayIndex === 0 ? 'Variable name' : ''}>
               <EuiFieldText
+                id={`attribute-${arrayIndex}`}
                 value={userAttribute.key}
                 onChange={(e) => onValueChangeHandler('key')(e.target.value)}
                 placeholder="Type in variable name"
@@ -77,6 +78,7 @@ function generateAttributesPanels(
           <EuiFlexItem grow={false}>
             <FormRow headerText={arrayIndex === 0 ? 'Value' : ''}>
               <EuiFieldText
+                id={`value-${arrayIndex}`}
                 value={userAttribute.value}
                 onChange={(e) => onValueChangeHandler('value')(e.target.value)}
                 placeholder="Type in value"
@@ -86,6 +88,7 @@ function generateAttributesPanels(
           <EuiFlexItem grow={false}>
             <EuiFormRow hasEmptyLabelSpace={arrayIndex === 0 ? true : false}>
               <EuiButton
+                id={`delete-${arrayIndex}`}
                 color="danger"
                 onClick={() => removeElementFromArray(setAttributes, [], arrayIndex)}
               >
@@ -121,6 +124,7 @@ export function AttributePanel(props: {
       {generateAttributesPanels(state, setState)}
       <EuiSpacer />
       <EuiButton
+        id="add-row"
         onClick={() => {
           appendElementToArray(setState, [], getEmptyAttribute());
         }}

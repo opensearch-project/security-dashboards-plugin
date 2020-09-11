@@ -58,6 +58,7 @@ import { PermissionTree } from '../permission-tree';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 import { useContextMenuState } from '../../utils/context-menu';
+import { generateResourceName } from '../../utils/resource-utils';
 
 function renderBooleanToCheckMark(value: boolean): React.ReactNode {
   return value ? <EuiIcon type="check" /> : '';
@@ -237,7 +238,11 @@ export function PermissionList(props: AppDependencies) {
     <EuiButtonEmpty
       key="duplicate"
       onClick={() =>
-        showEditModal(selection[0].name + '_copy', Action.duplicate, selection[0].allowedActions)
+        showEditModal(
+          generateResourceName(Action.duplicate, selection[0].name),
+          Action.duplicate,
+          selection[0].allowedActions
+        )
       }
       disabled={selection.length !== 1 || selection[0].type !== 'Action group'}
     >
