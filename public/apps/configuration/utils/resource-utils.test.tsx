@@ -28,7 +28,7 @@ describe('generateResourceName', () => {
     expect(result).toBe('role1_copy');
   });
 
-  it('other action should return empth string', () => {
+  it('other action should return empty string', () => {
     const result = generateResourceName('create', 'tenant1');
 
     expect(result).toBe('');
