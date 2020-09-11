@@ -52,7 +52,7 @@ import {
 } from '../../utils/action-groups-utils';
 import { stringToComboBoxOption } from '../../utils/combo-box-utils';
 import { ExternalLink, renderCustomization } from '../../utils/display-utils';
-import { useToastState } from '../../utils/toast-utils';
+import { useToastState, getSuccessToastMessage } from '../../utils/toast-utils';
 import { PermissionEditModal } from './edit-modal';
 import { PermissionTree } from '../permission-tree';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
@@ -165,17 +165,6 @@ const SEARCH_OPTIONS: EuiSearchBarProps = {
   ],
 };
 
-function getSuccessToastMessage(action: string, groupName: string): string {
-  switch (action) {
-    case 'create':
-    case 'duplicate':
-      return `Action group "${groupName}" successfully created`;
-    case 'edit':
-      return `Action group "${groupName}" successfully updated`;
-    default:
-      return '';
-  }
-}
 
 export function PermissionList(props: AppDependencies) {
   const [permissionList, setPermissionList] = useState<PermissionListingItem[]>([]);
@@ -281,7 +270,7 @@ export function PermissionList(props: AppDependencies) {
             fetchData();
             addToast({
               id: 'saveSucceeded',
-              title: getSuccessToastMessage(action, groupName),
+              title: getSuccessToastMessage('Action group', action, groupName),
               color: 'success',
             });
           } catch (e) {
@@ -317,7 +306,7 @@ export function PermissionList(props: AppDependencies) {
     </EuiButtonEmpty>,
   ];
 
-  const [createActionGroupMenu, closeCreateActionGroupMenu] = useContextMenuState(
+  const [createActionGroupMenu, ] = useContextMenuState(
     'Create action group',
     { fill: true },
     createActionGroupMenuItems
