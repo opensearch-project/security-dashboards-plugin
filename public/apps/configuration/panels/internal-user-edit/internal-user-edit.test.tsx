@@ -121,4 +121,3 @@ describe('Internal user edit', () => {
     expect(updateUser).toBeCalledTimes(0);
   });
 });
-
