@@ -230,7 +230,7 @@ const WRITE_WATCHED_FIELDS: SettingContent = {
   placeHolder: 'Add indices',
 };
 
-const CONFIG = {
+export const CONFIG = {
   ENABLED: {
     title: 'Enable audit logging',
     path: 'enabled',
