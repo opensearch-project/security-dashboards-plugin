@@ -13,63 +13,30 @@
  *   permissions and limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react';
-import { EuiCode, EuiPageHeader, EuiSpacer, EuiText, EuiTitle } from '@elastic/eui';
+import React, { useState } from 'react';
+import { EuiPageHeader, EuiSpacer, EuiTitle } from '@elastic/eui';
+import { isEmpty } from 'lodash';
 import { AuthenticationSequencePanel } from './authentication-sequence-panel';
 import { AuthorizationPanel } from './authorization-panel';
-import { API_ENDPOINT_SECURITYCONFIG, DocLinks } from '../../constants';
+import { DocLinks } from '../../constants';
 import { AppDependencies } from '../../../types';
 import { ExternalLinkButton } from '../../utils/display-utils';
-
-function renderInstructionView() {
-  return (
-    <>
-      <EuiTitle size="l">
-        <h1>Authentication and authorization</h1>
-      </EuiTitle>
-
-      <EuiSpacer size="xxl" />
-
-      <EuiText textAlign="center">
-        <h2>You have not set up authentication and authorization</h2>
-      </EuiText>
-
-      <EuiText textAlign="center" size="xs" color="subdued" className="instruction-text">
-        In order to use Security plugin, you must decide on authentication <EuiCode>authc</EuiCode>{' '}
-        and authorization backends <EuiCode>authz</EuiCode>. Use{' '}
-        <EuiCode>plugins/opendistro_security/securityconfig/config.yml</EuiCode> to define how to
-        retrieve and verify the user credentials, and how to fetch additional roles from backend
-        system if needed.
-      </EuiText>
-
-      <EuiSpacer />
-
-      <div style={{ textAlign: 'center' }}>
-        <ExternalLinkButton
-          fill
-          size="s"
-          href={DocLinks.BackendConfigurationDoc}
-          text="Create config.yml"
-        />
-      </div>
-    </>
-  );
-}
+import { getSecurityConfig } from '../../utils/auth-view-utils';
+import { InstructionView } from './instruction-view';
 
 export function AuthView(props: AppDependencies) {
-  const [authentication, setAuthentication] = useState([]);
-  const [authorization, setAuthorization] = useState([]);
+  const [authentication, setAuthentication] = React.useState([]);
+  const [authorization, setAuthorization] = React.useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const rawSecurityConfig = await props.coreStart.http.get(API_ENDPOINT_SECURITYCONFIG);
-        const dynamic = rawSecurityConfig.data.config.dynamic;
+        const config = getSecurityConfig(props.coreStart.http);
 
-        setAuthentication(dynamic.authc);
-        setAuthorization(dynamic.authz);
+        setAuthentication(config.authc);
+        setAuthorization(config.authz);
       } catch (e) {
         console.log(e);
       } finally {
@@ -80,8 +47,8 @@ export function AuthView(props: AppDependencies) {
     fetchData();
   }, [props.coreStart.http]);
 
-  if (!authentication) {
-    return renderInstructionView();
+  if (isEmpty(authentication)) {
+    return <InstructionView />;
   }
 
   return (
