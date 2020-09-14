@@ -15,7 +15,12 @@
 
 import { shallow } from 'enzyme';
 import React from 'react';
-import { PermissionList, renderBooleanToCheckMark, toggleRowDetails, renderRowExpanstionArrow } from './permission-list';
+import {
+  PermissionList,
+  renderBooleanToCheckMark,
+  toggleRowDetails,
+  renderRowExpanstionArrow,
+} from './permission-list';
 import { EuiInMemoryTable, EuiButtonIcon } from '@elastic/eui';
 import {
   requestDeleteActionGroups,
@@ -41,7 +46,7 @@ jest.mock('../../utils/context-menu', () => ({
     .mockImplementation((buttonText, buttonProps, children) => [children, jest.fn()]),
 }));
 jest.mock('../../utils/toast-utils', () => ({
-  useToastState: jest.fn().mockReturnValue([[], jest.fn(), jest.fn()])
+  useToastState: jest.fn().mockReturnValue([[], jest.fn(), jest.fn()]),
 }));
 
 describe('Permission list page ', () => {
@@ -60,28 +65,32 @@ describe('Permission list page ', () => {
   });
 
   it('toggleRowDetails', () => {
-    const setMap = jest.fn()
+    const setMap = jest.fn();
     toggleRowDetails(sampleActionGroup, {}, setMap);
     const updateMapFunc = setMap.mock.calls[0][0];
-    updateMapFunc({'group': ''})
+    updateMapFunc({ group: '' });
   });
 
   describe('renderRowExpanstionArrow', () => {
     it('should render down arrow when collapsed', () => {
       const renderFunc = renderRowExpanstionArrow({}, {}, jest.fn());
-      const Wrapper = () => <>{renderFunc(sampleActionGroup)}</>     
+      const Wrapper = () => <>{renderFunc(sampleActionGroup)}</>;
       const component = shallow(<Wrapper />);
 
       expect(component.find(EuiButtonIcon).prop('iconType')).toBe('arrowDown');
     });
 
     it('should render up arrow when expanded', () => {
-      const renderFunc = renderRowExpanstionArrow({[sampleActionGroup.name]: sampleActionGroup}, {}, jest.fn());
-      const Wrapper = () => <>{renderFunc(sampleActionGroup)}</>     
+      const renderFunc = renderRowExpanstionArrow(
+        { [sampleActionGroup.name]: sampleActionGroup },
+        {},
+        jest.fn()
+      );
+      const Wrapper = () => <>{renderFunc(sampleActionGroup)}</>;
       const component = shallow(<Wrapper />);
 
       expect(component.find(EuiButtonIcon).prop('iconType')).toBe('arrowUp');
-    });    
+    });
   });
 
   describe('PermissionList', () => {
@@ -191,8 +200,8 @@ describe('Permission list page ', () => {
         expect(requestDeleteActionGroups).toBeCalled();
         done();
       });
-    });    
-    
+    });
+
     it('edit and duplicate button should be enabled when there is 1 custom action group selected', () => {
       jest.spyOn(React, 'useState').mockImplementation(() => [[sampleActionGroup], jest.fn()]);
       const component = shallow(

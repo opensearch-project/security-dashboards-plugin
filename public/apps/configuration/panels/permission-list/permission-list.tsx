@@ -87,15 +87,14 @@ export function renderRowExpanstionArrow(
   actionGroupDict: DataObject<ActionGroupItem>,
   setItemIdToExpandedRowMap: Dispatch<SetStateAction<ExpandedRowMapInterface>>
 ) {
-  return (item: PermissionListingItem) => (
+  return (item: PermissionListingItem) =>
     item.type === 'Action group' && (
       <EuiButtonIcon
         onClick={() => toggleRowDetails(item, actionGroupDict, setItemIdToExpandedRowMap)}
         aria-label={itemIdToExpandedRowMap[item.name] ? 'Collapse' : 'Expand'}
         iconType={itemIdToExpandedRowMap[item.name] ? 'arrowUp' : 'arrowDown'}
       />
-    )
-  );
+    );
 }
 
 function getColumns(
@@ -137,7 +136,7 @@ function getColumns(
         itemIdToExpandedRowMap,
         actionGroupDict,
         setItemIdToExpandedRowMap
-      )
+      ),
     },
   ];
 }

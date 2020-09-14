@@ -31,7 +31,7 @@ describe('Permission edit modal', () => {
         handleSave={handleSave}
       />
     );
-    component.find("#submit").simulate('click');
+    component.find('#submit').simulate('click');
 
     expect(handleSave).toBeCalled();
   });
