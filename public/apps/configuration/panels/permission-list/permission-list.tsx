@@ -38,7 +38,6 @@ import React, {
   ReactNode,
   SetStateAction,
   useCallback,
-  useEffect,
   useState,
 } from 'react';
 import { AppDependencies } from '../../../types';
