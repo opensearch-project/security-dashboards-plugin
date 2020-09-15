@@ -17,13 +17,17 @@ import { HttpStart, HttpHandler } from 'kibana/public';
 
 /**
  * Send a request but ignore some error codes (suppress exception)
- * @param requestFunc 
- * @param url 
+ * @param requestFunc
+ * @param url
  * @param ignores the error codes to be ignored
  */
-export async function requestWithIgnores<T>(requestFunc: HttpHandler, url: string, ignores: number[]): Promise<T | undefined> {
-  try { 
-    return await requestFunc(url) as T;
+export async function requestWithIgnores<T>(
+  requestFunc: HttpHandler,
+  url: string,
+  ignores: number[]
+): Promise<T | undefined> {
+  try {
+    return (await requestFunc(url)) as T;
   } catch (e) {
     if (!ignores.includes(e?.body.statusCode)) {
       throw e;
@@ -31,10 +35,18 @@ export async function requestWithIgnores<T>(requestFunc: HttpHandler, url: strin
   }
 }
 
-export async function getWithIgnores<T>(http: HttpStart, url: string, ignores: number[]): Promise<T | undefined> {
+export async function getWithIgnores<T>(
+  http: HttpStart,
+  url: string,
+  ignores: number[]
+): Promise<T | undefined> {
   return await requestWithIgnores<T>(http.get, url, ignores);
 }
 
-export async function deleteWithIgnores<T>(http: HttpStart, url: string, ignores: number[]): Promise<T | undefined> {
+export async function deleteWithIgnores<T>(
+  http: HttpStart,
+  url: string,
+  ignores: number[]
+): Promise<T | undefined> {
   return await requestWithIgnores<T>(http.delete, url, ignores);
 }

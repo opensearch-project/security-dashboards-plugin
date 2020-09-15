@@ -112,10 +112,7 @@ export function RoleView(props: RoleViewProps) {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const originalRoleMapData = await getRoleMappingData(
-          props.coreStart.http,
-          props.roleName
-        );
+        const originalRoleMapData = await getRoleMappingData(props.coreStart.http, props.roleName);
         if (originalRoleMapData) {
           setMappedUsers(transformRoleMappingData(originalRoleMapData));
           setHosts(originalRoleMapData.hosts);

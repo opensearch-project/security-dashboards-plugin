@@ -24,7 +24,6 @@ import {
   EuiGlobalToastList,
 } from '@elastic/eui';
 import React, { useState, useEffect } from 'react';
-import { isEmpty } from 'lodash';
 import { BreadcrumbsPageDependencies } from '../../../types';
 import { InternalUsersPanel } from './internal-users-panel';
 import {
@@ -62,10 +61,10 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const originalRoleMapData = (await getRoleMappingData(
+        const originalRoleMapData: RoleMappingDetail | undefined = await getRoleMappingData(
           props.coreStart.http,
           props.roleName
-        )) as RoleMappingDetail;
+        );
         if (originalRoleMapData) {
           setInternalUsers(originalRoleMapData.users.map(stringToComboBoxOption));
           setExternalIdentities(buildExternalIdentityState(originalRoleMapData.backend_roles));
