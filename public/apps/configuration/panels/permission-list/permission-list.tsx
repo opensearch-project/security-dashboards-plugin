@@ -33,14 +33,7 @@ import {
   EuiButtonEmpty,
 } from '@elastic/eui';
 import { difference } from 'lodash';
-import React, {
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import React, { Dispatch, ReactNode, SetStateAction, useCallback, useState } from 'react';
 import { AppDependencies } from '../../../types';
 import { Action, DataObject, ActionGroupItem, ExpandedRowMapInterface } from '../../types';
 import {
@@ -52,7 +45,7 @@ import {
 } from '../../utils/action-groups-utils';
 import { stringToComboBoxOption } from '../../utils/combo-box-utils';
 import { ExternalLink, renderCustomization } from '../../utils/display-utils';
-import { useToastState } from '../../utils/toast-utils';
+import { useToastState, getSuccessToastMessage } from '../../utils/toast-utils';
 import { PermissionEditModal } from './edit-modal';
 import { PermissionTree } from '../permission-tree';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
@@ -60,11 +53,11 @@ import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 import { useContextMenuState } from '../../utils/context-menu';
 import { generateResourceName } from '../../utils/resource-utils';
 
-function renderBooleanToCheckMark(value: boolean): React.ReactNode {
+export function renderBooleanToCheckMark(value: boolean): React.ReactNode {
   return value ? <EuiIcon type="check" /> : '';
 }
 
-function toggleRowDetails(
+export function toggleRowDetails(
   item: PermissionListingItem,
   actionGroupDict: DataObject<ActionGroupItem>,
   setItemIdToExpandedRowMap: Dispatch<SetStateAction<ExpandedRowMapInterface>>
@@ -80,6 +73,21 @@ function toggleRowDetails(
     }
     return itemIdToExpandedRowMapValues;
   });
+}
+
+export function renderRowExpanstionArrow(
+  itemIdToExpandedRowMap: ExpandedRowMapInterface,
+  actionGroupDict: DataObject<ActionGroupItem>,
+  setItemIdToExpandedRowMap: Dispatch<SetStateAction<ExpandedRowMapInterface>>
+) {
+  return (item: PermissionListingItem) =>
+    item.type === 'Action group' && (
+      <EuiButtonIcon
+        onClick={() => toggleRowDetails(item, actionGroupDict, setItemIdToExpandedRowMap)}
+        aria-label={itemIdToExpandedRowMap[item.name] ? 'Collapse' : 'Expand'}
+        iconType={itemIdToExpandedRowMap[item.name] ? 'arrowUp' : 'arrowDown'}
+      />
+    );
 }
 
 function getColumns(
@@ -117,14 +125,11 @@ function getColumns(
       align: RIGHT_ALIGNMENT,
       width: '40px',
       isExpander: true,
-      render: (item: PermissionListingItem) =>
-        item.type === 'Action group' && (
-          <EuiButtonIcon
-            onClick={() => toggleRowDetails(item, actionGroupDict, setItemIdToExpandedRowMap)}
-            aria-label={itemIdToExpandedRowMap[item.name] ? 'Collapse' : 'Expand'}
-            iconType={itemIdToExpandedRowMap[item.name] ? 'arrowUp' : 'arrowDown'}
-          />
-        ),
+      render: renderRowExpanstionArrow(
+        itemIdToExpandedRowMap,
+        actionGroupDict,
+        setItemIdToExpandedRowMap
+      ),
     },
   ];
 }
@@ -165,23 +170,11 @@ const SEARCH_OPTIONS: EuiSearchBarProps = {
   ],
 };
 
-function getSuccessToastMessage(action: string, groupName: string): string {
-  switch (action) {
-    case 'create':
-    case 'duplicate':
-      return `Action group "${groupName}" successfully created`;
-    case 'edit':
-      return `Action group "${groupName}" successfully updated`;
-    default:
-      return '';
-  }
-}
-
 export function PermissionList(props: AppDependencies) {
   const [permissionList, setPermissionList] = useState<PermissionListingItem[]>([]);
   const [actionGroupDict, setActionGroupDict] = useState<DataObject<ActionGroupItem>>({});
   const [errorFlag, setErrorFlag] = useState<boolean>(false);
-  const [selection, setSelection] = useState<PermissionListingItem[]>([]);
+  const [selection, setSelection] = React.useState<PermissionListingItem[]>([]);
   const [itemIdToExpandedRowMap, setItemIdToExpandedRowMap] = useState<ExpandedRowMapInterface>({});
 
   // Modal state
@@ -205,7 +198,7 @@ export function PermissionList(props: AppDependencies) {
     }
   }, [props.coreStart.http]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     fetchData();
   }, [props.coreStart.http, fetchData]);
 
@@ -229,6 +222,7 @@ export function PermissionList(props: AppDependencies) {
 
   const actionsMenuItems = [
     <EuiButtonEmpty
+      id="edit"
       key="edit"
       onClick={() => showEditModal(selection[0].name, Action.edit, selection[0].allowedActions)}
       disabled={selection.length !== 1 || selection[0].reserved}
@@ -236,6 +230,7 @@ export function PermissionList(props: AppDependencies) {
       Edit
     </EuiButtonEmpty>,
     <EuiButtonEmpty
+      id="duplicate"
       key="duplicate"
       onClick={() =>
         showEditModal(
@@ -281,7 +276,7 @@ export function PermissionList(props: AppDependencies) {
             fetchData();
             addToast({
               id: 'saveSucceeded',
-              title: getSuccessToastMessage(action, groupName),
+              title: getSuccessToastMessage('Action group', action, groupName),
               color: 'success',
             });
           } catch (e) {
@@ -304,6 +299,7 @@ export function PermissionList(props: AppDependencies) {
     </EuiButtonEmpty>,
     <EuiButtonEmpty
       key="create-from-selection"
+      id="create-from-selection"
       onClick={() =>
         showEditModal(
           '',
@@ -317,7 +313,7 @@ export function PermissionList(props: AppDependencies) {
     </EuiButtonEmpty>,
   ];
 
-  const [createActionGroupMenu, closeCreateActionGroupMenu] = useContextMenuState(
+  const [createActionGroupMenu] = useContextMenuState(
     'Create action group',
     { fill: true },
     createActionGroupMenuItems

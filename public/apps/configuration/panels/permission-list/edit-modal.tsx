@@ -54,6 +54,7 @@ export function PermissionEditModal(props: PermissionEditModalDeps) {
 
   const handleGroupNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
+    // TODO: Have a shared component to manage entity name form row.
     if (newValue.length <= 50) {
       setGroupName(newValue);
     }
@@ -93,6 +94,7 @@ export function PermissionEditModal(props: PermissionEditModalDeps) {
           <EuiButtonEmpty onClick={props.handleClose}>Cancel</EuiButtonEmpty>
 
           <EuiButton
+            id="submit"
             onClick={async () => {
               await props.handleSave(groupName, allowedActions.map(comboBoxOptionToString));
             }}
