@@ -17,8 +17,7 @@ import { schema } from '@kbn/config-schema';
 import { IRouter, SessionStorageFactory } from '../../../../src/core/server';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { SecurityClient } from '../backend/opendistro_security_client';
-
-const TENANT_NAME_REGEX: RegExp = /^[0-9a-zA-Z_\-]+$/;
+import { AllHtmlEntities } from 'html-entities';
 
 export function setupMultitenantRoutes(
   router: IRouter,
@@ -27,11 +26,8 @@ export function setupMultitenantRoutes(
 ) {
   const PREFIX: string = '/api/v1';
 
-  function validateTenantName(tenantName: string) {
-    if (!TENANT_NAME_REGEX.test(tenantName)) {
-      return 'Invalid tenant name.';
-    }
-  }
+  const entities = new AllHtmlEntities();
+
   /**
    * Updates selected tenant.
    */
@@ -41,9 +37,7 @@ export function setupMultitenantRoutes(
       validate: {
         body: schema.object({
           username: schema.string(),
-          tenant: schema.string({
-            validate: validateTenantName,
-          }),
+          tenant: schema.string(),
         }),
       },
     },
@@ -61,7 +55,7 @@ export function setupMultitenantRoutes(
       cookie.tenant = tenant;
       sessionStroageFactory.asScoped(request).set(cookie);
       return response.ok({
-        body: tenant,
+        body: entities.encode(tenant),
       });
     }
   );
@@ -82,7 +76,7 @@ export function setupMultitenantRoutes(
         });
       }
       return response.ok({
-        body: cookie.tenant,
+        body: entities.encode(cookie.tenant),
       });
     }
   );

@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@hapi/wreck": "17.0.0",
-    "@hapi/cryptiles": "5.0.0"
+    "@hapi/cryptiles": "5.0.0",
+    "html-entities": "1.3.1"
   }
 }
