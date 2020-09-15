@@ -14,10 +14,10 @@
  */
 
 import { schema } from '@kbn/config-schema';
+import { AllHtmlEntities } from 'html-entities';
 import { IRouter, SessionStorageFactory } from '../../../../src/core/server';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { SecurityClient } from '../backend/opendistro_security_client';
-import { AllHtmlEntities } from 'html-entities';
 
 export function setupMultitenantRoutes(
   router: IRouter,
