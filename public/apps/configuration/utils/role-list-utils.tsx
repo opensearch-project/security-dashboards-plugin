@@ -16,6 +16,7 @@
 import { map, chain } from 'lodash';
 import { HttpStart } from '../../../../../../src/core/public';
 import { API_ENDPOINT_ROLES, API_ENDPOINT_ROLESMAPPING } from '../constants';
+import { deleteWithIgnores } from './request-utils';
 
 export interface RoleListing {
   roleName: string;
@@ -89,6 +90,7 @@ export function buildSearchFilterOptions(roleList: any[], attrName: string): Arr
 export async function requestDeleteRoles(http: HttpStart, roles: string[]) {
   for (const role of roles) {
     await http.delete(`${API_ENDPOINT_ROLES}/${role}`);
+    await deleteWithIgnores(http, `${API_ENDPOINT_ROLESMAPPING}/${role}`, [404]);
   }
 }
 

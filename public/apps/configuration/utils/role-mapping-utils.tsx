@@ -17,6 +17,7 @@ import { map } from 'lodash';
 import { HttpStart } from '../../../../../../src/core/public';
 import { API_ENDPOINT_ROLESMAPPING } from '../constants';
 import { RoleMappingDetail } from '../types';
+import { getWithIgnores } from './request-utils';
 
 export interface MappedUsersListing {
   userName: string;
@@ -29,12 +30,7 @@ export enum UserType {
 }
 
 export async function getRoleMappingData(http: HttpStart, roleName: string) {
-  try {
-    return (await http.get(`${API_ENDPOINT_ROLESMAPPING}/${roleName}`)) as RoleMappingDetail;
-  } catch (e) {
-    if (e.response.status === 404) return [];
-    throw e;
-  }
+  return getWithIgnores<RoleMappingDetail>(http, `${API_ENDPOINT_ROLESMAPPING}/${roleName}`, [404]);
 }
 
 export function transformRoleMappingData(rawData: RoleMappingDetail): MappedUsersListing[] {

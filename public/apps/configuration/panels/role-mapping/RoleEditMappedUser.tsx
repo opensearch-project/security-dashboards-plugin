@@ -66,7 +66,7 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
           props.coreStart.http,
           props.roleName
         )) as RoleMappingDetail;
-        if (!isEmpty(originalRoleMapData)) {
+        if (originalRoleMapData) {
           setInternalUsers(originalRoleMapData.users.map(stringToComboBoxOption));
           setExternalIdentities(buildExternalIdentityState(originalRoleMapData.backend_roles));
           setHosts(originalRoleMapData.hosts);
