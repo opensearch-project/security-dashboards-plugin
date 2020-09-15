@@ -13,14 +13,25 @@
  *   permissions and limitations under the License.
  */
 
-import { HttpStart } from 'kibana/public';
-import { API_ENDPOINT_AUTHINFO } from '../../common';
-import { AuthInfo } from '../types';
+import { shallow } from 'enzyme';
+import React from 'react';
+import { TenantEditModal } from './edit-modal';
+import { Action } from '../../types';
 
-export async function getAuthInfo(http: HttpStart) {
-  return (await http.get(`${API_ENDPOINT_AUTHINFO}`)) as AuthInfo;
-}
+describe('Permission edit modal', () => {
+  it('Submit change', () => {
+    const handleSave = jest.fn();
+    const component = shallow(
+      <TenantEditModal
+        tenantName={'tenant1'}
+        tenantDescription={'description1'}
+        action={Action.create}
+        handleClose={jest.fn()}
+        handleSave={handleSave}
+      />
+    );
+    component.find('#submit').simulate('click');
 
-export async function getCurrentUser(http: HttpStart) {
-  return (await getAuthInfo(http)).user_name;
-}
+    expect(handleSave).toBeCalled();
+  });
+});
