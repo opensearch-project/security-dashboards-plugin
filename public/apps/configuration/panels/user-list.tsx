@@ -54,7 +54,7 @@ export function dictView(items: Dictionary<string>) {
   return (
     <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
       {map(items, (v, k) => (
-        <EuiText key={k} size="xs">
+        <EuiText key={k} className="table-items">
           {k}: {`"${v}"`}
         </EuiText>
       ))}

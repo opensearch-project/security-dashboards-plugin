@@ -66,7 +66,7 @@ export function renderFieldLevelSecurity() {
     if (items === undefined || items.length === 0) {
       return (
         <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
-          <EuiText key={'-'} size="xs">
+          <EuiText key={'-'} className="table-items">
             {EMPTY_FIELD_VALUE}
           </EuiText>
         </EuiFlexGroup>
@@ -75,7 +75,7 @@ export function renderFieldLevelSecurity() {
 
     return (
       <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
-        <EuiText size="xs">
+        <EuiText className="table-items">
           {getFieldLevelSecurityMethod(items) === 'exclude' ? 'Exclude' : 'Include'}:{' '}
           {displayArray(items.map((s: string) => s.replace(/^~/, '')))}
         </EuiText>

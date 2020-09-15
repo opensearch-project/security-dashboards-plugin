@@ -62,7 +62,7 @@ export function renderCustomization(reserved: boolean) {
         <EuiIcon type={reserved ? 'lock' : 'pencil'} />
       </EuiFlexItem>
       <EuiFlexItem grow={false}>
-        <EuiText size="xs">{reserved ? 'Reserved' : 'Custom'}</EuiText>
+        <EuiText className="table-items">{reserved ? 'Reserved' : 'Custom'}</EuiText>
       </EuiFlexItem>
     </EuiFlexGroup>
   );
@@ -74,7 +74,7 @@ export function truncatedListView(limit = 3) {
     if (items === undefined || items.length === 0) {
       return (
         <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
-          <EuiText key={'-'} size="xs">
+          <EuiText key={'-'} className="table-items">
             {EMPTY_FIELD_VALUE}
           </EuiText>
         </EuiFlexGroup>
@@ -85,12 +85,12 @@ export function truncatedListView(limit = 3) {
     return (
       <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
         {items.slice(0, limit).map((item) => (
-          <EuiText key={item} size="xs">
+          <EuiText key={item} className="table-items">
             {item}
           </EuiText>
         ))}
         {items.length > limit && (
-          <EuiText key={'...'} size="xs">
+          <EuiText key={'...'} className="table-items">
             ...
           </EuiText>
         )}
