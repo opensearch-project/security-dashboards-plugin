@@ -18,6 +18,8 @@ import { IRouter, SessionStorageFactory } from '../../../../src/core/server';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { SecurityClient } from '../backend/opendistro_security_client';
 
+const TENANT_NAME_REGEX: RegExp = /^[0-9a-zA-Z_\-]+$/;
+
 export function setupMultitenantRoutes(
   router: IRouter,
   sessionStroageFactory: SessionStorageFactory<SecuritySessionCookie>,
@@ -25,6 +27,11 @@ export function setupMultitenantRoutes(
 ) {
   const PREFIX: string = '/api/v1';
 
+  function validateTenantName(tenantName: string) {
+    if (!TENANT_NAME_REGEX.test(tenantName)) {
+      return 'Invalid tenant name.';
+    }
+  }
   /**
    * Updates selected tenant.
    */
@@ -34,7 +41,9 @@ export function setupMultitenantRoutes(
       validate: {
         body: schema.object({
           username: schema.string(),
-          tenant: schema.string(),
+          tenant: schema.string({
+            validate: validateTenantName,
+          }),
         }),
       },
     },

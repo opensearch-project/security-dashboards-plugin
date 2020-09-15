@@ -22,6 +22,8 @@ import {
 } from '../../../../src/core/server';
 import { API_PREFIX, CONFIGURATION_API_PREFIX } from '../../common';
 
+const RESOURCE_ID_REGEX: RegExp = /^[0-9a-zA-Z_\-]+$/;
+
 // TODO: consider to extract entity CRUD operations and put it into a client class
 export function defineRoutes(router: IRouter) {
   const internalUserSchema = schema.object({
@@ -80,6 +82,12 @@ export function defineRoutes(router: IRouter) {
       throw new Error(`Unknown resource ${resourceName}`);
     }
     inputSchema.validate(requestBody); // throws error if validation fail
+  }
+
+  function validateEntityId(resourceName: string) {
+    if (!RESOURCE_ID_REGEX.test(resourceName)) {
+      return 'Invalid entity name or id.';
+    }
   }
 
   /**
@@ -359,7 +367,9 @@ export function defineRoutes(router: IRouter) {
       validate: {
         params: schema.object({
           resourceName: schema.string(),
-          id: schema.string(),
+          id: schema.string({
+            validate: validateEntityId,
+          }),
         }),
       },
     },
@@ -435,7 +445,9 @@ export function defineRoutes(router: IRouter) {
       validate: {
         params: schema.object({
           resourceName: schema.string(),
-          id: schema.string(),
+          id: schema.string({
+            validate: validateEntityId,
+          }),
         }),
         body: schema.any(),
       },
