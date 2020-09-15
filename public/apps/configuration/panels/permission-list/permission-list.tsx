@@ -33,13 +33,7 @@ import {
   EuiButtonEmpty,
 } from '@elastic/eui';
 import { difference } from 'lodash';
-import React, {
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useCallback,
-  useState,
-} from 'react';
+import React, { Dispatch, ReactNode, SetStateAction, useCallback, useState } from 'react';
 import { AppDependencies } from '../../../types';
 import { Action, DataObject, ActionGroupItem, ExpandedRowMapInterface } from '../../types';
 import {
