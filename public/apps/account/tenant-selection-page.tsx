@@ -22,7 +22,10 @@ import { TenantSwitchPanel } from './tenant-switch-panel';
 function handleModalClose(serverBasePath: string) {
   // navigate to nextUrl
   const urlParams = new URLSearchParams(window.location.search);
-  const nextUrl = urlParams.get('nextUrl') || serverBasePath;
+  let nextUrl = urlParams.get('nextUrl');
+  if (!nextUrl || nextUrl.toLowerCase().startsWith('http')) {
+    nextUrl = serverBasePath;
+  }
   window.location.href = nextUrl;
 }
 
