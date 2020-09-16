@@ -23,7 +23,7 @@ function handleModalClose(serverBasePath: string) {
   // navigate to nextUrl
   const urlParams = new URLSearchParams(window.location.search);
   let nextUrl = urlParams.get('nextUrl');
-  if (!nextUrl || nextUrl.toLowerCase().startsWith('http')) {
+  if (!nextUrl || nextUrl.toLowerCase().includes('//')) {
     nextUrl = serverBasePath;
   }
   window.location.href = nextUrl;
