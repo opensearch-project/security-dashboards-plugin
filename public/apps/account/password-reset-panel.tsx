@@ -24,6 +24,7 @@ import {
   EuiOverlayMask,
   EuiSpacer,
   EuiTitle,
+  EuiCallOut,
 } from '@elastic/eui';
 import { CoreStart } from 'kibana/public';
 import { FormRow } from '../configuration/utils/form-row';
@@ -46,10 +47,11 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
   const [newPassword, setNewPassword] = useState<string>('');
   // reply on backend response of user update call to verify
   const [isNewPasswordInvalid, setIsNewPasswordInvalid] = useState<boolean>(false);
-  const [newPasswordError, setNewPasswordError] = useState<string[]>([]);
 
   const [repeatNewPassword, setRepeatNewPassword] = useState<string>('');
   const [isRepeatNewPasswordInvalid, setIsRepeatNewPasswordInvalid] = useState<boolean>(false);
+
+  const [errorCallOut, setErrorCallOut] = useState<string>('');
 
   const handleReset = async () => {
     const http = props.coreStart.http;
@@ -78,8 +80,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
 
       await logout(http);
     } catch (e) {
-      setIsNewPasswordInvalid(true);
-      setNewPasswordError(['Invalid new password due to error: ' + e?.body?.message]);
+      setErrorCallOut('Failed to reset password due to error: ' + e?.body?.message);
     }
   };
 
@@ -114,7 +115,6 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
             headerText="New password"
             helpText={PASSWORD_INSTRUCTION}
             isInvalid={isNewPasswordInvalid}
-            error={newPasswordError}
           >
             <EuiFieldPassword
               onChange={function (e: React.ChangeEvent<HTMLInputElement>) {
@@ -139,6 +139,14 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
               }}
             />
           </FormRow>
+
+          <EuiSpacer />
+
+          {errorCallOut && (
+            <EuiCallOut color="danger" iconType="alert">
+              {errorCallOut}
+            </EuiCallOut>
+          )}
         </EuiModalBody>
         <EuiModalFooter>
           <EuiButtonEmpty onClick={props.handleClose}>Cancel</EuiButtonEmpty>
