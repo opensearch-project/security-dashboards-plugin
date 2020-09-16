@@ -17,21 +17,14 @@ import { HttpStart } from 'kibana/public';
 import { API_AUTH_LOGOUT } from '../../../common';
 import { API_ENDPOINT_ACCOUNT_INFO } from './constants';
 import { AccountInfo } from './types';
+import { getWithIgnores } from '../configuration/utils/request-utils';
 
 export function fetchAccountInfo(http: HttpStart): Promise<AccountInfo> {
   return http.get(API_ENDPOINT_ACCOUNT_INFO);
 }
 
 export async function fetchAccountInfoSafe(http: HttpStart): Promise<AccountInfo | undefined> {
-  try {
-    const accountInfo = await fetchAccountInfo(http);
-    return accountInfo;
-  } catch (e) {
-    // ignore 401 and continue to login page.
-    if (e?.body.statusCode !== 401) {
-      throw e;
-    }
-  }
+  return getWithIgnores<AccountInfo>(http, API_ENDPOINT_ACCOUNT_INFO, [401]);
 }
 
 export async function logout(http: HttpStart): Promise<void> {
