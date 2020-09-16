@@ -14,14 +14,9 @@
  */
 
 import { schema } from '@kbn/config-schema';
-import {
-  IRouter,
-  ResponseError,
-  IKibanaResponse,
-  KibanaResponseFactory,
-} from 'kibana/server';
-import { API_PREFIX, CONFIGURATION_API_PREFIX } from '../../common';
+import { IRouter, ResponseError, IKibanaResponse, KibanaResponseFactory } from 'kibana/server';
 import XRegExp from 'xregexp';
+import { API_PREFIX, CONFIGURATION_API_PREFIX } from '../../common';
 
 // see: https://www.npmjs.com/package/xregexp & https://javascript.info/regexp-unicode
 const RESOURCE_ID_REGEX = XRegExp('^[\\p{L}\\p{N}\\p{P}-]+$', 'u');
