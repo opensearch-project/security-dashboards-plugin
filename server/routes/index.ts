@@ -19,10 +19,12 @@ import {
   ResponseError,
   IKibanaResponse,
   KibanaResponseFactory,
-} from '../../../../src/core/server';
+} from 'kibana/server';
 import { API_PREFIX, CONFIGURATION_API_PREFIX } from '../../common';
+import XRegExp from 'xregexp';
 
-const RESOURCE_ID_REGEX: RegExp = /^[0-9a-zA-Z_\-]+$/;
+// see: https://www.npmjs.com/package/xregexp & https://javascript.info/regexp-unicode
+const RESOURCE_ID_REGEX = XRegExp('^[\\p{L}\\p{N}\\p{P}-]+$', 'u');
 
 // TODO: consider to extract entity CRUD operations and put it into a client class
 export function defineRoutes(router: IRouter) {
@@ -85,7 +87,7 @@ export function defineRoutes(router: IRouter) {
   }
 
   function validateEntityId(resourceName: string) {
-    if (!RESOURCE_ID_REGEX.test(resourceName)) {
+    if (!XRegExp.test(resourceName, RESOURCE_ID_REGEX)) {
       return 'Invalid entity name or id.';
     }
   }
@@ -368,7 +370,7 @@ export function defineRoutes(router: IRouter) {
         params: schema.object({
           resourceName: schema.string(),
           id: schema.string({
-            validate: validateEntityId,
+            minLength: 1,
           }),
         }),
       },
