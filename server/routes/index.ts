@@ -14,13 +14,12 @@
  */
 
 import { schema } from '@kbn/config-schema';
-import {
-  IRouter,
-  ResponseError,
-  IKibanaResponse,
-  KibanaResponseFactory,
-} from '../../../../src/core/server';
+import { IRouter, ResponseError, IKibanaResponse, KibanaResponseFactory } from 'kibana/server';
+import XRegExp from 'xregexp';
 import { API_PREFIX, CONFIGURATION_API_PREFIX } from '../../common';
+
+// see: https://www.npmjs.com/package/xregexp & https://javascript.info/regexp-unicode
+const RESOURCE_ID_REGEX = XRegExp('^[\\p{L}\\p{N}\\p{P}-]+$', 'u');
 
 // TODO: consider to extract entity CRUD operations and put it into a client class
 export function defineRoutes(router: IRouter) {
@@ -80,6 +79,12 @@ export function defineRoutes(router: IRouter) {
       throw new Error(`Unknown resource ${resourceName}`);
     }
     inputSchema.validate(requestBody); // throws error if validation fail
+  }
+
+  function validateEntityId(resourceName: string) {
+    if (!XRegExp.test(resourceName, RESOURCE_ID_REGEX)) {
+      return 'Invalid entity name or id.';
+    }
   }
 
   /**
@@ -359,7 +364,9 @@ export function defineRoutes(router: IRouter) {
       validate: {
         params: schema.object({
           resourceName: schema.string(),
-          id: schema.string(),
+          id: schema.string({
+            minLength: 1,
+          }),
         }),
       },
     },
@@ -435,7 +442,9 @@ export function defineRoutes(router: IRouter) {
       validate: {
         params: schema.object({
           resourceName: schema.string(),
-          id: schema.string(),
+          id: schema.string({
+            validate: validateEntityId,
+          }),
         }),
         body: schema.any(),
       },

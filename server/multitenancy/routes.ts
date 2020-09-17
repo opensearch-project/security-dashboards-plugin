@@ -14,6 +14,7 @@
  */
 
 import { schema } from '@kbn/config-schema';
+import { AllHtmlEntities } from 'html-entities';
 import { IRouter, SessionStorageFactory } from '../../../../src/core/server';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { SecurityClient } from '../backend/opendistro_security_client';
@@ -24,6 +25,8 @@ export function setupMultitenantRoutes(
   securityClient: SecurityClient
 ) {
   const PREFIX: string = '/api/v1';
+
+  const entities = new AllHtmlEntities();
 
   /**
    * Updates selected tenant.
@@ -52,7 +55,7 @@ export function setupMultitenantRoutes(
       cookie.tenant = tenant;
       sessionStroageFactory.asScoped(request).set(cookie);
       return response.ok({
-        body: tenant,
+        body: entities.encode(tenant),
       });
     }
   );
@@ -73,7 +76,7 @@ export function setupMultitenantRoutes(
         });
       }
       return response.ok({
-        body: cookie.tenant,
+        body: entities.encode(cookie.tenant),
       });
     }
   );
