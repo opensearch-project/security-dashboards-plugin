@@ -38,7 +38,7 @@ import { Action, ResourceType } from '../types';
 import { EMPTY_FIELD_VALUE } from '../ui-constants';
 import { useContextMenuState } from '../utils/context-menu';
 import { useDeleteConfirmState } from '../utils/delete-confirm-modal-utils';
-import { ExternalLink } from '../utils/display-utils';
+import { ExternalLink, tableItemsUIProps } from '../utils/display-utils';
 import {
   getUserList,
   InternalUsersListing,
@@ -54,7 +54,7 @@ export function dictView(items: Dictionary<string>) {
   return (
     <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
       {map(items, (v, k) => (
-        <EuiText key={k} size="xs">
+        <EuiText key={k} className={tableItemsUIProps.cssClassName}>
           {k}: {`"${v}"`}
         </EuiText>
       ))}

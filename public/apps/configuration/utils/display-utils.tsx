@@ -32,6 +32,14 @@ import { ExpressionModal } from '../panels/expression-modal';
 import { EMPTY_FIELD_VALUE } from '../ui-constants';
 import { LEARN_MORE } from '../constants';
 
+export interface UIProps {
+  cssClassName: string;
+}
+
+export const tableItemsUIProps: UIProps = {
+  cssClassName: 'table-items',
+};
+
 export function renderTextFlexItem(header: string, value: string) {
   return (
     <EuiFlexItem>
@@ -55,26 +63,26 @@ export function displayObject(object: object | undefined) {
   return !isEmpty(object) ? JSON.stringify(object, null, 2) : EMPTY_FIELD_VALUE;
 }
 
-export function renderCustomization(reserved: boolean) {
+export function renderCustomization(reserved: boolean, props: UIProps) {
   return (
     <EuiFlexGroup alignItems="center" gutterSize="xs">
       <EuiFlexItem grow={false}>
         <EuiIcon type={reserved ? 'lock' : 'pencil'} />
       </EuiFlexItem>
       <EuiFlexItem grow={false}>
-        <EuiText size="xs">{reserved ? 'Reserved' : 'Custom'}</EuiText>
+        <EuiText className={props.cssClassName}>{reserved ? 'Reserved' : 'Custom'}</EuiText>
       </EuiFlexItem>
     </EuiFlexGroup>
   );
 }
 
-export function truncatedListView(limit = 3) {
+export function truncatedListView(props: UIProps, limit = 3) {
   return (items: string[]) => {
     // Show - to indicate empty
     if (items === undefined || items.length === 0) {
       return (
         <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
-          <EuiText key={'-'} size="xs">
+          <EuiText key={'-'} className={props.cssClassName}>
             {EMPTY_FIELD_VALUE}
           </EuiText>
         </EuiFlexGroup>
@@ -85,12 +93,12 @@ export function truncatedListView(limit = 3) {
     return (
       <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
         {items.slice(0, limit).map((item) => (
-          <EuiText key={item} size="xs">
+          <EuiText key={item} className={props.cssClassName}>
             {item}
           </EuiText>
         ))}
         {items.length > limit && (
-          <EuiText key={'...'} size="xs">
+          <EuiText key={'...'} className={props.cssClassName}>
             ...
           </EuiText>
         )}

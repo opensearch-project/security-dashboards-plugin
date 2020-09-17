@@ -22,7 +22,6 @@ import {
   EuiPageContent,
   EuiPageContentHeader,
   EuiPageContentHeaderSection,
-  EuiLink,
   EuiFlexItem,
   EuiButton,
   EuiPageBody,
@@ -42,7 +41,12 @@ import {
 } from '../utils/role-list-utils';
 import { ResourceType, Action } from '../types';
 import { buildHashUrl } from '../utils/url-builder';
-import { ExternalLink, renderCustomization, truncatedListView } from '../utils/display-utils';
+import {
+  ExternalLink,
+  renderCustomization,
+  truncatedListView,
+  tableItemsUIProps,
+} from '../utils/display-utils';
 import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { useDeleteConfirmState } from '../utils/delete-confirm-modal-utils';
 import { useContextMenuState } from '../utils/context-menu';
@@ -59,34 +63,36 @@ const columns: Array<EuiBasicTableColumn<RoleListing>> = [
   {
     field: 'clusterPermissions',
     name: 'Cluster permissions',
-    render: truncatedListView(),
+    render: truncatedListView(tableItemsUIProps),
     truncateText: true,
   },
   {
     field: 'indexPermissions',
     name: 'Index permissions',
-    render: truncatedListView(),
+    render: truncatedListView(tableItemsUIProps),
     truncateText: true,
   },
   {
     field: 'internalUsers',
     name: 'Internal users',
-    render: truncatedListView(),
+    render: truncatedListView(tableItemsUIProps),
   },
   {
     field: 'backendRoles',
     name: 'External indentities',
-    render: truncatedListView(),
+    render: truncatedListView(tableItemsUIProps),
   },
   {
     field: 'tenantPermissions',
     name: 'Tenants',
-    render: truncatedListView(),
+    render: truncatedListView(tableItemsUIProps),
   },
   {
     field: 'reserved',
     name: 'Customization',
-    render: renderCustomization,
+    render: (reserved: boolean) => {
+      return renderCustomization(reserved, tableItemsUIProps);
+    },
   },
 ];
 
@@ -214,11 +220,11 @@ export function RoleList(props: AppDependencies) {
           options: [
             {
               value: true,
-              view: renderCustomization(true),
+              view: renderCustomization(true, tableItemsUIProps),
             },
             {
               value: false,
-              view: renderCustomization(false),
+              view: renderCustomization(false, tableItemsUIProps),
             },
           ],
         },
