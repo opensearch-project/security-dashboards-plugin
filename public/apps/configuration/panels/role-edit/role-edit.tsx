@@ -57,6 +57,7 @@ import {
 import { setCrossPageToast } from '../../utils/storage-utils';
 import { ExternalLink } from '../../utils/display-utils';
 import { generateResourceName } from '../../utils/resource-utils';
+import { resourceNameHelpText, useErrorState } from '../../utils/resource-validation-util';
 
 interface RoleEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -83,6 +84,8 @@ export function RoleEdit(props: RoleEditDeps) {
   >([]);
 
   const [toasts, addToast, removeToast] = useToastState();
+
+  const { showErrors, errors, checkForResourceNameErrors } = useErrorState();
 
   React.useEffect(() => {
     const action = props.action;
@@ -195,19 +198,23 @@ export function RoleEdit(props: RoleEditDeps) {
         </EuiText>
       </EuiPageHeader>
       <PanelWithHeader headerText="Name">
-        <EuiForm>
+        <EuiForm isInvalid={showErrors} error={errors}>
           <FormRow
             headerText="Name"
             headerSubText="Specify a descriptive and unique role name. You cannot edit the name once the role is created."
-            helpText="The Role name must contain from m to n characters. Valid characters are
-            lowercase a-z, 0-9 and (-) hyphen."
+            helpText={resourceNameHelpText('role')}
+            isInvalid={showErrors}
           >
             <EuiFieldText
               value={roleName}
               onChange={(e) => {
                 setRoleName(e.target.value);
               }}
+              onBlur={() => {
+                checkForResourceNameErrors('role', roleName);
+              }}
               disabled={props.action === 'edit'}
+              isInvalid={showErrors}
             />
           </FormRow>
         </EuiForm>
@@ -242,7 +249,7 @@ export function RoleEdit(props: RoleEditDeps) {
           </EuiButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton fill onClick={updateRoleHandler}>
+          <EuiButton fill onClick={updateRoleHandler} disabled={showErrors}>
             {props.action === 'edit' ? 'Update' : 'Create'}
           </EuiButton>
         </EuiFlexItem>

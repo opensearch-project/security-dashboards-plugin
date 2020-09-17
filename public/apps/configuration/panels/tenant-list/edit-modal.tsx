@@ -30,6 +30,7 @@ import {
 import React, { useState } from 'react';
 import { Action } from '../../types';
 import { FormRow } from '../../utils/form-row';
+import { resourceNameHelpText, useErrorState } from '../../utils/resource-validation-util';
 
 interface TenantEditModalDeps {
   tenantName: string;
@@ -49,6 +50,8 @@ export function TenantEditModal(props: TenantEditModalDeps) {
   const [tenantName, setTenantName] = useState<string>(props.tenantName);
   const [tenantDescription, setTenantDescription] = useState<string>(props.tenantDescription);
 
+  const { showErrors, errors, checkForResourceNameErrors } = useErrorState();
+
   const handleTenantNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTenantName(e.target.value);
   };
@@ -65,17 +68,22 @@ export function TenantEditModal(props: TenantEditModalDeps) {
         </EuiModalHeader>
 
         <EuiModalBody>
-          <EuiForm>
+          <EuiForm isInvalid={showErrors} error={errors}>
             <FormRow
               headerText="Name"
               headerSubText="Specify a descriptive and unique tenant name that is easy to recognize. You cannot edit the name once the tenant is created."
-              helpText="The tenant name must contain from m to n characters. Valid characters are lowercase a-z, 0-9, and -(hyphen)."
+              helpText={resourceNameHelpText('tenant')}
+              isInvalid={showErrors}
             >
               <EuiFieldText
                 fullWidth
                 disabled={props.action === 'edit'}
                 value={tenantName}
                 onChange={handleTenantNameChange}
+                onBlur={() => {
+                  checkForResourceNameErrors('tenant', tenantName);
+                }}
+                isInvalid={showErrors}
               />
             </FormRow>
             <FormRow
@@ -101,6 +109,7 @@ export function TenantEditModal(props: TenantEditModalDeps) {
               await props.handleSave(tenantName, tenantDescription);
             }}
             fill
+            disabled={showErrors}
           >
             {props.action === Action.create ? 'Create' : 'Save'}
           </EuiButton>

@@ -44,6 +44,7 @@ import { UserAttributeStateClass } from './types';
 import { setCrossPageToast } from '../../utils/storage-utils';
 import { ExternalLink } from '../../utils/display-utils';
 import { generateResourceName } from '../../utils/resource-utils';
+import { resourceNameHelpText, useErrorState } from '../../utils/resource-validation-util';
 
 interface InternalUserEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -67,6 +68,8 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
   const [backendRoles, setBackendRoles] = useState<string[]>([]);
 
   const [toasts, addToast, removeToast] = useToastState();
+
+  const { showErrors, errors, checkForResourceNameErrors } = useErrorState();
 
   React.useEffect(() => {
     const action = props.action;
@@ -142,19 +145,23 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
         </EuiFlexGroup>
       </EuiPageHeader>
       <PanelWithHeader headerText="Credentials">
-        <EuiForm>
+        <EuiForm isInvalid={showErrors} error={errors}>
           <FormRow
             headerText="Username"
             headerSubText="Specify a descriptive and unique user name. You cannot edit the name once the user is created."
-            helpText="The username must contain from m to n characters. Valid characters are
-             lowercase a-z, 0-9 and (-) hyphen."
+            helpText={resourceNameHelpText('user')}
+            isInvalid={showErrors}
           >
             <EuiFieldText
               value={userName}
               onChange={(e) => {
                 setUserName(e.target.value);
               }}
+              onBlur={() => {
+                checkForResourceNameErrors('user', userName);
+              }}
               disabled={props.action === 'edit'}
+              isInvalid={showErrors}
             />
           </FormRow>
           <PasswordEditPanel updatePassword={setPassword} updateIsInvalid={setIsPasswordInvalid} />
@@ -174,7 +181,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
           </EuiButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton id="submit" fill onClick={updateUserHandler}>
+          <EuiButton id="submit" fill onClick={updateUserHandler} disabled={showErrors}>
             {props.action === 'edit' ? 'Save changes' : 'Create'}
           </EuiButton>
         </EuiFlexItem>

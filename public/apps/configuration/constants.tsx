@@ -156,3 +156,7 @@ export enum ToolTipContent {
   DocumentLevelSecurity = 'Document-level security lets you restrict a role to a subset of documents in an index.',
   FieldLevelSecurity = 'Field-level security lets you control which document fields a user can see.',
 }
+
+// Name constraint: m is lower limit  and n is upper limit
+export const m = 2;
+export const n = 50;
