@@ -16,7 +16,9 @@
 import { GENERIC_ERROR_INSTRUCTION } from './apps-constants';
 
 // TODO: use this util function for error message construction.
-export function constructErrorMessage(exception: object, messagePrefix: string) {
+export function constructErrorMessageAndLog(exception: object, messagePrefix: string) {
+  console.error(JSON.stringify(exception));
+
   const message = exception?.body?.message || GENERIC_ERROR_INSTRUCTION;
 
   if (messagePrefix) {

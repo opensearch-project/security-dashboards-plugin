@@ -31,7 +31,7 @@ import { FormRow } from '../configuration/utils/form-row';
 import { API_ENDPOINT_ACCOUNT_INFO } from './constants';
 import { logout } from './utils';
 import { PASSWORD_INSTRUCTION } from '../apps-constants';
-import { constructErrorMessage } from '../error-utils';
+import { constructErrorMessageAndLog } from '../error-utils';
 
 interface PasswordResetPanelProps {
   coreStart: CoreStart;
@@ -65,9 +65,8 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
         }),
       });
     } catch (e) {
-      console.error(e);
       setIsCurrentPasswordInvalid(true);
-      setCurrentPasswordError([constructErrorMessage(e, 'Invalid current password.')]);
+      setCurrentPasswordError([constructErrorMessageAndLog(e, 'Invalid current password.')]);
     }
 
     // update new password
@@ -81,8 +80,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
 
       await logout(http);
     } catch (e) {
-      console.error(e);
-      setErrorCallOut(constructErrorMessage(e, 'Failed to reset password.'));
+      setErrorCallOut(constructErrorMessageAndLog(e, 'Failed to reset password.'));
     }
   };
 

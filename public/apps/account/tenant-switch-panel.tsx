@@ -38,7 +38,7 @@ import {
   selectTenant,
 } from '../configuration/utils/tenant-utils';
 import { fetchAccountInfo } from './utils';
-import { constructErrorMessage } from '../error-utils';
+import { constructErrorMessageAndLog } from '../error-utils';
 
 interface TenantSwitchPanelProps {
   coreStart: CoreStart;
@@ -212,8 +212,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
         await changeTenant(tenantName);
         props.handleClose();
       } catch (e) {
-        console.error(e);
-        setErrorCallOut(constructErrorMessage(e, 'Failed to switch tenant.'));
+        setErrorCallOut(constructErrorMessageAndLog(e, 'Failed to switch tenant.'));
       }
     }
   };
