@@ -17,6 +17,7 @@ import React, { useState } from 'react';
 import {
   EuiButton,
   EuiButtonEmpty,
+  EuiCallOut,
   EuiFieldPassword,
   EuiModal,
   EuiModalBody,
@@ -24,13 +25,13 @@ import {
   EuiOverlayMask,
   EuiSpacer,
   EuiTitle,
-  EuiCallOut,
 } from '@elastic/eui';
 import { CoreStart } from 'kibana/public';
 import { FormRow } from '../configuration/utils/form-row';
 import { API_ENDPOINT_ACCOUNT_INFO } from './constants';
 import { logout } from './utils';
 import { PASSWORD_INSTRUCTION } from '../apps-constants';
+import { constructErrorMessage } from '../error-utils';
 
 interface PasswordResetPanelProps {
   coreStart: CoreStart;
@@ -64,9 +65,9 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
         }),
       });
     } catch (e) {
+      console.error(e);
       setIsCurrentPasswordInvalid(true);
-      setCurrentPasswordError(['Invalid current password due to error: ' + e?.body?.message]);
-      return;
+      setCurrentPasswordError([constructErrorMessage(e, 'Invalid current password.')]);
     }
 
     // update new password
@@ -80,7 +81,8 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
 
       await logout(http);
     } catch (e) {
-      setErrorCallOut('Failed to reset password due to error: ' + e?.body?.message);
+      console.error(e);
+      setErrorCallOut(constructErrorMessage(e, 'Failed to reset password.'));
     }
   };
 

@@ -31,7 +31,6 @@ import { CoreStart } from 'kibana/public';
 import { keys } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { ClientConfigType } from '../../types';
-import { GENERIC_ERROR_INSTRUCTION } from '../apps-constants';
 import {
   RESOLVED_GLOBAL_TENANT,
   RESOLVED_PRIVATE_TENANT,
@@ -39,6 +38,7 @@ import {
   selectTenant,
 } from '../configuration/utils/tenant-utils';
 import { fetchAccountInfo } from './utils';
+import { constructErrorMessage } from '../error-utils';
 
 interface TenantSwitchPanelProps {
   coreStart: CoreStart;
@@ -212,11 +212,8 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
         await changeTenant(tenantName);
         props.handleClose();
       } catch (e) {
-        if (e.body) {
-          setErrorCallOut('Failed to switch tenant due to ' + e.body?.message);
-        } else {
-          setErrorCallOut('Failed to switch tenant. ' + GENERIC_ERROR_INSTRUCTION);
-        }
+        console.error(e);
+        setErrorCallOut(constructErrorMessage(e, 'Failed to switch tenant.'));
       }
     }
   };
