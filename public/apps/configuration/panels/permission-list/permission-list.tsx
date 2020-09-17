@@ -44,7 +44,7 @@ import {
   mergeAllPermissions,
 } from '../../utils/action-groups-utils';
 import { stringToComboBoxOption } from '../../utils/combo-box-utils';
-import { ExternalLink, renderCustomization } from '../../utils/display-utils';
+import { ExternalLink, renderCustomization, tableItemsUIProps } from '../../utils/display-utils';
 import { useToastState, getSuccessToastMessage } from '../../utils/toast-utils';
 import { PermissionEditModal } from './edit-modal';
 import { PermissionTree } from '../permission-tree';
@@ -119,7 +119,9 @@ function getColumns(
     {
       field: 'reserved',
       name: 'Customization',
-      render: renderCustomization,
+      render: (reserved: boolean) => {
+        return renderCustomization(reserved, tableItemsUIProps);
+      },
     },
     {
       align: RIGHT_ALIGNMENT,
@@ -159,11 +161,11 @@ const SEARCH_OPTIONS: EuiSearchBarProps = {
       options: [
         {
           value: true,
-          view: renderCustomization(true),
+          view: renderCustomization(true, tableItemsUIProps),
         },
         {
           value: false,
-          view: renderCustomization(false),
+          view: renderCustomization(false, tableItemsUIProps),
         },
       ],
     },

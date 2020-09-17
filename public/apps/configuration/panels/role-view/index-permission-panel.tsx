@@ -33,7 +33,7 @@ import {
   ResourceType,
   Action,
 } from '../../types';
-import { truncatedListView, displayArray } from '../../utils/display-utils';
+import { truncatedListView, displayArray, tableItemsUIProps } from '../../utils/display-utils';
 import { PermissionTree } from '../permission-tree';
 import { getFieldLevelSecurityMethod } from '../../utils/index-permission-utils';
 import { renderExpression, displayHeaderWithTooltip } from '../../utils/display-utils';
@@ -66,7 +66,7 @@ export function renderFieldLevelSecurity() {
     if (items === undefined || items.length === 0) {
       return (
         <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
-          <EuiText key={'-'} className="table-items">
+          <EuiText key={'-'} className={tableItemsUIProps.cssClassName}>
             {EMPTY_FIELD_VALUE}
           </EuiText>
         </EuiFlexGroup>
@@ -75,7 +75,7 @@ export function renderFieldLevelSecurity() {
 
     return (
       <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
-        <EuiText className="table-items">
+        <EuiText className={tableItemsUIProps.cssClassName}>
           {getFieldLevelSecurityMethod(items) === 'exclude' ? 'Exclude' : 'Include'}:{' '}
           {displayArray(items.map((s: string) => s.replace(/^~/, '')))}
         </EuiText>
@@ -94,13 +94,13 @@ function getColumns(
       field: 'index_patterns',
       name: 'Index',
       sortable: true,
-      render: truncatedListView(),
+      render: truncatedListView(tableItemsUIProps),
       truncateText: true,
     },
     {
       field: 'allowed_actions',
       name: 'Permissions',
-      render: truncatedListView(),
+      render: truncatedListView(tableItemsUIProps),
       truncateText: true,
     },
     {
@@ -125,7 +125,7 @@ function getColumns(
     {
       field: 'masked_fields',
       name: 'Anonymizations',
-      render: truncatedListView(),
+      render: truncatedListView(tableItemsUIProps),
       truncateText: true,
     },
     {

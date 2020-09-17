@@ -32,7 +32,7 @@ import {
   ResourceType,
   Action,
 } from '../../types';
-import { truncatedListView } from '../../utils/display-utils';
+import { truncatedListView, tableItemsUIProps } from '../../utils/display-utils';
 import {
   fetchTenants,
   transformTenantData,
@@ -114,7 +114,7 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
     {
       field: 'tenant_patterns',
       name: 'Name',
-      render: truncatedListView(),
+      render: truncatedListView(tableItemsUIProps),
       truncateText: true,
       sortable: true,
     },

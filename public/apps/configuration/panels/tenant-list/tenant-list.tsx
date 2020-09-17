@@ -35,7 +35,7 @@ import { difference } from 'lodash';
 import { getAuthInfo } from '../../../../utils/auth-info-utils';
 import { AppDependencies } from '../../../types';
 import { Action, Tenant } from '../../types';
-import { ExternalLink, renderCustomization } from '../../utils/display-utils';
+import { ExternalLink, renderCustomization, tableItemsUIProps } from '../../utils/display-utils';
 import {
   fetchTenants,
   transformTenantData,
@@ -225,7 +225,9 @@ export function TenantList(props: AppDependencies) {
     {
       field: 'reserved',
       name: 'Customization',
-      render: renderCustomization,
+      render: (reserved: boolean) => {
+        return renderCustomization(reserved, tableItemsUIProps);
+      },
     },
   ];
 
