@@ -15,7 +15,6 @@
 
 import {
   EuiButton,
-  EuiFieldText,
   EuiFlexGroup,
   EuiFlexItem,
   EuiForm,
@@ -28,7 +27,6 @@ import {
 import React, { useState } from 'react';
 import { BreadcrumbsPageDependencies } from '../../../types';
 import { InternalUserUpdate, ResourceType } from '../../types';
-import { FormRow } from '../../utils/form-row';
 import { getUserDetail, updateUser } from '../../utils/internal-user-detail-utils';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { PasswordEditPanel } from '../../utils/password-edit-panel';
@@ -44,7 +42,7 @@ import { UserAttributeStateClass } from './types';
 import { setCrossPageToast } from '../../utils/storage-utils';
 import { ExternalLink } from '../../utils/display-utils';
 import { generateResourceName } from '../../utils/resource-utils';
-import { resourceNameHelpText, useErrorState } from '../../utils/resource-validation-util';
+import { NameRow } from '../../utils/name-row';
 
 interface InternalUserEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -69,7 +67,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
 
   const [toasts, addToast, removeToast] = useToastState();
 
-  const { showErrors, errors, checkForResourceNameErrors } = useErrorState();
+  const [isFormValid, setIsFormValid] = useState<boolean>(true);
 
   React.useEffect(() => {
     const action = props.action;
@@ -145,25 +143,16 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
         </EuiFlexGroup>
       </EuiPageHeader>
       <PanelWithHeader headerText="Credentials">
-        <EuiForm isInvalid={showErrors} error={errors}>
-          <FormRow
+        <EuiForm>
+          <NameRow
             headerText="Username"
             headerSubText="Specify a descriptive and unique user name. You cannot edit the name once the user is created."
-            helpText={resourceNameHelpText('user')}
-            isInvalid={showErrors}
-          >
-            <EuiFieldText
-              value={userName}
-              onChange={(e) => {
-                setUserName(e.target.value);
-              }}
-              onBlur={() => {
-                checkForResourceNameErrors('user', userName);
-              }}
-              disabled={props.action === 'edit'}
-              isInvalid={showErrors}
-            />
-          </FormRow>
+            resourceName={userName}
+            resourceType={'user'}
+            action={props.action}
+            setNameState={setUserName}
+            setIsFormValid={setIsFormValid}
+          />
           <PasswordEditPanel updatePassword={setPassword} updateIsInvalid={setIsPasswordInvalid} />
         </EuiForm>
       </PanelWithHeader>
@@ -181,7 +170,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
           </EuiButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton id="submit" fill onClick={updateUserHandler} disabled={showErrors}>
+          <EuiButton id="submit" fill onClick={updateUserHandler} disabled={!isFormValid}>
             {props.action === 'edit' ? 'Save changes' : 'Create'}
           </EuiButton>
         </EuiFlexItem>

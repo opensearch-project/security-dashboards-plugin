@@ -16,19 +16,15 @@
 import { EuiFormRow, EuiText } from '@elastic/eui';
 import React from 'react';
 import { ExternalLink } from './display-utils';
+import { FormRowDeps } from '../types';
 
-interface FormRowDeps {
-  headerText: string;
-  optional?: boolean;
-  headerSubText?: string;
-  helpLink?: string;
-  helpText?: string;
+export interface FormRowWithChildComponentDeps extends FormRowDeps {
   isInvalid?: boolean;
   error?: string[];
   children: React.ReactElement;
 }
 
-export function FormRow(props: FormRowDeps) {
+export function FormRow(props: FormRowWithChildComponentDeps) {
   return (
     <EuiFormRow
       fullWidth
@@ -43,7 +39,7 @@ export function FormRow(props: FormRowDeps) {
             {props.helpLink && (
               <>
                 {' '}
-                <ExternalLink href="{props.helpLink}" />
+                <ExternalLink href={props.helpLink} />
               </>
             )}
           </EuiText>

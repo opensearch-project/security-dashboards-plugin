@@ -23,14 +23,13 @@ import {
   EuiModalHeaderTitle,
   EuiOverlayMask,
   EuiForm,
-  EuiFieldText,
   EuiComboBox,
 } from '@elastic/eui';
 import React, { useState } from 'react';
 import { ComboBoxOptions, Action } from '../../types';
 import { stringToComboBoxOption, comboBoxOptionToString } from '../../utils/combo-box-utils';
 import { FormRow } from '../../utils/form-row';
-import { resourceNameHelpText, useErrorState } from '../../utils/resource-validation-util';
+import { NameRow } from '../../utils/name-row';
 
 interface PermissionEditModalDeps {
   groupName: string;
@@ -52,15 +51,7 @@ export function PermissionEditModal(props: PermissionEditModalDeps) {
   const [allowedActions, setAllowedActions] = useState<ComboBoxOptions>(
     props.allowedActions.map(stringToComboBoxOption)
   );
-  const { showErrors, errors, checkForResourceNameErrors } = useErrorState();
-
-  const handleGroupNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    // TODO: Have a shared component to manage entity name form row.
-    if (newValue.length <= 50) {
-      setGroupName(newValue);
-    }
-  };
+  const [isFormValid, setIsFormValid] = useState<boolean>(true);
 
   return (
     <EuiOverlayMask>
@@ -70,23 +61,16 @@ export function PermissionEditModal(props: PermissionEditModalDeps) {
         </EuiModalHeader>
 
         <EuiModalBody>
-          <EuiForm isInvalid={showErrors} error={errors}>
-            <FormRow
+          <EuiForm>
+            <NameRow
               headerText="Name"
               headerSubText="Enter a unique name to describe the purpose of this group. You cannot change the name after creation."
-              helpText={resourceNameHelpText('')}
-              isInvalid={showErrors}
-            >
-              <EuiFieldText
-                disabled={props.action === 'edit'}
-                value={groupName}
-                onChange={handleGroupNameChange}
-                onBlur={() => {
-                  checkForResourceNameErrors('', groupName);
-                }}
-                isInvalid={showErrors}
-              />
-            </FormRow>
+              resourceName={groupName}
+              resourceType={''}
+              action={props.action}
+              setNameState={setGroupName}
+              setIsFormValid={setIsFormValid}
+            />
             <FormRow headerText="Permissions">
               <EuiComboBox
                 options={props.optionUniverse}
@@ -106,7 +90,7 @@ export function PermissionEditModal(props: PermissionEditModalDeps) {
               await props.handleSave(groupName, allowedActions.map(comboBoxOptionToString));
             }}
             fill
-            disabled={showErrors}
+            disabled={!isFormValid}
           >
             {props.action === Action.create ? 'Create' : 'Save'}
           </EuiButton>

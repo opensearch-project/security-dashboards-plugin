@@ -12,43 +12,22 @@
  *   express or implied. See the License for the specific language governing
  *   permissions and limitations under the License.
  */
-import { useState } from 'react';
 import XRegExp from 'xregexp';
 import { isEmpty } from 'lodash';
-import { m, n } from '../constants';
+import {
+  MIN_NUMBER_OF_CHARS_IN_RESOURCE_NAME,
+  MAX_NUMBER_OF_CHARS_IN_RESOURCE_NAME,
+} from '../constants';
 
 const RESOURCE_ID_REGEX = XRegExp('^[\\p{L}\\p{N}\\p{P}-]+$', 'u');
 
 const VALID_LENGTH_HELP_TEXT = (resourceType: string) => {
-  return `The ${resourceType} name must contain from ${m} to ${n} characters.`;
+  return `The ${resourceType} name must contain from ${MIN_NUMBER_OF_CHARS_IN_RESOURCE_NAME} to ${MAX_NUMBER_OF_CHARS_IN_RESOURCE_NAME} characters.`;
 };
 
 const VALID_CHARACTERS_HELP_TEXT =
   'Valid characters are A-Z, a-z, 0-9, (_)underscore, (-) hyphen and unicode characters.';
 
-export interface UseErrorState {
-  showErrors: boolean;
-  errors: string[];
-  checkForResourceNameErrors: (resourceType: string, resourceName: string) => void;
-}
-
-export function useErrorState(): UseErrorState {
-  const [showErrors, setShowErrors] = useState<boolean>(false);
-  const [errors, setErrors] = useState<string[]>([]);
-
-  const checkForResourceNameErrors = (resourceType: string, resourceName: string) => {
-    const errorMessages = validateResourceName(resourceType, resourceName);
-    if (errorMessages.length > 0) {
-      setShowErrors(true);
-      setErrors(errorMessages);
-    } else {
-      setShowErrors(false);
-      setErrors([]);
-    }
-  };
-
-  return { showErrors, errors, checkForResourceNameErrors };
-}
 export function validateResourceName(resourceType: string, resourceName: string): string[] {
   const errors: string[] = [];
   if (!isResourceNameLengthValid(resourceName)) {
@@ -62,7 +41,11 @@ export function validateResourceName(resourceType: string, resourceName: string)
 }
 
 export function isResourceNameLengthValid(resourceName: string): boolean {
-  if (resourceName.length < m || resourceName.length > n) return false;
+  if (
+    resourceName.length < MIN_NUMBER_OF_CHARS_IN_RESOURCE_NAME ||
+    resourceName.length > MAX_NUMBER_OF_CHARS_IN_RESOURCE_NAME
+  )
+    return false;
   return true;
 }
 

@@ -15,7 +15,6 @@
 
 import {
   EuiButton,
-  EuiFieldText,
   EuiFlexGroup,
   EuiFlexItem,
   EuiForm,
@@ -31,7 +30,6 @@ import { BreadcrumbsPageDependencies } from '../../../types';
 import { CLUSTER_PERMISSIONS, INDEX_PERMISSIONS } from '../../constants';
 import { fetchActionGroups } from '../../utils/action-groups-utils';
 import { comboBoxOptionToString, stringToComboBoxOption } from '../../utils/combo-box-utils';
-import { FormRow } from '../../utils/form-row';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { getRoleDetail, updateRole } from '../../utils/role-detail-utils';
 import { fetchTenantNameList } from '../../utils/tenant-utils';
@@ -57,7 +55,7 @@ import {
 import { setCrossPageToast } from '../../utils/storage-utils';
 import { ExternalLink } from '../../utils/display-utils';
 import { generateResourceName } from '../../utils/resource-utils';
-import { resourceNameHelpText, useErrorState } from '../../utils/resource-validation-util';
+import { NameRow } from '../../utils/name-row';
 
 interface RoleEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -85,7 +83,7 @@ export function RoleEdit(props: RoleEditDeps) {
 
   const [toasts, addToast, removeToast] = useToastState();
 
-  const { showErrors, errors, checkForResourceNameErrors } = useErrorState();
+  const [isFormValid, setIsFormValid] = useState<boolean>(true);
 
   React.useEffect(() => {
     const action = props.action;
@@ -198,25 +196,16 @@ export function RoleEdit(props: RoleEditDeps) {
         </EuiText>
       </EuiPageHeader>
       <PanelWithHeader headerText="Name">
-        <EuiForm isInvalid={showErrors} error={errors}>
-          <FormRow
+        <EuiForm>
+          <NameRow
             headerText="Name"
             headerSubText="Specify a descriptive and unique role name. You cannot edit the name once the role is created."
-            helpText={resourceNameHelpText('role')}
-            isInvalid={showErrors}
-          >
-            <EuiFieldText
-              value={roleName}
-              onChange={(e) => {
-                setRoleName(e.target.value);
-              }}
-              onBlur={() => {
-                checkForResourceNameErrors('role', roleName);
-              }}
-              disabled={props.action === 'edit'}
-              isInvalid={showErrors}
-            />
-          </FormRow>
+            resourceName={roleName}
+            resourceType={'role'}
+            action={props.action}
+            setNameState={setRoleName}
+            setIsFormValid={setIsFormValid}
+          />
         </EuiForm>
       </PanelWithHeader>
       <EuiSpacer size="m" />
@@ -249,7 +238,7 @@ export function RoleEdit(props: RoleEditDeps) {
           </EuiButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton fill onClick={updateRoleHandler} disabled={showErrors}>
+          <EuiButton fill onClick={updateRoleHandler} disabled={!isFormValid}>
             {props.action === 'edit' ? 'Update' : 'Create'}
           </EuiButton>
         </EuiFlexItem>

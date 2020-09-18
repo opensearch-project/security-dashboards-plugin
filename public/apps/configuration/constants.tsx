@@ -157,6 +157,5 @@ export enum ToolTipContent {
   FieldLevelSecurity = 'Field-level security lets you control which document fields a user can see.',
 }
 
-// Name constraint: m is lower limit  and n is upper limit
-export const m = 2;
-export const n = 50;
+export const MIN_NUMBER_OF_CHARS_IN_RESOURCE_NAME = 2;
+export const MAX_NUMBER_OF_CHARS_IN_RESOURCE_NAME = 50;
