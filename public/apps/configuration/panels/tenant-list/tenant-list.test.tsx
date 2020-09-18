@@ -222,23 +222,28 @@ describe('Tenant list', () => {
     expect(consoleLog).toBeCalledWith(error);
   });
 
-  describe('Action menu enable-diable check', () => {
-    const sampleTenantList: Tenant[] = [
-      {
-        tenant: 'tenant_1',
-        description: '',
-        reserved: true,
-        tenantValue: 'tenant_1',
-      },
-      {
-        tenant: 'tenant_2',
-        description: '',
-        reserved: false,
-        tenantValue: 'tenant_2',
-      },
-    ];
-    it('edit and delete should be disabled when there is at least 1 reserved tenant selected', () => {
-      jest.spyOn(React, 'useState').mockImplementation(() => [[sampleTenantList], jest.fn()]);
+  describe('Action menu enable-disable check', () => {
+    const sampleReservedTenant: Tenant = {
+      tenant: 'tenant_1',
+      description: '',
+      reserved: true,
+      tenantValue: 'tenant_1',
+    };
+    const sampleCustomTenant1: Tenant = {
+      tenant: 'tenant_2',
+      description: '',
+      reserved: false,
+      tenantValue: 'tenant_2',
+    };
+    const sampleCustomTenant2: Tenant = {
+      tenant: 'tenant_3',
+      description: '',
+      reserved: false,
+      tenantValue: 'tenant_3',
+    };
+
+    it('edit and delete should be disabled when selected tenant is reserved', () => {
+      jest.spyOn(React, 'useState').mockImplementation(() => [[sampleReservedTenant], jest.fn()]);
       const component = shallow(
         <TenantList
           coreStart={mockCoreStart as any}
@@ -251,8 +256,10 @@ describe('Tenant list', () => {
       expect(component.find('#delete').prop('disabled')).toBe(true);
     });
 
-    it('All menues should be disabled when there is multiple tenant selected including multiple tenant', () => {
-      jest.spyOn(React, 'useState').mockImplementation(() => [[sampleTenantList], jest.fn()]);
+    it('All menues should be disabled when there is multiple tenant selected including reserved tenant', () => {
+      jest
+        .spyOn(React, 'useState')
+        .mockImplementation(() => [[sampleReservedTenant, sampleCustomTenant1], jest.fn()]);
       const component = shallow(
         <TenantList
           coreStart={mockCoreStart as any}
@@ -267,6 +274,27 @@ describe('Tenant list', () => {
       expect(component.find('#createDashboard').prop('disabled')).toBe(true);
       expect(component.find('#createVisualizations').prop('disabled')).toBe(true);
       expect(component.find('#delete').prop('disabled')).toBe(true);
+    });
+
+    it('All menues should be disabled except delete when there is multiple custom tenant selected', () => {
+      jest
+        .spyOn(React, 'useState')
+        .mockImplementation(() => [[sampleCustomTenant1, sampleCustomTenant2], jest.fn()]);
+      const component = shallow(
+        <TenantList
+          coreStart={mockCoreStart as any}
+          navigation={{} as any}
+          params={{} as any}
+          config={config as any}
+        />
+      );
+      expect(component.find('#switchTenant').prop('disabled')).toBe(true);
+      expect(component.find('#edit').prop('disabled')).toBe(true);
+      expect(component.find('#duplicate').prop('disabled')).toBe(true);
+      expect(component.find('#createDashboard').prop('disabled')).toBe(true);
+      expect(component.find('#createVisualizations').prop('disabled')).toBe(true);
+
+      expect(component.find('#delete').prop('disabled')).toBe(false);
     });
   });
 });

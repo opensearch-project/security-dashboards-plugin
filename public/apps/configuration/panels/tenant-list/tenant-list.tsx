@@ -61,7 +61,7 @@ import { generateResourceName } from '../../utils/resource-utils';
 export function TenantList(props: AppDependencies) {
   const [tenantData, setTenantData] = React.useState<Tenant[]>([]);
   const [errorFlag, setErrorFlag] = React.useState(false);
-  const [selection, setSelection] = useState<Tenant[]>([]);
+  const [selection, setSelection] = React.useState<Tenant[]>([]);
   const [currentTenant, setCurrentTenant] = useState('');
   const [currentUsername, setCurrentUsername] = useState('');
   // Modal state
