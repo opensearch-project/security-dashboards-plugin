@@ -87,8 +87,7 @@ export function AuthorizationPanel(props: { authz: []; loading: boolean }) {
   return (
     <PanelWithHeader
       headerText={headerText}
-      headerSubText="After the user has been authenticated, authorization allows optional user collection from backend systems.
-      There is no execution order among multiple authorization domains."
+      headerSubText="After the user authenticates, the security plugin can collect external identities, such as LDAP groups, from authorization backends. These backends have no execution order; the plugin tries to collect external identities from all of them."
       helpLink={DocLinks.BackendConfigurationAuthorizationDoc}
       count={domains.length}
     >

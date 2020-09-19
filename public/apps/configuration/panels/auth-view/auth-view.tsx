@@ -33,7 +33,7 @@ export function AuthView(props: AppDependencies) {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const config = getSecurityConfig(props.coreStart.http);
+        const config = await getSecurityConfig(props.coreStart.http);
 
         setAuthentication(config.authc);
         setAuthorization(config.authz);
