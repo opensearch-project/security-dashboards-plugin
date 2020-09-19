@@ -338,10 +338,11 @@ export function PermissionList(props: AppDependencies) {
               </h3>
             </EuiTitle>
             <EuiText size="xs" color="subdued">
-              Permissions define the type of access to the cluster or the specified indices. An
-              action group is a set of predefined single permissions and/or another set of action
-              groups. You can often achieve your desired security posture using some combination of
-              the default action groups. Or you can create your own group. <ExternalLink href="/" />
+              Permissions are individual actions, such as cluster:admin/snapshot/restore, which lets
+              you restore snapshots. Action groups are reusable collections of permissions, such as
+              MANAGE_SNAPSHOTS, which lets you view, take, delete, and restore snapshots. You can
+              often meet your security needs using the default action groups, but you might find it
+              convenient to create your own. <ExternalLink href="/" />
             </EuiText>
           </EuiPageContentHeaderSection>
           <EuiPageContentHeaderSection>
