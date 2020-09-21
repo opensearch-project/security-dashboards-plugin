@@ -74,7 +74,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
       try {
         const accountInfo = await fetchAccountInfo(props.coreStart.http);
         const tenantsInfo = accountInfo.data.tenants || {};
-        setTenants(keys(tenantsInfo).filter((tenantName) => tenantsInfo[tenantName]));
+        setTenants(keys(tenantsInfo));
 
         const currentUserName = accountInfo.data.user_name;
         setUsername(currentUserName);
