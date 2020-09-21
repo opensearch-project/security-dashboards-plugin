@@ -29,6 +29,7 @@ import {
   EuiText,
   EuiTitle,
   EuiGlobalToastList,
+  Query,
 } from '@elastic/eui';
 import React, { ReactNode, useEffect, useState, useCallback } from 'react';
 import { difference } from 'lodash';
@@ -68,6 +69,8 @@ export function TenantList(props: AppDependencies) {
   const [editModal, setEditModal] = useState<ReactNode>(null);
   const [toasts, addToast, removeToast] = useToastState();
   const [loading, setLoading] = useState(false);
+
+  const [query, setQuery] = useState<string>('');
 
   // Configuration
   const isPrivateEnabled = props.config.multitenancy.tenants.enable_private;
@@ -328,7 +331,10 @@ export function TenantList(props: AppDependencies) {
             <EuiTitle size="s">
               <h3>
                 Tenants
-                <span className="panel-header-count"> ({tenantData.length})</span>
+                <span className="panel-header-count">
+                  {' '}
+                  ({Query.execute(query, tenantData).length})
+                </span>
               </h3>
             </EuiTitle>
             <EuiText size="xs" color="subdued">
@@ -363,7 +369,13 @@ export function TenantList(props: AppDependencies) {
             items={tenantData}
             itemId={'tenant'}
             pagination
-            search={{ box: { placeholder: 'Find tenant' } }}
+            search={{
+              box: { placeholder: 'Find tenant' },
+              onChange: (arg) => {
+                setQuery(arg.queryText);
+                return true;
+              },
+            }}
             selection={{ onSelectionChange: setSelection }}
             sorting
             error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}

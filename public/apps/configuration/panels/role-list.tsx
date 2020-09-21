@@ -28,6 +28,8 @@ import {
   EuiInMemoryTable,
   EuiBasicTableColumn,
   EuiButtonEmpty,
+  EuiSearchBarProps,
+  Query,
 } from '@elastic/eui';
 import { difference } from 'lodash';
 import { AppDependencies } from '../../types';
@@ -178,9 +180,14 @@ export function RoleList(props: AppDependencies) {
 
   const [actionsMenu, closeActionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);
 
-  const [searchOptions, setSearchOptions] = useState({});
+  const [searchOptions, setSearchOptions] = useState<EuiSearchBarProps>({});
+  const [query, setQuery] = useState<string>('');
   useEffect(() => {
     setSearchOptions({
+      onChange: (arg) => {
+        setQuery(arg.queryText);
+        return true;
+      },
       filters: [
         {
           type: 'field_value_selection',
@@ -245,7 +252,10 @@ export function RoleList(props: AppDependencies) {
             <EuiTitle size="s">
               <h3>
                 Roles
-                <span className="panel-header-count"> ({roleData.length})</span>
+                <span className="panel-header-count">
+                  {' '}
+                  ({Query.execute(query, roleData).length})
+                </span>
               </h3>
             </EuiTitle>
             <EuiText size="xs" color="subdued">
