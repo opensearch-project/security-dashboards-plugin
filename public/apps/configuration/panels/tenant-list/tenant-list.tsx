@@ -58,6 +58,7 @@ import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { useContextMenuState } from '../../utils/context-menu';
 import { generateResourceName } from '../../utils/resource-utils';
+import { DocLinks } from '../../constants';
 
 export function TenantList(props: AppDependencies) {
   const [tenantData, setTenantData] = React.useState<Tenant[]>([]);
@@ -343,7 +344,7 @@ export function TenantList(props: AppDependencies) {
               users. You can control which roles have access to a tenant and whether those roles
               have read or write access. The “Current” label indicates which tenant you are using
               now. Switch to another tenant anytime from your user profile, which is located on the
-              top right of the screen. <ExternalLink href="/" />
+              top right of the screen. <ExternalLink href={DocLinks.TenantPermissionsDoc} />
             </EuiText>
           </EuiPageContentHeaderSection>
           <EuiPageContentHeaderSection>

@@ -30,7 +30,7 @@ import {
 import { FormRow } from '../../utils/form-row';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { RoleTenantPermissionStateClass } from './types';
-import { TENANT_READ_PERMISSION, TENANT_WRITE_PERMISSION } from '../../constants';
+import { DocLinks, TENANT_READ_PERMISSION, TENANT_WRITE_PERMISSION } from '../../constants';
 import { getTenantPermissionType } from '../../utils/tenant-utils';
 
 export function buildTenantPermissionState(
@@ -134,7 +134,7 @@ export function TenantPanel(props: {
     <PanelWithHeader
       headerText="Tenant permissions"
       headerSubText="Tenants are useful for safely sharing your work with other Kibana users. You can control which roles have access to a tenant and whether those roles have read and/or write access."
-      helpLink="/"
+      helpLink={DocLinks.TenantPermissionsDoc}
     >
       <FormRow headerText="Tenant">
         {generateTenantPermissionPanels(state, optionUniverse, setState)}

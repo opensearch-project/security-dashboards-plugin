@@ -32,6 +32,7 @@ import {
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { UserAttributeStateClass } from './types';
 import { FormRow } from '../../utils/form-row';
+import { DocLinks } from '../../constants';
 
 export function buildAttributeState(attributesDict: UserAttributes): UserAttributeStateClass[] {
   return map(attributesDict, (v, k) => ({
@@ -118,7 +119,7 @@ export function AttributePanel(props: {
       headerSubText="Attributes can be used to further describe the user, and, more importantly they can be used as 
       variables in the Document Level Security query in the index permission of a role. This makes it possible to 
       write dynamic DLS queries based on a user's attributes."
-      helpLink="/"
+      helpLink={DocLinks.AttributeBasedSecurityDoc}
       optional
     >
       {generateAttributesPanels(state, setState)}

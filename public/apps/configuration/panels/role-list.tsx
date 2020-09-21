@@ -52,6 +52,7 @@ import {
 import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { useDeleteConfirmState } from '../utils/delete-confirm-modal-utils';
 import { useContextMenuState } from '../utils/context-menu';
+import { DocLinks } from '../constants';
 
 const columns: Array<EuiBasicTableColumn<RoleListing>> = [
   {
@@ -262,7 +263,7 @@ export function RoleList(props: AppDependencies) {
               Roles are the core way of controlling access to your cluster. Roles contain any
               combination of cluster-wide permission, index-specific permissions, document- and
               field-level security, and tenants. Then you map users to these roles so that users
-              gain those permissions. <ExternalLink href="/" />
+              gain those permissions. <ExternalLink href={DocLinks.UsersAndRolesDoc} />
             </EuiText>
           </EuiPageContentHeaderSection>
           <EuiPageContentHeaderSection>

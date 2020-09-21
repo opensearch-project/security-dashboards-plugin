@@ -43,6 +43,7 @@ import { setCrossPageToast } from '../../utils/storage-utils';
 import { ExternalLink } from '../../utils/display-utils';
 import { generateResourceName } from '../../utils/resource-utils';
 import { NameRow } from '../../utils/name-row';
+import { DocLinks } from '../../constants';
 
 interface InternalUserEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -137,7 +138,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
             <EuiText size="xs" color="subdued">
               The security plugin includes an internal user database. Use this database in place of,
               or in addition to, an external authentication system such as LDAP or Active Directory.{' '}
-              <ExternalLink href="/" />
+              <ExternalLink href={DocLinks.UsersAndRolesDoc} />
             </EuiText>
           </EuiFlexItem>
         </EuiFlexGroup>

@@ -37,7 +37,7 @@ import { truncatedListView, displayArray, tableItemsUIProps } from '../../utils/
 import { PermissionTree } from '../permission-tree';
 import { getFieldLevelSecurityMethod } from '../../utils/index-permission-utils';
 import { renderExpression, displayHeaderWithTooltip } from '../../utils/display-utils';
-import { ToolTipContent } from '../../constants';
+import { DocLinks, ToolTipContent } from '../../constants';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { buildHashUrl } from '../../utils/url-builder';
 import { EMPTY_FIELD_VALUE } from '../../ui-constants';
@@ -179,7 +179,7 @@ export function IndexPermissionPanel(props: IndexPermissionPanelProps) {
       headerSubText="Index permissions allow you to specify how users in this role can access the indices. You can restrict a role to a subset of documents in an index,
       and which document fields a user can see as well. If you use field-level security in conjunction with document-level security,
       make sure you don't restrict access to the fields that document-level security uses."
-      helpLink="/"
+      helpLink={DocLinks.IndexPermissionsDoc}
       count={props.indexPermissions.length}
     >
       <EuiInMemoryTable

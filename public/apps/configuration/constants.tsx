@@ -146,10 +146,18 @@ export enum DocLinks {
   BackendConfigurationAuthenticationDoc = 'https://opendistro.github.io/for-elasticsearch-docs/docs/security/configuration/configuration/#authentication',
   BackendConfigurationAuthorizationDoc = 'https://opendistro.github.io/for-elasticsearch-docs/docs/security/configuration/configuration/#authorization',
   AuthenticationFlowDoc = 'https://opendistro.github.io/for-elasticsearch-docs/docs/security/configuration/concepts/',
+  UsersAndRolesDoc = 'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/users-roles/',
   CreateRolesDoc = 'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/users-roles/#create-roles',
   MapUsersToRolesDoc = 'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/users-roles/#map-users-to-roles',
+  CreateUsersDoc = 'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/users-roles/#create-users',
   AuditLogsDoc = 'https://opendistro.github.io/for-elasticsearch-docs/docs/security/audit-logs/',
   AuditLogsStorageDoc = 'https://opendistro.github.io/for-elasticsearch-docs/docs/security/audit-logs/storage-types/',
+  PermissionsDoc = 'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/default-action-groups/',
+  ClusterPermissionsDoc = 'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/default-action-groups/#cluster-level',
+  IndexPermissionsDoc = 'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/default-action-groups/#index-level',
+  DocumentLevelSecurityDoc = 'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/document-level-security/',
+  TenantPermissionsDoc = 'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/multi-tenancy/',
+  AttributeBasedSecurityDoc = 'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/document-level-security/#attribute-based-security',
 }
 
 export enum ToolTipContent {
