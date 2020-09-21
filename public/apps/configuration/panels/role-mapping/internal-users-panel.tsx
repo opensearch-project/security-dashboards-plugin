@@ -14,13 +14,14 @@
  */
 
 import React, { Dispatch, SetStateAction } from 'react';
-import { EuiForm, EuiFlexGroup, EuiFlexItem, EuiComboBox, EuiButton } from '@elastic/eui';
+import { EuiForm, EuiFlexGroup, EuiFlexItem, EuiComboBox } from '@elastic/eui';
 import { ComboBoxOptions } from '../../types';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { FormRow } from '../../utils/form-row';
 import { buildHashUrl } from '../../utils/url-builder';
 import { ResourceType, Action } from '../../types';
 import { ExternalLinkButton } from '../../utils/display-utils';
+import { DocLinks } from '../../constants';
 
 export function InternalUsersPanel(props: {
   state: ComboBoxOptions;
@@ -34,7 +35,7 @@ export function InternalUsersPanel(props: {
       headerSubText="You can create an internal user in internal user database of the security plugin. An
       internal user can have its own backend role and host for an external authentication and
       authorization."
-      helpLink="/"
+      helpLink={DocLinks.CreateUsersDoc}
     >
       <EuiForm>
         <FormRow

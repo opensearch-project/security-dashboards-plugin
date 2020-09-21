@@ -27,7 +27,7 @@ import {
 import React, { useState } from 'react';
 import { isEmpty } from 'lodash';
 import { BreadcrumbsPageDependencies } from '../../../types';
-import { CLUSTER_PERMISSIONS, INDEX_PERMISSIONS } from '../../constants';
+import { CLUSTER_PERMISSIONS, DocLinks, INDEX_PERMISSIONS } from '../../constants';
 import { fetchActionGroups } from '../../utils/action-groups-utils';
 import { comboBoxOptionToString, stringToComboBoxOption } from '../../utils/combo-box-utils';
 import { PanelWithHeader } from '../../utils/panel-with-header';
@@ -192,7 +192,8 @@ export function RoleEdit(props: RoleEditDeps) {
           Roles are the core way of controlling access to your cluster. Roles contain any
           combination of cluster-wide permission, index-specific permissions, document- and
           field-level security, and tenants. Once you&apos;ve created the role, you can map users to
-          the roles so that users gain those permissions. <ExternalLink href="/" />
+          the roles so that users gain those permissions.{' '}
+          <ExternalLink href={DocLinks.UsersAndRolesDoc} />
         </EuiText>
       </EuiPageHeader>
       <PanelWithHeader headerText="Name">

@@ -31,6 +31,7 @@ import {
   updateElementInArrayHandler,
 } from '../../utils/array-state-utils';
 import { ExternalIdentityStateClass } from './types';
+import { DocLinks } from '../../constants';
 
 export function unbuildExternalIdentityState(
   externalIdentities: ExternalIdentityStateClass[]
@@ -97,7 +98,7 @@ export function ExternalIdentitiesPanel(props: {
     <PanelWithHeader
       headerText="External identities"
       headerSubText="Use an external identity to directly map to roles through an external authentication system."
-      helpLink="/"
+      helpLink={DocLinks.CreateUsersDoc}
     >
       {panel}
       <EuiSpacer />

@@ -45,6 +45,7 @@ import { getFieldLevelSecurityMethod } from '../../utils/index-permission-utils'
 import { LIMIT_WIDTH_INPUT_CLASS } from './constant';
 import { buildHashUrl } from '../../utils/url-builder';
 import { ExternalLinkButton } from '../../utils/display-utils';
+import { DocLinks } from '../../constants';
 
 export function getEmptyIndexPermission(): RoleIndexPermissionStateClass {
   return {
@@ -172,7 +173,7 @@ export function DocLevelSecurityRow(props: {
     <FormRow
       headerText="Document level security"
       headerSubText="You can restrict a role to a subset of documents in an index."
-      helpLink="/"
+      helpLink={DocLinks.DocumentLevelSecurityDoc}
       optional
     >
       <EuiTextArea
@@ -322,7 +323,7 @@ export function IndexPermissionPanel(props: {
     <PanelWithHeader
       headerText="Index permissions"
       headerSubText="Index permissions allow you to specify how users in this role can access the specific indices. By default, no index permission is granted."
-      helpLink="/"
+      helpLink={DocLinks.IndexPermissionsDoc}
     >
       {generateIndexPermissionPanels(state, optionUniverse, setState)}
       <EuiButton

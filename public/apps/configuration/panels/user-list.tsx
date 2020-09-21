@@ -33,7 +33,7 @@ import { Dictionary, difference, isEmpty, map } from 'lodash';
 import React, { useState } from 'react';
 import { getAuthInfo } from '../../../utils/auth-info-utils';
 import { AppDependencies } from '../../types';
-import { API_ENDPOINT_INTERNALUSERS } from '../constants';
+import { API_ENDPOINT_INTERNALUSERS, DocLinks } from '../constants';
 import { Action, ResourceType } from '../types';
 import { EMPTY_FIELD_VALUE } from '../ui-constants';
 import { useContextMenuState } from '../utils/context-menu';
@@ -204,7 +204,7 @@ export function UserList(props: AppDependencies) {
               Directory. You can map an internal user to a role from{' '}
               <EuiLink href={buildHashUrl(ResourceType.roles)}>Roles</EuiLink>
               . First, click into the detail page of the role. Then, under “Mapped users”, click
-              “Manage mapping” <ExternalLink href="/" />
+              “Manage mapping” <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
             </EuiText>
           </EuiPageContentHeaderSection>
           <EuiPageContentHeaderSection>

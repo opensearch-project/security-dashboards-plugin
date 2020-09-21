@@ -52,6 +52,7 @@ import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 import { useContextMenuState } from '../../utils/context-menu';
 import { generateResourceName } from '../../utils/resource-utils';
+import { DocLinks } from '../../constants';
 
 export function renderBooleanToCheckMark(value: boolean): React.ReactNode {
   return value ? <EuiIcon type="check" /> : '';
@@ -342,7 +343,7 @@ export function PermissionList(props: AppDependencies) {
               you restore snapshots. Action groups are reusable collections of permissions, such as
               MANAGE_SNAPSHOTS, which lets you view, take, delete, and restore snapshots. You can
               often meet your security needs using the default action groups, but you might find it
-              convenient to create your own. <ExternalLink href="/" />
+              convenient to create your own. <ExternalLink href={DocLinks.PermissionsDoc} />
             </EuiText>
           </EuiPageContentHeaderSection>
           <EuiPageContentHeaderSection>

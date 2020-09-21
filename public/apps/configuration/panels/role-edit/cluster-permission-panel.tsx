@@ -22,6 +22,7 @@ import { FormRow } from '../../utils/form-row';
 import { LIMIT_WIDTH_INPUT_CLASS } from './constant';
 import { ExternalLinkButton } from '../../utils/display-utils';
 import { buildHashUrl } from '../../utils/url-builder';
+import { DocLinks } from '../../constants';
 
 export function ClusterPermissionPanel(props: {
   state: ComboBoxOptions;
@@ -33,7 +34,7 @@ export function ClusterPermissionPanel(props: {
     <PanelWithHeader
       headerText="Cluster permissions"
       headerSubText="Specify how users in this role can access the cluster. By default, no cluster permission is granted."
-      helpLink="/"
+      helpLink={DocLinks.ClusterPermissionsDoc}
     >
       <EuiForm>
         <FormRow

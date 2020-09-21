@@ -39,7 +39,7 @@ import {
   transformRoleTenantPermissionData,
   selectTenant,
 } from '../../utils/tenant-utils';
-import { RoleViewTenantInvalidText } from '../../constants';
+import { DocLinks, RoleViewTenantInvalidText } from '../../constants';
 import { PageId } from '../../types';
 import { getNavLinkById } from '../../../../services/chrome_wrapper';
 import { useToastState, createUnknownErrorToast } from '../../utils/toast-utils';
@@ -190,7 +190,7 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
         headerSubText="Tenants in Kibana are spaces for saving index patterns, visualizations, dashboards, and other Kibana objects. 
         Tenants are useful for safely sharing your work with other Kibana users. 
         You can control which roles have access to a tenant and whether those roles have read or write access."
-        helpLink="/"
+        helpLink={DocLinks.TenantPermissionsDoc}
         count={tenantPermissionDetail.length}
       >
         <EuiInMemoryTable

@@ -20,6 +20,7 @@ import { PermissionTree } from '../permission-tree';
 import { ActionGroupItem, DataObject, ResourceType, Action } from '../../types';
 import { buildHashUrl } from '../../utils/url-builder';
 import { loadingSpinner } from '../../utils/loading-spinner-utils';
+import { DocLinks } from '../../constants';
 
 interface ClusterPermissionPanelProps {
   roleName: string;
@@ -55,7 +56,7 @@ export function ClusterPermissionPanel(props: ClusterPermissionPanelProps) {
       headerSubText="Cluster permissions specify how users in this role can access the cluster. You can
       specify permissions using both action groups or single permissions. An action
       group is a list of single permissions."
-      helpLink="/"
+      helpLink={DocLinks.ClusterPermissionsDoc}
       count={props.clusterPermissions.length}
     >
       {props.loading ? (
