@@ -34,5 +34,6 @@ export default {
     '!<rootDir>/plugins/opendistro_security/server/auth/types/saml/**/*.{ts,tsx}',
     '!<rootDir>/plugins/opendistro_security/server/auth/types/proxy/**/*.{ts,tsx}',
   ],
-  coverageDirectory: '<rootDir>/plugins/opendistro_security/kibana-coverage/jest',
+  coverageDirectory: '<rootDir>/plugins/opendistro_security/kibana-coverage/jest_server',
+  coverageReporters: ['lcov', 'text', 'cobertura', 'html'],
 };

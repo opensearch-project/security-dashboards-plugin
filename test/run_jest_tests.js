@@ -13,9 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-const resolve = require('path').resolve;
-
-process.argv.push('--config', resolve(__dirname, './jest.config.integration.js'));
 process.argv.push('--runInBand');
 
 require('../../../src/setup_node_env');
