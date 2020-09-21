@@ -28,6 +28,7 @@ import {
   EuiPageHeader,
   EuiText,
   EuiTitle,
+  Query,
 } from '@elastic/eui';
 import { Dictionary, difference, isEmpty, map } from 'lodash';
 import React, { useState } from 'react';
@@ -95,6 +96,7 @@ export function UserList(props: AppDependencies) {
   const [selection, setSelection] = useState<InternalUsersListing[]>([]);
   const [currentUsername, setCurrentUsername] = useState('');
   const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState<string>('');
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -195,7 +197,10 @@ export function UserList(props: AppDependencies) {
             <EuiTitle size="s">
               <h3>
                 Internal users
-                <span className="panel-header-count"> ({userData.length})</span>
+                <span className="panel-header-count">
+                  {' '}
+                  ({Query.execute(query, userData).length})
+                </span>
               </h3>
             </EuiTitle>
             <EuiText size="xs" color="subdued">
@@ -226,7 +231,13 @@ export function UserList(props: AppDependencies) {
             items={userData}
             itemId={'username'}
             pagination
-            search={{ box: { placeholder: 'Search internal users' } }}
+            search={{
+              box: { placeholder: 'Search internal users' },
+              onChange: (arg) => {
+                setQuery(arg.queryText);
+                return true;
+              },
+            }}
             selection={{ onSelectionChange: setSelection }}
             sorting
             error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}

@@ -31,6 +31,7 @@ import {
   EuiTitle,
   RIGHT_ALIGNMENT,
   EuiButtonEmpty,
+  Query,
 } from '@elastic/eui';
 import { difference } from 'lodash';
 import React, { Dispatch, ReactNode, SetStateAction, useCallback, useState } from 'react';
@@ -186,6 +187,8 @@ export function PermissionList(props: AppDependencies) {
 
   const [loading, setLoading] = useState(false);
 
+  const [query, setQuery] = useState<string>('');
+
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
@@ -334,7 +337,10 @@ export function PermissionList(props: AppDependencies) {
             <EuiTitle size="s">
               <h3>
                 Permissions
-                <span className="panel-header-count"> ({permissionList.length})</span>
+                <span className="panel-header-count">
+                  {' '}
+                  ({Query.execute(query, permissionList).length})
+                </span>
               </h3>
             </EuiTitle>
             <EuiText size="xs" color="subdued">
@@ -360,7 +366,13 @@ export function PermissionList(props: AppDependencies) {
             items={permissionList}
             itemId={'name'}
             pagination
-            search={SEARCH_OPTIONS}
+            search={{
+              ...SEARCH_OPTIONS,
+              onChange: (arg) => {
+                setQuery(arg.queryText);
+                return true;
+              },
+            }}
             selection={{ onSelectionChange: setSelection }}
             sorting={{ sort: { field: 'type', direction: 'asc' } }}
             error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
