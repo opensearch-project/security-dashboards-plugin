@@ -15,7 +15,6 @@
 
 import {
   EuiButton,
-  EuiFieldText,
   EuiFlexGroup,
   EuiFlexItem,
   EuiForm,
@@ -28,7 +27,6 @@ import {
 import React, { useState } from 'react';
 import { BreadcrumbsPageDependencies } from '../../../types';
 import { InternalUserUpdate, ResourceType } from '../../types';
-import { FormRow } from '../../utils/form-row';
 import { getUserDetail, updateUser } from '../../utils/internal-user-detail-utils';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { PasswordEditPanel } from '../../utils/password-edit-panel';
@@ -44,6 +42,7 @@ import { UserAttributeStateClass } from './types';
 import { setCrossPageToast } from '../../utils/storage-utils';
 import { ExternalLink } from '../../utils/display-utils';
 import { generateResourceName } from '../../utils/resource-utils';
+import { NameRow } from '../../utils/name-row';
 
 interface InternalUserEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -67,6 +66,8 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
   const [backendRoles, setBackendRoles] = useState<string[]>([]);
 
   const [toasts, addToast, removeToast] = useToastState();
+
+  const [isFormValid, setIsFormValid] = useState<boolean>(true);
 
   React.useEffect(() => {
     const action = props.action;
@@ -143,20 +144,15 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
       </EuiPageHeader>
       <PanelWithHeader headerText="Credentials">
         <EuiForm>
-          <FormRow
+          <NameRow
             headerText="Username"
             headerSubText="Specify a descriptive and unique user name. You cannot edit the name once the user is created."
-            helpText="The username must contain from m to n characters. Valid characters are
-             lowercase a-z, 0-9 and (-) hyphen."
-          >
-            <EuiFieldText
-              value={userName}
-              onChange={(e) => {
-                setUserName(e.target.value);
-              }}
-              disabled={props.action === 'edit'}
-            />
-          </FormRow>
+            resourceName={userName}
+            resourceType="user"
+            action={props.action}
+            setNameState={setUserName}
+            setIsFormValid={setIsFormValid}
+          />
           <PasswordEditPanel updatePassword={setPassword} updateIsInvalid={setIsPasswordInvalid} />
         </EuiForm>
       </PanelWithHeader>
@@ -174,7 +170,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
           </EuiButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton id="submit" fill onClick={updateUserHandler}>
+          <EuiButton id="submit" fill onClick={updateUserHandler} disabled={!isFormValid}>
             {props.action === 'edit' ? 'Save changes' : 'Create'}
           </EuiButton>
         </EuiFlexItem>

@@ -149,3 +149,11 @@ export interface ActionGroupItem extends ActionGroupUpdate {
 export interface ExpandedRowMapInterface {
   [key: string]: React.ReactNode;
 }
+
+export interface FormRowDeps {
+  headerText: string;
+  optional?: boolean;
+  headerSubText?: string;
+  helpLink?: string;
+  helpText?: string;
+}

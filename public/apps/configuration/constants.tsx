@@ -156,3 +156,6 @@ export enum ToolTipContent {
   DocumentLevelSecurity = 'Document-level security lets you restrict a role to a subset of documents in an index.',
   FieldLevelSecurity = 'Field-level security lets you control which document fields a user can see.',
 }
+
+export const MIN_NUMBER_OF_CHARS_IN_RESOURCE_NAME = 2;
+export const MAX_NUMBER_OF_CHARS_IN_RESOURCE_NAME = 50;

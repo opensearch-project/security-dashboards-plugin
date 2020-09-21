@@ -23,13 +23,13 @@ import {
   EuiModalHeaderTitle,
   EuiOverlayMask,
   EuiForm,
-  EuiFieldText,
   EuiTextArea,
   EuiHorizontalRule,
 } from '@elastic/eui';
 import React, { useState } from 'react';
 import { Action } from '../../types';
 import { FormRow } from '../../utils/form-row';
+import { NameRow } from '../../utils/name-row';
 
 interface TenantEditModalDeps {
   tenantName: string;
@@ -49,9 +49,7 @@ export function TenantEditModal(props: TenantEditModalDeps) {
   const [tenantName, setTenantName] = useState<string>(props.tenantName);
   const [tenantDescription, setTenantDescription] = useState<string>(props.tenantDescription);
 
-  const handleTenantNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTenantName(e.target.value);
-  };
+  const [isFormValid, setIsFormValid] = useState<boolean>(true);
 
   const handleTenantDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setTenantDescription(e.target.value);
@@ -66,18 +64,16 @@ export function TenantEditModal(props: TenantEditModalDeps) {
 
         <EuiModalBody>
           <EuiForm>
-            <FormRow
+            <NameRow
               headerText="Name"
               headerSubText="Specify a descriptive and unique tenant name that is easy to recognize. You cannot edit the name once the tenant is created."
-              helpText="The tenant name must contain from m to n characters. Valid characters are lowercase a-z, 0-9, and -(hyphen)."
-            >
-              <EuiFieldText
-                fullWidth
-                disabled={props.action === 'edit'}
-                value={tenantName}
-                onChange={handleTenantNameChange}
-              />
-            </FormRow>
+              resourceName={tenantName}
+              resourceType="tenant"
+              action={props.action}
+              setNameState={setTenantName}
+              setIsFormValid={setIsFormValid}
+              fullWidth={true}
+            />
             <FormRow
               headerText="Description"
               headerSubText="Describe the purpose of the tenant."
@@ -102,6 +98,7 @@ export function TenantEditModal(props: TenantEditModalDeps) {
               await props.handleSave(tenantName, tenantDescription);
             }}
             fill
+            disabled={!isFormValid}
           >
             {props.action === Action.create ? 'Create' : 'Save'}
           </EuiButton>
