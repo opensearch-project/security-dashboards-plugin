@@ -32,7 +32,7 @@ import {
 } from '@elastic/eui';
 import React, { ReactNode, useEffect, useState, useCallback } from 'react';
 import { difference } from 'lodash';
-import { getAuthInfo } from '../../../../utils/auth-info-utils';
+import { getCurrentUser } from '../../../../utils/auth-info-utils';
 import { AppDependencies } from '../../../types';
 import { Action, Tenant } from '../../types';
 import { ExternalLink, renderCustomization, tableItemsUIProps } from '../../utils/display-utils';
@@ -47,29 +47,21 @@ import {
 } from '../../utils/tenant-utils';
 import { getNavLinkById } from '../../../../services/chrome_wrapper';
 import { TenantEditModal } from './edit-modal';
-import { useToastState, createUnknownErrorToast } from '../../utils/toast-utils';
+import {
+  useToastState,
+  createUnknownErrorToast,
+  getSuccessToastMessage,
+} from '../../utils/toast-utils';
 import { PageId } from '../../types';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { useContextMenuState } from '../../utils/context-menu';
 import { generateResourceName } from '../../utils/resource-utils';
 
-function getSuccessToastMessage(action: string, tenantName: string): string {
-  switch (action) {
-    case 'create':
-    case 'duplicate':
-      return `Tenant "${tenantName}" successfully created`;
-    case 'edit':
-      return `Tenant "${tenantName}" successfully updated`;
-    default:
-      return '';
-  }
-}
-
 export function TenantList(props: AppDependencies) {
-  const [tenantData, setTenantData] = useState<Tenant[]>([]);
-  const [errorFlag, setErrorFlag] = useState(false);
-  const [selection, setSelection] = useState<Tenant[]>([]);
+  const [tenantData, setTenantData] = React.useState<Tenant[]>([]);
+  const [errorFlag, setErrorFlag] = React.useState(false);
+  const [selection, setSelection] = React.useState<Tenant[]>([]);
   const [currentTenant, setCurrentTenant] = useState('');
   const [currentUsername, setCurrentUsername] = useState('');
   // Modal state
@@ -86,7 +78,7 @@ export function TenantList(props: AppDependencies) {
       const rawTenantData = await fetchTenants(props.coreStart.http);
       const processedTenantData = transformTenantData(rawTenantData, isPrivateEnabled);
       const activeTenant = await fetchCurrentTenant(props.coreStart.http);
-      const currentUser = (await getAuthInfo(props.coreStart.http)).user_name;
+      const currentUser = await getCurrentUser(props.coreStart.http);
       setCurrentUsername(currentUser);
       setCurrentTenant(resolveTenantName(activeTenant, currentUser));
       setTenantData(processedTenantData);
@@ -98,7 +90,7 @@ export function TenantList(props: AppDependencies) {
     }
   }, [isPrivateEnabled, props.coreStart.http]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     fetchData();
   }, [props.coreStart.http, fetchData]);
 
@@ -233,6 +225,7 @@ export function TenantList(props: AppDependencies) {
 
   const actionsMenuItems = [
     <EuiButtonEmpty
+      id="switchTenant"
       key="switchTenant"
       disabled={selection.length !== 1}
       onClick={() => switchToSelectedTenant(selection[0].tenantValue, selection[0].tenant)}
@@ -240,6 +233,7 @@ export function TenantList(props: AppDependencies) {
       Switch to selected tenant
     </EuiButtonEmpty>,
     <EuiButtonEmpty
+      id="edit"
       key="edit"
       disabled={selection.length !== 1 || selection[0].reserved}
       onClick={() => showEditModal(selection[0].tenant, Action.edit, selection[0].description)}
@@ -247,6 +241,7 @@ export function TenantList(props: AppDependencies) {
       Edit
     </EuiButtonEmpty>,
     <EuiButtonEmpty
+      id="duplicate"
       key="duplicate"
       disabled={selection.length !== 1}
       onClick={() =>
@@ -260,6 +255,7 @@ export function TenantList(props: AppDependencies) {
       Duplicate
     </EuiButtonEmpty>,
     <EuiButtonEmpty
+      id="createDashboard"
       key="createDashboard"
       disabled={selection.length !== 1}
       onClick={() => viewOrCreateDashboard(selection[0].tenantValue, Action.create)}
@@ -267,6 +263,7 @@ export function TenantList(props: AppDependencies) {
       Create dashboard
     </EuiButtonEmpty>,
     <EuiButtonEmpty
+      id="createVisualizations"
       key="createVisualizations"
       disabled={selection.length !== 1}
       onClick={() => viewOrCreateVisualization(selection[0].tenantValue, Action.create)}
@@ -274,6 +271,7 @@ export function TenantList(props: AppDependencies) {
       Create visualizations
     </EuiButtonEmpty>,
     <EuiButtonEmpty
+      id="delete"
       key="delete"
       color="danger"
       onClick={showDeleteConfirmModal}
@@ -305,7 +303,7 @@ export function TenantList(props: AppDependencies) {
             fetchData();
             addToast({
               id: 'saveSucceeded',
-              title: getSuccessToastMessage(action, tenantName),
+              title: getSuccessToastMessage('Tenant', action, tenantName),
               color: 'success',
             });
           } catch (e) {
@@ -346,7 +344,11 @@ export function TenantList(props: AppDependencies) {
             <EuiFlexGroup>
               <EuiFlexItem>{actionsMenu}</EuiFlexItem>
               <EuiFlexItem>
-                <EuiButton fill onClick={() => showEditModal('', Action.create, '')}>
+                <EuiButton
+                  id="createTenant"
+                  fill
+                  onClick={() => showEditModal('', Action.create, '')}
+                >
                   Create tenant
                 </EuiButton>
               </EuiFlexItem>

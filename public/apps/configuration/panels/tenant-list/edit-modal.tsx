@@ -97,6 +97,7 @@ export function TenantEditModal(props: TenantEditModalDeps) {
           <EuiButtonEmpty onClick={props.handleClose}>Cancel</EuiButtonEmpty>
 
           <EuiButton
+            id="submit"
             onClick={async () => {
               await props.handleSave(tenantName, tenantDescription);
             }}
