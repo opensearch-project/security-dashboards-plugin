@@ -34,13 +34,8 @@ export function NameRow(props: NameRowDeps) {
   const validateName = () => {
     setErrors(validateResourceName(props.resourceType, props.resourceName));
     const errorMessages = validateResourceName(props.resourceType, props.resourceName);
-    if (errorMessages.length > 0) {
-      props.setIsFormValid(false);
-      setErrors(errorMessages);
-    } else {
-      props.setIsFormValid(true);
-      setErrors([]);
-    }
+    props.setIsFormValid(!(errorMessages.length > 0));
+    setErrors(errorMessages);
   };
 
   return (

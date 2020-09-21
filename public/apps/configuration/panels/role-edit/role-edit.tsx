@@ -201,7 +201,7 @@ export function RoleEdit(props: RoleEditDeps) {
             headerText="Name"
             headerSubText="Specify a descriptive and unique role name. You cannot edit the name once the role is created."
             resourceName={roleName}
-            resourceType={'role'}
+            resourceType="role"
             action={props.action}
             setNameState={setRoleName}
             setIsFormValid={setIsFormValid}

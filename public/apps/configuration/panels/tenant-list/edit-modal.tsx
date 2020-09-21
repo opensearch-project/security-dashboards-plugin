@@ -68,7 +68,7 @@ export function TenantEditModal(props: TenantEditModalDeps) {
               headerText="Name"
               headerSubText="Specify a descriptive and unique tenant name that is easy to recognize. You cannot edit the name once the tenant is created."
               resourceName={tenantName}
-              resourceType={'tenant'}
+              resourceType="tenant"
               action={props.action}
               setNameState={setTenantName}
               setIsFormValid={setIsFormValid}

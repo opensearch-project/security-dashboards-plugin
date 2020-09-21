@@ -66,7 +66,7 @@ export function PermissionEditModal(props: PermissionEditModalDeps) {
               headerText="Name"
               headerSubText="Enter a unique name to describe the purpose of this group. You cannot change the name after creation."
               resourceName={groupName}
-              resourceType={''}
+              resourceType=""
               action={props.action}
               setNameState={setGroupName}
               setIsFormValid={setIsFormValid}

@@ -148,7 +148,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
             headerText="Username"
             headerSubText="Specify a descriptive and unique user name. You cannot edit the name once the user is created."
             resourceName={userName}
-            resourceType={'user'}
+            resourceType="user"
             action={props.action}
             setNameState={setUserName}
             setIsFormValid={setIsFormValid}
