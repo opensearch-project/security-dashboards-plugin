@@ -23,6 +23,7 @@ jobs:
       with:
         path: kibana
         repository: elastic/kibana
+        fetch-depth: 0
     - name: Use release
       run: |
         cd ./kibana
