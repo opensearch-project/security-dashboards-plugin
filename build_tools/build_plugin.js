@@ -72,7 +72,7 @@ async function build() {
   console.log('Creating plugin zip bundle...');
   try {
     await createPackage.createPackage(plugin, buildTarget, buildVersion);
-    // rename to opendistro_security_kiban_plugin-{version}.zip to match legacy plugin name
+    // rename to opendistro_security_kibana_plugin-{version}.zip to match legacy plugin name
     execa.sync('mv', [
       `build/${plugin.id}-${buildVersion}.zip`,
       `build/opendistro_security_kibana_plugin-${buildVersion}.zip`,
