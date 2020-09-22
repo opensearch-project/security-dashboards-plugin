@@ -63,7 +63,7 @@ jobs:
     - name: Hack step to update kibana source to unblock tsc
       run: |
         cd ./kibana
-        sed -i 170d' src/core/server/http/router/request.ts
+        sed -i '170d' src/core/server/http/router/request.ts
     - name: build security plugin
       run: |
         cd ./kibana/plugins/opendistro_security
