@@ -23,7 +23,10 @@ jobs:
       with:
         path: kibana
         repository: elastic/kibana
-      run: git checkout tags/v7.9.1 -b v7.9.1
+    - name: Use release
+      run: |
+        cd ./kibana
+        git checkout tags/v7.9.1 -b v7.9.1
     - name: Get node and yarn versions
       id: versions
       run: |
