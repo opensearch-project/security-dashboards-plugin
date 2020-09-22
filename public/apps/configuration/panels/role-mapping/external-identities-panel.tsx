@@ -73,6 +73,7 @@ export function ExternalIdentitiesPanel(props: {
           <EuiFlexItem style={{ maxWidth: '400px' }}>
             <FormRow headerText={arrayIndex === 0 ? 'External identities' : ''}>
               <EuiFieldText
+                id={`externalIdentity-${arrayIndex}`}
                 value={externalIdentity.externalIdentity}
                 onChange={(e) => onValueChangeHandler('externalIdentity')(e.target.value)}
                 placeholder="Type in external identity"
@@ -82,6 +83,7 @@ export function ExternalIdentitiesPanel(props: {
           <EuiFlexItem grow={false}>
             <EuiFormRow hasEmptyLabelSpace={arrayIndex === 0 ? true : false}>
               <EuiButton
+                id={`delete-${arrayIndex}`}
                 color="danger"
                 onClick={() => removeElementFromArray(setExternalIdentities, [], arrayIndex)}
               >
@@ -103,6 +105,7 @@ export function ExternalIdentitiesPanel(props: {
       {panel}
       <EuiSpacer />
       <EuiButton
+        id="add-row"
         onClick={() => {
           appendElementToArray(setExternalIdentities, [], getEmptyExternalIdentity());
         }}
