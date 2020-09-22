@@ -75,7 +75,7 @@ async function build() {
     // rename to opendistro_security_kiban_plugin-{version}.zip to match legacy plugin name
     execa.sync('mv', [
       `build/${plugin.id}-${buildVersion}.zip`,
-      `build/opendistro_security_kibna_plugin-${buildVersion}.zip`,
+      `build/opendistro_security_kibana_plugin-${buildVersion}.zip`,
     ]);
   } catch (error) {
     console.log(error);
