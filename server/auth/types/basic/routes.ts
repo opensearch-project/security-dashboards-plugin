@@ -17,9 +17,8 @@ import { schema } from '@kbn/config-schema';
 import {
   IRouter,
   SessionStorageFactory,
-  KibanaRequest,
   CoreSetup,
-} from '../../../../../../src/core/server';
+} from 'kibana/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
 import { User } from '../../user';

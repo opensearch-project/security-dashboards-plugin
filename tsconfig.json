@@ -4,6 +4,12 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "outDir": "./target",
+    "allowUnusedLabels": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "skipLibCheck": true,
+    "alwaysStrict": false,
+    "noImplicitUseStrict": false,
   },
 
   // tell the TypeScript compiler where to find your source files
@@ -16,5 +22,11 @@
     "../../typings/**/*",
   ],
   "exclude": [
-  ]
+    "public/**/*.test.ts",
+    "public/**/*.test.tsx",
+    "server/**/*.test.ts",
+    "../../src/**/*",
+    "**/request.ts",
+    "src/**/*"
+  ],
 }
