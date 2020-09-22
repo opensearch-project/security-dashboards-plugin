@@ -1,18 +1,20 @@
-name: CI
+name: CD
 
 on:
-  pull_request:
-    branches:
-      - dev
   push:
-    branches:
-      - dev
-      - github-action
+    tags:
+      - 'v*'
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Set up JDK
+      uses: actions/setup-java@v1
+      with:
+        # TODO: Parse this from security plugin
+        java-version: 13
     - name: Checkout Kibana
       uses: actions/checkout@v2
       with:
@@ -51,10 +53,6 @@ jobs:
       run: |
         cd ./kibana
         yarn kbn bootstrap --oss
-    - name: Run lint
-      run: |
-        cd ./kibana/plugins/opendistro_security
-        yarn lint
     - name: Hack step to update kibana source to unblock tsc
       run: |
         cd ./kibana
