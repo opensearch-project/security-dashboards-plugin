@@ -10,11 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Set up JDK
-      uses: actions/setup-java@v1
-      with:
-        # TODO: Parse this from security plugin
-        java-version: 13
     - name: Checkout Kibana
       uses: actions/checkout@v2
       with:
@@ -65,8 +60,15 @@ jobs:
         artifact_name=`basename $artifact_path`
         echo ::set-env name=ARTIFACT_PATH::$artifact_path
         echo ::set-env name=ARTIFACT_NAME::$artifact_name
-    - name: Upload Workflow Artifacts
-      uses: actions/upload-artifact@v1
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
       with:
-        name: ${{ env.ARTIFACT_NAME }}
-        path: ${{ env.ARTIFACT_PATH }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-2
+    - name: Upload Artifacts to S3
+      run: |
+        s3_path=s3://artifacts.opendistroforelasticsearch.amazon.com/downloads
+        aws s3 cp ${{ env.ARTIFACT_PATH }} $s3_path/kibana-plugins/opendistro-security/
+        aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID }} --paths '/downloads/*'
+
