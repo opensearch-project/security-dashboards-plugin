@@ -7,12 +7,12 @@ on:
   push:
     branches:
       - dev
+      - github-action
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-
     - name: Set up JDK
       uses: actions/setup-java@v1
       with:
@@ -23,6 +23,7 @@ jobs:
       with:
         path: kibana
         repository: elastic/kibana
+      run: git checkout tags/v7.9.1 -b v7.9.1
     - name: Get node and yarn versions
       id: versions
       run: |
@@ -45,16 +46,21 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       with:
-        path: security-kibana-plugin
+        path: kibana/plugins/opendistro_security
         ref: ${{ github.ref }}
     - name: Bootstrap Kibana
       run: |
-        mv ./security-kibana-plugin ./kibana/plugins/
         cd ./kibana
-        yarn kbn bootstrap
+        yarn kbn bootstrap --oss
     - name: Run lint
       run: |
-        cd ./kibana/plugins/security-kibana-plugin
-        node ../../scripts/eslint -v
+        cd ./kibana/plugins/opendistro_security
         yarn lint
-
+    - name: Hack step to update kibana source to unblock tsc
+      run: |
+        cd ./kibana
+        sed -i 170d' src/core/server/http/router/request.ts
+    - name: build security plugin
+      run: |
+        cd ./kibana/plugins/opendistro_security
+        node build_tools/build_plugin.js
