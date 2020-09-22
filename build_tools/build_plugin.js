@@ -72,6 +72,11 @@ async function build() {
   console.log('Creating plugin zip bundle...');
   try {
     await createPackage.createPackage(plugin, buildTarget, buildVersion);
+    // rename to opendistro_security_kibana_plugin-{version}.zip to match legacy plugin name
+    execa.sync('mv', [
+      `build/${plugin.id}-${buildVersion}.zip`,
+      `build/opendistro_security_kibana_plugin-${buildVersion}.zip`,
+    ]);
   } catch (error) {
     console.log(error);
     process.exit(1);
@@ -104,7 +109,7 @@ function runOptimizer() {
 async function createBuild(pluginRoot, plugin) {
   const pluginId = plugin.id;
   const buildVersion = plugin.pkg.version;
-  const kibanaVeersion = plugin.pkg.kibana.version;
+  const kibanaVersion = plugin.pkg.kibana.version;
   const buildTarget = path.resolve(pluginRoot, 'build');
   const buildRoot = path.join(buildTarget, 'kibana', pluginId);
 
@@ -119,7 +124,7 @@ async function createBuild(pluginRoot, plugin) {
     return new Promise(function (resolve, reject) {
       vfs
         .src(srcGlobs, { cwd, base, allowEmpty })
-        .pipe(rewritePackageJson.rewritePackageJson(pluginRoot, buildVersion, kibanaVeersion))
+        .pipe(rewritePackageJson.rewritePackageJson(pluginRoot, buildVersion, kibanaVersion))
         .pipe(rename(nestFileInDir))
         .pipe(vfs.dest(buildTarget))
         .on('end', resolve)
