@@ -1,9 +1,9 @@
 {
   "name": "opendistro_security",
-  "version": "0.0.1",
+  "version": "1.10.1",
   "main": "target/plugins/opendistro_security",
   "kibana": {
-    "version": "8.0.0",
+    "version": "7.9.1",
     "templateVersion": "1.0.0"
   },
   "license": "Apache-2.0",
