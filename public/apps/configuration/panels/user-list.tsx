@@ -228,6 +228,7 @@ export function UserList(props: AppDependencies) {
             tableLayout={'auto'}
             loading={userData === [] && !errorFlag}
             columns={getColumns(currentUsername)}
+            // @ts-ignore
             items={userData}
             itemId={'username'}
             pagination
@@ -238,6 +239,7 @@ export function UserList(props: AppDependencies) {
                 return true;
               },
             }}
+            // @ts-ignore
             selection={{ onSelectionChange: setSelection }}
             sorting
             error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}

@@ -19,6 +19,7 @@ import { GENERIC_ERROR_INSTRUCTION } from './apps-constants';
 export function constructErrorMessageAndLog(exception: object, messagePrefix: string) {
   console.error(JSON.stringify(exception));
 
+  // @ts-ignore
   const message = exception?.body?.message || GENERIC_ERROR_INSTRUCTION;
 
   if (messagePrefix) {

@@ -367,6 +367,7 @@ export function TenantList(props: AppDependencies) {
             tableLayout={'auto'}
             loading={tenantData === [] && !errorFlag}
             columns={columns}
+            // @ts-ignore
             items={tenantData}
             itemId={'tenant'}
             pagination
@@ -377,6 +378,7 @@ export function TenantList(props: AppDependencies) {
                 return true;
               },
             }}
+            // @ts-ignore
             selection={{ onSelectionChange: setSelection }}
             sorting
             error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}

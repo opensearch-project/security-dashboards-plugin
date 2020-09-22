@@ -12,20 +12,25 @@
  *   express or implied. See the License for the specific language governing
  *   permissions and limitations under the License.
  */
+require('../../../src/setup_node_env/prebuilt_dev_only_entry');
 
 const execa = require('execa');
 const optimizer = require('@kbn/optimizer');
 const devUtils = require('@kbn/dev-utils');
 // eslint-disable-next-line import/no-unresolved
-const pluginConfig = require('@kbn/plugin-helpers/lib/plugin_config');
+const pluginHelper = require('@kbn/plugin-helpers');
+const pluginConfig = pluginHelper.pluginConfig;
 const path = require('path');
 const vfs = require('vinyl-fs');
 const rename = require('gulp-rename');
-// eslint-disable-next-line import/no-unresolved
-const rewritePackageJson = require('@kbn/plugin-helpers/tasks/build/rewrite_package_json');
-// eslint-disable-next-line import/no-unresolved
-const createPackage = require('@kbn/plugin-helpers/tasks/build/create_package');
 
+// TODO importing from target dir is a hack, need to fix it.
+// eslint-disable-next-line import/no-unresolved
+const rewritePackageJson = require('@kbn/plugin-helpers/target/tasks/build/rewrite_package_json');
+// eslint-disable-next-line import/no-unresolved
+const createPackage = require('@kbn/plugin-helpers/target/tasks/build/create_package');
+
+// main build workflow
 async function build() {
   const pluginRoot = process.cwd();
 
@@ -66,7 +71,7 @@ async function build() {
   // create plugin zip file
   console.log('Creating plugin zip bundle...');
   try {
-    await createPackage(plugin, buildTarget, buildVersion);
+    await createPackage.createPackage(plugin, buildTarget, buildVersion);
   } catch (error) {
     console.log(error);
     process.exit(1);
@@ -114,7 +119,7 @@ async function createBuild(pluginRoot, plugin) {
     return new Promise(function (resolve, reject) {
       vfs
         .src(srcGlobs, { cwd, base, allowEmpty })
-        .pipe(rewritePackageJson(pluginRoot, buildVersion, kibanaVeersion))
+        .pipe(rewritePackageJson.rewritePackageJson(pluginRoot, buildVersion, kibanaVeersion))
         .pipe(rename(nestFileInDir))
         .pipe(vfs.dest(buildTarget))
         .on('end', resolve)
