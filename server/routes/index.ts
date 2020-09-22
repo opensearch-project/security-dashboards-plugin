@@ -19,7 +19,7 @@ import XRegExp from 'xregexp';
 import { API_PREFIX, CONFIGURATION_API_PREFIX } from '../../common';
 
 // see: https://www.npmjs.com/package/xregexp & https://javascript.info/regexp-unicode
-const RESOURCE_ID_REGEX = XRegExp('^[\\p{L}\\p{N}\\p{P}-]+$', 'u');
+const RESOURCE_ID_REGEX = XRegExp('^[\\p{L}\\p{N}]+[\\p{L}\\p{N}\\p{P}-]*$', 'u');
 
 // TODO: consider to extract entity CRUD operations and put it into a client class
 export function defineRoutes(router: IRouter) {
