@@ -7,7 +7,7 @@ on:
   push:
     branches:
       - dev
-      - github-action-refactor
+
 jobs:
   build:
     runs-on: ubuntu-latest
