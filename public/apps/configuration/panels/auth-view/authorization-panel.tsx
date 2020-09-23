@@ -13,8 +13,8 @@
  *   permissions and limitations under the License.
  */
 
-import React from 'react';
-import { EuiInMemoryTable, EuiEmptyPrompt } from '@elastic/eui';
+import React, { useState } from 'react';
+import { EuiInMemoryTable, EuiEmptyPrompt, EuiSearchBarProps, Query } from '@elastic/eui';
 import { keys, map, get } from 'lodash';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { renderExpression, ExternalLinkButton } from '../../utils/display-utils';
@@ -62,6 +62,7 @@ const emptyListMessage = (
 );
 
 export function AuthorizationPanel(props: { authz: []; loading: boolean }) {
+  const [query, setQuery] = useState<string>('');
   const domains = keys(props.authz);
 
   const items = map(domains, function (domain: string) {
@@ -76,9 +77,13 @@ export function AuthorizationPanel(props: { authz: []; loading: boolean }) {
     };
   });
 
-  const search = {
+  const search: EuiSearchBarProps = {
     box: {
       placeholder: 'Search authorization domain',
+    },
+    onChange: (arg) => {
+      setQuery(arg.queryText);
+      return true;
     },
   };
 
@@ -89,7 +94,7 @@ export function AuthorizationPanel(props: { authz: []; loading: boolean }) {
       headerText={headerText}
       headerSubText="After the user authenticates, the security plugin can collect external identities, such as LDAP groups, from authorization backends. These backends have no execution order; the plugin tries to collect external identities from all of them."
       helpLink={DocLinks.BackendConfigurationAuthorizationDoc}
-      count={domains.length}
+      count={Query.execute(query, items).length}
     >
       <EuiInMemoryTable
         tableLayout={'auto'}
