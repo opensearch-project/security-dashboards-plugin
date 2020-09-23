@@ -10,65 +10,68 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Kibana
-      uses: actions/checkout@v2
-      with:
-        path: kibana
-        repository: elastic/kibana
-        fetch-depth: 0
-    - name: Use release
-      run: |
-        cd ./kibana
-        git checkout tags/v7.9.1 -b v7.9.1
-    - name: Get node and yarn versions
-      id: versions
-      run: |
-        echo "::set-output name=node_version::$(cat ./kibana/.node-version)"
-        echo "::set-output name=yarn_version::$(cat ./kibana/package.json | jq '.engines.yarn' | tr -d '"')"
-    - name: Setup node
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ steps.versions.outputs.node_version }}
-        registry-url: 'https://registry.npmjs.org'
-    - name: Install correct yarn version for Kibana
-      run: |
-        npm uninstall -g yarn
-        echo "Installing yarn ${{ steps.versions_step.outputs.yarn_version }}"
-        npm i -g yarn@${{ steps.versions.outputs.yarn_version }}
-    - name: Create plugins dir
-      run: |
-        cd ./kibana
-        mkdir plugins
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        path: kibana/plugins/opendistro_security
-        ref: ${{ github.ref }}
-    - name: Bootstrap Kibana
-      run: |
-        cd ./kibana
-        yarn kbn bootstrap --oss
-    - name: Hack step to update kibana source to unblock tsc
-      run: |
-        cd ./kibana
-        sed -i '170d' src/core/server/http/router/request.ts
-    - name: build security plugin
-      run: |
-        cd ./kibana/plugins/opendistro_security
-        node build_tools/build_plugin.js
-        artifact_path=`ls $(pwd)/build/opendistro_security_kibana_plugin-*.zip`
-        artifact_name=`basename $artifact_path`
-        echo ::set-env name=ARTIFACT_PATH::$artifact_path
-        echo ::set-env name=ARTIFACT_NAME::$artifact_name
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-west-2
-    - name: Upload Artifacts to S3
-      run: |
-        s3_path=s3://artifacts.opendistroforelasticsearch.amazon.com/downloads
-        aws s3 cp ${{ env.ARTIFACT_PATH }} $s3_path/kibana-plugins/opendistro-security/
-        aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID }} --paths '/downloads/*'
-
+      - name: Checkout Kibana
+        uses: actions/checkout@v2
+        with:
+          path: kibana
+          repository: elastic/kibana
+          fetch-depth: 0
+      - name: Create plugins dir
+        run: |
+          cd ./kibana
+          mkdir plugins
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: kibana/plugins/opendistro_security
+          ref: ${{ github.ref }}
+      - name: Get Kibana version
+        id: kbn_version
+        run: |
+          echo "::set-output name=kbn_version::$(jq -r '.kibana.version' ./kibana/plugins/opendistro_security/package.json)"
+      - name: Use kibana release commit
+        run: |
+          cd ./kibana
+          git checkout tags/v${{ steps.kbn_version.outputs.kbn_version }} -b v${{ steps.kbn_version.outputs.kbn_version }}
+      - name: Get node and yarn versions
+        id: versions
+        run: |
+          echo "::set-output name=node_version::$(cat ./kibana/.node-version)"
+          echo "::set-output name=yarn_version::$(jq -r '.engines.yarn' ./kibana/package.json)"
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ steps.versions.outputs.node_version }}
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install correct yarn version for Kibana
+        run: |
+          npm uninstall -g yarn
+          echo "Installing yarn ${{ steps.versions_step.outputs.yarn_version }}"
+          npm i -g yarn@${{ steps.versions.outputs.yarn_version }}
+      - name: Bootstrap Kibana
+        run: |
+          cd ./kibana
+          yarn kbn bootstrap --oss
+      - name: Hack step to update kibana source to unblock tsc
+        run: |
+          cd ./kibana
+          sed -i '170d' src/core/server/http/router/request.ts
+      - name: build security plugin
+        run: |
+          cd ./kibana/plugins/opendistro_security
+          node build_tools/build_plugin.js
+          artifact_path=`ls $(pwd)/build/opendistro_security_kibana_plugin-*.zip`
+          artifact_name=`basename $artifact_path`
+          echo ::set-env name=ARTIFACT_PATH::$artifact_path
+          echo ::set-env name=ARTIFACT_NAME::$artifact_name
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+      - name: Upload Artifacts to S3
+        run: |
+          s3_path=s3://artifacts.opendistroforelasticsearch.amazon.com/downloads
+          aws s3 cp ${{ env.ARTIFACT_PATH }} $s3_path/kibana-plugins/opendistro-security/
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID }} --paths '/downloads/*'
