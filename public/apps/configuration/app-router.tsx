@@ -31,7 +31,7 @@ import { NavPanel } from './panels/nav-panel';
 import { PermissionList } from './panels/permission-list/permission-list';
 import { RoleEdit } from './panels/role-edit/role-edit';
 import { RoleList } from './panels/role-list';
-import { RoleEditMappedUser } from './panels/role-mapping/RoleEditMappedUser';
+import { RoleEditMappedUser } from './panels/role-mapping/role-edit-mapped-user';
 import { RoleView } from './panels/role-view/role-view';
 import { TenantList } from './panels/tenant-list/tenant-list';
 import { UserList } from './panels/user-list';
