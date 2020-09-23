@@ -101,13 +101,13 @@ function resolve(
 
   if (isValidTenent(requestedTenant)) {
     requestedTenant = requestedTenant!;
-    if (availableTenants[requestedTenant]) {
+    if (requestedTenant in availableTenants) {
       return requestedTenant;
     }
 
     if (
       privateTenantEnabled &&
-      availableTenants[username] &&
+      username in availableTenants &&
       PRIVATE_TENANTS.indexOf(requestedTenant) > -1
     ) {
       return PRIVATE_TENANT_SYMBOL;
@@ -129,12 +129,12 @@ function resolve(
       if (
         privateTenantEnabled &&
         PRIVATE_TENANTS.indexOf(tenant) > -1 &&
-        availableTenants[username]
+        username in availableTenants
       ) {
         return PRIVATE_TENANT_SYMBOL;
       }
 
-      if (availableTenants[tenant]) {
+      if (tenant in availableTenants) {
         return tenant;
       }
     }
