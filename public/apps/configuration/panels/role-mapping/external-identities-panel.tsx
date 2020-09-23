@@ -83,7 +83,7 @@ export function ExternalIdentitiesPanel(props: {
           <EuiFlexItem grow={false}>
             <EuiFormRow hasEmptyLabelSpace={arrayIndex === 0 ? true : false}>
               <EuiButton
-                id={`delete-${arrayIndex}`}
+                id={`remove-${arrayIndex}`}
                 color="danger"
                 onClick={() => removeElementFromArray(setExternalIdentities, [], arrayIndex)}
               >

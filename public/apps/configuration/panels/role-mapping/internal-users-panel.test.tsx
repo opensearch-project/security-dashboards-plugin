@@ -21,10 +21,10 @@ import { InternalUsersPanel } from './internal-users-panel';
 
 describe('Role mapping - Internal users panel', () => {
   it('render data', () => {
-    const smapleUser1 = 'user1';
-    const smapleUser2 = 'user2';
-    const state: ComboBoxOptions = [{ label: smapleUser1 }];
-    const optionUniverse: ComboBoxOptions = [{ label: smapleUser1 }, { label: smapleUser2 }];
+    const sampleUser1 = 'user1';
+    const sampleUser2 = 'user2';
+    const state: ComboBoxOptions = [{ label: sampleUser1 }];
+    const optionUniverse: ComboBoxOptions = [{ label: sampleUser1 }, { label: sampleUser2 }];
     const setState = jest.fn();
 
     const component = shallow(

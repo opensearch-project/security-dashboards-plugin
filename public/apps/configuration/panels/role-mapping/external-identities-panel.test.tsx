@@ -36,7 +36,7 @@ jest.mock('../../utils/array-state-utils', () => ({
 
 describe('Role mapping - external identities panel', () => {
   const externalIdentity1 = 'external_identity1';
-  it('buildExternalIdentityState', () => {
+  it('Build external identity state', () => {
     const input: string[] = [externalIdentity1];
 
     const result = buildExternalIdentityState(input);
@@ -49,7 +49,7 @@ describe('Role mapping - external identities panel', () => {
     expect(result).toEqual(expected);
   });
 
-  it('unbuildExternalIdentityState', () => {
+  it('Unbuild external identity state', () => {
     const externalIdentities: ExternalIdentityStateClass[] = [
       {
         externalIdentity: externalIdentity1,
@@ -124,14 +124,14 @@ describe('Role mapping - external identities panel', () => {
       ]);
     });
 
-    it('delete row', () => {
+    it('remove row', () => {
       const component = shallow(
         <ExternalIdentitiesPanel
           externalIdentities={externalIdentities}
           setExternalIdentities={setExternalIdentities}
         />
       );
-      component.find('#delete-0').simulate('click');
+      component.find('#remove-0').simulate('click');
 
       expect(removeElementFromArray).toBeCalledWith(setExternalIdentities, [], 0);
     });
