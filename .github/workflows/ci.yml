@@ -35,7 +35,7 @@ jobs:
       - name: Use kibana release commit
         run: |
           cd ./kibana
-          git checkout tags/v${{ steps.kbn_version.outputs.kbn-version }} -b v${{ steps.kbn_version.outputs.kbn-version }}
+          git checkout tags/v${{ steps.kbn_version.outputs.kbn_version }} -b v${{ steps.kbn_version.outputs.kbn_version }}
       - name: Get node and yarn versions
         id: versions
         run: |
