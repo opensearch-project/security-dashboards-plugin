@@ -52,13 +52,15 @@ const TITLE_TEXT_DICT = {
 };
 
 export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
-  const [internalUsers, setInternalUsers] = useState<ComboBoxOptions>([]);
-  const [externalIdentities, setExternalIdentities] = useState<ExternalIdentityStateClass[]>([]);
+  const [internalUsers, setInternalUsers] = React.useState<ComboBoxOptions>([]);
+  const [externalIdentities, setExternalIdentities] = React.useState<ExternalIdentityStateClass[]>(
+    []
+  );
   const [userNames, setUserNames] = useState<string[]>([]);
-  const [hosts, setHosts] = useState<string[]>([]);
+  const [hosts, setHosts] = React.useState<string[]>([]);
   const [toasts, addToast, removeToast] = useToastState();
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchData = async () => {
       try {
         const originalRoleMapData: RoleMappingDetail | undefined = await getRoleMappingData(
@@ -79,7 +81,7 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
     fetchData();
   }, [addToast, props.coreStart.http, props.roleName]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchInternalUserNames = async () => {
       try {
         setUserNames(await fetchUserNameList(props.coreStart.http));
@@ -165,7 +167,7 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
           </EuiButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton fill onClick={updateRoleMappingHandler}>
+          <EuiButton id="map" fill onClick={updateRoleMappingHandler}>
             Map
           </EuiButton>
         </EuiFlexItem>

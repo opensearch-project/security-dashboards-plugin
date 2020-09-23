@@ -118,7 +118,7 @@ describe('Tenant list', () => {
       },
     ];
 
-    mockTenantUtils.transformRoleData = jest.fn().mockReturnValue(mockTenantListingData);
+    mockTenantUtils.transformTenantData = jest.fn().mockReturnValue(mockTenantListingData);
 
     shallow(
       <TenantList
