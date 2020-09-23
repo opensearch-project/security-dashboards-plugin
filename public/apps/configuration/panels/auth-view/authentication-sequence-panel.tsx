@@ -13,8 +13,8 @@
  *   permissions and limitations under the License.
  */
 
-import React from 'react';
-import { EuiInMemoryTable } from '@elastic/eui';
+import React, { useState } from 'react';
+import { EuiInMemoryTable, EuiSearchBarProps, Query } from '@elastic/eui';
 import { keys, map, get } from 'lodash';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { renderExpression } from '../../utils/display-utils';
@@ -69,6 +69,7 @@ const TRUE_STRING = 'True';
 const FALSE_STRING = 'False';
 
 export function AuthenticationSequencePanel(props: { authc: []; loading: boolean }) {
+  const [query, setQuery] = useState<string>('');
   const domains = keys(props.authc);
 
   const items = map(domains, function (domain: string) {
@@ -88,9 +89,13 @@ export function AuthenticationSequencePanel(props: { authc: []; loading: boolean
     };
   });
 
-  const search = {
+  const search: EuiSearchBarProps = {
     box: {
       placeholder: 'Search authentication domain',
+    },
+    onChange: (arg) => {
+      setQuery(arg.queryText);
+      return true;
     },
   };
 
@@ -103,7 +108,7 @@ export function AuthenticationSequencePanel(props: { authc: []; loading: boolean
       backend they should be authenticated. When there are multiple authentication domains, the plugin will authenticate
       the user sequentially against each backend until one succeeds."
       helpLink={DocLinks.BackendConfigurationAuthenticationDoc}
-      count={domains.length}
+      count={Query.execute(query, items).length}
     >
       <EuiInMemoryTable
         tableLayout={'auto'}
