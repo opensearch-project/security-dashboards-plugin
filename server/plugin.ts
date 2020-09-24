@@ -41,6 +41,7 @@ import { setupIndexTemplate, migrateTenantIndices } from './multitenancy/tenant_
 import { IAuthenticationType } from './auth/types/authentication_type';
 import { getAuthenticationHandler } from './auth/auth_handler_factory';
 import { setupMultitenantRoutes } from './multitenancy/routes';
+import { defineAuthTypeRoutes } from './routes/auty_type_routes';
 
 export interface SecurityPluginRequestContext {
   logger: Logger;
@@ -119,6 +120,7 @@ export class OpendistroSecurityPlugin
 
     // Register server side APIs
     defineRoutes(router);
+    defineAuthTypeRoutes(router, config);
     // set up multi-tenent routes
     if (config.multitenancy?.enabled) {
       setupMultitenantRoutes(router, securitySessionStorageFactory, this.securityClient);
