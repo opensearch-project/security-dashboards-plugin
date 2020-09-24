@@ -10,6 +10,7 @@ This plugin for Kibana adds a configuration management UI for the Open Distro fo
 * Kibana session management
 * Open Distro for Elasticsearch Security configuration UI
 * Multi-tenancy support for Kibana
+* Open Distro for Elasticsearch audit logging configuration UI
 
 ## Build
 
