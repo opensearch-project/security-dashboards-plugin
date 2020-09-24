@@ -13,8 +13,8 @@
  *   permissions and limitations under the License.
  */
 
-import { SecurityPluginConfigType } from '..';
 import { IRouter } from 'kibana/server';
+import { SecurityPluginConfigType } from '..';
 
 export function defineAuthTypeRoutes(router: IRouter, config: SecurityPluginConfigType) {
   /**
