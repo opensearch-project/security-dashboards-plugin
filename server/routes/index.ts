@@ -727,7 +727,9 @@ export function defineRoutes(router: IRouter) {
           body: esResponse,
         });
       } catch (error) {
-        return errorResponse(response, error);
+        return response.badRequest({
+          body: error,
+        });
       }
     }
   );
