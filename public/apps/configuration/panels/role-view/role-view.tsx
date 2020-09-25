@@ -93,22 +93,26 @@ const mappedUserColumns = [
 export function RoleView(props: RoleViewProps) {
   const duplicateRoleLink = buildHashUrl(ResourceType.roles, Action.duplicate, props.roleName);
 
-  const [mappedUsers, setMappedUsers] = useState<MappedUsersListing[]>([]);
-  const [errorFlag, setErrorFlag] = useState(false);
+  const [mappedUsers, setMappedUsers] = React.useState<MappedUsersListing[]>([]);
+  const [errorFlag, setErrorFlag] = React.useState(false);
   const [selection, setSelection] = useState<MappedUsersListing[]>([]);
-  const [hosts, setHosts] = useState<string[]>([]);
-  const [actionGroupDict, setActionGroupDict] = useState<DataObject<ActionGroupItem>>({});
+  const [hosts, setHosts] = React.useState<string[]>([]);
+  const [actionGroupDict, setActionGroupDict] = React.useState<DataObject<ActionGroupItem>>({});
   const [roleClusterPermission, setRoleClusterPermission] = useState<string[]>([]);
-  const [roleIndexPermission, setRoleIndexPermission] = useState<RoleIndexPermissionView[]>([]);
-  const [roleTenantPermission, setRoleTenantPermission] = useState<RoleTenantPermissionView[]>([]);
+  const [roleIndexPermission, setRoleIndexPermission] = React.useState<RoleIndexPermissionView[]>(
+    []
+  );
+  const [roleTenantPermission, setRoleTenantPermission] = React.useState<
+    RoleTenantPermissionView[]
+  >([]);
   const [toasts, addToast, removeToast] = useToastState();
-  const [isReserved, setIsReserved] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isReserved, setIsReserved] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const PERMISSIONS_TAB_INDEX = 0;
   const MAP_USER_TAB_INDEX = 1;
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
@@ -184,6 +188,7 @@ export function RoleView(props: RoleViewProps) {
           </EuiFlexItem>
           <EuiFlexItem>
             <EuiButton
+              data-test-subj="edit-rolemapping"
               fill
               onClick={() => {
                 window.location.href = buildHashUrl(
@@ -313,6 +318,7 @@ export function RoleView(props: RoleViewProps) {
             <EuiHorizontalRule margin="s" />
             <EuiPageBody>
               <EuiInMemoryTable
+                data-test-subj="role-mapping-list"
                 tableLayout={'auto'}
                 loading={mappedUsers === [] && !errorFlag}
                 columns={mappedUserColumns}
@@ -339,6 +345,7 @@ export function RoleView(props: RoleViewProps) {
       duplicate
     </EuiButtonEmpty>,
     <EuiButtonEmpty
+      data-test-subj="delete"
       key="delete"
       color="danger"
       onClick={async () => {
