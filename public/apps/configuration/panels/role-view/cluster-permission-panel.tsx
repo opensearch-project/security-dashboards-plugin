@@ -37,6 +37,7 @@ export function ClusterPermissionPanel(props: ClusterPermissionPanelProps) {
       titleSize="s"
       actions={
         <EuiButton
+          data-test-subj="addClusterPermission"
           disabled={props.isReserved}
           onClick={() => {
             window.location.href = buildHashUrl(ResourceType.roles, Action.edit, props.roleName);

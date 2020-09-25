@@ -42,7 +42,7 @@ import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { buildHashUrl } from '../../utils/url-builder';
 import { EMPTY_FIELD_VALUE } from '../../ui-constants';
 
-function toggleRowDetails(
+export function toggleRowDetails(
   item: RoleIndexPermissionView,
   actionGroupDict: DataObject<ActionGroupItem>,
   setItemIdToExpandedRowMap: Dispatch<SetStateAction<ExpandedRowMapInterface>>
@@ -60,13 +60,31 @@ function toggleRowDetails(
   });
 }
 
+export function renderRowExpanstionArrow(
+  itemIdToExpandedRowMap: ExpandedRowMapInterface,
+  actionGroupDict: DataObject<ActionGroupItem>,
+  setItemIdToExpandedRowMap: Dispatch<SetStateAction<ExpandedRowMapInterface>>
+) {
+  return (item: RoleIndexPermissionView) => (
+    <EuiButtonIcon
+      onClick={() => toggleRowDetails(item, actionGroupDict, setItemIdToExpandedRowMap)}
+      aria-label={itemIdToExpandedRowMap[item.id] ? 'Collapse' : 'Expand'}
+      iconType={itemIdToExpandedRowMap[item.id] ? 'arrowUp' : 'arrowDown'}
+    />
+  );
+}
+
 export function renderFieldLevelSecurity() {
   return (items: string[]) => {
     // Show - to indicate empty
     if (items === undefined || items.length === 0) {
       return (
         <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
-          <EuiText key={'-'} className={tableItemsUIProps.cssClassName}>
+          <EuiText
+            data-test-subj="empty-fls-text"
+            key={'-'}
+            className={tableItemsUIProps.cssClassName}
+          >
             {EMPTY_FIELD_VALUE}
           </EuiText>
         </EuiFlexGroup>
@@ -75,7 +93,7 @@ export function renderFieldLevelSecurity() {
 
     return (
       <EuiFlexGroup direction="column" style={{ margin: '1px' }}>
-        <EuiText className={tableItemsUIProps.cssClassName}>
+        <EuiText data-test-subj="fls-text" className={tableItemsUIProps.cssClassName}>
           {getFieldLevelSecurityMethod(items) === 'exclude' ? 'Exclude' : 'Include'}:{' '}
           {displayArray(items.map((s: string) => s.replace(/^~/, '')))}
         </EuiText>
@@ -132,12 +150,10 @@ function getColumns(
       align: RIGHT_ALIGNMENT,
       width: '40px',
       isExpander: true,
-      render: (item: RoleIndexPermissionView) => (
-        <EuiButtonIcon
-          onClick={() => toggleRowDetails(item, actionGroupDict, setItemIdToExpandedRowMap)}
-          aria-label={itemIdToExpandedRowMap[item.id] ? 'Collapse' : 'Expand'}
-          iconType={itemIdToExpandedRowMap[item.id] ? 'arrowUp' : 'arrowDown'}
-        />
+      render: renderRowExpanstionArrow(
+        itemIdToExpandedRowMap,
+        actionGroupDict,
+        setItemIdToExpandedRowMap
       ),
     },
   ];
@@ -161,6 +177,7 @@ export function IndexPermissionPanel(props: IndexPermissionPanelProps) {
       titleSize="s"
       actions={
         <EuiButton
+          data-test-subj="addIndexPermission"
           disabled={props.isReserved}
           onClick={() => {
             window.location.href = buildHashUrl(ResourceType.roles, Action.edit, props.roleName);
@@ -183,6 +200,7 @@ export function IndexPermissionPanel(props: IndexPermissionPanelProps) {
       count={props.indexPermissions.length}
     >
       <EuiInMemoryTable
+        data-test-subj="index-permission-container"
         tableLayout={'auto'}
         loading={props.indexPermissions === [] && !props.errorFlag}
         columns={getColumns(itemIdToExpandedRowMap, props.actionGroups, setItemIdToExpandedRowMap)}

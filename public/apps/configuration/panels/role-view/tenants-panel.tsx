@@ -24,7 +24,7 @@ import {
   EuiButton,
 } from '@elastic/eui';
 import { CoreStart } from 'kibana/public';
-import { getAuthInfo } from '../../../../utils/auth-info-utils';
+import { getCurrentUser } from '../../../../utils/auth-info-utils';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import {
   RoleTenantPermissionView,
@@ -56,14 +56,14 @@ interface RoleViewTenantsPanelProps {
 }
 
 export function TenantsPanel(props: RoleViewTenantsPanelProps) {
-  const [tenantPermissionDetail, setTenantPermissionDetail] = useState<
+  const [tenantPermissionDetail, setTenantPermissionDetail] = React.useState<
     RoleTenantPermissionDetail[]
   >([]);
-  const [currentUsername, setCurrentUsername] = useState('');
+  const [currentUsername, setCurrentUsername] = React.useState('');
   const [toasts, addToast, removeToast] = useToastState();
-  const [errorFlag, setErrorFlag] = useState(props.errorFlag);
+  const [errorFlag, setErrorFlag] = React.useState(props.errorFlag);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchData = async () => {
       try {
         const rawTenantData = await fetchTenants(props.coreStart.http);
@@ -71,7 +71,7 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
         setTenantPermissionDetail(
           transformRoleTenantPermissionData(props.tenantPermissions, processedTenantData)
         );
-        const currentUser = (await getAuthInfo(props.coreStart.http)).user_name;
+        const currentUser = await getCurrentUser(props.coreStart.http);
         setCurrentUsername(currentUser);
       } catch (e) {
         console.log(e);
@@ -171,6 +171,7 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
       titleSize="s"
       actions={
         <EuiButton
+          data-test-subj="addTenantPermission"
           disabled={props.isReserved}
           onClick={() => {
             window.location.href = buildHashUrl(ResourceType.roles, Action.edit, props.roleName);
@@ -194,6 +195,7 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
         count={tenantPermissionDetail.length}
       >
         <EuiInMemoryTable
+          data-test-subj="tenant-permission-container"
           tableLayout={'auto'}
           loading={tenantPermissionDetail === [] && !errorFlag}
           columns={columns}
