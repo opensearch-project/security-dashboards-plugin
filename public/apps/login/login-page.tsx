@@ -107,7 +107,7 @@ export function LoginPage(props: LoginPageDeps) {
           'If you have forgotten your username or password, please ask your system administrator'}
       </EuiText>
       <EuiSpacer size="s" />
-      <EuiForm>
+      <EuiForm component="form">
         <EuiFormRow>
           <EuiFieldText
             placeholder="Username"
