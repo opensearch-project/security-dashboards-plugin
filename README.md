@@ -1,4 +1,4 @@
-[![CI](https://github.com/opendistro-for-elasticsearch/security-kibana-plugin/workflows/CI/badge.svg?branch=master)](https://github.com/opendistro-for-elasticsearch/security-kibana-plugin/actions)
+[![CI](https://github.com/opendistro-for-elasticsearch/security-kibana-plugin/workflows/CI/badge.svg?branch=main)](https://github.com/opendistro-for-elasticsearch/security-kibana-plugin/actions)
 
 # Open Distro for Elasticsearch Security Kibana Plugin
 
