@@ -1,4 +1,6 @@
-The new Kibana Security Plugin is re-designed to streamline workflows, improve usability, and leverage the new Kibana Plugin platform.
+## Version 1.10.1.1 (2020-9-28)
+
+Redesign and implmemented a new Kibana Security Plugin. The new Kibana security plugin is re-designed to streamline workflows, improve usability, and leverage the new Kibana Plugin platform.
 
 The new Kibana security plugin supoorts Kibana `7.9.1`.
 
