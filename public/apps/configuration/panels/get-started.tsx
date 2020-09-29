@@ -61,6 +61,7 @@ const setOfSteps = [
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <EuiButton
+              data-test-subj="review-authentication-and-authorization"
               onClick={() => {
                 window.location.href = buildHashUrl(ResourceType.auth);
               }}
@@ -89,6 +90,7 @@ const setOfSteps = [
         <EuiFlexGroup gutterSize="s">
           <EuiFlexItem grow={false}>
             <EuiButton
+              data-test-subj="explore-existing-roles"
               fill
               onClick={() => {
                 window.location.href = buildHashUrl(ResourceType.roles);
@@ -99,6 +101,7 @@ const setOfSteps = [
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <EuiButton
+              data-test-subj="create-new-role"
               onClick={() => {
                 window.location.href = buildHashUrl(ResourceType.roles, Action.create);
               }}
@@ -127,6 +130,7 @@ const setOfSteps = [
         <EuiFlexGroup gutterSize="s">
           <EuiFlexItem grow={false}>
             <EuiButton
+              data-test-subj="map-users-to-role"
               fill
               onClick={() => {
                 window.location.href = buildHashUrl(ResourceType.users);
@@ -137,6 +141,7 @@ const setOfSteps = [
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <EuiButton
+              data-test-subj="create-internal-user"
               onClick={() => {
                 window.location.href = buildHashUrl(ResourceType.users, Action.create);
               }}
@@ -195,6 +200,7 @@ export function GetStarted(props: AppDependencies) {
               compliance purposes. <ExternalLink href={DocLinks.AuditLogsDoc} />
             </p>
             <EuiButton
+              data-test-subj="review-audit-log-configuration"
               fill
               onClick={() => {
                 window.location.href = buildHashUrl(ResourceType.auditLogging);
