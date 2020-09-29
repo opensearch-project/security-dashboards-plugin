@@ -95,6 +95,7 @@ const TRANSPORT_DISABLED_CATEGORIES: SettingContent = {
     'MISSING_PRIVILEGES',
     'GRANTED_PRIVILEGES',
     'SSL_EXCEPTION',
+    'OPENDISTRO_SECURITY_INDEX_ATTEMPT',
     'AUTHENTICATED',
   ],
   placeHolder: 'Select categories',
