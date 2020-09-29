@@ -3,7 +3,7 @@
 The Kibana security plugin is re-designed and re-implemented to streamline workflows, improve usability, and leverage the new Kibana Plugin platform.
 
 ### Features
-* Added `Introduction and Tutorial` page to help users get up and running quickly.
+* Added `Introduction and Tutorial` page to help users with plugin usages.
 * Added audit logging configuration function into Kibana security plugin.
 * Replace the logout button with account drop down menu. Moved `account info` and `switching tenant` function to the account drop down menu.
 
