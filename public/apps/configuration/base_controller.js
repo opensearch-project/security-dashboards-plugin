@@ -169,7 +169,7 @@ app.controller('securityBaseController', function ($scope, $element, $route, $wi
 
     // --- Start navigation
     $scope.edit = function(resourcename) {
-        kbnUrl.change('/' +$scope.endpoint.toLowerCase() + '/edit/' + resourcename );
+        kbnUrl.change('/' +$scope.endpoint.toLowerCase() + '/edit/' + encodeURIComponent(encodeURIComponent(resourcename)));
     }
 
     $scope.new = function(query) {
@@ -177,7 +177,7 @@ app.controller('securityBaseController', function ($scope, $element, $route, $wi
     }
 
     $scope.clone = function(resourcename) {
-        kbnUrl.change('/' +$scope.endpoint.toLowerCase() + '/clone/' + resourcename);
+        kbnUrl.change('/' +$scope.endpoint.toLowerCase() + '/clone/' + encodeURIComponent(encodeURIComponent(resourcename)));
     }
 
     $scope.cancel = function () {
@@ -187,7 +187,7 @@ app.controller('securityBaseController', function ($scope, $element, $route, $wi
 
     $scope.delete = function() {
         $scope.displayModal = false;
-        var name = $scope.deleteModalResourceName;
+        var name = encodeURIComponent($scope.deleteModalResourceName);
         $scope.deleteModalResourceName = "";
         $scope.service.delete(name)
             .then(() => $scope.cancel());
