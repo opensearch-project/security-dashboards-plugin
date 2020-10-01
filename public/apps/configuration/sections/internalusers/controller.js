@@ -103,11 +103,6 @@ app.controller('securityEditInternalUsersController', function ($scope, $element
 
         const form = $element.find('form[name="objectForm"]');
 
-        if ($scope.isNew && $scope.resourcename.length < 3) {
-            $scope.errorMessage = 'Username needs to have at least 3 characters.';
-            return;
-        }
-
         if ($scope.isNew && $scope.resourcenames.indexOf($scope.resourcename) != -1) {
             $scope.errorMessage = 'Username already exists, please choose another one.';
             return;
