@@ -54,12 +54,15 @@ export async function fetchTenantNameList(http: HttpStart): Promise<string[]> {
   return Object.keys(await fetchTenants(http));
 }
 
-export function transformTenantData(rawTenantData: DataObject<Tenant>, isPrivateEnabled: boolean) {
-  const tenantList = map(rawTenantData, (v: any, k: string) => ({
-    tenant: k === globalTenantName ? GLOBAL_USER_DICT.Label : k,
+export function transformTenantData(
+  rawTenantData: DataObject<Tenant>,
+  isPrivateEnabled: boolean
+): Tenant[] {
+  const tenantList: Tenant[] = map<Tenant, Tenant>(rawTenantData, (v: Tenant, k?: string) => ({
+    tenant: k === globalTenantName ? GLOBAL_USER_DICT.Label : k || '',
     reserved: v.reserved,
     description: k === globalTenantName ? GLOBAL_USER_DICT.Description : v.description,
-    tenantValue: k === globalTenantName ? GLOBAL_USER_DICT.Value : k,
+    tenantValue: k === globalTenantName ? GLOBAL_USER_DICT.Value : k || '',
   }));
   if (isPrivateEnabled) {
     // Insert Private Tenant in List

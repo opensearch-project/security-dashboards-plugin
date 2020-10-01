@@ -34,7 +34,7 @@ export function ViewSettingGroup(props: {
 
     if (setting.type === 'bool') {
       val = val || false;
-
+      // @ts-ignore
       return renderTextFlexItem(setting.title, displayBoolean(val));
     } else if (setting.type === 'array') {
       val = val || [];
