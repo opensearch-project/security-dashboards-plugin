@@ -103,22 +103,10 @@ app.controller('securityEditInternalUsersController', function ($scope, $element
 
         const form = $element.find('form[name="objectForm"]');
 
-        if ($scope.isNew && $scope.resourcename.length < 3) {
-            $scope.errorMessage = 'Username needs to have at least 3 characters.';
-            return;
-        }
-
         if ($scope.isNew && $scope.resourcenames.indexOf($scope.resourcename) != -1) {
             $scope.errorMessage = 'Username already exists, please choose another one.';
             return;
         }
-
-        if ($scope.resourcename.indexOf("*") != -1 || $scope.resourcename.indexOf('.') != -1 ||
-            $scope.resourcename.indexOf("{") != -1 || $scope.resourcename.indexOf("}") != -1) {
-            $scope.errorMessage = "Username must not contain '*', '.' or curly brackets";
-            return;
-        }
-
 
         if (form.hasClass('ng-invalid-required')) {
             $scope.errorMessage = 'Please fill in all the required parameters.';
