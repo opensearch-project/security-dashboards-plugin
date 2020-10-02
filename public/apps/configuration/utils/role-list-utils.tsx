@@ -73,8 +73,8 @@ export function transformRoleData(rawRoleData: any, rawRoleMappingData: any): Ro
       .flatten()
       .compact()
       .value() as string[],
-    internalUsers: rawRoleMappingData.data[k]?.users || [],
-    backendRoles: rawRoleMappingData.data[k]?.backend_roles || [],
+    internalUsers: rawRoleMappingData.data[k || ''].users || [],
+    backendRoles: rawRoleMappingData.data[k || '']?.backend_roles || [],
   }));
 }
 
