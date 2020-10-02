@@ -114,11 +114,6 @@ app.controller('securityEditInternalUsersController', function ($scope, $element
             return;
         }
 
-        if ($scope.resourcename.indexOf(".") != -1 || $scope.resourcename.indexOf("*") != -1) {
-            $scope.errorMessage = "Username must not contain '.' or '*'";
-            return;
-        }
-
         if (form.hasClass('ng-invalid-required')) {
             $scope.errorMessage = 'Please fill in all the required parameters.';
             return;
