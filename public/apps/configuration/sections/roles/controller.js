@@ -304,13 +304,6 @@ app.controller('securityEditRolesController', function ($rootScope, $scope, $ele
             event.preventDefault();
         }
 
-        // no dots, curly brackets or * allowed 
-        if ($scope.resourcename.indexOf("*") != -1 || $scope.resourcename.indexOf('.') != -1 ||
-            $scope.resourcename.indexOf("{") != -1 || $scope.resourcename.indexOf("}") != -1) {
-            $scope.errorMessage = "Role name must not contain '*', '.' or curly brackets";
-            return;
-        }
-
         const form = $element.find('form[name="objectForm"]');
 
         // role name is required
