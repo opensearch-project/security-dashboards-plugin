@@ -67,10 +67,13 @@ export function AuthorizationPanel(props: { authz: []; loading: boolean }) {
 
   const items = map(domains, function (domain: string) {
     const data = get(props.authz, domain);
+    // @ts-ignore
     const backend = data.authorization_backend;
     return {
       domain_name: domain,
+      // @ts-ignore
       http_enabled: data.http_enabled ? ENABLED_STRING : DISABLED_STRING,
+      // @ts-ignore
       transport_enabled: data.transport_enabled ? ENABLED_STRING : DISABLED_STRING,
       backend_type: backend.type,
       backend_configuration: backend.config,

@@ -64,7 +64,9 @@ export function EditSettingGroup(props: {
 
       return (
         <EuiSwitch
+          // @ts-ignore
           label={displayBoolean(val)}
+          // @ts-ignore
           checked={val}
           onChange={(e) => {
             handleChange(setting.path, e.target.checked);
@@ -78,6 +80,7 @@ export function EditSettingGroup(props: {
         <EuiComboBox
           placeholder={setting.title}
           options={setting.options.map(stringToComboBoxOption)}
+          // @ts-ignore
           selectedOptions={val.map(stringToComboBoxOption)}
           onChange={(selectedOptions) => {
             handleChange(setting.path, selectedOptions.map(comboBoxOptionToString));
@@ -91,12 +94,14 @@ export function EditSettingGroup(props: {
         <EuiComboBox
           noSuggestions
           placeholder={setting.title}
+          // @ts-ignore
           selectedOptions={val.map(stringToComboBoxOption)}
           onChange={(selectedOptions) => {
             // @ts-ignore
             handleChange(setting.path, selectedOptions.map(comboBoxOptionToString));
           }}
           onCreateOption={(searchValue) => {
+            // @ts-ignore
             handleChange(setting.path, [...val, searchValue]);
           }}
         />
@@ -118,6 +123,7 @@ export function EditSettingGroup(props: {
       if (isEmpty(codeMap)) {
         codeString = '{}';
       } else {
+        // @ts-ignore
         codeString = displayObject(codeMap);
       }
 

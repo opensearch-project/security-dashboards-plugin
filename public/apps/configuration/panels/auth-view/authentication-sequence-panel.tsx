@@ -74,12 +74,17 @@ export function AuthenticationSequencePanel(props: { authc: []; loading: boolean
 
   const items = map(domains, function (domain: string) {
     const data = get(props.authc, domain);
+    // @ts-ignore
     const httpAuthenticator = data.http_authenticator;
+    // @ts-ignore
     const backend = data.authentication_backend;
     return {
+      // @ts-ignore
       order: data.order,
       domain_name: domain,
+      // @ts-ignore
       http_enabled: data.http_enabled ? ENABLED_STRING : DISABLED_STRING,
+      // @ts-ignore
       transport_enabled: data.transport_enabled ? ENABLED_STRING : DISABLED_STRING,
       http_type: httpAuthenticator.type,
       http_challenge: httpAuthenticator.challenge ? TRUE_STRING : FALSE_STRING,

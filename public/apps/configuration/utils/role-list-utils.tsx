@@ -59,18 +59,22 @@ Input[1] - RoleMapping schema: {
 }
 */
 export function transformRoleData(rawRoleData: any, rawRoleMappingData: any): RoleListing[] {
-  return map(rawRoleData.data, (v: any, k: string) => ({
-    roleName: k,
+  return map(rawRoleData.data, (v: any, k?: string) => ({
+    roleName: k || '',
     reserved: v.reserved,
     clusterPermissions: v.cluster_permissions,
-    indexPermissions: chain(v.index_permissions).map('index_patterns').flatten().compact().value(),
+    indexPermissions: chain(v.index_permissions)
+      .map('index_patterns')
+      .flatten()
+      .compact()
+      .value() as string[],
     tenantPermissions: chain(v.tenant_permissions)
       .map('tenant_patterns')
       .flatten()
       .compact()
-      .value(),
-    internalUsers: rawRoleMappingData.data[k]?.users || [],
-    backendRoles: rawRoleMappingData.data[k]?.backend_roles || [],
+      .value() as string[],
+    internalUsers: rawRoleMappingData.data[k || ''].users || [],
+    backendRoles: rawRoleMappingData.data[k || '']?.backend_roles || [],
   }));
 }
 
