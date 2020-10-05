@@ -19,7 +19,7 @@ jobs:
       - name: Create plugins dir
         run: |
           cd ./kibana
-          mkdir plugins
+          mkdir -p plugins
       - name: Checkout
         uses: actions/checkout@v2
         with:
