@@ -59,6 +59,8 @@ export class OpenIdAuthRoutes {
             nextUrl: schema.maybe(schema.string()),
             state: schema.maybe(schema.string()),
             refresh: schema.maybe(schema.string()),
+          }, {
+            unknowns: 'allow',
           }),
         },
         options: {
