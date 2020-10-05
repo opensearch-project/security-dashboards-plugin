@@ -54,14 +54,17 @@ export class OpenIdAuthRoutes {
       {
         path: `/auth/openid/login`,
         validate: {
-          query: schema.object({
-            code: schema.maybe(schema.string()),
-            nextUrl: schema.maybe(schema.string()),
-            state: schema.maybe(schema.string()),
-            refresh: schema.maybe(schema.string()),
-          }, {
-            unknowns: 'allow',
-          }),
+          query: schema.object(
+            {
+              code: schema.maybe(schema.string()),
+              nextUrl: schema.maybe(schema.string()),
+              state: schema.maybe(schema.string()),
+              refresh: schema.maybe(schema.string()),
+            },
+            {
+              unknowns: 'allow',
+            }
+          ),
         },
         options: {
           authRequired: false,
