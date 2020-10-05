@@ -58,6 +58,7 @@ export function transformTenantData(
   rawTenantData: DataObject<Tenant>,
   isPrivateEnabled: boolean
 ): Tenant[] {
+  // @ts-ignore
   const tenantList: Tenant[] = map<Tenant, Tenant>(rawTenantData, (v: Tenant, k?: string) => ({
     tenant: k === globalTenantName ? GLOBAL_USER_DICT.Label : k || '',
     reserved: v.reserved,
