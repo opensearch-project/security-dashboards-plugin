@@ -77,7 +77,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
   public authHandler: AuthenticationHandler = async (request, response, toolkit) => {
     // allow access to assets
     if (request.url.pathname && request.url.pathname.startsWith('/bundles/')) {
-      return toolkit.notHandled();
+      return toolkit.authenticated();
     }
 
     // skip auth for APIs that do not require auth
