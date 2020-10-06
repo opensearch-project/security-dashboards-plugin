@@ -22,7 +22,7 @@ const PRIVATE_TENANT_SYMBOL: string = '__user__';
 const GLOBAL_TENANT_SYMBOL: string = '';
 
 export const PRIVATE_TENANTS: string[] = [PRIVATE_TENANT_SYMBOL, 'private'];
-export const GLOBAL_TENANTS: string[] = ['', GLOBAL_TENANT_SYMBOL];
+export const GLOBAL_TENANTS: string[] = ['global', GLOBAL_TENANT_SYMBOL];
 /**
  * Resovles the tenant the user is using.
  *
@@ -42,7 +42,7 @@ export function resolveTenant(
   cookie: SecuritySessionCookie
 ): string | undefined {
   let selectedTenant: string | undefined;
-  const query: any = request.query as any;
+  const query: any = request.url.query as any;
   if (query && (query.security_tenant || query.securitytenant)) {
     selectedTenant = query.security_tenant ? query.security_tenant : query.securitytenant;
   } else if (request.headers.securitytenant || request.headers.security_tenant) {
