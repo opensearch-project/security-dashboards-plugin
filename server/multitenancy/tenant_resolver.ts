@@ -80,6 +80,8 @@ export function isMultitenantPath(request: KibanaRequest): boolean {
     request.url.pathname?.startsWith('/elasticsearch') ||
     request.url.pathname?.startsWith('/api') ||
     request.url.pathname?.startsWith('/app') ||
+    // bootstrap.js depends on tenant info to fetch kibana configs in tenant index
+    (request.url.pathname?.indexOf('bootstrap.js') || -1) > -1 ||
     request.url.pathname === '/'
   );
 }
