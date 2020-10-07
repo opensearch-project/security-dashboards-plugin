@@ -75,11 +75,6 @@ export abstract class AuthenticationType implements IAuthenticationType {
   }
 
   public authHandler: AuthenticationHandler = async (request, response, toolkit) => {
-    // allow access to assets
-    if (request.url.pathname && request.url.pathname.startsWith('/bundles/')) {
-      return toolkit.authenticated();
-    }
-
     // skip auth for APIs that do not require auth
     if (this.authNotRequired(request)) {
       return toolkit.authenticated();
@@ -119,6 +114,14 @@ export abstract class AuthenticationType implements IAuthenticationType {
       if (!cookie || !(await this.isValidCookie(cookie))) {
         // clear cookie
         this.sessionStorageFactory.asScoped(request).clear();
+
+        // for assets, we can still pass it to resource handler as notHandled.
+        // marking it as authenticated may result in login pop up when auth challenge
+        // is enabled.
+        if (request.url.pathname && request.url.pathname.startsWith('/bundles/')) {
+          return toolkit.notHandled();
+        }
+
         // send to auth workflow
         return this.handleUnauthedRequest(request, response, toolkit);
       }
@@ -157,6 +160,9 @@ export abstract class AuthenticationType implements IAuthenticationType {
       } catch (error) {
         this.logger.error(`Failed to resolve user tenant: ${error}`);
         if (error instanceof UnauthenticatedError) {
+          if (request.url.pathname && request.url.pathname.startsWith('/bundles/')) {
+            return toolkit.notHandled();
+          }
           return this.handleUnauthedRequest(request, response, toolkit);
         }
         throw error;
