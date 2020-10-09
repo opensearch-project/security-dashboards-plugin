@@ -132,7 +132,15 @@ function getColumns(
           return EMPTY_FIELD_VALUE;
         }
 
-        return renderExpression('Document-level security', JSON.parse(dls));
+        // TODO: unify the experience for both cases which may require refactoring of renderExpression.
+        try {
+          return renderExpression('Document-level security', JSON.parse(dls));
+        } catch (e) {
+          // Support the use case for $variable without double quotes in DLS, e.g. variable is an array.
+
+          console.warn('Failed to parse dls as json!');
+          return dls;
+        }
       },
     },
     {
