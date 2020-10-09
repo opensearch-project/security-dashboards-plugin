@@ -61,7 +61,7 @@ function resetLastSubUrl(id) {
   }
 
    if (getNewPlatform) {
-    updateNavLinkProperty(id, 'url', navLink.subUrlBase);
+    updateNavLinkProperty(id, 'url', chrome.getBasePath() + navLink.subUrlBase);
   } else {
     navLink.lastSubUrl = navLink.url;
   }
