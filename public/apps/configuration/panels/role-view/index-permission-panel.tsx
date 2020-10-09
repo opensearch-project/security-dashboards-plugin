@@ -136,7 +136,7 @@ function getColumns(
         try {
           return renderExpression('Document-level security', JSON.parse(dls));
         } catch (e) {
-          // support the use case for $expression in DLS.
+          // Support the use case for $variable without double quotes in DLS, e.g. variable is an array.
 
           console.warn('Failed to parse dls as json!');
           return dls;
