@@ -27,6 +27,7 @@ import {
   EuiPageHeader,
 } from '@elastic/eui';
 import React from 'react';
+import { FormattedMessage } from '@kbn/i18n/react';
 import { AppDependencies } from '../../types';
 import securityStepsDiagram from '../../../assets/get_started.svg';
 import { buildHashUrl } from '../utils/url-builder';
@@ -196,8 +197,11 @@ export function GetStarted(props: AppDependencies) {
           </EuiTitle>
           <EuiText size="s" color="subdued">
             <p>
-              Audit logs let you track user access to your Elasticsearch cluster and are useful for
-              compliance purposes. <ExternalLink href={DocLinks.AuditLogsDoc} />
+              <FormattedMessage
+                id="audit.logs.introduction"
+                defaultMessage="Audit logs let you track user access to your Elasticsearch cluster and are useful for compliance purposes."
+              />{' '}
+              <ExternalLink href={DocLinks.AuditLogsDoc} />
             </p>
             <EuiButton
               data-test-subj="review-audit-log-configuration"

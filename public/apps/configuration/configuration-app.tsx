@@ -17,6 +17,7 @@ import './_index.scss';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { I18nProvider } from '@kbn/i18n/react';
 import { AppMountParameters, CoreStart } from '../../../../../src/core/public';
 import { AppPluginStartDependencies, ClientConfigType } from '../../types';
 import { AppRouter } from './app-router';
@@ -28,6 +29,11 @@ export function renderApp(
   config: ClientConfigType
 ) {
   const deps = { coreStart, navigation, params, config };
-  ReactDOM.render(<AppRouter {...deps} />, params.element);
+  ReactDOM.render(
+    <I18nProvider>
+      <AppRouter {...deps} />
+    </I18nProvider>,
+    params.element
+  );
   return () => ReactDOM.unmountComponentAtNode(params.element);
 }
