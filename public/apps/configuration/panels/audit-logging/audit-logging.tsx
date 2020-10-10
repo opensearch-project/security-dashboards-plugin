@@ -29,6 +29,7 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 import React from 'react';
+import { FormattedMessage } from '@kbn/i18n/react';
 import { AppDependencies } from '../../../types';
 import { ResourceType } from '../../types';
 import { getAuditLogging, updateAuditLogging } from '../../utils/audit-logging-utils';
@@ -58,10 +59,15 @@ function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: bool
         <EuiDescribedFormGroup title={<h3>Storage location</h3>} className="described-form-group">
           <EuiFormRow className="form-row">
             <EuiText color="subdued" grow={false}>
-              Configure the output location and storage types in{' '}
-              <EuiCode>elasticsearch.yml</EuiCode>. The default storage location is{' '}
-              <EuiCode>internal_elasticsearch</EuiCode>, which stores the logs in an index on this
-              cluster. <ExternalLink href={DocLinks.AuditLogsStorageDoc} />
+              <FormattedMessage
+                id="audit.logs.storageInstruction"
+                defaultMessage="Configure the output location and storage types in {elasticsearchCode}. The default storage location is {internalElasticsearchCode}, which stores the logs in an index on this cluster."
+                values={{
+                  elasticsearchCode: <EuiCode>elasticsearch.yml</EuiCode>,
+                  internalElasticsearchCode: <EuiCode>internal_elasticsearch</EuiCode>,
+                }}
+              />{' '}
+              <ExternalLink href={DocLinks.AuditLogsStorageDoc} />
             </EuiText>
           </EuiFormRow>
         </EuiDescribedFormGroup>
