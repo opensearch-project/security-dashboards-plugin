@@ -30,9 +30,17 @@ import {
   ClientConfigType,
 } from './types';
 import { LOGIN_PAGE_URI, PLUGIN_NAME, SELECT_TENANT_PAGE_URI } from '../common';
-import { API_ENDPOINT_PERMISSIONS_INFO } from './apps/configuration/constants';
+import {
+  API_ENDPOINT_PERMISSIONS_INFO,
+  includeClusterPermissions,
+  includeIndexPermissions,
+} from './apps/configuration/constants';
 import { setupTopNavButton } from './apps/account/account-app';
 import { fetchAccountInfoSafe } from './apps/account/utils';
+import {
+  excludeFromDisabledRestCategories,
+  excludeFromDisabledTransportCategories,
+} from './apps/configuration/panels/audit-logging/constants';
 
 async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
   try {
@@ -70,6 +78,14 @@ export class OpendistroSecurityPlugin
         mount: async (params: AppMountParameters) => {
           const { renderApp } = await import('./apps/configuration/configuration-app');
           const [coreStart, depsStart] = await core.getStartServices();
+
+          // merge Kibana yml configuration
+          includeClusterPermissions(config.clusterPermissions.include);
+          includeIndexPermissions(config.indexPermissions.include);
+
+          excludeFromDisabledTransportCategories(config.disabledTransportCategories.exclude);
+          excludeFromDisabledRestCategories(config.disabledRestCategories.exclude);
+
           return renderApp(coreStart, depsStart as AppPluginStartDependencies, params, config);
         },
       });
