@@ -12,6 +12,7 @@
  *   express or implied. See the License for the specific language governing
  *   permissions and limitations under the License.
  */
+import { pullAll } from 'lodash';
 
 export const CONFIG_LABELS = {
   AUDIT_LOGGING: 'Audit logging',
@@ -75,6 +76,10 @@ const REST_DISABLED_CATEGORIES: SettingContent = {
   placeHolder: 'Select categories',
 };
 
+export function excludeFromDisabledRestCategories(optionsToExclude: string[]) {
+  pullAll(REST_DISABLED_CATEGORIES.options || [], optionsToExclude);
+}
+
 const TRANSPORT_LAYER: SettingContent = {
   title: 'Transport layer',
   path: 'audit.enable_transport',
@@ -92,14 +97,19 @@ const TRANSPORT_DISABLED_CATEGORIES: SettingContent = {
   options: [
     'BAD_HEADERS',
     'FAILED_LOGIN',
-    'MISSING_PRIVILEGES',
     'GRANTED_PRIVILEGES',
+    'INDEX_EVENT',
+    'MISSING_PRIVILEGES',
     'SSL_EXCEPTION',
     'OPENDISTRO_SECURITY_INDEX_ATTEMPT',
     'AUTHENTICATED',
   ],
   placeHolder: 'Select categories',
 };
+
+export function excludeFromDisabledTransportCategories(optionsToExclude: string[]) {
+  pullAll(TRANSPORT_DISABLED_CATEGORIES.options || [], optionsToExclude);
+}
 
 const BULK_REQUESTS: SettingContent = {
   title: 'Bulk requests',
