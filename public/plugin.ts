@@ -22,6 +22,7 @@ import {
   PluginInitializerContext,
   AppUpdater,
   AppStatus,
+  DEFAULT_APP_CATEGORIES,
 } from '../../../src/core/public';
 import {
   OpendistroSecurityPluginSetup,
@@ -88,6 +89,8 @@ export class OpendistroSecurityPlugin
 
           return renderApp(coreStart, depsStart as AppPluginStartDependencies, params, config);
         },
+        order:10000,
+        category: DEFAULT_APP_CATEGORIES.management
       });
     }
 
