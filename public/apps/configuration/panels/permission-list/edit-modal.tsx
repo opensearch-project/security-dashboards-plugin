@@ -27,7 +27,11 @@ import {
 } from '@elastic/eui';
 import React, { useState } from 'react';
 import { ComboBoxOptions, Action } from '../../types';
-import { stringToComboBoxOption, comboBoxOptionToString, appendOptionToComboBoxHandler } from '../../utils/combo-box-utils';
+import {
+  stringToComboBoxOption,
+  comboBoxOptionToString,
+  appendOptionToComboBoxHandler,
+} from '../../utils/combo-box-utils';
 import { FormRow } from '../../utils/form-row';
 import { NameRow } from '../../utils/name-row';
 
