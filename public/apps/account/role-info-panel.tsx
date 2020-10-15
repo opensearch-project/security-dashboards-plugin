@@ -26,8 +26,8 @@ import { CoreStart } from 'kibana/public';
 import { fetchAccountInfo } from './utils';
 
 export function RoleInfoPanel(props: { coreStart: CoreStart; handleClose: () => void }) {
-  const [roles, setRoles] = useState<string[]>([]);
-  const [backendRoles, setBackendRoles] = useState<string[]>([]);
+  const [roles, setRoles] = React.useState<string[]>([]);
+  const [backendRoles, setBackendRoles] = React.useState<string[]>([]);
 
   const fetchData = useCallback(async () => {
     try {
@@ -39,13 +39,13 @@ export function RoleInfoPanel(props: { coreStart: CoreStart; handleClose: () => 
     }
   }, [props.coreStart.http]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     fetchData();
   }, [props.coreStart.http, fetchData]);
 
   return (
     <EuiOverlayMask>
-      <EuiModal onClose={props.handleClose}>
+      <EuiModal data-test-subj="role-info-modal" onClose={props.handleClose}>
         <EuiSpacer />
         <EuiModalBody>
           <EuiTitle>

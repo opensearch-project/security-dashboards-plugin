@@ -31,3 +31,29 @@ export async function logout(http: HttpStart): Promise<void> {
   await http.post(API_AUTH_LOGOUT);
   window.location.href = http.basePath.serverBasePath;
 }
+
+export async function validateCurrentPassword(
+  http: HttpStart,
+  userName: string,
+  currentPassword: string
+): Promise<void> {
+  await http.post('/auth/login', {
+    body: JSON.stringify({
+      username: userName,
+      password: currentPassword,
+    }),
+  });
+}
+
+export async function updateNewPassword(
+  http: HttpStart,
+  newPassword: string,
+  currentPassword: string
+): Promise<void> {
+  await http.post(`${API_ENDPOINT_ACCOUNT_INFO}`, {
+    body: JSON.stringify({
+      password: newPassword,
+      current_password: currentPassword,
+    }),
+  });
+}

@@ -29,7 +29,7 @@ import {
 import { CoreStart } from 'kibana/public';
 import { FormRow } from '../configuration/utils/form-row';
 import { API_ENDPOINT_ACCOUNT_INFO } from './constants';
-import { logout } from './utils';
+import { logout, updateNewPassword, validateCurrentPassword } from './utils';
 import { PASSWORD_INSTRUCTION } from '../apps-constants';
 import { constructErrorMessageAndLog } from '../error-utils';
 
@@ -40,30 +40,27 @@ interface PasswordResetPanelProps {
 }
 
 export function PasswordResetPanel(props: PasswordResetPanelProps) {
-  const [currentPassword, setCurrentPassword] = useState<string>('');
+  const [currentPassword, setCurrentPassword] = React.useState<string>('');
   // reply on backend response of login call to verify
-  const [isCurrentPasswordInvalid, setIsCurrentPasswordInvalid] = useState<boolean>(false);
-  const [currentPasswordError, setCurrentPasswordError] = useState<string[]>([]);
+  const [isCurrentPasswordInvalid, setIsCurrentPasswordInvalid] = React.useState<boolean>(false);
+  const [currentPasswordError, setCurrentPasswordError] = React.useState<string[]>([]);
 
-  const [newPassword, setNewPassword] = useState<string>('');
+  const [newPassword, setNewPassword] = React.useState<string>('');
   // reply on backend response of user update call to verify
-  const [isNewPasswordInvalid, setIsNewPasswordInvalid] = useState<boolean>(false);
+  const [isNewPasswordInvalid, setIsNewPasswordInvalid] = React.useState<boolean>(false);
 
-  const [repeatNewPassword, setRepeatNewPassword] = useState<string>('');
-  const [isRepeatNewPasswordInvalid, setIsRepeatNewPasswordInvalid] = useState<boolean>(false);
+  const [repeatNewPassword, setRepeatNewPassword] = React.useState<string>('');
+  const [isRepeatNewPasswordInvalid, setIsRepeatNewPasswordInvalid] = React.useState<boolean>(
+    false
+  );
 
-  const [errorCallOut, setErrorCallOut] = useState<string>('');
+  const [errorCallOut, setErrorCallOut] = React.useState<string>('');
 
   const handleReset = async () => {
     const http = props.coreStart.http;
     // validate the current password
     try {
-      await http.post('/auth/login', {
-        body: JSON.stringify({
-          username: props.username,
-          password: currentPassword,
-        }),
-      });
+      await validateCurrentPassword(http, props.username, currentPassword);
     } catch (e) {
       setIsCurrentPasswordInvalid(true);
       setCurrentPasswordError([constructErrorMessageAndLog(e, 'Invalid current password.')]);
@@ -71,12 +68,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
 
     // update new password
     try {
-      await http.post(`${API_ENDPOINT_ACCOUNT_INFO}`, {
-        body: JSON.stringify({
-          password: newPassword,
-          current_password: currentPassword,
-        }),
-      });
+      await updateNewPassword(http, newPassword, currentPassword);
 
       await logout(http);
     } catch (e) {
@@ -87,7 +79,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
   // TODO: replace the instruction message for new password once UX provides it.
   return (
     <EuiOverlayMask>
-      <EuiModal onClose={props.handleClose}>
+      <EuiModal data-test-subj="reset-password-modal" onClose={props.handleClose}>
         <EuiSpacer />
         <EuiModalBody>
           <EuiTitle>
@@ -103,6 +95,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
             error={currentPasswordError}
           >
             <EuiFieldPassword
+              data-test-subj="current-password"
               onChange={function (e: React.ChangeEvent<HTMLInputElement>) {
                 setCurrentPassword(e.target.value);
                 setIsCurrentPasswordInvalid(false);
@@ -117,6 +110,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
             isInvalid={isNewPasswordInvalid}
           >
             <EuiFieldPassword
+              data-test-subj="new-password"
               onChange={function (e: React.ChangeEvent<HTMLInputElement>) {
                 setNewPassword(e.target.value);
                 setIsNewPasswordInvalid(false);
@@ -131,6 +125,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
             helpText="The password must be identical to what you entered above."
           >
             <EuiFieldPassword
+              data-test-subj="reenter-new-password"
               isInvalid={isRepeatNewPasswordInvalid}
               onChange={function (e: React.ChangeEvent<HTMLInputElement>) {
                 const value = e.target.value;
@@ -149,9 +144,16 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
           )}
         </EuiModalBody>
         <EuiModalFooter>
-          <EuiButtonEmpty onClick={props.handleClose}>Cancel</EuiButtonEmpty>
+          <EuiButtonEmpty data-test-subj="cancel" onClick={props.handleClose}>
+            Cancel
+          </EuiButtonEmpty>
 
-          <EuiButton fill disabled={isRepeatNewPasswordInvalid} onClick={handleReset}>
+          <EuiButton
+            data-test-subj="reset"
+            fill
+            disabled={isRepeatNewPasswordInvalid}
+            onClick={handleReset}
+          >
             Reset
           </EuiButton>
         </EuiModalFooter>

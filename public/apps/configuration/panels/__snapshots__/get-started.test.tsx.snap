@@ -218,7 +218,12 @@ exports[`Get started (landing page) renders 1`] = `
         size="s"
       >
         <p>
-          Audit logs let you track user access to your Elasticsearch cluster and are useful for compliance purposes. 
+          <FormattedMessage
+            defaultMessage="Audit logs let you track user access to your Elasticsearch cluster and are useful for compliance purposes."
+            id="audit.logs.introduction"
+            values={Object {}}
+          />
+           
           <ExternalLink
             href="https://opendistro.github.io/for-elasticsearch-docs/docs/security/audit-logs/"
           />
