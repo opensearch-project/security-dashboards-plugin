@@ -56,7 +56,7 @@ export class SamlAuthRoutes {
           const samlHeader = await this.securityClient.getSamlHeader(request);
           const cookie: SecuritySessionCookie = {
             saml: {
-              nextUrl: request.query.nextUrl,
+              nextUrl: `${this.coreSetup.http.basePath.serverBasePath}${request.query.nextUrl}`,
               requestId: samlHeader.requestId,
             },
           };
@@ -194,7 +194,7 @@ export class SamlAuthRoutes {
           const authInfo = await this.securityClient.authinfo(request);
           this.sessionStorageFactory.asScoped(request).clear();
           // TODO: need a default logout page
-          const redirectUrl = authInfo.sso_logout_url || '/';
+          const redirectUrl = authInfo.sso_logout_url || `${this.coreSetup.http.basePath.serverBasePath || '/'}`;
           return response.redirected({
             headers: {
               location: redirectUrl,
