@@ -19,7 +19,6 @@ import { HttpStart } from 'kibana/public';
 import { logout } from './utils';
 
 export function LogoutButton(props: { authType: string; http: HttpStart; divider: JSX.Element }) {
-  props.http.basePath.serverBasePath;
   if (props.authType === 'openid' || props.authType === 'saml') {
     return (
       <div>
