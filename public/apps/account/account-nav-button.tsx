@@ -89,6 +89,9 @@ export function AccountNavButton(props: {
               config={props.config}
               handleClose={() => {
                 setModal(null);
+              }}
+              handleSwitchAndClose={() => {
+                setModal(null);
                 window.location.reload();
               }}
             />
