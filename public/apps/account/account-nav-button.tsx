@@ -87,9 +87,7 @@ export function AccountNavButton(props: {
             <TenantSwitchPanel
               coreStart={props.coreStart}
               config={props.config}
-              handleClose={() => {
-                setModal(null);
-              }}
+              handleClose={() => setModal(null)}
               handleSwitchAndClose={() => {
                 setModal(null);
                 window.location.reload();
