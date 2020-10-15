@@ -75,7 +75,7 @@ export class OpendistroSecurityPlugin
       core.application.register({
         id: PLUGIN_NAME,
         title: 'Security',
-        order: 10000,
+        order: 9040,
         mount: async (params: AppMountParameters) => {
           const { renderApp } = await import('./apps/configuration/configuration-app');
           const [coreStart, depsStart] = await core.getStartServices();
