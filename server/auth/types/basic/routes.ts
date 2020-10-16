@@ -138,7 +138,9 @@ export class BasicAuthRoutes {
       },
       async (context, request, response) => {
         this.sessionStorageFactory.asScoped(request).clear();
-        return response.ok();
+        return response.ok({
+          body: {},
+        });
       }
     );
 
