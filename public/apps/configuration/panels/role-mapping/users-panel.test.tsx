@@ -17,7 +17,7 @@ import { EuiComboBox } from '@elastic/eui';
 import { shallow } from 'enzyme';
 import React from 'react';
 import { ComboBoxOptions } from '../../types';
-import { InternalUsersPanel } from './internal-users-panel';
+import { InternalUsersPanel } from './users-panel';
 
 describe('Role mapping - Internal users panel', () => {
   it('render data', () => {
