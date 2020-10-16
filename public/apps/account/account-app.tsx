@@ -32,7 +32,7 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
             coreStart={coreStart}
             isInternalUser={accountInfo.is_internal_user}
             username={accountInfo.user_name}
-            tenant={accountInfo.user_requested_tenants}
+            tenant={accountInfo.user_requested_tenant}
             config={config}
           />,
           element

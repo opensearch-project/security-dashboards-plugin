@@ -81,7 +81,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
 
         // @ts-ignore
         const currentRawTenantName = accountInfo.data.user_requested_tenant;
-        setCurrentTenant(currentRawTenantName, currentUserName);
+        setCurrentTenant(currentRawTenantName || '', currentUserName);
       } catch (e) {
         // TODO: switch to better error display.
         console.error(e);

@@ -34,6 +34,7 @@ import { PasswordResetPanel } from './password-reset-panel';
 import { TenantSwitchPanel } from './tenant-switch-panel';
 import { ClientConfigType } from '../../types';
 import { LogoutButton } from './log-out-button';
+import { resolveTenantName } from '../configuration/utils/tenant-utils';
 
 export function AccountNavButton(props: {
   coreStart: CoreStart;
@@ -64,10 +65,10 @@ export function AccountNavButton(props: {
               }
             />
           </EuiListGroup>
-          {/* Resolve global and private tenant name. */}
           <EuiListGroupItem
+            color="subdued"
             key="tenant"
-            label={<EuiText size="xs">{props.tenant || ''}</EuiText>}
+            label={<EuiText size="xs">{resolveTenantName(props.tenant || '', username)}</EuiText>}
           />
         </EuiFlexItem>
       </EuiFlexGroup>
