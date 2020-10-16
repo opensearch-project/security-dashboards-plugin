@@ -22,6 +22,7 @@ import { buildHashUrl } from '../../utils/url-builder';
 import { ResourceType, Action } from '../../types';
 import { ExternalLinkButton } from '../../utils/display-utils';
 import { DocLinks } from '../../constants';
+import { appendOptionToComboBoxHandler } from '../../utils/combo-box-utils';
 
 export function InternalUsersPanel(props: {
   state: ComboBoxOptions;
@@ -44,7 +45,12 @@ export function InternalUsersPanel(props: {
         >
           <EuiFlexGroup>
             <EuiFlexItem style={{ maxWidth: '400px' }}>
-              <EuiComboBox options={optionUniverse} selectedOptions={state} onChange={setState} />
+              <EuiComboBox
+                options={optionUniverse}
+                selectedOptions={state}
+                onChange={setState}
+                onCreateOption={appendOptionToComboBoxHandler(setState, [])}
+              />
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
               <ExternalLinkButton
