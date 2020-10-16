@@ -23,7 +23,11 @@ export function LogoutButton(props: { authType: string; http: HttpStart; divider
     return (
       <div>
         {props.divider}
-        <EuiButtonEmpty color="danger" size="xs" href="/auth/logout">
+        <EuiButtonEmpty
+          color="danger"
+          size="xs"
+          href={`${props.http.basePath.serverBasePath}/auth/logout`}
+        >
           Log out
         </EuiButtonEmpty>
       </div>

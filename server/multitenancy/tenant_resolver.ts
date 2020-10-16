@@ -151,7 +151,7 @@ function resolve(
   }
 
   // fall back to the first tenant in the available tenants
-  return findKey(availableTenantsClone, (value: boolean) => value);
+  return findKey(availableTenantsClone, () => true);
 }
 
 /**

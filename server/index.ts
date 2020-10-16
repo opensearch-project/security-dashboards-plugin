@@ -36,7 +36,7 @@ export const configSchema = schema.object({
     exclude: schema.arrayOf(schema.string(), { defaultValue: [] }),
   }),
   cookie: schema.object({
-    secure: schema.boolean({ defaultValue: true }),
+    secure: schema.boolean({ defaultValue: false }),
     name: schema.string({ defaultValue: 'security_authentication' }),
     password: schema.string({ defaultValue: 'security_cookie_default_password', minLength: 32 }),
     ttl: schema.number({ defaultValue: 60 * 60 * 1000 }),
@@ -101,29 +101,23 @@ export const configSchema = schema.object({
       buttonstyle: schema.string({ defaultValue: '' }),
     }),
   }),
-  multitenancy: schema.maybe(
-    schema.object({
-      enabled: schema.boolean({ defaultValue: false }),
-      show_roles: schema.boolean({ defaultValue: false }),
-      enable_filter: schema.boolean({ defaultValue: false }),
-      debug: schema.boolean({ defaultValue: false }),
-      tenants: schema.object({
-        enable_private: schema.boolean({ defaultValue: true }),
-        enable_global: schema.boolean({ defaultValue: true }),
-        preferred: schema.arrayOf(schema.string(), { defaultValue: [] }),
-      }),
-    })
-  ),
-  configuration: schema.maybe(
-    schema.object({
-      enabled: schema.boolean({ defaultValue: true }),
-    })
-  ),
-  accountinfo: schema.maybe(
-    schema.object({
-      enabled: schema.boolean({ defaultValue: false }),
-    })
-  ),
+  multitenancy: schema.object({
+    enabled: schema.boolean({ defaultValue: false }),
+    show_roles: schema.boolean({ defaultValue: false }),
+    enable_filter: schema.boolean({ defaultValue: false }),
+    debug: schema.boolean({ defaultValue: false }),
+    tenants: schema.object({
+      enable_private: schema.boolean({ defaultValue: true }),
+      enable_global: schema.boolean({ defaultValue: true }),
+      preferred: schema.arrayOf(schema.string(), { defaultValue: [] }),
+    }),
+  }),
+  configuration: schema.object({
+    enabled: schema.boolean({ defaultValue: true }),
+  }),
+  accountinfo: schema.object({
+    enabled: schema.boolean({ defaultValue: false }),
+  }),
   openid: schema.maybe(
     schema.object({
       connect_url: schema.maybe(schema.string()),
