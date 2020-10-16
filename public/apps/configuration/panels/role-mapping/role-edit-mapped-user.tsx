@@ -25,7 +25,7 @@ import {
 } from '@elastic/eui';
 import React, { useState, useEffect } from 'react';
 import { BreadcrumbsPageDependencies } from '../../../types';
-import { InternalUsersPanel } from './internal-users-panel';
+import { InternalUsersPanel } from './users-panel';
 import {
   ExternalIdentitiesPanel,
   unbuildExternalIdentityState,
