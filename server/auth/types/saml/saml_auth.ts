@@ -49,7 +49,9 @@ export class SamlAuthentication extends AuthenticationType {
   }
 
   private generateNextUrl(request: KibanaRequest): string {
-    const path = request.url.path || `${this.coreSetup.http.basePath.serverBasePath}/app/kibana`;
+    const path = request.url.path
+      ? `${this.coreSetup.http.basePath.serverBasePath}${request.url.path}`
+      : `${this.coreSetup.http.basePath.serverBasePath}/app/kibana`;
     return escape(path);
   }
 
