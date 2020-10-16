@@ -25,7 +25,7 @@ export interface MappedUsersListing {
 }
 
 export enum UserType {
-  internal = 'Internal user',
+  internal = 'User',
   external = 'External identity',
 }
 
