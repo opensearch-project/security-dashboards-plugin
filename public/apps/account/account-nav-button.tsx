@@ -89,6 +89,10 @@ export function AccountNavButton(props: {
               coreStart={props.coreStart}
               config={props.config}
               handleClose={() => setModal(null)}
+              handleSwitchAndClose={() => {
+                setModal(null);
+                window.location.reload();
+              }}
             />
           )
         }

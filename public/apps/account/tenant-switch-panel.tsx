@@ -43,6 +43,7 @@ import { constructErrorMessageAndLog } from '../error-utils';
 interface TenantSwitchPanelProps {
   coreStart: CoreStart;
   handleClose: () => void;
+  handleSwitchAndClose: () => void;
   config: ClientConfigType;
 }
 
@@ -210,7 +211,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
     } else {
       try {
         await changeTenant(tenantName);
-        props.handleClose();
+        props.handleSwitchAndClose();
       } catch (e) {
         setErrorCallOut(constructErrorMessageAndLog(e, 'Failed to switch tenant.'));
       }
