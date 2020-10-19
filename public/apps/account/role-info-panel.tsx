@@ -21,7 +21,7 @@ import {
   EuiHorizontalRule,
   EuiSpacer,
 } from '@elastic/eui';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import { CoreStart } from 'kibana/public';
 import { fetchAccountInfo } from './utils';
 

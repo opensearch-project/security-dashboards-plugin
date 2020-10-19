@@ -29,7 +29,7 @@ import {
 } from '@elastic/eui';
 import { CoreStart } from 'kibana/public';
 import { keys } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { ClientConfigType } from '../../types';
 import {
   RESOLVED_GLOBAL_TENANT,
@@ -81,7 +81,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
 
         // @ts-ignore
         const currentRawTenantName = accountInfo.data.user_requested_tenant;
-        setCurrentTenant(currentRawTenantName, currentUserName);
+        setCurrentTenant(currentRawTenantName || '', currentUserName);
       } catch (e) {
         // TODO: switch to better error display.
         console.error(e);
@@ -92,7 +92,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
   }, [props.coreStart.http]);
 
   // Custom tenant super select related.
-  const [selectedCustomTenantOption, setSelectedCustomTenantOption] = useState<string>('');
+  const [selectedCustomTenantOption, setSelectedCustomTenantOption] = React.useState<string>('');
   const onCustomTenantChange = (selectedOption: string) => {
     setSelectedCustomTenantOption(selectedOption);
     setTenantSwitchRadioIdSelected(CUSTOM_TENANT_RADIO_ID);

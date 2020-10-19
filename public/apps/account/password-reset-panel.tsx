@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import {
   EuiButton,
   EuiButtonEmpty,
@@ -28,7 +28,6 @@ import {
 } from '@elastic/eui';
 import { CoreStart } from 'kibana/public';
 import { FormRow } from '../configuration/utils/form-row';
-import { API_ENDPOINT_ACCOUNT_INFO } from './constants';
 import { logout, updateNewPassword, validateCurrentPassword } from './utils';
 import { PASSWORD_INSTRUCTION } from '../apps-constants';
 import { constructErrorMessageAndLog } from '../error-utils';
