@@ -29,7 +29,7 @@ import {
 } from '@elastic/eui';
 import { CoreStart } from 'kibana/public';
 import { keys } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { ClientConfigType } from '../../types';
 import {
   RESOLVED_GLOBAL_TENANT,
@@ -48,14 +48,14 @@ interface TenantSwitchPanelProps {
 }
 
 const GLOBAL_TENANT_KEY_NAME = 'global_tenant';
-const GLOBAL_TENANT_RADIO_ID = 'global';
-const PRIVATE_TENANT_RADIO_ID = 'private';
-const CUSTOM_TENANT_RADIO_ID = 'custom';
+export const GLOBAL_TENANT_RADIO_ID = 'global';
+export const PRIVATE_TENANT_RADIO_ID = 'private';
+export const CUSTOM_TENANT_RADIO_ID = 'custom';
 
 export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
-  const [tenants, setTenants] = useState<string[]>([]);
-  const [username, setUsername] = useState<string>('');
-  const [errorCallOut, setErrorCallOut] = useState<string>('');
+  const [tenants, setTenants] = React.useState<string[]>([]);
+  const [username, setUsername] = React.useState<string>('');
+  const [errorCallOut, setErrorCallOut] = React.useState<string>('');
 
   const setCurrentTenant = (currentRawTenantName: string, currentUserName: string) => {
     const resolvedTenantName = resolveTenantName(currentRawTenantName, currentUserName);
@@ -70,7 +70,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchData = async () => {
       try {
         const accountInfo = await fetchAccountInfo(props.coreStart.http);
@@ -93,7 +93,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
   }, [props.coreStart.http]);
 
   // Custom tenant super select related.
-  const [selectedCustomTenantOption, setSelectedCustomTenantOption] = useState<string>('');
+  const [selectedCustomTenantOption, setSelectedCustomTenantOption] = React.useState<string>('');
   const onCustomTenantChange = (selectedOption: string) => {
     setSelectedCustomTenantOption(selectedOption);
     setTenantSwitchRadioIdSelected(CUSTOM_TENANT_RADIO_ID);
@@ -179,7 +179,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
     },
   ];
 
-  const [tenantSwitchRadioIdSelected, setTenantSwitchRadioIdSelected] = useState<string>();
+  const [tenantSwitchRadioIdSelected, setTenantSwitchRadioIdSelected] = React.useState<string>();
   const onTenantSwitchRadioChange = (radioId: string) => {
     setTenantSwitchRadioIdSelected(radioId);
     setErrorCallOut('');
@@ -224,6 +224,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
     content = (
       <>
         <EuiRadioGroup
+          data-test-subj="tenant-switch-radios"
           options={tenantSwitchRadios}
           idSelected={tenantSwitchRadioIdSelected}
           onChange={(radioId) => onTenantSwitchRadioChange(radioId)}
@@ -245,7 +246,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
 
   return (
     <EuiOverlayMask>
-      <EuiModal onClose={props.handleClose}>
+      <EuiModal data-test-subj="tenant-switch-modal" onClose={props.handleClose}>
         <EuiSpacer />
         <EuiModalBody>
           <EuiTitle>
@@ -266,7 +267,12 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
         <EuiModalFooter>
           <EuiButtonEmpty onClick={props.handleClose}>Cancel</EuiButtonEmpty>
 
-          <EuiButton fill disabled={!isMultiTenancyEnabled} onClick={handleTenantConfirmation}>
+          <EuiButton
+            data-test-subj="confirm"
+            fill
+            disabled={!isMultiTenancyEnabled}
+            onClick={handleTenantConfirmation}
+          >
             Confirm
           </EuiButton>
         </EuiModalFooter>

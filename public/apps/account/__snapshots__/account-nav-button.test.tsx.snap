@@ -1,0 +1,113 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Account navigation button renders 1`] = `
+<EuiHeaderSectionItemButton
+  onClick={[Function]}
+>
+  <EuiPopover
+    anchorPosition="downCenter"
+    button={
+      <EuiAvatar
+        name="user1"
+      />
+    }
+    closePopover={[Function]}
+    display="inlineBlock"
+    hasArrow={true}
+    id="actionsMenu"
+    isOpen={false}
+    ownFocus={false}
+    panelPaddingSize="s"
+  >
+    <EuiContextMenuPanel
+      hasFocus={true}
+      items={Array []}
+    >
+      <div
+        style={
+          Object {
+            "maxWidth": "256px",
+          }
+        }
+      >
+        <EuiFlexGroup
+          gutterSize="s"
+        >
+          <EuiFlexItem
+            grow={null}
+          >
+            <EuiAvatar
+              name="user1"
+            />
+          </EuiFlexItem>
+          <EuiFlexItem>
+            <EuiListGroup
+              gutterSize="none"
+            >
+              <EuiListGroupItem
+                key="username"
+                label={
+                  <EuiText
+                    size="s"
+                  >
+                    <h5>
+                      user1
+                    </h5>
+                  </EuiText>
+                }
+                wrapText={true}
+              />
+            </EuiListGroup>
+            <EuiListGroupItem
+              key="tenant"
+              label={
+                <EuiText
+                  size="xs"
+                >
+                  tenant1
+                </EuiText>
+              }
+            />
+          </EuiFlexItem>
+        </EuiFlexGroup>
+        <EuiHorizontalRule
+          margin="xs"
+        />
+        <EuiButtonEmpty
+          onClick={[Function]}
+          size="xs"
+        >
+          View roles and identities
+        </EuiButtonEmpty>
+        <EuiHorizontalRule
+          margin="xs"
+        />
+        <EuiButtonEmpty
+          onClick={[Function]}
+          size="xs"
+        >
+          Switch tenants
+        </EuiButtonEmpty>
+        <EuiHorizontalRule
+          margin="xs"
+        />
+        <EuiButtonEmpty
+          onClick={[Function]}
+          size="xs"
+        >
+          Reset password
+        </EuiButtonEmpty>
+        <LogoutButton
+          authType="dummy"
+          divider={
+            <EuiHorizontalRule
+              margin="xs"
+            />
+          }
+          http={1}
+        />
+      </div>
+    </EuiContextMenuPanel>
+  </EuiPopover>
+</EuiHeaderSectionItemButton>
+`;
