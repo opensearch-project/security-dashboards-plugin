@@ -22,6 +22,7 @@ import {
   PluginInitializerContext,
   AppUpdater,
   AppStatus,
+  DEFAULT_APP_CATEGORIES,
 } from '../../../src/core/public';
 import {
   OpendistroSecurityPluginSetup,
@@ -74,7 +75,7 @@ export class OpendistroSecurityPlugin
       core.application.register({
         id: PLUGIN_NAME,
         title: 'Security',
-        order: 1,
+        order: 9050,
         mount: async (params: AppMountParameters) => {
           const { renderApp } = await import('./apps/configuration/configuration-app');
           const [coreStart, depsStart] = await core.getStartServices();
@@ -88,6 +89,7 @@ export class OpendistroSecurityPlugin
 
           return renderApp(coreStart, depsStart as AppPluginStartDependencies, params, config);
         },
+        category: DEFAULT_APP_CATEGORIES.management,
       });
     }
 

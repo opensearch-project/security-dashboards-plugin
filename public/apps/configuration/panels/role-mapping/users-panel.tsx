@@ -22,6 +22,7 @@ import { buildHashUrl } from '../../utils/url-builder';
 import { ResourceType, Action } from '../../types';
 import { ExternalLinkButton } from '../../utils/display-utils';
 import { DocLinks } from '../../constants';
+import { appendOptionToComboBoxHandler } from '../../utils/combo-box-utils';
 
 export function InternalUsersPanel(props: {
   state: ComboBoxOptions;
@@ -31,7 +32,7 @@ export function InternalUsersPanel(props: {
   const { state, optionUniverse, setState } = props;
   return (
     <PanelWithHeader
-      headerText="Internal users"
+      headerText="Users"
       headerSubText="You can create an internal user in internal user database of the security plugin. An
       internal user can have its own backend role and host for an external authentication and
       authorization."
@@ -39,12 +40,17 @@ export function InternalUsersPanel(props: {
     >
       <EuiForm>
         <FormRow
-          headerText="Internal users"
+          headerText="Users"
           helpText="Look up by user name. You can also create new internal user."
         >
           <EuiFlexGroup>
             <EuiFlexItem style={{ maxWidth: '400px' }}>
-              <EuiComboBox options={optionUniverse} selectedOptions={state} onChange={setState} />
+              <EuiComboBox
+                options={optionUniverse}
+                selectedOptions={state}
+                onChange={setState}
+                onCreateOption={appendOptionToComboBoxHandler(setState, [])}
+              />
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
               <ExternalLinkButton

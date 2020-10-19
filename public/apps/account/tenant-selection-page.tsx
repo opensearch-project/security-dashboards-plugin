@@ -19,7 +19,7 @@ import { AppMountParameters, CoreStart } from '../../../../../src/core/public';
 import { ClientConfigType } from '../../types';
 import { TenantSwitchPanel } from './tenant-switch-panel';
 
-function handleModalClose(serverBasePath: string) {
+function redirect(serverBasePath: string) {
   // navigate to nextUrl
   const urlParams = new URLSearchParams(window.location.search);
   let nextUrl = urlParams.get('nextUrl');
@@ -36,18 +36,20 @@ export async function renderPage(
   hasApiPermission?: boolean
 ) {
   const serverBasePath: string = coreStart.http.basePath.serverBasePath;
+  const handleModalClose = () => redirect(serverBasePath);
   // Skip either:
   // 1. multitenancy is disabled
   // 2. security manager (user with api permission)
   if (!config.multitenancy.enabled || hasApiPermission) {
-    handleModalClose(serverBasePath);
+    handleModalClose();
     return () => {};
   } else {
     ReactDOM.render(
       <TenantSwitchPanel
         coreStart={coreStart}
         config={config}
-        handleClose={() => handleModalClose(serverBasePath)}
+        handleClose={handleModalClose}
+        handleSwitchAndClose={handleModalClose}
       />,
       params.element
     );

@@ -52,7 +52,7 @@ const setOfSteps = [
 
         <EuiSpacer size="m" />
 
-        <EuiFlexGroup gutterSize="s">
+        <EuiFlexGroup gutterSize="s" wrap>
           <EuiFlexItem grow={false}>
             <ExternalLinkButton
               fill

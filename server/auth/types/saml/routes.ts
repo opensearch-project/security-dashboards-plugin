@@ -194,7 +194,8 @@ export class SamlAuthRoutes {
           const authInfo = await this.securityClient.authinfo(request);
           this.sessionStorageFactory.asScoped(request).clear();
           // TODO: need a default logout page
-          const redirectUrl = authInfo.sso_logout_url || '/';
+          const redirectUrl =
+            authInfo.sso_logout_url || this.coreSetup.http.basePath.serverBasePath || '/';
           return response.redirected({
             headers: {
               location: redirectUrl,
