@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { EuiFieldText } from '@elastic/eui';
 import { FormRow } from './form-row';
 import { resourceNameHelpText, validateResourceName } from './resource-validation-util';
@@ -29,10 +29,9 @@ export interface NameRowDeps extends FormRowDeps {
 }
 
 export function NameRow(props: NameRowDeps) {
-  const [errors, setErrors] = useState<string[]>([]);
+  const [errors, setErrors] = React.useState<string[]>([]);
 
   const validateName = () => {
-    setErrors(validateResourceName(props.resourceType, props.resourceName));
     const errorMessages = validateResourceName(props.resourceType, props.resourceName);
     props.setIsFormValid(!(errorMessages.length > 0));
     setErrors(errorMessages);
@@ -47,6 +46,7 @@ export function NameRow(props: NameRowDeps) {
       error={errors}
     >
       <EuiFieldText
+        data-test-subj="name-text"
         fullWidth={props.fullWidth}
         value={props.resourceName}
         onChange={(e) => {

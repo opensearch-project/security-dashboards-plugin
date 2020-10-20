@@ -32,7 +32,7 @@ export async function fetchActionGroups(http: HttpStart): Promise<DataObject<Act
   return actiongroups.data;
 }
 
-function tranformActionGroupsToListingFormat(
+export function tranformActionGroupsToListingFormat(
   rawData: DataObject<ActionGroupItem>
 ): PermissionListingItem[] {
   return map(rawData, (value: ActionGroupItem, key?: string) => ({

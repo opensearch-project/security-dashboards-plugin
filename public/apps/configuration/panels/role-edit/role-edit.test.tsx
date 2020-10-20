@@ -127,33 +127,4 @@ describe('Role edit', () => {
       done();
     });
   });
-
-  it('change role name', () => {
-    useEffect.mockImplementationOnce((f) => f());
-    useEffect.mockImplementationOnce((f) => f());
-    useEffect.mockImplementationOnce((f) => f());
-    const setState = jest.fn();
-    useState.mockImplementation((initialValue) => [initialValue, setState]);
-    const action = 'edit';
-    const buildBreadcrumbs = jest.fn();
-    const updatedRoleName = 'admin';
-
-    const component = shallow(
-      <RoleEdit
-        action={action}
-        sourceRoleName={sampleSourceRole}
-        buildBreadcrumbs={buildBreadcrumbs}
-        coreStart={mockCoreStart as any}
-        navigation={{} as any}
-        params={{} as any}
-        config={{} as any}
-      />
-    );
-    component
-      .find(EuiFieldText)
-      .first()
-      .simulate('change', { target: { value: updatedRoleName } });
-
-    expect(setState).toBeCalledWith(updatedRoleName);
-  });
 });

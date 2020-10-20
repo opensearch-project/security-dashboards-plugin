@@ -29,10 +29,11 @@ describe('Account menu - Log out button', () => {
     Proxy = 'proxy',
   }
   const mockHttpStart = {
-    http: 1,
+    basePath: {
+      serverBasePath: '/app/kibana',
+    },
   };
   const mockDivider = <></>;
-
   describe('renders', () => {
     it('renders when auth type is OpenId', () => {
       const component = shallow(

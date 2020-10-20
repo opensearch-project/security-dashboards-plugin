@@ -1,0 +1,123 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Display utils Render Customization column when reserved = False 1`] = `
+<div
+  className="euiFlexGroup euiFlexGroup--gutterExtraSmall euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive"
+>
+  <EuiFlexItem
+    grow={false}
+  >
+    <EuiIcon
+      type="pencil"
+    />
+  </EuiFlexItem>
+  <EuiFlexItem
+    grow={false}
+  >
+    <EuiText
+      className="table-items"
+    >
+      Custom
+    </EuiText>
+  </EuiFlexItem>
+</div>
+`;
+
+exports[`Display utils Render Customization column when reserved = True 1`] = `
+<div
+  className="euiFlexGroup euiFlexGroup--gutterExtraSmall euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive"
+>
+  <EuiFlexItem
+    grow={false}
+  >
+    <EuiIcon
+      type="lock"
+    />
+  </EuiFlexItem>
+  <EuiFlexItem
+    grow={false}
+  >
+    <EuiText
+      className="table-items"
+    >
+      Reserved
+    </EuiText>
+  </EuiFlexItem>
+</div>
+`;
+
+exports[`Display utils Render External Link 1`] = `
+<EuiLink
+  className="external-link-inline-block"
+  external={true}
+  href="http://localhost:5601"
+  target="_blank"
+>
+  Learn more
+</EuiLink>
+`;
+
+exports[`Display utils Render External Link Button 1`] = `
+<EuiButton
+  fill={true}
+  href="http://localhost:5601"
+  iconSide="right"
+  iconType="popout"
+  size="s"
+  target="_blank"
+>
+  Test
+</EuiButton>
+`;
+
+exports[`Display utils Render expression when expression is non-empty 1`] = `
+<div>
+  <EuiLink
+    onClick={[Function]}
+  >
+    View expression
+  </EuiLink>
+</div>
+`;
+
+exports[`Display utils Render header with tooltip 1`] = `
+<Fragment>
+  <span
+    className="euiToolTipAnchor"
+    onKeyUp={[Function]}
+    onMouseOut={[Function]}
+    onMouseOver={[Function]}
+  >
+    <span
+      onBlur={[Function]}
+      onFocus={[Function]}
+    >
+      Header
+       
+      <EuiIcon
+        className="eui-alignTop"
+        color="subdued"
+        size="s"
+        type="questionInCircle"
+      />
+    </span>
+  </span>
+</Fragment>
+`;
+
+exports[`Display utils Render text flex item 1`] = `
+<div
+  className="euiFlexItem"
+>
+  <EuiText
+    size="xs"
+  >
+    <strong>
+      Header
+    </strong>
+    <div>
+      Value
+    </div>
+  </EuiText>
+</div>
+`;

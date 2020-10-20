@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { EuiFieldText, EuiIcon } from '@elastic/eui';
 import { FormRow } from './form-row';
 import { PASSWORD_INSTRUCTION } from '../../apps-constants';
@@ -22,11 +22,11 @@ export function PasswordEditPanel(props: {
   updatePassword: (p: string) => void;
   updateIsInvalid: (v: boolean) => void;
 }) {
-  const [password, setPassword] = useState<string>('');
-  const [repeatPassword, setRepeatPassword] = useState<string>('');
-  const [isRepeatPasswordInvalid, setIsRepeatPasswordInvalid] = useState<boolean>(false);
+  const [password, setPassword] = React.useState<string>('');
+  const [repeatPassword, setRepeatPassword] = React.useState<string>('');
+  const [isRepeatPasswordInvalid, setIsRepeatPasswordInvalid] = React.useState<boolean>(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     props.updatePassword(password);
     const isInvalid = repeatPassword !== password;
     setIsRepeatPasswordInvalid(isInvalid);
@@ -45,6 +45,7 @@ export function PasswordEditPanel(props: {
     <>
       <FormRow headerText="Password" helpText={PASSWORD_INSTRUCTION}>
         <EuiFieldText
+          data-test-subj="password"
           prepend={<EuiIcon type="lock" />}
           type="password"
           onChange={passwordChangeHandler}
@@ -56,6 +57,7 @@ export function PasswordEditPanel(props: {
         helpText="The password must be identical to what you entered above."
       >
         <EuiFieldText
+          data-test-subj="re-enter-password"
           prepend={<EuiIcon type="lock" />}
           type="password"
           isInvalid={isRepeatPasswordInvalid}

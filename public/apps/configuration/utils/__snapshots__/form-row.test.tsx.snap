@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Form row renders 1`] = `
+<EuiFormRow
+  describedByIds={Array []}
+  display="row"
+  error={
+    Array [
+      "error1",
+      "error2",
+    ]
+  }
+  fullWidth={true}
+  hasChildLabel={true}
+  hasEmptyLabelSpace={false}
+  helpText="Help!!!"
+  isInvalid={true}
+  label={
+    <React.Fragment>
+      <EuiText
+        size="xs"
+      >
+        <b>
+          Header
+        </b>
+        <i>
+           - optional
+        </i>
+      </EuiText>
+      <EuiText
+        color="subdued"
+        size="xs"
+      >
+        Sub text
+        <React.Fragment>
+           
+          <ExternalLink
+            href="http://localhost:5601/"
+          />
+        </React.Fragment>
+      </EuiText>
+    </React.Fragment>
+  }
+  labelType="label"
+>
+  <div>
+    Test
+  </div>
+</EuiFormRow>
+`;

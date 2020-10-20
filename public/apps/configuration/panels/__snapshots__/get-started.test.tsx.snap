@@ -80,6 +80,7 @@ exports[`Get started (landing page) renders 1`] = `
                 />
                 <EuiFlexGroup
                   gutterSize="s"
+                  wrap={true}
                 >
                   <EuiFlexItem
                     grow={false}
