@@ -30,6 +30,7 @@ import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { ProxyAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
+import { isValidTenent } from '../../../multitenancy/tenant_resolver';
 
 export class ProxyAuthentication extends AuthenticationType {
   private static readonly XFF: string = 'x-forwarded-for';
@@ -88,7 +89,7 @@ export class ProxyAuthentication extends AuthenticationType {
     return authHeaders;
   }
 
-  getCookie(request: KibanaRequest, authInfo: any): SecuritySessionCookie {
+  async getCookie(request: KibanaRequest, authInfo: any): Promise<SecuritySessionCookie> {
     const cookie: SecuritySessionCookie = {
       username: authInfo.username,
       credentials: {},
@@ -96,6 +97,7 @@ export class ProxyAuthentication extends AuthenticationType {
       isAnonymousAuth: false,
       expiryTime: Date.now() + this.config.cookie.ttl,
     };
+
     if (this.userHeaderName && request.headers[this.userHeaderName]) {
       cookie.credentials[this.userHeaderName] = request.headers[this.userHeaderName];
     }
@@ -107,6 +109,12 @@ export class ProxyAuthentication extends AuthenticationType {
     }
     if (request.headers.authorization) {
       cookie.credentials.authorization = request.headers.authorization;
+    }
+
+    // set tenant from cookie if exist
+    const browserCookie = await this.sessionStorageFactory.asScoped(request).get();
+    if (browserCookie && isValidTenent(browserCookie.tenant)) {
+      cookie.tenant = browserCookie.tenant;
     }
     return cookie;
   }
