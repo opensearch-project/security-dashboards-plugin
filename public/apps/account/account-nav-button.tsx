@@ -99,9 +99,9 @@ export function AccountNavButton(props: {
       >
         Switch tenants
       </EuiButtonEmpty>
-      {horizontalRule}
       {props.isInternalUser && (
         <>
+          {horizontalRule}
           <EuiButtonEmpty
             size="xs"
             onClick={() =>
