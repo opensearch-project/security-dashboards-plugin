@@ -30,18 +30,19 @@ export function InternalUsersPanel(props: {
   setState: Dispatch<SetStateAction<ComboBoxOptions>>;
 }) {
   const { state, optionUniverse, setState } = props;
+  // TODO: improve UX by adding colors to user name pills to distinguish internal user and external user on field population.
   return (
     <PanelWithHeader
       headerText="Users"
       headerSubText="You can create an internal user in internal user database of the security plugin. An
       internal user can have its own backend role and host for an external authentication and
-      authorization."
+      authorization. External users from your identity provider are also supported."
       helpLink={DocLinks.CreateUsersDoc}
     >
       <EuiForm>
         <FormRow
           headerText="Users"
-          helpText="Look up by user name. You can also create new internal user."
+          helpText="Look up by user name. You can also create new internal user or enter external user."
         >
           <EuiFlexGroup>
             <EuiFlexItem style={{ maxWidth: '400px' }}>
