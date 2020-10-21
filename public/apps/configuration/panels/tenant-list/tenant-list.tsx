@@ -31,7 +31,7 @@ import {
   EuiGlobalToastList,
   Query,
 } from '@elastic/eui';
-import React, { ReactNode, useEffect, useState, useCallback } from 'react';
+import React, { ReactNode, useState, useCallback } from 'react';
 import { difference } from 'lodash';
 import { getCurrentUser } from '../../../../utils/auth-info-utils';
 import { AppDependencies } from '../../../types';
@@ -59,6 +59,7 @@ import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { useContextMenuState } from '../../utils/context-menu';
 import { generateResourceName } from '../../utils/resource-utils';
 import { DocLinks } from '../../constants';
+import { TenantInstructionView } from './tenant-instruction-view';
 
 export function TenantList(props: AppDependencies) {
   const [tenantData, setTenantData] = React.useState<Tenant[]>([]);
@@ -318,6 +319,10 @@ export function TenantList(props: AppDependencies) {
       />
     );
   };
+
+  if (!props.config.multitenancy.enabled) {
+    return <TenantInstructionView />;
+  }
 
   return (
     <>

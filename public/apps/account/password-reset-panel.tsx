@@ -36,6 +36,7 @@ interface PasswordResetPanelProps {
   coreStart: CoreStart;
   username: string;
   handleClose: () => void;
+  logoutUrl?: string;
 }
 
 export function PasswordResetPanel(props: PasswordResetPanelProps) {
@@ -69,7 +70,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
     try {
       await updateNewPassword(http, newPassword, currentPassword);
 
-      await logout(http);
+      await logout(http, props.logoutUrl);
     } catch (e) {
       setErrorCallOut(constructErrorMessageAndLog(e, 'Failed to reset password.'));
     }

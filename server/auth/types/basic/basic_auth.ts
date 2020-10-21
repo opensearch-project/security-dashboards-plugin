@@ -68,7 +68,7 @@ export class BasicAuthentication extends AuthenticationType {
     return {};
   }
 
-  getCookie(request: KibanaRequest, authInfo: any): SecuritySessionCookie {
+  async getCookie(request: KibanaRequest, authInfo: any): Promise<SecuritySessionCookie> {
     if (
       this.config.auth.anonymous_auth_enabled &&
       authInfo.user_name === 'opendistro_security_anonymous'
