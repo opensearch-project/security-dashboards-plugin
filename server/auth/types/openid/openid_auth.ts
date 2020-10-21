@@ -114,7 +114,7 @@ export class OpenIdAuthentication extends AuthenticationType {
     return {};
   }
 
-  getCookie(request: KibanaRequest, authInfo: any): SecuritySessionCookie {
+  async getCookie(request: KibanaRequest, authInfo: any): Promise<SecuritySessionCookie> {
     return {
       username: authInfo.user_name,
       credentials: {

@@ -97,10 +97,10 @@ export class JwtAuthentication extends AuthenticationType {
     return header;
   }
 
-  protected getCookie(
+  protected async getCookie(
     request: KibanaRequest<unknown, unknown, unknown, any>,
     authInfo: any
-  ): SecuritySessionCookie {
+  ): Promise<SecuritySessionCookie> {
     return {
       username: authInfo.user_name,
       credentials: {

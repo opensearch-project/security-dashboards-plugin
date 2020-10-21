@@ -49,7 +49,7 @@ export function resolveTenant(
     selectedTenant = request.headers.securitytenant
       ? (request.headers.securitytenant as string)
       : (request.headers.security_tenant as string);
-  } else if (isValidTenent(cookie.tenant)) {
+  } else if (isValidTenant(cookie.tenant)) {
     selectedTenant = cookie.tenant;
   } else {
     selectedTenant = undefined;
@@ -101,7 +101,7 @@ function resolve(
     return undefined;
   }
 
-  if (isValidTenent(requestedTenant)) {
+  if (isValidTenant(requestedTenant)) {
     requestedTenant = requestedTenant!;
     if (requestedTenant in availableTenants) {
       return requestedTenant;
@@ -161,6 +161,6 @@ function resolve(
  *
  * @param tenant
  */
-export function isValidTenent(tenant: string | undefined | null): boolean {
+export function isValidTenant(tenant: string | undefined | null): boolean {
   return tenant !== undefined && tenant !== null;
 }
