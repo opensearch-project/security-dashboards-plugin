@@ -30,7 +30,7 @@ export function TenantInstructionView() {
       </EuiText>
 
       <EuiText textAlign="center" size="xs" color="subdued" className="instruction-text">
-        Contact the administrator to enable multi tenancy.
+        Contact your administrator to enable multi tenancy.
       </EuiText>
     </>
   );
