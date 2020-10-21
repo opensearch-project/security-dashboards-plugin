@@ -27,9 +27,9 @@ export async function fetchAccountInfoSafe(http: HttpStart): Promise<AccountInfo
   return getWithIgnores<AccountInfo>(http, API_ENDPOINT_ACCOUNT_INFO, [401]);
 }
 
-export async function logout(http: HttpStart): Promise<void> {
+export async function logout(http: HttpStart, logoutUrl?: string): Promise<void> {
   await http.post(API_AUTH_LOGOUT);
-  window.location.href = http.basePath.serverBasePath;
+  window.location.href = logoutUrl || http.basePath.serverBasePath;
 }
 
 export async function validateCurrentPassword(

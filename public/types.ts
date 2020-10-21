@@ -55,6 +55,7 @@ export interface ClientConfigType {
   };
   auth: {
     type: string;
+    logout_url: string;
   };
   clusterPermissions: {
     include: string[];
