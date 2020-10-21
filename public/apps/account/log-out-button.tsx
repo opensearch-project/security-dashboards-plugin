@@ -18,7 +18,12 @@ import { EuiButtonEmpty } from '@elastic/eui';
 import { HttpStart } from 'kibana/public';
 import { logout } from './utils';
 
-export function LogoutButton(props: { authType: string; http: HttpStart; divider: JSX.Element; logoutUrl?: string}) {
+export function LogoutButton(props: {
+  authType: string;
+  http: HttpStart;
+  divider: JSX.Element;
+  logoutUrl?: string;
+}) {
   if (props.authType === 'openid' || props.authType === 'saml') {
     return (
       <div>

@@ -30,8 +30,8 @@ describe('Account menu - Log out button', () => {
   }
   const mockHttpStart = {
     basePath: {
-      serverBasePath: "",
-    }
+      serverBasePath: '',
+    },
   };
   const mockDivider = <></>;
 
