@@ -30,7 +30,7 @@ import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { ProxyAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
-import { isValidTenent } from '../../../multitenancy/tenant_resolver';
+import { isValidTenant } from '../../../multitenancy/tenant_resolver';
 
 export class ProxyAuthentication extends AuthenticationType {
   private static readonly XFF: string = 'x-forwarded-for';
@@ -113,7 +113,7 @@ export class ProxyAuthentication extends AuthenticationType {
 
     // set tenant from cookie if exist
     const browserCookie = await this.sessionStorageFactory.asScoped(request).get();
-    if (browserCookie && isValidTenent(browserCookie.tenant)) {
+    if (browserCookie && isValidTenant(browserCookie.tenant)) {
       cookie.tenant = browserCookie.tenant;
     }
     return cookie;

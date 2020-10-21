@@ -32,7 +32,7 @@ import { SecurityClient } from '../../backend/opendistro_security_client';
 import {
   isMultitenantPath,
   resolveTenant,
-  isValidTenent,
+  isValidTenant,
 } from '../../multitenancy/tenant_resolver';
 import { UnauthenticatedError } from '../../errors';
 
@@ -143,7 +143,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
       try {
         const tenant = await this.resolveTenant(request, cookie!, authHeaders, authInfo);
         // return 401 if no tenant available
-        if (!isValidTenent(tenant)) {
+        if (!isValidTenant(tenant)) {
           return response.badRequest({
             body:
               'No available tenant for current user, please reach out to your system administrator',
