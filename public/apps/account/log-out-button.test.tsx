@@ -29,7 +29,9 @@ describe('Account menu - Log out button', () => {
     Proxy = 'proxy',
   }
   const mockHttpStart = {
-    http: 1,
+    basePath: {
+      serverBasePath: "",
+    }
   };
   const mockDivider = <></>;
 

@@ -29,7 +29,6 @@ import {
 import { CoreStart } from 'kibana/public';
 import React, { useState } from 'react';
 import { RoleInfoPanel } from './role-info-panel';
-import { logout } from './utils';
 import { PasswordResetPanel } from './password-reset-panel';
 import { TenantSwitchPanel } from './tenant-switch-panel';
 import { ClientConfigType } from '../../types';
@@ -110,6 +109,7 @@ export function AccountNavButton(props: {
                   coreStart={props.coreStart}
                   username={props.username}
                   handleClose={() => setModal(null)}
+                  logoutUrl={props.config.auth.logout_url}
                 />
               )
             }
@@ -122,6 +122,7 @@ export function AccountNavButton(props: {
         authType={props.config.auth.type}
         http={props.coreStart.http}
         divider={horizontalRule}
+        logoutUrl={props.config.auth.logout_url}
       />
     </div>
   );

@@ -59,6 +59,7 @@ exports[`Account navigation button renders 1`] = `
               />
             </EuiListGroup>
             <EuiListGroupItem
+              color="subdued"
               key="tenant"
               label={
                 <EuiText
