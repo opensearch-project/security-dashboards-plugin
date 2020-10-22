@@ -79,14 +79,14 @@ export class SamlAuthentication extends AuthenticationType {
     return {};
   }
 
-  async getCookie(request: KibanaRequest, authInfo: any): Promise<SecuritySessionCookie> {
+  getCookie(request: KibanaRequest, authInfo: any): SecuritySessionCookie {
     return {
       username: authInfo.user_name,
       credentials: {
         authHeaderValue: request.headers[SamlAuthentication.AUTH_HEADER_NAME],
       },
       authType: this.type,
-      expiryTime: Date.now() + this.config.cookie.ttl,
+      expiryTime: Date.now() + this.config.session.ttl,
     };
   }
 

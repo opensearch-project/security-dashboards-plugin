@@ -68,7 +68,7 @@ export class BasicAuthentication extends AuthenticationType {
     return {};
   }
 
-  async getCookie(request: KibanaRequest, authInfo: any): Promise<SecuritySessionCookie> {
+  getCookie(request: KibanaRequest, authInfo: any): SecuritySessionCookie {
     if (
       this.config.auth.anonymous_auth_enabled &&
       authInfo.user_name === 'opendistro_security_anonymous'
@@ -76,7 +76,7 @@ export class BasicAuthentication extends AuthenticationType {
       return {
         username: authInfo.user_name,
         authType: this.type,
-        expiryTime: Date.now() + this.config.cookie.ttl,
+        expiryTime: Date.now() + this.config.session.ttl,
         isAnonymousAuth: true,
       };
     }
@@ -86,7 +86,7 @@ export class BasicAuthentication extends AuthenticationType {
         authHeaderValue: request.headers[BasicAuthentication.AUTH_HEADER_NAME],
       },
       authType: this.type,
-      expiryTime: Date.now() + this.config.cookie.ttl,
+      expiryTime: Date.now() + this.config.session.ttl,
     };
   }
 

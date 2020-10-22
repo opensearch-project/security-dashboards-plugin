@@ -89,13 +89,13 @@ export class ProxyAuthentication extends AuthenticationType {
     return authHeaders;
   }
 
-  async getCookie(request: KibanaRequest, authInfo: any): Promise<SecuritySessionCookie> {
+  getCookie(request: KibanaRequest, authInfo: any): SecuritySessionCookie {
     const cookie: SecuritySessionCookie = {
       username: authInfo.username,
       credentials: {},
       authType: this.authType,
       isAnonymousAuth: false,
-      expiryTime: Date.now() + this.config.cookie.ttl,
+      expiryTime: Date.now() + this.config.session.ttl,
     };
 
     if (this.userHeaderName && request.headers[this.userHeaderName]) {
@@ -109,12 +109,6 @@ export class ProxyAuthentication extends AuthenticationType {
     }
     if (request.headers.authorization) {
       cookie.credentials.authorization = request.headers.authorization;
-    }
-
-    // set tenant from cookie if exist
-    const browserCookie = await this.sessionStorageFactory.asScoped(request).get();
-    if (browserCookie && isValidTenant(browserCookie.tenant)) {
-      cookie.tenant = browserCookie.tenant;
     }
     return cookie;
   }

@@ -96,6 +96,13 @@ export abstract class AuthenticationType implements IAuthenticationType {
         Object.assign(authHeaders, additonalAuthHeader);
         authInfo = await this.securityClient.authinfo(request, additonalAuthHeader);
         cookie = await this.getCookie(request, authInfo);
+
+        // set tenant from cookie if exist
+        const browserCookie = await this.sessionStorageFactory.asScoped(request).get();
+        if (browserCookie && isValidTenant(browserCookie.tenant)) {
+          cookie.tenant = browserCookie.tenant;
+        }
+
         this.sessionStorageFactory.asScoped(request).set(cookie);
       } catch (error) {
         return response.unauthorized({
@@ -219,10 +226,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
   // abstract functions for concrete auth types to implement
   protected abstract requestIncludesAuthInfo(request: KibanaRequest): boolean;
   protected abstract getAdditionalAuthHeader(request: KibanaRequest): any;
-  protected abstract async getCookie(
-    request: KibanaRequest,
-    authInfo: any
-  ): Promise<SecuritySessionCookie>;
+  protected abstract getCookie(request: KibanaRequest, authInfo: any): SecuritySessionCookie;
   protected abstract async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean>;
   protected abstract handleUnauthedRequest(
     request: KibanaRequest,
