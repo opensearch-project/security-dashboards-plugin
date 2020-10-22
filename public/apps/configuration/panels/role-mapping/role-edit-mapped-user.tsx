@@ -141,7 +141,7 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
             <h1>Map user</h1>
           </EuiTitle>
           Map users to this role to inherit role permissions. Two types of users are supported:
-          internal user, and external identity. <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
+          user, and external identity. <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
         </EuiText>
       </EuiPageHeader>
       <EuiSpacer size="m" />
