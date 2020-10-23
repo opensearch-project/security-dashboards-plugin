@@ -223,7 +223,7 @@ export function GetStarted(props: AppDependencies) {
           </EuiTitle>
           <EuiText size="s" color="subdued">
             <p>
-              By default, the security plugin caches authenticated uses, along with their roles and
+              By default, the security plugin caches authenticated users, along with their roles and
               permissions. This option will purge cached users, roles and permissions.
             </p>
             <EuiButton
