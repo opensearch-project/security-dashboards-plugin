@@ -100,7 +100,7 @@ export class BasicAuthRoutes {
           },
           authType: 'basicauth',
           isAnonymousAuth: false,
-          expiryTime: Date.now() + this.config.cookie.ttl,
+          expiryTime: Date.now() + this.config.session.ttl,
         };
 
         if (this.config.multitenancy?.enabled) {
@@ -172,7 +172,7 @@ export class BasicAuthRoutes {
             username: user.username,
             authType: 'basicauth',
             isAnonymousAuth: true,
-            expiryTime: Date.now() + this.config.cookie.ttl,
+            expiryTime: Date.now() + this.config.session.ttl,
           };
 
           if (this.config.multitenancy?.enabled) {
