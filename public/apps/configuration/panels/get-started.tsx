@@ -32,7 +32,7 @@ import { AppDependencies } from '../../types';
 import securityStepsDiagram from '../../../assets/get_started.svg';
 import { buildHashUrl } from '../utils/url-builder';
 import { Action, ResourceType } from '../types';
-import { DocLinks } from '../constants';
+import { API_ENDPOINT_CACHE, DocLinks } from '../constants';
 import { ExternalLink, ExternalLinkButton } from '../utils/display-utils';
 
 const setOfSteps = [
@@ -211,6 +211,29 @@ export function GetStarted(props: AppDependencies) {
               }}
             >
               Review Audit Log Configuration
+            </EuiButton>
+          </EuiText>
+        </EuiPanel>
+
+        <EuiSpacer size="l" />
+
+        <EuiPanel paddingSize="l">
+          <EuiTitle size="s">
+            <h3>Optional: Purge cache</h3>
+          </EuiTitle>
+          <EuiText size="s" color="subdued">
+            <p>
+              By default, the security plugin caches authenticated users, along with their roles and
+              permissions. This option will purge cached users, roles and permissions.
+            </p>
+            <EuiButton
+              iconType="refresh"
+              fill
+              onClick={() => {
+                props.coreStart.http.delete(API_ENDPOINT_CACHE);
+              }}
+            >
+              Purge cache
             </EuiButton>
           </EuiText>
         </EuiPanel>

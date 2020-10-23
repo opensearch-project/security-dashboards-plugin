@@ -27,6 +27,7 @@ export const API_ENDPOINT_INTERNALUSERS = API_ENDPOINT + '/internalusers';
 export const API_ENDPOINT_AUDITLOGGING = API_ENDPOINT + '/audit';
 export const API_ENDPOINT_AUDITLOGGING_UPDATE = API_ENDPOINT_AUDITLOGGING + '/config';
 export const API_ENDPOINT_PERMISSIONS_INFO = API_PREFIX + '/restapiinfo';
+export const API_ENDPOINT_CACHE = API_ENDPOINT + '/cache';
 
 export const CLUSTER_PERMISSIONS: string[] = [
   'cluster:admin/ingest/pipeline/delete',
