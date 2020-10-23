@@ -31,6 +31,7 @@ import { CoreStart } from '../../../../../src/core/public';
 import { ClientConfigType } from '../../types';
 import defaultBrandImage from '../../assets/open_distro_for_elasticsearch_logo_h.svg';
 import { SELECT_TENANT_PAGE_URI } from '../../../common';
+import { validateCurrentPassword } from '../../utils/login-utils';
 
 interface LoginPageDeps {
   http: CoreStart['http'];
@@ -38,8 +39,8 @@ interface LoginPageDeps {
 }
 
 export function LoginPage(props: LoginPageDeps) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = React.useState('');
+  const [password, setPassword] = React.useState('');
   const [loginFailed, setloginFailed] = useState(false);
   const [usernameValidationFailed, setUsernameValidationFailed] = useState(false);
   const [passwordValidationFailed, setPasswordValidationFailed] = useState(false);
@@ -74,13 +75,7 @@ export function LoginPage(props: LoginPageDeps) {
     }
 
     try {
-      // @ts-ignore : response not used
-      const response = await props.http.post('/auth/login', {
-        body: JSON.stringify({
-          username,
-          password,
-        }),
-      });
+      await validateCurrentPassword(props.http, username, password);
       // Forward search to keep nextUrl argument
       window.location.href =
         props.http.basePath.serverBasePath + SELECT_TENANT_PAGE_URI + window.location.search;
@@ -110,6 +105,7 @@ export function LoginPage(props: LoginPageDeps) {
       <EuiForm component="form">
         <EuiFormRow>
           <EuiFieldText
+            data-test-subj="user-name"
             placeholder="Username"
             prepend={<EuiIcon type="user" />}
             onChange={(e) => setUsername(e.target.value)}
@@ -119,6 +115,7 @@ export function LoginPage(props: LoginPageDeps) {
         </EuiFormRow>
         <EuiFormRow isInvalid={passwordValidationFailed}>
           <EuiFieldText
+            data-test-subj="password"
             placeholder="Password"
             prepend={<EuiIcon type="lock" />}
             type="password"
@@ -129,6 +126,7 @@ export function LoginPage(props: LoginPageDeps) {
         </EuiFormRow>
         <EuiFormRow>
           <EuiButton
+            data-test-subj="submit"
             fill
             size="s"
             type="submit"
