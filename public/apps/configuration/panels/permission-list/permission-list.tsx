@@ -146,6 +146,7 @@ const SEARCH_OPTIONS: EuiSearchBarProps = {
       field: 'type',
       name: 'All types',
       options: [{ value: 'Action group' }, { value: 'Single permission' }],
+      multiSelect: false,
     },
     {
       type: 'field_value_selection',
@@ -188,7 +189,7 @@ export function PermissionList(props: AppDependencies) {
 
   const [loading, setLoading] = useState(false);
 
-  const [query, setQuery] = useState<string>('');
+  const [query, setQuery] = useState<Query | null>(null);
 
   const fetchData = useCallback(async () => {
     try {
@@ -340,7 +341,7 @@ export function PermissionList(props: AppDependencies) {
                 Permissions
                 <span className="panel-header-count">
                   {' '}
-                  ({Query.execute(query, permissionList).length})
+                  ({Query.execute(query || '', permissionList).length})
                 </span>
               </h3>
             </EuiTitle>
@@ -370,7 +371,7 @@ export function PermissionList(props: AppDependencies) {
             search={{
               ...SEARCH_OPTIONS,
               onChange: (arg) => {
-                setQuery(arg.queryText);
+                setQuery(arg.query);
                 return true;
               },
             }}

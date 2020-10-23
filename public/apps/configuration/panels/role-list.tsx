@@ -182,11 +182,11 @@ export function RoleList(props: AppDependencies) {
   const [actionsMenu, closeActionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);
 
   const [searchOptions, setSearchOptions] = useState<EuiSearchBarProps>({});
-  const [query, setQuery] = useState<string>('');
+  const [query, setQuery] = useState<Query | null>(null);
   useEffect(() => {
     setSearchOptions({
       onChange: (arg) => {
-        setQuery(arg.queryText);
+        setQuery(arg.query);
         return true;
       },
       filters: [
@@ -194,30 +194,35 @@ export function RoleList(props: AppDependencies) {
           type: 'field_value_selection',
           field: 'clusterPermissions',
           name: 'Cluster permissions',
+          multiSelect: 'or',
           options: buildSearchFilterOptions(roleData, 'clusterPermissions'),
         },
         {
           type: 'field_value_selection',
           field: 'indexPermissions',
           name: 'Index permissions',
+          multiSelect: 'or',
           options: buildSearchFilterOptions(roleData, 'indexPermissions'),
         },
         {
           type: 'field_value_selection',
           field: 'internalUsers',
           name: 'Internal users',
+          multiSelect: 'or',
           options: buildSearchFilterOptions(roleData, 'internalUsers'),
         },
         {
           type: 'field_value_selection',
           field: 'backendRoles',
           name: 'External identities',
+          multiSelect: 'or',
           options: buildSearchFilterOptions(roleData, 'backendRoles'),
         },
         {
           type: 'field_value_selection',
           field: 'tenantPermissions',
           name: 'Tenants',
+          multiSelect: 'or',
           options: buildSearchFilterOptions(roleData, 'tenantPermissions'),
         },
         {
@@ -255,7 +260,7 @@ export function RoleList(props: AppDependencies) {
                 Roles
                 <span className="panel-header-count">
                   {' '}
-                  ({Query.execute(query, roleData).length})
+                  ({Query.execute(query || '', roleData).length})
                 </span>
               </h3>
             </EuiTitle>

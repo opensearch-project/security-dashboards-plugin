@@ -72,7 +72,7 @@ export function TenantList(props: AppDependencies) {
   const [toasts, addToast, removeToast] = useToastState();
   const [loading, setLoading] = useState(false);
 
-  const [query, setQuery] = useState<string>('');
+  const [query, setQuery] = useState<Query | null>(null);
 
   // Configuration
   const isPrivateEnabled = props.config.multitenancy.tenants.enable_private;
@@ -339,7 +339,7 @@ export function TenantList(props: AppDependencies) {
                 Tenants
                 <span className="panel-header-count">
                   {' '}
-                  ({Query.execute(query, tenantData).length})
+                  ({Query.execute(query || '', tenantData).length})
                 </span>
               </h3>
             </EuiTitle>
@@ -379,7 +379,7 @@ export function TenantList(props: AppDependencies) {
             search={{
               box: { placeholder: 'Find tenant' },
               onChange: (arg) => {
-                setQuery(arg.queryText);
+                setQuery(arg.query);
                 return true;
               },
             }}
