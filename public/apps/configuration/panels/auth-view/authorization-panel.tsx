@@ -62,7 +62,7 @@ const emptyListMessage = (
 );
 
 export function AuthorizationPanel(props: { authz: []; loading: boolean }) {
-  const [query, setQuery] = useState<string>('');
+  const [query, setQuery] = useState<Query | null>(null);
   const domains = keys(props.authz);
 
   const items = map(domains, function (domain: string) {
@@ -85,7 +85,7 @@ export function AuthorizationPanel(props: { authz: []; loading: boolean }) {
       placeholder: 'Search authorization domain',
     },
     onChange: (arg) => {
-      setQuery(arg.queryText);
+      setQuery(arg.query);
       return true;
     },
   };
@@ -97,7 +97,7 @@ export function AuthorizationPanel(props: { authz: []; loading: boolean }) {
       headerText={headerText}
       headerSubText="After the user authenticates, the security plugin can collect external identities, such as LDAP groups, from authorization backends. These backends have no execution order; the plugin tries to collect external identities from all of them."
       helpLink={DocLinks.BackendConfigurationAuthorizationDoc}
-      count={Query.execute(query, items).length}
+      count={Query.execute(query || '', items).length}
     >
       <EuiInMemoryTable
         tableLayout={'auto'}

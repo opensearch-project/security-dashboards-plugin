@@ -96,7 +96,7 @@ export function UserList(props: AppDependencies) {
   const [selection, setSelection] = useState<InternalUsersListing[]>([]);
   const [currentUsername, setCurrentUsername] = useState('');
   const [loading, setLoading] = useState(false);
-  const [query, setQuery] = useState<string>('');
+  const [query, setQuery] = useState<Query | null>(null);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -199,7 +199,7 @@ export function UserList(props: AppDependencies) {
                 Internal users
                 <span className="panel-header-count">
                   {' '}
-                  ({Query.execute(query, userData).length})
+                  ({Query.execute(query || '', userData).length})
                 </span>
               </h3>
             </EuiTitle>
@@ -235,7 +235,7 @@ export function UserList(props: AppDependencies) {
             search={{
               box: { placeholder: 'Search internal users' },
               onChange: (arg) => {
-                setQuery(arg.queryText);
+                setQuery(arg.query);
                 return true;
               },
             }}
