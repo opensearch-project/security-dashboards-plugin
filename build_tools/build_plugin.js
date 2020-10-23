@@ -139,7 +139,7 @@ async function createBuild(pluginRoot, plugin) {
     true
   );
   await copyArtifacts(['target/public/**/*'], pluginRoot, pluginRoot, true);
-  const artifactDir = path.join(pluginRoot, 'target', 'plugins', pluginId);
+  const artifactDir = path.join(pluginRoot, 'target', 'plugins', path.basename(pluginRoot));
   await copyArtifacts(['**/*'], artifactDir, artifactDir, true);
   console.log('Copied artifacts to build dir.');
 
