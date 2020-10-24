@@ -31,6 +31,7 @@ describe('Audit logs', () => {
 
   beforeEach(() => {
     jest.spyOn(React, 'useState').mockImplementation((initialValue) => [initialValue, setState]);
+    jest.spyOn(React, 'useEffect').mockImplementationOnce((f) => f());
   });
 
   it('Render disabled', () => {
@@ -53,8 +54,6 @@ describe('Audit logs', () => {
   });
 
   it('Render enabled', (done) => {
-    jest.spyOn(React, 'useEffect').mockImplementationOnce((f) => f());
-
     const mockAuditLoggingData = {
       enabled: true,
       audit: '',
@@ -74,11 +73,10 @@ describe('Audit logs', () => {
   });
 
   it('Render error', (done) => {
-    jest.spyOn(React, 'useEffect').mockImplementationOnce((f) => f());
     // Hide the error message
     jest.spyOn(console, 'log').mockImplementationOnce(() => {});
 
-    mockAuditLoggingUtils.getAuditLogging.mockImplementationOnce(() => {
+    mockAuditLoggingUtils.getAuditLogging = jest.fn().mockImplementationOnce(() => {
       throw Error();
     });
 
