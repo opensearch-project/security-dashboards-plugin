@@ -181,7 +181,7 @@ const CONFIG = {
     WRITE_LOG_DIFFS: {
       title: 'Log diffs',
       path: 'compliance.write_log_diffs',
-      description: 'Log only diffs for document updates.',
+      description: 'Log diffs for document updates.',
       type: 'bool',
     },
     WRITE_IGNORED_USERS: {
