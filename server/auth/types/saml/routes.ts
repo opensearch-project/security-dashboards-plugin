@@ -120,7 +120,7 @@ export class SamlAuthRoutes {
               authHeaderValue: credentials.authorization,
             },
             authType: 'saml', // TODO: create constant
-            expiryTime: Date.now() + this.config.cookie.ttl,
+            expiryTime: Date.now() + this.config.session.ttl,
           };
           this.sessionStorageFactory.asScoped(request).set(cookie);
           return response.redirected({
@@ -167,7 +167,7 @@ export class SamlAuthRoutes {
               authHeaderValue: credentials.authorization,
             },
             authType: 'saml', // TODO: create constant
-            expiryTime: Date.now() + this.config.cookie.ttl,
+            expiryTime: Date.now() + this.config.session.ttl,
           };
           this.sessionStorageFactory.asScoped(request).set(cookie);
           return response.redirected({
