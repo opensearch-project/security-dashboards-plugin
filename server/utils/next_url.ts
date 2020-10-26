@@ -26,7 +26,7 @@ export function composeNextUrlQeuryParam(request: KibanaRequest, basePath: strin
 }
 
 export const validateNextUrl = (url: string | undefined): string | void => {
-  if (url && !url.startsWith('/')) {
+  if (url && url.toLowerCase().includes('//')) {
     return 'invalid nextUrl parameter';
   }
 };
