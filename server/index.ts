@@ -42,17 +42,8 @@ export const configSchema = schema.object({
     ttl: schema.number({ defaultValue: 60 * 60 * 1000 }),
     domain: schema.nullable(schema.string()),
     isSameSite: schema.oneOf(
-      [
-        schema.string({
-          validate(value) {
-            if (value === 'Strict' || value === 'Lax') {
-              return `Allowed values of 'isSameSite' are ['Strict, 'Lax', true, false]`;
-            }
-          },
-        }),
-        schema.boolean(),
-      ],
-      { defaultValue: true }
+      [schema.literal('Strict'), schema.literal('Lax'), schema.literal(false)],
+      { defaultValue: false }
     ),
   }),
   session: schema.object({
