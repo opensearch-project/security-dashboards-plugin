@@ -149,7 +149,7 @@ export class OpenIdAuthRoutes {
               expires_at: Date.now() + tokenResponse.expiresIn! * 1000, // expiresIn is in second
             },
             authType: 'openid',
-            expiryTime: Date.now() + this.config.cookie.ttl,
+            expiryTime: Date.now() + this.config.session.ttl,
           };
           this.sessionStorageFactory.asScoped(request).set(sessionStorage);
           return response.redirected({
