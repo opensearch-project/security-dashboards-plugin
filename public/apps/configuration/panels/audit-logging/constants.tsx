@@ -219,7 +219,7 @@ const WRITE_METADATA_ONLY: SettingContent = {
 const WRITE_LOG_DIFFS: SettingContent = {
   title: 'Log diffs',
   path: 'compliance.write_log_diffs',
-  description: '',
+  description: 'Log diffs for document updates.',
   type: 'bool',
 };
 
