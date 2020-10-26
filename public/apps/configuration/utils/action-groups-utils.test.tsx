@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { tranformActionGroupsToListingFormat, mergeAllPermissions } from './action-groups-utils';
+import { transformActionGroupsToListingFormat } from './action-groups-utils';
 import { ActionGroupItem } from '../types';
 
 describe('Action group utils', () => {
@@ -32,7 +32,7 @@ describe('Action group utils', () => {
   };
 
   it('Tranform action groups to listing format', () => {
-    const result = tranformActionGroupsToListingFormat({ actionGroup1: actionGroupItem });
+    const result = transformActionGroupsToListingFormat({ actionGroup1: actionGroupItem });
     expect(result).toEqual([expectedPermissionListingItem]);
   });
 });
