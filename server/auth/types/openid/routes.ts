@@ -27,6 +27,7 @@ import { SecurityPluginConfigType } from '../../..';
 import { OpenIdAuthConfig } from './openid_auth';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { getBaseRedirectUrl, callTokenEndpoint } from './helper';
+import { validateNextUrl } from '../../../utils/next_url';
 
 export class OpenIdAuthRoutes {
   private static readonly NONCE_LENGTH: number = 22;
@@ -57,7 +58,11 @@ export class OpenIdAuthRoutes {
           query: schema.object(
             {
               code: schema.maybe(schema.string()),
-              nextUrl: schema.maybe(schema.string()),
+              nextUrl: schema.maybe(
+                schema.string({
+                  validate: validateNextUrl,
+                })
+              ),
               state: schema.maybe(schema.string()),
               refresh: schema.maybe(schema.string()),
             },
