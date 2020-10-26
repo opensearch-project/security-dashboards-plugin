@@ -18,7 +18,7 @@ import React from 'react';
 import { fetchUserNameList } from '../../utils/internal-user-list-utils';
 import { getRoleMappingData, updateRoleMapping } from '../../utils/role-mapping-utils';
 import { ExternalIdentitiesPanel } from './external-identities-panel';
-import { InternalUsersPanel } from './internal-users-panel';
+import { InternalUsersPanel } from './users-panel';
 import { RoleEditMappedUser } from './role-edit-mapped-user';
 import { RoleMappingDetail } from '../../types';
 

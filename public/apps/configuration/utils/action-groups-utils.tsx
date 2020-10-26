@@ -32,7 +32,7 @@ export async function fetchActionGroups(http: HttpStart): Promise<DataObject<Act
   return actiongroups.data;
 }
 
-function tranformActionGroupsToListingFormat(
+export function transformActionGroupsToListingFormat(
   rawData: DataObject<ActionGroupItem>
 ): PermissionListingItem[] {
   return map(rawData, (value: ActionGroupItem, key?: string) => ({
@@ -46,7 +46,7 @@ function tranformActionGroupsToListingFormat(
 }
 
 export async function fetchActionGroupListing(http: HttpStart): Promise<PermissionListingItem[]> {
-  return tranformActionGroupsToListingFormat(await fetchActionGroups(http));
+  return transformActionGroupsToListingFormat(await fetchActionGroups(http));
 }
 
 function getClusterSinglePermissions(): PermissionListingItem[] {
@@ -78,7 +78,7 @@ export async function getAllPermissionsListing(http: HttpStart): Promise<Permiss
 export async function mergeAllPermissions(
   actionGroups: DataObject<ActionGroupItem>
 ): Promise<PermissionListingItem[]> {
-  return tranformActionGroupsToListingFormat(actionGroups)
+  return transformActionGroupsToListingFormat(actionGroups)
     .concat(getClusterSinglePermissions())
     .concat(getIndexSinglePermissions());
 }

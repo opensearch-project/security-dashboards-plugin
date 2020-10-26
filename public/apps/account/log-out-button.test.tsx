@@ -34,7 +34,6 @@ describe('Account menu - Log out button', () => {
     },
   };
   const mockDivider = <></>;
-
   describe('renders', () => {
     it('renders when auth type is OpenId', () => {
       const component = shallow(

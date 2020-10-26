@@ -5,7 +5,7 @@ exports[`Account menu - Log out button renders renders when auth type is OpenId 
   <EuiButtonEmpty
     color="danger"
     data-test-subj="log-out-1"
-    href="/auth/logout"
+    href="/app/kibana/auth/logout"
     size="xs"
   >
     Log out
@@ -20,7 +20,7 @@ exports[`Account menu - Log out button renders renders when auth type is SAML 1`
   <EuiButtonEmpty
     color="danger"
     data-test-subj="log-out-1"
-    href="/auth/logout"
+    href="/app/kibana/auth/logout"
     size="xs"
   >
     Log out

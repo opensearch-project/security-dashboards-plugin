@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Panel with header renders 1`] = `
+<EuiPanel>
+  <EuiTitle
+    size="s"
+  >
+    <h3>
+      Header
+      <i>
+         - optional
+      </i>
+      <span
+        className="panel-header-count"
+      >
+         (
+        0
+        )
+      </span>
+    </h3>
+  </EuiTitle>
+  <EuiText
+    className="panel-header-subtext"
+    color="subdued"
+    size="xs"
+  >
+    Sub text
+     
+    <ExternalLink
+      href="http://localhost:5601/"
+    />
+  </EuiText>
+  <EuiHorizontalRule
+    margin="s"
+  />
+  <div>
+    Test
+  </div>
+</EuiPanel>
+`;
