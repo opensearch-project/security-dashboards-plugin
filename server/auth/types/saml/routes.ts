@@ -19,6 +19,7 @@ import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { CoreSetup } from '../../../../../../src/core/server';
+import { validateNextUrl } from '../../../utils/next_url';
 
 export class SamlAuthRoutes {
   constructor(
@@ -36,7 +37,11 @@ export class SamlAuthRoutes {
         path: `/auth/saml/login`,
         validate: {
           query: schema.object({
-            nextUrl: schema.maybe(schema.string()),
+            nextUrl: schema.maybe(
+              schema.string({
+                validate: validateNextUrl,
+              })
+            ),
           }),
         },
         options: {

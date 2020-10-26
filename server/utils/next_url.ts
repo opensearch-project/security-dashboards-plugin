@@ -24,3 +24,9 @@ export function composeNextUrlQeuryParam(request: KibanaRequest, basePath: strin
   const nextUrl = format(url);
   return stringify({ nextUrl });
 }
+
+export const validateNextUrl = (url: string | undefined): string | void => {
+  if (url && !url.startsWith('/')) {
+    return 'invalid nextUrl parameter';
+  }
+}
