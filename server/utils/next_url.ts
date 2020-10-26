@@ -29,4 +29,4 @@ export const validateNextUrl = (url: string | undefined): string | void => {
   if (url && !url.startsWith('/')) {
     return 'invalid nextUrl parameter';
   }
-}
+};
