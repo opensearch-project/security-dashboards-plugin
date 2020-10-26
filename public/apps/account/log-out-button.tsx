@@ -18,7 +18,12 @@ import { EuiButtonEmpty } from '@elastic/eui';
 import { HttpStart } from 'kibana/public';
 import { logout } from './utils';
 
-export function LogoutButton(props: { authType: string; http: HttpStart; divider: JSX.Element }) {
+export function LogoutButton(props: {
+  authType: string;
+  http: HttpStart;
+  divider: JSX.Element;
+  logoutUrl?: string;
+}) {
   if (props.authType === 'openid' || props.authType === 'saml') {
     return (
       <div>
@@ -43,7 +48,7 @@ export function LogoutButton(props: { authType: string; http: HttpStart; divider
           data-test-subj="log-out-2"
           color="danger"
           size="xs"
-          onClick={() => logout(props.http)}
+          onClick={() => logout(props.http, props.logoutUrl)}
         >
           Log out
         </EuiButtonEmpty>

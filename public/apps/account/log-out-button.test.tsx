@@ -30,7 +30,7 @@ describe('Account menu - Log out button', () => {
   }
   const mockHttpStart = {
     basePath: {
-      serverBasePath: '/app/kibana',
+      serverBasePath: '',
     },
   };
   const mockDivider = <></>;

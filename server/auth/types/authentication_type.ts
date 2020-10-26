@@ -32,7 +32,7 @@ import { SecurityClient } from '../../backend/opendistro_security_client';
 import {
   isMultitenantPath,
   resolveTenant,
-  isValidTenent,
+  isValidTenant,
 } from '../../multitenancy/tenant_resolver';
 import { UnauthenticatedError } from '../../errors';
 
@@ -95,7 +95,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
         const additonalAuthHeader = this.getAdditionalAuthHeader(request);
         Object.assign(authHeaders, additonalAuthHeader);
         authInfo = await this.securityClient.authinfo(request, additonalAuthHeader);
-        cookie = this.getCookie(request, authInfo);
+        cookie = await this.getCookie(request, authInfo);
         this.sessionStorageFactory.asScoped(request).set(cookie);
       } catch (error) {
         return response.unauthorized({
@@ -126,10 +126,11 @@ export abstract class AuthenticationType implements IAuthenticationType {
         return this.handleUnauthedRequest(request, response, toolkit);
       }
 
-      // extend cookie expiration time
-      cookie!.expiryTime = Date.now() + this.config.cookie.ttl;
-      this.sessionStorageFactory.asScoped(request).set(cookie!);
-
+      // extend session expiration time
+      if (this.config.session.keepalive) {
+        cookie!.expiryTime = Date.now() + this.config.session.ttl;
+        this.sessionStorageFactory.asScoped(request).set(cookie!);
+      }
       // cookie is valid
       // build auth header
       const authHeadersFromCookie = this.buildAuthHeaderFromCookie(cookie!);
@@ -143,7 +144,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
       try {
         const tenant = await this.resolveTenant(request, cookie!, authHeaders, authInfo);
         // return 401 if no tenant available
-        if (!isValidTenent(tenant)) {
+        if (!isValidTenant(tenant)) {
           return response.badRequest({
             body:
               'No available tenant for current user, please reach out to your system administrator',
@@ -218,7 +219,10 @@ export abstract class AuthenticationType implements IAuthenticationType {
   // abstract functions for concrete auth types to implement
   protected abstract requestIncludesAuthInfo(request: KibanaRequest): boolean;
   protected abstract getAdditionalAuthHeader(request: KibanaRequest): any;
-  protected abstract getCookie(request: KibanaRequest, authInfo: any): SecuritySessionCookie;
+  protected abstract async getCookie(
+    request: KibanaRequest,
+    authInfo: any
+  ): Promise<SecuritySessionCookie>;
   protected abstract async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean>;
   protected abstract handleUnauthedRequest(
     request: KibanaRequest,
