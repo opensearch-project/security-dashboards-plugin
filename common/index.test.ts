@@ -40,6 +40,18 @@ describe('Test isValidResourceName', () => {
     expect(isValidResourceName('%')).toBe(false);
   });
 
+  it('Question mark is invalid', () => {
+    expect(isValidResourceName('?')).toBe(false);
+  });
+
+  it('Hash is invalid', () => {
+    expect(isValidResourceName('#')).toBe(false);
+  });
+
+  it('And sign is invalid', () => {
+    expect(isValidResourceName('&')).toBe(false);
+  });
+
   it('Unicode is valid', () => {
     expect(isValidResourceName('Düsseldorf_Köln_Москва_北京市_إسرائيل')).toBe(true);
   });
