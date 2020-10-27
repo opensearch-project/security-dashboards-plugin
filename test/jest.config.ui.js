@@ -18,7 +18,7 @@ import config from '../../../src/dev/jest/config';
 export default {
   ...config,
   roots: ['<rootDir>/plugins/opendistro_security'],
-  testMatch: ['**/public/**/*.test.{ts,tsx}', '**/public/**/*.test.{js,jsx}'],
+  testMatch: ['**/public/**/*.test.{ts,tsx,js,jsx}', '**/common/*.test.{ts, tsx}'],
   testPathIgnorePatterns: [
     '<rootDir>/plugins/opendistro_security/build/',
     '<rootDir>/plugins/opendistro_security/node_modules/',
