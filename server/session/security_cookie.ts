@@ -69,6 +69,6 @@ export function getSecurityCookieOptions(
       return { isValid: true, path: '/' };
     },
     isSecure: config.cookie.secure,
-    sameSite: config.cookie.isSameSite || 'None',
+    sameSite: config.cookie.isSameSite || undefined,
   };
 }

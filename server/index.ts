@@ -42,7 +42,12 @@ export const configSchema = schema.object({
     ttl: schema.number({ defaultValue: 60 * 60 * 1000 }),
     domain: schema.nullable(schema.string()),
     isSameSite: schema.oneOf(
-      [schema.literal('Strict'), schema.literal('Lax'), schema.literal(false)],
+      [
+        schema.literal('Strict'),
+        schema.literal('Lax'),
+        schema.literal('None'),
+        schema.literal(false),
+      ],
       { defaultValue: false }
     ),
   }),
