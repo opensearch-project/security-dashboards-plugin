@@ -1,0 +1,88 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Permission tree renders 1`] = `
+<div
+  className="permission-tree-container"
+>
+  <EuiTreeView
+    aria-label="Permission tree"
+    display="compressed"
+    items={
+      Array [
+        Object {
+          "children": Array [
+            Object {
+              "children": Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "children": Array [
+                        Object {
+                          "children": Array [
+                            Object {
+                              "children": undefined,
+                              "className": "tree-leaf-node",
+                              "icon": <EuiText
+                                size="xs"
+                              >
+                                •
+                              </EuiText>,
+                              "id": "permission15",
+                              "label": "permission15",
+                            },
+                          ],
+                          "className": "",
+                          "icon": <EuiText
+                            size="xs"
+                          >
+                            •
+                          </EuiText>,
+                          "id": "permission14",
+                          "label": "permission14",
+                        },
+                      ],
+                      "className": "",
+                      "icon": <EuiText
+                        size="xs"
+                      >
+                        •
+                      </EuiText>,
+                      "id": "permission13",
+                      "label": "permission13",
+                    },
+                  ],
+                  "className": "",
+                  "icon": <EuiText
+                    size="xs"
+                  >
+                    •
+                  </EuiText>,
+                  "id": "permission12",
+                  "label": "permission12",
+                },
+              ],
+              "className": "",
+              "icon": <EuiText
+                size="xs"
+              >
+                •
+              </EuiText>,
+              "id": "permission11",
+              "label": "permission11",
+            },
+          ],
+          "className": "",
+          "icon": <EuiText
+            size="xs"
+          >
+            •
+          </EuiText>,
+          "id": "permission1",
+          "label": "permission1",
+        },
+      ]
+    }
+    showExpansionArrows={true}
+  />
+</div>
+`;

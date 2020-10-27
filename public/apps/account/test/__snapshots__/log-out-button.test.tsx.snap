@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Account menu - Log out button renders renders when auth type is OpenId 1`] = `
+<div>
+  <EuiButtonEmpty
+    color="danger"
+    data-test-subj="log-out-1"
+    href="/auth/logout"
+    size="xs"
+  >
+    Log out
+  </EuiButtonEmpty>
+</div>
+`;
+
+exports[`Account menu - Log out button renders renders when auth type is Proxy 1`] = `<div />`;
+
+exports[`Account menu - Log out button renders renders when auth type is SAML 1`] = `
+<div>
+  <EuiButtonEmpty
+    color="danger"
+    data-test-subj="log-out-1"
+    href="/auth/logout"
+    size="xs"
+  >
+    Log out
+  </EuiButtonEmpty>
+</div>
+`;
+
+exports[`Account menu - Log out button renders renders when auth type is not OpenId, SAML, or Proxy 1`] = `
+<div>
+  <EuiButtonEmpty
+    color="danger"
+    data-test-subj="log-out-2"
+    onClick={[Function]}
+    size="xs"
+  >
+    Log out
+  </EuiButtonEmpty>
+</div>
+`;
