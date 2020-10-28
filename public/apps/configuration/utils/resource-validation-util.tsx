@@ -12,14 +12,12 @@
  *   express or implied. See the License for the specific language governing
  *   permissions and limitations under the License.
  */
-import XRegExp from 'xregexp';
-import { isEmpty } from 'lodash';
+
+import { isValidResourceName } from '../../../../common';
 import {
   MIN_NUMBER_OF_CHARS_IN_RESOURCE_NAME,
   MAX_NUMBER_OF_CHARS_IN_RESOURCE_NAME,
 } from '../constants';
-
-const RESOURCE_ID_REGEX = XRegExp('^[\\p{L}\\p{N}\\p{P}-]+$', 'u');
 
 const VALID_LENGTH_HELP_TEXT = (resourceType: string) => {
   return `The ${resourceType} name must contain from ${MIN_NUMBER_OF_CHARS_IN_RESOURCE_NAME} to ${MAX_NUMBER_OF_CHARS_IN_RESOURCE_NAME} characters.`;
@@ -34,7 +32,7 @@ export function validateResourceName(resourceType: string, resourceName: string)
     errors.push(VALID_LENGTH_HELP_TEXT(resourceType));
   }
 
-  if (!isResourceNameValid(resourceName)) {
+  if (!isValidResourceName(resourceName)) {
     errors.push(`Invalid characters found in ${resourceType} name. ${VALID_CHARACTERS_HELP_TEXT}`);
   }
   return errors;
@@ -46,13 +44,6 @@ export function isResourceNameLengthValid(resourceName: string): boolean {
     resourceName.length > MAX_NUMBER_OF_CHARS_IN_RESOURCE_NAME
   )
     return false;
-  return true;
-}
-
-export function isResourceNameValid(resourceName: string): boolean {
-  if (!isEmpty(resourceName) && !XRegExp.test(resourceName, RESOURCE_ID_REGEX)) {
-    return false;
-  }
   return true;
 }
 

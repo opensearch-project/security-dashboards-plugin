@@ -15,11 +15,7 @@
 
 import { schema } from '@kbn/config-schema';
 import { IRouter, ResponseError, IKibanaResponse, KibanaResponseFactory } from 'kibana/server';
-import XRegExp from 'xregexp';
-import { API_PREFIX, CONFIGURATION_API_PREFIX } from '../../common';
-
-// see: https://www.npmjs.com/package/xregexp & https://javascript.info/regexp-unicode
-const RESOURCE_ID_REGEX = XRegExp('^[\\p{L}\\p{N}]+[\\p{L}\\p{N}\\p{P}-]*$', 'u');
+import { API_PREFIX, CONFIGURATION_API_PREFIX, isValidResourceName } from '../../common';
 
 // TODO: consider to extract entity CRUD operations and put it into a client class
 export function defineRoutes(router: IRouter) {
@@ -82,7 +78,7 @@ export function defineRoutes(router: IRouter) {
   }
 
   function validateEntityId(resourceName: string) {
-    if (!XRegExp.test(resourceName, RESOURCE_ID_REGEX)) {
+    if (!isValidResourceName(resourceName)) {
       return 'Invalid entity name or id.';
     }
   }
