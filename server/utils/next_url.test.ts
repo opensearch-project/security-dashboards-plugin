@@ -50,5 +50,4 @@ describe('test validateNextUrl', () => {
     const url = '/test/path?key=a@b&k2=v';
     expect(validateNextUrl(url)).toEqual(undefined);
   });
-
 });

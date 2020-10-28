@@ -25,7 +25,7 @@ export function composeNextUrlQeuryParam(request: KibanaRequest, basePath: strin
   return stringify({ nextUrl });
 }
 
-export const INVALID_NEXT_URL_PARAMETER_MESSAGE = 'Invalid nextUrl parameter.'
+export const INVALID_NEXT_URL_PARAMETER_MESSAGE = 'Invalid nextUrl parameter.';
 
 /**
  * Ensures the nextUrl parameter is a relative url, the nextUrl parameter should:
