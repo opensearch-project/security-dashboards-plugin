@@ -55,6 +55,9 @@ async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
 }
 
 const DEFAULT_READONLY_ROLES = ['kibana_read_only'];
+const APP_ID_MULTITENANCY = 'multitenancy';
+const APP_ID_HOME = 'home';
+const APP_ID_DASHBOARDS = 'dashboards';
 
 export class OpendistroSecurityPlugin
   implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
@@ -107,7 +110,7 @@ export class OpendistroSecurityPlugin
     });
 
     core.application.register({
-      id: 'multitenancy',
+      id: APP_ID_MULTITENANCY,
       title: 'Security',
       chromeless: true,
       appRoute: SELECT_TENANT_PAGE_URI,
@@ -120,7 +123,11 @@ export class OpendistroSecurityPlugin
 
     core.application.registerAppUpdater(
       new BehaviorSubject<AppUpdater>((app) => {
-        if (!apiPermission && isReadonly && app.id !== 'dashboards' && app.id !== 'home') {
+        if (
+          !apiPermission &&
+          isReadonly &&
+          ![APP_ID_DASHBOARDS, APP_ID_HOME, APP_ID_MULTITENANCY].includes(app.id)
+        ) {
           return {
             status: AppStatus.inaccessible,
           };
