@@ -56,6 +56,8 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
   const [tenants, setTenants] = React.useState<string[]>([]);
   const [username, setUsername] = React.useState<string>('');
   const [errorCallOut, setErrorCallOut] = React.useState<string>('');
+  const [tenantSwitchRadioIdSelected, setTenantSwitchRadioIdSelected] = React.useState<string>();
+  const [selectedCustomTenantOption, setSelectedCustomTenantOption] = React.useState<string>('');
 
   const setCurrentTenant = (currentRawTenantName: string, currentUserName: string) => {
     const resolvedTenantName = resolveTenantName(currentRawTenantName, currentUserName);
@@ -93,7 +95,6 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
   }, [props.coreStart.http]);
 
   // Custom tenant super select related.
-  const [selectedCustomTenantOption, setSelectedCustomTenantOption] = React.useState<string>('');
   const onCustomTenantChange = (selectedOption: string) => {
     setSelectedCustomTenantOption(selectedOption);
     setTenantSwitchRadioIdSelected(CUSTOM_TENANT_RADIO_ID);
@@ -179,7 +180,6 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
     },
   ];
 
-  const [tenantSwitchRadioIdSelected, setTenantSwitchRadioIdSelected] = React.useState<string>();
   const onTenantSwitchRadioChange = (radioId: string) => {
     setTenantSwitchRadioIdSelected(radioId);
     setErrorCallOut('');

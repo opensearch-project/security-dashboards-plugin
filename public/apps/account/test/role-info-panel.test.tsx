@@ -55,11 +55,33 @@ describe('Account menu - Role info panel', () => {
     });
   });
 
+  it('fetch data error', (done) => {
+    (fetchAccountInfo as jest.Mock).mockImplementationOnce(() => {
+      throw Error();
+    });
+    // Hide the error message
+    jest.spyOn(console, 'log').mockImplementationOnce(() => {});
+    shallow(<RoleInfoPanel coreStart={mockCoreStart as any} handleClose={handleClose} />);
+    process.nextTick(() => {
+      expect(setState).toBeCalledTimes(0);
+      done();
+    });
+  });
+
   it('should call handleClose on close event', () => {
     const component = shallow(
       <RoleInfoPanel coreStart={mockCoreStart as any} handleClose={handleClose} />
     );
     component.find('[data-test-subj="role-info-modal"]').simulate('close');
     expect(handleClose).toBeCalled();
+  });
+
+  it('renders', () => {
+    useState.mockImplementationOnce(() => [['role1', 'role2'], setState]);
+    useState.mockImplementationOnce(() => [['backend_role1', 'backend_role2'], setState]);
+    const component = shallow(
+      <RoleInfoPanel coreStart={mockCoreStart as any} handleClose={handleClose} />
+    );
+    expect(component).toMatchSnapshot();
   });
 });

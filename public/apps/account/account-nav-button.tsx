@@ -27,7 +27,7 @@ import {
   EuiText,
 } from '@elastic/eui';
 import { CoreStart } from 'kibana/public';
-import React, { useState } from 'react';
+import React from 'react';
 import { RoleInfoPanel } from './role-info-panel';
 import { PasswordResetPanel } from './password-reset-panel';
 import { TenantSwitchPanel } from './tenant-switch-panel';
@@ -42,8 +42,8 @@ export function AccountNavButton(props: {
   tenant?: string;
   config: ClientConfigType;
 }) {
-  const [isPopoverOpen, setPopoverOpen] = useState<boolean>(false);
-  const [modal, setModal] = useState<React.ReactNode>(null);
+  const [isPopoverOpen, setPopoverOpen] = React.useState<boolean>(false);
+  const [modal, setModal] = React.useState<React.ReactNode>(null);
   const horizontalRule = <EuiHorizontalRule margin="xs" />;
   const username = props.username;
   const contextMenuPanel = (
@@ -74,6 +74,7 @@ export function AccountNavButton(props: {
 
       {horizontalRule}
       <EuiButtonEmpty
+        data-test-subj="view-roles-and-identities"
         size="xs"
         onClick={() => setModal(<RoleInfoPanel {...props} handleClose={() => setModal(null)} />)}
       >
@@ -81,6 +82,7 @@ export function AccountNavButton(props: {
       </EuiButtonEmpty>
       {horizontalRule}
       <EuiButtonEmpty
+        data-test-subj="switch-tenants"
         size="xs"
         onClick={() =>
           setModal(
@@ -102,6 +104,7 @@ export function AccountNavButton(props: {
         <>
           {horizontalRule}
           <EuiButtonEmpty
+            data-test-subj="reset-password"
             size="xs"
             onClick={() =>
               setModal(
@@ -128,6 +131,7 @@ export function AccountNavButton(props: {
   );
   return (
     <EuiHeaderSectionItemButton
+      data-test-subj="account-header-section-button"
       onClick={() => {
         setPopoverOpen((prevState) => !prevState);
       }}

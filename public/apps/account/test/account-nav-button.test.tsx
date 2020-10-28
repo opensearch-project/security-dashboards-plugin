@@ -40,9 +40,9 @@ describe('Account navigation button', () => {
   let component;
   const setState = jest.fn();
   const useStateSpy = jest.spyOn(React, 'useState');
-  useStateSpy.mockImplementation((init) => [init, setState]);
 
   beforeEach(() => {
+    useStateSpy.mockImplementation((init) => [init, setState]);
     component = shallow(
       <AccountNavButton
         coreStart={mockCoreStart}
@@ -58,9 +58,27 @@ describe('Account navigation button', () => {
     jest.clearAllMocks();
   });
 
-  const handleClose = jest.fn();
-
   it('renders', () => {
     expect(component).toMatchSnapshot();
+  });
+
+  it('should set modal when click on "View roles and identities" button', () => {
+    component.find('[data-test-subj="view-roles-and-identities"]').simulate('click');
+    expect(setState).toBeCalledTimes(1);
+  });
+
+  it('should set modal when click on "Switch tenants" button', () => {
+    component.find('[data-test-subj="switch-tenants"]').simulate('click');
+    expect(setState).toBeCalledTimes(1);
+  });
+
+  it('should set modal when click on "Reset password" button', () => {
+    component.find('[data-test-subj="reset-password"]').simulate('click');
+    expect(setState).toBeCalledTimes(1);
+  });
+
+  it('should set isPopoverOpen to true when click on Avatar in header section', () => {
+    component.find('[data-test-subj="account-header-section-button"]').simulate('click');
+    expect(setState).toBeCalledTimes(1);
   });
 });

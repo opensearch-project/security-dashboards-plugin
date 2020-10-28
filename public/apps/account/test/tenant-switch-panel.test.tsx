@@ -16,15 +16,22 @@
 import { shallow } from 'enzyme';
 import React from 'react';
 import { fetchAccountInfo } from '../utils';
-import { GLOBAL_TENANT_RADIO_ID, TenantSwitchPanel } from '../tenant-switch-panel';
+import {
+  CUSTOM_TENANT_RADIO_ID,
+  GLOBAL_TENANT_RADIO_ID,
+  PRIVATE_TENANT_RADIO_ID,
+  TenantSwitchPanel,
+} from '../tenant-switch-panel';
+import { selectTenant } from '../../configuration/utils/tenant-utils';
+import { constructErrorMessageAndLog } from '../../error-utils';
 import { keys } from 'lodash';
 
 const mockAccountInfo = {
   data: {
     tenants: {
       ['tenant1']: true,
-      ['tenant2']: true,
-      ['tenant3']: true,
+      ['global_tenant']: true,
+      ['user1']: true,
     },
     user_name: 'user1',
     user_requested_tenant: '',
@@ -35,6 +42,15 @@ jest.mock('../utils', () => ({
   fetchAccountInfo: jest.fn().mockImplementation(() => {
     return mockAccountInfo;
   }),
+}));
+
+jest.mock('../../configuration/utils/tenant-utils', () => ({
+  ...jest.requireActual('../../configuration/utils/tenant-utils'),
+  selectTenant: jest.fn(),
+}));
+
+jest.mock('../../error-utils', () => ({
+  constructErrorMessageAndLog: jest.fn(),
 }));
 
 describe('Account menu -tenant switch panel', () => {
@@ -61,7 +77,7 @@ describe('Account menu -tenant switch panel', () => {
     useState.mockImplementation((initialValue) => [initialValue, setState]);
   });
 
-  it('fetch data', (done) => {
+  it('fetch data when user requested tenant is Global', (done) => {
     shallow(
       <TenantSwitchPanel
         coreStart={mockCoreStart as any}
@@ -80,8 +96,63 @@ describe('Account menu -tenant switch panel', () => {
     });
   });
 
+  it('fetch data when user requested tenant is Private', (done) => {
+    (fetchAccountInfo as jest.Mock).mockImplementationOnce(() => {
+      return {
+        data: {
+          tenants: {
+            ['tenant1']: true,
+          },
+          user_name: 'user1',
+          user_requested_tenant: '__user__',
+        },
+      };
+    });
+    shallow(
+      <TenantSwitchPanel
+        coreStart={mockCoreStart as any}
+        handleClose={handleClose}
+        handleSwitchAndClose={handleSwitchAndClose}
+        config={defaultConfig as any}
+      />
+    );
+
+    process.nextTick(() => {
+      expect(setState).toHaveBeenCalledWith(PRIVATE_TENANT_RADIO_ID);
+      done();
+    });
+  });
+
+  it('fetch data when user requested tenant is Custom', (done) => {
+    (fetchAccountInfo as jest.Mock).mockImplementationOnce(() => {
+      return {
+        data: {
+          tenants: {
+            ['tenant1']: true,
+          },
+          user_name: 'user1',
+          user_requested_tenant: 'tenant1',
+        },
+      };
+    });
+    shallow(
+      <TenantSwitchPanel
+        coreStart={mockCoreStart as any}
+        handleClose={handleClose}
+        handleSwitchAndClose={handleSwitchAndClose}
+        config={defaultConfig as any}
+      />
+    );
+
+    process.nextTick(() => {
+      expect(setState).toHaveBeenCalledWith(CUSTOM_TENANT_RADIO_ID);
+      expect(setState).toHaveBeenCalledWith('tenant1');
+      done();
+    });
+  });
+
   it('error occurred while fetching data', (done) => {
-    (fetchAccountInfo as jest.Mock).mockReturnValueOnce(() => {
+    (fetchAccountInfo as jest.Mock).mockImplementationOnce(() => {
       throw new Error();
     });
     const spy = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
@@ -149,5 +220,149 @@ describe('Account menu -tenant switch panel', () => {
 
     expect(setState).toBeCalledWith(GLOBAL_TENANT_RADIO_ID);
     expect(setState).toBeCalledWith('');
+  });
+
+  it('should set error call out when tenant name is undefined', () => {
+    const component = shallow(
+      <TenantSwitchPanel
+        coreStart={mockCoreStart as any}
+        handleClose={handleClose}
+        handleSwitchAndClose={handleSwitchAndClose}
+        config={defaultConfig as any}
+      />
+    );
+    component.find('[data-test-subj="confirm"]').simulate('click');
+    expect(setState).toBeCalledWith('No target tenant is specified!');
+  });
+
+  describe('confirm button and renders', () => {
+    beforeEach(() => {
+      useState.mockImplementationOnce(() => [keys(mockAccountInfo.data.tenants), setState]);
+      useState.mockImplementationOnce(() => [mockAccountInfo.data.user_name, setState]);
+      useState.mockImplementationOnce(() => ['', setState]);
+    });
+
+    it('should handle tenant confirmation on "confirm" button click when selected tenant is Global tenant', () => {
+      useState.mockImplementationOnce(() => [GLOBAL_TENANT_RADIO_ID, setState]);
+      useState.mockImplementationOnce(() => ['', setState]);
+      const component = shallow(
+        <TenantSwitchPanel
+          coreStart={mockCoreStart as any}
+          handleClose={handleClose}
+          handleSwitchAndClose={handleSwitchAndClose}
+          config={defaultConfig as any}
+        />
+      );
+      component.find('[data-test-subj="confirm"]').simulate('click');
+      expect(selectTenant).toHaveBeenCalledTimes(1);
+    });
+
+    it('should handle tenant confirmation on "confirm" button click when selected tenant is Private tenant', () => {
+      useState.mockImplementationOnce(() => [PRIVATE_TENANT_RADIO_ID, setState]);
+      useState.mockImplementationOnce(() => ['', setState]);
+      const component = shallow(
+        <TenantSwitchPanel
+          coreStart={mockCoreStart as any}
+          handleClose={handleClose}
+          handleSwitchAndClose={handleSwitchAndClose}
+          config={defaultConfig as any}
+        />
+      );
+      component.find('[data-test-subj="confirm"]').simulate('click');
+      expect(selectTenant).toHaveBeenCalledTimes(1);
+    });
+
+    it('should handle tenant confirmation on "confirm" button click when selected tenant is Custom tenant', () => {
+      useState.mockImplementationOnce(() => [CUSTOM_TENANT_RADIO_ID, setState]);
+      useState.mockImplementationOnce(() => ['tenant1', setState]);
+      const component = shallow(
+        <TenantSwitchPanel
+          coreStart={mockCoreStart as any}
+          handleClose={handleClose}
+          handleSwitchAndClose={handleSwitchAndClose}
+          config={defaultConfig as any}
+        />
+      );
+      component.find('[data-test-subj="confirm"]').simulate('click');
+      expect(selectTenant).toHaveBeenCalledTimes(1);
+    });
+
+    it('should set error call out when error occurred while changing the tenant', (done) => {
+      useState.mockImplementationOnce(() => [GLOBAL_TENANT_RADIO_ID, setState]);
+      useState.mockImplementationOnce(() => ['', setState]);
+      (selectTenant as jest.Mock).mockImplementationOnce(() => {
+        throw Error();
+      });
+      const component = shallow(
+        <TenantSwitchPanel
+          coreStart={mockCoreStart as any}
+          handleClose={handleClose}
+          handleSwitchAndClose={handleSwitchAndClose}
+          config={defaultConfig as any}
+        />
+      );
+      component.find('[data-test-subj="confirm"]').simulate('click');
+      process.nextTick(() => {
+        expect(constructErrorMessageAndLog).toHaveBeenCalledTimes(1);
+        done();
+      });
+    });
+
+    it('renders when both global and private tenant enabled', () => {
+      const component = shallow(
+        <TenantSwitchPanel
+          coreStart={mockCoreStart as any}
+          handleClose={handleClose}
+          handleSwitchAndClose={handleSwitchAndClose}
+          config={defaultConfig as any}
+        />
+      );
+      expect(component).toMatchSnapshot();
+    });
+
+    it('renders when global tenant disabled', () => {
+      const config = {
+        multitenancy: {
+          enabled: true,
+          tenants: {
+            enable_private: true,
+            enable_global: false,
+          },
+        },
+      };
+      const component = shallow(
+        <TenantSwitchPanel
+          coreStart={mockCoreStart as any}
+          handleClose={handleClose}
+          handleSwitchAndClose={handleSwitchAndClose}
+          config={config as any}
+        />
+      );
+      expect(component).toMatchSnapshot();
+    });
+
+    it('renders when private tenant disabled', (done) => {
+      const config = {
+        multitenancy: {
+          enabled: true,
+          tenants: {
+            enable_private: false,
+            enable_global: true,
+          },
+        },
+      };
+      const component = shallow(
+        <TenantSwitchPanel
+          coreStart={mockCoreStart as any}
+          handleClose={handleClose}
+          handleSwitchAndClose={handleSwitchAndClose}
+          config={config as any}
+        />
+      );
+      process.nextTick(() => {
+        expect(component).toMatchSnapshot();
+        done();
+      });
+    });
   });
 });
