@@ -25,8 +25,21 @@ export function composeNextUrlQeuryParam(request: KibanaRequest, basePath: strin
   return stringify({ nextUrl });
 }
 
+export const INVALID_NEXT_URL_PARAMETER_MESSAGE = 'Invalid nextUrl parameter.';
+
+/**
+ * Ensures the nextUrl parameter is a relative url, the nextUrl parameter should:
+ *   1. starts with '/'
+ *   2. not start with '//'
+ *   3. does not contain '@' in the path
+ * @param url url string.
+ * @returns error message if nextUrl is invalid, otherwise void.
+ */
 export const validateNextUrl = (url: string | undefined): string | void => {
-  if (url && url.toLowerCase().includes('//')) {
-    return 'invalid nextUrl parameter';
+  if (url) {
+    const path = url.split('?')[0];
+    if (!path.startsWith('/') || path.startsWith('//') || path.includes('@')) {
+      return INVALID_NEXT_URL_PARAMETER_MESSAGE;
+    }
   }
 };

@@ -18,7 +18,7 @@ import config from '../../../src/dev/jest/config';
 export default {
   ...config,
   roots: ['<rootDir>/plugins/opendistro_security'],
-  testMatch: ['**/test/jest_integration/**/*.test.ts'],
+  testMatch: ['**/test/jest_integration/**/*.test.ts', '**/server/**/*.test.ts'],
   testPathIgnorePatterns: config.testPathIgnorePatterns.filter(
     (pattern) => !pattern.includes('integration_tests')
   ),

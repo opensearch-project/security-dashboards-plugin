@@ -14,7 +14,7 @@
     "lint:es": "node ../../scripts/eslint",
     "lint:sass": "node ../../scripts/sasslint",
     "lint": "yarn run lint:es && yarn run lint:sass",
-    "test:jest_server": "node ./test/run_jest_tests.js --config ./test/jest.config.integration.js",
+    "test:jest_server": "node ./test/run_jest_tests.js --config ./test/jest.config.server.js",
     "test:jest_ui": "node ./test/run_jest_tests.js --config ./test/jest.config.ui.js"
   },
   "devDependencies": {
