@@ -32,7 +32,8 @@ export const INVALID_NEXT_URL_PARAMETER_MESSAGE = 'Invalid nextUrl parameter.';
  *   1. starts with '/'
  *   2. not start with '//'
  *   3. does not contain '@' in the path
- * @param url
+ * @param url url string.
+ * @returns error message if nextUrl is invalid, otherwise void.
  */
 export const validateNextUrl = (url: string | undefined): string | void => {
   if (url) {
