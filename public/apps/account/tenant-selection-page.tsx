@@ -26,7 +26,7 @@ function redirect(serverBasePath: string) {
   if (!nextUrl || nextUrl.toLowerCase().includes('//')) {
     nextUrl = serverBasePath;
   }
-  window.location.href = nextUrl;
+  window.location.href = nextUrl + window.location.hash;
 }
 
 export async function renderPage(
