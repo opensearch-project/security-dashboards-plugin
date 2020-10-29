@@ -44,6 +44,7 @@ import { ExternalLink } from '../../utils/display-utils';
 import { generateResourceName } from '../../utils/resource-utils';
 import { NameRow } from '../../utils/name-row';
 import { DocLinks } from '../../constants';
+import { constructErrorMessageAndLog } from '../../../error-utils';
 
 interface InternalUserEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -114,12 +115,9 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
       // Redirect to user listing
       window.location.href = buildHashUrl(ResourceType.users);
     } catch (e) {
-      if (e.message) {
-        addToast(createErrorToast('updateUserFailed', 'Update error', e.message));
-      } else {
-        addToast(createUnknownErrorToast('updateUserFailed', `${props.action} user`));
-        console.error(e);
-      }
+      addToast(
+        createErrorToast('updateUserFailed', 'Update error', constructErrorMessageAndLog(e, ''))
+      );
     }
   };
 
