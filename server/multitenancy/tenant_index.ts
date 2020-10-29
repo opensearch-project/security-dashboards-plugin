@@ -94,7 +94,7 @@ export async function migrateTenantIndices(
     log: logger,
   });
 
-  Object.keys(tenentInfo).forEach(async (indexName, i, array) => {
+  for (const indexName of Object.keys(tenentInfo)) {
     const indexMap = createIndexMap({
       kibanaIndexName: indexName,
       indexMap: mergeTypes(typeRegistry.getAllTypes()),
@@ -125,5 +125,5 @@ export async function migrateTenantIndices(
       logger.error(error);
       throw error;
     }
-  });
+  }
 }
