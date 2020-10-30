@@ -78,7 +78,10 @@ export function LoginPage(props: LoginPageDeps) {
       await validateCurrentPassword(props.http, username, password);
       // Forward search to keep nextUrl argument
       window.location.href =
-        props.http.basePath.serverBasePath + SELECT_TENANT_PAGE_URI + window.location.search;
+        props.http.basePath.serverBasePath +
+        SELECT_TENANT_PAGE_URI +
+        window.location.search +
+        window.location.hash;
     } catch (error) {
       console.log(error);
       setloginFailed(true);
