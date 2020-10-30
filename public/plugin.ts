@@ -146,7 +146,7 @@ export class OpendistroSecurityPlugin
           ![APP_ID_DASHBOARDS, APP_ID_HOME, APP_ID_MULTITENANCY].includes(app.id)
         ) {
           return {
-            status: AppStatus.accessible,
+            status: AppStatus.inaccessible,
           };
         }
       })
