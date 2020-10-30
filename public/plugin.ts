@@ -144,6 +144,29 @@ export class OpendistroSecurityPlugin
 
     setupTopNavButton(core, config);
 
+    if (config.ui.autologout) {
+      // logout the user when getting 401 unauthorized, e.g. when session timed out.
+      core.http.intercept({
+        responseError: (httpErrorResponse, controller) => {
+          if (
+            httpErrorResponse.response?.status === 401 &&
+            !(
+              window.location.pathname.toLowerCase().includes('/login') ||
+              window.location.pathname.toLowerCase().includes('error')
+            )
+          ) {
+            if (config.auth.logout_url) {
+              window.location.href = config.auth.logout_url;
+            } else {
+              // when session timed out, user credentials in cookie are wiped out
+              // refres the page will direct the user to go through login process
+              window.location.reload();
+            }
+          }
+        },
+      });
+    }
+
     return {};
   }
 
