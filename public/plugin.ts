@@ -55,7 +55,9 @@ async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
 }
 
 const DEFAULT_READONLY_ROLES = ['kibana_read_only'];
+const APP_ID_LOGIN = 'login';
 const APP_ID_MULTITENANCY = 'multitenancy';
+const APP_ID_CUSTOMERROR = 'customerror';
 const APP_ID_HOME = 'home';
 const APP_ID_DASHBOARDS = 'dashboards';
 
@@ -97,7 +99,7 @@ export class OpendistroSecurityPlugin
     }
 
     core.application.register({
-      id: 'login',
+      id: APP_ID_LOGIN,
       title: 'Security',
       chromeless: true,
       appRoute: LOGIN_PAGE_URI,
@@ -121,6 +123,17 @@ export class OpendistroSecurityPlugin
       },
     });
 
+    core.application.register({
+      id: APP_ID_CUSTOMERROR,
+      title: 'Security',
+      chromeless: true,
+      mount: async (params: AppMountParameters) => {
+        const { renderPage } = await import('./apps/customerror/custom-error');
+        const [coreStart] = await core.getStartServices();
+        return renderPage(coreStart, params, config);
+      },
+    });
+
     core.application.registerAppUpdater(
       new BehaviorSubject<AppUpdater>((app) => {
         if (
@@ -129,7 +142,7 @@ export class OpendistroSecurityPlugin
           ![APP_ID_DASHBOARDS, APP_ID_HOME, APP_ID_MULTITENANCY].includes(app.id)
         ) {
           return {
-            status: AppStatus.inaccessible,
+            status: AppStatus.accessible
           };
         }
       })
