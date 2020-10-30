@@ -1,0 +1,128 @@
+name: E2E Integration Tests
+on:
+  push:
+    branches:
+      - main
+jobs:
+  tests:
+    name: Run Cypress E2E tests
+    runs-on: ubuntu-latest
+    env:
+      # prevents extra Cypress installation progress messages
+      CI: 1
+      # avoid warnings like "tput: No value for $TERM and no -T specified"
+      TERM: xterm
+    steps:
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          # TODO: Parse this from security plugin
+          java-version: 13
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: security
+          repository: opendistro-for-elasticsearch/security
+      - name: Checkout Security Kibana plugin
+        uses: actions/checkout@v2
+        with:
+          path: security-kibana-plugin
+      - name: Get Kibana version
+        id: kibana_version
+        run: |
+          echo "::set-output name=kibana_version::$(cat ./security-kibana-plugin/package.json | jq '.kibana.version' | tr -d '"')"
+      - name: Get Opendistro version
+        id: opendistro_version
+        run: |
+          echo "::set-output name=opendistro_version::$(cat ./security-kibana-plugin/package.json | jq '.version' | tr -d '"')"
+      - name: Get Cypress version
+        id: cypress_version
+        run: |
+          echo "::set-output name=cypress_version::$(cat ./security-kibana-plugin/package.json | jq '.devDependencies.cypress' | tr -d '"')"
+      - name: Run elasticsearch with plugin
+        run: |
+          wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-${{ steps.kibana_version.outputs.kibana_version }}-darwin-x86_64.tar.gz
+          tar -xzf elasticsearch-oss-${{ steps.kibana_version.outputs.kibana_version }}-darwin-x86_64.tar.gz
+          cd elasticsearch-${{ steps.kibana_version.outputs.kibana_version }}/
+          bin/elasticsearch-plugin install -b https://d3g5vo6xdbdb9a.cloudfront.net/downloads/elasticsearch-plugins/opendistro-security/opendistro_security-${{ steps.opendistro_version.outputs.opendistro_version }}.zip
+          bash plugins/opendistro_security/tools/install_demo_configuration.sh -y -i
+          echo $(curl -s -o /dev/null -w ''%{http_code}'' https://localhost:9200 -u admin:admin -k)
+          bin/elasticsearch &
+          sleep 30
+          timeout 900 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' https://localhost:9200 -u admin:admin -k)" != "200" ]]; do echo "ping ElasticSearch..."; sleep 5; done'
+      - name: Checkout Kibana
+        uses: actions/checkout@v2
+        with:
+          repository: opendistro-for-elasticsearch/kibana-oss
+          ref: ${{ steps.kibana_version.outputs.kibana_version }}
+          token: ${{ secrets.KIBANA_OSS_TOKEN }}
+          path: kibana
+      - name: Get node and yarn versions
+        id: versions
+        run: |
+          echo "::set-output name=node_version::$(cat ./kibana/.node-version)"
+          echo "::set-output name=yarn_version::$(cat ./kibana/package.json | jq '.engines.yarn' | tr -d '"')"
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ steps.versions.outputs.node_version }}
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install correct yarn version for Kibana
+        run: |
+          npm uninstall -g yarn
+          echo "Installing yarn ${{ steps.versions_step.outputs.yarn_version }}"
+          npm i -g yarn@${{ steps.versions.outputs.yarn_version }}
+      - name: Bootstrap plugin/kibana
+        env:
+          CYPRESS_INSTALL_BINARY: ${{ steps.cypress_version.outputs.cypress_version }}
+        run: |
+          mkdir -p kibana/plugins
+          mv security-kibana-plugin kibana/plugins
+          cd kibana/plugins/security-kibana-plugin
+          yarn kbn bootstrap
+      - name: Run kibana server
+        run: |
+          security_config='elasticsearch.username: "kibanaserver"
+          elasticsearch.password: "kibanaserver"
+          elasticsearch.hosts: "https://localhost:9200"
+          elasticsearch.ssl.verificationMode: none
+          elasticsearch.requestHeadersWhitelist: ["securitytenant","Authorization"]
+          opendistro_security.multitenancy.enabled: true
+          opendistro_security.multitenancy.tenants.preferred: ["Private", "Global"]
+          opendistro_security.readonly_mode.roles: ["kibana_read_only"]
+          opendistro_security.auth.type: "basicauth"
+          '
+          echo "$security_config" >> kibana/config/kibana.yml
+          cd kibana
+          yarn start --no-base-path --no-watch &
+          sleep 60
+          timeout 900 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:5601/api/status)" != "200" ]]; do echo "ping Kibana..."; sleep 5; done'
+      - name: Cache Cypress
+        id: cache-cypress
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+      # now let's install Cypress binary
+      - run: npx cypress install
+      - run: npx cypress cache list
+      - run: npx cypress cache path
+        # for now just chrome, use matrix to do all browsers later
+      - name: Cypress tests
+        run: |
+          cd kibana/plugins/security-kibana-plugin
+          yarn run cypress run --browser chrome
+      # Screenshots are only captured on failure, will change this once we do visual regression tests
+      - uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: kibana/plugins/security-kibana-plugin/cypress/screenshots
+      # Test run video was always captured, so this action uses "always()" condition
+      - uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: cypress-videos
+          path: kibana/plugins/security-kibana-plugin/cypress/videos
+
+          
