@@ -137,6 +137,18 @@ export class OpendistroSecurityPlugin
 
     setupTopNavButton(core, config);
 
+    // refresh the page when getting 401 unauthorized, e.g. when session timedo out.
+    core.http.intercept({
+      responseError: (httpErrorResponse, controller) => {
+        if (
+          httpErrorResponse.response?.status === 401 &&
+          !window.location.pathname.includes('/login')
+        ) {
+          window.location.reload();
+        }
+      },
+    });
+
     return {};
   }
 
