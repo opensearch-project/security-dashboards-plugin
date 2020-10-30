@@ -27,6 +27,7 @@ import {
 import {
   APP_ID_LOGIN,
   APP_ID_MULTITENANCY,
+  CUSTOM_ERROR_PAGE_URI,
   LOGIN_PAGE_URI,
   PLUGIN_NAME,
   SELECT_TENANT_PAGE_URI,
@@ -131,6 +132,7 @@ export class OpendistroSecurityPlugin
       id: APP_ID_CUSTOMERROR,
       title: 'Security',
       chromeless: true,
+      appRoute: CUSTOM_ERROR_PAGE_URI,
       mount: async (params: AppMountParameters) => {
         const { renderPage } = await import('./apps/customerror/custom-error');
         const [coreStart] = await core.getStartServices();
@@ -168,8 +170,8 @@ export class OpendistroSecurityPlugin
           if (
             httpErrorResponse.response?.status === 401 &&
             !(
-              window.location.pathname.toLowerCase().includes('/login') ||
-              window.location.pathname.toLowerCase().includes('error')
+              window.location.pathname.toLowerCase().includes(LOGIN_PAGE_URI) ||
+              window.location.pathname.toLowerCase().includes(CUSTOM_ERROR_PAGE_URI)
             )
           ) {
             if (config.auth.logout_url) {
