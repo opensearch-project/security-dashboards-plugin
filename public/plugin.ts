@@ -142,7 +142,10 @@ export class OpendistroSecurityPlugin
       responseError: (httpErrorResponse, controller) => {
         if (
           httpErrorResponse.response?.status === 401 &&
-          !window.location.pathname.includes('/login')
+          !(
+            window.location.pathname.toLowerCase().includes('/login') ||
+            window.location.pathname.toLowerCase().includes('error')
+          )
         ) {
           if (config.auth.logout_url) {
             window.location.href = config.auth.logout_url;
