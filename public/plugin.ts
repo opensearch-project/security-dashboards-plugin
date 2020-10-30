@@ -16,32 +16,39 @@
 import { BehaviorSubject } from 'rxjs';
 import {
   AppMountParameters,
+  AppStatus,
+  AppUpdater,
   CoreSetup,
   CoreStart,
+  DEFAULT_APP_CATEGORIES,
   Plugin,
   PluginInitializerContext,
-  AppUpdater,
-  AppStatus,
-  DEFAULT_APP_CATEGORIES,
 } from '../../../src/core/public';
 import {
-  OpendistroSecurityPluginSetup,
-  OpendistroSecurityPluginStart,
-  AppPluginStartDependencies,
-  ClientConfigType,
-} from './types';
-import { LOGIN_PAGE_URI, PLUGIN_NAME, SELECT_TENANT_PAGE_URI } from '../common';
+  APP_ID_LOGIN,
+  APP_ID_MULTITENANCY,
+  LOGIN_PAGE_URI,
+  PLUGIN_NAME,
+  SELECT_TENANT_PAGE_URI,
+} from '../common';
+import { APP_ID_CUSTOMERROR } from '../common/index';
+import { setupTopNavButton } from './apps/account/account-app';
+import { fetchAccountInfoSafe } from './apps/account/utils';
 import {
   API_ENDPOINT_PERMISSIONS_INFO,
   includeClusterPermissions,
   includeIndexPermissions,
 } from './apps/configuration/constants';
-import { setupTopNavButton } from './apps/account/account-app';
-import { fetchAccountInfoSafe } from './apps/account/utils';
 import {
   excludeFromDisabledRestCategories,
   excludeFromDisabledTransportCategories,
 } from './apps/configuration/panels/audit-logging/constants';
+import {
+  AppPluginStartDependencies,
+  ClientConfigType,
+  OpendistroSecurityPluginSetup,
+  OpendistroSecurityPluginStart,
+} from './types';
 
 async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
   try {
@@ -55,9 +62,6 @@ async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
 }
 
 const DEFAULT_READONLY_ROLES = ['kibana_read_only'];
-const APP_ID_LOGIN = 'login';
-const APP_ID_MULTITENANCY = 'multitenancy';
-const APP_ID_CUSTOMERROR = 'customerror';
 const APP_ID_HOME = 'home';
 const APP_ID_DASHBOARDS = 'dashboards';
 
@@ -142,7 +146,7 @@ export class OpendistroSecurityPlugin
           ![APP_ID_DASHBOARDS, APP_ID_HOME, APP_ID_MULTITENANCY].includes(app.id)
         ) {
           return {
-            status: AppStatus.accessible
+            status: AppStatus.accessible,
           };
         }
       })

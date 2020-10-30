@@ -13,19 +13,19 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiImage, EuiButton, EuiListGroup, EuiSpacer, EuiText } from '@elastic/eui';
+import { EuiButton, EuiImage, EuiListGroup, EuiSpacer, EuiText } from '@elastic/eui';
 import { AppMountParameters, CoreStart } from 'kibana/public';
-import { HashRouter as Router, Route } from 'react-router-dom';
-import React from "react";
+import React from 'react';
 import ReactDOM from 'react-dom';
+import { Router, Route } from 'react-router-dom';
+import { ERROR_MISSING_ROLE_PATH } from '../../../common';
 import defaultBrandImage from '../../assets/open_distro_for_elasticsearch_logo_h.svg';
 import { ClientConfigType } from '../../types';
-
 import './_index.scss';
 
 interface CustomErrorDeps {
-  title: string,
-  subtitle: string,
+  title: string;
+  subtitle: string;
   http: CoreStart['http'];
   config: ClientConfigType['ui']['basicauth']['login'];
 }
@@ -33,23 +33,23 @@ interface CustomErrorDeps {
 export function CustomErrorPage(props: CustomErrorDeps) {
   return (
     <EuiListGroup className="custom-error-wrapper">
-    {props.config.showbrandimage && (
-      <EuiImage alt="" url={props.config.brandimage || defaultBrandImage} />
-    )}
-    <EuiSpacer size="s" />
-    <EuiText size="m" textAlign="center">
-      <h3>{props.title}</h3>
-    </EuiText>
-    <EuiSpacer size="s" />
-    <EuiText size="s" textAlign="center">
-      {props.subtitle}
-    </EuiText>
-    <EuiSpacer size="s" />
-    <EuiButton fill href={props.http.basePath.serverBasePath} fullWidth>
-      Back to Kibana Home
-    </EuiButton>
-  </EuiListGroup>
-  )
+      {props.config.showbrandimage && (
+        <EuiImage alt="" url={props.config.brandimage || defaultBrandImage} />
+      )}
+      <EuiSpacer size="s" />
+      <EuiText size="m" textAlign="center">
+        <h3>{props.title}</h3>
+      </EuiText>
+      <EuiSpacer size="s" />
+      <EuiText size="s" textAlign="center">
+        {props.subtitle}
+      </EuiText>
+      <EuiSpacer size="s" />
+      <EuiButton fill href={props.http.basePath.serverBasePath} fullWidth>
+        Back to Kibana Home
+      </EuiButton>
+    </EuiListGroup>
+  );
 }
 
 export async function renderPage(
@@ -58,14 +58,15 @@ export async function renderPage(
   config: ClientConfigType
 ) {
   ReactDOM.render(
-    <Router>
-      <Route path="/missing-role">
+    <Router history={params.history}>
+      <Route path={ERROR_MISSING_ROLE_PATH}>
         <CustomErrorPage
           http={coreStart.http}
-          config={config['ui']['basicauth']['login']}
+          config={config.ui.basicauth.login}
           title="Missing Role"
           subtitle="No roles available for this user, please contact your system administrator."
-        />,
+        />
+        ,
       </Route>
     </Router>,
     params.element

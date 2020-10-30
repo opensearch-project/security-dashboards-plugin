@@ -19,10 +19,17 @@ import { CoreStart } from 'kibana/public';
 import { AccountNavButton } from './account-nav-button';
 import { fetchAccountInfoSafe } from './utils';
 import { ClientConfigType } from '../../types';
+import { CUSTOM_ERROR_PAGE_URI, ERROR_MISSING_ROLE_PATH } from '../../../common';
 
 export async function setupTopNavButton(coreStart: CoreStart, config: ClientConfigType) {
   const accountInfo = (await fetchAccountInfoSafe(coreStart.http))?.data;
   if (accountInfo) {
+    // Missing role error
+    if (accountInfo.roles.length === 0 && !window.location.href.includes(CUSTOM_ERROR_PAGE_URI)) {
+      window.location.href =
+        coreStart.http.basePath.serverBasePath + CUSTOM_ERROR_PAGE_URI + ERROR_MISSING_ROLE_PATH;
+    }
+
     coreStart.chrome.navControls.registerRight({
       // Pin to rightmost, since newsfeed plugin is using 1000, here needs a number > 1000
       order: 2000,
