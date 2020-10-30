@@ -47,6 +47,7 @@ export async function renderPage(
   // Skip either:
   // 1. multitenancy is disabled
   // 2. security manager (user with api permission)
+  // 3. user specified tenant as url query parameter
   if (!config.multitenancy.enabled || hasApiPermission || tenantSpecifiedInUrl()) {
     handleModalClose();
     return () => {};
