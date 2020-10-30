@@ -144,7 +144,11 @@ export class OpendistroSecurityPlugin
           httpErrorResponse.response?.status === 401 &&
           !window.location.pathname.includes('/login')
         ) {
-          window.location.reload();
+          if (config.auth.logout_url) {
+            window.location.href = config.auth.logout_url;
+          } else {
+            window.location.reload();
+          }
         }
       },
     });
