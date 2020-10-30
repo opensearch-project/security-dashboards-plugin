@@ -29,6 +29,13 @@ function redirect(serverBasePath: string) {
   window.location.href = nextUrl + window.location.hash;
 }
 
+function tenantSpecifiedInUrl() {
+  return (
+    window.location.search.includes('security_tenant') ||
+    window.location.search.includes('securitytenant')
+  );
+}
+
 export async function renderPage(
   coreStart: CoreStart,
   params: AppMountParameters,
@@ -40,7 +47,7 @@ export async function renderPage(
   // Skip either:
   // 1. multitenancy is disabled
   // 2. security manager (user with api permission)
-  if (!config.multitenancy.enabled || hasApiPermission) {
+  if (!config.multitenancy.enabled || hasApiPermission || tenantSpecifiedInUrl()) {
     handleModalClose();
     return () => {};
   } else {
