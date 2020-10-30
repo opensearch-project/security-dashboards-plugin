@@ -2,6 +2,7 @@
 
 exports[`Account navigation button renders 1`] = `
 <EuiHeaderSectionItemButton
+  data-test-subj="account-header-section-button"
   onClick={[Function]}
 >
   <EuiPopover
@@ -75,6 +76,7 @@ exports[`Account navigation button renders 1`] = `
           margin="xs"
         />
         <EuiButtonEmpty
+          data-test-subj="view-roles-and-identities"
           onClick={[Function]}
           size="xs"
         >
@@ -84,6 +86,7 @@ exports[`Account navigation button renders 1`] = `
           margin="xs"
         />
         <EuiButtonEmpty
+          data-test-subj="switch-tenants"
           onClick={[Function]}
           size="xs"
         >
@@ -93,6 +96,7 @@ exports[`Account navigation button renders 1`] = `
           margin="xs"
         />
         <EuiButtonEmpty
+          data-test-subj="reset-password"
           onClick={[Function]}
           size="xs"
         >
