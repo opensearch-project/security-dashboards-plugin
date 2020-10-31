@@ -16,32 +16,40 @@
 import { BehaviorSubject } from 'rxjs';
 import {
   AppMountParameters,
+  AppStatus,
+  AppUpdater,
   CoreSetup,
   CoreStart,
+  DEFAULT_APP_CATEGORIES,
   Plugin,
   PluginInitializerContext,
-  AppUpdater,
-  AppStatus,
-  DEFAULT_APP_CATEGORIES,
 } from '../../../src/core/public';
 import {
-  OpendistroSecurityPluginSetup,
-  OpendistroSecurityPluginStart,
-  AppPluginStartDependencies,
-  ClientConfigType,
-} from './types';
-import { LOGIN_PAGE_URI, PLUGIN_NAME, SELECT_TENANT_PAGE_URI } from '../common';
+  APP_ID_LOGIN,
+  APP_ID_MULTITENANCY,
+  CUSTOM_ERROR_PAGE_URI,
+  LOGIN_PAGE_URI,
+  PLUGIN_NAME,
+  SELECT_TENANT_PAGE_URI,
+} from '../common';
+import { APP_ID_CUSTOMERROR } from '../common/index';
+import { setupTopNavButton } from './apps/account/account-app';
+import { fetchAccountInfoSafe } from './apps/account/utils';
 import {
   API_ENDPOINT_PERMISSIONS_INFO,
   includeClusterPermissions,
   includeIndexPermissions,
 } from './apps/configuration/constants';
-import { setupTopNavButton } from './apps/account/account-app';
-import { fetchAccountInfoSafe } from './apps/account/utils';
 import {
   excludeFromDisabledRestCategories,
   excludeFromDisabledTransportCategories,
 } from './apps/configuration/panels/audit-logging/constants';
+import {
+  AppPluginStartDependencies,
+  ClientConfigType,
+  OpendistroSecurityPluginSetup,
+  OpendistroSecurityPluginStart,
+} from './types';
 
 async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
   try {
@@ -55,7 +63,6 @@ async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
 }
 
 const DEFAULT_READONLY_ROLES = ['kibana_read_only'];
-const APP_ID_MULTITENANCY = 'multitenancy';
 const APP_ID_HOME = 'home';
 const APP_ID_DASHBOARDS = 'dashboards';
 
@@ -97,7 +104,7 @@ export class OpendistroSecurityPlugin
     }
 
     core.application.register({
-      id: 'login',
+      id: APP_ID_LOGIN,
       title: 'Security',
       chromeless: true,
       appRoute: LOGIN_PAGE_URI,
@@ -118,6 +125,18 @@ export class OpendistroSecurityPlugin
         const { renderPage } = await import('./apps/account/tenant-selection-page');
         const [coreStart] = await core.getStartServices();
         return renderPage(coreStart, params, config, apiPermission);
+      },
+    });
+
+    core.application.register({
+      id: APP_ID_CUSTOMERROR,
+      title: 'Security',
+      chromeless: true,
+      appRoute: CUSTOM_ERROR_PAGE_URI,
+      mount: async (params: AppMountParameters) => {
+        const { renderPage } = await import('./apps/customerror/custom-error');
+        const [coreStart] = await core.getStartServices();
+        return renderPage(coreStart, params, config);
       },
     });
 
@@ -151,8 +170,8 @@ export class OpendistroSecurityPlugin
           if (
             httpErrorResponse.response?.status === 401 &&
             !(
-              window.location.pathname.toLowerCase().includes('/login') ||
-              window.location.pathname.toLowerCase().includes('error')
+              window.location.pathname.toLowerCase().includes(LOGIN_PAGE_URI) ||
+              window.location.pathname.toLowerCase().includes(CUSTOM_ERROR_PAGE_URI)
             )
           ) {
             if (config.auth.logout_url) {

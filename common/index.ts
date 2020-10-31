@@ -16,13 +16,20 @@
 export const PLUGIN_ID = 'opendistroSecurity';
 export const PLUGIN_NAME = 'opendistro_security';
 
+export const APP_ID_LOGIN = 'login';
+export const APP_ID_MULTITENANCY = 'multitenancy';
+export const APP_ID_CUSTOMERROR = 'customerror';
+
 export const API_PREFIX = '/api/v1';
 export const CONFIGURATION_API_PREFIX = 'configuration';
 export const API_ENDPOINT_AUTHINFO = API_PREFIX + '/auth/authinfo';
-export const LOGIN_PAGE_URI = '/app/login';
+export const LOGIN_PAGE_URI = '/app/' + APP_ID_LOGIN;
 export const SELECT_TENANT_PAGE_URI = '/app/select_tenant';
+export const CUSTOM_ERROR_PAGE_URI = '/app/' + APP_ID_CUSTOMERROR;
 export const API_AUTH_LOGIN = '/auth/login';
 export const API_AUTH_LOGOUT = '/auth/logout';
+
+export const ERROR_MISSING_ROLE_PATH = '/missing-role';
 
 export enum AuthType {
   BASIC = 'basicauth',
