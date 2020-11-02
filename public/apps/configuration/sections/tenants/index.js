@@ -11,10 +11,10 @@ uiRoutes
     .when('/tenants', {
       template: sectionTemplate
     })
-    .when('/tenants/edit/:resourcename', {
+    .when('/tenants/edit', {
       template: editTemplate
     })
-    .when('/tenants/clone/:resourcename', {
+    .when('/tenants/clone', {
         template: editTemplate
     })
     .when('/tenants/new', {

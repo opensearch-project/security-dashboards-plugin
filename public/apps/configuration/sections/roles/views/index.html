@@ -89,7 +89,7 @@
                                 <td class="kuiTableRowCell cellAlignTop">
                                     <div class="kuiTableRowCell__liner">
                                             <span ng-repeat="indexname in extractPatternsFromObjectArray(resources[rolename].index_permissions, 'index_patterns')">
-                                                <a title="{{indexname}}" class="kuiLink" ng-href="#/roles/edit/{{rolename}}/{{indexname | escape}}" >
+                                                <a title="{{indexname}}" class="kuiLink" ng-href="#/roles/edit?resourcename={{rolename | escape}}&indexname={{indexname | escape}}" >
                                                     {{indexname}}
                                                 </a>
                                                 <br/>
