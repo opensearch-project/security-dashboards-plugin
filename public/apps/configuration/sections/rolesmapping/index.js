@@ -12,10 +12,10 @@ uiRoutes
     .when('/rolesmapping', {
       template: sectionTemplate
     })
-    .when('/rolesmapping/edit/:resourcename', {
+    .when('/rolesmapping/edit', {
       template: editTemplate
     })
-    .when('/rolesmapping/clone/:resourcename', {
+    .when('/rolesmapping/clone', {
         template: editTemplate
     })
     .when('/rolesmapping/new', {

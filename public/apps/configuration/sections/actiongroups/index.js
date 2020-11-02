@@ -13,10 +13,10 @@ uiRoutes
     .when('/actiongroups', {
       template: sectionTemplate
     })
-    .when('/actiongroups/edit/:resourcename', {
+    .when('/actiongroups/edit', {
       template: editTemplate
     })
-    .when('/actiongroups/clone/:resourcename', {
+    .when('/actiongroups/clone', {
         template: editTemplate
     })
     .when('/actiongroups/new', {
