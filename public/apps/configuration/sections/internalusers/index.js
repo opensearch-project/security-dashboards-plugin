@@ -12,10 +12,10 @@ uiRoutes
     .when('/internalusers', {
         template: sectionTemplate
     })
-    .when('/internalusers/edit/:resourcename', {
+    .when('/internalusers/edit', {
         template: editTemplate
     })
-    .when('/internalusers/clone/:resourcename', {
+    .when('/internalusers/clone', {
         template: editTemplate
     })
     .when('/internalusers/new', {
