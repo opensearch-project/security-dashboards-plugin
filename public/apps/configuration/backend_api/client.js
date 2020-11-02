@@ -31,6 +31,7 @@ uiModules.get('apps/opendistro_security/configuration', [])
         };
 
         this.get = function(resourceName, id) {
+            id = encodeURIComponent(id);
             return $http.get(`${AUTH_BACKEND_API_ROOT}/configuration/${resourceName}/${id}`)
                 .then((response) => {
                     return response.data;
@@ -49,6 +50,7 @@ uiModules.get('apps/opendistro_security/configuration', [])
         };
 
         this.getSilent = function(resourceName, id, showError) {
+            id = encodeURIComponent(id);
             showError = typeof showError !== 'undefined' ? showError : true;
             return $http.get(`${AUTH_BACKEND_API_ROOT}/configuration/${resourceName}/${id}`)
                 .then((response) => {
@@ -60,6 +62,7 @@ uiModules.get('apps/opendistro_security/configuration', [])
         };
 
         this.save = (resourceName, id, data, showToastOnError = true) => {
+            id = encodeURIComponent(id);
             let url = `${AUTH_BACKEND_API_ROOT}/configuration/${resourceName}/${id}`;
             return $http.post(url, data)
                 .then((response) => {
@@ -100,6 +103,7 @@ uiModules.get('apps/opendistro_security/configuration', [])
         };
 
         this.delete = (resourceName, id) => {
+            id = encodeURIComponent(id);
             return $http.delete(`${AUTH_BACKEND_API_ROOT}/configuration/${resourceName}/${id}`)
                 .then((response) => {
                     toastNotifications.addSuccess({
