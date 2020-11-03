@@ -15,10 +15,11 @@
 
 import { HttpStart } from 'kibana/public';
 import { API_ENDPOINT_AUTHINFO } from '../../common';
+import { httpGet } from '../apps/configuration/utils/request-utils';
 import { AuthInfo } from '../types';
 
 export async function getAuthInfo(http: HttpStart) {
-  return (await http.get(`${API_ENDPOINT_AUTHINFO}`)) as AuthInfo;
+  return (await httpGet<AuthInfo>(http, API_ENDPOINT_AUTHINFO));
 }
 
 export async function getCurrentUser(http: HttpStart) {

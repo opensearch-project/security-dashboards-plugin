@@ -28,9 +28,10 @@ import {
 } from '@elastic/eui';
 import { CoreStart } from 'kibana/public';
 import { FormRow } from '../configuration/utils/form-row';
-import { logout, updateNewPassword, validateCurrentPassword } from './utils';
+import { logout, updateNewPassword } from './utils';
 import { PASSWORD_INSTRUCTION } from '../apps-constants';
 import { constructErrorMessageAndLog } from '../error-utils';
+import { validateCurrentPassword } from '../../utils/login-utils';
 
 interface PasswordResetPanelProps {
   coreStart: CoreStart;

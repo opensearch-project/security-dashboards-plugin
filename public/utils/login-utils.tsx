@@ -14,16 +14,15 @@
  */
 
 import { HttpStart } from 'kibana/public';
+import { httpPost } from '../apps/configuration/utils/request-utils';
 
 export async function validateCurrentPassword(
   http: HttpStart,
   userName: string,
   currentPassword: string
 ): Promise<void> {
-  await http.post('/auth/login', {
-    body: JSON.stringify({
-      username: userName,
-      password: currentPassword,
-    }),
+  await httpPost(http, '/auth/login', {
+    username: userName,
+    password: currentPassword,
   });
 }

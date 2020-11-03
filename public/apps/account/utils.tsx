@@ -17,32 +17,19 @@ import { HttpStart } from 'kibana/public';
 import { API_AUTH_LOGOUT } from '../../../common';
 import { API_ENDPOINT_ACCOUNT_INFO } from './constants';
 import { AccountInfo } from './types';
-import { getWithIgnores } from '../configuration/utils/request-utils';
+import { httpGet, httpGetWithIgnores, httpPost } from '../configuration/utils/request-utils';
 
 export function fetchAccountInfo(http: HttpStart): Promise<AccountInfo> {
-  return http.get(API_ENDPOINT_ACCOUNT_INFO);
+  return httpGet(http, API_ENDPOINT_ACCOUNT_INFO);
 }
 
 export async function fetchAccountInfoSafe(http: HttpStart): Promise<AccountInfo | undefined> {
-  return getWithIgnores<AccountInfo>(http, API_ENDPOINT_ACCOUNT_INFO, [401]);
+  return httpGetWithIgnores<AccountInfo>(http, API_ENDPOINT_ACCOUNT_INFO, [401]);
 }
 
 export async function logout(http: HttpStart, logoutUrl?: string): Promise<void> {
-  await http.post(API_AUTH_LOGOUT);
+  await httpPost(http, API_AUTH_LOGOUT);
   window.location.href = logoutUrl || http.basePath.serverBasePath;
-}
-
-export async function validateCurrentPassword(
-  http: HttpStart,
-  userName: string,
-  currentPassword: string
-): Promise<void> {
-  await http.post('/auth/login', {
-    body: JSON.stringify({
-      username: userName,
-      password: currentPassword,
-    }),
-  });
 }
 
 export async function updateNewPassword(
@@ -50,10 +37,8 @@ export async function updateNewPassword(
   newPassword: string,
   currentPassword: string
 ): Promise<void> {
-  await http.post(`${API_ENDPOINT_ACCOUNT_INFO}`, {
-    body: JSON.stringify({
-      password: newPassword,
-      current_password: currentPassword,
-    }),
+  await httpPost(http, API_ENDPOINT_ACCOUNT_INFO, {
+    password: newPassword,
+    current_password: currentPassword,
   });
 }
