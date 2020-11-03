@@ -16,7 +16,7 @@
 import { HttpStart } from 'kibana/public';
 import { map } from 'lodash';
 import { API_ENDPOINT_ACTIONGROUPS, CLUSTER_PERMISSIONS, INDEX_PERMISSIONS } from '../constants';
-import { DataObject, ActionGroupItem, ActionGroupUpdate } from '../types';
+import { DataObject, ActionGroupItem, ActionGroupUpdate, ObjectsMessage } from '../types';
 import { httpDelete, httpGet, httpPost } from './request-utils';
 import { getResourceUrl } from './resource-utils';
 
@@ -30,7 +30,7 @@ export interface PermissionListingItem {
 }
 
 export async function fetchActionGroups(http: HttpStart): Promise<DataObject<ActionGroupItem>> {
-  const actiongroups = await httpGet<any>(http, API_ENDPOINT_ACTIONGROUPS);
+  const actiongroups = await httpGet<ObjectsMessage<ActionGroupItem>>(http, API_ENDPOINT_ACTIONGROUPS);
   return actiongroups.data;
 }
 

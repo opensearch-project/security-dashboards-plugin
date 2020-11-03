@@ -20,7 +20,7 @@ import { httpGet, httpPost } from './request-utils';
 import { getResourceUrl } from './resource-utils';
 
 export async function getUserDetail(http: HttpStart, username: string): Promise<InternalUser> {
-  return await httpGet(http, getResourceUrl(API_ENDPOINT_INTERNALUSERS, username));
+  return await httpGet<InternalUser>(http, getResourceUrl(API_ENDPOINT_INTERNALUSERS, username));
 }
 
 export async function updateUser(
