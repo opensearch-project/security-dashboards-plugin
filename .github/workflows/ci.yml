@@ -63,6 +63,11 @@ jobs:
         run: |
           cd ./kibana
           sed -i '170d' src/core/server/http/router/request.ts
+      - name: Run check
+        run: |
+          cd ./kibana/plugins/opendistro_security
+          yarn tsc
+          yarn test:jest_ui
       - name: build security plugin
         run: |
           cd ./kibana/plugins/opendistro_security
