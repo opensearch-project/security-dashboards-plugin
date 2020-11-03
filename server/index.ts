@@ -182,6 +182,7 @@ export const configSchema = schema.object({
         buttonstyle: schema.string({ defaultValue: '' }),
       }),
     }),
+    autologout: schema.boolean({ defaultValue: true }),
   }),
 });
 
