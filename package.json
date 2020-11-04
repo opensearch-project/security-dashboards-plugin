@@ -15,12 +15,14 @@
     "lint:sass": "node ../../scripts/sasslint",
     "lint": "yarn run lint:es && yarn run lint:sass",
     "test:jest_server": "node ./test/run_jest_tests.js --config ./test/jest.config.server.js",
-    "test:jest_ui": "node ./test/run_jest_tests.js --config ./test/jest.config.ui.js"
+    "test:jest_ui": "node ./test/run_jest_tests.js --config ./test/jest.config.ui.js",
+    "cypress:open": "cypress open"
   },
   "devDependencies": {
     "typescript": "3.9.5",
     "gulp-rename": "2.0.0",
-    "@testing-library/react-hooks": "^3.4.1"
+    "@testing-library/react-hooks": "^3.4.1",
+    "cypress": "^5.5.0"
   },
   "dependencies": {
     "@hapi/wreck": "17.0.0",
