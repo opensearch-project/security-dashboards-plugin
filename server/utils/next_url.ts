@@ -17,6 +17,7 @@ import { cloneDeep } from 'lodash';
 import { format } from 'url';
 import { stringify } from 'querystring';
 import { KibanaRequest } from 'kibana/server';
+import normalizeUrl from 'normalize-url';
 
 export function composeNextUrlQeuryParam(request: KibanaRequest, basePath: string): string {
   const url = cloneDeep(request.url);
@@ -28,18 +29,24 @@ export function composeNextUrlQeuryParam(request: KibanaRequest, basePath: strin
 export const INVALID_NEXT_URL_PARAMETER_MESSAGE = 'Invalid nextUrl parameter.';
 
 /**
- * Ensures the nextUrl parameter is a relative url, the nextUrl parameter should:
- *   1. starts with '/'
- *   2. not start with '//'
- *   3. does not contain '@' in the path
+ * We require the nextUrl parameter to be an relative url.
+ *
+ * Here we leverage the normalizeUrl function. If the library can parse the url
+ * parameter, which means it is an absolute url, then we reject it. Otherwise, the
+ * library cannot parse the url, which means it is not an absolute url, we let to
+ * go through.
+ * Note: url has been decoded by Kibana.
+ *
  * @param url url string.
  * @returns error message if nextUrl is invalid, otherwise void.
  */
 export const validateNextUrl = (url: string | undefined): string | void => {
   if (url) {
-    const path = url.split('?')[0];
-    if (!path.startsWith('/') || path.startsWith('//') || path.includes('@')) {
-      return INVALID_NEXT_URL_PARAMETER_MESSAGE;
+    try {
+      normalizeUrl(url);
+    } catch (error) {
+      return;
     }
+    return INVALID_NEXT_URL_PARAMETER_MESSAGE;
   }
 };
