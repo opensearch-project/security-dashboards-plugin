@@ -37,11 +37,6 @@ describe('Resource validation util', () => {
     expect(errors).not.toHaveLength(0);
   });
 
-  it('should return error when resource name contains invalid character', () => {
-    const errors = validateResourceName(resourceType, resourceNameWithInvalidChar);
-    expect(errors).not.toHaveLength(0);
-  });
-
   it('resource name help text should contain passed resource type', () => {
     const helpText = resourceNameHelpText(resourceType);
     expect(helpText).toContain(resourceType);
