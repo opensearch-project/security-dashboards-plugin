@@ -123,7 +123,7 @@ export async function migrateTenantIndices(
       await indexMigrator.migrate();
     } catch (error) {
       logger.error(error);
-      // fail early, exist the kibana process
+      // fail early, exit the kibana process
       // NOTE: according to https://github.com/elastic/kibana/issues/41983 ,
       //       PR https://github.com/elastic/kibana/pull/75819 , API to allow plugins
       //       to set status will be available in 7.10, for now, we fail Kibana
