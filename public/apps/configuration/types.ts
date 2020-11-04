@@ -47,8 +47,7 @@ export enum PageId {
 export enum TenantPermissionType {
   None = '',
   Read = 'Read only',
-  Write = 'Write only',
-  Full = 'Read and Write',
+  ReadWrite = 'Read and Write',
 }
 
 export interface RouteItem {

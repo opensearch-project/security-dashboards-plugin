@@ -54,7 +54,7 @@ describe('Role edit - tenant panel', () => {
     const permissions: RoleTenantPermissionStateClass[] = [
       {
         tenantPatterns: [{ label: tenantName1 }],
-        permissionType: TenantPermissionType.Full,
+        permissionType: TenantPermissionType.ReadWrite,
       },
     ];
 
@@ -63,7 +63,7 @@ describe('Role edit - tenant panel', () => {
     const expected: RoleTenantPermission[] = [
       {
         tenant_patterns: [tenantName1],
-        allowed_actions: [TENANT_READ_PERMISSION, TENANT_WRITE_PERMISSION],
+        allowed_actions: [TENANT_WRITE_PERMISSION],
       },
     ];
 
@@ -81,7 +81,7 @@ describe('Role edit - tenant panel', () => {
       expect(setState).toHaveBeenCalledWith([
         {
           tenantPatterns: [],
-          permissionType: TenantPermissionType.Full,
+          permissionType: TenantPermissionType.ReadWrite,
         },
       ]);
     });
@@ -90,7 +90,7 @@ describe('Role edit - tenant panel', () => {
       const state: RoleTenantPermissionStateClass[] = [
         {
           tenantPatterns: [{ label: tenantName1 }],
-          permissionType: TenantPermissionType.Full,
+          permissionType: TenantPermissionType.ReadWrite,
         },
         {
           tenantPatterns: [{ label: tenantName2 }],
@@ -126,7 +126,7 @@ describe('Role edit - tenant panel', () => {
       const state: RoleTenantPermissionStateClass[] = [
         {
           tenantPatterns: [{ label: tenantName1 }],
-          permissionType: TenantPermissionType.Full,
+          permissionType: TenantPermissionType.ReadWrite,
         },
       ];
 
