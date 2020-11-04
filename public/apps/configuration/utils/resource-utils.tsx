@@ -28,5 +28,5 @@ export function generateResourceName(action: string, sourceResourceName: string)
 }
 
 export function getResourceUrl(endpoint: string, resourceName: string) {
-  return endpoint + encodeURI(resourceName);
+  return endpoint + '/' + encodeURIComponent(resourceName);
 }

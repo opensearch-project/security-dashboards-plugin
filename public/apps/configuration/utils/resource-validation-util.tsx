@@ -13,7 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-import { isValidResourceName } from '../../../../common';
 import {
   MIN_NUMBER_OF_CHARS_IN_RESOURCE_NAME,
   MAX_NUMBER_OF_CHARS_IN_RESOURCE_NAME,
@@ -27,15 +26,10 @@ const VALID_CHARACTERS_HELP_TEXT =
   'Valid characters are A-Z, a-z, 0-9, (_)underscore, (-) hyphen and unicode characters.';
 
 export function validateResourceName(resourceType: string, resourceName: string): string[] {
-  const errors: string[] = [];
   if (!isResourceNameLengthValid(resourceName)) {
-    errors.push(VALID_LENGTH_HELP_TEXT(resourceType));
+    return [VALID_LENGTH_HELP_TEXT(resourceType)];
   }
-
-  if (!isValidResourceName(resourceName)) {
-    errors.push(`Invalid characters found in ${resourceType} name. ${VALID_CHARACTERS_HELP_TEXT}`);
-  }
-  return errors;
+  return [];
 }
 
 export function isResourceNameLengthValid(resourceName: string): boolean {

@@ -14,7 +14,7 @@
  */
 
 import { EuiBreadcrumb, EuiPage, EuiPageBody, EuiPageSideBar } from '@elastic/eui';
-import { flow, partial } from 'lodash';
+import { flow, map, mapValues, partial } from 'lodash';
 import React from 'react';
 import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { AppDependencies } from '../types';
@@ -120,6 +120,23 @@ export function getBreadcrumbs(
   return breadcrumbs;
 }
 
+type RouteMatchParamsType = { [k: string]: string };
+// type RouteMatchParamsType = (Params extends { [K in keyof Params]?: string } = {});
+// function decodeParams(params: RouteMatchParamsType ): RouteMatchParamsType {
+//   return mapValues<RouteMatchParamsType, string>(params, decodeURIComponent);
+// }
+
+// function decodeParams<Params extends { [K in keyof Params]?: string } = {}>(params: Params ): Params {
+//   return mapValues<Params, string>(params, decodeURIComponent);
+// }
+
+function decodeParams(params: { [k: string]: string }): any {
+  return Object.keys(params).reduce((obj: { [k: string]: string }, key: string) => {
+    obj[key] = decodeURIComponent(params[key]);
+    return obj;
+  }, {});
+}
+
 export function AppRouter(props: AppDependencies) {
   const setGlobalBreadcrumbs = flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs);
 
@@ -137,20 +154,20 @@ export function AppRouter(props: AppDependencies) {
         <EuiPageBody>
           <Switch>
             <Route
-              path={buildUrl(ResourceType.roles, Action.edit, ':roleName', SubAction.mapuser)}
+              path={buildUrl(ResourceType.roles, Action.edit) + '/:roleName/' + SubAction.mapuser}
               render={(match) => (
                 <RoleEditMappedUser
                   buildBreadcrumbs={partial(setGlobalBreadcrumbs, ResourceType.roles)}
-                  {...{ ...props, ...match.match.params }}
+                  {...{ ...props, ...decodeParams(match.match.params) }}
                 />
               )}
             />
             <Route
-              path={buildUrl(ResourceType.roles, Action.view, ':roleName', ':prevAction?')}
+              path={buildUrl(ResourceType.roles, Action.view) + '/:roleName/:prevAction?'}
               render={(match) => (
                 <RoleView
                   buildBreadcrumbs={partial(setGlobalBreadcrumbs, ResourceType.roles)}
-                  {...{ ...props, ...match.match.params }}
+                  {...{ ...props, ...decodeParams(match.match.params) }}
                 />
               )}
             />
@@ -159,7 +176,7 @@ export function AppRouter(props: AppDependencies) {
               render={(match) => (
                 <RoleEdit
                   buildBreadcrumbs={partial(setGlobalBreadcrumbs, ResourceType.roles)}
-                  {...{ ...props, ...match.match.params }}
+                  {...{ ...props, ...decodeParams(match.match.params) }}
                 />
               )}
             />
@@ -182,7 +199,7 @@ export function AppRouter(props: AppDependencies) {
               render={(match) => (
                 <InternalUserEdit
                   buildBreadcrumbs={partial(setGlobalBreadcrumbs, ResourceType.users)}
-                  {...{ ...props, ...match.match.params }}
+                  {...{ ...props, ...decodeParams(match.match.params) }}
                 />
               )}
             />

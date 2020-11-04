@@ -16,12 +16,12 @@
 import { ResourceType, Action } from '../types';
 
 /**
- * Build hash based url.
+ * Build hash based url, encode the resourceId part
  * e.g.
  *   buildUrl() => "/" (landing page)
  *   buildUrl(ResourceType.roles) => "/roles" (role listing page)
  *   buildUrl(ResourceType.roles, Action.create) => "/roles/create" (role creation page)
- *   buildUrl(ResourceType.roles, Action.view, "someRole") => "/roles/view/someRole" (role detail page)
+ *   buildUrl(ResourceType.roles, Action.view, "../someRole") => "/roles/view/..%2FsomeRole" (role detail page)
  *   buildUrl(ResourceType.roles, Action.view, "someRole", SubAction.mapuser) => "/roles/view/someRole/mapuser" (Map User page)
  * edge case (wrong usage) fallbacks:
  *   buildUrl(undefined, Action.create) => ""
@@ -33,7 +33,8 @@ export function buildUrl(
   resourceId?: string,
   subAction?: string
 ) {
-  const rawContents = [resouceType, action, resourceId, subAction];
+  const encodedResouceId = resourceId ? encodeURIComponent(resourceId) : undefined;
+  const rawContents = [resouceType, action, encodedResouceId, subAction];
   const contents = [];
   for (const content of rawContents) {
     if (content === undefined) {

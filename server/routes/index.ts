@@ -15,7 +15,7 @@
 
 import { schema } from '@kbn/config-schema';
 import { IRouter, ResponseError, IKibanaResponse, KibanaResponseFactory } from 'kibana/server';
-import { API_PREFIX, CONFIGURATION_API_PREFIX, isValidResourceName } from '../../common';
+import { API_PREFIX, CONFIGURATION_API_PREFIX } from '../../common';
 
 // TODO: consider to extract entity CRUD operations and put it into a client class
 export function defineRoutes(router: IRouter) {
@@ -75,12 +75,6 @@ export function defineRoutes(router: IRouter) {
       throw new Error(`Unknown resource ${resourceName}`);
     }
     inputSchema.validate(requestBody); // throws error if validation fail
-  }
-
-  function validateEntityId(resourceName: string) {
-    if (!isValidResourceName(resourceName)) {
-      return 'Invalid entity name or id.';
-    }
   }
 
   /**
@@ -438,9 +432,7 @@ export function defineRoutes(router: IRouter) {
       validate: {
         params: schema.object({
           resourceName: schema.string(),
-          id: schema.string({
-            validate: validateEntityId,
-          }),
+          id: schema.string(),
         }),
         body: schema.any(),
       },
