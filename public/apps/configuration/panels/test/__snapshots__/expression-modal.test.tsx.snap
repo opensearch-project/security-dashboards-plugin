@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Expression modal renders when isModalVisible = True 1`] = `
+<div>
+  <EuiLink
+    data-test-subj="view-expression"
+    onClick={[Function]}
+  >
+    View expression
+  </EuiLink>
+  <EuiOverlayMask>
+    <EuiModal
+      data-test-subj="expression-modal"
+      onClose={[Function]}
+    >
+      <EuiModalHeader>
+        <EuiModalHeaderTitle>
+          Title
+        </EuiModalHeaderTitle>
+      </EuiModalHeader>
+      <EuiModalBody>
+        <EuiCodeBlock
+          color="dark"
+          fontSize="m"
+          isCopyable={true}
+          overflowHeight={300}
+          paddingSize="m"
+        >
+          {
+  "key": "value1"
+}
+        </EuiCodeBlock>
+      </EuiModalBody>
+    </EuiModal>
+  </EuiOverlayMask>
+</div>
+`;

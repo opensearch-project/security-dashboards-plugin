@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import {
   EuiLink,
   EuiCodeBlock,
@@ -25,7 +25,7 @@ import {
 } from '@elastic/eui';
 
 export function ExpressionModal(props: { title: string; expression: object }) {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = React.useState(false);
 
   const closeModal = () => setIsModalVisible(false);
 
@@ -36,7 +36,7 @@ export function ExpressionModal(props: { title: string; expression: object }) {
   if (isModalVisible) {
     modal = (
       <EuiOverlayMask>
-        <EuiModal onClose={closeModal}>
+        <EuiModal data-test-subj="expression-modal" onClose={closeModal}>
           <EuiModalHeader>
             <EuiModalHeaderTitle>{props.title}</EuiModalHeaderTitle>
           </EuiModalHeader>
@@ -53,7 +53,9 @@ export function ExpressionModal(props: { title: string; expression: object }) {
 
   return (
     <div>
-      <EuiLink onClick={showModal}>View expression</EuiLink>
+      <EuiLink data-test-subj="view-expression" onClick={showModal}>
+        View expression
+      </EuiLink>
       {modal}
     </div>
   );
