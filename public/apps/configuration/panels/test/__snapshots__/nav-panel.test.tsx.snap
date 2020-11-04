@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Navigation panel renders 1`] = `
+<EuiSideNav
+  items={
+    Array [
+      Object {
+        "id": "security",
+        "items": Array [
+          Object {
+            "href": "#/item1",
+            "id": "Item1",
+            "isSelected": false,
+            "name": "Item1",
+          },
+          Object {
+            "href": "#/item2",
+            "id": "Item2",
+            "isSelected": false,
+            "name": "Item2",
+          },
+        ],
+        "name": "Security",
+      },
+    ]
+  }
+/>
+`;
