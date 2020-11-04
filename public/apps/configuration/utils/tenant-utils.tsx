@@ -154,12 +154,10 @@ export function getTenantPermissionType(tenantPermissions: string[]) {
   const readable = tenantPermissions.includes(TENANT_READ_PERMISSION);
   const writable = tenantPermissions.includes(TENANT_WRITE_PERMISSION);
   let permissionType = TenantPermissionType.None;
-  if (readable && writable) {
-    permissionType = TenantPermissionType.Full;
+  if (writable) {
+    permissionType = TenantPermissionType.ReadWrite;
   } else if (readable) {
     permissionType = TenantPermissionType.Read;
-  } else if (writable) {
-    permissionType = TenantPermissionType.Write;
   }
   return permissionType;
 }

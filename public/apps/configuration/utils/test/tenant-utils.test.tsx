@@ -232,8 +232,7 @@ describe('Tenant list utils', () => {
 
   const emptyTenantPermissions: string[] = [];
   const readTenantPermissions: string[] = [TENANT_READ_PERMISSION];
-  const writeTenantPermissions: string[] = [TENANT_WRITE_PERMISSION];
-  const readWriteTenantPermissions: string[] = [TENANT_READ_PERMISSION, TENANT_WRITE_PERMISSION];
+  const readWriteTenantPermissions: string[] = [TENANT_WRITE_PERMISSION];
 
   describe('Tenant permission type', () => {
     it('empty permission', () => {
@@ -247,13 +246,8 @@ describe('Tenant list utils', () => {
     });
 
     it('write permission', () => {
-      const result = getTenantPermissionType(writeTenantPermissions);
-      expect(result).toBe(TenantPermissionType.Write);
-    });
-
-    it('read and write permission', () => {
       const result = getTenantPermissionType(readWriteTenantPermissions);
-      expect(result).toBe(TenantPermissionType.Full);
+      expect(result).toBe(TenantPermissionType.ReadWrite);
     });
   });
 
@@ -273,25 +267,10 @@ describe('Tenant list utils', () => {
       expect(result[0]).toMatchObject(expectedRoleTenantPermissionView);
     });
 
-    it('transform tenant patterns with just write permission', () => {
-      const expectedRoleTenantPermissionView = {
-        tenant_patterns: ['dummy'],
-        permissionType: TenantPermissionType.Write,
-      };
-
-      const result = transformRoleTenantPermissions([
-        {
-          tenant_patterns: sampleTenantPattern1,
-          allowed_actions: writeTenantPermissions,
-        },
-      ]);
-      expect(result[0]).toMatchObject(expectedRoleTenantPermissionView);
-    });
-
     it('transform tenant patterns with read and write permission', () => {
       const expectedRoleTenantPermissionView = {
         tenant_patterns: ['dummy'],
-        permissionType: TenantPermissionType.Full,
+        permissionType: TenantPermissionType.ReadWrite,
       };
 
       const result = transformRoleTenantPermissions([

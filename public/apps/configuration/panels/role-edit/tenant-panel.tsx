@@ -46,9 +46,8 @@ export function buildTenantPermissionState(
 }
 
 const TENANT_PERMISSION_TYPE_DICT: Record<string, string[]> = {
-  [TenantPermissionType.Full]: [TENANT_READ_PERMISSION, TENANT_WRITE_PERMISSION],
+  [TenantPermissionType.ReadWrite]: [TENANT_WRITE_PERMISSION],
   [TenantPermissionType.Read]: [TENANT_READ_PERMISSION],
-  [TenantPermissionType.Write]: [TENANT_WRITE_PERMISSION],
   [TenantPermissionType.None]: [],
 };
 
@@ -66,7 +65,7 @@ export function unbuildTenantPermissionState(
 function getEmptyTenantPermission(): RoleTenantPermissionStateClass {
   return {
     tenantPatterns: [],
-    permissionType: TenantPermissionType.Full,
+    permissionType: TenantPermissionType.ReadWrite,
   };
 }
 
@@ -100,8 +99,10 @@ function generateTenantPermissionPanels(
               onChange={onValueChangeHandler('permissionType')}
               options={[
                 { inputDisplay: TenantPermissionType.Read, value: TenantPermissionType.Read },
-                { inputDisplay: TenantPermissionType.Write, value: TenantPermissionType.Write },
-                { inputDisplay: TenantPermissionType.Full, value: TenantPermissionType.Full },
+                {
+                  inputDisplay: TenantPermissionType.ReadWrite,
+                  value: TenantPermissionType.ReadWrite,
+                },
               ]}
             />
           </EuiFlexItem>
