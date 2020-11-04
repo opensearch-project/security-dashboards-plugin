@@ -38,3 +38,13 @@ export enum AuthType {
   SAML = 'saml',
   PROXY = 'proxy',
 }
+
+/**
+ * A valid resource name should not containing percent sign (%) as they raise url injection issue.
+ * And also should not be empty.
+ * @param resourceName resource name to be validated
+ */
+export function isValidResourceName(resourceName: string): boolean {
+  // see: https://javascript.info/regexp-unicode
+  return !/[\p{C}%]/u.test(resourceName) && resourceName.length > 0;
+}
