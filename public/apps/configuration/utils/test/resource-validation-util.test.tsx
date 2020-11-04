@@ -18,7 +18,6 @@ import { resourceNameHelpText, validateResourceName } from '../resource-validati
 describe('Resource validation util', () => {
   const resourceType = 'dummy';
   const validResourceName = 'resource1';
-  const resourceNameWithInvalidChar = 'resource1$';
   const resourceNameWithInvalidLength1 = 'r';
   const resourceNameWithInvalidLength2 = 'rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr'; // 51 Characters
 
