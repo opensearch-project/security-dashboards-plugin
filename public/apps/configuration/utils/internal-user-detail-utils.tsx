@@ -16,9 +16,11 @@
 import { HttpStart } from 'kibana/public';
 import { API_ENDPOINT_INTERNALUSERS } from '../constants';
 import { InternalUser, InternalUserUpdate } from '../types';
+import { httpGet, httpPost } from './request-utils';
+import { getResourceUrl } from './resource-utils';
 
 export async function getUserDetail(http: HttpStart, username: string): Promise<InternalUser> {
-  return await http.get(`${API_ENDPOINT_INTERNALUSERS}/${username}`);
+  return await httpGet<InternalUser>(http, getResourceUrl(API_ENDPOINT_INTERNALUSERS, username));
 }
 
 export async function updateUser(
@@ -26,7 +28,5 @@ export async function updateUser(
   username: string,
   updateObject: InternalUserUpdate
 ): Promise<InternalUser> {
-  return await http.post(`${API_ENDPOINT_INTERNALUSERS}/${username}`, {
-    body: JSON.stringify(updateObject),
-  });
+  return await httpPost(http, getResourceUrl(API_ENDPOINT_INTERNALUSERS, username), updateObject);
 }

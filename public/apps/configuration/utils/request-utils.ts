@@ -15,6 +15,25 @@
 
 import { HttpStart, HttpHandler } from 'kibana/public';
 
+export async function request<T>(requestFunc: HttpHandler, url: string, body?: object): Promise<T> {
+  if (body) {
+    return (await requestFunc(url, { body: JSON.stringify(body) })) as T;
+  }
+  return (await requestFunc(url)) as T;
+}
+
+export async function httpGet<T>(http: HttpStart, url: string): Promise<T> {
+  return await request<T>(http.get, url);
+}
+
+export async function httpPost<T>(http: HttpStart, url: string, body?: object): Promise<T> {
+  return await request<T>(http.post, url, body);
+}
+
+export async function httpDelete<T>(http: HttpStart, url: string): Promise<T> {
+  return await request<T>(http.delete, url);
+}
+
 /**
  * Send a request but ignore some error codes (suppress exception)
  * @param requestFunc
@@ -24,10 +43,11 @@ import { HttpStart, HttpHandler } from 'kibana/public';
 export async function requestWithIgnores<T>(
   requestFunc: HttpHandler,
   url: string,
-  ignores: number[]
+  ignores: number[],
+  body?: object
 ): Promise<T | undefined> {
   try {
-    return (await requestFunc(url)) as T;
+    return await request<T>(requestFunc, url, body);
   } catch (e) {
     if (!ignores.includes(e?.body.statusCode)) {
       throw e;
@@ -35,7 +55,7 @@ export async function requestWithIgnores<T>(
   }
 }
 
-export async function getWithIgnores<T>(
+export async function httpGetWithIgnores<T>(
   http: HttpStart,
   url: string,
   ignores: number[]
@@ -43,7 +63,15 @@ export async function getWithIgnores<T>(
   return await requestWithIgnores<T>(http.get, url, ignores);
 }
 
-export async function deleteWithIgnores<T>(
+export async function httpPostWithIgnores<T>(
+  http: HttpStart,
+  url: string,
+  ignores: number[]
+): Promise<T | undefined> {
+  return await requestWithIgnores<T>(http.post, url, ignores);
+}
+
+export async function httpDeleteWithIgnores<T>(
   http: HttpStart,
   url: string,
   ignores: number[]

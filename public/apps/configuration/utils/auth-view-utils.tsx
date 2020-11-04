@@ -15,8 +15,9 @@
 
 import { HttpStart } from 'kibana/public';
 import { API_ENDPOINT_SECURITYCONFIG } from '../constants';
+import { httpGet } from './request-utils';
 
 export async function getSecurityConfig(http: HttpStart) {
-  const rawSecurityConfig = await http.get(API_ENDPOINT_SECURITYCONFIG);
+  const rawSecurityConfig = await httpGet<any>(http, API_ENDPOINT_SECURITYCONFIG);
   return rawSecurityConfig.data.config.dynamic;
 }

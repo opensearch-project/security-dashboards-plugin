@@ -16,7 +16,9 @@
 import { HttpStart } from 'kibana/public';
 import { map } from 'lodash';
 import { API_ENDPOINT_ACTIONGROUPS, CLUSTER_PERMISSIONS, INDEX_PERMISSIONS } from '../constants';
-import { DataObject, ActionGroupItem, ActionGroupUpdate } from '../types';
+import { DataObject, ActionGroupItem, ActionGroupUpdate, ObjectsMessage } from '../types';
+import { httpDelete, httpGet, httpPost } from './request-utils';
+import { getResourceUrl } from './resource-utils';
 
 export interface PermissionListingItem {
   name: string;
@@ -28,7 +30,10 @@ export interface PermissionListingItem {
 }
 
 export async function fetchActionGroups(http: HttpStart): Promise<DataObject<ActionGroupItem>> {
-  const actiongroups = await http.get(API_ENDPOINT_ACTIONGROUPS);
+  const actiongroups = await httpGet<ObjectsMessage<ActionGroupItem>>(
+    http,
+    API_ENDPOINT_ACTIONGROUPS
+  );
   return actiongroups.data;
 }
 
@@ -88,13 +93,11 @@ export async function updateActionGroup(
   groupName: string,
   updateObject: ActionGroupUpdate
 ): Promise<ActionGroupUpdate> {
-  return await http.post(`${API_ENDPOINT_ACTIONGROUPS}/${groupName}`, {
-    body: JSON.stringify(updateObject),
-  });
+  return await httpPost(http, getResourceUrl(API_ENDPOINT_ACTIONGROUPS, groupName), updateObject);
 }
 
 export async function requestDeleteActionGroups(http: HttpStart, groups: string[]) {
   for (const group of groups) {
-    await http.delete(`${API_ENDPOINT_ACTIONGROUPS}/${group}`);
+    await httpDelete(http, getResourceUrl(API_ENDPOINT_ACTIONGROUPS, group));
   }
 }

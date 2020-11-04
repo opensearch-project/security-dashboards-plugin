@@ -18,7 +18,6 @@ import { resourceNameHelpText, validateResourceName } from '../resource-validati
 describe('Resource validation util', () => {
   const resourceType = 'dummy';
   const validResourceName = 'resource1';
-  const resourceNameWithInvalidChar = 'resource1$';
   const resourceNameWithInvalidLength1 = 'r';
   const resourceNameWithInvalidLength2 = 'rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr'; // 51 Characters
 
@@ -34,11 +33,6 @@ describe('Resource validation util', () => {
 
   it('should return error when resource name length is greater than max valid length', () => {
     const errors = validateResourceName(resourceType, resourceNameWithInvalidLength2);
-    expect(errors).not.toHaveLength(0);
-  });
-
-  it('should return error when resource name contains invalid character', () => {
-    const errors = validateResourceName(resourceType, resourceNameWithInvalidChar);
     expect(errors).not.toHaveLength(0);
   });
 

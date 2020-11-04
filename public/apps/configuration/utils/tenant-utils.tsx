@@ -32,6 +32,8 @@ import {
   RoleTenantPermission,
 } from '../types';
 import { TENANT_READ_PERMISSION, TENANT_WRITE_PERMISSION } from '../constants';
+import { httpDelete, httpGet, httpPost } from './request-utils';
+import { getResourceUrl } from './resource-utils';
 
 export const globalTenantName = 'global_tenant';
 export const GLOBAL_USER_DICT: { [key: string]: string } = {
@@ -47,7 +49,7 @@ export const PRIVATE_USER_DICT: { [key: string]: string } = {
 };
 
 export async function fetchTenants(http: HttpStart): Promise<DataObject<Tenant>> {
-  return ((await http.get(API_ENDPOINT_TENANTS)) as ObjectsMessage<Tenant>).data;
+  return (await httpGet<ObjectsMessage<Tenant>>(http, API_ENDPOINT_TENANTS)).data;
 }
 
 export async function fetchTenantNameList(http: HttpStart): Promise<string[]> {
@@ -77,8 +79,8 @@ export function transformTenantData(
   return tenantList;
 }
 
-export async function fetchCurrentTenant(http: HttpStart) {
-  return await http.get(API_ENDPOINT_MULTITENANCY);
+export async function fetchCurrentTenant(http: HttpStart): Promise<string> {
+  return await httpGet<string>(http, API_ENDPOINT_MULTITENANCY);
 }
 
 export async function updateTenant(
@@ -86,21 +88,17 @@ export async function updateTenant(
   tenantName: string,
   updateObject: TenantUpdate
 ) {
-  return await http.post(`${API_ENDPOINT_TENANTS}/${tenantName}`, {
-    body: JSON.stringify(updateObject),
-  });
+  return await httpPost(http, getResourceUrl(API_ENDPOINT_TENANTS, tenantName), updateObject);
 }
 
 export async function requestDeleteTenant(http: HttpStart, tenants: string[]) {
   for (const tenant of tenants) {
-    await http.delete(`${API_ENDPOINT_TENANTS}/${tenant}`);
+    await httpDelete(http, getResourceUrl(API_ENDPOINT_TENANTS, tenant));
   }
 }
 
-export async function selectTenant(http: HttpStart, selectObject: TenantSelect) {
-  return await http.post(`${API_ENDPOINT_MULTITENANCY}`, {
-    body: JSON.stringify(selectObject),
-  });
+export async function selectTenant(http: HttpStart, selectObject: TenantSelect): Promise<string> {
+  return await httpPost<string>(http, API_ENDPOINT_MULTITENANCY, selectObject);
 }
 
 export const RESOLVED_GLOBAL_TENANT = 'Global';

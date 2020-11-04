@@ -17,6 +17,8 @@ import { map } from 'lodash';
 import { HttpStart } from '../../../../../../src/core/public';
 import { API_ENDPOINT_INTERNALUSERS } from '../constants';
 import { DataObject, InternalUser, ObjectsMessage } from '../types';
+import { httpDelete, httpGet } from './request-utils';
+import { getResourceUrl } from './resource-utils';
 
 export interface InternalUsersListing extends InternalUser {
   username: string;
@@ -32,15 +34,15 @@ export function transformUserData(rawData: DataObject<InternalUser>): InternalUs
 
 export async function requestDeleteUsers(http: HttpStart, users: string[]) {
   for (const user of users) {
-    await http.delete(`${API_ENDPOINT_INTERNALUSERS}/${user}`);
+    await httpDelete(http, getResourceUrl(API_ENDPOINT_INTERNALUSERS, user));
   }
 }
 
-async function getUserListRaw(http: HttpStart) {
-  return (await http.get(`${API_ENDPOINT_INTERNALUSERS}`)) as ObjectsMessage<InternalUser>;
+async function getUserListRaw(http: HttpStart): Promise<ObjectsMessage<InternalUser>> {
+  return await httpGet<ObjectsMessage<InternalUser>>(http, API_ENDPOINT_INTERNALUSERS);
 }
 
-export async function getUserList(http: HttpStart) {
+export async function getUserList(http: HttpStart): Promise<InternalUsersListing[]> {
   const rawData = await getUserListRaw(http);
   return transformUserData(rawData.data);
 }

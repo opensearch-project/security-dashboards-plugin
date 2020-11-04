@@ -16,7 +16,8 @@
 import { map, chain } from 'lodash';
 import { HttpStart } from '../../../../../../src/core/public';
 import { API_ENDPOINT_ROLES, API_ENDPOINT_ROLESMAPPING } from '../constants';
-import { deleteWithIgnores } from './request-utils';
+import { httpDelete, httpDeleteWithIgnores, httpGet } from './request-utils';
+import { getResourceUrl } from './resource-utils';
 
 export interface RoleListing {
   roleName: string;
@@ -93,17 +94,17 @@ export function buildSearchFilterOptions(roleList: any[], attrName: string): Arr
 // Submit request to delete given roles. No error handling in this function.
 export async function requestDeleteRoles(http: HttpStart, roles: string[]) {
   for (const role of roles) {
-    await http.delete(`${API_ENDPOINT_ROLES}/${role}`);
-    await deleteWithIgnores(http, `${API_ENDPOINT_ROLESMAPPING}/${role}`, [404]);
+    await httpDelete(http, getResourceUrl(API_ENDPOINT_ROLES, role));
+    await httpDeleteWithIgnores(http, getResourceUrl(API_ENDPOINT_ROLESMAPPING, role), [404]);
   }
 }
 
 // TODO: have a type definition for it
 export function fetchRole(http: HttpStart): Promise<any> {
-  return http.get(API_ENDPOINT_ROLES);
+  return httpGet<any>(http, API_ENDPOINT_ROLES);
 }
 
 // TODO: have a type definition for it
 export function fetchRoleMapping(http: HttpStart): Promise<any> {
-  return http.get(API_ENDPOINT_ROLESMAPPING);
+  return httpGet<any>(http, API_ENDPOINT_ROLESMAPPING);
 }

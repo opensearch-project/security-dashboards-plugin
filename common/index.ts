@@ -38,14 +38,3 @@ export enum AuthType {
   SAML = 'saml',
   PROXY = 'proxy',
 }
-
-/**
- * A valid resource name should contain only letters (can be unicode chars), numbers, dash and underscore.
- * Here we don't limit length (except empty) or block brackets to be more compatible with previous version.
- * Dot (.), slash (/) and percent sign (%) are prohibited as they raise url injection issue.
- * @param resourceName resource name to be validated
- */
-export function isValidResourceName(resourceName: string): boolean {
-  // see: https://javascript.info/regexp-unicode
-  return /^[\p{L}\p{N}\p{Pc}\p{Pd}\p{Ps}\p{Pe}]+$/u.test(resourceName);
-}

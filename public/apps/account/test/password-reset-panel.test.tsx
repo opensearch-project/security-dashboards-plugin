@@ -15,12 +15,16 @@
 
 import { shallow } from 'enzyme';
 import React from 'react';
+import { validateCurrentPassword } from '../../../utils/login-utils';
 import { PasswordResetPanel } from '../password-reset-panel';
-import { logout, updateNewPassword, validateCurrentPassword } from '../utils';
+import { logout, updateNewPassword } from '../utils';
 
 jest.mock('../utils', () => ({
   logout: jest.fn(),
   updateNewPassword: jest.fn(),
+}));
+
+jest.mock('../../../utils/login-utils', () => ({
   validateCurrentPassword: jest.fn(),
 }));
 

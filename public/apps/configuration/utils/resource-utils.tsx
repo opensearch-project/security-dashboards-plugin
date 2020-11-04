@@ -23,3 +23,7 @@ export function generateResourceName(action: string, sourceResourceName: string)
       return '';
   }
 }
+
+export function getResourceUrl(endpoint: string, resourceName: string) {
+  return endpoint + '/' + encodeURIComponent(resourceName);
+}

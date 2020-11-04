@@ -24,5 +24,5 @@ export interface AppDependencies {
 }
 
 export interface BreadcrumbsPageDependencies extends AppDependencies {
-  buildBreadcrumbs: (pageTitle: string, subAction?: string) => React.ReactNode;
+  buildBreadcrumbs: (pageTitle: string, subAction?: string) => void;
 }
