@@ -1,0 +1,6 @@
+{
+    "defaultCommandTimeout": 30000,
+    "env": {
+      "kibana": "localhost:5601"
+    }
+}
