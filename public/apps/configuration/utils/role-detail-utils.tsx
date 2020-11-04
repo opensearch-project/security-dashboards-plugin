@@ -20,7 +20,7 @@ import { httpGet, httpPost } from './request-utils';
 import { getResourceUrl } from './resource-utils';
 
 export async function getRoleDetail(http: HttpStart, roleName: string): Promise<RoleDetail> {
-  return (await httpGet<RoleDetail>(http, getResourceUrl(API_ENDPOINT_ROLES, roleName)));
+  return await httpGet<RoleDetail>(http, getResourceUrl(API_ENDPOINT_ROLES, roleName));
 }
 
 export async function updateRole(http: HttpStart, roleName: string, updateObject: RoleUpdate) {

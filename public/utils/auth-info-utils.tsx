@@ -19,7 +19,7 @@ import { httpGet } from '../apps/configuration/utils/request-utils';
 import { AuthInfo } from '../types';
 
 export async function getAuthInfo(http: HttpStart) {
-  return (await httpGet<AuthInfo>(http, API_ENDPOINT_AUTHINFO));
+  return await httpGet<AuthInfo>(http, API_ENDPOINT_AUTHINFO);
 }
 
 export async function getCurrentUser(http: HttpStart) {

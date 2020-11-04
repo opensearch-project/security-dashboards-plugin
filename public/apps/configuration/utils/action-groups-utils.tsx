@@ -30,7 +30,10 @@ export interface PermissionListingItem {
 }
 
 export async function fetchActionGroups(http: HttpStart): Promise<DataObject<ActionGroupItem>> {
-  const actiongroups = await httpGet<ObjectsMessage<ActionGroupItem>>(http, API_ENDPOINT_ACTIONGROUPS);
+  const actiongroups = await httpGet<ObjectsMessage<ActionGroupItem>>(
+    http,
+    API_ENDPOINT_ACTIONGROUPS
+  );
   return actiongroups.data;
 }
 

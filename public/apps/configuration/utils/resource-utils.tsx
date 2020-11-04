@@ -1,4 +1,3 @@
-import { API_ENDPOINT_ACTIONGROUPS, API_ENDPOINT_AUDITLOGGING, API_ENDPOINT_INTERNALUSERS, API_ENDPOINT_ROLES, API_ENDPOINT_TENANTS } from '../constants';
 /*
  *   Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -13,8 +12,6 @@ import { API_ENDPOINT_ACTIONGROUPS, API_ENDPOINT_AUDITLOGGING, API_ENDPOINT_INTE
  *   express or implied. See the License for the specific language governing
  *   permissions and limitations under the License.
  */
-
-import { ResourceType } from '../types';
 
 export function generateResourceName(action: string, sourceResourceName: string): string {
   switch (action) {

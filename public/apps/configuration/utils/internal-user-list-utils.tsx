@@ -39,7 +39,7 @@ export async function requestDeleteUsers(http: HttpStart, users: string[]) {
 }
 
 async function getUserListRaw(http: HttpStart): Promise<ObjectsMessage<InternalUser>> {
-  return (await httpGet<ObjectsMessage<InternalUser>>(http, API_ENDPOINT_INTERNALUSERS));
+  return await httpGet<ObjectsMessage<InternalUser>>(http, API_ENDPOINT_INTERNALUSERS);
 }
 
 export async function getUserList(http: HttpStart): Promise<InternalUsersListing[]> {

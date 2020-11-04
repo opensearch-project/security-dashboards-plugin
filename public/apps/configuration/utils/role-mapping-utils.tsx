@@ -31,7 +31,11 @@ export enum UserType {
 }
 
 export async function getRoleMappingData(http: HttpStart, roleName: string) {
-  return httpGetWithIgnores<RoleMappingDetail>(http, getResourceUrl(API_ENDPOINT_ROLESMAPPING, roleName), [404]);
+  return httpGetWithIgnores<RoleMappingDetail>(
+    http,
+    getResourceUrl(API_ENDPOINT_ROLESMAPPING, roleName),
+    [404]
+  );
 }
 
 export function transformRoleMappingData(rawData: RoleMappingDetail): MappedUsersListing[] {
