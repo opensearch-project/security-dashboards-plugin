@@ -104,7 +104,11 @@ export class SamlAuthentication extends AuthenticationType {
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
   ): IKibanaResponse | AuthResult {
-    return this.redirectToLoginUri(request, toolkit);
+    if (this.isPageRequest(request)) {
+      return this.redirectToLoginUri(request, toolkit);
+    } else {
+      return response.unauthorized();
+    }
   }
 
   buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any {
