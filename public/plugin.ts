@@ -50,6 +50,7 @@ import {
   OpendistroSecurityPluginSetup,
   OpendistroSecurityPluginStart,
 } from './types';
+import { addTenantToShareURL } from './services/shared-link';
 
 async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
   try {
@@ -186,6 +187,9 @@ export class OpendistroSecurityPlugin
       });
     }
 
+    if (config.multitenancy.enabled) {
+      addTenantToShareURL(core);
+    }
     return {};
   }
 

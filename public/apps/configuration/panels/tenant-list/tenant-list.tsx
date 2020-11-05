@@ -131,12 +131,9 @@ export function TenantList(props: AppDependencies) {
   const switchToSelectedTenant = async (tenantValue: string, tenantName: string) => {
     try {
       await changeTenant(tenantValue);
-      setSelection([]);
-      addToast({
-        id: 'selectSucceeded',
-        title: `Selected tenant is now ${tenantName}`,
-        color: 'success',
-      });
+      // refresh the page to let the page to reload app configs, like dark mode etc.
+      // also refresh the tenant to ensure tenant is set correctly when sharing urls.
+      window.location.reload();
     } catch (e) {
       console.log(e);
       addToast(createUnknownErrorToast('selectFailed', `select ${tenantName} tenant`));
