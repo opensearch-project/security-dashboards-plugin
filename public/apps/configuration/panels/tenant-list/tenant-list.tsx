@@ -131,12 +131,7 @@ export function TenantList(props: AppDependencies) {
   const switchToSelectedTenant = async (tenantValue: string, tenantName: string) => {
     try {
       await changeTenant(tenantValue);
-      setSelection([]);
-      addToast({
-        id: 'selectSucceeded',
-        title: `Selected tenant is now ${tenantName}`,
-        color: 'success',
-      });
+      window.location.reload();
     } catch (e) {
       console.log(e);
       addToast(createUnknownErrorToast('selectFailed', `select ${tenantName} tenant`));
