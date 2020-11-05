@@ -17,7 +17,6 @@ import { cloneDeep } from 'lodash';
 import { format } from 'url';
 import { stringify } from 'querystring';
 import { KibanaRequest } from 'kibana/server';
-import normalizeUrl from 'normalize-url';
 
 export function composeNextUrlQeuryParam(request: KibanaRequest, basePath: string): string {
   const url = cloneDeep(request.url);
@@ -42,11 +41,14 @@ export const INVALID_NEXT_URL_PARAMETER_MESSAGE = 'Invalid nextUrl parameter.';
  */
 export const validateNextUrl = (url: string | undefined): string | void => {
   if (url) {
-    try {
-      normalizeUrl(url);
-    } catch (error) {
-      return;
+    const path = url.split('?')[0];
+    if (
+      !path.startsWith('/') ||
+      path.startsWith('//') ||
+      path.includes('\\') ||
+      path.includes('@')
+    ) {
+      return INVALID_NEXT_URL_PARAMETER_MESSAGE;
     }
-    return INVALID_NEXT_URL_PARAMETER_MESSAGE;
   }
 };
