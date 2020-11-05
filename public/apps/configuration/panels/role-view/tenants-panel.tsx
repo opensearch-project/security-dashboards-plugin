@@ -140,7 +140,9 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
         }
         return (
           <>
-            <EuiLink onClick={() => viewDashboard(tenant)}>View dashboard</EuiLink>
+            <EuiLink data-test-subj="view-dashboard" onClick={() => viewDashboard(tenant)}>
+              View dashboard
+            </EuiLink>
           </>
         );
       },
@@ -158,7 +160,9 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
         }
         return (
           <>
-            <EuiLink onClick={() => viewVisualization(tenant)}>View visualizations</EuiLink>
+            <EuiLink data-test-subj="view-visualizations" onClick={() => viewVisualization(tenant)}>
+              View visualizations
+            </EuiLink>
           </>
         );
       },

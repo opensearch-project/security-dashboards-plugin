@@ -102,6 +102,24 @@ export function renderFieldLevelSecurity() {
   };
 }
 
+export function renderDocumentLevelSecurity() {
+  return (dls: string) => {
+    if (!dls) {
+      return EMPTY_FIELD_VALUE;
+    }
+
+    // TODO: unify the experience for both cases which may require refactoring of renderExpression.
+    try {
+      return renderExpression('Document-level security', JSON.parse(dls));
+    } catch (e) {
+      // Support the use case for $variable without double quotes in DLS, e.g. variable is an array.
+
+      console.warn('Failed to parse dls as json!');
+      return dls;
+    }
+  };
+}
+
 function getColumns(
   itemIdToExpandedRowMap: ExpandedRowMapInterface,
   actionGroupDict: DataObject<ActionGroupItem>,
@@ -127,21 +145,7 @@ function getColumns(
         'Document-level security',
         ToolTipContent.DocumentLevelSecurity
       ),
-      render: (dls: string) => {
-        if (!dls) {
-          return EMPTY_FIELD_VALUE;
-        }
-
-        // TODO: unify the experience for both cases which may require refactoring of renderExpression.
-        try {
-          return renderExpression('Document-level security', JSON.parse(dls));
-        } catch (e) {
-          // Support the use case for $variable without double quotes in DLS, e.g. variable is an array.
-
-          console.warn('Failed to parse dls as json!');
-          return dls;
-        }
-      },
+      render: renderDocumentLevelSecurity(),
     },
     {
       field: 'fls',
