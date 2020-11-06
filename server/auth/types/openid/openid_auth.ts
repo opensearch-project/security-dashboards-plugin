@@ -192,9 +192,7 @@ export class OpenIdAuthentication extends AuthenticationType {
         },
       });
     } else {
-      return response.forbidden({
-        body: 'Request failed authentication.',
-      });
+      return response.unauthorized();
     }
   }
 
