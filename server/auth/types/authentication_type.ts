@@ -171,6 +171,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
           if (request.url.pathname && request.url.pathname.startsWith('/bundles/')) {
             return toolkit.notHandled();
           }
+          this.sessionStorageFactory.asScoped(request).clear();
           return this.handleUnauthedRequest(request, response, toolkit);
         }
         throw error;
@@ -221,6 +222,11 @@ export abstract class AuthenticationType implements IAuthenticationType {
       cookie
     );
     return selectedTenant;
+  }
+
+  isPageRequest(request: KibanaRequest) {
+    const path = request.url.pathname || '/';
+    return path.startsWith('/app/') || path === '/' || path.startsWith('/goto/');
   }
 
   // abstract functions for concrete auth types to implement

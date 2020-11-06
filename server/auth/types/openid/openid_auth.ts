@@ -180,8 +180,7 @@ export class OpenIdAuthentication extends AuthenticationType {
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
   ): IKibanaResponse {
-    this.sessionStorageFactory.asScoped(request).clear();
-    if (request.url.pathname!.startsWith('/app/') || request.url.pathname === '/') {
+    if (this.isPageRequest(request)) {
       // nextUrl is a key value pair
       const nextUrl = composeNextUrlQeuryParam(
         request,

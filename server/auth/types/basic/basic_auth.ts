@@ -104,10 +104,7 @@ export class BasicAuthentication extends AuthenticationType {
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
   ): KibanaResponse {
-    // TODO: do the samething for other auth types?
-    // return 302 for /app
-    const pathname = request.url.pathname || '';
-    if (pathname.startsWith('/app/') || pathname === '/') {
+    if (this.isPageRequest(request)) {
       const nextUrlParam = composeNextUrlQeuryParam(
         request,
         this.coreSetup.http.basePath.serverBasePath
