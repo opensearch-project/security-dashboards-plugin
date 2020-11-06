@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Role view - tenant panel Tenant permission list render view dashboard column when tenant permissions contains multiple tenants or tenant pattern 1`] = `
+<Fragment>
+  <EuiText
+    size="s"
+  >
+    N/A
+  </EuiText>
+</Fragment>
+`;
+
+exports[`Role view - tenant panel Tenant permission list render view visualization column when tenant permissions contains multiple tenants or tenant pattern 1`] = `
+<Fragment>
+  <EuiText
+    size="s"
+  >
+    N/A
+  </EuiText>
+</Fragment>
+`;

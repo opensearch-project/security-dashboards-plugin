@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Role list Render columns render Customization column 1`] = `
+<EuiFlexGroup
+  alignItems="center"
+  gutterSize="xs"
+>
+  <EuiFlexItem
+    grow={false}
+  >
+    <EuiIcon
+      type="lock"
+    />
+  </EuiFlexItem>
+  <EuiFlexItem
+    grow={false}
+  >
+    <EuiText
+      className="table-items"
+    >
+      Reserved
+    </EuiText>
+  </EuiFlexItem>
+</EuiFlexGroup>
+`;
+
+exports[`Role list Render columns render role name column 1`] = `
+<a
+  href="#/roles/view/role1"
+>
+  role1
+</a>
+`;

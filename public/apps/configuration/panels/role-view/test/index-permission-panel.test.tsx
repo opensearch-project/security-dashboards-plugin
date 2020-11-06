@@ -15,16 +15,19 @@
 
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import { RoleIndexPermissionView } from '../../../types';
+import { Action, ResourceType, RoleIndexPermissionView } from '../../../types';
 import {
   renderFieldLevelSecurity,
   renderRowExpanstionArrow,
   toggleRowDetails,
   IndexPermissionPanel,
+  renderDocumentLevelSecurity,
 } from '../index-permission-panel';
 import { EuiButtonIcon, EuiEmptyPrompt, EuiInMemoryTable } from '@elastic/eui';
+import { buildHashUrl } from '../../../utils/url-builder';
 
 describe('Role view - index permission panel', () => {
+  const sampleRoleName = 'role1';
   const sampleRoleIndexPermission: RoleIndexPermissionView = {
     id: 1,
     index_patterns: [],
@@ -61,13 +64,25 @@ describe('Role view - index permission panel', () => {
 
       expect(component.find(EuiButtonIcon).prop('iconType')).toBe('arrowUp');
     });
+
+    it('renders when arrow expanded', () => {
+      const renderFunc = renderRowExpanstionArrow(
+        { [sampleRoleIndexPermission.id]: sampleRoleIndexPermission },
+        {},
+        jest.fn()
+      );
+      const Wrapper = () => <>{renderFunc(sampleRoleIndexPermission)}</>;
+      const component = shallow(<Wrapper />);
+      component.find(EuiButtonIcon).simulate('click');
+      expect(component).toMatchSnapshot();
+    });
   });
 
   describe('Render field level security', () => {
     const field = 'fls';
     const excludeField = '~' + field;
 
-    it('it renders em-dash when field level security is empty', () => {
+    it('renders em-dash when field level security is empty', () => {
       const renderFunc = renderFieldLevelSecurity();
       const Wrapper = () => <>{renderFunc([])}</>;
       const component = mount(<Wrapper />);
@@ -93,8 +108,32 @@ describe('Role view - index permission panel', () => {
     });
   });
 
+  describe('Render document level security', () => {
+    it('renders em-dash when document level security is empty', () => {
+      const renderFunc = renderDocumentLevelSecurity();
+      const Wrapper = () => <>{renderFunc('')}</>;
+      const component = shallow(<Wrapper />);
+      expect(component).toMatchSnapshot();
+    });
+
+    it('renders document level security when dls is valid json', () => {
+      const renderFunc = renderDocumentLevelSecurity();
+      const Wrapper = () => <>{renderFunc('{"key": "value"}')}</>;
+      const component = shallow(<Wrapper />);
+      expect(component).toMatchSnapshot();
+    });
+
+    it('renders document level security when dls is invalid json', () => {
+      const renderFunc = renderDocumentLevelSecurity();
+      const Wrapper = () => <>{renderFunc('{"key": "value"%%%}')}</>;
+      const spy = jest.spyOn(console, 'warn').mockImplementationOnce(() => {});
+      const component = shallow(<Wrapper />);
+      expect(spy).toBeCalled();
+      expect(component).toMatchSnapshot();
+    });
+  });
+
   describe('Index permission list', () => {
-    const sampleRoleName = 'role1';
     it('render empty', () => {
       const wrapper = shallow(
         <IndexPermissionPanel
@@ -147,6 +186,29 @@ describe('Role view - index permission panel', () => {
       const component = shallow(prompt);
       const button = component.find('[data-test-subj="addIndexPermission"]');
       expect(button.prop('disabled')).toBe(true);
+    });
+
+    it('should render to role edit page when click on Add index permission button', () => {
+      const wrapper = mount(
+        <IndexPermissionPanel
+          roleName={sampleRoleName}
+          indexPermissions={[]}
+          actionGroups={{}}
+          errorFlag={false}
+          loading={false}
+          isReserved={true}
+        />
+      );
+
+      const prompt = wrapper
+        .find('[data-test-subj="index-permission-container"] tbody EuiEmptyPrompt')
+        .first()
+        .getElement();
+      const component = shallow(prompt);
+      component.find('[data-test-subj="addIndexPermission"]').simulate('click');
+      expect(window.location.hash).toBe(
+        buildHashUrl(ResourceType.roles, Action.edit, sampleRoleName)
+      );
     });
   });
 });

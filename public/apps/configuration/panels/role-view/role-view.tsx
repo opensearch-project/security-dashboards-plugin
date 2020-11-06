@@ -188,7 +188,7 @@ export function RoleView(props: RoleViewProps) {
           </EuiFlexItem>
           <EuiFlexItem>
             <EuiButton
-              data-test-subj="edit-rolemapping"
+              data-test-subj="map-users"
               fill
               onClick={() => {
                 window.location.href = buildHashUrl(
@@ -299,6 +299,7 @@ export function RoleView(props: RoleViewProps) {
                   </EuiFlexItem>
                   <EuiFlexItem>
                     <EuiButton
+                      data-test-subj="manage-mapping"
                       onClick={() => {
                         window.location.href = buildHashUrl(
                           ResourceType.roles,

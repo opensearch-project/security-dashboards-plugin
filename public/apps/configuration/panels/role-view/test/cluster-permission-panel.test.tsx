@@ -16,8 +16,10 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { ClusterPermissionPanel } from '../cluster-permission-panel';
-import { EuiButton, EuiEmptyPrompt } from '@elastic/eui';
+import { EuiButton, EuiEmptyPrompt, EuiLoadingSpinner } from '@elastic/eui';
 import { PermissionTree } from '../../permission-tree';
+import { Action, ResourceType } from '../../../types';
+import { buildHashUrl } from '../../../utils/url-builder';
 
 describe('Role view - cluster permission panel', () => {
   const sampleRole = 'role';
@@ -36,6 +38,19 @@ describe('Role view - cluster permission panel', () => {
     expect(component.find(EuiEmptyPrompt).length).toBe(1);
   });
 
+  it('should show loading spinner when cluster permissions are loading', () => {
+    const component = shallow(
+      <ClusterPermissionPanel
+        roleName={sampleRole}
+        clusterPermissions={[]}
+        actionGroups={{}}
+        loading={true}
+        isReserved={false}
+      />
+    );
+    expect(component.find(EuiLoadingSpinner).length).toBe(1);
+  });
+
   it('Add cluster permission button is disabled for reserved role', () => {
     const wrapper = shallow(
       <ClusterPermissionPanel
@@ -50,6 +65,21 @@ describe('Role view - cluster permission panel', () => {
     expect(prompt.find(EuiButton)).toHaveLength(1);
     const button = prompt.find('[data-test-subj="addClusterPermission"]');
     expect(button.prop('disabled')).toBe(true);
+  });
+
+  it('should render to role edit page when click on Add cluster permission button', () => {
+    const wrapper = shallow(
+      <ClusterPermissionPanel
+        roleName={sampleRole}
+        clusterPermissions={[]}
+        actionGroups={{}}
+        loading={false}
+        isReserved={false}
+      />
+    );
+    const prompt = wrapper.find(EuiEmptyPrompt).dive();
+    prompt.find('[data-test-subj="addClusterPermission"]').simulate('click');
+    expect(window.location.hash).toBe(buildHashUrl(ResourceType.roles, Action.edit, sampleRole));
   });
 
   it('with cluster permission', () => {

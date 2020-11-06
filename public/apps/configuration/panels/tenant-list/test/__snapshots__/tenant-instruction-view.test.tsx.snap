@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tenant instruction view renders 1`] = `
+<Fragment>
+  <EuiTitle
+    size="l"
+  >
+    <h1>
+      Tenants
+    </h1>
+  </EuiTitle>
+  <EuiSpacer
+    size="xxl"
+  />
+  <EuiText
+    textAlign="center"
+  >
+    <h2>
+      You have not enabled multi tenancy
+    </h2>
+  </EuiText>
+  <EuiText
+    className="instruction-text"
+    color="subdued"
+    size="xs"
+    textAlign="center"
+  >
+    Contact your administrator to enable multi tenancy.
+  </EuiText>
+</Fragment>
+`;

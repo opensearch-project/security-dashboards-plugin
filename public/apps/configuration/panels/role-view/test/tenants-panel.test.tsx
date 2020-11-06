@@ -16,7 +16,10 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import { TenantsPanel } from '../tenants-panel';
-import { EuiEmptyPrompt, EuiInMemoryTable } from '@elastic/eui';
+import { EuiEmptyPrompt, EuiInMemoryTable, EuiTableFieldDataColumnType } from '@elastic/eui';
+import { buildHashUrl } from '../../../utils/url-builder';
+import { Action, ResourceType, RoleTenantPermissionDetail } from '../../../types';
+import { RoleViewTenantInvalidText } from '../../../constants';
 
 jest.mock('../../../utils/tenant-utils');
 jest.mock('../../../../../utils/auth-info-utils');
@@ -89,6 +92,139 @@ describe('Role view - tenant panel', () => {
       const component = shallow(prompt);
       const button = component.find('[data-test-subj="addTenantPermission"]');
       expect(button.prop('disabled')).toBe(true);
+    });
+
+    it('should render to role edit page when click on Add tenant permission button', () => {
+      const wrapper = mount(
+        <TenantsPanel
+          roleName={sampleRoleName}
+          tenantPermissions={[]}
+          errorFlag={false}
+          coreStart={mockCoreStart as any}
+          loading={false}
+          isReserved={true}
+        />
+      );
+
+      const prompt = wrapper
+        .find('[data-test-subj="tenant-permission-container"] tbody EuiEmptyPrompt')
+        .first()
+        .getElement();
+      const component = shallow(prompt);
+      component.find('[data-test-subj="addTenantPermission"]').simulate('click');
+      expect(window.location.hash).toBe(
+        buildHashUrl(ResourceType.roles, Action.edit, sampleRoleName)
+      );
+    });
+
+    it('click on View Dashboard link', () => {
+      const tenantPermissions = [{ tenant_patterns: ['tenant1'], permissionType: 'dummy' }];
+      const wrapper = mount(
+        <TenantsPanel
+          roleName={sampleRoleName}
+          tenantPermissions={tenantPermissions}
+          errorFlag={false}
+          coreStart={mockCoreStart as any}
+          loading={false}
+          isReserved={true}
+        />
+      );
+
+      const prompt = wrapper
+        .find('[data-test-subj="tenant-permission-container"]')
+        .first()
+        .getElement();
+      const component = shallow(prompt);
+      const columns = component.prop<
+        Array<EuiTableFieldDataColumnType<RoleTenantPermissionDetail>>
+      >('columns');
+      const viewDashboardRenderer = columns[3].render as (tenant: string) => JSX.Element;
+      const Container = (props: { tenant: string }) => viewDashboardRenderer(props.tenant);
+      const result = shallow(<Container tenant={'tenant1'} />);
+      result.find('[data-test-subj="view-dashboard"]').simulate('click');
+      expect(mockTenantUtils.selectTenant).toHaveBeenCalled();
+    });
+
+    it('click on View Visualizations link', () => {
+      const tenantPermissions = [{ tenant_patterns: ['tenant1'], permissionType: 'dummy' }];
+      const wrapper = mount(
+        <TenantsPanel
+          roleName={sampleRoleName}
+          tenantPermissions={tenantPermissions}
+          errorFlag={false}
+          coreStart={mockCoreStart as any}
+          loading={false}
+          isReserved={true}
+        />
+      );
+
+      const prompt = wrapper
+        .find('[data-test-subj="tenant-permission-container"]')
+        .first()
+        .getElement();
+      const component = shallow(prompt);
+      const columns = component.prop<
+        Array<EuiTableFieldDataColumnType<RoleTenantPermissionDetail>>
+      >('columns');
+      const viewVisualizationRenderer = columns[4].render as (tenant: string) => JSX.Element;
+      const Container = (props: { tenant: string }) => viewVisualizationRenderer(props.tenant);
+      const result = shallow(<Container tenant={'tenant1'} />);
+      result.find('[data-test-subj="view-visualizations"]').simulate('click');
+      expect(mockTenantUtils.selectTenant).toHaveBeenCalled();
+    });
+
+    it('render view dashboard column when tenant permissions contains multiple tenants or tenant pattern', () => {
+      const tenantPermissions = [{ tenant_patterns: ['*'], permissionType: 'dummy' }];
+      const wrapper = mount(
+        <TenantsPanel
+          roleName={sampleRoleName}
+          tenantPermissions={tenantPermissions}
+          errorFlag={false}
+          coreStart={mockCoreStart as any}
+          loading={false}
+          isReserved={true}
+        />
+      );
+
+      const prompt = wrapper
+        .find('[data-test-subj="tenant-permission-container"]')
+        .first()
+        .getElement();
+      const component = shallow(prompt);
+      const columns = component.prop<
+        Array<EuiTableFieldDataColumnType<RoleTenantPermissionDetail>>
+      >('columns');
+      const viewDashboardRenderer = columns[3].render as (tenant: string) => JSX.Element;
+      const Container = (props: { tenant: string }) => viewDashboardRenderer(props.tenant);
+      const result = shallow(<Container tenant={RoleViewTenantInvalidText} />);
+      expect(result).toMatchSnapshot();
+    });
+
+    it('render view visualization column when tenant permissions contains multiple tenants or tenant pattern', () => {
+      const tenantPermissions = [{ tenant_patterns: ['*'], permissionType: 'dummy' }];
+      const wrapper = mount(
+        <TenantsPanel
+          roleName={sampleRoleName}
+          tenantPermissions={tenantPermissions}
+          errorFlag={false}
+          coreStart={mockCoreStart as any}
+          loading={false}
+          isReserved={true}
+        />
+      );
+
+      const prompt = wrapper
+        .find('[data-test-subj="tenant-permission-container"]')
+        .first()
+        .getElement();
+      const component = shallow(prompt);
+      const columns = component.prop<
+        Array<EuiTableFieldDataColumnType<RoleTenantPermissionDetail>>
+      >('columns');
+      const viewVisualizationRenderer = columns[4].render as (tenant: string) => JSX.Element;
+      const Container = (props: { tenant: string }) => viewVisualizationRenderer(props.tenant);
+      const result = shallow(<Container tenant={RoleViewTenantInvalidText} />);
+      expect(result).toMatchSnapshot();
     });
 
     it('fetch data error', (done) => {

@@ -18,7 +18,11 @@ import { shallow } from 'enzyme';
 import React from 'react';
 import { EMPTY_FIELD_VALUE } from '../../ui-constants';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
-import { getUserList, requestDeleteUsers } from '../../utils/internal-user-list-utils';
+import {
+  getUserList,
+  InternalUsersListing,
+  requestDeleteUsers,
+} from '../../utils/internal-user-list-utils';
 import { dictView, getColumns, UserList } from '../user-list';
 
 jest.mock('../../utils/internal-user-list-utils');
@@ -28,8 +32,15 @@ jest.mock('../../../../utils/auth-info-utils', () => ({
 jest.mock('../../utils/delete-confirm-modal-utils', () => ({
   useDeleteConfirmState: jest.fn().mockReturnValue([jest.fn(), '']),
 }));
+jest.mock('../../utils/context-menu', () => ({
+  useContextMenuState: jest
+    .fn()
+    .mockImplementation((buttonText, buttonProps, children) => [children, jest.fn()]),
+}));
 
 import { getAuthInfo } from '../../../../utils/auth-info-utils';
+import { buildHashUrl } from '../../utils/url-builder';
+import { ResourceType, Action } from '../../types';
 
 describe('User list', () => {
   describe('dictView', () => {
@@ -168,6 +179,47 @@ describe('User list', () => {
         expect(loggingFunc).toBeCalled();
         done();
       });
+    });
+  });
+
+  describe('Action menu click', () => {
+    const mockCoreStart = {
+      http: {
+        basePath: {
+          serverBasePath: '',
+        },
+      },
+    };
+    let component;
+    const mockUserListingData: InternalUsersListing = {
+      username: 'user_1',
+      attributes: { key: 'value' },
+      backend_roles: ['backend_role1'],
+    };
+    beforeEach(() => {
+      jest.spyOn(React, 'useState').mockImplementation(() => [[mockUserListingData], jest.fn()]);
+      component = shallow(
+        <UserList
+          coreStart={mockCoreStart as any}
+          navigation={{} as any}
+          params={{} as any}
+          config={{} as any}
+        />
+      );
+    });
+
+    it('Edit click', () => {
+      component.find('[data-test-subj="edit"]').simulate('click');
+      expect(window.location.hash).toBe(
+        buildHashUrl(ResourceType.users, Action.edit, mockUserListingData.username)
+      );
+    });
+
+    it('Duplicate click', () => {
+      component.find('[data-test-subj="duplicate"]').simulate('click');
+      expect(window.location.hash).toBe(
+        buildHashUrl(ResourceType.users, Action.duplicate, mockUserListingData.username)
+      );
     });
   });
 });

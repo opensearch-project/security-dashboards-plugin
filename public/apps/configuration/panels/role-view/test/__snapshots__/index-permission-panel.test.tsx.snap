@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Role view - index permission panel Render document level security renders document level security when dls is invalid json 1`] = `
+<Fragment>
+  {"key": "value"%%%}
+</Fragment>
+`;
+
+exports[`Role view - index permission panel Render document level security renders document level security when dls is valid json 1`] = `
+<Fragment>
+  <ExpressionModal
+    expression={
+      Object {
+        "key": "value",
+      }
+    }
+    title="Document-level security"
+  />
+</Fragment>
+`;
+
+exports[`Role view - index permission panel Render document level security renders em-dash when document level security is empty 1`] = `
+<Fragment>
+  <span>
+    —
+  </span>
+</Fragment>
+`;
+
+exports[`Role view - index permission panel Render row expanstion arrow renders when arrow expanded 1`] = `
+<Fragment>
+  <EuiButtonIcon
+    aria-label="Collapse"
+    iconType="arrowUp"
+    onClick={[Function]}
+  />
+</Fragment>
+`;

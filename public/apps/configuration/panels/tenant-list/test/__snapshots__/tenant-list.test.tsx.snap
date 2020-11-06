@@ -1,0 +1,373 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tenant list Action menu click Duplicate click 1`] = `
+<Fragment>
+  <EuiPageHeader>
+    <EuiTitle
+      size="l"
+    >
+      <h1>
+        Tenants
+      </h1>
+    </EuiTitle>
+  </EuiPageHeader>
+  <EuiPageContent>
+    <EuiPageContentHeader>
+      <EuiPageContentHeaderSection>
+        <EuiTitle
+          size="s"
+        >
+          <h3>
+            Tenants
+            <span
+              className="panel-header-count"
+            >
+               
+              (
+              1
+              )
+            </span>
+          </h3>
+        </EuiTitle>
+        <EuiText
+          color="subdued"
+          size="xs"
+        >
+          Tenants in Kibana are spaces for saving index patterns, visualizations, dashboards, and other Kibana objects. Use tenants to safely share your work with other Kibana users. You can control which roles have access to a tenant and whether those roles have read or write access. The “Current” label indicates which tenant you are using now. Switch to another tenant anytime from your user profile, which is located on the top right of the screen. 
+          <ExternalLink
+            href="https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/multi-tenancy/"
+          />
+        </EuiText>
+      </EuiPageContentHeaderSection>
+      <EuiPageContentHeaderSection>
+        <EuiFlexGroup>
+          <EuiFlexItem>
+            <EuiButtonEmpty
+              disabled={false}
+              id="switchTenant"
+              key="switchTenant"
+              onClick={[Function]}
+            >
+              Switch to selected tenant
+            </EuiButtonEmpty>
+            <EuiButtonEmpty
+              disabled={false}
+              id="edit"
+              key="edit"
+              onClick={[Function]}
+            >
+              Edit
+            </EuiButtonEmpty>
+            <EuiButtonEmpty
+              disabled={false}
+              id="duplicate"
+              key="duplicate"
+              onClick={[Function]}
+            >
+              Duplicate
+            </EuiButtonEmpty>
+            <EuiButtonEmpty
+              disabled={false}
+              id="createDashboard"
+              key="createDashboard"
+              onClick={[Function]}
+            >
+              Create dashboard
+            </EuiButtonEmpty>
+            <EuiButtonEmpty
+              disabled={false}
+              id="createVisualizations"
+              key="createVisualizations"
+              onClick={[Function]}
+            >
+              Create visualizations
+            </EuiButtonEmpty>
+            <EuiButtonEmpty
+              color="danger"
+              disabled={false}
+              id="delete"
+              key="delete"
+              onClick={[MockFunction]}
+            >
+              Delete
+            </EuiButtonEmpty>
+          </EuiFlexItem>
+          <EuiFlexItem>
+            <EuiButton
+              fill={true}
+              id="createTenant"
+              onClick={[Function]}
+            >
+              Create tenant
+            </EuiButton>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      </EuiPageContentHeaderSection>
+    </EuiPageContentHeader>
+    <EuiPageBody>
+      <EuiInMemoryTable
+        columns={
+          Array [
+            Object {
+              "field": "tenant",
+              "name": "Name",
+              "render": [Function],
+              "sortable": true,
+            },
+            Object {
+              "field": "description",
+              "name": "Description",
+              "truncateText": true,
+            },
+            Object {
+              "field": "tenantValue",
+              "name": "Dashboard",
+              "render": [Function],
+            },
+            Object {
+              "field": "tenantValue",
+              "name": "Visualizations",
+              "render": [Function],
+            },
+            Object {
+              "field": "reserved",
+              "name": "Customization",
+              "render": [Function],
+            },
+          ]
+        }
+        error="Load data failed, please check console log for more detail."
+        itemId="tenant"
+        items={
+          Array [
+            Object {
+              "description": "",
+              "reserved": false,
+              "tenant": "tenant_2",
+              "tenantValue": "tenant_2",
+            },
+          ]
+        }
+        loading={false}
+        message={false}
+        pagination={true}
+        responsive={true}
+        search={
+          Object {
+            "box": Object {
+              "placeholder": "Find tenant",
+            },
+            "onChange": [Function],
+          }
+        }
+        selection={
+          Object {
+            "onSelectionChange": [MockFunction],
+          }
+        }
+        sorting={true}
+        tableLayout="auto"
+      />
+    </EuiPageBody>
+  </EuiPageContent>
+  <TenantEditModal
+    action="duplicate"
+    handleClose={[Function]}
+    handleSave={[Function]}
+    tenantDescription=""
+    tenantName="tenant_2_copy"
+  />
+  <EuiGlobalToastList
+    dismissToast={[MockFunction]}
+    side="right"
+    toastLifeTimeMs={10000}
+    toasts={Array []}
+  />
+</Fragment>
+`;
+
+exports[`Tenant list Action menu click Edit click 1`] = `
+<Fragment>
+  <EuiPageHeader>
+    <EuiTitle
+      size="l"
+    >
+      <h1>
+        Tenants
+      </h1>
+    </EuiTitle>
+  </EuiPageHeader>
+  <EuiPageContent>
+    <EuiPageContentHeader>
+      <EuiPageContentHeaderSection>
+        <EuiTitle
+          size="s"
+        >
+          <h3>
+            Tenants
+            <span
+              className="panel-header-count"
+            >
+               
+              (
+              1
+              )
+            </span>
+          </h3>
+        </EuiTitle>
+        <EuiText
+          color="subdued"
+          size="xs"
+        >
+          Tenants in Kibana are spaces for saving index patterns, visualizations, dashboards, and other Kibana objects. Use tenants to safely share your work with other Kibana users. You can control which roles have access to a tenant and whether those roles have read or write access. The “Current” label indicates which tenant you are using now. Switch to another tenant anytime from your user profile, which is located on the top right of the screen. 
+          <ExternalLink
+            href="https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/multi-tenancy/"
+          />
+        </EuiText>
+      </EuiPageContentHeaderSection>
+      <EuiPageContentHeaderSection>
+        <EuiFlexGroup>
+          <EuiFlexItem>
+            <EuiButtonEmpty
+              disabled={false}
+              id="switchTenant"
+              key="switchTenant"
+              onClick={[Function]}
+            >
+              Switch to selected tenant
+            </EuiButtonEmpty>
+            <EuiButtonEmpty
+              disabled={false}
+              id="edit"
+              key="edit"
+              onClick={[Function]}
+            >
+              Edit
+            </EuiButtonEmpty>
+            <EuiButtonEmpty
+              disabled={false}
+              id="duplicate"
+              key="duplicate"
+              onClick={[Function]}
+            >
+              Duplicate
+            </EuiButtonEmpty>
+            <EuiButtonEmpty
+              disabled={false}
+              id="createDashboard"
+              key="createDashboard"
+              onClick={[Function]}
+            >
+              Create dashboard
+            </EuiButtonEmpty>
+            <EuiButtonEmpty
+              disabled={false}
+              id="createVisualizations"
+              key="createVisualizations"
+              onClick={[Function]}
+            >
+              Create visualizations
+            </EuiButtonEmpty>
+            <EuiButtonEmpty
+              color="danger"
+              disabled={false}
+              id="delete"
+              key="delete"
+              onClick={[MockFunction]}
+            >
+              Delete
+            </EuiButtonEmpty>
+          </EuiFlexItem>
+          <EuiFlexItem>
+            <EuiButton
+              fill={true}
+              id="createTenant"
+              onClick={[Function]}
+            >
+              Create tenant
+            </EuiButton>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      </EuiPageContentHeaderSection>
+    </EuiPageContentHeader>
+    <EuiPageBody>
+      <EuiInMemoryTable
+        columns={
+          Array [
+            Object {
+              "field": "tenant",
+              "name": "Name",
+              "render": [Function],
+              "sortable": true,
+            },
+            Object {
+              "field": "description",
+              "name": "Description",
+              "truncateText": true,
+            },
+            Object {
+              "field": "tenantValue",
+              "name": "Dashboard",
+              "render": [Function],
+            },
+            Object {
+              "field": "tenantValue",
+              "name": "Visualizations",
+              "render": [Function],
+            },
+            Object {
+              "field": "reserved",
+              "name": "Customization",
+              "render": [Function],
+            },
+          ]
+        }
+        error="Load data failed, please check console log for more detail."
+        itemId="tenant"
+        items={
+          Array [
+            Object {
+              "description": "",
+              "reserved": false,
+              "tenant": "tenant_2",
+              "tenantValue": "tenant_2",
+            },
+          ]
+        }
+        loading={false}
+        message={false}
+        pagination={true}
+        responsive={true}
+        search={
+          Object {
+            "box": Object {
+              "placeholder": "Find tenant",
+            },
+            "onChange": [Function],
+          }
+        }
+        selection={
+          Object {
+            "onSelectionChange": [MockFunction],
+          }
+        }
+        sorting={true}
+        tableLayout="auto"
+      />
+    </EuiPageBody>
+  </EuiPageContent>
+  <TenantEditModal
+    action="edit"
+    handleClose={[Function]}
+    handleSave={[Function]}
+    tenantDescription=""
+    tenantName="tenant_2"
+  />
+  <EuiGlobalToastList
+    dismissToast={[MockFunction]}
+    side="right"
+    toastLifeTimeMs={10000}
+    toasts={Array []}
+  />
+</Fragment>
+`;

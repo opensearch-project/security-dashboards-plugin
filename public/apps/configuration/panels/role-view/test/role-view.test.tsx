@@ -14,7 +14,7 @@
  */
 
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import { RoleView } from '../role-view';
 import { ClusterPermissionPanel } from '../../role-view/cluster-permission-panel';
 import { IndexPermissionPanel } from '../index-permission-panel';
@@ -30,6 +30,9 @@ import { getRoleDetail } from '../../../utils/role-detail-utils';
 import { transformRoleIndexPermissions } from '../../../utils/index-permission-utils';
 import { useDeleteConfirmState } from '../../../utils/delete-confirm-modal-utils';
 import { requestDeleteRoles } from '../../../utils/role-list-utils';
+import { Action, ResourceType, SubAction } from '../../../types';
+import { buildHashUrl } from '../../../utils/url-builder';
+import { createUnknownErrorToast } from '../../../utils/toast-utils';
 
 jest.mock('../../../utils/role-mapping-utils', () => ({
   getRoleMappingData: jest.fn().mockReturnValue({ backend_roles: [], hosts: [], users: [] }),
@@ -63,6 +66,11 @@ jest.mock('../../../utils/context-menu', () => ({
     .fn()
     .mockImplementation((buttonText, buttonProps, children) => [children, jest.fn()]),
 }));
+jest.mock('../../../utils/toast-utils', () => ({
+  createErrorToast: jest.fn(),
+  createUnknownErrorToast: jest.fn(),
+  useToastState: jest.fn().mockReturnValue([[], jest.fn(), jest.fn()]),
+}));
 
 describe('Role view', () => {
   const setState = jest.fn();
@@ -80,7 +88,7 @@ describe('Role view', () => {
     useState.mockImplementation((initialValue) => [initialValue, setState]);
   });
 
-  it('basic rendering', () => {
+  it('basic rendering when permission tab is selected', () => {
     const component = shallow(
       <RoleView
         roleName={sampleRole}
@@ -100,6 +108,62 @@ describe('Role view', () => {
     expect(tabs.find(ClusterPermissionPanel).length).toBe(1);
     expect(tabs.find(IndexPermissionPanel).length).toBe(1);
     expect(tabs.find(TenantsPanel).length).toBe(1);
+    expect(component).toMatchSnapshot();
+  });
+
+  it('renders when mapped user tab is selected', () => {
+    const component = shallow(
+      <RoleView
+        roleName={sampleRole}
+        prevAction={SubAction.mapuser}
+        buildBreadcrumbs={buildBreadcrumbs}
+        coreStart={mockCoreStart as any}
+        navigation={{} as any}
+        params={{} as any}
+        config={{} as any}
+      />
+    );
+    expect(component).toMatchSnapshot();
+  });
+
+  it('should render to map user page when click on Map users', () => {
+    const wrapper = shallow(
+      <RoleView
+        roleName={sampleRole}
+        prevAction={SubAction.mapuser}
+        buildBreadcrumbs={buildBreadcrumbs}
+        coreStart={mockCoreStart as any}
+        navigation={{} as any}
+        params={{} as any}
+        config={{} as any}
+      />
+    );
+    const tabs = wrapper.find(EuiTabbedContent).dive();
+    const roleMappingList = tabs.find('[data-test-subj="role-mapping-list"]').dive();
+    const Wrapper = mount(<>{roleMappingList}</>);
+    Wrapper.find('[data-test-subj="map-users"]').first().simulate('click');
+    expect(window.location.hash).toBe(
+      buildHashUrl(ResourceType.roles, Action.edit, sampleRole, SubAction.mapuser)
+    );
+  });
+
+  it('should render to map user page when click on Manage Mapping', () => {
+    const wrapper = shallow(
+      <RoleView
+        roleName={sampleRole}
+        prevAction={SubAction.mapuser}
+        buildBreadcrumbs={buildBreadcrumbs}
+        coreStart={mockCoreStart as any}
+        navigation={{} as any}
+        params={{} as any}
+        config={{} as any}
+      />
+    );
+    const tabs = wrapper.find(EuiTabbedContent).dive();
+    tabs.find('[data-test-subj="manage-mapping"]').first().simulate('click');
+    expect(window.location.hash).toBe(
+      buildHashUrl(ResourceType.roles, Action.edit, sampleRole, SubAction.mapuser)
+    );
   });
 
   it('fetch data', (done) => {
@@ -120,7 +184,6 @@ describe('Role view', () => {
       expect(transformRoleMappingData).toHaveBeenCalledTimes(1);
       expect(fetchActionGroups).toHaveBeenCalledTimes(1);
       expect(getRoleDetail).toHaveBeenCalledTimes(1);
-      expect(transformRoleIndexPermissions).toHaveBeenCalledTimes(1);
       expect(transformRoleIndexPermissions).toHaveBeenCalledTimes(1);
       done();
     });
@@ -170,6 +233,32 @@ describe('Role view', () => {
     });
   });
 
+  it('should capture error by console.log if error occurred while deleting role mapping', (done) => {
+    (updateRoleMapping as jest.Mock).mockImplementationOnce(() => {
+      throw new Error();
+    });
+    const spy = jest.spyOn(console, 'log').mockImplementationOnce(() => {});
+    shallow(
+      <RoleView
+        roleName={sampleRole}
+        prevAction=""
+        buildBreadcrumbs={buildBreadcrumbs}
+        coreStart={mockCoreStart as any}
+        navigation={{} as any}
+        params={{} as any}
+        config={{} as any}
+      />
+    );
+    const deleteFunc = useDeleteConfirmState.mock.calls[0][0];
+
+    deleteFunc();
+
+    process.nextTick(() => {
+      expect(spy).toBeCalled();
+      done();
+    });
+  });
+
   it('delete role', () => {
     const component = shallow(
       <RoleView
@@ -185,5 +274,24 @@ describe('Role view', () => {
     component.find('[data-test-subj="delete"]').simulate('click');
 
     expect(requestDeleteRoles).toBeCalled();
+  });
+
+  it('error occurred while deleting the role', () => {
+    (requestDeleteRoles as jest.Mock).mockImplementationOnce(() => {
+      throw new Error();
+    });
+    const component = shallow(
+      <RoleView
+        roleName={sampleRole}
+        prevAction=""
+        buildBreadcrumbs={buildBreadcrumbs}
+        coreStart={mockCoreStart as any}
+        navigation={{} as any}
+        params={{} as any}
+        config={{} as any}
+      />
+    );
+    component.find('[data-test-subj="delete"]').simulate('click');
+    expect(createUnknownErrorToast).toBeCalled();
   });
 });
