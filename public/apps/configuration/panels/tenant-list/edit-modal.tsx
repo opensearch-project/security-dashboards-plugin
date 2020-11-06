@@ -47,7 +47,7 @@ const TITLE_DICT: { [key: string]: string } = {
 
 export function TenantEditModal(props: TenantEditModalDeps) {
   const [tenantName, setTenantName] = useState<string>(props.tenantName);
-  const [tenantDescription, setTenantDescription] = useState<string>(props.tenantDescription);
+  const [tenantDescription, setTenantDescription] = React.useState<string>(props.tenantDescription);
 
   const [isFormValid, setIsFormValid] = useState<boolean>(true);
 
@@ -80,6 +80,7 @@ export function TenantEditModal(props: TenantEditModalDeps) {
               optional
             >
               <EuiTextArea
+                data-test-subj="tenant-description"
                 fullWidth
                 placeholder="Describe the tenant"
                 value={tenantDescription}

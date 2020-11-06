@@ -93,7 +93,7 @@ export function getColumns(currentUsername: string) {
 export function UserList(props: AppDependencies) {
   const [userData, setUserData] = React.useState<InternalUsersListing[]>([]);
   const [errorFlag, setErrorFlag] = React.useState(false);
-  const [selection, setSelection] = useState<InternalUsersListing[]>([]);
+  const [selection, setSelection] = React.useState<InternalUsersListing[]>([]);
   const [currentUsername, setCurrentUsername] = useState('');
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState<Query | null>(null);
@@ -139,6 +139,7 @@ export function UserList(props: AppDependencies) {
 
   const actionsMenuItems = [
     <EuiButtonEmpty
+      data-test-subj="edit"
       key="edit"
       onClick={() => {
         window.location.href = buildHashUrl(ResourceType.users, Action.edit, selection[0].username);
@@ -148,6 +149,7 @@ export function UserList(props: AppDependencies) {
       Edit
     </EuiButtonEmpty>,
     <EuiButtonEmpty
+      data-test-subj="duplicate"
       key="duplicate"
       onClick={() => {
         window.location.href = buildHashUrl(

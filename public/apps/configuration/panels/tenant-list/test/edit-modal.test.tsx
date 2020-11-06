@@ -19,9 +19,13 @@ import { TenantEditModal } from '../edit-modal';
 import { Action } from '../../../types';
 
 describe('Permission edit modal', () => {
-  it('Submit change', () => {
-    const handleSave = jest.fn();
-    const component = shallow(
+  let component;
+  const handleSave = jest.fn();
+  const setState = jest.fn();
+  const useState = jest.spyOn(React, 'useState');
+  beforeEach(() => {
+    useState.mockImplementation((initialValue) => [initialValue, setState]);
+    component = shallow(
       <TenantEditModal
         tenantName={'tenant1'}
         tenantDescription={'description1'}
@@ -30,8 +34,37 @@ describe('Permission edit modal', () => {
         handleSave={handleSave}
       />
     );
+  });
+  it('Submit change', () => {
     component.find('#submit').simulate('click');
 
     expect(handleSave).toBeCalled();
+  });
+
+  it('handle tenant description change', () => {
+    const event = {
+      target: { value: 'dummy' },
+    } as React.ChangeEvent<HTMLTextAreaElement>;
+    component.find('[data-test-subj="tenant-description"]').simulate('change', event);
+    expect(setState).toBeCalledWith('dummy');
+  });
+
+  it('Submit button text should be Create when user is creating tenant', () => {
+    const submitButton = component.find('#submit').dive();
+    expect(submitButton).toMatchSnapshot();
+  });
+
+  it('Submit button text should be Save when user is updating tenant', () => {
+    const component1 = shallow(
+      <TenantEditModal
+        tenantName={'tenant1'}
+        tenantDescription={'description1'}
+        action={Action.edit}
+        handleClose={jest.fn()}
+        handleSave={handleSave}
+      />
+    );
+    const submitButton = component1.find('#submit').dive();
+    expect(submitButton).toMatchSnapshot();
   });
 });

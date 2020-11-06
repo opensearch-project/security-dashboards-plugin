@@ -102,7 +102,7 @@ const columns: Array<EuiBasicTableColumn<RoleListing>> = [
 export function RoleList(props: AppDependencies) {
   const [roleData, setRoleData] = React.useState<RoleListing[]>([]);
   const [errorFlag, setErrorFlag] = React.useState(false);
-  const [selection, setSelection] = useState<RoleListing[]>([]);
+  const [selection, setSelection] = React.useState<RoleListing[]>([]);
   const [loading, setLoading] = useState(false);
 
   React.useEffect(() => {
@@ -147,6 +147,7 @@ export function RoleList(props: AppDependencies) {
 
   const actionsMenuItems = [
     <EuiButtonEmpty
+      data-test-subj="edit"
       key="edit"
       onClick={() => {
         window.location.href = buildHashUrl(ResourceType.roles, Action.edit, selection[0].roleName);
@@ -157,6 +158,7 @@ export function RoleList(props: AppDependencies) {
     </EuiButtonEmpty>,
     // TODO: Change duplication to a popup window
     <EuiButtonEmpty
+      data-test-subj="duplicate"
       key="duplicate"
       onClick={() => {
         window.location.href = buildHashUrl(
@@ -284,6 +286,7 @@ export function RoleList(props: AppDependencies) {
         </EuiPageContentHeader>
         <EuiPageBody>
           <EuiInMemoryTable
+            data-test-subj="role-list"
             tableLayout={'auto'}
             loading={roleData === [] && !errorFlag}
             columns={columns}

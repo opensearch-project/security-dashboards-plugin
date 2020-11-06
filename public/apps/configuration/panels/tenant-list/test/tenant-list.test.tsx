@@ -20,6 +20,7 @@ import { EuiInMemoryTable } from '@elastic/eui';
 import { useDeleteConfirmState } from '../../../utils/delete-confirm-modal-utils';
 import { Tenant } from '../../../types';
 import { TenantEditModal } from '../edit-modal';
+import { TenantInstructionView } from '../tenant-instruction-view';
 
 jest.mock('../../../utils/tenant-utils');
 jest.mock('../../../../../utils/auth-info-utils');
@@ -48,9 +49,9 @@ describe('Tenant list', () => {
   };
   const config = {
     multitenancy: {
-      enabled: 'true',
+      enabled: true,
       tenants: {
-        enable_private: 'true',
+        enable_private: true,
       },
     },
   };
@@ -81,6 +82,26 @@ describe('Tenant list', () => {
     );
 
     expect(component.find(EuiInMemoryTable).prop('items').length).toBe(0);
+  });
+
+  it('renders when multitenancy is disabled in the kibana.yml', () => {
+    const config1 = {
+      multitenancy: {
+        enabled: false,
+        tenants: {
+          enable_private: true,
+        },
+      },
+    };
+    const component = shallow(
+      <TenantList
+        coreStart={mockCoreStart as any}
+        navigation={{} as any}
+        params={{} as any}
+        config={config1 as any}
+      />
+    );
+    expect(component.find(TenantInstructionView).length).toBe(1);
   });
 
   it('fetch data error', (done) => {
@@ -296,6 +317,53 @@ describe('Tenant list', () => {
       expect(component.find('#createVisualizations').prop('disabled')).toBe(true);
 
       expect(component.find('#delete').prop('disabled')).toBe(false);
+    });
+  });
+
+  describe('Action menu click', () => {
+    let component;
+    const sampleCustomTenant1: Tenant = {
+      tenant: 'tenant_2',
+      description: '',
+      reserved: false,
+      tenantValue: 'tenant_2',
+    };
+
+    beforeEach(() => {
+      jest.spyOn(React, 'useState').mockImplementation(() => [[sampleCustomTenant1], jest.fn()]);
+      component = shallow(
+        <TenantList
+          coreStart={mockCoreStart as any}
+          navigation={{} as any}
+          params={{} as any}
+          config={config as any}
+        />
+      );
+    });
+
+    it('switchTenant click', () => {
+      component.find('#switchTenant').simulate('click');
+      expect(mockTenantUtils.selectTenant).toBeCalled();
+    });
+
+    it('Edit click', () => {
+      component.find('#edit').simulate('click');
+      expect(component).toMatchSnapshot();
+    });
+
+    it('Duplicate click', () => {
+      component.find('#duplicate').simulate('click');
+      expect(component).toMatchSnapshot();
+    });
+
+    it('Create dashboard click', () => {
+      component.find('#createDashboard').simulate('click');
+      expect(mockTenantUtils.selectTenant).toHaveBeenCalled();
+    });
+
+    it('Create visualizations click', () => {
+      component.find('#createVisualizations').simulate('click');
+      expect(mockTenantUtils.selectTenant).toHaveBeenCalled();
     });
   });
 });
