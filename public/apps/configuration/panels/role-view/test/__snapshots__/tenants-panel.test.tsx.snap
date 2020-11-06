@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Role view - tenant panel Tenant permission list render view dashboard column when tenant is invalid 1`] = `
+exports[`Role view - tenant panel Tenant permission list render view dashboard column when tenant permissions contains multiple tenants or tenant pattern 1`] = `
 <Fragment>
   <EuiText
     size="s"
@@ -10,7 +10,7 @@ exports[`Role view - tenant panel Tenant permission list render view dashboard c
 </Fragment>
 `;
 
-exports[`Role view - tenant panel Tenant permission list render view visualization column when tenant is invalid 1`] = `
+exports[`Role view - tenant panel Tenant permission list render view visualization column when tenant permissions contains multiple tenants or tenant pattern 1`] = `
 <Fragment>
   <EuiText
     size="s"

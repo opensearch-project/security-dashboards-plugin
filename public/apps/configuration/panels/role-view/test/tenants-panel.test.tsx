@@ -173,7 +173,7 @@ describe('Role view - tenant panel', () => {
       expect(mockTenantUtils.selectTenant).toHaveBeenCalled();
     });
 
-    it('render view dashboard column when tenant is invalid', () => {
+    it('render view dashboard column when tenant permissions contains multiple tenants or tenant pattern', () => {
       const tenantPermissions = [{ tenant_patterns: ['*'], permissionType: 'dummy' }];
       const wrapper = mount(
         <TenantsPanel
@@ -200,7 +200,7 @@ describe('Role view - tenant panel', () => {
       expect(result).toMatchSnapshot();
     });
 
-    it('render view visualization column when tenant is invalid', () => {
+    it('render view visualization column when tenant permissions contains multiple tenants or tenant pattern', () => {
       const tenantPermissions = [{ tenant_patterns: ['*'], permissionType: 'dummy' }];
       const wrapper = mount(
         <TenantsPanel
