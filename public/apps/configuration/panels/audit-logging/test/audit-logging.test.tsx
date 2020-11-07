@@ -14,9 +14,15 @@
  */
 
 import { shallow } from 'enzyme';
-import { AuditLogging } from '../audit-logging';
+import { AuditLogging, renderComplianceSettings, renderGeneralSettings } from '../audit-logging';
 import React from 'react';
 import { EuiSwitch } from '@elastic/eui';
+import { buildHashUrl } from '../../../utils/url-builder';
+import { ResourceType } from '../../../types';
+import {
+  SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT,
+  SUB_URL_FOR_GENERAL_SETTINGS_EDIT,
+} from '../constants';
 
 jest.mock('../../../utils/audit-logging-utils');
 
@@ -88,5 +94,76 @@ describe('Audit logs', () => {
 
       done();
     });
+  });
+
+  it('render general settings', () => {
+    const generalSettings = renderGeneralSettings({});
+    const Component = () => <>{generalSettings}</>;
+    const wrapper = shallow(<Component />);
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it('render compliance settings', () => {
+    const complianceSettings = renderComplianceSettings({});
+    const Component = () => <>{complianceSettings}</>;
+    const wrapper = shallow(<Component />);
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it('audit logging switch change', () => {
+    const component = shallow(
+      <AuditLogging coreStart={mockCoreStart as any} navigation={{} as any} />
+    );
+    component.find('[data-test-subj="audit-logging-enabled-switch"]').simulate('change');
+    expect(mockAuditLoggingUtils.updateAuditLogging).toHaveBeenCalledTimes(1);
+  });
+
+  it('should log error if error occurred while switch change', () => {
+    // Hide the error message
+    const spy = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
+
+    mockAuditLoggingUtils.updateAuditLogging = jest.fn().mockImplementationOnce(() => {
+      throw Error();
+    });
+    const component = shallow(
+      <AuditLogging coreStart={mockCoreStart as any} navigation={{} as any} />
+    );
+    component.find('[data-test-subj="audit-logging-enabled-switch"]').simulate('change');
+
+    expect(spy).toBeCalled();
+    expect(setState).toBeCalledTimes(0);
+  });
+
+  it('render when AuditLoggingSettings.enabled is true', () => {
+    const auditLoggingSettings = { enabled: true };
+    jest.spyOn(React, 'useState').mockImplementation(() => [auditLoggingSettings, setState]);
+    const component = shallow(
+      <AuditLogging coreStart={mockCoreStart as any} navigation={{} as any} />
+    );
+    expect(component).toMatchSnapshot();
+  });
+
+  it('Click Configure button of general setting section', () => {
+    const auditLoggingSettings = { enabled: true };
+    jest.spyOn(React, 'useState').mockImplementation(() => [auditLoggingSettings, setState]);
+    const component = shallow(
+      <AuditLogging coreStart={mockCoreStart as any} navigation={{} as any} />
+    );
+    component.find('[data-test-subj="general-settings-configure"]').simulate('click');
+    expect(window.location.hash).toBe(
+      buildHashUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT
+    );
+  });
+
+  it('Click Configure button of Compliance settings section', () => {
+    const auditLoggingSettings = { enabled: true };
+    jest.spyOn(React, 'useState').mockImplementation(() => [auditLoggingSettings, setState]);
+    const component = shallow(
+      <AuditLogging coreStart={mockCoreStart as any} navigation={{} as any} />
+    );
+    component.find('[data-test-subj="compliance-settings-configure"]').simulate('click');
+    expect(window.location.hash).toBe(
+      buildHashUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT
+    );
   });
 });

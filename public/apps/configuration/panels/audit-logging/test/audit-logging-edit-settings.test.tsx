@@ -17,6 +17,8 @@ import { shallow } from 'enzyme';
 import { AuditLoggingEditSettings } from '../audit-logging-edit-settings';
 import React from 'react';
 import { ComplianceSettings, GeneralSettings } from '../types';
+import { buildHashUrl } from '../../../utils/url-builder';
+import { ResourceType } from '../../../types';
 
 jest.mock('../../../utils/audit-logging-utils');
 
@@ -53,6 +55,8 @@ describe('Audit logs edit', () => {
         coreStart={mockCoreStart as any}
         navigation={{} as any}
         setting="general"
+        params={{} as any}
+        config={{} as any}
       />
     );
 
@@ -87,6 +91,8 @@ describe('Audit logs edit', () => {
         coreStart={mockCoreStart as any}
         navigation={{} as any}
         setting="compliance"
+        params={{} as any}
+        config={{} as any}
       />
     );
 
@@ -95,5 +101,71 @@ describe('Audit logs edit', () => {
       expect(setState).toHaveBeenCalledWith(mockAuditLoggingData);
       done();
     });
+  });
+
+  it('should log the error when error occurred while loading the audit logging page', (done) => {
+    jest.spyOn(React, 'useEffect').mockImplementationOnce((f) => f());
+    mockAuditLoggingUtils.getAuditLogging = jest.fn().mockImplementationOnce(() => {
+      throw new Error();
+    });
+    const spy = jest.spyOn(console, 'log').mockImplementationOnce(() => {});
+    shallow(
+      <AuditLoggingEditSettings
+        coreStart={mockCoreStart as any}
+        navigation={{} as any}
+        setting="compliance"
+        params={{} as any}
+        config={{} as any}
+      />
+    );
+
+    process.nextTick(() => {
+      expect(spy).toBeCalled();
+      done();
+    });
+  });
+
+  it('should render to audit logging page when click on Cancel button', () => {
+    const component = shallow(
+      <AuditLoggingEditSettings
+        coreStart={mockCoreStart as any}
+        navigation={{} as any}
+        setting="compliance"
+        params={{} as any}
+        config={{} as any}
+      />
+    );
+    component.find('[data-test-subj="cancel"]').simulate('click');
+    expect(window.location.hash).toBe(buildHashUrl(ResourceType.auditLogging));
+  });
+
+  it('should save or update audit logging when click on Save button and setting is compliance', () => {
+    const component = shallow(
+      <AuditLoggingEditSettings
+        coreStart={mockCoreStart as any}
+        navigation={{} as any}
+        setting="compliance"
+        params={{} as any}
+        config={{} as any}
+      />
+    );
+    component.find('[data-test-subj="save"]').simulate('click');
+    expect(mockAuditLoggingUtils.updateAuditLogging).toBeCalled();
+    expect(window.location.hash).toBe(buildHashUrl(ResourceType.auditLogging));
+  });
+
+  it('should save or update audit logging when click on Save button and setting is general', () => {
+    const component = shallow(
+      <AuditLoggingEditSettings
+        coreStart={mockCoreStart as any}
+        navigation={{} as any}
+        setting="general"
+        params={{} as any}
+        config={{} as any}
+      />
+    );
+    component.find('[data-test-subj="save"]').simulate('click');
+    expect(mockAuditLoggingUtils.updateAuditLogging).toBeCalled();
+    expect(window.location.hash).toBe(buildHashUrl(ResourceType.auditLogging));
   });
 });

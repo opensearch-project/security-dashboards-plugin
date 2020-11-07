@@ -79,6 +79,7 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
         <EuiFlexGroup justifyContent="flexEnd">
           <EuiFlexItem grow={false}>
             <EuiButton
+              data-test-subj="cancel"
               onClick={() => {
                 window.location.href = buildHashUrl(ResourceType.auditLogging);
               }}
@@ -88,6 +89,7 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <EuiButton
+              data-test-subj="save"
               fill
               isDisabled={invalidSettings.length !== 0}
               onClick={() => {
