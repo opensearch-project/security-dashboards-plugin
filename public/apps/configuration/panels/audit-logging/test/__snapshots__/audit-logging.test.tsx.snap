@@ -1,0 +1,629 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Audit logs render compliance settings 1`] = `
+<Fragment>
+  <ViewSettingGroup
+    config={Object {}}
+    settingGroup={
+      Object {
+        "settings": Array [
+          Object {
+            "description": "Enable or disable compliance logging.",
+            "path": "compliance.enabled",
+            "title": "Compliance logging",
+            "type": "bool",
+          },
+        ],
+        "title": "Compliance mode",
+      }
+    }
+  />
+  <EuiSpacer />
+  <ViewSettingGroup
+    config={Object {}}
+    settingGroup={
+      Object {
+        "settings": Array [
+          Object {
+            "description": "Enable or disable logging of events on internal security index.",
+            "path": "compliance.internal_config",
+            "title": "Internal config logging",
+            "type": "bool",
+          },
+          Object {
+            "description": "Enable or disable logging of external configuration.",
+            "path": "compliance.external_config",
+            "title": "External config logging",
+            "type": "bool",
+          },
+        ],
+        "title": "Config",
+      }
+    }
+  />
+  <EuiSpacer />
+  <ViewSettingGroup
+    config={Object {}}
+    settingGroup={
+      Object {
+        "settings": Array [
+          Object {
+            "description": "Do not log any document fields. Log only metadata of the document.",
+            "path": "compliance.read_metadata_only",
+            "title": "Read metadata",
+            "type": "bool",
+          },
+          Object {
+            "description": "Users to ignore during auditing.",
+            "path": "compliance.read_ignore_users",
+            "placeHolder": "Add users or user patterns",
+            "title": "Ignored users",
+            "type": "array",
+          },
+          Object {
+            "code": "{
+  \\"index-name-pattern\\": [\\"field-name-pattern\\"],
+  \\"logs*\\": [\\"message\\"],
+  \\"twitter\\": [\\"id\\", \\"user*\\"]
+}",
+            "description": "List the indices and fields to watch during read events. Adding watched fields will generate one log per document access and could result in significant overhead. Sample data content:",
+            "error": "Invalid content. Please check sample data content.",
+            "path": "compliance.read_watched_fields",
+            "title": "Watched fields",
+            "type": "map",
+          },
+        ],
+        "title": "Read",
+      }
+    }
+  />
+  <EuiSpacer />
+  <ViewSettingGroup
+    config={Object {}}
+    settingGroup={
+      Object {
+        "settings": Array [
+          Object {
+            "description": "Do not log any document content. Log only metadata of the document.",
+            "path": "compliance.write_metadata_only",
+            "title": "Write metadata",
+            "type": "bool",
+          },
+          Object {
+            "description": "Log diffs for document updates.",
+            "path": "compliance.write_log_diffs",
+            "title": "Log diffs",
+            "type": "bool",
+          },
+          Object {
+            "description": "Users to ignore during auditing.",
+            "path": "compliance.write_ignore_users",
+            "placeHolder": "Add users or user patterns",
+            "title": "Ignored users",
+            "type": "array",
+          },
+          Object {
+            "description": "List the indices to watch during write events. Adding watched indices will generate one log per document access and could result in significant overhead.",
+            "path": "compliance.write_watched_indices",
+            "placeHolder": "Add indices",
+            "title": "Watch indices",
+            "type": "array",
+          },
+        ],
+        "title": "Write",
+      }
+    }
+  />
+  <EuiSpacer />
+</Fragment>
+`;
+
+exports[`Audit logs render general settings 1`] = `
+<Fragment>
+  <ViewSettingGroup
+    config={Object {}}
+    settingGroup={
+      Object {
+        "settings": Array [
+          Object {
+            "description": "Enable or disable auditing events that happen on the REST layer.",
+            "path": "audit.enable_rest",
+            "title": "REST layer",
+            "type": "bool",
+          },
+          Object {
+            "description": "Specify audit categories which must be ignored on the REST layer. Modifying these could result in significant overhead.",
+            "options": Array [
+              "BAD_HEADERS",
+              "FAILED_LOGIN",
+              "MISSING_PRIVILEGES",
+              "GRANTED_PRIVILEGES",
+              "SSL_EXCEPTION",
+              "AUTHENTICATED",
+            ],
+            "path": "audit.disabled_rest_categories",
+            "placeHolder": "Select categories",
+            "title": "REST disabled categories",
+            "type": "array",
+          },
+          Object {
+            "description": "Enable or disable auditing events that happen on the transport layer.",
+            "path": "audit.enable_transport",
+            "title": "Transport layer",
+            "type": "bool",
+          },
+          Object {
+            "description": "Specify audit categories which must be ignored on the transport layer. Modifying these could result in significant overhead.",
+            "options": Array [
+              "BAD_HEADERS",
+              "FAILED_LOGIN",
+              "GRANTED_PRIVILEGES",
+              "INDEX_EVENT",
+              "MISSING_PRIVILEGES",
+              "SSL_EXCEPTION",
+              "OPENDISTRO_SECURITY_INDEX_ATTEMPT",
+              "AUTHENTICATED",
+            ],
+            "path": "audit.disabled_transport_categories",
+            "placeHolder": "Select categories",
+            "title": "Transport disabled categories",
+            "type": "array",
+          },
+        ],
+        "title": "Layer settings",
+      }
+    }
+  />
+  <EuiSpacer />
+  <ViewSettingGroup
+    config={Object {}}
+    settingGroup={
+      Object {
+        "settings": Array [
+          Object {
+            "description": "Resolve bulk requests during auditing of requests. Enabling this will generate a log for each document request which could result in significant overhead.",
+            "path": "audit.resolve_bulk_requests",
+            "title": "Bulk requests",
+            "type": "bool",
+          },
+          Object {
+            "description": "Include request body during auditing of requests.",
+            "path": "audit.log_request_body",
+            "title": "Request body",
+            "type": "bool",
+          },
+          Object {
+            "description": "Resolve indices during auditing of requests.",
+            "path": "audit.resolve_indices",
+            "title": "Resolve indices",
+            "type": "bool",
+          },
+          Object {
+            "description": "Exclude sensitive headers during auditing. (e.g. authorization header)",
+            "path": "audit.exclude_sensitive_headers",
+            "title": "Sensitive headers",
+            "type": "bool",
+          },
+        ],
+        "title": "Attribute settings",
+      }
+    }
+  />
+  <EuiSpacer />
+  <ViewSettingGroup
+    config={Object {}}
+    settingGroup={
+      Object {
+        "settings": Array [
+          Object {
+            "description": "Users to ignore during auditing. Changing the defaults could result in significant overhead.",
+            "path": "audit.ignore_users",
+            "placeHolder": "Add users or user patterns",
+            "title": "Ignored users",
+            "type": "array",
+          },
+          Object {
+            "description": "Request patterns to ignore during auditing.",
+            "path": "audit.ignore_requests",
+            "placeHolder": "Add request patterns",
+            "title": "Ignored requests",
+            "type": "array",
+          },
+        ],
+        "title": "Ignore settings",
+      }
+    }
+  />
+</Fragment>
+`;
+
+exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
+<div
+  className="panel-restrict-width"
+>
+  <EuiPanel>
+    <EuiTitle>
+      <h3>
+        Audit logging
+      </h3>
+    </EuiTitle>
+    <EuiHorizontalRule
+      margin="m"
+    />
+    <EuiForm>
+      <EuiDescribedFormGroup
+        className="described-form-group"
+        title={
+          <h3>
+            Storage location
+          </h3>
+        }
+      >
+        <EuiFormRow
+          className="form-row"
+          describedByIds={Array []}
+          display="row"
+          fullWidth={false}
+          hasChildLabel={true}
+          hasEmptyLabelSpace={false}
+          labelType="label"
+        >
+          <EuiText
+            color="subdued"
+            grow={false}
+          >
+            <FormattedMessage
+              defaultMessage="Configure the output location and storage types in {elasticsearchCode}. The default storage location is {internalElasticsearchCode}, which stores the logs in an index on this cluster."
+              id="audit.logs.storageInstruction"
+              values={
+                Object {
+                  "elasticsearchCode": <EuiCode>
+                    elasticsearch.yml
+                  </EuiCode>,
+                  "internalElasticsearchCode": <EuiCode>
+                    internal_elasticsearch
+                  </EuiCode>,
+                }
+              }
+            />
+             
+            <ExternalLink
+              href="https://opendistro.github.io/for-elasticsearch-docs/docs/security/audit-logs/storage-types/"
+            />
+          </EuiText>
+        </EuiFormRow>
+      </EuiDescribedFormGroup>
+      <EuiDescribedFormGroup
+        className="described-form-group"
+        title={
+          <h3>
+            Enable audit logging
+          </h3>
+        }
+      >
+        <EuiFormRow
+          describedByIds={Array []}
+          display="row"
+          fullWidth={false}
+          hasChildLabel={true}
+          hasEmptyLabelSpace={false}
+          labelType="label"
+        >
+          <EuiSwitch
+            checked={true}
+            data-test-subj="audit-logging-enabled-switch"
+            label="Enabled"
+            name="auditLoggingEnabledSwitch"
+            onChange={[Function]}
+          />
+        </EuiFormRow>
+      </EuiDescribedFormGroup>
+    </EuiForm>
+  </EuiPanel>
+  <EuiSpacer />
+  <EuiPanel>
+    <EuiFlexGroup>
+      <EuiFlexItem>
+        <EuiTitle>
+          <h3>
+            General settings
+          </h3>
+        </EuiTitle>
+      </EuiFlexItem>
+      <EuiFlexItem
+        grow={false}
+      >
+        <EuiButton
+          data-test-subj="general-settings-configure"
+          onClick={[Function]}
+        >
+          Configure
+        </EuiButton>
+      </EuiFlexItem>
+    </EuiFlexGroup>
+    <EuiHorizontalRule
+      margin="m"
+    />
+    <ViewSettingGroup
+      config={
+        Object {
+          "enabled": true,
+        }
+      }
+      settingGroup={
+        Object {
+          "settings": Array [
+            Object {
+              "description": "Enable or disable auditing events that happen on the REST layer.",
+              "path": "audit.enable_rest",
+              "title": "REST layer",
+              "type": "bool",
+            },
+            Object {
+              "description": "Specify audit categories which must be ignored on the REST layer. Modifying these could result in significant overhead.",
+              "options": Array [
+                "BAD_HEADERS",
+                "FAILED_LOGIN",
+                "MISSING_PRIVILEGES",
+                "GRANTED_PRIVILEGES",
+                "SSL_EXCEPTION",
+                "AUTHENTICATED",
+              ],
+              "path": "audit.disabled_rest_categories",
+              "placeHolder": "Select categories",
+              "title": "REST disabled categories",
+              "type": "array",
+            },
+            Object {
+              "description": "Enable or disable auditing events that happen on the transport layer.",
+              "path": "audit.enable_transport",
+              "title": "Transport layer",
+              "type": "bool",
+            },
+            Object {
+              "description": "Specify audit categories which must be ignored on the transport layer. Modifying these could result in significant overhead.",
+              "options": Array [
+                "BAD_HEADERS",
+                "FAILED_LOGIN",
+                "GRANTED_PRIVILEGES",
+                "INDEX_EVENT",
+                "MISSING_PRIVILEGES",
+                "SSL_EXCEPTION",
+                "OPENDISTRO_SECURITY_INDEX_ATTEMPT",
+                "AUTHENTICATED",
+              ],
+              "path": "audit.disabled_transport_categories",
+              "placeHolder": "Select categories",
+              "title": "Transport disabled categories",
+              "type": "array",
+            },
+          ],
+          "title": "Layer settings",
+        }
+      }
+    />
+    <EuiSpacer />
+    <ViewSettingGroup
+      config={
+        Object {
+          "enabled": true,
+        }
+      }
+      settingGroup={
+        Object {
+          "settings": Array [
+            Object {
+              "description": "Resolve bulk requests during auditing of requests. Enabling this will generate a log for each document request which could result in significant overhead.",
+              "path": "audit.resolve_bulk_requests",
+              "title": "Bulk requests",
+              "type": "bool",
+            },
+            Object {
+              "description": "Include request body during auditing of requests.",
+              "path": "audit.log_request_body",
+              "title": "Request body",
+              "type": "bool",
+            },
+            Object {
+              "description": "Resolve indices during auditing of requests.",
+              "path": "audit.resolve_indices",
+              "title": "Resolve indices",
+              "type": "bool",
+            },
+            Object {
+              "description": "Exclude sensitive headers during auditing. (e.g. authorization header)",
+              "path": "audit.exclude_sensitive_headers",
+              "title": "Sensitive headers",
+              "type": "bool",
+            },
+          ],
+          "title": "Attribute settings",
+        }
+      }
+    />
+    <EuiSpacer />
+    <ViewSettingGroup
+      config={
+        Object {
+          "enabled": true,
+        }
+      }
+      settingGroup={
+        Object {
+          "settings": Array [
+            Object {
+              "description": "Users to ignore during auditing. Changing the defaults could result in significant overhead.",
+              "path": "audit.ignore_users",
+              "placeHolder": "Add users or user patterns",
+              "title": "Ignored users",
+              "type": "array",
+            },
+            Object {
+              "description": "Request patterns to ignore during auditing.",
+              "path": "audit.ignore_requests",
+              "placeHolder": "Add request patterns",
+              "title": "Ignored requests",
+              "type": "array",
+            },
+          ],
+          "title": "Ignore settings",
+        }
+      }
+    />
+  </EuiPanel>
+  <EuiSpacer />
+  <EuiPanel>
+    <EuiFlexGroup>
+      <EuiFlexItem>
+        <EuiTitle>
+          <h3>
+            Compliance settings
+          </h3>
+        </EuiTitle>
+      </EuiFlexItem>
+      <EuiFlexItem
+        grow={false}
+      >
+        <EuiButton
+          data-test-subj="compliance-settings-configure"
+          onClick={[Function]}
+        >
+          Configure
+        </EuiButton>
+      </EuiFlexItem>
+    </EuiFlexGroup>
+    <EuiHorizontalRule
+      margin="m"
+    />
+    <ViewSettingGroup
+      config={
+        Object {
+          "enabled": true,
+        }
+      }
+      settingGroup={
+        Object {
+          "settings": Array [
+            Object {
+              "description": "Enable or disable compliance logging.",
+              "path": "compliance.enabled",
+              "title": "Compliance logging",
+              "type": "bool",
+            },
+          ],
+          "title": "Compliance mode",
+        }
+      }
+    />
+    <EuiSpacer />
+    <ViewSettingGroup
+      config={
+        Object {
+          "enabled": true,
+        }
+      }
+      settingGroup={
+        Object {
+          "settings": Array [
+            Object {
+              "description": "Enable or disable logging of events on internal security index.",
+              "path": "compliance.internal_config",
+              "title": "Internal config logging",
+              "type": "bool",
+            },
+            Object {
+              "description": "Enable or disable logging of external configuration.",
+              "path": "compliance.external_config",
+              "title": "External config logging",
+              "type": "bool",
+            },
+          ],
+          "title": "Config",
+        }
+      }
+    />
+    <EuiSpacer />
+    <ViewSettingGroup
+      config={
+        Object {
+          "enabled": true,
+        }
+      }
+      settingGroup={
+        Object {
+          "settings": Array [
+            Object {
+              "description": "Do not log any document fields. Log only metadata of the document.",
+              "path": "compliance.read_metadata_only",
+              "title": "Read metadata",
+              "type": "bool",
+            },
+            Object {
+              "description": "Users to ignore during auditing.",
+              "path": "compliance.read_ignore_users",
+              "placeHolder": "Add users or user patterns",
+              "title": "Ignored users",
+              "type": "array",
+            },
+            Object {
+              "code": "{
+  \\"index-name-pattern\\": [\\"field-name-pattern\\"],
+  \\"logs*\\": [\\"message\\"],
+  \\"twitter\\": [\\"id\\", \\"user*\\"]
+}",
+              "description": "List the indices and fields to watch during read events. Adding watched fields will generate one log per document access and could result in significant overhead. Sample data content:",
+              "error": "Invalid content. Please check sample data content.",
+              "path": "compliance.read_watched_fields",
+              "title": "Watched fields",
+              "type": "map",
+            },
+          ],
+          "title": "Read",
+        }
+      }
+    />
+    <EuiSpacer />
+    <ViewSettingGroup
+      config={
+        Object {
+          "enabled": true,
+        }
+      }
+      settingGroup={
+        Object {
+          "settings": Array [
+            Object {
+              "description": "Do not log any document content. Log only metadata of the document.",
+              "path": "compliance.write_metadata_only",
+              "title": "Write metadata",
+              "type": "bool",
+            },
+            Object {
+              "description": "Log diffs for document updates.",
+              "path": "compliance.write_log_diffs",
+              "title": "Log diffs",
+              "type": "bool",
+            },
+            Object {
+              "description": "Users to ignore during auditing.",
+              "path": "compliance.write_ignore_users",
+              "placeHolder": "Add users or user patterns",
+              "title": "Ignored users",
+              "type": "array",
+            },
+            Object {
+              "description": "List the indices to watch during write events. Adding watched indices will generate one log per document access and could result in significant overhead.",
+              "path": "compliance.write_watched_indices",
+              "placeHolder": "Add indices",
+              "title": "Watch indices",
+              "type": "array",
+            },
+          ],
+          "title": "Write",
+        }
+      }
+    />
+    <EuiSpacer />
+  </EuiPanel>
+</div>
+`;

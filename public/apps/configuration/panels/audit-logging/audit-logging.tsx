@@ -78,6 +78,7 @@ function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: bool
         >
           <EuiFormRow>
             <EuiSwitch
+              data-test-subj="audit-logging-enabled-switch"
               name="auditLoggingEnabledSwitch"
               label={displayBoolean(auditLoggingEnabled)}
               checked={auditLoggingEnabled}
@@ -90,7 +91,7 @@ function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: bool
   );
 }
 
-function renderGeneralSettings(config: AuditLoggingSettings) {
+export function renderGeneralSettings(config: AuditLoggingSettings) {
   return (
     <>
       <ViewSettingGroup config={config} settingGroup={SETTING_GROUPS.LAYER_SETTINGS} />
@@ -106,7 +107,7 @@ function renderGeneralSettings(config: AuditLoggingSettings) {
   );
 }
 
-function renderComplianceSettings(config: AuditLoggingSettings) {
+export function renderComplianceSettings(config: AuditLoggingSettings) {
   return (
     <>
       <ViewSettingGroup
@@ -182,6 +183,7 @@ export function AuditLogging(props: AuditLoggingProps) {
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
               <EuiButton
+                data-test-subj="general-settings-configure"
                 onClick={() => {
                   window.location.href =
                     buildHashUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT;
@@ -206,6 +208,7 @@ export function AuditLogging(props: AuditLoggingProps) {
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
               <EuiButton
+                data-test-subj="compliance-settings-configure"
                 onClick={() => {
                   window.location.href =
                     buildHashUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT;
