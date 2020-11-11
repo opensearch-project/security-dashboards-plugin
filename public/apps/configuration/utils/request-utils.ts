@@ -49,7 +49,7 @@ export async function requestWithIgnores<T>(
   try {
     return await request<T>(requestFunc, url, body);
   } catch (e) {
-    if (!ignores.includes(e?.body.statusCode)) {
+    if (!ignores.includes(e?.response?.status)) {
       throw e;
     }
   }
