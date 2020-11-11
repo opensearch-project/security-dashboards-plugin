@@ -1,2 +1,5 @@
 codecov:
   branch: main
+
+  fixes: 
+    - "/kibana/plugins/opendistro_security/::"
