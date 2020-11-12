@@ -165,7 +165,8 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
                     color="subdued"
                     size="xs"
                   >
-                    You can map two types of users: users and backend roles. A user can have its own backend role and host for an external authentication and authorization. A backend role directly maps to roles through an external authentication system. 
+                    You can map two types of users: users and backend roles. A user can have its own backend role and host for an external authentication and authorization. A backend role directly maps to roles through an external authentication system.
+                     
                     <ExternalLink
                       href="https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/users-roles/#map-users-to-roles"
                     />
@@ -360,7 +361,8 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
                   color="subdued"
                   size="xs"
                 >
-                  You can map two types of users: users and backend roles. A user can have its own backend role and host for an external authentication and authorization. A backend role directly maps to roles through an external authentication system. 
+                  You can map two types of users: users and backend roles. A user can have its own backend role and host for an external authentication and authorization. A backend role directly maps to roles through an external authentication system.
+                   
                   <ExternalLink
                     href="https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/users-roles/#map-users-to-roles"
                   />
@@ -546,7 +548,8 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
                     color="subdued"
                     size="xs"
                   >
-                    You can map two types of users: users and backend roles. A user can have its own backend role and host for an external authentication and authorization. A backend role directly maps to roles through an external authentication system. 
+                    You can map two types of users: users and backend roles. A user can have its own backend role and host for an external authentication and authorization. A backend role directly maps to roles through an external authentication system.
+                     
                     <ExternalLink
                       href="https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/users-roles/#map-users-to-roles"
                     />

@@ -69,8 +69,7 @@ exports[`Get started (landing page) renders 1`] = `
                   <EuiCode>
                     authz
                   </EuiCode>
-                  section contains any backends to fetch backend roles from. The most common example of an backend role is an LDAP group.
-                   
+                  section contains any backends to fetch backend roles from. The most common example of an backend role is an LDAP group. 
                   <ExternalLink
                     href="https://opendistro.github.io/for-elasticsearch-docs/docs/security/configuration/concepts/"
                   />
