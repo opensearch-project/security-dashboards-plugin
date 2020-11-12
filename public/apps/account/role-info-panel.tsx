@@ -63,10 +63,10 @@ export function RoleInfoPanel(props: { coreStart: CoreStart; handleClose: () => 
           ))}
           <EuiHorizontalRule />
           <EuiTitle>
-            <h4>External identities ({backendRoles.length})</h4>
+            <h4>Backend roles ({backendRoles.length})</h4>
           </EuiTitle>
           <EuiText color="subdued">
-            External identities you are currently mapped to by your administrator.
+            Backend roles you are currently mapped to by your administrator.
           </EuiText>
           <EuiSpacer />
           {backendRoles.map((item) => (
