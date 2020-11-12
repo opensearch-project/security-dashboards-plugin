@@ -284,10 +284,10 @@ export function RoleView(props: RoleViewProps) {
                   </h3>
                 </EuiTitle>
                 <EuiText size="xs" color="subdued" className="panel-header-subtext">
-                  You can map two types of users: users and backend roles. A user can have its
-                  own backend role and host for an external authentication and authorization. A
-                  backend role directly maps to roles through an external authentication
-                  system. <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
+                  You can map two types of users: users and backend roles. A user can have its own
+                  backend role and host for an external authentication and authorization. A backend
+                  role directly maps to roles through an external authentication system.{' '}
+                  <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
                 </EuiText>
               </EuiPageContentHeaderSection>
               <EuiPageContentHeaderSection>
