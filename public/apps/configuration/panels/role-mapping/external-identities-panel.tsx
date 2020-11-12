@@ -71,7 +71,7 @@ export function ExternalIdentitiesPanel(props: {
       <Fragment key={`externalIdentity-${arrayIndex}`}>
         <EuiFlexGroup>
           <EuiFlexItem style={{ maxWidth: '400px' }}>
-            <FormRow headerText={arrayIndex === 0 ? 'backend roles' : ''}>
+            <FormRow headerText={arrayIndex === 0 ? 'Backend roles' : ''}>
               <EuiFieldText
                 id={`externalIdentity-${arrayIndex}`}
                 value={externalIdentity.externalIdentity}
