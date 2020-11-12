@@ -46,6 +46,7 @@ export interface ClientConfigType {
       };
     };
     autologout: boolean;
+    backend_configurable: boolean;
   };
   multitenancy: {
     enabled: boolean;
