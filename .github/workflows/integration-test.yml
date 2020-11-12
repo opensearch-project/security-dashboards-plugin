@@ -13,6 +13,11 @@ jobs:
     name: Run integration tests
     runs-on: ubuntu-latest
     steps:
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          # TODO: Parse this from security plugin
+          java-version: 14
       - name: Checkout Kibana
         uses: actions/checkout@v2
         with:
