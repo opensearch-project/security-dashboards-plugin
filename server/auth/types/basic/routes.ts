@@ -44,7 +44,17 @@ export class BasicAuthRoutes {
       },
       async (context, request, response) => {
         this.sessionStorageFactory.asScoped(request).clear();
-        return response.renderAnonymousCoreApp();
+        let clearOldVersionCookie: string;
+        if (this.config.cookie.secure) {
+          clearOldVersionCookie = 'security_authentication=; Secure; HttpOnly; Path=/';
+        } else {
+          clearOldVersionCookie = 'security_authentication=; HttpOnly; Path=/';
+        }
+        return response.renderAnonymousCoreApp({
+          headers: {
+            'set-cookie': clearOldVersionCookie,
+          },
+        });
       }
     );
 

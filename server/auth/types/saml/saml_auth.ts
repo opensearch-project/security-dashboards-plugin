@@ -55,8 +55,15 @@ export class SamlAuthentication extends AuthenticationType {
 
   private redirectToLoginUri(request: KibanaRequest, toolkit: AuthToolkit) {
     const nextUrl = this.generateNextUrl(request);
+    let clearOldVersionCookie: string;
+    if (this.config.cookie.secure) {
+      clearOldVersionCookie = 'security_authentication=; Secure; HttpOnly; Path=/';
+    } else {
+      clearOldVersionCookie = 'security_authentication=; HttpOnly; Path=/';
+    }
     return toolkit.redirected({
       location: `${this.coreSetup.http.basePath.serverBasePath}/auth/saml/login?nextUrl=${nextUrl}`,
+      'set-cookie': clearOldVersionCookie,
     });
   }
 
