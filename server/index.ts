@@ -183,7 +183,7 @@ export const configSchema = schema.object({
       }),
     }),
     autologout: schema.boolean({ defaultValue: true }),
-    backend_configurable: schema.boolean({ defaultValue: true}),
+    backend_configurable: schema.boolean({ defaultValue: true }),
   }),
 });
 
