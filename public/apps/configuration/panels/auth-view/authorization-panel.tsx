@@ -16,6 +16,7 @@
 import React, { useState } from 'react';
 import { EuiInMemoryTable, EuiEmptyPrompt, EuiSearchBarProps, Query } from '@elastic/eui';
 import { keys, map, get } from 'lodash';
+import { ClientConfigType } from '../../../../types';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { renderExpression, ExternalLinkButton } from '../../utils/display-utils';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
@@ -48,20 +49,11 @@ const columns = [
 const ENABLED_STRING = 'Enabled';
 const DISABLED_STRING = 'Disabled';
 
-const emptyListMessage = (
-  <EuiEmptyPrompt
-    title={<h3>No authorization</h3>}
-    titleSize="s"
-    actions={
-      <ExternalLinkButton
-        href={DocLinks.BackendConfigurationAuthorizationDoc}
-        text="Manage via config.yml"
-      />
-    }
-  />
-);
-
-export function AuthorizationPanel(props: { authz: []; loading: boolean }) {
+export function AuthorizationPanel(props: {
+  authz: [];
+  loading: boolean;
+  config: ClientConfigType;
+}) {
   const [query, setQuery] = useState<Query | null>(null);
   const domains = keys(props.authz);
 
@@ -91,6 +83,21 @@ export function AuthorizationPanel(props: { authz: []; loading: boolean }) {
   };
 
   const headerText = 'Authorization';
+
+  const emptyListMessage = (
+    <EuiEmptyPrompt
+      title={<h3>No authorization</h3>}
+      titleSize="s"
+      actions={
+        props.config.ui.backend_configurable && (
+          <ExternalLinkButton
+            href={DocLinks.BackendConfigurationAuthorizationDoc}
+            text="Manage via config.yml"
+          />
+        )
+      }
+    />
+  );
 
   return (
     <PanelWithHeader

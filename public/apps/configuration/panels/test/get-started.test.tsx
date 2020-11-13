@@ -24,14 +24,36 @@ describe('Get started (landing page)', () => {
   const mockCoreStart = {
     http: 1,
   };
+  const config = {
+    ui: {
+      backend_configurable: true,
+    },
+  };
 
-  it('renders', () => {
+  it('renders when backend configuration is enabled', () => {
     const component = shallow(
       <GetStarted
         coreStart={mockCoreStart as any}
         navigation={{} as any}
         params={{} as any}
-        config={{} as any}
+        config={config as any}
+      />
+    );
+    expect(component).toMatchSnapshot();
+  });
+
+  it('renders when backend configuration is disabled', () => {
+    const config1 = {
+      ui: {
+        backend_configurable: false,
+      },
+    };
+    const component = shallow(
+      <GetStarted
+        coreStart={mockCoreStart as any}
+        navigation={{} as any}
+        params={{} as any}
+        config={config1 as any}
       />
     );
     expect(component).toMatchSnapshot();
@@ -45,7 +67,7 @@ describe('Get started (landing page)', () => {
           coreStart={mockCoreStart as any}
           navigation={{} as any}
           params={{} as any}
-          config={{} as any}
+          config={config as any}
         />
       );
     });

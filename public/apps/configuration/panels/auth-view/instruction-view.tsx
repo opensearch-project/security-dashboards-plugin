@@ -15,10 +15,11 @@
 
 import { EuiCode, EuiSpacer, EuiText, EuiTitle } from '@elastic/eui';
 import React from 'react';
+import { ClientConfigType } from '../../../../types';
 import { ExternalLinkButton } from '../../utils/display-utils';
 import { DocLinks } from '../../constants';
 
-export function InstructionView() {
+export function InstructionView(props: { config: ClientConfigType }) {
   return (
     <>
       <EuiTitle size="l">
@@ -41,14 +42,16 @@ export function InstructionView() {
 
       <EuiSpacer />
 
-      <div style={{ textAlign: 'center' }}>
-        <ExternalLinkButton
-          fill
-          size="s"
-          href={DocLinks.BackendConfigurationDoc}
-          text="Create config.yml"
-        />
-      </div>
+      {props.config.ui.backend_configurable && (
+        <div style={{ textAlign: 'center' }}>
+          <ExternalLinkButton
+            fill
+            size="s"
+            href={DocLinks.BackendConfigurationDoc}
+            text="Create config.yml"
+          />
+        </div>
+      )}
     </>
   );
 }
