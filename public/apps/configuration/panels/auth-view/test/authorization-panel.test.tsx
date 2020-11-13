@@ -19,6 +19,11 @@ import { AuthorizationPanel } from '../authorization-panel';
 import { EuiInMemoryTable } from '@elastic/eui';
 
 describe('Authorization panel', () => {
+  const config = {
+    ui: {
+      backend_configurable: true,
+    },
+  };
   it('valid data', () => {
     const authz = {
       ldap: {
@@ -45,7 +50,9 @@ describe('Authorization panel', () => {
       },
     };
 
-    const component = shallow(<AuthorizationPanel authz={authz} loading={false} />);
+    const component = shallow(
+      <AuthorizationPanel authz={authz} loading={false} config={config as any} />
+    );
 
     expect(component.find(EuiInMemoryTable).prop('items').length).toBe(2);
   });
@@ -53,7 +60,9 @@ describe('Authorization panel', () => {
   it('empty data', () => {
     const authz = {};
 
-    const component = shallow(<AuthorizationPanel authz={authz} loading={false} />);
+    const component = shallow(
+      <AuthorizationPanel authz={authz} loading={false} config={config as any} />
+    );
     const foundTable = component.find(EuiInMemoryTable);
     expect(foundTable.prop('items').length).toBe(0);
   });

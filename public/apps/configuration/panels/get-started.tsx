@@ -35,47 +35,48 @@ import { Action, ResourceType } from '../types';
 import { API_ENDPOINT_CACHE, DocLinks } from '../constants';
 import { ExternalLink, ExternalLinkButton } from '../utils/display-utils';
 
+const addBackendStep = {
+  title: 'Add backends',
+  children: (
+    <>
+      <EuiText size="s" color="subdued">
+        Add authentication<EuiCode>(authc)</EuiCode>and authorization<EuiCode>(authz)</EuiCode>
+        information to<EuiCode>plugins/opendistro_security/securityconfig/config.yml</EuiCode>. The
+        <EuiCode>authc</EuiCode> section contains the backends to check user credentials against.
+        The <EuiCode>authz</EuiCode>
+        section contains any backends to fetch external identities from. The most common example of
+        an external identity is an LDAP group.{' '}
+        <ExternalLink href={DocLinks.AuthenticationFlowDoc} />
+      </EuiText>
+
+      <EuiSpacer size="m" />
+
+      <EuiFlexGroup gutterSize="s" wrap>
+        <EuiFlexItem grow={false}>
+          <ExternalLinkButton
+            fill
+            href={DocLinks.BackendConfigurationDoc}
+            text="Create config.yml"
+          />
+        </EuiFlexItem>
+        <EuiFlexItem grow={false}>
+          <EuiButton
+            data-test-subj="review-authentication-and-authorization"
+            onClick={() => {
+              window.location.href = buildHashUrl(ResourceType.auth);
+            }}
+          >
+            Review authentication and authorization
+          </EuiButton>
+        </EuiFlexItem>
+      </EuiFlexGroup>
+
+      <EuiSpacer size="l" />
+    </>
+  ),
+};
+
 const setOfSteps = [
-  {
-    title: 'Add backends',
-    children: (
-      <>
-        <EuiText size="s" color="subdued">
-          Add authentication<EuiCode>(authc)</EuiCode>and authorization<EuiCode>(authz)</EuiCode>
-          information to<EuiCode>plugins/opendistro_security/securityconfig/config.yml</EuiCode>.
-          The <EuiCode>authc</EuiCode> section contains the backends to check user credentials
-          against. The <EuiCode>authz</EuiCode>
-          section contains any backends to fetch external identities from. The most common example
-          of an external identity is an LDAP group.{' '}
-          <ExternalLink href={DocLinks.AuthenticationFlowDoc} />
-        </EuiText>
-
-        <EuiSpacer size="m" />
-
-        <EuiFlexGroup gutterSize="s" wrap>
-          <EuiFlexItem grow={false}>
-            <ExternalLinkButton
-              fill
-              href={DocLinks.BackendConfigurationDoc}
-              text="Create config.yml"
-            />
-          </EuiFlexItem>
-          <EuiFlexItem grow={false}>
-            <EuiButton
-              data-test-subj="review-authentication-and-authorization"
-              onClick={() => {
-                window.location.href = buildHashUrl(ResourceType.auth);
-              }}
-            >
-              Review authentication and authorization
-            </EuiButton>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-
-        <EuiSpacer size="l" />
-      </>
-    ),
-  },
   {
     title: 'Create roles',
     children: (
@@ -157,6 +158,13 @@ const setOfSteps = [
 ];
 
 export function GetStarted(props: AppDependencies) {
+  let steps;
+  if (props.config.ui.backend_configurable) {
+    steps = [addBackendStep, ...setOfSteps];
+  } else {
+    steps = setOfSteps;
+  }
+
   return (
     <>
       <div className="panel-restrict-width">
@@ -172,21 +180,22 @@ export function GetStarted(props: AppDependencies) {
             <p>
               The Open Distro for Elasticsearch security plugin lets you define the API calls that
               users can make and the data they can access. The most basic configuration consists of
-              three steps.
+              these steps.
             </p>
           </EuiText>
 
           <EuiSpacer size="l" />
-
-          <EuiImage
-            size="xl"
-            alt="Three steps to set up your security"
-            url={securityStepsDiagram}
-          />
+          {props.config.ui.backend_configurable && (
+            <EuiImage
+              size="xl"
+              alt="Three steps to set up your security"
+              url={securityStepsDiagram}
+            />
+          )}
 
           <EuiSpacer size="l" />
 
-          <EuiSteps steps={setOfSteps} />
+          <EuiSteps steps={steps} />
         </EuiPanel>
 
         <EuiSpacer size="l" />

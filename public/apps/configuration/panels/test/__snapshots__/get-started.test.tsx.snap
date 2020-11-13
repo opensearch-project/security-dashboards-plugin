@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Get started (landing page) renders 1`] = `
+exports[`Get started (landing page) renders when backend configuration is disabled 1`] = `
 <Fragment>
   <div
     className="panel-restrict-width"
@@ -26,7 +26,208 @@ exports[`Get started (landing page) renders 1`] = `
         size="s"
       >
         <p>
-          The Open Distro for Elasticsearch security plugin lets you define the API calls that users can make and the data they can access. The most basic configuration consists of three steps.
+          The Open Distro for Elasticsearch security plugin lets you define the API calls that users can make and the data they can access. The most basic configuration consists of these steps.
+        </p>
+      </EuiText>
+      <EuiSpacer
+        size="l"
+      />
+      <EuiSpacer
+        size="l"
+      />
+      <EuiSteps
+        steps={
+          Array [
+            Object {
+              "children": <React.Fragment>
+                <EuiText
+                  color="subdued"
+                  size="s"
+                >
+                  Roles are reusable collections of permissions. The default roles are a great starting point, but you might need to create custom roles that meet your exact needs.
+                   
+                  <ExternalLink
+                    href="https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/users-roles/#create-roles"
+                  />
+                </EuiText>
+                <EuiSpacer
+                  size="m"
+                />
+                <EuiFlexGroup
+                  gutterSize="s"
+                >
+                  <EuiFlexItem
+                    grow={false}
+                  >
+                    <EuiButton
+                      data-test-subj="explore-existing-roles"
+                      fill={true}
+                      onClick={[Function]}
+                    >
+                      Explore existing roles
+                    </EuiButton>
+                  </EuiFlexItem>
+                  <EuiFlexItem
+                    grow={false}
+                  >
+                    <EuiButton
+                      data-test-subj="create-new-role"
+                      onClick={[Function]}
+                    >
+                      Create new role
+                    </EuiButton>
+                  </EuiFlexItem>
+                </EuiFlexGroup>
+                <EuiSpacer
+                  size="l"
+                />
+              </React.Fragment>,
+              "title": "Create roles",
+            },
+            Object {
+              "children": <React.Fragment>
+                <EuiText
+                  color="subdued"
+                  size="s"
+                >
+                  After a user successfully authenticates, the security plugin retrieves that user’s roles. You can map roles directly to users, but you can also map them to external identities.
+                   
+                  <ExternalLink
+                    href="https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/users-roles/#map-users-to-roles"
+                  />
+                </EuiText>
+                <EuiSpacer
+                  size="m"
+                />
+                <EuiFlexGroup
+                  gutterSize="s"
+                >
+                  <EuiFlexItem
+                    grow={false}
+                  >
+                    <EuiButton
+                      data-test-subj="map-users-to-role"
+                      fill={true}
+                      onClick={[Function]}
+                    >
+                      Map users to a role
+                    </EuiButton>
+                  </EuiFlexItem>
+                  <EuiFlexItem
+                    grow={false}
+                  >
+                    <EuiButton
+                      data-test-subj="create-internal-user"
+                      onClick={[Function]}
+                    >
+                      Create internal user
+                    </EuiButton>
+                  </EuiFlexItem>
+                </EuiFlexGroup>
+              </React.Fragment>,
+              "title": "Map users",
+            },
+          ]
+        }
+      />
+    </EuiPanel>
+    <EuiSpacer
+      size="l"
+    />
+    <EuiPanel
+      paddingSize="l"
+    >
+      <EuiTitle
+        size="s"
+      >
+        <h3>
+          Optional: Configure audit logs
+        </h3>
+      </EuiTitle>
+      <EuiText
+        color="subdued"
+        size="s"
+      >
+        <p>
+          <FormattedMessage
+            defaultMessage="Audit logs let you track user access to your Elasticsearch cluster and are useful for compliance purposes."
+            id="audit.logs.introduction"
+            values={Object {}}
+          />
+           
+          <ExternalLink
+            href="https://opendistro.github.io/for-elasticsearch-docs/docs/security/audit-logs/"
+          />
+        </p>
+        <EuiButton
+          data-test-subj="review-audit-log-configuration"
+          fill={true}
+          onClick={[Function]}
+        >
+          Review Audit Log Configuration
+        </EuiButton>
+      </EuiText>
+    </EuiPanel>
+    <EuiSpacer
+      size="l"
+    />
+    <EuiPanel
+      paddingSize="l"
+    >
+      <EuiTitle
+        size="s"
+      >
+        <h3>
+          Optional: Purge cache
+        </h3>
+      </EuiTitle>
+      <EuiText
+        color="subdued"
+        size="s"
+      >
+        <p>
+          By default, the security plugin caches authenticated users, along with their roles and permissions. This option will purge cached users, roles and permissions.
+        </p>
+        <EuiButton
+          fill={true}
+          iconType="refresh"
+          onClick={[Function]}
+        >
+          Purge cache
+        </EuiButton>
+      </EuiText>
+    </EuiPanel>
+  </div>
+</Fragment>
+`;
+
+exports[`Get started (landing page) renders when backend configuration is enabled 1`] = `
+<Fragment>
+  <div
+    className="panel-restrict-width"
+  >
+    <EuiPageHeader>
+      <EuiTitle
+        size="l"
+      >
+        <h1>
+          Get started
+        </h1>
+      </EuiTitle>
+      <ExternalLinkButton
+        href="#/"
+        text="Open in new window"
+      />
+    </EuiPageHeader>
+    <EuiPanel
+      paddingSize="l"
+    >
+      <EuiText
+        color="subdued"
+        size="s"
+      >
+        <p>
+          The Open Distro for Elasticsearch security plugin lets you define the API calls that users can make and the data they can access. The most basic configuration consists of these steps.
         </p>
       </EuiText>
       <EuiSpacer
@@ -61,7 +262,7 @@ exports[`Get started (landing page) renders 1`] = `
                   <EuiCode>
                     plugins/opendistro_security/securityconfig/config.yml
                   </EuiCode>
-                  . The 
+                  . The
                   <EuiCode>
                     authc
                   </EuiCode>

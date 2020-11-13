@@ -48,7 +48,7 @@ export function AuthView(props: AppDependencies) {
   }, [props.coreStart.http]);
 
   if (isEmpty(authentication)) {
-    return <InstructionView />;
+    return <InstructionView config={props.config} />;
   }
 
   return (
@@ -57,13 +57,18 @@ export function AuthView(props: AppDependencies) {
         <EuiTitle size="l">
           <h1>Authentication and authorization</h1>
         </EuiTitle>
-        <ExternalLinkButton href={DocLinks.BackendConfigurationDoc} text="Manage via config.yml" />
+        {props.config.ui.backend_configurable && (
+          <ExternalLinkButton
+            href={DocLinks.BackendConfigurationDoc}
+            text="Manage via config.yml"
+          />
+        )}
       </EuiPageHeader>
       {/* @ts-ignore */}
       <AuthenticationSequencePanel authc={authentication} loading={loading} />
       <EuiSpacer size="m" />
       {/* @ts-ignore */}
-      <AuthorizationPanel authz={authorization} loading={loading} />
+      <AuthorizationPanel authz={authorization} loading={loading} config={props.config} />
     </>
   );
 }
