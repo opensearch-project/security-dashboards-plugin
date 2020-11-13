@@ -71,12 +71,12 @@ export function ExternalIdentitiesPanel(props: {
       <Fragment key={`externalIdentity-${arrayIndex}`}>
         <EuiFlexGroup>
           <EuiFlexItem style={{ maxWidth: '400px' }}>
-            <FormRow headerText={arrayIndex === 0 ? 'External identities' : ''}>
+            <FormRow headerText={arrayIndex === 0 ? 'Backend roles' : ''}>
               <EuiFieldText
                 id={`externalIdentity-${arrayIndex}`}
                 value={externalIdentity.externalIdentity}
                 onChange={(e) => onValueChangeHandler('externalIdentity')(e.target.value)}
-                placeholder="Type in external identity"
+                placeholder="Type in backend role"
               />
             </FormRow>
           </EuiFlexItem>
@@ -98,8 +98,8 @@ export function ExternalIdentitiesPanel(props: {
 
   return (
     <PanelWithHeader
-      headerText="External identities"
-      headerSubText="Use an external identity to directly map to roles through an external authentication system."
+      headerText="Backend roles"
+      headerSubText="Use a backend role to directly map to roles through an external authentication system."
       helpLink={DocLinks.CreateUsersDoc}
     >
       {panel}
@@ -110,7 +110,7 @@ export function ExternalIdentitiesPanel(props: {
           appendElementToArray(setExternalIdentities, [], getEmptyExternalIdentity());
         }}
       >
-        Add another external identity
+        Add another backend role
       </EuiButton>
     </PanelWithHeader>
   );

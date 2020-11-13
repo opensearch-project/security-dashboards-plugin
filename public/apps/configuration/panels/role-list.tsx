@@ -82,7 +82,7 @@ const columns: Array<EuiBasicTableColumn<RoleListing>> = [
   },
   {
     field: 'backendRoles',
-    name: 'External indentities',
+    name: 'Backend roles',
     render: truncatedListView(tableItemsUIProps),
   },
   {
@@ -216,7 +216,7 @@ export function RoleList(props: AppDependencies) {
         {
           type: 'field_value_selection',
           field: 'backendRoles',
-          name: 'External identities',
+          name: 'Backend roles',
           multiSelect: 'or',
           options: buildSearchFilterOptions(roleData, 'backendRoles'),
         },

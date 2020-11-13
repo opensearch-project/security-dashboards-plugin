@@ -36,7 +36,7 @@ exports[`Account menu - Role info panel renders 1`] = `
       <EuiHorizontalRule />
       <EuiTitle>
         <h4>
-          External identities (
+          Backend roles (
           2
           )
         </h4>
@@ -44,7 +44,7 @@ exports[`Account menu - Role info panel renders 1`] = `
       <EuiText
         color="subdued"
       >
-        External identities you are currently mapped to by your administrator.
+        Backend roles you are currently mapped to by your administrator.
       </EuiText>
       <EuiSpacer />
       <EuiText

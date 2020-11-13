@@ -69,8 +69,7 @@ exports[`Get started (landing page) renders 1`] = `
                   <EuiCode>
                     authz
                   </EuiCode>
-                  section contains any backends to fetch external identities from. The most common example of an external identity is an LDAP group.
-                   
+                  section contains any backends to fetch backend roles from. The most common example of a backend role is an LDAP group. 
                   <ExternalLink
                     href="https://opendistro.github.io/for-elasticsearch-docs/docs/security/configuration/concepts/"
                   />
@@ -160,7 +159,7 @@ exports[`Get started (landing page) renders 1`] = `
                   color="subdued"
                   size="s"
                 >
-                  After a user successfully authenticates, the security plugin retrieves that user’s roles. You can map roles directly to users, but you can also map them to external identities.
+                  After a user successfully authenticates, the security plugin retrieves that user’s roles. You can map roles directly to users, but you can also map them to backend roles.
                    
                   <ExternalLink
                     href="https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/users-roles/#map-users-to-roles"
