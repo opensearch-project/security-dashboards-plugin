@@ -27,7 +27,7 @@ export interface MappedUsersListing {
 
 export enum UserType {
   internal = 'User',
-  external = 'External identity',
+  external = 'Backend role',
 }
 
 export async function getRoleMappingData(http: HttpStart, roleName: string) {

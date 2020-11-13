@@ -102,7 +102,7 @@ export function AuthorizationPanel(props: {
   return (
     <PanelWithHeader
       headerText={headerText}
-      headerSubText="After the user authenticates, the security plugin can collect external identities, such as LDAP groups, from authorization backends. These backends have no execution order; the plugin tries to collect external identities from all of them."
+      headerSubText="After the user authenticates, the security plugin can collect backend roles, such as LDAP groups, from authorization backends. These backends have no execution order; the plugin tries to collect backend roles from all of them."
       helpLink={DocLinks.BackendConfigurationAuthorizationDoc}
       count={Query.execute(query || '', items).length}
     >

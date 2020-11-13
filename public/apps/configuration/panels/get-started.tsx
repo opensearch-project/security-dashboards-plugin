@@ -44,9 +44,8 @@ const addBackendStep = {
         information to<EuiCode>plugins/opendistro_security/securityconfig/config.yml</EuiCode>. The
         <EuiCode>authc</EuiCode> section contains the backends to check user credentials against.
         The <EuiCode>authz</EuiCode>
-        section contains any backends to fetch external identities from. The most common example of
-        an external identity is an LDAP group.{' '}
-        <ExternalLink href={DocLinks.AuthenticationFlowDoc} />
+        section contains any backends to fetch backend roles from. The most common example of a
+        backend role is an LDAP group. <ExternalLink href={DocLinks.AuthenticationFlowDoc} />
       </EuiText>
 
       <EuiSpacer size="m" />
@@ -123,7 +122,7 @@ const setOfSteps = [
       <>
         <EuiText size="s" color="subdued">
           After a user successfully authenticates, the security plugin retrieves that user’s roles.
-          You can map roles directly to users, but you can also map them to external identities.{' '}
+          You can map roles directly to users, but you can also map them to backend roles.{' '}
           <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
         </EuiText>
 
