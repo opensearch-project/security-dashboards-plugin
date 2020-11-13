@@ -45,7 +45,7 @@ const setOfSteps = [
           information to<EuiCode>plugins/opendistro_security/securityconfig/config.yml</EuiCode>.
           The <EuiCode>authc</EuiCode> section contains the backends to check user credentials
           against. The <EuiCode>authz</EuiCode>
-          section contains any backends to fetch backend roles from. The most common example of an
+          section contains any backends to fetch backend roles from. The most common example of a
           backend role is an LDAP group. <ExternalLink href={DocLinks.AuthenticationFlowDoc} />
         </EuiText>
 
