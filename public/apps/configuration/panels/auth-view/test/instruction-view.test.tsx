@@ -21,7 +21,12 @@ import { ExternalLinkButton } from '../../../utils/display-utils';
 
 describe('Instruction view', () => {
   it('render', () => {
-    const component = shallow(<InstructionView />);
+    const config = {
+      ui: {
+        backend_configurable: true,
+      },
+    };
+    const component = shallow(<InstructionView config={config as any} />);
 
     expect(component.find(EuiTitle).find('h1').text()).toBe('Authentication and authorization');
     expect(component.find(ExternalLinkButton).prop('text')).toBe('Create config.yml');
