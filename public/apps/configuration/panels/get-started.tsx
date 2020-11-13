@@ -185,11 +185,13 @@ export function GetStarted(props: AppDependencies) {
 
           <EuiSpacer size="l" />
           {props.config.ui.backend_configurable && (
-            <EuiImage
-              size="xl"
-              alt="Three steps to set up your security"
-              url={securityStepsDiagram}
-            />
+            <div className="text-center">
+              <EuiImage
+                size="xl"
+                alt="Three steps to set up your security"
+                url={securityStepsDiagram}
+              />
+            </div>
           )}
 
           <EuiSpacer size="l" />
