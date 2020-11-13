@@ -15,7 +15,10 @@
 
 import { schema } from '@kbn/config-schema';
 import { IRouter, SessionStorageFactory, CoreSetup } from 'kibana/server';
-import { SecuritySessionCookie } from '../../../session/security_cookie';
+import {
+  SecuritySessionCookie,
+  clearOldVersionCookieValue,
+} from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
 import { User } from '../../user';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
@@ -44,7 +47,12 @@ export class BasicAuthRoutes {
       },
       async (context, request, response) => {
         this.sessionStorageFactory.asScoped(request).clear();
-        return response.renderAnonymousCoreApp();
+        const clearOldVersionCookie = clearOldVersionCookieValue(this.config);
+        return response.renderAnonymousCoreApp({
+          headers: {
+            'set-cookie': clearOldVersionCookie,
+          },
+        });
       }
     );
 

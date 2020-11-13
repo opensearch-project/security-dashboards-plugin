@@ -27,7 +27,10 @@ import {
   IKibanaResponse,
   AuthResult,
 } from '../../../../../../src/core/server';
-import { SecuritySessionCookie } from '../../../session/security_cookie';
+import {
+  SecuritySessionCookie,
+  clearOldVersionCookieValue,
+} from '../../../session/security_cookie';
 import { SamlAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
 
@@ -55,8 +58,10 @@ export class SamlAuthentication extends AuthenticationType {
 
   private redirectToLoginUri(request: KibanaRequest, toolkit: AuthToolkit) {
     const nextUrl = this.generateNextUrl(request);
+    const clearOldVersionCookie = clearOldVersionCookieValue(this.config);
     return toolkit.redirected({
       location: `${this.coreSetup.http.basePath.serverBasePath}/auth/saml/login?nextUrl=${nextUrl}`,
+      'set-cookie': clearOldVersionCookie,
     });
   }
 
