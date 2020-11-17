@@ -150,12 +150,16 @@ export class OpenIdAuthRoutes {
             username: user.username,
             credentials: {
               authHeaderValue: `Bearer ${tokenResponse.idToken}`,
-              refresh_token: tokenResponse.refreshToken,
               expires_at: Date.now() + tokenResponse.expiresIn! * 1000, // expiresIn is in second
             },
             authType: 'openid',
             expiryTime: Date.now() + this.config.session.ttl,
           };
+          if (this.config.openid?.refresh_tokens && tokenResponse.refreshToken) {
+            Object.assign(sessionStorage.credentials, {
+              refresh_token: tokenResponse.refreshToken,
+            });
+          }
           this.sessionStorageFactory.asScoped(request).set(sessionStorage);
           return response.redirected({
             headers: {
