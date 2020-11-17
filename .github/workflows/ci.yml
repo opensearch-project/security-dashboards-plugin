@@ -90,5 +90,5 @@ jobs:
       - name: Upload Workflow Artifacts
         uses: actions/upload-artifact@v1
         with:
-          name: $ARTIFACT_NAME
-          path: $ARTIFACT_PATH
+          name: ${{ $ARTIFACT_NAME }}
+          path: ${{ $ARTIFACT_PATH }}
