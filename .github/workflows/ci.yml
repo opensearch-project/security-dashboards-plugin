@@ -81,10 +81,14 @@ jobs:
           node build_tools/build_plugin.js
           artifact_path=`ls $(pwd)/build/opendistro_security_kibana_plugin-*.zip`
           artifact_name=`basename $artifact_path`
-          echo name=ARTIFACT_PATH::$artifact_path >> $GITHUB_ENV
-          echo name=ARTIFACT_NAME::$artifact_name >> $GITHUB_ENV
+          echo "ARTIFACT_PATH=$artifact_path" >> $GITHUB_ENV
+          echo "ARTIFACT_NAME=$artifact_name" >> $GITHUB_ENV
+      - name: Test
+        run: 
+          echo $ARTIFACT_PATH
+          echo $ARTIFACT_NAME
       - name: Upload Workflow Artifacts
         uses: actions/upload-artifact@v1
         with:
-          name: ${{ env.ARTIFACT_NAME }}
-          path: ${{ env.ARTIFACT_PATH }}
+          name: $ARTIFACT_NAME
+          path: $ARTIFACT_PATH
