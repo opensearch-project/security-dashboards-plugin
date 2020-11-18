@@ -76,15 +76,16 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: build security plugin
+        id: build_zip
         run: |
           cd ./kibana/plugins/opendistro_security
           node build_tools/build_plugin.js
           artifact_path=`ls $(pwd)/build/opendistro_security_kibana_plugin-*.zip`
           artifact_name=`basename $artifact_path`
-          echo ::set-env name=ARTIFACT_PATH::$artifact_path
-          echo ::set-env name=ARTIFACT_NAME::$artifact_name
+          echo "::set-output name=ARTIFACT_PATH::$artifact_path"
+          echo "::set-output name=ARTIFACT_NAME::$artifact_name"
       - name: Upload Workflow Artifacts
         uses: actions/upload-artifact@v1
         with:
-          name: ${{ env.ARTIFACT_NAME }}
-          path: ${{ env.ARTIFACT_PATH }}
+          name: ${{ steps.build_zip.outputs.ARTIFACT_NAME }}
+          path: ${{ steps.build_zip.outputs.ARTIFACT_PATH }}

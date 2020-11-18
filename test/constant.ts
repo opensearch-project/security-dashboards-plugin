@@ -16,8 +16,9 @@
 export const KIBANA_SERVER_USER: string = 'kibanaserver';
 export const KIBANA_SERVER_PASSWORD: string = 'kibanaserver';
 
-export const ELASTICSEARCH_VERSION: string = '7.8.0';
-export const SECURITY_ES_PLUGIN_VERSION: string = '1.9.0.0';
+// TODO: Parse this from package.json
+export const ELASTICSEARCH_VERSION: string = '7.9.1';
+export const SECURITY_ES_PLUGIN_VERSION: string = '1.11.0.0';
 
 export const ADMIN_USER: string = 'admin';
 export const ADMIN_PASSWORD: string = 'admin';
