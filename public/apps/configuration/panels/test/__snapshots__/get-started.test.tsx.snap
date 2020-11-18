@@ -233,11 +233,15 @@ exports[`Get started (landing page) renders when backend configuration is enable
       <EuiSpacer
         size="l"
       />
-      <EuiImage
-        alt="Three steps to set up your security"
-        size="xl"
-        url="test-file-stub"
-      />
+      <div
+        className="text-center"
+      >
+        <EuiImage
+          alt="Three steps to set up your security"
+          size="xl"
+          url="test-file-stub"
+        />
+      </div>
       <EuiSpacer
         size="l"
       />
