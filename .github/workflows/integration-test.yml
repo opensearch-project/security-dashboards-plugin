@@ -31,7 +31,7 @@ jobs:
           cd ./kibana
           mkdir -p plugins
       
-      - name: Checkout
+      - name: Checkout security kibana plugin
         uses: actions/checkout@v2
         with:
           path: kibana/plugins/opendistro_security
