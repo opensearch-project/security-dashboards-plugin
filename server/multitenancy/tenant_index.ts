@@ -26,10 +26,8 @@ import {
   IndexMigrator,
   MigrationEsClient,
 } from '../../../../src/core/server/saved_objects/migrations/core';
-// import { docValidator } from '../../../../src/core/server/saved_objects/validation';
 import { createIndexMap } from '../../../../src/core/server/saved_objects/migrations/core/build_index_map';
 import { mergeTypes } from '../../../../src/core/server/saved_objects/migrations/kibana/kibana_migrator';
-// import { MigrationLogger } from '../../../../src/core/server/saved_objects/migrations/core/migration_logger';
 import { SecurityClient } from '../backend/opendistro_security_client';
 
 export async function setupIndexTemplate(
@@ -85,7 +83,7 @@ export async function migrateTenantIndices(
   }
 
   // follows the same approach in kibana_migrator.ts to initiate DocumentMigrator here
-  // see: https://github.com/elastic/kibana/blob/d275d7f4df60f2370671f4fef56ccc7b5436091b/src/core/server/saved_objects/migrations/kibana/kibana_migrator.ts#L97
+  // see: https://tiny.amazon.com/foi0x1wt/githelaskibablobe4c1srccore
   const documentMigrator = new DocumentMigrator({
     kibanaVersion,
     typeRegistry,
@@ -100,7 +98,7 @@ export async function migrateTenantIndices(
     });
 
     // follows the same aporach in kibana_mirator.ts to construct IndexMigrator
-    // see: https://tiny.amazon.com/iuarepiw/githelaskibablobd275srccore
+    // see: https://tiny.amazon.com/9cdcchz5/githelaskibablobe4c1srccore
     //
     // FIXME: hard code batchSize, pollInterval, and scrollDuration for now
     //        they are used to fetched from `migration.xxx` config, which is not accessible from new playform
