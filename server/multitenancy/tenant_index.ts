@@ -14,32 +14,33 @@
  */
 
 import {
-  ILegacyClusterClient,
-  SavedObjectsSerializer,
+  ElasticsearchClient,
   ISavedObjectTypeRegistry,
   Logger,
+  SavedObjectsSerializer,
 } from '../../../../src/core/server';
 import { IndexMapping } from '../../../../src/core/server/saved_objects/mappings';
 import {
+  buildActiveMappings,
   DocumentMigrator,
   IndexMigrator,
-  buildActiveMappings,
+  MigrationEsClient,
 } from '../../../../src/core/server/saved_objects/migrations/core';
-import { docValidator } from '../../../../src/core/server/saved_objects/validation';
+// import { docValidator } from '../../../../src/core/server/saved_objects/validation';
 import { createIndexMap } from '../../../../src/core/server/saved_objects/migrations/core/build_index_map';
 import { mergeTypes } from '../../../../src/core/server/saved_objects/migrations/kibana/kibana_migrator';
 // import { MigrationLogger } from '../../../../src/core/server/saved_objects/migrations/core/migration_logger';
 import { SecurityClient } from '../backend/opendistro_security_client';
 
 export async function setupIndexTemplate(
-  esClient: ILegacyClusterClient,
+  esClient: ElasticsearchClient,
   kibanaIndex: string,
   typeRegistry: ISavedObjectTypeRegistry,
   logger: Logger
 ) {
   const mappings: IndexMapping = buildActiveMappings(mergeTypes(typeRegistry.getAllTypes()));
   try {
-    await esClient.callAsInternalUser('indices.putTemplate', {
+    await esClient.indices.putTemplate({
       name: 'tenant_template',
       body: {
         index_patterns: [
@@ -69,7 +70,7 @@ export async function setupIndexTemplate(
 
 export async function migrateTenantIndices(
   kibanaVersion: string,
-  esClient: ILegacyClusterClient,
+  migrationClient: MigrationEsClient,
   securityClient: SecurityClient,
   typeRegistry: ISavedObjectTypeRegistry,
   serializer: SavedObjectsSerializer,
@@ -84,13 +85,10 @@ export async function migrateTenantIndices(
   }
 
   // follows the same approach in kibana_migrator.ts to initiate DocumentMigrator here
-  // see: https://tiny.amazon.com/fdpo47ue/githelaskibablobd275srccore
+  // see: https://github.com/elastic/kibana/blob/d275d7f4df60f2370671f4fef56ccc7b5436091b/src/core/server/saved_objects/migrations/kibana/kibana_migrator.ts#L97
   const documentMigrator = new DocumentMigrator({
     kibanaVersion,
     typeRegistry,
-    // doc validation in kibana_migrator is initialized int saved_object_service at
-    // https://tiny.amazon.com/1ienclahn/githelaskibablobd275srccore , cannot get it from plugin
-    validateDoc: docValidator({}),
     log: logger,
   });
 
@@ -108,7 +106,7 @@ export async function migrateTenantIndices(
     //        they are used to fetched from `migration.xxx` config, which is not accessible from new playform
     const indexMigrator = new IndexMigrator({
       batchSize: 100,
-      callCluster: esClient.callAsInternalUser,
+      client: migrationClient,
       documentMigrator,
       index: indexName,
       log: logger,
