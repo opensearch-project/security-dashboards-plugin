@@ -42,6 +42,11 @@ jobs:
         run: |
           echo "::set-output name=kbn_version::$(jq -r '.kibana.version' ./kibana/plugins/opendistro_security/package.json)"
       
+      - name: Get Opendistro version
+        id: opendistro_version
+        run: |
+          echo "::set-output name=opendistro_version::$(jq -r '.version' ./kibana/plugins/opendistro_security/package.json)"
+
       - name: Run elasticsearch with plugin
         run: |
           wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-${{ steps.kbn_version.outputs.kbn_version }}-darwin-x86_64.tar.gz
