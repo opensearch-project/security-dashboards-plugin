@@ -13,53 +13,76 @@ jobs:
     name: Run integration tests
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Java
-        uses: actions/setup-java@v1
-        with:
-          # TODO: Parse this from security plugin
-          java-version: 14
+
+      - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11.0.x
+      
       - name: Checkout Kibana
         uses: actions/checkout@v2
         with:
           path: kibana
           repository: elastic/kibana
           fetch-depth: 0
+      
       - name: Create plugins dir
         run: |
           cd ./kibana
           mkdir -p plugins
+      
       - name: Checkout
         uses: actions/checkout@v2
         with:
           path: kibana/plugins/opendistro_security
           ref: ${{ github.ref }}
+      
       - name: Get Kibana version
         id: kbn_version
         run: |
           echo "::set-output name=kbn_version::$(jq -r '.kibana.version' ./kibana/plugins/opendistro_security/package.json)"
+      
       - name: Use kibana release commit
         run: |
           cd ./kibana
           git checkout tags/v${{ steps.kbn_version.outputs.kbn_version }} -b v${{ steps.kbn_version.outputs.kbn_version }}
+      
       - name: Get node and yarn versions
         id: versions
         run: |
           echo "::set-output name=node_version::$(cat ./kibana/.node-version)"
           echo "::set-output name=yarn_version::$(jq -r '.engines.yarn' ./kibana/package.json)"
+      
       - name: Setup node
         uses: actions/setup-node@v1
         with:
           node-version: ${{ steps.versions.outputs.node_version }}
           registry-url: 'https://registry.npmjs.org'
+      
       - name: Install correct yarn version for Kibana
         run: |
           npm uninstall -g yarn
           echo "Installing yarn ${{ steps.versions_step.outputs.yarn_version }}"
           npm i -g yarn@${{ steps.versions.outputs.yarn_version }}
+      
       - name: Bootstrap Kibana
         run: |
           cd ./kibana
           yarn kbn bootstrap --oss
+
+      - name: Run elasticsearch with plugin
+        run: |
+          wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-${{ steps.kibana_version.outputs.kibana_version }}-darwin-x86_64.tar.gz
+          tar -xzf elasticsearch-oss-${{ steps.kibana_version.outputs.kibana_version }}-darwin-x86_64.tar.gz
+          cd elasticsearch-${{ steps.kibana_version.outputs.kibana_version }}/
+          bin/elasticsearch-plugin install -b https://d3g5vo6xdbdb9a.cloudfront.net/downloads/elasticsearch-plugins/opendistro-security/opendistro_security-${{ steps.opendistro_version.outputs.opendistro_version }}.zip
+          bash plugins/opendistro_security/tools/install_demo_configuration.sh -y -i
+          echo 'opendistro_security.unsupported.restapi.allow_securityconfig_modification: true' >> config/elasticsearch.yml
+          echo $(curl -s -o /dev/null -w ''%{http_code}'' https://localhost:9200 -u admin:admin -k)
+          bin/elasticsearch &
+          sleep 30
+          timeout 900 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' https://localhost:9200 -u admin:admin -k)" != "200" ]]; do echo "ping ElasticSearch..."; sleep 5; done'
+      
       - name: Run integration tests
         run: |
           cd ./kibana/plugins/opendistro_security

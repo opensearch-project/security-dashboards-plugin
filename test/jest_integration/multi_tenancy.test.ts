@@ -17,8 +17,8 @@ import * as kbnTestServer from '../../../../src/test_utils/kbn_server';
 import { Root } from '../../../../src/core/server/root';
 import { resolve } from 'path';
 import { describe, expect, it, beforeAll, afterAll } from '@jest/globals';
-import { startElasticsearch, stopElasticsearch } from '../es/elasticsearch_helper';
-import { ChildProcess } from 'child_process';
+// import { startElasticsearch, stopElasticsearch } from '../es/elasticsearch_helper';
+// import { ChildProcess } from 'child_process';
 import {
   KIBANA_SERVER_USER,
   KIBANA_SERVER_PASSWORD,
@@ -31,11 +31,11 @@ import { createOrUpdateEntityAsAdmin } from '../helper/entity_operation';
 
 describe('start kibana server', () => {
   let root: Root;
-  let esProcess: ChildProcess;
+  // let esProcess: ChildProcess;
 
   beforeAll(async () => {
-    esProcess = await startElasticsearch();
-    console.log('Started Elasticsearch');
+    // esProcess = await startElasticsearch();
+    // console.log('Started Elasticsearch');
 
     root = kbnTestServer.createRootWithSettings(
       {
@@ -70,7 +70,7 @@ describe('start kibana server', () => {
     // shutdown Kibana server
     await root.shutdown();
     // shutdown Elasticsearch
-    await stopElasticsearch(esProcess);
+    // await stopElasticsearch(esProcess);
   });
 
   async function createTestUser(username: string = undefined, password: string = undefined) {
