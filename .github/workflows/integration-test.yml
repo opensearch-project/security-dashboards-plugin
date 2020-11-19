@@ -42,6 +42,19 @@ jobs:
         run: |
           echo "::set-output name=kbn_version::$(jq -r '.kibana.version' ./kibana/plugins/opendistro_security/package.json)"
       
+      - name: Run elasticsearch with plugin
+        run: |
+          wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-${{ steps.kbn_version.outputs.kbn_version }}-darwin-x86_64.tar.gz
+          tar -xzf elasticsearch-oss-${{ steps.kbn_version.outputs.kbn_version }}-darwin-x86_64.tar.gz
+          cd elasticsearch-${{ steps.kbn_version.outputs.kbn_version }}/
+          bin/elasticsearch-plugin install -b https://d3g5vo6xdbdb9a.cloudfront.net/downloads/elasticsearch-plugins/opendistro-security/opendistro_security-${{ steps.opendistro_version.outputs.opendistro_version }}.zip
+          bash plugins/opendistro_security/tools/install_demo_configuration.sh -y -i
+          echo 'opendistro_security.unsupported.restapi.allow_securityconfig_modification: true' >> config/elasticsearch.yml
+          echo $(curl -s -o /dev/null -w ''%{http_code}'' https://localhost:9200 -u admin:admin -k)
+          bin/elasticsearch &
+          sleep 30
+          timeout 900 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' https://localhost:9200 -u admin:admin -k)" != "200" ]]; do echo "ping ElasticSearch..."; sleep 5; done'
+      
       - name: Use kibana release commit
         run: |
           cd ./kibana
@@ -69,19 +82,6 @@ jobs:
         run: |
           cd ./kibana
           yarn kbn bootstrap --oss
-
-      - name: Run elasticsearch with plugin
-        run: |
-          wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-${{ steps.kibana_version.outputs.kibana_version }}-darwin-x86_64.tar.gz
-          tar -xzf elasticsearch-oss-${{ steps.kibana_version.outputs.kibana_version }}-darwin-x86_64.tar.gz
-          cd elasticsearch-${{ steps.kibana_version.outputs.kibana_version }}/
-          bin/elasticsearch-plugin install -b https://d3g5vo6xdbdb9a.cloudfront.net/downloads/elasticsearch-plugins/opendistro-security/opendistro_security-${{ steps.opendistro_version.outputs.opendistro_version }}.zip
-          bash plugins/opendistro_security/tools/install_demo_configuration.sh -y -i
-          echo 'opendistro_security.unsupported.restapi.allow_securityconfig_modification: true' >> config/elasticsearch.yml
-          echo $(curl -s -o /dev/null -w ''%{http_code}'' https://localhost:9200 -u admin:admin -k)
-          bin/elasticsearch &
-          sleep 30
-          timeout 900 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' https://localhost:9200 -u admin:admin -k)" != "200" ]]; do echo "ping ElasticSearch..."; sleep 5; done'
       
       - name: Run integration tests
         run: |
