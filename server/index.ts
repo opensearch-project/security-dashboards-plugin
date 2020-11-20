@@ -132,6 +132,7 @@ export const configSchema = schema.object({
       logout_url: schema.string({ defaultValue: '' }),
       root_ca: schema.string({ defaultValue: '' }),
       verify_hostnames: schema.boolean({ defaultValue: true }),
+      refresh_tokens: schema.boolean({ defaultValue: true }),
     })
   ),
   proxycache: schema.maybe(
