@@ -8,8 +8,9 @@
   },
   "license": "Apache-2.0",
   "scripts": {
-    "kbn": "node ../../scripts/kbn.js",
-    "build": "rm -rf './target' && tsc",
+    "plugin-helpers": "node ../../scripts/plugin_helpers",
+    "kbn": "node ../../scripts/kbn",
+    "build": "yarn plugin-helpers build",
     "start": "node ../../scripts/kibana --dev",
     "lint:es": "node ../../scripts/eslint",
     "lint:sass": "node ../../scripts/sasslint",
