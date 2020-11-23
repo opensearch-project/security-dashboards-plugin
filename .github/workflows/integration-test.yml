@@ -4,9 +4,11 @@ on:
   pull_request:
     branches:
       - main
+      - opendistro-1.12
   push:
     branches:
       - main
+      - opendistro-1.12
 
 jobs:
   tests:
@@ -52,7 +54,7 @@ jobs:
           wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-${{ steps.kbn_version.outputs.kbn_version }}-darwin-x86_64.tar.gz
           tar -xzf elasticsearch-oss-${{ steps.kbn_version.outputs.kbn_version }}-darwin-x86_64.tar.gz
           cd elasticsearch-${{ steps.kbn_version.outputs.kbn_version }}/
-          bin/elasticsearch-plugin install -b https://d3g5vo6xdbdb9a.cloudfront.net/downloads/elasticsearch-plugins/opendistro-security/opendistro_security-${{ steps.opendistro_version.outputs.opendistro_version }}.zip
+          bin/elasticsearch-plugin install -b https://d3g5vo6xdbdb9a.cloudfront.net/downloads/elasticsearch-plugins/opendistro-security/opendistroSecurityKibana-${{ steps.opendistro_version.outputs.opendistro_version }}.zip
           bash plugins/opendistro_security/tools/install_demo_configuration.sh -y -i
           echo 'opendistro_security.unsupported.restapi.allow_securityconfig_modification: true' >> config/elasticsearch.yml
           echo $(curl -s -o /dev/null -w ''%{http_code}'' https://localhost:9200 -u admin:admin -k)
