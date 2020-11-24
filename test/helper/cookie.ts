@@ -15,7 +15,7 @@
 
 import { Response } from 'supertest';
 import { Root } from '../../../../src/core/server/root';
-import * as kbnTestServer from '../../../../src/test_utils/kbn_server';
+import * as kbnTestServer from '../../../../src/core/test_helpers/kbn_server';
 import { AUTHORIZATION_HEADER_NAME } from '../constant';
 
 export function extractAuthCookie(response: Response) {

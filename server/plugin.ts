@@ -42,6 +42,7 @@ import { IAuthenticationType } from './auth/types/authentication_type';
 import { getAuthenticationHandler } from './auth/auth_handler_factory';
 import { setupMultitenantRoutes } from './multitenancy/routes';
 import { defineAuthTypeRoutes } from './routes/auth_type_routes';
+import { createMigrationEsClient } from '../../../src/core/server/saved_objects/migrations/core';
 
 export interface SecurityPluginRequestContext {
   logger: Logger;
@@ -143,7 +144,8 @@ export class OpendistroSecurityPlugin
       const globalConfig: SharedGlobalConfig = await globalConfig$.pipe(first()).toPromise();
       const kibanaIndex = globalConfig.kibana.index;
       const typeRegistry: ISavedObjectTypeRegistry = core.savedObjects.getTypeRegistry();
-      const esClient = core.elasticsearch.legacy.client;
+      const esClient = core.elasticsearch.client.asInternalUser;
+      const migrationClient = createMigrationEsClient(esClient, this.logger);
 
       setupIndexTemplate(esClient, kibanaIndex, typeRegistry, this.logger);
 
@@ -151,7 +153,7 @@ export class OpendistroSecurityPlugin
       const kibanaVersion = this.initializerContext.env.packageInfo.version;
       migrateTenantIndices(
         kibanaVersion,
-        esClient,
+        migrationClient,
         this.securityClient,
         typeRegistry,
         serializer,
