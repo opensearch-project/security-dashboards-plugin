@@ -1,41 +1,29 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Permission edit modal Submit button text should be Create when user is creating tenant 1`] = `
-<button
-  className="euiButton euiButton--primary euiButton--fill"
+<EuiButtonDisplay
   disabled={false}
+  element="button"
+  fill={true}
   id="submit"
+  isDisabled={false}
   onClick={[Function]}
   type="button"
 >
-  <span
-    className="euiButton__content"
-  >
-    <span
-      className="euiButton__text"
-    >
-      Create
-    </span>
-  </span>
-</button>
+  Create
+</EuiButtonDisplay>
 `;
 
 exports[`Permission edit modal Submit button text should be Save when user is updating tenant 1`] = `
-<button
-  className="euiButton euiButton--primary euiButton--fill"
+<EuiButtonDisplay
   disabled={false}
+  element="button"
+  fill={true}
   id="submit"
+  isDisabled={false}
   onClick={[Function]}
   type="button"
 >
-  <span
-    className="euiButton__content"
-  >
-    <span
-      className="euiButton__text"
-    >
-      Save
-    </span>
-  </span>
-</button>
+  Save
+</EuiButtonDisplay>
 `;
