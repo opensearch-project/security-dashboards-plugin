@@ -20,7 +20,6 @@ import {
   AppUpdater,
   CoreSetup,
   CoreStart,
-  DEFAULT_APP_CATEGORIES,
   Plugin,
   PluginInitializerContext,
 } from '../../../src/core/public';
