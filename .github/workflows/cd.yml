@@ -63,7 +63,7 @@ jobs:
         id: build_zip
         run: |
           cd ./kibana/plugins/opendistro_security
-          yarn build
+          yarn build --kibana-version ${{ steps.kbn_version.outputs.kbn_version }}
           artifact_path=`ls $(pwd)/build/opendistroSecurity-*.zip`
           artifact_name=`basename $artifact_path`
           echo "::set-output name=ARTIFACT_PATH::$artifact_path"
