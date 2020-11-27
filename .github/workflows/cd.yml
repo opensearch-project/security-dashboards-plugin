@@ -29,6 +29,10 @@ jobs:
         id: kbn_version
         run: |
           echo "::set-output name=kbn_version::$(jq -r '.kibana.version' ./kibana/plugins/opendistro_security/package.json)"
+      - name: Get plugin version
+        id: plugin_version
+        run: |
+          echo "::set-output name=plugin_version::$(jq -r .version ./kibana/plugins/opendistro_security/kibana.json)"
       - name: Use kibana release commit
         run: |
           cd ./kibana
@@ -52,16 +56,12 @@ jobs:
         run: |
           cd ./kibana
           yarn kbn bootstrap --oss
-      - name: Hack step to update kibana source to unblock tsc
-        run: |
-          cd ./kibana
-          sed -i '170d' src/core/server/http/router/request.ts
       - name: build security plugin
         id: build_zip
         run: |
           cd ./kibana/plugins/opendistro_security
-          node build_tools/build_plugin.js
-          artifact_path=`ls $(pwd)/build/opendistro_security_kibana_plugin-*.zip`
+          yarn build --kibana-version ${{ steps.kbn_version.outputs.kbn_version }}
+          artifact_path=`ls $(pwd)/build/opendistroSecurity-*.zip`
           artifact_name=`basename $artifact_path`
           echo "::set-output name=ARTIFACT_PATH::$artifact_path"
           echo "::set-output name=ARTIFACT_NAME::$artifact_name"
@@ -74,5 +74,5 @@ jobs:
       - name: Upload Artifacts to S3
         run: |
           s3_path=s3://artifacts.opendistroforelasticsearch.amazon.com/downloads
-          aws s3 cp ${{ steps.build_zip.outputs.ARTIFACT_PATH }} $s3_path/kibana-plugins/opendistro-security/
+          aws s3 cp ${{ steps.build_zip.outputs.ARTIFACT_PATH }} $s3_path/kibana-plugins/opendistro-security/opendistroSecurityKibana-${{ steps.plugin_version.output.plugin_version }}.zip
           aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID }} --paths '/downloads/*'
