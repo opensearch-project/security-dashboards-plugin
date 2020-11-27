@@ -1,6 +1,6 @@
 {
   "id": "opendistroSecurity",
-  "version": "1.12.0",
+  "version": "1.12.0.0",
   "kibanaVersion": "kibana",
   "configPath": ["opendistro_security"],
   "requiredPlugins": ["navigation"],
