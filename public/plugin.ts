@@ -98,7 +98,6 @@ export class OpendistroSecurityPlugin
         category: {
           id: 'odfe',
           label: 'Open Distro for Elasticsearch',
-          euiIconType: 'logoKibana',
           order: 2000,
         },
       });
