@@ -93,7 +93,7 @@ export function LoginPage(props: LoginPageDeps) {
   return (
     <EuiListGroup className="login-wrapper">
       {props.config.showbrandimage && (
-        <EuiImage alt="" url={props.config.brandimage || defaultBrandImage} />
+        <EuiImage size="fullWidth" alt="" url={props.config.brandimage || defaultBrandImage} />
       )}
       <EuiSpacer size="s" />
       <EuiText size="m" textAlign="center">
