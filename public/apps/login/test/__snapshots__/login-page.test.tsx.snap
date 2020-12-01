@@ -6,6 +6,7 @@ exports[`Login page renders renders with config value 1`] = `
 >
   <EuiImage
     alt=""
+    size="fullWidth"
     url="http://localhost:5601/images/test.png"
   />
   <EuiSpacer
