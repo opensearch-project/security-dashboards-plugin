@@ -47,7 +47,7 @@ function redirectOnSessionTimeout($window) {
 
                 // Don't run on login or logout. We shouldn't have any Ajax requests here,
                 // but if other plugins are active, we would get a redirect loop.
-                if (path === '/login' || path === '/logout' || path === '/customerror') {
+                if(path === '/login' || path === '/logout' || path === '/customerror') {
                     return $q.reject(response);
                 }
 
@@ -76,9 +76,10 @@ app.factory('errorInterceptor', function ($q, $window) {
 
     return {
         responseError: function (response) {
+
             // Handles 401s, but only if we've explicitly set the redirect property on the response.
             // Fix for https://github.com/angular/angular/issues/19888
-            var data = null;
+            let data = null;
             if (response.data) {
                 try { // Security plugin returns real json data. If its real json.parse fails and it sets data as the response
                     data = JSON.parse(response.data);
@@ -99,7 +100,7 @@ app.factory('errorInterceptor', function ($q, $window) {
 /**
  * Make sure that we add the interceptor to the existing ones.
  */
-app.config(function ($httpProvider) {
+app.config(function($httpProvider) {
     $httpProvider.interceptors.push('errorInterceptor');
 });
 
@@ -117,7 +118,7 @@ function setupResponseErrorHandler($window) {
     const nativeFetch = window.fetch;
     window.fetch = (url, config) => {
         return nativeFetch(url, config)
-            .then(async (result) => {
+            .then(async(result) => {
                 if (result.status === 401) {
                     try {
                         // We need to clone the response before converting the body to JSON,
@@ -150,7 +151,7 @@ export function enableConfiguration($http, $window, systemstate) {
     const path = chrome.removeBasePath($window.location.pathname);
 
     // don't run on login or logout, we don't have any user on these pages
-    if (path === '/login' || path === '/logout' || path === '/customerror') {
+    if(path === '/login' || path === '/logout' || path === '/customerror') {
         return;
     }
 
