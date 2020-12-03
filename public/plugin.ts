@@ -66,6 +66,10 @@ async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
 const DEFAULT_READONLY_ROLES = ['kibana_read_only'];
 const APP_ID_HOME = 'home';
 const APP_ID_DASHBOARDS = 'dashboards';
+// Kibana app is for legacy url migration
+const APP_ID_KIBANA = 'kibana';
+const APP_ID_SHORT_URL_REDIRECT = '"short_url_redirect"';
+const APP_LIST_FOR_READONLY_ROLE = [APP_ID_HOME, APP_ID_DASHBOARDS, APP_ID_KIBANA, APP_ID_SHORT_URL_REDIRECT, APP_ID_MULTITENANCY];
 
 export class OpendistroSecurityPlugin
   implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
@@ -146,7 +150,7 @@ export class OpendistroSecurityPlugin
         if (
           !apiPermission &&
           isReadonly &&
-          ![APP_ID_DASHBOARDS, APP_ID_HOME, APP_ID_MULTITENANCY].includes(app.id)
+          !APP_LIST_FOR_READONLY_ROLE.includes(app.id)
         ) {
           return {
             status: AppStatus.inaccessible,
