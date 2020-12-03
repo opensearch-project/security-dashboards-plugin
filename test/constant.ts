@@ -13,12 +13,13 @@
  *   permissions and limitations under the License.
  */
 
+import { version, kibana } from '../package.json';
+
 export const KIBANA_SERVER_USER: string = 'kibanaserver';
 export const KIBANA_SERVER_PASSWORD: string = 'kibanaserver';
 
-// TODO: Parse this from package.json
-export const ELASTICSEARCH_VERSION: string = '7.9.1';
-export const SECURITY_ES_PLUGIN_VERSION: string = '1.11.0.0';
+export const ELASTICSEARCH_VERSION: string = kibana.version;
+export const SECURITY_ES_PLUGIN_VERSION: string = version;
 
 export const ADMIN_USER: string = 'admin';
 export const ADMIN_PASSWORD: string = 'admin';

@@ -22,10 +22,7 @@ export default {
   testPathIgnorePatterns: config.testPathIgnorePatterns.filter(
     (pattern) => !pattern.includes('integration_tests')
   ),
-  setupFilesAfterEnv: [
-    '<rootDir>/src/dev/jest/setup/after_env.integration.js',
-    '<rootDir>/plugins/opendistro_security/test/es/setup_es.js',
-  ],
+  setupFilesAfterEnv: ['<rootDir>/src/dev/jest/setup/after_env.integration.js'],
   collectCoverageFrom: [
     '<rootDir>/plugins/opendistro_security/server/**/*.{ts,tsx}',
     '!<rootDir>/plugins/opendistro_security/server/**/*.test.{ts,tsx}',
