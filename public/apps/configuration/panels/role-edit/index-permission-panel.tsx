@@ -13,7 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-import './_index.scss';
 import {
   EuiAccordion,
   EuiButton,
