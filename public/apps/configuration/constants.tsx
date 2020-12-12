@@ -227,6 +227,8 @@ export const DocLinks = {
     'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/multi-tenancy/',
   AttributeBasedSecurityDoc:
     'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/document-level-security/#attribute-based-security',
+  BackendRoleDoc:
+    'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/users-roles/#map-users-to-roles',
 };
 
 export enum ToolTipContent {
@@ -236,3 +238,5 @@ export enum ToolTipContent {
 
 export const MIN_NUMBER_OF_CHARS_IN_RESOURCE_NAME = 2;
 export const MAX_NUMBER_OF_CHARS_IN_RESOURCE_NAME = 50;
+
+export const LIMIT_WIDTH_INPUT_CLASS = 'limit-width-input';
