@@ -32,8 +32,7 @@ To build the security-kibana plugin from source follow these instructions:
 │   └── plugins
 │       └── opendistro_security
 ```
-* run the build script to build the plugin inside `kibana/plugins/opendistro_security` directory
-`node build_tools/build_plugin.js`
+* run `yarn build` to build the plugin inside `kibana/plugins/opendistro_security` directory
 
 The above builds the final artifacts in zip format. The artifacts can be found in the `kibana/plugins/opendistro_security/build` directory
 
