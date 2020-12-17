@@ -16,6 +16,12 @@
 import { shallow } from 'enzyme';
 import React from 'react';
 import { AccountNavButton } from '../account-nav-button';
+import { getShouldShowTenantPopup, setShouldShowTenantPopup } from '../../../utils/storage-utils';
+
+jest.mock('../../../utils/storage-utils', () => ({
+  getShouldShowTenantPopup: jest.fn(),
+  setShouldShowTenantPopup: jest.fn(),
+}));
 
 describe('Account navigation button', () => {
   const mockCoreStart = {
@@ -60,6 +66,20 @@ describe('Account navigation button', () => {
 
   it('renders', () => {
     expect(component).toMatchSnapshot();
+  });
+
+  it('should set modal when show popup is true', () => {
+    (getShouldShowTenantPopup as jest.Mock).mockReturnValueOnce(true);
+    shallow(
+      <AccountNavButton
+        coreStart={mockCoreStart}
+        isInternalUser={true}
+        username={userName}
+        tenant="tenant1"
+        config={config as any}
+      />
+    );
+    expect(setState).toBeCalledTimes(1);
   });
 
   it('should set modal when click on "View roles and identities" button', () => {
