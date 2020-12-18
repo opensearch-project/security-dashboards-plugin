@@ -44,10 +44,10 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
     }
 
     let tenant = accountInfo.user_requested_tenant;
-    let shouldShowTenantPanel = true;
+    let shouldShowTenantPopup = true;
 
     if (tenantSpecifiedInUrl() || getShouldShowTenantPopup() === false) {
-      shouldShowTenantPanel = false;
+      shouldShowTenantPopup = false;
     } else {
       // Switch to previous tenant based on localStorage, it may fail due to
       // 1) Localstorage is disabled; 2) Request failed
@@ -55,14 +55,14 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
         const savedTenant = getSavedTenant();
         if (savedTenant !== null) {
           if (savedTenant === tenant) {
-            shouldShowTenantPanel = false;
+            shouldShowTenantPopup = false;
           } else {
             await selectTenant(coreStart.http, {
               username: accountInfo.user_name,
               tenant: savedTenant,
             });
             tenant = savedTenant;
-            shouldShowTenantPanel = false;
+            shouldShowTenantPopup = false;
           }
         }
       } catch (e) {
@@ -70,7 +70,7 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
       }
     }
 
-    setShouldShowTenantPopup(shouldShowTenantPanel);
+    setShouldShowTenantPopup(shouldShowTenantPopup);
 
     coreStart.chrome.navControls.registerRight({
       // Pin to rightmost, since newsfeed plugin is using 1000, here needs a number > 1000
