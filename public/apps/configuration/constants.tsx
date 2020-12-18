@@ -36,6 +36,7 @@ export const CLUSTER_PERMISSIONS: string[] = [
   'cluster:admin/ingest/pipeline/simulate',
   'cluster:admin/ingest/processor/grok/get',
   'cluster:admin/opendistro/ad/detector/delete',
+  'cluster:admin/opendistro/ad/detector/info',
   'cluster:admin/opendistro/ad/detector/jobmanagement',
   'cluster:admin/opendistro/ad/detector/run',
   'cluster:admin/opendistro/ad/detector/search',
