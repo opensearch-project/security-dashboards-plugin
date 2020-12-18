@@ -26,6 +26,7 @@ import {
   getShouldShowTenantPopup,
   setShouldShowTenantPopup,
 } from '../../utils/storage-utils';
+import { constructErrorMessageAndLog } from '../error-utils';
 
 function tenantSpecifiedInUrl() {
   return (
@@ -66,7 +67,7 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
           }
         }
       } catch (e) {
-        console.log(`Failed to switched to ${tenant} tenant.`);
+        constructErrorMessageAndLog(e, `Failed to switched to ${tenant} tenant.`);
       }
     }
 
