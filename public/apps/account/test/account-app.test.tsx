@@ -76,7 +76,6 @@ describe('Account app', () => {
 
   it('Should switch to saved tenant when securitytenant not in url', (done) => {
     (getSavedTenant as jest.Mock).mockReturnValueOnce('tenant1');
-    // (selectTenant as jest.Mock).mockResolvedValue(true);
 
     setupTopNavButton(mockCoreStart, {} as any);
 
