@@ -20,6 +20,20 @@ import { AccountNavButton } from './account-nav-button';
 import { fetchAccountInfoSafe } from './utils';
 import { ClientConfigType } from '../../types';
 import { CUSTOM_ERROR_PAGE_URI, ERROR_MISSING_ROLE_PATH } from '../../../common';
+import { selectTenant } from '../configuration/utils/tenant-utils';
+import {
+  getSavedTenant,
+  getShouldShowTenantPopup,
+  setShouldShowTenantPopup,
+} from '../../utils/storage-utils';
+import { constructErrorMessageAndLog } from '../error-utils';
+
+function tenantSpecifiedInUrl() {
+  return (
+    window.location.search.includes('security_tenant') ||
+    window.location.search.includes('securitytenant')
+  );
+}
 
 export async function setupTopNavButton(coreStart: CoreStart, config: ClientConfigType) {
   const accountInfo = (await fetchAccountInfoSafe(coreStart.http))?.data;
@@ -30,6 +44,35 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
         coreStart.http.basePath.serverBasePath + CUSTOM_ERROR_PAGE_URI + ERROR_MISSING_ROLE_PATH;
     }
 
+    let tenant = accountInfo.user_requested_tenant;
+    let shouldShowTenantPopup = true;
+
+    if (tenantSpecifiedInUrl() || getShouldShowTenantPopup() === false) {
+      shouldShowTenantPopup = false;
+    } else {
+      // Switch to previous tenant based on localStorage, it may fail due to
+      // 1) Localstorage is disabled; 2) Request failed
+      try {
+        const savedTenant = getSavedTenant();
+        if (savedTenant !== null) {
+          if (savedTenant === tenant) {
+            shouldShowTenantPopup = false;
+          } else {
+            await selectTenant(coreStart.http, {
+              username: accountInfo.user_name,
+              tenant: savedTenant,
+            });
+            tenant = savedTenant;
+            shouldShowTenantPopup = false;
+          }
+        }
+      } catch (e) {
+        constructErrorMessageAndLog(e, `Failed to switch to ${tenant} tenant.`);
+      }
+    }
+
+    setShouldShowTenantPopup(shouldShowTenantPopup);
+
     coreStart.chrome.navControls.registerRight({
       // Pin to rightmost, since newsfeed plugin is using 1000, here needs a number > 1000
       order: 2000,
@@ -39,7 +82,7 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
             coreStart={coreStart}
             isInternalUser={accountInfo.is_internal_user}
             username={accountInfo.user_name}
-            tenant={accountInfo.user_requested_tenant}
+            tenant={tenant}
             config={config}
           />,
           element

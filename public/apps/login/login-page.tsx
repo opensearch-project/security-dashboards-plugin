@@ -13,8 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-// @ts-ignore : Component not used
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import {
   EuiText,
   EuiFieldText,
@@ -23,19 +22,27 @@ import {
   EuiButton,
   EuiImage,
   EuiListGroup,
-  // @ts-ignore
   EuiForm,
   EuiFormRow,
 } from '@elastic/eui';
 import { CoreStart } from '../../../../../src/core/public';
 import { ClientConfigType } from '../../types';
 import defaultBrandImage from '../../assets/open_distro_for_elasticsearch_logo_h.svg';
-import { SELECT_TENANT_PAGE_URI } from '../../../common';
 import { validateCurrentPassword } from '../../utils/login-utils';
 
 interface LoginPageDeps {
   http: CoreStart['http'];
   config: ClientConfigType['ui']['basicauth']['login'];
+}
+
+function redirect(serverBasePath: string) {
+  // navigate to nextUrl
+  const urlParams = new URLSearchParams(window.location.search);
+  let nextUrl = urlParams.get('nextUrl');
+  if (!nextUrl || nextUrl.toLowerCase().includes('//')) {
+    nextUrl = serverBasePath;
+  }
+  window.location.href = nextUrl + window.location.hash;
 }
 
 export function LoginPage(props: LoginPageDeps) {
@@ -76,12 +83,7 @@ export function LoginPage(props: LoginPageDeps) {
 
     try {
       await validateCurrentPassword(props.http, username, password);
-      // Forward search to keep nextUrl argument
-      window.location.href =
-        props.http.basePath.serverBasePath +
-        SELECT_TENANT_PAGE_URI +
-        window.location.search +
-        window.location.hash;
+      redirect(props.http.basePath.serverBasePath);
     } catch (error) {
       console.log(error);
       setloginFailed(true);
