@@ -67,7 +67,7 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
           }
         }
       } catch (e) {
-        constructErrorMessageAndLog(e, `Failed to switched to ${tenant} tenant.`);
+        constructErrorMessageAndLog(e, `Failed to switch to ${tenant} tenant.`);
       }
     }
 
