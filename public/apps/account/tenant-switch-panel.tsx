@@ -17,6 +17,7 @@ import {
   EuiButton,
   EuiButtonEmpty,
   EuiCallOut,
+  EuiCheckbox,
   EuiModal,
   EuiModalBody,
   EuiModalFooter,
@@ -39,6 +40,7 @@ import {
 } from '../configuration/utils/tenant-utils';
 import { fetchAccountInfo } from './utils';
 import { constructErrorMessageAndLog } from '../error-utils';
+import { getSavedTenant, setSavedTenant } from '../../utils/storage-utils';
 
 interface TenantSwitchPanelProps {
   coreStart: CoreStart;
@@ -58,6 +60,11 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
   const [errorCallOut, setErrorCallOut] = React.useState<string>('');
   const [tenantSwitchRadioIdSelected, setTenantSwitchRadioIdSelected] = React.useState<string>();
   const [selectedCustomTenantOption, setSelectedCustomTenantOption] = React.useState<string>('');
+
+  // If saved tenant is present, set remember option to true
+  const [rememberSelection, setRememberSelection] = React.useState<boolean>(
+    Boolean(getSavedTenant())
+  );
 
   const setCurrentTenant = (currentRawTenantName: string, currentUserName: string) => {
     const resolvedTenantName = resolveTenantName(currentRawTenantName, currentUserName);
@@ -210,6 +217,12 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
       setErrorCallOut('No target tenant is specified!');
     } else {
       try {
+        if (rememberSelection) {
+          setSavedTenant(tenantName);
+        } else {
+          setSavedTenant(null);
+        }
+
         await changeTenant(tenantName);
         props.handleSwitchAndClose();
       } catch (e) {
@@ -263,6 +276,15 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
           <EuiSpacer />
 
           {content}
+
+          <EuiSpacer />
+
+          <EuiCheckbox
+            id="remember"
+            label="Remember my selection next time I log in from this device."
+            checked={rememberSelection}
+            onChange={(e) => setRememberSelection(e.target.checked)}
+          />
         </EuiModalBody>
         <EuiModalFooter>
           <EuiButtonEmpty onClick={props.handleClose}>Cancel</EuiButtonEmpty>

@@ -23,14 +23,7 @@ import {
   Plugin,
   PluginInitializerContext,
 } from '../../../src/core/public';
-import {
-  APP_ID_LOGIN,
-  APP_ID_MULTITENANCY,
-  CUSTOM_ERROR_PAGE_URI,
-  LOGIN_PAGE_URI,
-  PLUGIN_NAME,
-  SELECT_TENANT_PAGE_URI,
-} from '../common';
+import { APP_ID_LOGIN, CUSTOM_ERROR_PAGE_URI, LOGIN_PAGE_URI, PLUGIN_NAME } from '../common';
 import { APP_ID_CUSTOMERROR } from '../common/index';
 import { setupTopNavButton } from './apps/account/account-app';
 import { fetchAccountInfoSafe } from './apps/account/utils';
@@ -67,12 +60,7 @@ const APP_ID_HOME = 'home';
 const APP_ID_DASHBOARDS = 'dashboards';
 // Kibana app is for legacy url migration
 const APP_ID_KIBANA = 'kibana';
-const APP_LIST_FOR_READONLY_ROLE = [
-  APP_ID_HOME,
-  APP_ID_DASHBOARDS,
-  APP_ID_KIBANA,
-  APP_ID_MULTITENANCY,
-];
+const APP_LIST_FOR_READONLY_ROLE = [APP_ID_HOME, APP_ID_DASHBOARDS, APP_ID_KIBANA];
 
 export class OpendistroSecurityPlugin
   implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
@@ -125,18 +113,6 @@ export class OpendistroSecurityPlugin
         // @ts-ignore depsStart not used.
         const [coreStart, depsStart] = await core.getStartServices();
         return renderApp(coreStart, params, config.ui.basicauth.login);
-      },
-    });
-
-    core.application.register({
-      id: APP_ID_MULTITENANCY,
-      title: 'Security',
-      chromeless: true,
-      appRoute: SELECT_TENANT_PAGE_URI,
-      mount: async (params: AppMountParameters) => {
-        const { renderPage } = await import('./apps/account/tenant-selection-page');
-        const [coreStart] = await core.getStartServices();
-        return renderPage(coreStart, params, config, apiPermission);
       },
     });
 
