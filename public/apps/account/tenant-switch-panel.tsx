@@ -240,8 +240,8 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
         />
 
         {/* This combo box has to be outside the radio group.
-          In currently EUI if put into the child of radio option, clicking in the combo box will not
-          show the drop down list since the radio option comsumes the click event. */}
+          In current EUI if put into the child of radio option, clicking in the combo box will not
+          show the drop down list since the radio option consumes the click event. */}
         <EuiComboBox
           options={customTenantOptions}
           singleSelection={{ asPlainText: true }}
