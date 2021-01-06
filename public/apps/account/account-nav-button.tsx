@@ -139,12 +139,7 @@ export function AccountNavButton(props: {
     </div>
   );
   return (
-    <EuiHeaderSectionItemButton
-      data-test-subj="account-header-section-button"
-      onClick={() => {
-        setPopoverOpen((prevState) => !prevState);
-      }}
-    >
+    <EuiHeaderSectionItemButton data-test-subj="account-header-section-button">
       <EuiPopover
         id="actionsMenu"
         button={<EuiAvatar name={username} />}
@@ -153,6 +148,9 @@ export function AccountNavButton(props: {
           setPopoverOpen(false);
         }}
         panelPaddingSize="s"
+        onClick={() => {
+          setPopoverOpen((prevState) => !prevState);
+        }}
       >
         <EuiContextMenuPanel>{contextMenuPanel}</EuiContextMenuPanel>
       </EuiPopover>

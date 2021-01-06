@@ -110,18 +110,14 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
     setTenantSwitchRadioIdSelected(CUSTOM_TENANT_RADIO_ID);
     setErrorCallOut('');
   };
-  const customTenantOptions = React.useMemo(
-    () =>
-      tenants
-        .filter((tenant) => {
-          return tenant !== GLOBAL_TENANT_KEY_NAME && tenant !== username;
-        })
-        .sort()
-        .map((option: string) => ({
-          label: option,
-        })),
-    [tenants]
-  );
+  const customTenantOptions = tenants
+    .filter((tenant) => {
+      return tenant !== GLOBAL_TENANT_KEY_NAME && tenant !== username;
+    })
+    .sort()
+    .map((option: string) => ({
+      label: option,
+    }));
 
   const isMultiTenancyEnabled = props.config.multitenancy.enabled;
   const isGlobalEnabled = props.config.multitenancy.tenants.enable_global;
@@ -243,11 +239,15 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
           name="tenantSwitchRadios"
         />
 
+        {/* This combo box has to be outside the radio group.
+          In currently EUI if put into the child of radio option, clicking in the combo box will not
+          show the drop down list since the radio option comsumes the click event. */}
         <EuiComboBox
           options={customTenantOptions}
           singleSelection={{ asPlainText: true }}
           selectedOptions={selectedCustomTenantOption}
           onChange={onCustomTenantChange}
+          // For vertical alignment with the radio option.
           style={{ marginLeft: '24px' }}
         />
 
