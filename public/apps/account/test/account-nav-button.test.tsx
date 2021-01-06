@@ -98,7 +98,7 @@ describe('Account navigation button', () => {
   });
 
   it('should set isPopoverOpen to true when click on Avatar in header section', () => {
-    component.find('[data-test-subj="account-header-section-button"]').simulate('click');
+    component.find('[data-test-subj="account-popover"]').simulate('click');
     expect(setState).toBeCalledTimes(1);
   });
 });

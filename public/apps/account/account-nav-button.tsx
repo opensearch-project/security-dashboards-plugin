@@ -139,8 +139,9 @@ export function AccountNavButton(props: {
     </div>
   );
   return (
-    <EuiHeaderSectionItemButton data-test-subj="account-header-section-button">
+    <EuiHeaderSectionItemButton>
       <EuiPopover
+        data-test-subj="account-popover"
         id="actionsMenu"
         button={<EuiAvatar name={username} />}
         isOpen={isPopoverOpen}
