@@ -18,6 +18,8 @@ import {
   EuiButtonEmpty,
   EuiCallOut,
   EuiCheckbox,
+  EuiComboBox,
+  EuiComboBoxOptionOption,
   EuiModal,
   EuiModalBody,
   EuiModalFooter,
@@ -102,14 +104,14 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
   }, [props.coreStart.http]);
 
   // Custom tenant super select related.
-  const onCustomTenantChange = (selectedOption: string) => {
-    setSelectedCustomTenantOption(selectedOption);
+  const onCustomTenantChange = (selectedOption: EuiComboBoxOptionOption[]) => {
+    setSelectedCustomTenantOption(selectedOption[0].label);
     setTenantSwitchRadioIdSelected(CUSTOM_TENANT_RADIO_ID);
     setErrorCallOut('');
   };
   const customTenantOptions = tenants.filter((tenant) => {
     return tenant !== GLOBAL_TENANT_KEY_NAME && tenant !== username;
-  });
+  }).sort();
 
   const isMultiTenancyEnabled = props.config.multitenancy.enabled;
   const isGlobalEnabled = props.config.multitenancy.tenants.enable_global;
@@ -172,12 +174,13 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
       label: (
         <>
           Choose from custom
-          <EuiSuperSelect
+          <EuiComboBox
             options={customTenantOptions.map((option: string) => ({
-              value: option,
-              inputDisplay: option,
+              label: option,
             }))}
-            valueOfSelected={selectedCustomTenantOption}
+            compressed
+            singleSelection={{ asPlainText: true }}
+            selectedOptions={selectedCustomTenantOption ? [{label: selectedCustomTenantOption}] : []}
             onChange={onCustomTenantChange}
             style={{ width: 400 }}
           />
