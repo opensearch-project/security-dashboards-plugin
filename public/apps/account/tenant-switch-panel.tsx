@@ -26,7 +26,6 @@ import {
   EuiOverlayMask,
   EuiRadioGroup,
   EuiSpacer,
-  EuiSuperSelect,
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
@@ -61,7 +60,9 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
   const [username, setUsername] = React.useState<string>('');
   const [errorCallOut, setErrorCallOut] = React.useState<string>('');
   const [tenantSwitchRadioIdSelected, setTenantSwitchRadioIdSelected] = React.useState<string>();
-  const [selectedCustomTenantOption, setSelectedCustomTenantOption] = React.useState<string>('');
+  const [selectedCustomTenantOption, setSelectedCustomTenantOption] = React.useState<
+    EuiComboBoxOptionOption[]
+  >([]);
 
   // If saved tenant is present, set remember option to true
   const [rememberSelection, setRememberSelection] = React.useState<boolean>(
@@ -77,7 +78,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
       setTenantSwitchRadioIdSelected(PRIVATE_TENANT_RADIO_ID);
     } else {
       setTenantSwitchRadioIdSelected(CUSTOM_TENANT_RADIO_ID);
-      setSelectedCustomTenantOption(resolvedTenantName);
+      setSelectedCustomTenantOption([{ label: resolvedTenantName }]);
     }
   };
 
@@ -105,13 +106,22 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
 
   // Custom tenant super select related.
   const onCustomTenantChange = (selectedOption: EuiComboBoxOptionOption[]) => {
-    setSelectedCustomTenantOption(selectedOption[0].label);
+    setSelectedCustomTenantOption(selectedOption);
     setTenantSwitchRadioIdSelected(CUSTOM_TENANT_RADIO_ID);
     setErrorCallOut('');
   };
-  const customTenantOptions = tenants.filter((tenant) => {
-    return tenant !== GLOBAL_TENANT_KEY_NAME && tenant !== username;
-  }).sort();
+  const customTenantOptions = React.useMemo(
+    () =>
+      tenants
+        .filter((tenant) => {
+          return tenant !== GLOBAL_TENANT_KEY_NAME && tenant !== username;
+        })
+        .sort()
+        .map((option: string) => ({
+          label: option,
+        })),
+    [tenants]
+  );
 
   const isMultiTenancyEnabled = props.config.multitenancy.enabled;
   const isGlobalEnabled = props.config.multitenancy.tenants.enable_global;
@@ -171,21 +181,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
     },
     {
       id: CUSTOM_TENANT_RADIO_ID,
-      label: (
-        <>
-          Choose from custom
-          <EuiComboBox
-            options={customTenantOptions.map((option: string) => ({
-              label: option,
-            }))}
-            compressed
-            singleSelection={{ asPlainText: true }}
-            selectedOptions={selectedCustomTenantOption ? [{label: selectedCustomTenantOption}] : []}
-            onChange={onCustomTenantChange}
-            style={{ width: 400 }}
-          />
-        </>
-      ),
+      label: <>Choose from custom</>,
       disabled: customTenantOptions.length === 0,
     },
   ];
@@ -211,7 +207,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
       tenantName = '__user__';
     } else if (tenantSwitchRadioIdSelected === CUSTOM_TENANT_RADIO_ID) {
       if (selectedCustomTenantOption) {
-        tenantName = selectedCustomTenantOption;
+        tenantName = selectedCustomTenantOption[0].label;
       }
     }
 
@@ -245,6 +241,14 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
           idSelected={tenantSwitchRadioIdSelected}
           onChange={(radioId) => onTenantSwitchRadioChange(radioId)}
           name="tenantSwitchRadios"
+        />
+
+        <EuiComboBox
+          options={customTenantOptions}
+          singleSelection={{ asPlainText: true }}
+          selectedOptions={selectedCustomTenantOption}
+          onChange={onCustomTenantChange}
+          style={{ marginLeft: '24px' }}
         />
 
         <EuiSpacer />
