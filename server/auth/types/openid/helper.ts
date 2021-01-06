@@ -16,6 +16,7 @@
 import wreck from '@hapi/wreck';
 import { parse, stringify } from 'querystring';
 import { CoreSetup } from 'kibana/server';
+import { parse as parseUrl, format } from 'url';
 import { SecurityPluginConfigType } from '../../..';
 
 export function parseTokenResponse(payload: Buffer) {
@@ -68,6 +69,18 @@ export async function callTokenEndpoint(tokenEndpoint: string, query: any): Prom
     refreshToken: tokenPayload.refresh_token,
     expiresIn: tokenPayload.expires_in,
   };
+}
+
+export function composeLogoutUrl(
+  customLogoutUrl: string | undefined,
+  idpEndsessionEndpoint: string | undefined,
+  additionalQueryString: string
+) {
+  const logoutEndpont = customLogoutUrl || idpEndsessionEndpoint;
+  const logoutUrl = parseUrl(logoutEndpont!);
+  return logoutUrl.query
+    ? `${logoutEndpont}&${additionalQueryString}`
+    : `${logoutEndpont}?${additionalQueryString}`;
 }
 
 export interface TokenResponse {

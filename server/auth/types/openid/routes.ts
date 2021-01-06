@@ -26,7 +26,7 @@ import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
 import { OpenIdAuthConfig } from './openid_auth';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
-import { getBaseRedirectUrl, callTokenEndpoint } from './helper';
+import { getBaseRedirectUrl, callTokenEndpoint, composeLogoutUrl } from './helper';
 import { validateNextUrl } from '../../../utils/next_url';
 
 export class OpenIdAuthRoutes {
@@ -189,10 +189,13 @@ export class OpenIdAuthRoutes {
           post_logout_redirect_uri: getBaseRedirectUrl(this.config, this.core),
           id_token_hint: token,
         };
+        const stringifiedLogoutQuery = stringify(logoutQueryParams);
 
-        const logoutBaseUri =
-          this.config.openid?.logout_url || this.openIdAuthConfig.endSessionEndpoint;
-        const endSessionUrl = `${logoutBaseUri}?${stringify(logoutQueryParams)}`;
+        const endSessionUrl = composeLogoutUrl(
+          this.config.openid?.logout_url,
+          this.openIdAuthConfig.endSessionEndpoint,
+          stringifiedLogoutQuery
+        );
 
         return response.redirected({
           headers: {
