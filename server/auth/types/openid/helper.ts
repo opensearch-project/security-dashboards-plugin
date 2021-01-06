@@ -45,8 +45,12 @@ export function getBaseRedirectUrl(config: SecurityPluginConfigType, core: CoreS
   return `${protocol}://${host}:${port}`;
 }
 
-export async function callTokenEndpoint(tokenEndpoint: string, query: any): Promise<TokenResponse> {
-  const tokenResponse = await wreck.post(tokenEndpoint, {
+export async function callTokenEndpoint(
+  tokenEndpoint: string,
+  query: any,
+  wreckClient: typeof wreck
+): Promise<TokenResponse> {
+  const tokenResponse = await wreckClient.post(tokenEndpoint, {
     payload: stringify(query),
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',

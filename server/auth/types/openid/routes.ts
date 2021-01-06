@@ -15,6 +15,7 @@
 import { schema } from '@kbn/config-schema';
 import { randomString } from '@hapi/cryptiles';
 import { stringify } from 'querystring';
+import wreck from '@hapi/wreck';
 import {
   IRouter,
   SessionStorageFactory,
@@ -38,7 +39,8 @@ export class OpenIdAuthRoutes {
     private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
     private readonly openIdAuthConfig: OpenIdAuthConfig,
     private readonly securityClient: SecurityClient,
-    private readonly core: CoreSetup
+    private readonly core: CoreSetup,
+    private readonly wreckClient: typeof wreck
   ) {}
 
   private redirectToLogin(request: KibanaRequest, response: KibanaResponseFactory) {
@@ -136,7 +138,8 @@ export class OpenIdAuthRoutes {
         try {
           const tokenResponse = await callTokenEndpoint(
             this.openIdAuthConfig.tokenEndpoint!,
-            query
+            query,
+            this.wreckClient
           );
 
           const user = await this.securityClient.authenticateWithHeader(
