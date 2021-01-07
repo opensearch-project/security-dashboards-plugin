@@ -58,31 +58,35 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
               "id": "custom",
               "label": <React.Fragment>
                 Choose from custom
-                <EuiSuperSelect
-                  compressed={false}
-                  fullWidth={false}
-                  hasDividers={false}
-                  isInvalid={false}
-                  isLoading={false}
-                  onChange={[Function]}
-                  options={
-                    Array [
-                      Object {
-                        "inputDisplay": "tenant1",
-                        "value": "tenant1",
-                      },
-                    ]
-                  }
-                  style={
-                    Object {
-                      "width": 400,
-                    }
-                  }
-                  valueOfSelected=""
-                />
               </React.Fragment>,
             },
           ]
+        }
+      />
+      <EuiComboBox
+        async={false}
+        compressed={false}
+        fullWidth={false}
+        isClearable={true}
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "label": "tenant1",
+            },
+          ]
+        }
+        selectedOptions={Array []}
+        singleSelection={
+          Object {
+            "asPlainText": true,
+          }
+        }
+        sortMatchesBy="none"
+        style={
+          Object {
+            "marginLeft": "24px",
+          }
         }
       />
       <EuiSpacer />
@@ -177,31 +181,35 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
               "id": "custom",
               "label": <React.Fragment>
                 Choose from custom
-                <EuiSuperSelect
-                  compressed={false}
-                  fullWidth={false}
-                  hasDividers={false}
-                  isInvalid={false}
-                  isLoading={false}
-                  onChange={[Function]}
-                  options={
-                    Array [
-                      Object {
-                        "inputDisplay": "tenant1",
-                        "value": "tenant1",
-                      },
-                    ]
-                  }
-                  style={
-                    Object {
-                      "width": 400,
-                    }
-                  }
-                  valueOfSelected=""
-                />
               </React.Fragment>,
             },
           ]
+        }
+      />
+      <EuiComboBox
+        async={false}
+        compressed={false}
+        fullWidth={false}
+        isClearable={true}
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "label": "tenant1",
+            },
+          ]
+        }
+        selectedOptions={Array []}
+        singleSelection={
+          Object {
+            "asPlainText": true,
+          }
+        }
+        sortMatchesBy="none"
+        style={
+          Object {
+            "marginLeft": "24px",
+          }
         }
       />
       <EuiSpacer />
@@ -296,31 +304,35 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
               "id": "custom",
               "label": <React.Fragment>
                 Choose from custom
-                <EuiSuperSelect
-                  compressed={false}
-                  fullWidth={false}
-                  hasDividers={false}
-                  isInvalid={false}
-                  isLoading={false}
-                  onChange={[Function]}
-                  options={
-                    Array [
-                      Object {
-                        "inputDisplay": "tenant1",
-                        "value": "tenant1",
-                      },
-                    ]
-                  }
-                  style={
-                    Object {
-                      "width": 400,
-                    }
-                  }
-                  valueOfSelected=""
-                />
               </React.Fragment>,
             },
           ]
+        }
+      />
+      <EuiComboBox
+        async={false}
+        compressed={false}
+        fullWidth={false}
+        isClearable={true}
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "label": "tenant1",
+            },
+          ]
+        }
+        selectedOptions={Array []}
+        singleSelection={
+          Object {
+            "asPlainText": true,
+          }
+        }
+        sortMatchesBy="none"
+        style={
+          Object {
+            "marginLeft": "24px",
+          }
         }
       />
       <EuiSpacer />
