@@ -146,7 +146,7 @@ describe('Account menu -tenant switch panel', () => {
 
     process.nextTick(() => {
       expect(setState).toHaveBeenCalledWith(CUSTOM_TENANT_RADIO_ID);
-      expect(setState).toHaveBeenCalledWith('tenant1');
+      expect(setState).toHaveBeenCalledWith([{ label: 'tenant1' }]);
       done();
     });
   });
@@ -274,7 +274,7 @@ describe('Account menu -tenant switch panel', () => {
 
     it('should handle tenant confirmation on "confirm" button click when selected tenant is Custom tenant', () => {
       useState.mockImplementationOnce(() => [CUSTOM_TENANT_RADIO_ID, setState]);
-      useState.mockImplementationOnce(() => ['tenant1', setState]);
+      useState.mockImplementationOnce(() => [[{ label: 'tenant1' }], setState]);
       const component = shallow(
         <TenantSwitchPanel
           coreStart={mockCoreStart as any}
