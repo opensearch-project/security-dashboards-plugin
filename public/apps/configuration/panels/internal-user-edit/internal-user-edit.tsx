@@ -45,6 +45,7 @@ import { generateResourceName } from '../../utils/resource-utils';
 import { NameRow } from '../../utils/name-row';
 import { DocLinks } from '../../constants';
 import { constructErrorMessageAndLog } from '../../../error-utils';
+import { BackendRolePanel } from './backend-role-panel';
 
 interface InternalUserEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -155,6 +156,8 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
           <PasswordEditPanel updatePassword={setPassword} updateIsInvalid={setIsPasswordInvalid} />
         </EuiForm>
       </PanelWithHeader>
+      <EuiSpacer size="m" />
+      <BackendRolePanel state={backendRoles} setState={setBackendRoles} />
       <EuiSpacer size="m" />
       <AttributePanel state={attributes} setState={setAttributes} />
       <EuiSpacer size="m" />

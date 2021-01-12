@@ -18,6 +18,7 @@ import { API_AUTH_LOGOUT } from '../../../common';
 import { API_ENDPOINT_ACCOUNT_INFO } from './constants';
 import { AccountInfo } from './types';
 import { httpGet, httpGetWithIgnores, httpPost } from '../configuration/utils/request-utils';
+import { setShouldShowTenantPopup } from '../../utils/storage-utils';
 
 export function fetchAccountInfo(http: HttpStart): Promise<AccountInfo> {
   return httpGet(http, API_ENDPOINT_ACCOUNT_INFO);
@@ -29,6 +30,7 @@ export async function fetchAccountInfoSafe(http: HttpStart): Promise<AccountInfo
 
 export async function logout(http: HttpStart, logoutUrl?: string): Promise<void> {
   await httpPost(http, API_AUTH_LOGOUT);
+  setShouldShowTenantPopup(null);
   window.location.href = logoutUrl || http.basePath.serverBasePath;
 }
 

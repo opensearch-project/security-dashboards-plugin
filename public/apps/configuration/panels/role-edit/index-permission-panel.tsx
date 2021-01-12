@@ -13,7 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-import './_index.scss';
 import {
   EuiAccordion,
   EuiButton,
@@ -42,7 +41,7 @@ import { PanelWithHeader } from '../../utils/panel-with-header';
 import { RoleIndexPermissionStateClass } from './types';
 import { FieldLevelSecurityMethod, ComboBoxOptions } from '../../types';
 import { getFieldLevelSecurityMethod } from '../../utils/index-permission-utils';
-import { LIMIT_WIDTH_INPUT_CLASS } from './constant';
+import { LIMIT_WIDTH_INPUT_CLASS } from '../../constants';
 import { buildHashUrl } from '../../utils/url-builder';
 import { ExternalLinkButton } from '../../utils/display-utils';
 import { DocLinks } from '../../constants';
