@@ -75,6 +75,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_STAGING_SECRET_ACCESS_KEY }}
           aws-region: us-west-2
       - name: Upload Artifacts to S3
+        shell: bash
         run: |
           zip=${{ env.ARTIFACT_PATH }}
 
