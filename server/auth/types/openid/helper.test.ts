@@ -19,7 +19,7 @@ describe('test OIDC helper utility', () => {
   test('test compose logout url', () => {
     const idpEndSessionUrl = 'https://idp.com/path';
     const customLogoutUrl = 'https://customurl.com/path';
-    const additionalQuery = 'key=value';
+    const additionalQuery = { key: 'value' };
 
     expect('https://customurl.com/path?key=value').toEqual(
       composeLogoutUrl(customLogoutUrl, idpEndSessionUrl, additionalQuery)
@@ -29,7 +29,7 @@ describe('test OIDC helper utility', () => {
   test('test compose logout url when no custom logout url', () => {
     const idpEndSessionUrl = 'https://idp.com/path';
     const customLogoutUrl = '';
-    const additionalQuery = 'key=value';
+    const additionalQuery = { key: 'value' };
 
     expect('https://idp.com/path?key=value').toEqual(
       composeLogoutUrl(customLogoutUrl, idpEndSessionUrl, additionalQuery)
@@ -39,7 +39,7 @@ describe('test OIDC helper utility', () => {
   test('test compse logout url when custom url has query parameter', () => {
     const idpEndSessionUrl = 'https://idp.com/path';
     const customLogoutUrl = 'https://customurl.com/path?a=b';
-    const additionalQuery = 'key=value';
+    const additionalQuery = { key: 'value' };
 
     expect('https://customurl.com/path?a=b&key=value').toEqual(
       composeLogoutUrl(customLogoutUrl, idpEndSessionUrl, additionalQuery)
@@ -49,7 +49,7 @@ describe('test OIDC helper utility', () => {
   test('test compse logout url when idp end session url has query parameter', () => {
     const idpEndSessionUrl = 'https://idp.com/path?a=b';
     const customLogoutUrl = '';
-    const additionalQuery = 'key=value';
+    const additionalQuery = { key: 'value' };;
 
     expect('https://idp.com/path?a=b&key=value').toEqual(
       composeLogoutUrl(customLogoutUrl, idpEndSessionUrl, additionalQuery)

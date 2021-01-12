@@ -18,6 +18,8 @@ import { parse, stringify } from 'querystring';
 import { CoreSetup } from 'kibana/server';
 import { parse as parseUrl, format } from 'url';
 import { SecurityPluginConfigType } from '../../..';
+import { parse as parseQueryString } from 'querystring';
+import { object } from 'joi';
 
 export function parseTokenResponse(payload: Buffer) {
   const payloadString = payload.toString();
@@ -74,13 +76,14 @@ export async function callTokenEndpoint(tokenEndpoint: string, query: any): Prom
 export function composeLogoutUrl(
   customLogoutUrl: string | undefined,
   idpEndsessionEndpoint: string | undefined,
-  additionalQueryString: string
+  additionalQueryParams: any
 ) {
   const logoutEndpont = customLogoutUrl || idpEndsessionEndpoint;
-  const logoutUrl = parseUrl(logoutEndpont!);
-  return logoutUrl.query
-    ? `${logoutEndpont}&${additionalQueryString}`
-    : `${logoutEndpont}?${additionalQueryString}`;
+  const logoutUrl = new URL(logoutEndpont!);
+  Object.keys(additionalQueryParams).forEach((key) => {
+    logoutUrl.searchParams.append(key, additionalQueryParams[key] as string);
+  });
+  return logoutUrl.toString();
 }
 
 export interface TokenResponse {

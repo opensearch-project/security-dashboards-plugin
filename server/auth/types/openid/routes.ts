@@ -189,12 +189,11 @@ export class OpenIdAuthRoutes {
           post_logout_redirect_uri: getBaseRedirectUrl(this.config, this.core),
           id_token_hint: token,
         };
-        const stringifiedLogoutQuery = stringify(logoutQueryParams);
 
         const endSessionUrl = composeLogoutUrl(
           this.config.openid?.logout_url,
           this.openIdAuthConfig.endSessionEndpoint,
-          stringifiedLogoutQuery
+          logoutQueryParams
         );
 
         return response.redirected({
