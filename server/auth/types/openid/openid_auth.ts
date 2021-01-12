@@ -84,7 +84,7 @@ export class OpenIdAuthentication extends AuthenticationType {
 
   private async init() {
     try {
-      const response = await wreck.get(this.openIdConnectUrl);
+      const response = await wreck.get(this.openIdConnectUrl, {});
       const payload = JSON.parse(response.payload as string);
 
       this.openIdAuthConfig.authorizationEndpoint = payload.authorization_endpoint;
