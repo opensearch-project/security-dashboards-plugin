@@ -77,7 +77,7 @@ jobs:
       - name: Upload Artifacts to S3
         shell: bash
         run: |
-          zip=${{ env.ARTIFACT_PATH }}
+          zip=${{ steps.build_zip.outputs.ARTIFACT_PATH }}
 
           # Inject the build number before the suffix
           zip_outfile=`basename ${zip%.zip}-build-${GITHUB_RUN_NUMBER}.zip`
