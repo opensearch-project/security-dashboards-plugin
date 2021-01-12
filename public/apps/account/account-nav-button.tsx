@@ -27,13 +27,14 @@ import {
   EuiText,
 } from '@elastic/eui';
 import { CoreStart } from 'kibana/public';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { RoleInfoPanel } from './role-info-panel';
 import { PasswordResetPanel } from './password-reset-panel';
 import { TenantSwitchPanel } from './tenant-switch-panel';
 import { ClientConfigType } from '../../types';
 import { LogoutButton } from './log-out-button';
 import { resolveTenantName } from '../configuration/utils/tenant-utils';
+import { getShouldShowTenantPopup, setShouldShowTenantPopup } from '../../utils/storage-utils';
 
 export function AccountNavButton(props: {
   coreStart: CoreStart;
@@ -46,6 +47,30 @@ export function AccountNavButton(props: {
   const [modal, setModal] = React.useState<React.ReactNode>(null);
   const horizontalRule = <EuiHorizontalRule margin="xs" />;
   const username = props.username;
+
+  const showTenantSwitchPanel = useCallback(
+    () =>
+      setModal(
+        <TenantSwitchPanel
+          coreStart={props.coreStart}
+          config={props.config}
+          handleClose={() => {
+            setModal(null);
+          }}
+          handleSwitchAndClose={() => {
+            setModal(null);
+            window.location.reload();
+          }}
+        />
+      ),
+    [props.config, props.coreStart]
+  );
+
+  if (getShouldShowTenantPopup()) {
+    setShouldShowTenantPopup(false);
+    showTenantSwitchPanel();
+  }
+
   const contextMenuPanel = (
     <div style={{ maxWidth: '256px' }}>
       <EuiFlexGroup gutterSize="s">
@@ -81,23 +106,7 @@ export function AccountNavButton(props: {
         View roles and identities
       </EuiButtonEmpty>
       {horizontalRule}
-      <EuiButtonEmpty
-        data-test-subj="switch-tenants"
-        size="xs"
-        onClick={() =>
-          setModal(
-            <TenantSwitchPanel
-              coreStart={props.coreStart}
-              config={props.config}
-              handleClose={() => setModal(null)}
-              handleSwitchAndClose={() => {
-                setModal(null);
-                window.location.reload();
-              }}
-            />
-          )
-        }
-      >
+      <EuiButtonEmpty data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
         Switch tenants
       </EuiButtonEmpty>
       {props.isInternalUser && (
@@ -130,13 +139,9 @@ export function AccountNavButton(props: {
     </div>
   );
   return (
-    <EuiHeaderSectionItemButton
-      data-test-subj="account-header-section-button"
-      onClick={() => {
-        setPopoverOpen((prevState) => !prevState);
-      }}
-    >
+    <EuiHeaderSectionItemButton>
       <EuiPopover
+        data-test-subj="account-popover"
         id="actionsMenu"
         button={<EuiAvatar name={username} />}
         isOpen={isPopoverOpen}
@@ -144,6 +149,9 @@ export function AccountNavButton(props: {
           setPopoverOpen(false);
         }}
         panelPaddingSize="s"
+        onClick={() => {
+          setPopoverOpen((prevState) => !prevState);
+        }}
       >
         <EuiContextMenuPanel>{contextMenuPanel}</EuiContextMenuPanel>
       </EuiPopover>
