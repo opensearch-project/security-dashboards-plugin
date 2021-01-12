@@ -16,10 +16,7 @@
 import wreck from '@hapi/wreck';
 import { parse, stringify } from 'querystring';
 import { CoreSetup } from 'kibana/server';
-import { parse as parseUrl, format } from 'url';
 import { SecurityPluginConfigType } from '../../..';
-import { parse as parseQueryString } from 'querystring';
-import { object } from 'joi';
 
 export function parseTokenResponse(payload: Buffer) {
   const payloadString = payload.toString();

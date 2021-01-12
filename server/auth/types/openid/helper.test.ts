@@ -49,7 +49,7 @@ describe('test OIDC helper utility', () => {
   test('test compse logout url when idp end session url has query parameter', () => {
     const idpEndSessionUrl = 'https://idp.com/path?a=b';
     const customLogoutUrl = '';
-    const additionalQuery = { key: 'value' };;
+    const additionalQuery = { key: 'value' };
 
     expect('https://idp.com/path?a=b&key=value').toEqual(
       composeLogoutUrl(customLogoutUrl, idpEndSessionUrl, additionalQuery)
