@@ -69,13 +69,13 @@ export const configSchema = schema.object({
       },
     }),
     anonymous_auth_enabled: schema.boolean({ defaultValue: false }),
-    unauthenticated_routes: schema.arrayOf(schema.string(), { defaultValue: ['/api/status'] }),
+    unauthenticated_routes: schema.arrayOf(schema.string(), { defaultValue: ['/api/status', '/api/reporting/stats'] }),
     forbidden_usernames: schema.arrayOf(schema.string(), { defaultValue: [] }),
     logout_url: schema.string({ defaultValue: '' }),
   }),
   basicauth: schema.object({
     enabled: schema.boolean({ defaultValue: true }),
-    unauthenticated_routes: schema.arrayOf(schema.string(), { defaultValue: ['/api/status'] }),
+    unauthenticated_routes: schema.arrayOf(schema.string(), { defaultValue: ['/api/status', '/api/reporting/stats'] }),
     forbidden_usernames: schema.arrayOf(schema.string(), { defaultValue: [] }),
     header_trumps_session: schema.boolean({ defaultValue: false }),
     alternative_login: schema.object({
