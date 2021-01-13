@@ -59,14 +59,6 @@ jobs:
         run: |
           cd ./kibana/plugins/opendistro_security
           yarn lint
-      - name: Hack step to update kibana source to unblock tsc
-        run: |
-          cd ./kibana
-          sed -i '170d' src/core/server/http/router/request.ts
-      - name: Run check
-        run: |
-          cd ./kibana/plugins/opendistro_security
-          yarn tsc
       - name: Run unit test
         run: |
           cd ./kibana/plugins/opendistro_security
@@ -79,8 +71,8 @@ jobs:
         id: build_zip
         run: |
           cd ./kibana/plugins/opendistro_security
-          node build_tools/build_plugin.js
-          artifact_path=`ls $(pwd)/build/opendistro_security_kibana_plugin-*.zip`
+          yarn build --kibana-version ${{ steps.kbn_version.outputs.kbn_version }}
+          artifact_path=`ls $(pwd)/build/opendistroSecurityKibana-*.zip`
           artifact_name=`basename $artifact_path`
           echo "::set-output name=ARTIFACT_PATH::$artifact_path"
           echo "::set-output name=ARTIFACT_NAME::$artifact_name"
