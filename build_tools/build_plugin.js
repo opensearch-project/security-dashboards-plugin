@@ -12,7 +12,7 @@
  *   express or implied. See the License for the specific language governing
  *   permissions and limitations under the License.
  */
-require('../../../src/setup_node_env/prebuilt_dev_only_entry');
+require('../../../src/setup_node_env/no_transpilation');
 
 const execa = require('execa');
 const optimizer = require('@kbn/optimizer');

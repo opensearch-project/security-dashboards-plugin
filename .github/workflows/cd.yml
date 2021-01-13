@@ -32,6 +32,10 @@ jobs:
         id: kbn_version
         run: |
           echo "::set-output name=kbn_version::$(jq -r '.kibana.version' ./kibana/plugins/opendistro_security/package.json)"
+      - name: Get plugin version
+        id: plugin_version
+        run: |
+          echo "::set-output name=plugin_version::$(jq -r .version ./kibana/plugins/opendistro_security/kibana.json)"
       - name: Use kibana release commit
         run: |
           cd ./kibana
@@ -55,16 +59,12 @@ jobs:
         run: |
           cd ./kibana
           yarn kbn bootstrap --oss
-      - name: Hack step to update kibana source to unblock tsc
-        run: |
-          cd ./kibana
-          sed -i '170d' src/core/server/http/router/request.ts
       - name: build security plugin
         id: build_zip
         run: |
           cd ./kibana/plugins/opendistro_security
-          node build_tools/build_plugin.js
-          artifact_path=`ls $(pwd)/build/opendistro_security_kibana_plugin-*.zip`
+          yarn build --kibana-version ${{ steps.kbn_version.outputs.kbn_version }}
+          artifact_path=`ls $(pwd)/build/opendistroSecurity*.zip`
           artifact_name=`basename $artifact_path`
           echo "::set-output name=ARTIFACT_PATH::$artifact_path"
           echo "::set-output name=ARTIFACT_NAME::$artifact_name"
@@ -77,12 +77,15 @@ jobs:
       - name: Upload Artifacts to S3
         shell: bash
         run: |
-          zip=${{ steps.build_zip.outputs.ARTIFACT_PATH }}
+          s3_prefix="s3://staging.artifacts.opendistroforelasticsearch.amazon.com/snapshots/kibana-plugins/security/"
+
+          # Rename
+          mv ${{ steps.build_zip.outputs.ARTIFACT_PATH }} opendistroSecurityKibana-${{ steps.plugin_version.outputs.plugin_version }}.zip
+          zip=`ls $(pwd)/build/opendistroSecurity*.zip`
+          echo $zip
 
           # Inject the build number before the suffix
           zip_outfile=`basename ${zip%.zip}-build-${GITHUB_RUN_NUMBER}.zip`
-
-          s3_prefix="s3://staging.artifacts.opendistroforelasticsearch.amazon.com/snapshots/kibana-plugins/security/"
 
           echo "Copying ${zip} to ${s3_prefix}${zip_outfile}"
           aws s3 cp --quiet $zip ${s3_prefix}${zip_outfile}

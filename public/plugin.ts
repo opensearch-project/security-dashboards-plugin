@@ -20,7 +20,6 @@ import {
   AppUpdater,
   CoreSetup,
   CoreStart,
-  DEFAULT_APP_CATEGORIES,
   Plugin,
   PluginInitializerContext,
 } from '../../../src/core/public';
@@ -82,7 +81,7 @@ export class OpendistroSecurityPlugin
       core.application.register({
         id: PLUGIN_NAME,
         title: 'Security',
-        order: 9050,
+        order: 8000,
         mount: async (params: AppMountParameters) => {
           const { renderApp } = await import('./apps/configuration/configuration-app');
           const [coreStart, depsStart] = await core.getStartServices();
@@ -96,7 +95,11 @@ export class OpendistroSecurityPlugin
 
           return renderApp(coreStart, depsStart as AppPluginStartDependencies, params, config);
         },
-        category: DEFAULT_APP_CATEGORIES.management,
+        category: {
+          id: 'odfe',
+          label: 'Open Distro for Elasticsearch',
+          order: 2000,
+        },
       });
     }
 

@@ -1,0 +1,9 @@
+{
+  "buildSourcePatterns": [
+    "package.json",
+    "yarn.lock",
+    "kibana.json",
+    "{common,lib,server,webpackShims,translations,utils,target}/**/*",
+    "!*test*"
+  ]
+}
