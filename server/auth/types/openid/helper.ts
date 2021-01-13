@@ -74,6 +74,19 @@ export async function callTokenEndpoint(
   };
 }
 
+export function composeLogoutUrl(
+  customLogoutUrl: string | undefined,
+  idpEndsessionEndpoint: string | undefined,
+  additionalQueryParams: any
+) {
+  const logoutEndpont = customLogoutUrl || idpEndsessionEndpoint;
+  const logoutUrl = new URL(logoutEndpont!);
+  Object.keys(additionalQueryParams).forEach((key) => {
+    logoutUrl.searchParams.append(key, additionalQueryParams[key] as string);
+  });
+  return logoutUrl.toString();
+}
+
 export interface TokenResponse {
   idToken?: string;
   accessToken?: string;

@@ -15,6 +15,7 @@
 
 import { validateNextUrl, INVALID_NEXT_URL_PARAMETER_MESSAGE } from './next_url';
 
+/* eslint-disable no-script-url */
 describe('test validateNextUrl', () => {
   test('accept relative url', () => {
     const url = '/relative/path';
