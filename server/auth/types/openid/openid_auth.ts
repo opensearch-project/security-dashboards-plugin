@@ -26,6 +26,9 @@ import {
   AuthToolkit,
   IKibanaResponse,
 } from 'kibana/server';
+import HTTP from 'http';
+import HTTPS from 'https';
+import { PeerCertificate } from 'tls';
 import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { OpenIdAuthRoutes } from './routes';
@@ -34,8 +37,6 @@ import { callTokenEndpoint } from './helper';
 import { composeNextUrlQeuryParam } from '../../../utils/next_url';
 
 export interface OpenIdAuthConfig {
-  ca?: Buffer | undefined;
-  // checkServerIdentity: (host: string, cert: any) => void;
   authorizationEndpoint?: string;
   tokenEndpoint?: string;
   endSessionEndpoint?: string;
@@ -44,12 +45,18 @@ export interface OpenIdAuthConfig {
   authHeaderName?: string;
 }
 
+export interface WreckHttpsOptions {
+  ca?: string | Buffer | Array<string | Buffer>;
+  checkServerIdentity?: (host: string, cert: PeerCertificate) => Error | undefined;
+}
+
 export class OpenIdAuthentication extends AuthenticationType {
   public readonly type: string = 'openid';
 
   private openIdAuthConfig: OpenIdAuthConfig;
   private authHeaderName: string;
   private openIdConnectUrl: string;
+  private wreckClient: typeof wreck;
 
   constructor(
     config: SecurityPluginConfigType,
@@ -60,15 +67,10 @@ export class OpenIdAuthentication extends AuthenticationType {
     logger: Logger
   ) {
     super(config, sessionStorageFactory, router, esClient, core, logger);
+
+    this.wreckClient = this.createWreckClient();
+
     this.openIdAuthConfig = {};
-
-    if (this.config.openid?.root_ca) {
-      this.openIdAuthConfig.ca = fs.readFileSync(this.config.openid.root_ca);
-    }
-    if (this.config.openid?.verify_hostnames) {
-      logger.debug(`openId auth 'verify_hostnames' option is on.`);
-    }
-
     this.authHeaderName = this.config.openid?.header || '';
     this.openIdAuthConfig.authHeaderName = this.authHeaderName;
 
@@ -84,7 +86,7 @@ export class OpenIdAuthentication extends AuthenticationType {
 
   private async init() {
     try {
-      const response = await wreck.get(this.openIdConnectUrl, {});
+      const response = await this.wreckClient.get(this.openIdConnectUrl);
       const payload = JSON.parse(response.payload as string);
 
       this.openIdAuthConfig.authorizationEndpoint = payload.authorization_endpoint;
@@ -97,12 +99,39 @@ export class OpenIdAuthentication extends AuthenticationType {
         this.sessionStorageFactory,
         this.openIdAuthConfig,
         this.securityClient,
-        this.coreSetup
+        this.coreSetup,
+        this.wreckClient
       );
       routes.setupRoutes();
     } catch (error) {
       this.logger.error(error); // TODO: log more info
       throw new Error('Failed when trying to obtain the endpoints from your IdP');
+    }
+  }
+
+  private createWreckClient(): typeof wreck {
+    const wreckHttpsOption: WreckHttpsOptions = {};
+    if (this.config.openid?.root_ca) {
+      wreckHttpsOption.ca = [fs.readFileSync(this.config.openid.root_ca)];
+    }
+    if (this.config.openid?.verify_hostnames === false) {
+      this.logger.debug(`openId auth 'verify_hostnames' option is off.`);
+      wreckHttpsOption.checkServerIdentity = (host: string, cert: PeerCertificate) => {
+        return undefined;
+      };
+    }
+    if (Object.keys(wreckHttpsOption).length > 0) {
+      return wreck.defaults({
+        agents: {
+          http: new HTTP.Agent(),
+          https: new HTTPS.Agent(wreckHttpsOption),
+          httpsAllowUnauthorized: new HTTPS.Agent({
+            rejectUnauthorized: false,
+          }),
+        },
+      });
+    } else {
+      return wreck;
     }
   }
 
@@ -151,7 +180,8 @@ export class OpenIdAuthentication extends AuthenticationType {
         };
         const refreshTokenResponse = await callTokenEndpoint(
           this.openIdAuthConfig.tokenEndpoint!,
-          query
+          query,
+          this.wreckClient
         );
 
         // if no id_token from refresh token call, maybe the Idp doesn't allow refresh id_token
