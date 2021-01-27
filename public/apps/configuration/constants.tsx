@@ -43,6 +43,7 @@ export const CLUSTER_PERMISSIONS: string[] = [
   'cluster:admin/opendistro/ad/detector/write',
   'cluster:admin/opendistro/ad/detectors/get',
   'cluster:admin/opendistro/ad/result/search',
+  'cluster:admin/opendistro/ad/tasks/search',
   'cluster:admin/opendistro/alerting/alerts/ack',
   'cluster:admin/opendistro/alerting/alerts/get',
   'cluster:admin/opendistro/alerting/destination/delete',
