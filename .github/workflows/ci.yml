@@ -55,10 +55,6 @@ jobs:
         run: |
           cd ./kibana
           yarn kbn bootstrap --oss
-      - name: Run lint
-        run: |
-          cd ./kibana/plugins/opendistro_security
-          yarn lint
       - name: Hack step to update kibana source to unblock tsc
         run: |
           cd ./kibana
