@@ -133,7 +133,7 @@ export interface InternalUser {
 }
 
 export interface InternalUserUpdate extends InternalUser {
-  password: string;
+  password?: string;
 }
 
 export interface ActionGroupUpdate {

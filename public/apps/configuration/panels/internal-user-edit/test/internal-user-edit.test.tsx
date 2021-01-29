@@ -15,6 +15,7 @@
 
 import { shallow } from 'enzyme';
 import React from 'react';
+import { InternalUserUpdate } from '../../../types';
 import { getUserDetail, updateUser } from '../../../utils/internal-user-detail-utils';
 import { createErrorToast } from '../../../utils/toast-utils';
 import { AttributePanel } from '../attribute-panel';
@@ -81,6 +82,27 @@ describe('Internal user edit', () => {
     expect(getUserDetail).toBeCalledWith(mockCoreStart.http, sampleUsername);
   });
 
+  it('should not submit if password is empty on creation', () => {
+    const action = 'create';
+    useState.mockImplementation((initialValue) => [initialValue, setState]);
+
+    const component = shallow(
+      <InternalUserEdit
+        action={action}
+        sourceUserName={sampleUsername}
+        buildBreadcrumbs={buildBreadcrumbs}
+        coreStart={mockCoreStart as any}
+        navigation={{} as any}
+        params={{} as any}
+        config={{} as any}
+      />
+    );
+    component.find('#submit').simulate('click');
+
+    expect(createErrorToast).toBeCalled();
+    expect(updateUser).toBeCalledTimes(0);
+  });
+
   it('submit change', () => {
     const action = 'edit';
 
@@ -98,6 +120,8 @@ describe('Internal user edit', () => {
     component.find('#submit').simulate('click');
 
     expect(updateUser).toBeCalled();
+    const userUpdateObj: InternalUserUpdate = updateUser.mock.calls[0][0];
+    expect(userUpdateObj.password).toEqual(undefined);
   });
 
   it('should create error toast when password is invalid', () => {

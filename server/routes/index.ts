@@ -21,7 +21,7 @@ import { API_PREFIX, CONFIGURATION_API_PREFIX, isValidResourceName } from '../..
 export function defineRoutes(router: IRouter) {
   const internalUserSchema = schema.object({
     description: schema.maybe(schema.string()),
-    password: schema.string(),
+    password: schema.maybe(schema.string()),
     backend_roles: schema.arrayOf(schema.string(), { defaultValue: [] }),
     attributes: schema.any({ defaultValue: {} }),
   });
