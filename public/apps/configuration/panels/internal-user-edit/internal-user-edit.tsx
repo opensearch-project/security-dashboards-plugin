@@ -98,14 +98,24 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
         return;
       }
 
+      if (password === '' && props.action !== 'edit') {
+        addToast(createErrorToast('emptyPassword', 'Update error', 'Password is required.'));
+        return;
+      }
+
       // Remove attributes with empty key
       const validAttributes = attributes.filter((v: UserAttributeStateClass) => v.key !== '');
 
       const updateObject: InternalUserUpdate = {
-        password,
         backend_roles: backendRoles,
         attributes: unbuildAttributeState(validAttributes),
       };
+
+      // Password field should be omitted if not updating password.
+      if (password !== '') {
+        updateObject.password = password;
+      }
+
       await updateUser(props.coreStart.http, userName, updateObject);
 
       setCrossPageToast(buildUrl(ResourceType.users), {
