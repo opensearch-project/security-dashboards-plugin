@@ -85,3 +85,4 @@ jobs:
 
           echo "Copying ${zip} to ${s3_prefix}${zip_outfile}"
           aws s3 cp --quiet $zip ${s3_prefix}${zip_outfile}
+          
