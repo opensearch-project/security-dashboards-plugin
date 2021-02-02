@@ -70,7 +70,7 @@ export const configSchema = schema.object({
     }),
     anonymous_auth_enabled: schema.boolean({ defaultValue: false }),
     unauthenticated_routes: schema.arrayOf(schema.string(), {
-      defaultValue: ['/api/status', '/api/reporting/stats']
+      defaultValue: ['/api/status', '/api/reporting/stats'],
     }),
     forbidden_usernames: schema.arrayOf(schema.string(), { defaultValue: [] }),
     logout_url: schema.string({ defaultValue: '' }),
