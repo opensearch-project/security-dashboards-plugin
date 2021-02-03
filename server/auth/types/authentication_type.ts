@@ -126,10 +126,11 @@ export abstract class AuthenticationType implements IAuthenticationType {
         return this.handleUnauthedRequest(request, response, toolkit);
       }
 
-      // extend cookie expiration time
-      cookie!.expiryTime = Date.now() + this.config.cookie.ttl;
-      this.sessionStorageFactory.asScoped(request).set(cookie!);
-
+      // extend session expiration time
+      if (this.config.session.keepalive) {
+        cookie!.expiryTime = Date.now() + this.config.session.ttl;
+        this.sessionStorageFactory.asScoped(request).set(cookie!);
+      }
       // cookie is valid
       // build auth header
       const authHeadersFromCookie = this.buildAuthHeaderFromCookie(cookie!);
