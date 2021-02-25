@@ -114,13 +114,22 @@ export class SamlAuthRoutes {
             'authorization',
             credentials.authorization
           );
+
+          let expiryTime = Date.now() + this.config.session.ttl;
+          const tokenPayload = JSON.parse(
+            Buffer.from(credentials.authorization.split(`·`)[1], 'base64').toString()
+          );
+
+          if (tokenPayload.exp) {
+            expiryTime = parseInt(tokenPayload.exp, 10) * 1000;
+          }
           const cookie: SecuritySessionCookie = {
             username: user.username,
             credentials: {
               authHeaderValue: credentials.authorization,
             },
             authType: 'saml', // TODO: create constant
-            expiryTime: Date.now() + this.config.session.ttl,
+            expiryTime,
           };
           this.sessionStorageFactory.asScoped(request).set(cookie);
           return response.redirected({
@@ -161,13 +170,23 @@ export class SamlAuthRoutes {
             'authorization',
             credentials.authorization
           );
+
+          let expiryTime = Date.now() + this.config.session.ttl;
+          const tokenPayload = JSON.parse(
+            Buffer.from(credentials.authorization.split(`·`)[1], 'base64').toString()
+          );
+
+          if (tokenPayload.exp) {
+            expiryTime = parseInt(tokenPayload.exp, 10) * 1000;
+          }
+
           const cookie: SecuritySessionCookie = {
             username: user.username,
             credentials: {
               authHeaderValue: credentials.authorization,
             },
             authType: 'saml', // TODO: create constant
-            expiryTime: Date.now() + this.config.session.ttl,
+            expiryTime,
           };
           this.sessionStorageFactory.asScoped(request).set(cookie);
           return response.redirected({
