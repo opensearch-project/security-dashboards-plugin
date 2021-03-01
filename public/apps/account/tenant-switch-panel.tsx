@@ -64,11 +64,6 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
     EuiComboBoxOptionOption[]
   >([]);
 
-  // If saved tenant is present, set remember option to true
-  const [rememberSelection, setRememberSelection] = React.useState<boolean>(
-    Boolean(getSavedTenant())
-  );
-
   const setCurrentTenant = (currentRawTenantName: string, currentUserName: string) => {
     const resolvedTenantName = resolveTenantName(currentRawTenantName, currentUserName);
 
@@ -212,11 +207,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
       setErrorCallOut('No target tenant is specified!');
     } else {
       try {
-        if (rememberSelection) {
-          setSavedTenant(tenantName);
-        } else {
-          setSavedTenant(null);
-        }
+        setSavedTenant(tenantName);
 
         await changeTenant(tenantName);
         props.handleSwitchAndClose();
@@ -285,13 +276,6 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
           {content}
 
           <EuiSpacer />
-
-          <EuiCheckbox
-            id="remember"
-            label="Remember my selection next time I log in from this device."
-            checked={rememberSelection}
-            onChange={(e) => setRememberSelection(e.target.checked)}
-          />
         </EuiModalBody>
         <EuiModalFooter>
           <EuiButtonEmpty onClick={props.handleClose}>Cancel</EuiButtonEmpty>
