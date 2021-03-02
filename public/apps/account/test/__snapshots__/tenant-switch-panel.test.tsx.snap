@@ -91,15 +91,6 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
       />
       <EuiSpacer />
       <EuiSpacer />
-      <EuiCheckbox
-        checked={false}
-        compressed={false}
-        disabled={false}
-        id="remember"
-        indeterminate={false}
-        label="Remember my selection next time I log in from this device."
-        onChange={[Function]}
-      />
     </EuiModalBody>
     <EuiModalFooter>
       <EuiButtonEmpty
@@ -214,15 +205,6 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
       />
       <EuiSpacer />
       <EuiSpacer />
-      <EuiCheckbox
-        checked={false}
-        compressed={false}
-        disabled={false}
-        id="remember"
-        indeterminate={false}
-        label="Remember my selection next time I log in from this device."
-        onChange={[Function]}
-      />
     </EuiModalBody>
     <EuiModalFooter>
       <EuiButtonEmpty
@@ -337,15 +319,6 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
       />
       <EuiSpacer />
       <EuiSpacer />
-      <EuiCheckbox
-        checked={false}
-        compressed={false}
-        disabled={false}
-        id="remember"
-        indeterminate={false}
-        label="Remember my selection next time I log in from this device."
-        onChange={[Function]}
-      />
     </EuiModalBody>
     <EuiModalFooter>
       <EuiButtonEmpty
