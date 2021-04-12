@@ -125,7 +125,6 @@ export class BasicAuthentication extends AuthenticationType {
         });
       }
     } else {
-      this.logger.error('\t\t Authentication required');
       return response.unauthorized({
         body: `Authentication required`,
       });
