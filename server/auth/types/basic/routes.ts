@@ -24,6 +24,7 @@ import { User } from '../../user';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { API_AUTH_LOGIN, API_AUTH_LOGOUT, LOGIN_PAGE_URI } from '../../../../common';
 import { resolveTenant } from '../../../multitenancy/tenant_resolver';
+import { composeNextUrlQeuryParam } from '../../../utils/next_url';
 
 export class BasicAuthRoutes {
   constructor(
@@ -167,10 +168,12 @@ export class BasicAuthRoutes {
           try {
             user = await this.securityClient.authenticateWithHeaders(request, {});
           } catch (error) {
-            context.security_plugin.logger.error(`Failed authentication: ${error}`);
-            return response.unauthorized({
+            context.security_plugin.logger.error(
+              `Failed authentication: ${error} redirecting to login page`
+            );
+            return response.redirected({
               headers: {
-                'www-authenticate': error.message,
+                location: `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}`,
               },
             });
           }
@@ -196,7 +199,9 @@ export class BasicAuthRoutes {
           this.sessionStorageFactory.asScoped(request).set(sessionStorage);
           return response.redirected({
             headers: {
-              location: `${this.coreSetup.http.basePath.serverBasePath}`,
+              location: `${this.coreSetup.http.basePath.serverBasePath}${
+                request.url.path?.split('?')[1]
+              }`,
             },
             body: {
               username: user.username,

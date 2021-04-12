@@ -104,26 +104,28 @@ export class BasicAuthentication extends AuthenticationType {
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
   ): KibanaResponse {
-    if (this.config.auth.anonymous_auth_enabled && request.url.pathname === '/') {
-      const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}/auth/anonymous`;
-      return response.redirected({
-        headers: {
-          location: `${redirectLocation}`,
-        },
-      });
-    }
+    const nextUrlParam = composeNextUrlQeuryParam(
+      request,
+      this.coreSetup.http.basePath.serverBasePath
+    );
     if (this.isPageRequest(request)) {
-      const nextUrlParam = composeNextUrlQeuryParam(
-        request,
-        this.coreSetup.http.basePath.serverBasePath
-      );
-      const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`;
-      return response.redirected({
-        headers: {
-          location: `${redirectLocation}`,
-        },
-      });
+      if (this.config.auth.anonymous_auth_enabled && request.url.pathname !== '/app/login') {
+        const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}/auth/anonymous?${request.url.pathname}`;
+        return response.redirected({
+          headers: {
+            location: `${redirectLocation}`,
+          },
+        });
+      } else {
+        const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`;
+        return response.redirected({
+          headers: {
+            location: `${redirectLocation}`,
+          },
+        });
+      }
     } else {
+      this.logger.error('\t\t Authentication required');
       return response.unauthorized({
         body: `Authentication required`,
       });
