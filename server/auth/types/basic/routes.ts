@@ -194,8 +194,10 @@ export class BasicAuthRoutes {
             sessionStorage.tenant = selectTenant;
           }
           this.sessionStorageFactory.asScoped(request).set(sessionStorage);
-
-          return response.ok({
+          return response.redirected({
+            headers: {
+              location: `${this.coreSetup.http.basePath.serverBasePath}`,
+            },
             body: {
               username: user.username,
               tenants: user.tenants,
