@@ -13,12 +13,12 @@
  *   permissions and limitations under the License.
  */
 
-import { IRouter } from 'kibana/server';
+import { IRouter } from 'opensearch-dashboards/server';
 import { SecurityPluginConfigType } from '..';
 
 export function defineAuthTypeRoutes(router: IRouter, config: SecurityPluginConfigType) {
   /**
-   * Auth type API that returns current auth type configured on Kibana Server.
+   * Auth type API that returns current auth type configured on OpenSearchDashboards Server.
    *
    * GET /api/authtype
    * Response:

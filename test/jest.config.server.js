@@ -17,20 +17,20 @@ import config from '../../../src/dev/jest/config';
 
 export default {
   ...config,
-  roots: ['<rootDir>/plugins/opendistro_security'],
+  roots: ['<rootDir>/plugins/security-dashboards-plugin'],
   testMatch: ['**/test/jest_integration/**/*.test.ts', '**/server/**/*.test.ts'],
   testPathIgnorePatterns: config.testPathIgnorePatterns.filter(
     (pattern) => !pattern.includes('integration_tests')
   ),
   setupFilesAfterEnv: ['<rootDir>/src/dev/jest/setup/after_env.integration.js'],
   collectCoverageFrom: [
-    '<rootDir>/plugins/opendistro_security/server/**/*.{ts,tsx}',
-    '!<rootDir>/plugins/opendistro_security/server/**/*.test.{ts,tsx}',
-    '!<rootDir>/plugins/opendistro_security/server/auth/types/jwt/**/*.{ts,tsx}',
-    '!<rootDir>/plugins/opendistro_security/server/auth/types/openid/**/*.{ts,tsx}',
-    '!<rootDir>/plugins/opendistro_security/server/auth/types/saml/**/*.{ts,tsx}',
-    '!<rootDir>/plugins/opendistro_security/server/auth/types/proxy/**/*.{ts,tsx}',
+    '<rootDir>/plugins/security-dashboards-plugin/server/**/*.{ts,tsx}',
+    '!<rootDir>/plugins/security-dashboards-plugin/server/**/*.test.{ts,tsx}',
+    '!<rootDir>/plugins/security-dashboards-plugin/server/auth/types/jwt/**/*.{ts,tsx}',
+    '!<rootDir>/plugins/security-dashboards-plugin/server/auth/types/openid/**/*.{ts,tsx}',
+    '!<rootDir>/plugins/security-dashboards-plugin/server/auth/types/saml/**/*.{ts,tsx}',
+    '!<rootDir>/plugins/security-dashboards-plugin/server/auth/types/proxy/**/*.{ts,tsx}',
   ],
-  coverageDirectory: '<rootDir>/plugins/opendistro_security/kibana-coverage/jest_server',
+  coverageDirectory: '<rootDir>/plugins/security-dashboards-plugin/kibana-coverage/jest_server',
   coverageReporters: ['lcov', 'text', 'cobertura', 'html'],
 };

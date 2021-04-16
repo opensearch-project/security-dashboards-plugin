@@ -1,5 +1,5 @@
 {
-  // extend Kibana's tsconfig, or use your own settings
+  // extend OpenSearchDashboards's tsconfig, or use your own settings
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "esModuleInterop": true,

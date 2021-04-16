@@ -15,7 +15,7 @@
 
 import React from 'react';
 import { EuiButtonEmpty } from '@elastic/eui';
-import { HttpStart } from 'kibana/public';
+import { HttpStart } from 'opensearch-dashboards/public';
 import { logout } from './utils';
 
 export function LogoutButton(props: {

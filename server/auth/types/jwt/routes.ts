@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { IRouter, SessionStorageFactory } from 'kibana/server';
+import { IRouter, SessionStorageFactory } from 'opensearch-dashboards/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { API_AUTH_LOGOUT, API_PREFIX } from '../../../../common';
 

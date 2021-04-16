@@ -23,7 +23,7 @@ To build the security-kibana plugin from source follow these instructions:
 * Change your node version to the version specified in `.node-version` inside the Kibana root directory.
 * cd into the `plugins` directory of the Kibana source code directory.
 * Check out this package from version control into the `plugins/opendistro_security` directory.
-* Run `yarn kbn bootstrap` inside `kibana` directory
+* Run `yarn osd bootstrap` inside `kibana` directory
 * Ultimately, your directory structure should look like this:
 
 ```md

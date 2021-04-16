@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { CoreStart } from 'kibana/public';
+import { CoreStart } from 'opensearch-dashboards/public';
 
 export function getNavLinkById(coreStart: CoreStart, id: string) {
   const navLink = coreStart.chrome.navLinks.get(id);

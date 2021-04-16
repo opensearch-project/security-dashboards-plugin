@@ -134,7 +134,7 @@ export function TenantPanel(props: {
   return (
     <PanelWithHeader
       headerText="Tenant permissions"
-      headerSubText="Tenants are useful for safely sharing your work with other Kibana users. You can control which roles have access to a tenant and whether those roles have read and/or write access."
+      headerSubText="Tenants are useful for safely sharing your work with other OpenSearchDashboards users. You can control which roles have access to a tenant and whether those roles have read and/or write access."
       helpLink={DocLinks.TenantPermissionsDoc}
     >
       <FormRow headerText="Tenant">

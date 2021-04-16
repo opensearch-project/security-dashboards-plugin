@@ -13,14 +13,14 @@
  *   permissions and limitations under the License.
  */
 
-import * as kbnTestServer from '../../../../src/core/test_helpers/kbn_server';
+import * as osdTestServer from '../../../../src/core/test_helpers/osd_server';
 import { Root } from '../../../../src/core/server/root';
 import { resolve } from 'path';
 import { describe, expect, it, beforeAll, afterAll } from '@jest/globals';
 import {
   ADMIN_CREDENTIALS,
-  KIBANA_SERVER_USER,
-  KIBANA_SERVER_PASSWORD,
+  OPENSEARCH_DASHBOARDS_SERVER_USER,
+  OPENSEARCH_DASHBOARDS_SERVER_PASSWORD,
   AUTHORIZATION_HEADER_NAME,
   ADMIN_USER,
   ADMIN_PASSWORD,
@@ -28,21 +28,22 @@ import {
 import { getAuthCookie, extractAuthCookie } from '../helper/cookie';
 import wreck from '@hapi/wreck';
 
-describe('start kibana server', () => {
+describe('start OpenSearch Dashboards server', () => {
   let root: Root;
+  let anonymousDisabledRoot: Root;
 
   beforeAll(async () => {
-    root = kbnTestServer.createRootWithSettings(
+    root = osdTestServer.createRootWithSettings(
       {
         plugins: {
           scanDirs: [resolve(__dirname, '../..')],
         },
-        elasticsearch: {
+        opensearch: {
           hosts: ['https://localhost:9200'],
           ignoreVersionMismatch: true,
           ssl: { verificationMode: 'none' },
-          username: KIBANA_SERVER_USER,
-          password: KIBANA_SERVER_PASSWORD,
+          username: OPENSEARCH_DASHBOARDS_SERVER_USER,
+          password: OPENSEARCH_DASHBOARDS_SERVER_PASSWORD,
         },
         opendistro_security: {
           auth: {
@@ -57,10 +58,37 @@ describe('start kibana server', () => {
       }
     );
 
-    console.log('Starting Kibana server..');
+    anonymousDisabledRoot = osdTestServer.createRootWithSettings(
+      {
+        plugins: {
+          scanDirs: [resolve(__dirname, '../..')],
+        },
+        opensearch: {
+          hosts: ['https://localhost:9200'],
+          ignoreVersionMismatch: true,
+          ssl: { verificationMode: 'none' },
+          username: OPENSEARCH_DASHBOARDS_SERVER_USER,
+          password: OPENSEARCH_DASHBOARDS_SERVER_PASSWORD,
+        },
+        opendistro_security: {
+          auth: {
+            anonymous_auth_enabled: false,
+          },
+        },
+      },
+      {
+        // to make ignoreVersionMismatch setting work
+        // can be removed when we have corresponding ES version
+        dev: true,
+      }
+    );
+    await anonymousDisabledRoot.setup();
+    await anonymousDisabledRoot.start();
+
+    console.log('Starting OpenSearchDashboards server..');
     await root.setup();
     await root.start();
-    console.log('Started Kibana server');
+    console.log('Started OpenSearchDashboards server');
 
     // update ES security config to enable anonymous auth
     const getConfigResponse = await wreck.get(
@@ -93,25 +121,26 @@ describe('start kibana server', () => {
   });
 
   afterAll(async () => {
-    // shutdown Kibana server
+    // shutdown OpenSearchDashboards server
     await root.shutdown();
+    await anonymousDisabledRoot.shutdown();
   });
 
   it('can access login page without credentials', async () => {
-    const response = await kbnTestServer.request.get(root, '/app/login');
+    const response = await osdTestServer.request.get(root, '/app/login');
     expect(response.status).toEqual(200);
   });
 
   it('call authinfo API as admin', async () => {
     const testUserCredentials = Buffer.from(ADMIN_CREDENTIALS);
-    const response = await kbnTestServer.request
+    const response = await osdTestServer.request
       .get(root, '/api/v1/auth/authinfo')
       .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
     expect(response.status).toEqual(200);
   });
 
   it('call authinfo API without credentials', async () => {
-    const response = await kbnTestServer.request
+    const response = await osdTestServer.request
       .get(root, '/api/v1/auth/authinfo')
       .unset('Authorization');
     expect(response.status).toEqual(401);
@@ -120,7 +149,7 @@ describe('start kibana server', () => {
   it('call authinfo API with cookie', async () => {
     const authCookie = await getAuthCookie(root, ADMIN_USER, ADMIN_PASSWORD);
 
-    const response = await kbnTestServer.request
+    const response = await osdTestServer.request
       .get(root, '/api/v1/auth/authinfo')
       .unset(AUTHORIZATION_HEADER_NAME)
       .set('Cookie', authCookie);
@@ -128,7 +157,7 @@ describe('start kibana server', () => {
   });
 
   it('login with user name and password', async () => {
-    const response = await kbnTestServer.request
+    const response = await osdTestServer.request
       .post(root, '/auth/login')
       .unset(AUTHORIZATION_HEADER_NAME)
       .send({
@@ -142,7 +171,7 @@ describe('start kibana server', () => {
   });
 
   it('login fails with invalid credentials', async () => {
-    const response = await kbnTestServer.request
+    const response = await osdTestServer.request
       .post(root, '/auth/login')
       .unset(AUTHORIZATION_HEADER_NAME)
       .send({
@@ -155,7 +184,7 @@ describe('start kibana server', () => {
   it('log out', async () => {
     const authCookie = await getAuthCookie(root, ADMIN_USER, ADMIN_PASSWORD);
 
-    const response = await kbnTestServer.request
+    const response = await osdTestServer.request
       .post(root, '/auth/logout')
       .unset(AUTHORIZATION_HEADER_NAME)
       .set('Cookie', authCookie);
@@ -165,7 +194,7 @@ describe('start kibana server', () => {
   });
 
   it('anonymous auth', async () => {
-    const response = await kbnTestServer.request
+    const response = await osdTestServer.request
       .get(root, '/auth/anonymous')
       .unset(AUTHORIZATION_HEADER_NAME);
     expect(response.status).toEqual(200);
@@ -173,36 +202,11 @@ describe('start kibana server', () => {
   });
 
   it('anonymous disabled', async () => {
-    const anonymousDisabledRoot = kbnTestServer.createRootWithSettings(
-      {
-        plugins: {
-          scanDirs: [resolve(__dirname, '../..')],
-        },
-        elasticsearch: {
-          hosts: ['https://localhost:9200'],
-          ignoreVersionMismatch: true,
-          ssl: { verificationMode: 'none' },
-          username: KIBANA_SERVER_USER,
-          password: KIBANA_SERVER_PASSWORD,
-        },
-        opendistro_security: {
-          auth: {
-            anonymous_auth_enabled: false,
-          },
-        },
-      },
-      {
-        // to make ignoreVersionMismatch setting work
-        // can be removed when we have corresponding ES version
-        dev: true,
-      }
-    );
-    await anonymousDisabledRoot.setup();
-    await anonymousDisabledRoot.start();
-    const response = await kbnTestServer.request
+    const response = await osdTestServer.request
       .get(anonymousDisabledRoot, '/auth/anonymous')
       .unset(AUTHORIZATION_HEADER_NAME);
+
     expect(response.status).toEqual(400);
-    await anonymousDisabledRoot.shutdown();
+
   });
 });

@@ -13,8 +13,8 @@
  *   permissions and limitations under the License.
  */
 
-import { schema } from '@kbn/config-schema';
-import { IRouter, ResponseError, IKibanaResponse, KibanaResponseFactory } from 'kibana/server';
+import { schema } from '@osd/config-schema';
+import { IRouter, ResponseError, IOpenSearchDashboardsResponse, OpenSearchDashboardsResponseFactory } from 'opensearch-dashboards/server';
 import { API_PREFIX, CONFIGURATION_API_PREFIX, isValidResourceName } from '../../common';
 
 // TODO: consider to extract entity CRUD operations and put it into a client class
@@ -33,7 +33,7 @@ export function defineRoutes(router: IRouter) {
     // type: schema.oneOf([
     //   schema.literal('cluster'),
     //   schema.literal('index'),
-    //   schema.literal('kibana'),
+    //   schema.literal('opensearch_dashboards'),
     // ]),
   });
 
@@ -145,13 +145,13 @@ export function defineRoutes(router: IRouter) {
    * {
    *   "total": 2,
    *   "data": {
-   *     "kibana_user": {
+   *     "opensearch_dashboards_user": {
    *       "reserved": true,
    *       "hidden": false,
-   *       "description": "Provide the minimum permissions for a kibana user",
+   *       "description": "Provide the minimum permissions for a opensearch_dashboards user",
    *       "cluster_permissions": ["cluster_composite_ops"],
    *       "index_permissions": [{
-   *         "index_patterns": [".kibana", ".kibana-6", ".kibana_*"],
+   *         "index_patterns": [".opensearch_dashboards", ".opensearch_dashboards-6", ".opensearch_dashboards_*"],
    *         "fls": [],
    *         "masked_fields": [],
    *         "allowed_actions": ["read", "delete", "manage", "index"]
@@ -177,7 +177,7 @@ export function defineRoutes(router: IRouter) {
    *       }],
    *       "tenant_permissions": [{
    *         "tenant_patterns": ["*"],
-   *         "allowed_actions": ["kibana_all_write"]
+   *         "allowed_actions": ["opensearch_dashboards_all_write"]
    *       }],
    *       "static": false
    *     }
@@ -235,7 +235,7 @@ export function defineRoutes(router: IRouter) {
         }),
       },
     },
-    async (context, request, response): Promise<IKibanaResponse<any | ResponseError>> => {
+    async (context, request, response): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
       const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
@@ -284,7 +284,7 @@ export function defineRoutes(router: IRouter) {
    *   }],
    *   "tenant_permissions": [{
    *     "tenant_patterns": ["*"],
-   *     "allowed_actions": ["kibana_all_write"]
+   *     "allowed_actions": ["opensearch_dashboards_all_write"]
    *   }],
    *   "static": false
    * }
@@ -303,7 +303,7 @@ export function defineRoutes(router: IRouter) {
    *   }],
    *   "tenant_permissions": [{
    *     "tenant_patterns": ["*"],
-   *     "allowed_actions": ["kibana_all_write"]
+   *     "allowed_actions": ["opensearch_dashboards_all_write"]
    *   }],
    *   "static": false
    * }
@@ -336,7 +336,7 @@ export function defineRoutes(router: IRouter) {
         }),
       },
     },
-    async (context, request, response): Promise<IKibanaResponse<any | ResponseError>> => {
+    async (context, request, response): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
       const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
@@ -366,7 +366,7 @@ export function defineRoutes(router: IRouter) {
         }),
       },
     },
-    async (context, request, response): Promise<IKibanaResponse<any | ResponseError>> => {
+    async (context, request, response): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
       const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
@@ -405,7 +405,7 @@ export function defineRoutes(router: IRouter) {
         body: schema.any(),
       },
     },
-    async (context, request, response): Promise<IKibanaResponse<any | ResponseError>> => {
+    async (context, request, response): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
       try {
         validateRequestBody(request.params.resourceName, request.body);
       } catch (error) {
@@ -445,7 +445,7 @@ export function defineRoutes(router: IRouter) {
         body: schema.any(),
       },
     },
-    async (context, request, response): Promise<IKibanaResponse<any | ResponseError>> => {
+    async (context, request, response): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
       try {
         validateRequestBody(request.params.resourceName, request.body);
       } catch (error) {
@@ -499,7 +499,7 @@ export function defineRoutes(router: IRouter) {
       path: `${API_PREFIX}/auth/authinfo`,
       validate: false,
     },
-    async (context, request, response): Promise<IKibanaResponse<any | ResponseError>> => {
+    async (context, request, response): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
       const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
@@ -554,7 +554,7 @@ export function defineRoutes(router: IRouter) {
    *       ]
    *     },
    *     "read_ignore_users":[
-   *       "kibanaserver",
+   *       "opensearchdashboardsserver",
    *       "operator/*"
    *     ],
    *     "write_metadata_only":false,
@@ -574,7 +574,7 @@ export function defineRoutes(router: IRouter) {
       path: `${API_PREFIX}/configuration/audit`,
       validate: false,
     },
-    async (context, request, response): Promise<IKibanaResponse<any | ResponseError>> => {
+    async (context, request, response): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
       const client = context.security_plugin.esClient.asScoped(request);
 
       let esResp;
@@ -831,7 +831,7 @@ function parseEsErrorResponse(error: any) {
   return error.message;
 }
 
-function errorResponse(response: KibanaResponseFactory, error: any) {
+function errorResponse(response: OpenSearchDashboardsResponseFactory, error: any) {
   return response.custom({
     statusCode: error.statusCode,
     body: parseEsErrorResponse(error),

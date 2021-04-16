@@ -58,9 +58,9 @@ async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
 const DEFAULT_READONLY_ROLES = ['kibana_read_only'];
 const APP_ID_HOME = 'home';
 const APP_ID_DASHBOARDS = 'dashboards';
-// Kibana app is for legacy url migration
-const APP_ID_KIBANA = 'kibana';
-const APP_LIST_FOR_READONLY_ROLE = [APP_ID_HOME, APP_ID_DASHBOARDS, APP_ID_KIBANA];
+// OpenSearchDashboards app is for legacy url migration
+const APP_ID_OPENSEARCH_DASHBOARDS = 'kibana';
+const APP_LIST_FOR_READONLY_ROLE = [APP_ID_HOME, APP_ID_DASHBOARDS, APP_ID_OPENSEARCH_DASHBOARDS];
 
 export class OpendistroSecurityPlugin
   implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
@@ -86,7 +86,7 @@ export class OpendistroSecurityPlugin
           const { renderApp } = await import('./apps/configuration/configuration-app');
           const [coreStart, depsStart] = await core.getStartServices();
 
-          // merge Kibana yml configuration
+          // merge OpenSearchDashboards yml configuration
           includeClusterPermissions(config.clusterPermissions.include);
           includeIndexPermissions(config.indexPermissions.include);
 

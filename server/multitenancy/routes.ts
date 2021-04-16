@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { schema } from '@kbn/config-schema';
+import { schema } from '@osd/config-schema';
 import { AllHtmlEntities } from 'html-entities';
 import { IRouter, SessionStorageFactory } from '../../../../src/core/server';
 import { SecuritySessionCookie } from '../session/security_cookie';
@@ -88,9 +88,9 @@ export function setupMultitenantRoutes(
    * {
    *   "user_name": "admin",
    *   "not_fail_on_forbidden_enabled": false,
-   *   "kibana_mt_enabled": true,
-   *   "kibana_index": ".kibana",
-   *   "kibana_server_user": "kibanaserver"
+   *   "opensearch_dashboards_mt_enabled": true,
+   *   "opensearch_dashboards_index": ".opensearch_dashboards",
+   *   "opensearch_dashboards_server_user": "opensearch_dashboardsserver"
    * }
    */
   router.get(

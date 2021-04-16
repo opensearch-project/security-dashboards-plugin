@@ -99,7 +99,7 @@ export function LoginPage(props: LoginPageDeps) {
       )}
       <EuiSpacer size="s" />
       <EuiText size="m" textAlign="center">
-        {props.config.title || 'Please login to Kibana'}
+        {props.config.title || 'Please login to OpenSearchDashboards'}
       </EuiText>
       <EuiSpacer size="s" />
       <EuiText size="s" textAlign="center">

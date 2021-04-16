@@ -20,7 +20,7 @@ import {
   ILegacyClusterClient,
   Logger,
   SessionStorageFactory,
-} from 'kibana/server';
+} from '../../../../src/core/server';
 import { SecurityPluginConfigType } from '..';
 import { SecuritySessionCookie } from '../session/security_cookie';
 

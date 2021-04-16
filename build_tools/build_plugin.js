@@ -15,10 +15,10 @@
 require('../../../src/setup_node_env/no_transpilation');
 
 const execa = require('execa');
-const optimizer = require('@kbn/optimizer');
-const devUtils = require('@kbn/dev-utils');
+const optimizer = require('@osd/optimizer');
+const devUtils = require('@osd/dev-utils');
 // eslint-disable-next-line import/no-unresolved
-const pluginHelper = require('@kbn/plugin-helpers');
+const pluginHelper = require('@osd/plugin-helpers');
 const pluginConfig = pluginHelper.pluginConfig;
 const path = require('path');
 const vfs = require('vinyl-fs');
@@ -26,9 +26,9 @@ const rename = require('gulp-rename');
 
 // TODO importing from target dir is a hack, need to fix it.
 // eslint-disable-next-line import/no-unresolved
-const rewritePackageJson = require('@kbn/plugin-helpers/target/tasks/build/rewrite_package_json');
+const rewritePackageJson = require('@osd/plugin-helpers/target/tasks/build/rewrite_package_json');
 // eslint-disable-next-line import/no-unresolved
-const createPackage = require('@kbn/plugin-helpers/target/tasks/build/create_package');
+const createPackage = require('@osd/plugin-helpers/target/tasks/build/create_package');
 
 // main build workflow
 async function build() {
@@ -72,10 +72,10 @@ async function build() {
   console.log('Creating plugin zip bundle...');
   try {
     await createPackage.createPackage(plugin, buildTarget, buildVersion);
-    // rename to opendistro_security_kibana_plugin-{version}.zip to match legacy plugin name
+    // rename to security-dashboards-plugin-{version}.zip to match legacy plugin name
     execa.sync('mv', [
       `build/${plugin.id}-${buildVersion}.zip`,
-      `build/opendistro_security_kibana_plugin-${buildVersion}.zip`,
+      `build/security-dashboards-plugin-${buildVersion}.zip`,
     ]);
   } catch (error) {
     console.log(error);
@@ -109,9 +109,9 @@ function runOptimizer() {
 async function createBuild(pluginRoot, plugin) {
   const pluginId = plugin.id;
   const buildVersion = plugin.pkg.version;
-  const kibanaVersion = plugin.pkg.kibana.version;
+  const opensearchDashboardsVersion = plugin.pkg.opensearchDashboards.version;
   const buildTarget = path.resolve(pluginRoot, 'build');
-  const buildRoot = path.join(buildTarget, 'kibana', pluginId);
+  const buildRoot = path.join(buildTarget, 'opensearchDashboards', pluginId);
 
   console.log(`${pluginRoot} ${plugin} ${buildTarget}`);
 
@@ -124,7 +124,7 @@ async function createBuild(pluginRoot, plugin) {
     return new Promise(function (resolve, reject) {
       vfs
         .src(srcGlobs, { cwd, base, allowEmpty })
-        .pipe(rewritePackageJson.rewritePackageJson(pluginRoot, buildVersion, kibanaVersion))
+        .pipe(rewritePackageJson.rewritePackageJson(pluginRoot, buildVersion, opensearchDashboardsVersion))
         .pipe(rename(nestFileInDir))
         .pipe(vfs.dest(buildTarget))
         .on('end', resolve)
@@ -133,7 +133,7 @@ async function createBuild(pluginRoot, plugin) {
   }
 
   await copyArtifacts(
-    ['kibana.json', 'package.json', 'LICENSE', 'NOTICE'],
+    ['opendistro_security.json', 'package.json', 'LICENSE', 'NOTICE'],
     pluginRoot,
     pluginRoot,
     true

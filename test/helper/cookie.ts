@@ -15,7 +15,7 @@
 
 import { Response } from 'supertest';
 import { Root } from '../../../../src/core/server/root';
-import * as kbnTestServer from '../../../../src/core/test_helpers/kbn_server';
+import * as osdTestServer from '../../../../src/core/test_helpers/osd_server';
 import { AUTHORIZATION_HEADER_NAME } from '../constant';
 
 export function extractAuthCookie(response: Response) {
@@ -32,7 +32,7 @@ export function extractAuthCookie(response: Response) {
 
 export async function getAuthCookie(root: Root, username: string, password: string) {
   const cred = `${username}:${password}`;
-  const authInfoResponse = await kbnTestServer.request
+  const authInfoResponse = await osdTestServer.request
     .get(root, '/api/v1/auth/authinfo')
     .set(AUTHORIZATION_HEADER_NAME, `Basic ${Buffer.from(cred).toString('base64')}`);
   return extractAuthCookie(authInfoResponse);

@@ -13,13 +13,13 @@
  *   permissions and limitations under the License.
  */
 
-import * as kbnTestServer from '../../../../src/core/test_helpers/kbn_server';
+import * as osdTestServer from '../../../../src/core/test_helpers/osd_server';
 import { Root } from '../../../../src/core/server/root';
 import { resolve } from 'path';
 import { describe, expect, it, beforeAll, afterAll } from '@jest/globals';
 import {
-  KIBANA_SERVER_USER,
-  KIBANA_SERVER_PASSWORD,
+  OPENSEARCH_DASHBOARDS_SERVER_USER,
+  OPENSEARCH_DASHBOARDS_SERVER_PASSWORD,
   ADMIN_CREDENTIALS,
   ADMIN_USER,
   ADMIN_PASSWORD,
@@ -28,21 +28,21 @@ import {
 import { extractAuthCookie, getAuthCookie } from '../helper/cookie';
 import { createOrUpdateEntityAsAdmin, getEntityAsAdmin } from '../helper/entity_operation';
 
-describe('start kibana server', () => {
+describe('start OpenSearch Dashboards server', () => {
   let root: Root;
 
   beforeAll(async () => {
-    root = kbnTestServer.createRootWithSettings(
+    root = osdTestServer.createRootWithSettings(
       {
         plugins: {
           scanDirs: [resolve(__dirname, '../..')],
         },
-        elasticsearch: {
+        opensearch: {
           hosts: ['https://localhost:9200'],
           ignoreVersionMismatch: true,
           ssl: { verificationMode: 'none' },
-          username: KIBANA_SERVER_USER,
-          password: KIBANA_SERVER_PASSWORD,
+          username: OPENSEARCH_DASHBOARDS_SERVER_USER,
+          password: OPENSEARCH_DASHBOARDS_SERVER_PASSWORD,
         },
         opendistro_security: {
           multitenancy: { enabled: true, tenants: { preferred: ['Private', 'Global'] } },
@@ -55,14 +55,14 @@ describe('start kibana server', () => {
       }
     );
 
-    console.log('Starting Kibana server..');
+    console.log('Starting OpenSearchDashboards server..');
     await root.setup();
     await root.start();
-    console.log('Started Kibana server');
+    console.log('Started OpenSearchDashboards server');
   });
 
   afterAll(async () => {
-    // shutdown Kibana server
+    // shutdown OpenSearchDashboards server
     await root.shutdown();
   });
 
@@ -87,7 +87,7 @@ describe('start kibana server', () => {
     expect(getUserResponse.body.description).toEqual('test user description');
     expect(getUserResponse.body.backend_roles).toContain('arbitrary_backend_role');
 
-    const listUserResponse = await kbnTestServer.request
+    const listUserResponse = await osdTestServer.request
       .get(root, `/api/v1/configuration/internalusers`)
       .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
     expect(listUserResponse.status).toEqual(200);
@@ -110,7 +110,7 @@ describe('start kibana server', () => {
     expect(getUpdatedUserResponse.status).toEqual(200);
     expect(getUpdatedUserResponse.body.description).toEqual('new description');
 
-    const deleteUserResponse = await kbnTestServer.request
+    const deleteUserResponse = await osdTestServer.request
       .delete(root, `/api/v1/configuration/internalusers/${testUsername}`)
       .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
     expect(deleteUserResponse.status).toEqual(200);
@@ -147,7 +147,7 @@ describe('start kibana server', () => {
     });
     expect(getCreatedRoleResponse.body.tenant_permissions.length).toEqual(0);
 
-    const listRolesResponse = await kbnTestServer.request
+    const listRolesResponse = await osdTestServer.request
       .get(root, `/api/v1/configuration/roles`)
       .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
     expect(listRolesResponse.status).toEqual(200);
@@ -172,7 +172,7 @@ describe('start kibana server', () => {
     expect(getUpdatedRoleResponse.body.description).toEqual('new role description');
     expect(getUpdatedRoleResponse.body.index_permissions[0].index_patterns).toContain('.kibana_1');
 
-    const deleteRoleResponse = await kbnTestServer.request
+    const deleteRoleResponse = await osdTestServer.request
       .delete(root, `/api/v1/configuration/roles/${testRoleName}`)
       .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
     expect(deleteRoleResponse.status).toEqual(200);
@@ -278,18 +278,18 @@ describe('start kibana server', () => {
     });
 
     const testUserCred = `${testUsername}:${testUserPassword}`;
-    const testUserAuthInfoResponse = await kbnTestServer.request
+    const testUserAuthInfoResponse = await osdTestServer.request
       .get(root, '/api/v1/auth/authinfo')
       .set(AUTHORIZATION_HEADER_NAME, `Basic ${Buffer.from(testUserCred).toString('base64')}`);
     const securityAuthCookie = extractAuthCookie(testUserAuthInfoResponse);
 
-    const getAccountWithCookieResponse = await kbnTestServer.request
+    const getAccountWithCookieResponse = await osdTestServer.request
       .get(root, `/api/v1/configuration/account`)
       .unset(AUTHORIZATION_HEADER_NAME)
       .set('Cookie', securityAuthCookie);
     expect(getAccountWithCookieResponse.status).toEqual(200);
 
-    const getAccountWithCredentialsResponse = await kbnTestServer.request
+    const getAccountWithCredentialsResponse = await osdTestServer.request
       .get(root, `/api/v1/configuration/account`)
       .set(AUTHORIZATION_HEADER_NAME, `Basic ${Buffer.from(testUserCred).toString('base64')}`);
     expect(getAccountWithCredentialsResponse.status).toEqual(200);
@@ -324,14 +324,14 @@ describe('start kibana server', () => {
     }
 
     const testUserCred = `${testUsername}:${testUserPassword}`;
-    const testUserAuthInfoResponse = await kbnTestServer.request
+    const testUserAuthInfoResponse = await osdTestServer.request
       .get(root, '/api/v1/auth/authinfo')
       .set(AUTHORIZATION_HEADER_NAME, `Basic ${Buffer.from(testUserCred).toString('base64')}`);
     const securityAuthCookie = extractAuthCookie(testUserAuthInfoResponse);
 
     const newPassword = `${testUserPassword}_new`;
 
-    const updatePasswordResponse = await kbnTestServer.request
+    const updatePasswordResponse = await osdTestServer.request
       .post(root, `/api/v1/configuration/account`)
       .unset(AUTHORIZATION_HEADER_NAME)
       .set('Cookie', securityAuthCookie)
@@ -342,20 +342,20 @@ describe('start kibana server', () => {
     expect(updatePasswordResponse.status).toEqual(200);
 
     const newCred = `${testUsername}:${newPassword}`;
-    const newAuthInfoResponse = await kbnTestServer.request
+    const newAuthInfoResponse = await osdTestServer.request
       .get(root, '/api/v1/auth/authinfo')
       .set(AUTHORIZATION_HEADER_NAME, `Basic ${Buffer.from(newCred).toString('base64')}`);
     expect(newAuthInfoResponse.status).toEqual(200);
   });
 
   it('delete cache', async () => {
-    const deleteCacheResponse = await kbnTestServer.request
+    const deleteCacheResponse = await osdTestServer.request
       .delete(root, '/api/v1/configuration/cache')
       .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
     expect(deleteCacheResponse.status).toEqual(200);
 
     const adminAuthCookie = await getAuthCookie(root, ADMIN_USER, ADMIN_PASSWORD);
-    const deleteCacheWithCookieResponse = await kbnTestServer.request
+    const deleteCacheWithCookieResponse = await osdTestServer.request
       .delete(root, '/api/v1/configuration/cache')
       .unset(AUTHORIZATION_HEADER_NAME)
       .set('Cookie', adminAuthCookie);
@@ -364,13 +364,13 @@ describe('start kibana server', () => {
 
   it('restapiinfo', async () => {
     const cred = `${ADMIN_USER}:${ADMIN_PASSWORD}`;
-    const restApiInfoWithHeaderResponse = await kbnTestServer.request
+    const restApiInfoWithHeaderResponse = await osdTestServer.request
       .get(root, '/api/v1/restapiinfo')
       .set(AUTHORIZATION_HEADER_NAME, `Basic ${Buffer.from(cred).toString('base64')}`);
     expect(restApiInfoWithHeaderResponse.status).toEqual(200);
 
     const authCookie = await getAuthCookie(root, ADMIN_USER, ADMIN_PASSWORD);
-    const restApiInfoResponse = await kbnTestServer.request
+    const restApiInfoResponse = await osdTestServer.request
       .get(root, '/api/v1/restapiinfo')
       .unset(AUTHORIZATION_HEADER_NAME)
       .set('Cookie', authCookie);
@@ -378,7 +378,7 @@ describe('start kibana server', () => {
   });
 
   it('index_mappings', async () => {
-    const response = await kbnTestServer.request
+    const response = await osdTestServer.request
       .post(root, '/api/v1/configuration/index_mappings')
       .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
       .send({
@@ -388,14 +388,14 @@ describe('start kibana server', () => {
   });
 
   it('indices api', async () => {
-    const response = await kbnTestServer.request
+    const response = await osdTestServer.request
       .get(root, '/api/v1/configuration/indices')
       .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
     expect(response.status).toEqual(200);
   });
 
   it('validate DLS', async () => {
-    const response = await kbnTestServer.request
+    const response = await osdTestServer.request
       .post(root, '/api/v1/configuration/validatedls/.kibana')
       .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
       .send({

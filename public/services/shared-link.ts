@@ -14,10 +14,10 @@
  */
 
 import { parse } from 'url';
-import { CoreStart } from 'kibana/public';
+import { CoreStart } from 'opensearch-dashboards/public';
 import { API_ENDPOINT_MULTITENANCY } from '../apps/configuration/constants';
 
-// refer to https://github.com/opendistro-for-elasticsearch/security-kibana-plugin/blob/master/public/chrome/multitenancy/enable_multitenancy.js
+// refer to https://github.com/opendistro-for-elasticsearch/security-opensearch-dashboards-plugin/blob/master/public/chrome/multitenancy/enable_multitenancy.js
 export async function addTenantToShareURL(core: CoreStart) {
   let tenant = '';
   try {
@@ -46,7 +46,7 @@ export async function addTenantToShareURL(core: CoreStart) {
       let urlPart = originalValue;
 
       // We need to figure out where in the value to add the tenant.
-      // Since Kibana sometimes adds values that aren't in the current location/url,
+      // Since OpenSearchDashboards sometimes adds values that aren't in the current location/url,
       // we need to use the actual input values to do a sanity check.
       try {
         // For the iFrame urls we need to parse out the src

@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { HttpStart } from 'kibana/public';
+import { HttpStart } from 'opensearch-dashboards/public';
 import { httpPost } from '../apps/configuration/utils/request-utils';
 
 export async function validateCurrentPassword(

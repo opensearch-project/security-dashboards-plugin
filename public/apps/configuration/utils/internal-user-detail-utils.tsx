@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { HttpStart } from 'kibana/public';
+import { HttpStart } from 'opensearch-dashboards/public';
 import { API_ENDPOINT_INTERNALUSERS } from '../constants';
 import { InternalUser, InternalUserUpdate } from '../types';
 import { httpGet, httpPost } from './request-utils';

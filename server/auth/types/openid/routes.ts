@@ -12,7 +12,7 @@
  *   express or implied. See the License for the specific language governing
  *   permissions and limitations under the License.
  */
-import { schema } from '@kbn/config-schema';
+import { schema } from '@osd/config-schema';
 import { randomString } from '@hapi/cryptiles';
 import { stringify } from 'querystring';
 import wreck from '@hapi/wreck';
@@ -20,8 +20,8 @@ import {
   IRouter,
   SessionStorageFactory,
   CoreSetup,
-  KibanaResponseFactory,
-  KibanaRequest,
+  OpenSearchDashboardsResponseFactory,
+  OpenSearchDashboardsRequest,
 } from '../../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
@@ -43,7 +43,7 @@ export class OpenIdAuthRoutes {
     private readonly wreckClient: typeof wreck
   ) {}
 
-  private redirectToLogin(request: KibanaRequest, response: KibanaResponseFactory) {
+  private redirectToLogin(request: OpenSearchDashboardsRequest, response: OpenSearchDashboardsResponseFactory) {
     this.sessionStorageFactory.asScoped(request).clear();
     return response.redirected({
       headers: {

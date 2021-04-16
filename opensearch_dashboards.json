@@ -1,7 +1,7 @@
 {
-  "id": "opendistroSecurityKibana",
+  "id": "opendistro_security",
   "version": "1.13.0.1",
-  "kibanaVersion": "kibana",
+  "opensearchDashboardsVersion": "opensearchDashboards",
   "configPath": ["opendistro_security"],
   "requiredPlugins": ["navigation"],
   "server": true,

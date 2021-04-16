@@ -13,13 +13,13 @@
  *   permissions and limitations under the License.
  */
 
-import * as kbnTestServer from '../../../../src/core/test_helpers/kbn_server';
+import * as osdTestServer from '../../../../src/core/test_helpers/osd_server';
 import { Root } from '../../../../src/core/server/root';
 import { resolve } from 'path';
 import { describe, expect, it, beforeAll, afterAll } from '@jest/globals';
 import {
-  KIBANA_SERVER_USER,
-  KIBANA_SERVER_PASSWORD,
+  OPENSEARCH_DASHBOARDS_SERVER_USER,
+  OPENSEARCH_DASHBOARDS_SERVER_PASSWORD,
   ADMIN_USER,
   ADMIN_PASSWORD,
   AUTHORIZATION_HEADER_NAME,
@@ -27,21 +27,21 @@ import {
 import { extractAuthCookie, getAuthCookie } from '../helper/cookie';
 import { createOrUpdateEntityAsAdmin } from '../helper/entity_operation';
 
-describe('start kibana server', () => {
+describe('start OpenSearch Dashboards server', () => {
   let root: Root;
 
   beforeAll(async () => {
-    root = kbnTestServer.createRootWithSettings(
+    root = osdTestServer.createRootWithSettings(
       {
         plugins: {
           scanDirs: [resolve(__dirname, '../..')],
         },
-        elasticsearch: {
+        opensearch: {
           hosts: ['https://localhost:9200'],
           ignoreVersionMismatch: true,
           ssl: { verificationMode: 'none' },
-          username: KIBANA_SERVER_USER,
-          password: KIBANA_SERVER_PASSWORD,
+          username: OPENSEARCH_DASHBOARDS_SERVER_USER,
+          password: OPENSEARCH_DASHBOARDS_SERVER_PASSWORD,
         },
         opendistro_security: {
           multitenancy: { enabled: true, tenants: { preferred: ['Private', 'Global'] } },
@@ -54,14 +54,14 @@ describe('start kibana server', () => {
       }
     );
 
-    console.log('Starting Kibana server..');
+    console.log('Starting OpenSearchDashboards server..');
     await root.setup();
     await root.start();
-    console.log('Started Kibana server');
+    console.log('Started OpenSearchDashboards server');
   });
 
   afterAll(async () => {
-    // shutdown Kibana server
+    // shutdown OpenSearchDashboards server
     await root.shutdown();
   });
 
@@ -76,7 +76,7 @@ describe('start kibana server', () => {
   }
 
   async function getTenant(authCookie: string) {
-    return await kbnTestServer.request
+    return await osdTestServer.request
       .get(root, '/api/v1/multitenancy/tenant')
       .unset(AUTHORIZATION_HEADER_NAME)
       .set('Cookie', authCookie);
@@ -96,7 +96,7 @@ describe('start kibana server', () => {
     });
 
     let authCookie = await getAuthCookie(root, username, password);
-    const usePrivateTenantResponse = await kbnTestServer.request
+    const usePrivateTenantResponse = await osdTestServer.request
       .post(root, '/api/v1/multitenancy/tenant')
       .unset(AUTHORIZATION_HEADER_NAME)
       .set('Cookie', authCookie)
@@ -113,7 +113,7 @@ describe('start kibana server', () => {
     expect(getTenantResponse.text).toEqual('__user__');
 
     authCookie = extractAuthCookie(getTenantResponse);
-    const useGlobalTenantResponse = await kbnTestServer.request
+    const useGlobalTenantResponse = await osdTestServer.request
       .post(root, '/api/v1/multitenancy/tenant')
       .unset(AUTHORIZATION_HEADER_NAME)
       .set('Cookie', authCookie)
@@ -132,7 +132,7 @@ describe('start kibana server', () => {
 
   it('call multitenancy info API as admin', async () => {
     const authCookie = await getAuthCookie(root, ADMIN_USER, ADMIN_PASSWORD);
-    const multitenancyInfoResponse = await kbnTestServer.request
+    const multitenancyInfoResponse = await osdTestServer.request
       .get(root, '/api/v1/multitenancy/info')
       .unset(AUTHORIZATION_HEADER_NAME)
       .set('Cookie', authCookie);
@@ -144,7 +144,7 @@ describe('start kibana server', () => {
     const { username, password } = await createTestUser();
 
     const authCookie = await getAuthCookie(root, username, password);
-    const multitenancyInfoResponse = await kbnTestServer.request
+    const multitenancyInfoResponse = await osdTestServer.request
       .get(root, '/api/v1/multitenancy/info')
       .unset(AUTHORIZATION_HEADER_NAME)
       .set('Cookie', authCookie);

@@ -26,7 +26,7 @@ import {
   EuiPopover,
   EuiText,
 } from '@elastic/eui';
-import { CoreStart } from 'kibana/public';
+import { CoreStart } from 'opensearch-dashboards/public';
 import React, { useCallback } from 'react';
 import { RoleInfoPanel } from './role-info-panel';
 import { PasswordResetPanel } from './password-reset-panel';

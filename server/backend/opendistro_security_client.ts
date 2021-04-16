@@ -13,13 +13,13 @@
  *   permissions and limitations under the License.
  */
 
-import { ILegacyClusterClient, KibanaRequest } from '../../../../src/core/server';
+import { ILegacyClusterClient, OpenSearchDashboardsRequest } from '../../../../src/core/server';
 import { User } from '../auth/user';
 
 export class SecurityClient {
   constructor(private readonly esClient: ILegacyClusterClient) {}
 
-  public async authenticate(request: KibanaRequest, credentials: any): Promise<User> {
+  public async authenticate(request: OpenSearchDashboardsRequest, credentials: any): Promise<User> {
     const authHeader = Buffer.from(`${credentials.username}:${credentials.password}`).toString(
       'base64'
     );
@@ -46,7 +46,7 @@ export class SecurityClient {
   }
 
   public async authenticateWithHeader(
-    request: KibanaRequest,
+    request: OpenSearchDashboardsRequest,
     headerName: string,
     headerValue: string,
     whitelistedHeadersAndValues: any = {},
@@ -83,7 +83,7 @@ export class SecurityClient {
   }
 
   public async authenticateWithHeaders(
-    request: KibanaRequest,
+    request: OpenSearchDashboardsRequest,
     additionalAuthHeaders: any = {}
   ): Promise<User> {
     try {
@@ -104,7 +104,7 @@ export class SecurityClient {
     }
   }
 
-  public async authinfo(request: KibanaRequest, headers: any = {}) {
+  public async authinfo(request: OpenSearchDashboardsRequest, headers: any = {}) {
     try {
       return await this.esClient
         .asScoped(request)
@@ -117,7 +117,7 @@ export class SecurityClient {
   }
 
   // Multi-tenancy APIs
-  public async getMultitenancyInfo(request: KibanaRequest) {
+  public async getMultitenancyInfo(request: OpenSearchDashboardsRequest) {
     try {
       return await this.esClient
         .asScoped(request)
@@ -135,7 +135,7 @@ export class SecurityClient {
     }
   }
 
-  public async getTenantInfo(request: KibanaRequest) {
+  public async getTenantInfo(request: OpenSearchDashboardsRequest) {
     try {
       return await this.esClient
         .asScoped(request)
@@ -145,7 +145,7 @@ export class SecurityClient {
     }
   }
 
-  public async getSamlHeader(request: KibanaRequest) {
+  public async getSamlHeader(request: OpenSearchDashboardsRequest) {
     try {
       // response is expected to be an error
       await this.esClient.asScoped(request).callAsCurrentUser('opendistro_security.authinfo');

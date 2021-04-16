@@ -17,7 +17,7 @@ import './_index.scss';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { I18nProvider } from '@kbn/i18n/react';
+import { I18nProvider } from '@osd/i18n/react';
 import { AppMountParameters, CoreStart } from '../../../../../src/core/public';
 import { AppPluginStartDependencies, ClientConfigType } from '../../types';
 import { AppRouter } from './app-router';
