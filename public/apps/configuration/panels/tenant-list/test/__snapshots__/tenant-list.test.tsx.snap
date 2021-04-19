@@ -33,7 +33,7 @@ exports[`Tenant list Action menu click Duplicate click 1`] = `
           color="subdued"
           size="xs"
         >
-          Tenants in OpenSearchDashboards are spaces for saving index patterns, visualizations, dashboards, and other OpenSearchDashboards objects. Use tenants to safely share your work with other OpenSearchDashboards users. You can control which roles have access to a tenant and whether those roles have read or write access. The “Current” label indicates which tenant you are using now. Switch to another tenant anytime from your user profile, which is located on the top right of the screen. 
+          Tenants in OpenSearch Dashboards are spaces for saving index patterns, visualizations, dashboards, and other OpenSearch Dashboards objects. Use tenants to safely share your work with other OpenSearch Dashboards users. You can control which roles have access to a tenant and whether those roles have read or write access. The “Current” label indicates which tenant you are using now. Switch to another tenant anytime from your user profile, which is located on the top right of the screen. 
           <ExternalLink
             href="https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/multi-tenancy/"
           />
@@ -219,7 +219,7 @@ exports[`Tenant list Action menu click Edit click 1`] = `
           color="subdued"
           size="xs"
         >
-          Tenants in OpenSearchDashboards are spaces for saving index patterns, visualizations, dashboards, and other OpenSearchDashboards objects. Use tenants to safely share your work with other OpenSearchDashboards users. You can control which roles have access to a tenant and whether those roles have read or write access. The “Current” label indicates which tenant you are using now. Switch to another tenant anytime from your user profile, which is located on the top right of the screen. 
+          Tenants in OpenSearch Dashboards are spaces for saving index patterns, visualizations, dashboards, and other OpenSearch Dashboards objects. Use tenants to safely share your work with other OpenSearch Dashboards users. You can control which roles have access to a tenant and whether those roles have read or write access. The “Current” label indicates which tenant you are using now. Switch to another tenant anytime from your user profile, which is located on the top right of the screen. 
           <ExternalLink
             href="https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/multi-tenancy/"
           />

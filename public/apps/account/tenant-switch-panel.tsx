@@ -148,7 +148,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
       label: (
         <>
           Global
-          <EuiText size="s">The global tenant is shared between every OpenSearchDashboards user.</EuiText>
+          <EuiText size="s">The global tenant is shared between every OpenSearch Dashboards user.</EuiText>
           {shouldDisableGlobal && <i>{getGlobalDisabledInstruction()}</i>}
           <EuiSpacer />
         </>
@@ -267,7 +267,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
           <EuiSpacer />
 
           <EuiText size="s" color="subdued">
-            Tenants are useful for safely sharing your work with other OpenSearchDashboards users. You can switch
+            Tenants are useful for safely sharing your work with other OpenSearch Dashboards users. You can switch
             your tenant anytime by clicking the user avatar on top right.
           </EuiText>
 

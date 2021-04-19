@@ -18,7 +18,7 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
         color="subdued"
         size="s"
       >
-        Tenants are useful for safely sharing your work with other OpenSearchDashboards users. You can switch your tenant anytime by clicking the user avatar on top right.
+        Tenants are useful for safely sharing your work with other OpenSearch Dashboards users. You can switch your tenant anytime by clicking the user avatar on top right.
       </EuiText>
       <EuiSpacer />
       <EuiRadioGroup
@@ -35,7 +35,7 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
                 <EuiText
                   size="s"
                 >
-                  The global tenant is shared between every OpenSearchDashboards user.
+                  The global tenant is shared between every OpenSearch Dashboards user.
                 </EuiText>
                 <EuiSpacer />
               </React.Fragment>,
@@ -129,7 +129,7 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
         color="subdued"
         size="s"
       >
-        Tenants are useful for safely sharing your work with other OpenSearchDashboards users. You can switch your tenant anytime by clicking the user avatar on top right.
+        Tenants are useful for safely sharing your work with other OpenSearch Dashboards users. You can switch your tenant anytime by clicking the user avatar on top right.
       </EuiText>
       <EuiSpacer />
       <EuiRadioGroup
@@ -146,7 +146,7 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
                 <EuiText
                   size="s"
                 >
-                  The global tenant is shared between every OpenSearchDashboards user.
+                  The global tenant is shared between every OpenSearch Dashboards user.
                 </EuiText>
                 <i>
                   Contact the administrator to enable global tenant.
@@ -243,7 +243,7 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
         color="subdued"
         size="s"
       >
-        Tenants are useful for safely sharing your work with other OpenSearchDashboards users. You can switch your tenant anytime by clicking the user avatar on top right.
+        Tenants are useful for safely sharing your work with other OpenSearch Dashboards users. You can switch your tenant anytime by clicking the user avatar on top right.
       </EuiText>
       <EuiSpacer />
       <EuiRadioGroup
@@ -260,7 +260,7 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
                 <EuiText
                   size="s"
                 >
-                  The global tenant is shared between every OpenSearchDashboards user.
+                  The global tenant is shared between every OpenSearch Dashboards user.
                 </EuiText>
                 <EuiSpacer />
               </React.Fragment>,

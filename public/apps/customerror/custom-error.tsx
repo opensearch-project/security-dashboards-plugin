@@ -46,7 +46,7 @@ export function CustomErrorPage(props: CustomErrorDeps) {
       </EuiText>
       <EuiSpacer size="s" />
       <EuiButton fill href={props.http.basePath.serverBasePath} fullWidth>
-        Back to OpenSearchDashboards Home
+        Back to OpenSearch Dashboards Home
       </EuiButton>
     </EuiListGroup>
   );

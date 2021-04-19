@@ -89,7 +89,7 @@ export const configSchema = schema.object({
     }),
     loadbalancer_url: schema.maybe(schema.string()),
     login: schema.object({
-      title: schema.string({ defaultValue: 'Please login to OpenSearchDashboards' }),
+      title: schema.string({ defaultValue: 'Please login to OpenSearch Dashboards' }),
       subtitle: schema.string({
         defaultValue:
           'If you have forgotten your username or password, please ask your system administrator',
@@ -175,7 +175,7 @@ export const configSchema = schema.object({
       // the login config here is the same as old config `opendistro_security.basicauth.login`
       // Since we are now rendering login page to browser app, so move these config to browser side.
       login: schema.object({
-        title: schema.string({ defaultValue: 'Please login to OpenSearchDashboards' }),
+        title: schema.string({ defaultValue: 'Please login to OpenSearch Dashboards' }),
         subtitle: schema.string({
           defaultValue:
             'If you have forgotten your username or password, please ask your system administrator',
