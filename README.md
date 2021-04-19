@@ -1,48 +1,48 @@
 [![CI](https://github.com/opendistro-for-elasticsearch/security-kibana-plugin/workflows/CI/badge.svg?branch=main)](https://github.com/opendistro-for-elasticsearch/security-kibana-plugin/actions)
 [![codecov](https://codecov.io/gh/opendistro-for-elasticsearch/security-kibana-plugin/branch/main/graphs/badge.svg)](https://codecov.io/gh/opendistro-for-elasticsearch/security-kibana-plugin)
 
-# Open Distro for Elasticsearch Security Kibana Plugin
+# OpenSearch-DashBoards Security Plugin
 
-This plugin for Kibana adds a configuration management UI for the Open Distro for Elasticsearch Security features, as well as authentication, session management and multi-tenancy support to your secured cluster.
+This plugin for OpenSearch-DashBoards adds a configuration management UI for the OpenSearch Security features, as well as authentication, session management and multi-tenancy support to your secured cluster.
 
 ## Basic features
 
-* Kibana authentication for Open Distro for Elasticsearch
-* Kibana session management
-* Open Distro for Elasticsearch Security configuration UI
-* Multi-tenancy support for Kibana
-* Open Distro for Elasticsearch audit logging configuration UI
+* OpenSearch-DashBoards authentication for OpenSearch
+* OpenSearch-DashBoards session management
+* OpenSearch Security configuration UI
+* Multi-tenancy support for OpenSearch-DashBoards
+* OpenSearch audit logging configuration UI
 
 ## Build
 
-To build the security-kibana plugin from source follow these instructions:
-* Download the Kibana source code for the [version specified in package.json](./package.json) you want to set up.
+To build the `security-dashboards-plugin` plugin from source follow these instructions:
+* Download the OpenSearch-DashBoards source code for the [version specified in package.json](./package.json) you want to set up.
 
-   See the [Kibana contributing guide](https://github.com/elastic/kibana/blob/master/CONTRIBUTING.md#setting-up-your-development-environment) for more instructions on setting up your development environment.
+   See the [OpenSearch-DashBoards contributing guide](https://github.com/opensearch-project/security-dashboards-plugin/blob/main/CONTRIBUTING.md) for more instructions on setting up your development environment.
 
-* Change your node version to the version specified in `.node-version` inside the Kibana root directory.
-* cd into the `plugins` directory of the Kibana source code directory.
-* Check out this package from version control into the `plugins/opendistro_security` directory.
-* Run `yarn osd bootstrap` inside `kibana` directory
+* Change your node version to the version specified in `.node-version` inside the OpenSearch-DashBoards root directory.
+* cd into the `plugins` directory of the OpenSearch-DashBoards source code directory.
+* Check out this package from version control into the `plugins/security-dashboards-plugin` directory.
+* Run `yarn osd bootstrap` inside `OpenSearch-DashBoards` directory
 * Ultimately, your directory structure should look like this:
 
 ```md
 .
-├── kibana
+├── OpenSearch-DashBoards
 │   └── plugins
-│       └── opendistro_security
+│       └── security-dashboards-plugin
 ```
-* run `yarn build` to build the plugin inside `kibana/plugins/opendistro_security` directory
+* run `yarn build` to build the plugin inside `OpenSearch-DashBoards/plugins/security-dashboards-plugin` directory
 
-The above builds the final artifacts in zip format. The artifacts can be found in the `kibana/plugins/opendistro_security/build` directory
+The above builds the final artifacts in zip format. The artifacts can be found in the `OpenSearch-DashBoards/plugins/security-dashboards-plugin/build` directory
 
 ## Install
 
-Install the plugin to Kibana cluster with the following commands:
+Install the plugin to OpenSearch-DashBoards cluster with the following commands:
 
 `cd kibana/bin`
 
-`./kibana-plugin install file:///path/to/security/target/releases/opendistro_security_kibana_plugin-<version>.zip`
+`./kibana-plugin install file:///path/to/security/target/releases/opendistro_security-<version>.zip`
 
 ## Documentation
 
