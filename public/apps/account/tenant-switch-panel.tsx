@@ -29,7 +29,7 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import { CoreStart } from 'kibana/public';
+import { CoreStart } from 'opensearch-dashboards/public';
 import { keys } from 'lodash';
 import React from 'react';
 import { ClientConfigType } from '../../types';
@@ -148,7 +148,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
       label: (
         <>
           Global
-          <EuiText size="s">The global tenant is shared between every Kibana user.</EuiText>
+          <EuiText size="s">The global tenant is shared between every OpenSearch Dashboards user.</EuiText>
           {shouldDisableGlobal && <i>{getGlobalDisabledInstruction()}</i>}
           <EuiSpacer />
         </>
@@ -267,7 +267,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
           <EuiSpacer />
 
           <EuiText size="s" color="subdued">
-            Tenants are useful for safely sharing your work with other Kibana users. You can switch
+            Tenants are useful for safely sharing your work with other OpenSearch Dashboards users. You can switch
             your tenant anytime by clicking the user avatar on top right.
           </EuiText>
 

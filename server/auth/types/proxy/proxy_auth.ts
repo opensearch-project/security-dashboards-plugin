@@ -20,12 +20,12 @@ import {
   ILegacyClusterClient,
   CoreSetup,
   Logger,
-  KibanaRequest,
+  OpenSearchDashboardsRequest,
   LifecycleResponseFactory,
   AuthToolkit,
-  IKibanaResponse,
+  IOpenSearchDashboardsResponse,
   AuthResult,
-} from 'kibana/server';
+} from 'opensearch-dashboards/server';
 import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { ProxyAuthRoutes } from './routes';
@@ -69,13 +69,13 @@ export class ProxyAuthentication extends AuthenticationType {
     routes.setupRoutes();
   }
 
-  requestIncludesAuthInfo(request: KibanaRequest): boolean {
+  requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean {
     return request.headers[ProxyAuthentication.XFF] && request.headers[this.userHeaderName]
       ? true
       : false;
   }
 
-  getAdditionalAuthHeader(request: KibanaRequest): any {
+  getAdditionalAuthHeader(request: OpenSearchDashboardsRequest): any {
     const authHeaders: any = {};
     const customProxyHeader = this.config.proxycache?.proxy_header;
     if (
@@ -83,13 +83,13 @@ export class ProxyAuthentication extends AuthenticationType {
       !request.headers[customProxyHeader] &&
       this.config.proxycache?.proxy_header_ip
     ) {
-      // TODO: check how to get remoteIp from KibanaRequest and add remoteIp to this header
+      // TODO: check how to get remoteIp from OpenSearchDashboardsRequest and add remoteIp to this header
       authHeaders[customProxyHeader] = this.config.proxycache!.proxy_header_ip;
     }
     return authHeaders;
   }
 
-  getCookie(request: KibanaRequest, authInfo: any): SecuritySessionCookie {
+  getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
     const cookie: SecuritySessionCookie = {
       username: authInfo.username,
       credentials: {},
@@ -123,10 +123,10 @@ export class ProxyAuthentication extends AuthenticationType {
   }
 
   handleUnauthedRequest(
-    request: KibanaRequest,
+    request: OpenSearchDashboardsRequest,
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
-  ): IKibanaResponse | AuthResult {
+  ): IOpenSearchDashboardsResponse | AuthResult {
     const loginEndpoint = this.config.proxycache?.login_endpoint;
     if (loginEndpoint) {
       return toolkit.redirected({

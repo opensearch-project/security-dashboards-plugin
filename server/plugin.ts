@@ -42,14 +42,14 @@ import { IAuthenticationType } from './auth/types/authentication_type';
 import { getAuthenticationHandler } from './auth/auth_handler_factory';
 import { setupMultitenantRoutes } from './multitenancy/routes';
 import { defineAuthTypeRoutes } from './routes/auth_type_routes';
-import { createMigrationEsClient } from '../../../src/core/server/saved_objects/migrations/core';
+import { createMigrationOpenSearchClient } from '../../../src/core/server/saved_objects/migrations/core';
 
 export interface SecurityPluginRequestContext {
   logger: Logger;
   esClient: ILegacyClusterClient;
 }
 
-declare module 'kibana/server' {
+declare module 'opensearch-dashboards/server' {
   interface RequestHandlerContext {
     security_plugin: SecurityPluginRequestContext;
   }
@@ -59,7 +59,7 @@ export interface SecurityPluginRequestContext {
   logger: Logger;
 }
 
-declare module 'kibana/server' {
+declare module 'opensearch-dashboards/server' {
   interface RequestHandlerContext {
     security_plugin: SecurityPluginRequestContext;
   }
@@ -86,7 +86,7 @@ export class OpendistroSecurityPlugin
 
     const router = core.http.createRouter();
 
-    const esClient: ILegacyClusterClient = core.elasticsearch.legacy.createClient(
+    const esClient: ILegacyClusterClient = core.opensearch.legacy.createClient(
       'opendistro_security',
       {
         plugins: [opendistroSecurityConfiguratoinPlugin, opendistroSecurityPlugin],
@@ -142,17 +142,17 @@ export class OpendistroSecurityPlugin
       const globalConfig$: Observable<SharedGlobalConfig> = this.initializerContext.config.legacy
         .globalConfig$;
       const globalConfig: SharedGlobalConfig = await globalConfig$.pipe(first()).toPromise();
-      const kibanaIndex = globalConfig.kibana.index;
+      const opensearchDashboardsIndex = globalConfig.opensearchDashboards.index;
       const typeRegistry: ISavedObjectTypeRegistry = core.savedObjects.getTypeRegistry();
-      const esClient = core.elasticsearch.client.asInternalUser;
-      const migrationClient = createMigrationEsClient(esClient, this.logger);
+      const esClient = core.opensearch.client.asInternalUser;
+      const migrationClient = createMigrationOpenSearchClient(esClient, this.logger);
 
-      setupIndexTemplate(esClient, kibanaIndex, typeRegistry, this.logger);
+      setupIndexTemplate(esClient, opensearchDashboardsIndex, typeRegistry, this.logger);
 
       const serializer: SavedObjectsSerializer = core.savedObjects.createSerializer();
-      const kibanaVersion = this.initializerContext.env.packageInfo.version;
+      const opensearchDashboardsVersion = this.initializerContext.env.packageInfo.version;
       migrateTenantIndices(
-        kibanaVersion,
+        opensearchDashboardsVersion,
         migrationClient,
         this.securityClient,
         typeRegistry,
@@ -162,7 +162,7 @@ export class OpendistroSecurityPlugin
     }
 
     return {
-      es: core.elasticsearch.legacy,
+      es: core.opensearch.legacy,
     };
   }
 

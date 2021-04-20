@@ -14,7 +14,7 @@
  */
 
 import {
-  ElasticsearchClient,
+  OpenSearchClient,
   ISavedObjectTypeRegistry,
   Logger,
   SavedObjectsSerializer,
@@ -24,15 +24,15 @@ import {
   buildActiveMappings,
   DocumentMigrator,
   IndexMigrator,
-  MigrationEsClient,
+  MigrationOpenSearchClient,
 } from '../../../../src/core/server/saved_objects/migrations/core';
 import { createIndexMap } from '../../../../src/core/server/saved_objects/migrations/core/build_index_map';
-import { mergeTypes } from '../../../../src/core/server/saved_objects/migrations/kibana/kibana_migrator';
+import { mergeTypes } from '../../../../src/core/server/saved_objects/migrations/opensearch_dashboards/opensearch_dashboards_migrator';
 import { SecurityClient } from '../backend/opendistro_security_client';
 
 export async function setupIndexTemplate(
-  esClient: ElasticsearchClient,
-  kibanaIndex: string,
+  esClient: OpenSearchClient,
+  opensearchDashboardsIndex: string,
   typeRegistry: ISavedObjectTypeRegistry,
   logger: Logger
 ) {
@@ -42,17 +42,17 @@ export async function setupIndexTemplate(
       name: 'tenant_template',
       body: {
         index_patterns: [
-          kibanaIndex + '_-*_*',
-          kibanaIndex + '_0*_*',
-          kibanaIndex + '_1*_*',
-          kibanaIndex + '_2*_*',
-          kibanaIndex + '_3*_*',
-          kibanaIndex + '_4*_*',
-          kibanaIndex + '_5*_*',
-          kibanaIndex + '_6*_*',
-          kibanaIndex + '_7*_*',
-          kibanaIndex + '_8*_*',
-          kibanaIndex + '_9*_*',
+          opensearchDashboardsIndex + '_-*_*',
+          opensearchDashboardsIndex + '_0*_*',
+          opensearchDashboardsIndex + '_1*_*',
+          opensearchDashboardsIndex + '_2*_*',
+          opensearchDashboardsIndex + '_3*_*',
+          opensearchDashboardsIndex + '_4*_*',
+          opensearchDashboardsIndex + '_5*_*',
+          opensearchDashboardsIndex + '_6*_*',
+          opensearchDashboardsIndex + '_7*_*',
+          opensearchDashboardsIndex + '_8*_*',
+          opensearchDashboardsIndex + '_9*_*',
         ],
         settings: {
           number_of_shards: 1,
@@ -67,8 +67,8 @@ export async function setupIndexTemplate(
 }
 
 export async function migrateTenantIndices(
-  kibanaVersion: string,
-  migrationClient: MigrationEsClient,
+  opensearchDashboardsVersion: string,
+  migrationClient: MigrationOpenSearchClient,
   securityClient: SecurityClient,
   typeRegistry: ISavedObjectTypeRegistry,
   serializer: SavedObjectsSerializer,
@@ -82,22 +82,22 @@ export async function migrateTenantIndices(
     throw error;
   }
 
-  // follows the same approach in kibana_migrator.ts to initiate DocumentMigrator here
+  // follows the same approach in opensearch_dashboards_migrator.ts to initiate DocumentMigrator here
   // see: https://tiny.amazon.com/foi0x1wt/githelaskibablobe4c1srccore
   const documentMigrator = new DocumentMigrator({
-    kibanaVersion,
+    opensearchDashboardsVersion,
     typeRegistry,
     log: logger,
   });
 
   for (const indexName of Object.keys(tenentInfo)) {
     const indexMap = createIndexMap({
-      kibanaIndexName: indexName,
+      opensearchDashboardsIndexName: indexName,
       indexMap: mergeTypes(typeRegistry.getAllTypes()),
       registry: typeRegistry,
     });
 
-    // follows the same aporach in kibana_mirator.ts to construct IndexMigrator
+    // follows the same aporach in opensearch_dashboards_mirator.ts to construct IndexMigrator
     // see: https://tiny.amazon.com/9cdcchz5/githelaskibablobe4c1srccore
     //
     // FIXME: hard code batchSize, pollInterval, and scrollDuration for now
@@ -122,9 +122,9 @@ export async function migrateTenantIndices(
       // fail early, exit the kibana process
       // NOTE: according to https://github.com/elastic/kibana/issues/41983 ,
       //       PR https://github.com/elastic/kibana/pull/75819 , API to allow plugins
-      //       to set status will be available in 7.10, for now, we fail Kibana
+      //       to set status will be available in 7.10, for now, we fail OpenSearchDashboards
       //       process to indicate index migration error. Customer can fix their
-      //       tenant indices in ES then restart Kibana.
+      //       tenant indices in ES then restart OpenSearchDashboards.
       process.exit(1);
     }
   }

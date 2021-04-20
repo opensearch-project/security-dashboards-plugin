@@ -23,7 +23,7 @@ import {
   EuiEmptyPrompt,
   EuiButton,
 } from '@elastic/eui';
-import { CoreStart } from 'kibana/public';
+import { CoreStart } from 'opensearch-dashboards/public';
 import { getCurrentUser } from '../../../../utils/auth-info-utils';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import {
@@ -192,8 +192,8 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
     <>
       <PanelWithHeader
         headerText={headerText}
-        headerSubText="Tenants in Kibana are spaces for saving index patterns, visualizations, dashboards, and other Kibana objects. 
-        Tenants are useful for safely sharing your work with other Kibana users. 
+        headerSubText="Tenants in OpenSearch Dashboards are spaces for saving index patterns, visualizations, dashboards, and other OpenSearch Dashboards objects. 
+        Tenants are useful for safely sharing your work with other OpenSearch Dashboards users. 
         You can control which roles have access to a tenant and whether those roles have read or write access."
         helpLink={DocLinks.TenantPermissionsDoc}
         count={tenantPermissionDetail.length}

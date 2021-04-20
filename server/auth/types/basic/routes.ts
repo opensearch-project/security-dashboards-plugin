@@ -13,8 +13,8 @@
  *   permissions and limitations under the License.
  */
 
-import { schema } from '@kbn/config-schema';
-import { IRouter, SessionStorageFactory, CoreSetup } from 'kibana/server';
+import { schema } from '@osd/config-schema';
+import { IRouter, SessionStorageFactory, CoreSetup } from 'opensearch-dashboards/server';
 import {
   SecuritySessionCookie,
   clearOldVersionCookieValue,

@@ -15,7 +15,7 @@
 
 import wreck from '@hapi/wreck';
 import { parse, stringify } from 'querystring';
-import { CoreSetup } from 'kibana/server';
+import { CoreSetup } from 'opensearch-dashboards/server';
 import { SecurityPluginConfigType } from '../../..';
 
 export function parseTokenResponse(payload: Buffer) {

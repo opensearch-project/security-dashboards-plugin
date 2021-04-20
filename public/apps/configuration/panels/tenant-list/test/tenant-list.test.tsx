@@ -84,7 +84,7 @@ describe('Tenant list', () => {
     expect(component.find(EuiInMemoryTable).prop('items').length).toBe(0);
   });
 
-  it('renders when multitenancy is disabled in the kibana.yml', () => {
+  it('renders when multitenancy is disabled in the opensearch_dashboards.yml', () => {
     const config1 = {
       multitenancy: {
         enabled: false,

@@ -14,7 +14,7 @@
  */
 
 import { EuiButton, EuiImage, EuiListGroup, EuiSpacer, EuiText } from '@elastic/eui';
-import { AppMountParameters, CoreStart } from 'kibana/public';
+import { AppMountParameters, CoreStart } from 'opensearch-dashboards/public';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route } from 'react-router-dom';
@@ -46,7 +46,7 @@ export function CustomErrorPage(props: CustomErrorDeps) {
       </EuiText>
       <EuiSpacer size="s" />
       <EuiButton fill href={props.http.basePath.serverBasePath} fullWidth>
-        Back to Kibana Home
+        Back to OpenSearch Dashboards Home
       </EuiButton>
     </EuiListGroup>
   );

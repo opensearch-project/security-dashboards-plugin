@@ -17,18 +17,18 @@ import config from '../../../src/dev/jest/config';
 
 export default {
   ...config,
-  roots: ['<rootDir>/plugins/opendistro_security'],
+  roots: ['<rootDir>/plugins/security-dashboards-plugin'],
   testMatch: ['**/public/**/*.test.{ts,tsx,js,jsx}', '**/common/*.test.{ts, tsx}'],
   testPathIgnorePatterns: [
-    '<rootDir>/plugins/opendistro_security/build/',
-    '<rootDir>/plugins/opendistro_security/node_modules/',
+    '<rootDir>/plugins/security-dashboards-plugin/build/',
+    '<rootDir>/plugins/security-dashboards-plugin/node_modules/',
   ],
   setupFilesAfterEnv: ['<rootDir>/src/dev/jest/setup/after_env.integration.js'],
   collectCoverageFrom: [
-    '<rootDir>/plugins/opendistro_security/public/**/*.{ts,tsx}',
-    '!<rootDir>/plugins/opendistro_security/public/**/*.test.{ts,tsx}',
+    '<rootDir>/plugins/security-dashboards-plugin/public/**/*.{ts,tsx}',
+    '!<rootDir>/plugins/security-dashboards-plugin/public/**/*.test.{ts,tsx}',
   ],
-  coverageDirectory: '<rootDir>/plugins/opendistro_security/kibana-coverage/jest_ui',
+  coverageDirectory: '<rootDir>/plugins/security-dashboards-plugin/kibana-coverage/jest_ui',
   clearMocks: true,
   coverageReporters: ['lcov', 'text', 'cobertura', 'html'],
 };

@@ -1,0 +1,2 @@
+Open Search Security - OpenSearch Dashboards Plugin 
+Copyright 2021 OpenSearch Contributors

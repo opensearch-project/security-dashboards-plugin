@@ -26,7 +26,7 @@ jest.mock('../../../utils/login-utils', () => ({
 describe('Login page', () => {
   const mockHttpStart = {
     basePath: {
-      serverBasePath: '/app/kibana',
+      serverBasePath: '/app/opensearch-dashboards',
     },
   };
 

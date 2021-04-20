@@ -27,7 +27,7 @@ import {
   EuiPageHeader,
 } from '@elastic/eui';
 import React from 'react';
-import { FormattedMessage } from '@kbn/i18n/react';
+import { FormattedMessage } from '@osd/i18n/react';
 import { AppDependencies } from '../../types';
 import securityStepsDiagram from '../../../assets/get_started.svg';
 import { buildHashUrl } from '../utils/url-builder';

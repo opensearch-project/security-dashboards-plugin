@@ -14,7 +14,7 @@
  */
 
 import { isEmpty, findKey, cloneDeep } from 'lodash';
-import { KibanaRequest } from '../../../../src/core/server';
+import { OpenSearchDashboardsRequest } from '../../../../src/core/server';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { SecurityPluginConfigType } from '..';
 
@@ -26,7 +26,7 @@ export const GLOBAL_TENANTS: string[] = ['global', GLOBAL_TENANT_SYMBOL];
 /**
  * Resovles the tenant the user is using.
  *
- * @param request Kibana request.
+ * @param request OpenSearchDashboards request.
  * @param config security plugin config.
  * @param cookie cookie extracted from the request. The cookie should have been parsed by AuthenticationHandler.
  * pass it as parameter instead of extracting again.
@@ -35,7 +35,7 @@ export const GLOBAL_TENANTS: string[] = ['global', GLOBAL_TENANT_SYMBOL];
  * @returns user preferred tenant of the request.
  */
 export function resolveTenant(
-  request: KibanaRequest,
+  request: OpenSearchDashboardsRequest,
   username: string,
   availabeTenants: any,
   config: SecurityPluginConfigType,
@@ -71,18 +71,18 @@ export function resolveTenant(
 
 /**
  * Determines whether the request requires tenant info.
- * @param request kibana request.
+ * @param request opensearch-dashboards request.
  *
  * @returns true if the request requires tenant info, otherwise false.
  */
-export function isMultitenantPath(request: KibanaRequest): boolean {
+export function isMultitenantPath(request: OpenSearchDashboardsRequest): boolean {
   return (
     request.url.pathname?.startsWith('/elasticsearch') ||
     request.url.pathname?.startsWith('/api') ||
     request.url.pathname?.startsWith('/app') ||
     // short url path
     request.url.pathname?.startsWith('/goto') ||
-    // bootstrap.js depends on tenant info to fetch kibana configs in tenant index
+    // bootstrap.js depends on tenant info to fetch opensearch-dashboards configs in tenant index
     (request.url.pathname?.indexOf('bootstrap.js') || -1) > -1 ||
     request.url.pathname === '/'
   );

@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { schema, TypeOf } from '@kbn/config-schema';
+import { schema, TypeOf } from '@osd/config-schema';
 import { PluginInitializerContext, PluginConfigDescriptor } from '../../../src/core/server';
 import { OpendistroSecurityPlugin } from './plugin';
 
@@ -89,7 +89,7 @@ export const configSchema = schema.object({
     }),
     loadbalancer_url: schema.maybe(schema.string()),
     login: schema.object({
-      title: schema.string({ defaultValue: 'Please login to Kibana' }),
+      title: schema.string({ defaultValue: 'Please login to OpenSearch Dashboards' }),
       subtitle: schema.string({
         defaultValue:
           'If you have forgotten your username or password, please ask your system administrator',
@@ -175,7 +175,7 @@ export const configSchema = schema.object({
       // the login config here is the same as old config `opendistro_security.basicauth.login`
       // Since we are now rendering login page to browser app, so move these config to browser side.
       login: schema.object({
-        title: schema.string({ defaultValue: 'Please login to Kibana' }),
+        title: schema.string({ defaultValue: 'Please login to OpenSearch Dashboards' }),
         subtitle: schema.string({
           defaultValue:
             'If you have forgotten your username or password, please ask your system administrator',
@@ -215,7 +215,7 @@ export const config: PluginConfigDescriptor<SecurityPluginConfigType> = {
 };
 
 //  This exports static code and TypeScript types,
-//  as well as, Kibana Platform `plugin()` initializer.
+//  as well as, OpenSearchDashboards Platform `plugin()` initializer.
 
 export function plugin(initializerContext: PluginInitializerContext) {
   return new OpendistroSecurityPlugin(initializerContext);

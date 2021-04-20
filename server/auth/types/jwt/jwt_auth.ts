@@ -19,12 +19,12 @@ import {
   IRouter,
   ILegacyClusterClient,
   CoreSetup,
-  KibanaRequest,
+  OpenSearchDashboardsRequest,
   Logger,
   LifecycleResponseFactory,
   AuthToolkit,
-  IKibanaResponse,
-} from 'kibana/server';
+  IOpenSearchDashboardsResponse,
+} from 'opensearch-dashboards/server';
 import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { AuthenticationType } from '../authentication_type';
@@ -54,7 +54,7 @@ export class JwtAuthentication extends AuthenticationType {
     routes.setupRoutes();
   }
 
-  private getTokenFromUrlParam(request: KibanaRequest): string | undefined {
+  private getTokenFromUrlParam(request: OpenSearchDashboardsRequest): string | undefined {
     const urlParamName = this.config.jwt?.url_param;
     if (urlParamName) {
       const token = (request.url.query as ParsedUrlQuery)[urlParamName];
@@ -63,7 +63,7 @@ export class JwtAuthentication extends AuthenticationType {
     return undefined;
   }
 
-  private getBearerToken(request: KibanaRequest): string | undefined {
+  private getBearerToken(request: OpenSearchDashboardsRequest): string | undefined {
     const token = this.getTokenFromUrlParam(request);
     if (token) {
       return `Bearer ${token}`;
@@ -74,7 +74,7 @@ export class JwtAuthentication extends AuthenticationType {
   }
 
   protected requestIncludesAuthInfo(
-    request: KibanaRequest<unknown, unknown, unknown, any>
+    request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
   ): boolean {
     if (request.headers[this.authHeaderName]) {
       return true;
@@ -88,7 +88,7 @@ export class JwtAuthentication extends AuthenticationType {
     return false;
   }
 
-  protected getAdditionalAuthHeader(request: KibanaRequest<unknown, unknown, unknown, any>) {
+  protected getAdditionalAuthHeader(request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>) {
     const header: any = {};
     const token = this.getTokenFromUrlParam(request);
     if (token) {
@@ -98,7 +98,7 @@ export class JwtAuthentication extends AuthenticationType {
   }
 
   protected getCookie(
-    request: KibanaRequest<unknown, unknown, unknown, any>,
+    request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>,
     authInfo: any
   ): SecuritySessionCookie {
     return {
@@ -121,10 +121,10 @@ export class JwtAuthentication extends AuthenticationType {
   }
 
   handleUnauthedRequest(
-    request: KibanaRequest,
+    request: OpenSearchDashboardsRequest,
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
-  ): IKibanaResponse {
+  ): IOpenSearchDashboardsResponse {
     return response.unauthorized();
   }
 

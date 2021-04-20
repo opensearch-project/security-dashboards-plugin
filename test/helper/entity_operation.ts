@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 import { Root } from '../../../../src/core/server/root';
-import * as kbnTestServer from '../../../../src/core/test_helpers/kbn_server';
+import * as osdTestServer from '../../../../src/core/test_helpers/osd_server';
 import { AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS } from '../constant';
 
 export async function createOrUpdateEntityAsAdmin(
@@ -22,14 +22,14 @@ export async function createOrUpdateEntityAsAdmin(
   entityId: string,
   body: any
 ) {
-  return await kbnTestServer.request
+  return await osdTestServer.request
     .post(root, `/api/v1/configuration/${entityType}/${entityId}`)
     .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
     .send(body);
 }
 
 export async function getEntityAsAdmin(root: Root, entityType: string, entityId: string) {
-  return await kbnTestServer.request
+  return await osdTestServer.request
     .get(root, `/api/v1/configuration/${entityType}/${entityId}`)
     .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
 }

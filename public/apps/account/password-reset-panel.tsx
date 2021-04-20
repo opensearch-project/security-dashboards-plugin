@@ -26,7 +26,7 @@ import {
   EuiSpacer,
   EuiTitle,
 } from '@elastic/eui';
-import { CoreStart } from 'kibana/public';
+import { CoreStart } from 'opensearch-dashboards/public';
 import { FormRow } from '../configuration/utils/form-row';
 import { logout, updateNewPassword } from './utils';
 import { PASSWORD_INSTRUCTION } from '../apps-constants';

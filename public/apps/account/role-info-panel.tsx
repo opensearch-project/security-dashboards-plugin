@@ -22,7 +22,7 @@ import {
   EuiSpacer,
 } from '@elastic/eui';
 import React, { useCallback } from 'react';
-import { CoreStart } from 'kibana/public';
+import { CoreStart } from 'opensearch-dashboards/public';
 import { fetchAccountInfo } from './utils';
 
 export function RoleInfoPanel(props: { coreStart: CoreStart; handleClose: () => void }) {

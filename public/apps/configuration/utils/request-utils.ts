@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { HttpStart, HttpHandler } from 'kibana/public';
+import { HttpStart, HttpHandler } from 'opensearch-dashboards/public';
 
 export async function request<T>(requestFunc: HttpHandler, url: string, body?: object): Promise<T> {
   if (body) {

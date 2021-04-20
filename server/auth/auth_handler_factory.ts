@@ -19,7 +19,7 @@ import {
   ILegacyClusterClient,
   Logger,
   SessionStorageFactory,
-} from 'kibana/server';
+} from 'opensearch-dashboards/server';
 import { AuthType } from '../../common';
 import {
   BasicAuthentication,

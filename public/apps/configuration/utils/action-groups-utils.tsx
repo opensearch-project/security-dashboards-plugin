@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { HttpStart } from 'kibana/public';
+import { HttpStart } from 'opensearch-dashboards/public';
 import { map } from 'lodash';
 import { API_ENDPOINT_ACTIONGROUPS, CLUSTER_PERMISSIONS, INDEX_PERMISSIONS } from '../constants';
 import { DataObject, ActionGroupItem, ActionGroupUpdate, ObjectsMessage } from '../types';

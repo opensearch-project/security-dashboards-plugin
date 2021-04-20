@@ -111,7 +111,7 @@ exports[`Login page renders renders with default value 1`] = `
     size="m"
     textAlign="center"
   >
-    Please login to Kibana
+    Please login to OpenSearch Dashboards
   </EuiText>
   <EuiSpacer
     size="s"

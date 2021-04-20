@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { schema } from '@kbn/config-schema';
+import { schema } from '@osd/config-schema';
 import { IRouter, SessionStorageFactory } from '../../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
@@ -51,7 +51,7 @@ export class ProxyAuthRoutes {
       async (context, request, response) => {
         if (request.auth.isAuthenticated) {
           const nextUrl =
-            request.query.nextUrl || `${this.coreSetup.http.basePath.serverBasePath}/app/kibana`;
+            request.query.nextUrl || `${this.coreSetup.http.basePath.serverBasePath}/app/opensearch-dashboards`;
           response.redirected({
             headers: {
               location: nextUrl,

@@ -18,12 +18,12 @@ import {
   SessionStorageFactory,
   IRouter,
   ILegacyClusterClient,
-  KibanaRequest,
+  OpenSearchDashboardsRequest,
   Logger,
   LifecycleResponseFactory,
   AuthToolkit,
-} from 'kibana/server';
-import { KibanaResponse } from 'src/core/server/http/router';
+} from 'opensearch-dashboards/server';
+import { OpenSearchDashboardsResponse } from 'src/core/server/http/router';
 import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { BasicAuthRoutes } from './routes';
@@ -60,15 +60,15 @@ export class BasicAuthentication extends AuthenticationType {
   }
 
   // override functions inherited from AuthenticationType
-  requestIncludesAuthInfo(request: KibanaRequest<unknown, unknown, unknown, any>): boolean {
+  requestIncludesAuthInfo(request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>): boolean {
     return request.headers[BasicAuthentication.AUTH_HEADER_NAME] ? true : false;
   }
 
-  getAdditionalAuthHeader(request: KibanaRequest<unknown, unknown, unknown, any>) {
+  getAdditionalAuthHeader(request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>) {
     return {};
   }
 
-  getCookie(request: KibanaRequest, authInfo: any): SecuritySessionCookie {
+  getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
     if (
       this.config.auth.anonymous_auth_enabled &&
       authInfo.user_name === 'opendistro_security_anonymous'
@@ -100,10 +100,10 @@ export class BasicAuthentication extends AuthenticationType {
   }
 
   handleUnauthedRequest(
-    request: KibanaRequest,
+    request: OpenSearchDashboardsRequest,
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
-  ): KibanaResponse {
+  ): OpenSearchDashboardsResponse {
     if (this.isPageRequest(request)) {
       const nextUrlParam = composeNextUrlQeuryParam(
         request,

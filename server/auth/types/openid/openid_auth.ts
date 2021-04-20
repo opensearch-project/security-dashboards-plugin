@@ -21,11 +21,11 @@ import {
   CoreSetup,
   IRouter,
   ILegacyClusterClient,
-  KibanaRequest,
+  OpenSearchDashboardsRequest,
   LifecycleResponseFactory,
   AuthToolkit,
-  IKibanaResponse,
-} from 'kibana/server';
+  IOpenSearchDashboardsResponse,
+} from 'opensearch-dashboards/server';
 import HTTP from 'http';
 import HTTPS from 'https';
 import { PeerCertificate } from 'tls';
@@ -135,15 +135,15 @@ export class OpenIdAuthentication extends AuthenticationType {
     }
   }
 
-  requestIncludesAuthInfo(request: KibanaRequest): boolean {
+  requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean {
     return request.headers.authorization ? true : false;
   }
 
-  getAdditionalAuthHeader(request: KibanaRequest): any {
+  getAdditionalAuthHeader(request: OpenSearchDashboardsRequest): any {
     return {};
   }
 
-  getCookie(request: KibanaRequest, authInfo: any): SecuritySessionCookie {
+  getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
     return {
       username: authInfo.user_name,
       credentials: {
@@ -206,10 +206,10 @@ export class OpenIdAuthentication extends AuthenticationType {
   }
 
   handleUnauthedRequest(
-    request: KibanaRequest,
+    request: OpenSearchDashboardsRequest,
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
-  ): IKibanaResponse {
+  ): IOpenSearchDashboardsResponse {
     if (this.isPageRequest(request)) {
       // nextUrl is a key value pair
       const nextUrl = composeNextUrlQeuryParam(

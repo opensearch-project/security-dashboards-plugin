@@ -19,8 +19,8 @@ import { ChildProcess, exec, execSync } from 'child_process';
 import wreck from '@hapi/wreck';
 import { sleep } from '../helper/sleep';
 import {
-  KIBANA_SERVER_USER,
-  KIBANA_SERVER_PASSWORD,
+  OPENSEARCH_DASHBOARDS_SERVER_USER,
+  OPENSEARCH_DASHBOARDS_SERVER_PASSWORD,
   ELASTICSEARCH_VERSION,
   SECURITY_ES_PLUGIN_VERSION,
 } from '../constant';
@@ -90,7 +90,7 @@ export async function startElasticsearch() {
   let countdown = 30;
   let pingError;
   console.log('Waiting for Elasticsearch to start...');
-  const kbnServerCredentials = Buffer.from(`${KIBANA_SERVER_USER}:${KIBANA_SERVER_PASSWORD}`);
+  const osdServerCredentials = Buffer.from(`${OPENSEARCH_DASHBOARDS_SERVER_USER}:${OPENSEARCH_DASHBOARDS_SERVER_PASSWORD}`);
   while (countdown > 0) {
     countdown = countdown - 1;
     await sleep(5000);
@@ -99,7 +99,7 @@ export async function startElasticsearch() {
       const response = await wreck.get('https://localhost:9200', {
         rejectUnauthorized: false,
         headers: {
-          authorization: `Basic ${kbnServerCredentials.toString('base64')}`,
+          authorization: `Basic ${osdServerCredentials.toString('base64')}`,
         },
       });
       if (

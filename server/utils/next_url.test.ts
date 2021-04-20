@@ -53,7 +53,7 @@ describe('test validateNextUrl', () => {
   });
 
   test('allow dashboard url', () => {
-    const url = '/_plugin/kibana/app/kibana#dashbard/dashboard-id?_g=(param=a&p=b)';
+    const url = '/_plugin/opensearch-dashboards/app/opensearch-dashboards#dashbard/dashboard-id?_g=(param=a&p=b)';
     expect(validateNextUrl(url)).toEqual(undefined);
   });
 

@@ -22,10 +22,10 @@ import {
   Logger,
   AuthToolkit,
   LifecycleResponseFactory,
-  KibanaRequest,
-  IKibanaResponse,
+  OpenSearchDashboardsRequest,
+  IOpenSearchDashboardsResponse,
   AuthResult,
-} from 'kibana/server';
+} from 'opensearch-dashboards/server';
 import { SecurityPluginConfigType } from '../..';
 import { SecuritySessionCookie } from '../../session/security_cookie';
 import { SecurityClient } from '../../backend/opendistro_security_client';
@@ -56,7 +56,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
     '/app/login',
   ];
 
-  protected static readonly REST_API_CALL_HEADER = 'kbn-xsrf';
+  protected static readonly REST_API_CALL_HEADER = 'osd-xsrf';
 
   public type: string;
 
@@ -89,7 +89,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
     let cookie: SecuritySessionCookie | null | undefined;
     let authInfo: any | undefined;
     // if this is an REST API call, suppose the request includes necessary auth header
-    // see https://www.elastic.co/guide/en/kibana/master/using-api.html
+    // see https://www.elastic.co/guide/en/opensearch-dashboards/master/using-api.html
     if (this.requestIncludesAuthInfo(request)) {
       try {
         const additonalAuthHeader = this.getAdditionalAuthHeader(request);
@@ -183,7 +183,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
     });
   };
 
-  authNotRequired(request: KibanaRequest): boolean {
+  authNotRequired(request: OpenSearchDashboardsRequest): boolean {
     const pathname = request.url.pathname;
     if (!pathname) {
       return false;
@@ -194,14 +194,14 @@ export abstract class AuthenticationType implements IAuthenticationType {
     }
     // allow requests to routes that doesn't require authentication
     if (this.config.auth.unauthenticated_routes.indexOf(pathname!) > -1) {
-      // TODO: use kibana server user
+      // TODO: use opensearch-dashboards server user
       return true;
     }
     return false;
   }
 
   async resolveTenant(
-    request: KibanaRequest,
+    request: OpenSearchDashboardsRequest,
     cookie: SecuritySessionCookie,
     authHeader: any,
     authInfo: any
@@ -224,20 +224,20 @@ export abstract class AuthenticationType implements IAuthenticationType {
     return selectedTenant;
   }
 
-  isPageRequest(request: KibanaRequest) {
+  isPageRequest(request: OpenSearchDashboardsRequest) {
     const path = request.url.pathname || '/';
     return path.startsWith('/app/') || path === '/' || path.startsWith('/goto/');
   }
 
   // abstract functions for concrete auth types to implement
-  protected abstract requestIncludesAuthInfo(request: KibanaRequest): boolean;
-  protected abstract getAdditionalAuthHeader(request: KibanaRequest): any;
-  protected abstract getCookie(request: KibanaRequest, authInfo: any): SecuritySessionCookie;
+  protected abstract requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean;
+  protected abstract getAdditionalAuthHeader(request: OpenSearchDashboardsRequest): any;
+  protected abstract getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie;
   protected abstract async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean>;
   protected abstract handleUnauthedRequest(
-    request: KibanaRequest,
+    request: OpenSearchDashboardsRequest,
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
-  ): IKibanaResponse | AuthResult;
+  ): IOpenSearchDashboardsResponse | AuthResult;
   protected abstract buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any;
 }

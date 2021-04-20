@@ -13,8 +13,8 @@
  *   permissions and limitations under the License.
  */
 
-import { schema } from '@kbn/config-schema';
-import { IRouter, SessionStorageFactory, KibanaRequest } from '../../../../../../src/core/server';
+import { schema } from '@osd/config-schema';
+import { IRouter, SessionStorageFactory, OpenSearchDashboardsRequest } from '../../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
@@ -52,7 +52,7 @@ export class SamlAuthRoutes {
         if (request.auth.isAuthenticated) {
           return response.redirected({
             headers: {
-              location: `${this.coreSetup.http.basePath.serverBasePath}/app/kibana`,
+              location: `${this.coreSetup.http.basePath.serverBasePath}/app/opensearch-dashboards`,
             },
           });
         }
@@ -96,7 +96,7 @@ export class SamlAuthRoutes {
           if (cookie) {
             requestId = cookie.saml?.requestId || '';
             nextUrl =
-              cookie.saml?.nextUrl || `${this.coreSetup.http.basePath.serverBasePath}/app/kibana`;
+              cookie.saml?.nextUrl || `${this.coreSetup.http.basePath.serverBasePath}/app/opensearch-dashboards`;
           }
           if (!requestId) {
             return response.badRequest({
@@ -200,7 +200,7 @@ export class SamlAuthRoutes {
           this.sessionStorageFactory.asScoped(request).set(cookie);
           return response.redirected({
             headers: {
-              location: `${this.coreSetup.http.basePath.serverBasePath}/app/kibana`,
+              location: `${this.coreSetup.http.basePath.serverBasePath}/app/opensearch-dashboards`,
             },
           });
         } catch (error) {

@@ -31,15 +31,15 @@ export default function (Client: any, config: any, components: any) {
   });
 
   /**
-   * Gets tenant info and kibana server info.
+   * Gets tenant info and opensearch-dashboards server info.
    *
    * e.g.
    * {
    *   "user_name": "admin",
    *   "not_fail_on_forbidden_enabled": false,
-   *   "kibana_mt_enabled": true,
-   *   "kibana_index": ".kibana",
-   *   "kibana_server_user": "kibanaserver"
+   *   "opensearch_dashboards_mt_enabled": true,
+   *   "opensearch_dashboards_index": ".opensearch_dashboards",
+   *   "opensearch_dashboards_server_user": "kibanaserver"
    * }
    */
   Client.prototype.opendistro_security.prototype.multitenancyinfo = ca({
@@ -51,7 +51,7 @@ export default function (Client: any, config: any, components: any) {
   /**
    * Gets tenant info. The output looks like:
    * {
-   *   ".kibana_92668751_admin":"__private__"
+   *   ".opensearch_dashboards_92668751_admin":"__private__"
    * }
    */
   Client.prototype.opendistro_security.prototype.tenantinfo = ca({

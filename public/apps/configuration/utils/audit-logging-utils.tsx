@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { HttpStart } from 'kibana/public';
+import { HttpStart } from 'opensearch-dashboards/public';
 import { AuditLoggingSettings } from '../panels/audit-logging/types';
 import { API_ENDPOINT_AUDITLOGGING, API_ENDPOINT_AUDITLOGGING_UPDATE } from '../constants';
 import { httpGet, httpPost } from './request-utils';

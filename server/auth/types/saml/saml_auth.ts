@@ -14,17 +14,17 @@
  */
 
 import { escape } from 'querystring';
-import { CoreSetup } from 'kibana/server';
+import { CoreSetup } from 'opensearch-dashboards/server';
 import { SecurityPluginConfigType } from '../../..';
 import {
   SessionStorageFactory,
   IRouter,
   ILegacyClusterClient,
-  KibanaRequest,
+  OpenSearchDashboardsRequest,
   AuthToolkit,
   Logger,
   LifecycleResponseFactory,
-  IKibanaResponse,
+  IOpenSearchDashboardsResponse,
   AuthResult,
 } from '../../../../../../src/core/server';
 import {
@@ -51,12 +51,12 @@ export class SamlAuthentication extends AuthenticationType {
     this.setupRoutes();
   }
 
-  private generateNextUrl(request: KibanaRequest): string {
-    const path = this.coreSetup.http.basePath.serverBasePath + (request.url.path || '/app/kibana');
+  private generateNextUrl(request: OpenSearchDashboardsRequest): string {
+    const path = this.coreSetup.http.basePath.serverBasePath + (request.url.path || '/app/opensearch-dashboards');
     return escape(path);
   }
 
-  private redirectToLoginUri(request: KibanaRequest, toolkit: AuthToolkit) {
+  private redirectToLoginUri(request: OpenSearchDashboardsRequest, toolkit: AuthToolkit) {
     const nextUrl = this.generateNextUrl(request);
     const clearOldVersionCookie = clearOldVersionCookieValue(this.config);
     return toolkit.redirected({
@@ -76,15 +76,15 @@ export class SamlAuthentication extends AuthenticationType {
     samlAuthRoutes.setupRoutes();
   }
 
-  requestIncludesAuthInfo(request: KibanaRequest): boolean {
+  requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean {
     return request.headers[SamlAuthentication.AUTH_HEADER_NAME] ? true : false;
   }
 
-  getAdditionalAuthHeader(request: KibanaRequest): any {
+  getAdditionalAuthHeader(request: OpenSearchDashboardsRequest): any {
     return {};
   }
 
-  getCookie(request: KibanaRequest, authInfo: any): SecuritySessionCookie {
+  getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
     return {
       username: authInfo.user_name,
       credentials: {
@@ -105,10 +105,10 @@ export class SamlAuthentication extends AuthenticationType {
   }
 
   handleUnauthedRequest(
-    request: KibanaRequest,
+    request: OpenSearchDashboardsRequest,
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
-  ): IKibanaResponse | AuthResult {
+  ): IOpenSearchDashboardsResponse | AuthResult {
     if (this.isPageRequest(request)) {
       return this.redirectToLoginUri(request, toolkit);
     } else {

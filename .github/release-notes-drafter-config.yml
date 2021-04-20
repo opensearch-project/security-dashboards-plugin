@@ -1,0 +1,24 @@
+
+# Configuration for Release Drafter: https://github.com/toolmantim/release-drafter
+template: |
+  Compatible with OpenSearch (set version here).
+  $CHANGES
+# Setting the formatting and sorting for the release notes body
+name-template: Version (set version here)
+change-template: '* $TITLE ([#$NUMBER](https://github.com/opensearch-project/security-dashboards-plugin/pull/$NUMBER))'
+sort-by: merged_at
+sort-direction: ascending
+replacers:
+  - search: "##"
+    replace: "###"
+
+# Organizing the tagged PRs into unified ODFE categories
+categories:
+  - title: "Enhancements"
+    labels: "enhancement"
+
+  - title: "Bug fixes"
+    labels: "bug"
+
+  - title: "Maintenance"
+    labels: "maintenance"

@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { i18n } from '@kbn/i18n';
+import { i18n } from '@osd/i18n';
 
 export function translateMessage(messageId: string, defaultMessage: string) {
   return i18n.translate(messageId, { defaultMessage });
