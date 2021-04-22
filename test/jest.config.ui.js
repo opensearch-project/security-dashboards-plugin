@@ -28,7 +28,7 @@ export default {
     '<rootDir>/plugins/security-dashboards-plugin/public/**/*.{ts,tsx}',
     '!<rootDir>/plugins/security-dashboards-plugin/public/**/*.test.{ts,tsx}',
   ],
-  coverageDirectory: '<rootDir>/plugins/security-dashboards-plugin/kibana-coverage/jest_ui',
+  coverageDirectory: '<rootDir>/plugins/security-dashboards-plugin/opensearch-dashboards-coverage/jest_ui',
   clearMocks: true,
   coverageReporters: ['lcov', 'text', 'cobertura', 'html'],
 };
