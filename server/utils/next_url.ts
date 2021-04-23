@@ -18,7 +18,10 @@ import { format } from 'url';
 import { stringify } from 'querystring';
 import { OpenSearchDashboardsRequest } from 'opensearch-dashboards/server';
 
-export function composeNextUrlQeuryParam(request: OpenSearchDashboardsRequest, basePath: string): string {
+export function composeNextUrlQeuryParam(
+  request: OpenSearchDashboardsRequest,
+  basePath: string
+): string {
   const url = cloneDeep(request.url);
   url.pathname = `${basePath}${url.pathname}`;
   const nextUrl = format(url);

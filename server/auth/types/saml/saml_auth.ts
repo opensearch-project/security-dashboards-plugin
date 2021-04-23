@@ -52,7 +52,9 @@ export class SamlAuthentication extends AuthenticationType {
   }
 
   private generateNextUrl(request: OpenSearchDashboardsRequest): string {
-    const path = this.coreSetup.http.basePath.serverBasePath + (request.url.path || '/app/opensearch-dashboards');
+    const path =
+      this.coreSetup.http.basePath.serverBasePath +
+      (request.url.path || '/app/opensearch-dashboards');
     return escape(path);
   }
 

@@ -341,12 +341,13 @@ export function TenantList(props: AppDependencies) {
               </h3>
             </EuiTitle>
             <EuiText size="xs" color="subdued">
-              Tenants in OpenSearch Dashboards are spaces for saving index patterns, visualizations, dashboards,
-              and other OpenSearch Dashboards objects. Use tenants to safely share your work with other OpenSearch Dashboards
-              users. You can control which roles have access to a tenant and whether those roles
-              have read or write access. The “Current” label indicates which tenant you are using
-              now. Switch to another tenant anytime from your user profile, which is located on the
-              top right of the screen. <ExternalLink href={DocLinks.TenantPermissionsDoc} />
+              Tenants in OpenSearch Dashboards are spaces for saving index patterns, visualizations,
+              dashboards, and other OpenSearch Dashboards objects. Use tenants to safely share your
+              work with other OpenSearch Dashboards users. You can control which roles have access
+              to a tenant and whether those roles have read or write access. The “Current” label
+              indicates which tenant you are using now. Switch to another tenant anytime from your
+              user profile, which is located on the top right of the screen.{' '}
+              <ExternalLink href={DocLinks.TenantPermissionsDoc} />
             </EuiText>
           </EuiPageContentHeaderSection>
           <EuiPageContentHeaderSection>

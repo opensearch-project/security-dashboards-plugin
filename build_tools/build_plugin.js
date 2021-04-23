@@ -124,7 +124,13 @@ async function createBuild(pluginRoot, plugin) {
     return new Promise(function (resolve, reject) {
       vfs
         .src(srcGlobs, { cwd, base, allowEmpty })
-        .pipe(rewritePackageJson.rewritePackageJson(pluginRoot, buildVersion, opensearchDashboardsVersion))
+        .pipe(
+          rewritePackageJson.rewritePackageJson(
+            pluginRoot,
+            buildVersion,
+            opensearchDashboardsVersion
+          )
+        )
         .pipe(rename(nestFileInDir))
         .pipe(vfs.dest(buildTarget))
         .on('end', resolve)

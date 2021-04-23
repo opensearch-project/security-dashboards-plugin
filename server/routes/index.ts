@@ -14,7 +14,12 @@
  */
 
 import { schema } from '@osd/config-schema';
-import { IRouter, ResponseError, IOpenSearchDashboardsResponse, OpenSearchDashboardsResponseFactory } from 'opensearch-dashboards/server';
+import {
+  IRouter,
+  ResponseError,
+  IOpenSearchDashboardsResponse,
+  OpenSearchDashboardsResponseFactory,
+} from 'opensearch-dashboards/server';
 import { API_PREFIX, CONFIGURATION_API_PREFIX, isValidResourceName } from '../../common';
 
 // TODO: consider to extract entity CRUD operations and put it into a client class
@@ -235,7 +240,11 @@ export function defineRoutes(router: IRouter) {
         }),
       },
     },
-    async (context, request, response): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
+    async (
+      context,
+      request,
+      response
+    ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
       const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
@@ -336,7 +345,11 @@ export function defineRoutes(router: IRouter) {
         }),
       },
     },
-    async (context, request, response): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
+    async (
+      context,
+      request,
+      response
+    ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
       const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
@@ -366,7 +379,11 @@ export function defineRoutes(router: IRouter) {
         }),
       },
     },
-    async (context, request, response): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
+    async (
+      context,
+      request,
+      response
+    ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
       const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
@@ -405,7 +422,11 @@ export function defineRoutes(router: IRouter) {
         body: schema.any(),
       },
     },
-    async (context, request, response): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
+    async (
+      context,
+      request,
+      response
+    ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
       try {
         validateRequestBody(request.params.resourceName, request.body);
       } catch (error) {
@@ -445,7 +466,11 @@ export function defineRoutes(router: IRouter) {
         body: schema.any(),
       },
     },
-    async (context, request, response): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
+    async (
+      context,
+      request,
+      response
+    ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
       try {
         validateRequestBody(request.params.resourceName, request.body);
       } catch (error) {
@@ -499,7 +524,11 @@ export function defineRoutes(router: IRouter) {
       path: `${API_PREFIX}/auth/authinfo`,
       validate: false,
     },
-    async (context, request, response): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
+    async (
+      context,
+      request,
+      response
+    ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
       const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
@@ -574,7 +603,11 @@ export function defineRoutes(router: IRouter) {
       path: `${API_PREFIX}/configuration/audit`,
       validate: false,
     },
-    async (context, request, response): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
+    async (
+      context,
+      request,
+      response
+    ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
       const client = context.security_plugin.esClient.asScoped(request);
 
       let esResp;

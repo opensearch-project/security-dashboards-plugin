@@ -31,6 +31,7 @@ export default {
     '!<rootDir>/plugins/security-dashboards-plugin/server/auth/types/saml/**/*.{ts,tsx}',
     '!<rootDir>/plugins/security-dashboards-plugin/server/auth/types/proxy/**/*.{ts,tsx}',
   ],
-  coverageDirectory: '<rootDir>/plugins/security-dashboards-plugin/opensearch-dashboards-coverage/jest_server',
+  coverageDirectory:
+    '<rootDir>/plugins/security-dashboards-plugin/opensearch-dashboards-coverage/jest_server',
   coverageReporters: ['lcov', 'text', 'cobertura', 'html'],
 };

@@ -88,7 +88,9 @@ export class JwtAuthentication extends AuthenticationType {
     return false;
   }
 
-  protected getAdditionalAuthHeader(request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>) {
+  protected getAdditionalAuthHeader(
+    request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
+  ) {
     const header: any = {};
     const token = this.getTokenFromUrlParam(request);
     if (token) {

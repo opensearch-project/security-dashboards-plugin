@@ -14,7 +14,11 @@
  */
 
 import { schema } from '@osd/config-schema';
-import { IRouter, SessionStorageFactory, OpenSearchDashboardsRequest } from '../../../../../../src/core/server';
+import {
+  IRouter,
+  SessionStorageFactory,
+  OpenSearchDashboardsRequest,
+} from '../../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
@@ -96,7 +100,8 @@ export class SamlAuthRoutes {
           if (cookie) {
             requestId = cookie.saml?.requestId || '';
             nextUrl =
-              cookie.saml?.nextUrl || `${this.coreSetup.http.basePath.serverBasePath}/app/opensearch-dashboards`;
+              cookie.saml?.nextUrl ||
+              `${this.coreSetup.http.basePath.serverBasePath}/app/opensearch-dashboards`;
           }
           if (!requestId) {
             return response.badRequest({
