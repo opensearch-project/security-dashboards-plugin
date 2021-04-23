@@ -36,7 +36,7 @@ jobs:
       - name: Use OpenSearch release commit
         run: |
           cd ./OpenSearch-Dashboards
-          git checkout tags/v${{ steps.osd_version.outputs.osd_version }} -b v${{ steps.osd_version.outputs.osd_version }}
+          # git checkout tags/v${{ steps.osd_version.outputs.osd_version }} -b v${{ steps.osd_version.outputs.osd_version }}
       - name: Get node and yarn versions
         id: versions
         run: |
