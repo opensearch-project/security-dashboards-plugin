@@ -320,7 +320,7 @@ export function TenantList(props: AppDependencies) {
   if (!props.config.multitenancy.enabled) {
     return <TenantInstructionView />;
   }
-
+  /* eslint-disable */
   return (
     <>
       <EuiPageHeader>
@@ -346,8 +346,7 @@ export function TenantList(props: AppDependencies) {
               work with other OpenSearch Dashboards users. You can control which roles have access
               to a tenant and whether those roles have read or write access. The “Current” label
               indicates which tenant you are using now. Switch to another tenant anytime from your
-              user profile, which is located on the top right of the screen.{' '}
-              <ExternalLink href={DocLinks.TenantPermissionsDoc} />
+              user profile, which is located on the top right of the screen. <ExternalLink href={DocLinks.TenantPermissionsDoc} />
             </EuiText>
           </EuiPageContentHeaderSection>
           <EuiPageContentHeaderSection>
