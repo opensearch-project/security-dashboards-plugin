@@ -40,9 +40,9 @@ The above builds the final artifacts in zip format. The artifacts can be found i
 
 Install the plugin to OpenSearch-Dashboards cluster with the following commands:
 
-`cd kibana/bin`
+`cd OpenSearch-Dashboards/bin`
 
-`./kibana-plugin install file:///path/to/security/target/releases/opendistro_security-<version>.zip`
+`./opensearch-dashboards-plugin install file:///path/to/security/target/releases/opensearch-security-dashboards-plugin-<version>.zip`
 
 ## Documentation
 

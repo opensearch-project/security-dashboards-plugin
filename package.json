@@ -1,12 +1,13 @@
 {
-  "name": "security-dashboards-plugin",
-  "version": "1.13.0.1",
-  "main": "target/plugins/security-dashboards-plugin",
+  "name": "opensearch_security_dashboards",
+  "version": "1.0.0.0",
+  "main": "target/plugins/opensearch_security_dashboards",
   "opensearchDashboards": {
-    "version": "7.10.2",
+    "version": "1.0.0",
     "templateVersion": "1.0.0"
   },
   "license": "Apache-2.0",
+  "homepage": "https://github.com/opensearch-project/security-dashboards-plugin",
   "scripts": {
     "plugin-helpers": "node ../../scripts/plugin_helpers",
     "osd": "node ../../scripts/osd",
