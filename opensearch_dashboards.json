@@ -1,6 +1,6 @@
 {
   "id": "opensearchSecurityDashboards",
-  "version": "1.0.0.0",
+  "version": "1.0.0.0-beta1",
   "opensearchDashboardsVersion": "1.0.0",
   "configPath": ["opensearch_security"],
   "requiredPlugins": ["navigation"],
