@@ -12,7 +12,7 @@
     "plugin-helpers": "node ../../scripts/plugin_helpers",
     "osd": "node ../../scripts/osd",
     "opensearch": "node ../../scripts/opensearch",
-    "build": "yarn plugin-helpers build && node build_tools/rename_zip.js",
+    "build": "yarn plugin-helpers build",
     "start": "node ../../scripts/opensearch-dashboards --dev",
     "lint:es": "node ../../scripts/eslint",
     "lint:sass": "node ../../scripts/sasslint",
