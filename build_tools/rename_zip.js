@@ -18,8 +18,8 @@ const shell = require('child_process').execSync;
 const packageJson = require('../package.json');
 const osdJson = require('../opensearch_dashboards.json');
 
-oldName = `build/${osdJson.id}-${osdJson.opensearchDashboardsVersion}.zip`;
-newName = `build/${osdJson.id}-${packageJson.version}.zip`;
+const oldName = `build/${osdJson.id}-${osdJson.opensearchDashboardsVersion}.zip`;
+const newName = `build/${osdJson.id}-${packageJson.version}.zip`;
 
-console.log("rename "+oldName+" to "+newName);
+console.log('rename ' + oldName + ' to ' + newName);
 shell(`mv ${oldName} ${newName}`);
