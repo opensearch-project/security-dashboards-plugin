@@ -78,7 +78,7 @@ jobs:
 
           # Rename
           mv ${{ steps.build_zip.outputs.ARTIFACT_PATH }} opendistroSecurityKibana-${{ steps.plugin_version.outputs.plugin_version }}.zip
-          zip=`ls opendistroSecurityKibana*.zip`
+          zip=`ls build/opendistroSecurityKibana*.zip`
 
           # Inject the build number before the suffix
           zip_outfile=`basename ${zip%.zip}-build-${GITHUB_RUN_NUMBER}.zip`
