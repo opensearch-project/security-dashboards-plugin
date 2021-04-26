@@ -14,7 +14,7 @@
  */
 
 
-const shell=require('child_process').execSync;
+import { execSync as shell } from 'child_process';
 
 packageJson = require('../package.json');
 osdJson = require('../opensearch_dashboards.json');
