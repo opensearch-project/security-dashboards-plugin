@@ -13,14 +13,13 @@
  *   permissions and limitations under the License.
  */
 
-
 import { execSync as shell } from 'child_process';
 
-packageJson = require('../package.json');
-osdJson = require('../opensearch_dashboards.json');
+const packageJson = require('../package.json');
+const osdJson = require('../opensearch_dashboards.json');
 
-old_name = `build/${osdJson.id}-${osdJson.opensearchDashboardsVersion}.zip`;
-new_name = `build/${packageJson.name}-${packageJson.version}.zip`;
+const oldName = `build/${osdJson.id}-${osdJson.opensearchDashboardsVersion}.zip`;
+const newName = `build/${packageJson.name}-${packageJson.version}.zip`;
 
-console.log("rename "+old_name+" to "+new_name);
-shell(`mv ${old_name} ${new_name}`);
+console.log('rename ' + oldName + ' to ' + newName);
+shell(`mv ${oldName} ${newName}`);
