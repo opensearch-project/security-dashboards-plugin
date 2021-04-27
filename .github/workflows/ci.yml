@@ -24,7 +24,7 @@ jobs:
         run: |
           cd ./OpenSearch-Dashboards
           mkdir -p plugins
-      - name: Checkout
+      - name: Checkout OpenSearch Dashboard Security plugin
         uses: actions/checkout@v2
         with:
           path: OpenSearch-Dashboards/plugins/security-dashboards-plugin
@@ -33,7 +33,7 @@ jobs:
         id: osd_version
         run: |
           echo "::set-output name=osd_version::$(jq -r '.opensearchDashboards.version' ./OpenSearch-Dashboards/plugins/security-dashboards-plugin/package.json)"
-      - name: Use OpenSearch release commit
+      - name: Use OpenSearch Dashboards release commit
         run: |
           cd ./OpenSearch-Dashboards
           # git checkout tags/v${{ steps.osd_version.outputs.osd_version }} -b v${{ steps.osd_version.outputs.osd_version }}
