@@ -43,7 +43,10 @@ export class OpenIdAuthRoutes {
     private readonly wreckClient: typeof wreck
   ) {}
 
-  private redirectToLogin(request: OpenSearchDashboardsRequest, response: OpenSearchDashboardsResponseFactory) {
+  private redirectToLogin(
+    request: OpenSearchDashboardsRequest,
+    response: OpenSearchDashboardsResponseFactory
+  ) {
     this.sessionStorageFactory.asScoped(request).clear();
     return response.redirected({
       headers: {

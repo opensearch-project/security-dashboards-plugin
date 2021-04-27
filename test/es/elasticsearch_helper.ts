@@ -90,7 +90,9 @@ export async function startElasticsearch() {
   let countdown = 30;
   let pingError;
   console.log('Waiting for Elasticsearch to start...');
-  const osdServerCredentials = Buffer.from(`${OPENSEARCH_DASHBOARDS_SERVER_USER}:${OPENSEARCH_DASHBOARDS_SERVER_PASSWORD}`);
+  const osdServerCredentials = Buffer.from(
+    `${OPENSEARCH_DASHBOARDS_SERVER_USER}:${OPENSEARCH_DASHBOARDS_SERVER_PASSWORD}`
+  );
   while (countdown > 0) {
     countdown = countdown - 1;
     await sleep(5000);

@@ -1,8 +1,8 @@
 {
-  "id": "opendistro_security",
-  "version": "1.13.0.1",
-  "opensearchDashboardsVersion": "opensearchDashboards",
-  "configPath": ["opendistro_security"],
+  "id": "opensearchSecurityDashboards",
+  "version": "1.0.0.0-alpha2",
+  "opensearchDashboardsVersion": "1.0.0",
+  "configPath": ["opensearch_security"],
   "requiredPlugins": ["navigation"],
   "server": true,
   "ui": true

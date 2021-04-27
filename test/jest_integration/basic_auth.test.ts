@@ -207,6 +207,5 @@ describe('start OpenSearch Dashboards server', () => {
       .unset(AUTHORIZATION_HEADER_NAME);
 
     expect(response.status).toEqual(400);
-
   });
 });

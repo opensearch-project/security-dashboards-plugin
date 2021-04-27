@@ -1,4 +1,3 @@
-const LICENSE_HEADER = `
 /*
  *   Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -13,26 +12,14 @@ const LICENSE_HEADER = `
  *   express or implied. See the License for the specific language governing
  *   permissions and limitations under the License.
  */
-`
 
-module.exports = {	
-  root: true,	
-  extends: ['@elastic/eslint-config-kibana', 'plugin:@elastic/eui/recommended'],
-  rules: {
-    // "@osd/eslint/require-license-header": "off"
-  },
-  overrides: [
-    {
-      files: ['**/*.{js,ts,tsx}'],
-      rules: {
-        '@osd/eslint/require-license-header': [
-          'error',
-          {
-            license: LICENSE_HEADER,
-          },
-        ],
-        "no-console": 0
-      }
-    }
-  ],
-};
+const shell = require('child_process').execSync;
+
+const packageJson = require('../package.json');
+const osdJson = require('../opensearch_dashboards.json');
+
+const oldName = `build/${osdJson.id}-${osdJson.opensearchDashboardsVersion}.zip`;
+const newName = `build/${osdJson.id}-${packageJson.version}.zip`;
+
+console.log('rename ' + oldName + ' to ' + newName);
+shell(`mv ${oldName} ${newName}`);

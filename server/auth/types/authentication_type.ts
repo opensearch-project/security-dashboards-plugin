@@ -232,7 +232,10 @@ export abstract class AuthenticationType implements IAuthenticationType {
   // abstract functions for concrete auth types to implement
   protected abstract requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean;
   protected abstract getAdditionalAuthHeader(request: OpenSearchDashboardsRequest): any;
-  protected abstract getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie;
+  protected abstract getCookie(
+    request: OpenSearchDashboardsRequest,
+    authInfo: any
+  ): SecuritySessionCookie;
   protected abstract async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean>;
   protected abstract handleUnauthedRequest(
     request: OpenSearchDashboardsRequest,
