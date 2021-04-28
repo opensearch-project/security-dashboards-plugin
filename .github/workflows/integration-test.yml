@@ -21,8 +21,8 @@ jobs:
         volumes:
           - ./OpenSearch-Dashboards/.github/workflows:/docker-host
         env:
-          - ES_PLUGIN_URL=https://d3g5vo6xdbdb9a.cloudfront.net/downloads/elasticsearch-plugins/opendistro-security/opendistro-security-1.13.1.0.zip
-          - discovery.type=single-node
+          ES_PLUGIN_URL: https://d3g5vo6xdbdb9a.cloudfront.net/downloads/elasticsearch-plugins/opendistro-security/opendistro-security-1.13.1.0.zip
+          discovery.type: single-node
         options: --entrypoint /bin/bash -c 'sh /docker-host/es-ep.sh'
     steps:
       - name: Set up JDK 14
