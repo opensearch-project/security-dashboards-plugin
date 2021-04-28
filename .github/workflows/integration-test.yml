@@ -12,6 +12,19 @@ jobs:
   tests:
     name: Run integration tests
     runs-on: ubuntu-latest
+    services:
+      elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
+        ports:
+          - "9200:9200"
+          - "9300:9300"
+        volumes:
+          - ./OpenSearch-Dashboards/.github/workflows:/docker-host
+        env:
+          - ES_PLUGIN_URL=https://d3g5vo6xdbdb9a.cloudfront.net/downloads/elasticsearch-plugins/opendistro-security/opendistro-security-1.13.1.0.zip
+          - discovery.type=single-node
+        options:
+          entrypoint: /bin/bash -c "sh /docker-host/es-ep.sh"
     steps:
       - name: Set up JDK 14
         uses: actions/setup-java@v1
@@ -45,19 +58,6 @@ jobs:
         id: opendistro_version
         run: |
           echo "::set-output name=opendistro_version::$(jq -r '.version' ./OpenSearch-Dashboards/plugins/security-dashboards-plugin/package.json | sed 's/[0-9]*$/0/')"
-
-      - name: Run elasticsearch with plugin (es 7.10.2, odfe 1.13)
-        run: |
-          wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.10.2-linux-x86_64.tar.gz &> /dev/null
-          tar -xzf elasticsearch-oss-7.10.2-linux-x86_64.tar.gz
-          cd elasticsearch-7.10.2/
-          yes | bin/elasticsearch-plugin install https://d3g5vo6xdbdb9a.cloudfront.net/downloads/elasticsearch-plugins/opendistro-security/opendistro-security-1.13.1.0.zip &> /dev/null
-          chmod +x plugins/opendistro_security/tools/install_demo_configuration.sh
-          yes | plugins/opendistro_security/tools/install_demo_configuration.sh
-          echo 'opendistro_security.unsupported.restapi.allow_securityconfig_modification: true' >> config/elasticsearch.yml
-          bin/elasticsearch &
-          sleep 30
-          curl -XGET https://localhost:9200 -u 'admin:admin' -k
       
       - name: Use OpenSearch Dashboards release commit
         run: |
