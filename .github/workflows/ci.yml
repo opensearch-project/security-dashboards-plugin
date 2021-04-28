@@ -74,7 +74,7 @@ jobs:
           cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
           yarn build --opensearch-dashboards-version ${{ steps.osd_version.outputs.osd_version }}
 
-          artifact_path=`ls $(pwd)/build/opensearch*.zip`
+          artifact_path=`ls $(pwd)/build/security*.zip`
           artifact_name=`basename $artifact_path`
           echo "::set-output name=ARTIFACT_PATH::$artifact_path"
           echo "::set-output name=ARTIFACT_NAME::$artifact_name"
