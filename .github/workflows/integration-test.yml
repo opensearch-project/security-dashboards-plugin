@@ -87,7 +87,7 @@ jobs:
           cd ./OpenSearch-Dashboards
           yarn osd bootstrap --oss
       
-      - name: Run unit test
+      - name: Run integration test
         run: |
           cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
           yarn test:jest_server --coverage
