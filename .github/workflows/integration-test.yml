@@ -48,16 +48,16 @@ jobs:
 
       - name: Run elasticsearch with plugin (es 7.10.2, odfe 1.13)
         run: |
-          wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.10.2-linux-x86_64.tar.gz
+          wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.10.2-linux-x86_64.tar.gz &> /dev/null
           tar -xzf elasticsearch-oss-7.10.2-linux-x86_64.tar.gz
           cd elasticsearch-7.10.2/
-          bin/elasticsearch-plugin install -b https://d3g5vo6xdbdb9a.cloudfront.net/downloads/elasticsearch-plugins/opendistro-security/opendistro-security-1.13.1.0.zip
-          bash plugins/opendistro_security/tools/install_demo_configuration.sh -y -i
+          yes | bin/elasticsearch-plugin install https://d3g5vo6xdbdb9a.cloudfront.net/downloads/elasticsearch-plugins/opendistro-security/opendistro-security-1.13.1.0.zip &> /dev/null
+          chmod +x plugins/opendistro_security/tools/install_demo_configuration.sh
+          yes | plugins/opendistro_security/tools/install_demo_configuration.sh
           echo 'opendistro_security.unsupported.restapi.allow_securityconfig_modification: true' >> config/elasticsearch.yml
-          echo $(curl -s -o /dev/null -w ''%{http_code}'' https://localhost:9200 -u admin:admin -k)
           bin/elasticsearch &
           sleep 30
-          timeout 900 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' https://localhost:9200 -u admin:admin -k)" != "200" ]]; do echo "ping ElasticSearch..."; sleep 5; done'
+          curl -XGET https://localhost:9200 -u 'admin:admin' -k
       
       - name: Use OpenSearch Dashboards release commit
         run: |
@@ -85,7 +85,7 @@ jobs:
       - name: Bootstrap OpenSearch Dashboards
         run: |
           cd ./OpenSearch-Dashboards
-          yarn osd bootstrap --oss
+          yarn osd bootstrap
       
       - name: Run integration test
         run: |
