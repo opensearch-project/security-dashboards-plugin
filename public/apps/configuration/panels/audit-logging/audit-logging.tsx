@@ -61,10 +61,10 @@ function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: bool
             <EuiText color="subdued" grow={false}>
               <FormattedMessage
                 id="audit.logs.storageInstruction"
-                defaultMessage="Configure the output location and storage types in {opensearchCode}. The default storage location is {internalopensearchCode}, which stores the logs in an index on this cluster."
+                defaultMessage="Configure the output location and storage types in {opensearchCode}. The default storage location is {internalOpenSearchCode}, which stores the logs in an index on this cluster."
                 values={{
                   opensearchCode: <EuiCode>opensearch.yml</EuiCode>,
-                  internalopensearchCode: <EuiCode>internal_opensearch</EuiCode>,
+                  internalOpenSearchCode: <EuiCode>internal_opensearch</EuiCode>,
                 }}
               />{' '}
               <ExternalLink href={DocLinks.AuditLogsStorageDoc} />
