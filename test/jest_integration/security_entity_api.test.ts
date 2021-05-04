@@ -44,7 +44,7 @@ describe('start OpenSearch Dashboards server', () => {
           username: OPENSEARCH_DASHBOARDS_SERVER_USER,
           password: OPENSEARCH_DASHBOARDS_SERVER_PASSWORD,
         },
-        opendistro_security: {
+        opensearch_security: {
           multitenancy: { enabled: true, tenants: { preferred: ['Private', 'Global'] } },
         },
       },
