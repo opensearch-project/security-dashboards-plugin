@@ -1,5 +1,5 @@
-[![CI](https://github.com/opendistro-for-elasticsearch/security-kibana-plugin/workflows/CI/badge.svg?branch=main)](https://github.com/opendistro-for-elasticsearch/security-kibana-plugin/actions)
-[![codecov](https://codecov.io/gh/opendistro-for-elasticsearch/security-kibana-plugin/branch/main/graphs/badge.svg)](https://codecov.io/gh/opendistro-for-elasticsearch/security-kibana-plugin)
+[![CI](https://github.com/opensearch-project/security-dashboards-plugin/workflows/CI/badge.svg?branch=main)](https://github.com/opensearch-project/security-dashboards-plugin/actions)
+[![codecov](https://codecov.io/gh/opensearch-project/security-dashboards-plugin/branch/main/graphs/badge.svg)](https://github.com/opensearch-project/security-dashboards-plugin)
 
 # OpenSearch-Dashboards Security Plugin
 
