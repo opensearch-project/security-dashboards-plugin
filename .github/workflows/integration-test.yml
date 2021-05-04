@@ -87,7 +87,7 @@ jobs:
           cd ./OpenSearch-Dashboards
           yarn osd bootstrap
       
-      - name: Run integration test
+      - name: Run integration tests
         run: |
           echo "check if elasticsearch is ready"
           curl -XGET https://localhost:9200 -u 'admin:admin' -k
