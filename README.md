@@ -1,4 +1,5 @@
-[![CI](https://github.com/opensearch-project/security-dashboards-plugin/workflows/CI/badge.svg?branch=main)](https://github.com/opensearch-project/security-dashboards-plugin/actions)
+[![Unit tests](https://github.com/opensearch-project/security-dashboards-plugin/workflows/Unit%20Tests/badge.svg?branch=main)](https://github.com/opensearch-project/security-dashboards-plugin/actions)
+[![Integration tests](https://github.com/opensearch-project/security-dashboards-plugin/workflows/Integration%20Tests/badge.svg?branch=main)](https://github.com/opensearch-project/security-dashboards-plugin/actions)
 [![codecov](https://codecov.io/gh/opensearch-project/security-dashboards-plugin/branch/main/graphs/badge.svg)](https://github.com/opensearch-project/security-dashboards-plugin)
 
 # OpenSearch-Dashboards Security Plugin

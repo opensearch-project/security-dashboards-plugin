@@ -273,15 +273,15 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
             grow={false}
           >
             <FormattedMessage
-              defaultMessage="Configure the output location and storage types in {elasticsearchCode}. The default storage location is {internalElasticsearchCode}, which stores the logs in an index on this cluster."
+              defaultMessage="Configure the output location and storage types in {opensearchCode}. The default storage location is {internalOpenSearchCode}, which stores the logs in an index on this cluster."
               id="audit.logs.storageInstruction"
               values={
                 Object {
-                  "elasticsearchCode": <EuiCode>
-                    elasticsearch.yml
+                  "internalOpenSearchCode": <EuiCode>
+                    internal_opensearch
                   </EuiCode>,
-                  "internalElasticsearchCode": <EuiCode>
-                    internal_elasticsearch
+                  "opensearchCode": <EuiCode>
+                    opensearch.yml
                   </EuiCode>,
                 }
               }
