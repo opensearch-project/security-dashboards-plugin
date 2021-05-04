@@ -50,15 +50,10 @@ jobs:
         run: |
           echo "::set-output name=osd_version::$(jq -r '.opensearchDashboards.version' ./OpenSearch-Dashboards/plugins/security-dashboards-plugin/package.json)"
       
-      - name: Get OpenSearch version
-        id: opendistro_version
-        run: |
-          echo "::set-output name=opendistro_version::$(jq -r '.version' ./OpenSearch-Dashboards/plugins/security-dashboards-plugin/package.json | sed 's/[0-9]*$/0/')"
-      
-      - name: Use OpenSearch Dashboards release commit
+      - name: Check OpenSearch Dashboards release tag
         run: |
           cd ./OpenSearch-Dashboards
-          # git checkout tags/v${{ steps.osd_version.outputs.osd_version }} -b v${{ steps.osd_version.outputs.osd_version }}
+          git checkout tags/${{ steps.osd_version.outputs.osd_version }} -b v${{ steps.osd_version.outputs.osd_version }}
       
       - name: Get node and yarn versions
         id: versions
