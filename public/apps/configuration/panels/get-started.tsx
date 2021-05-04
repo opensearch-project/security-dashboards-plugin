@@ -177,9 +177,8 @@ export function GetStarted(props: AppDependencies) {
         <EuiPanel paddingSize="l">
           <EuiText size="s" color="subdued">
             <p>
-              The OpenSearch security plugin lets you define the API calls that
-              users can make and the data they can access. The most basic configuration consists of
-              these steps.
+              The OpenSearch security plugin lets you define the API calls that users can make and
+              the data they can access. The most basic configuration consists of these steps.
             </p>
           </EuiText>
 
