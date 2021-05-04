@@ -177,9 +177,8 @@ export function GetStarted(props: AppDependencies) {
         <EuiPanel paddingSize="l">
           <EuiText size="s" color="subdued">
             <p>
-              The Open Distro for Elasticsearch security plugin lets you define the API calls that
-              users can make and the data they can access. The most basic configuration consists of
-              these steps.
+              The OpenSearch security plugin lets you define the API calls that users can make and
+              the data they can access. The most basic configuration consists of these steps.
             </p>
           </EuiText>
 
@@ -209,7 +208,7 @@ export function GetStarted(props: AppDependencies) {
             <p>
               <FormattedMessage
                 id="audit.logs.introduction"
-                defaultMessage="Audit logs let you track user access to your Elasticsearch cluster and are useful for compliance purposes."
+                defaultMessage="Audit logs let you track user access to your OpenSearch cluster and are useful for compliance purposes."
               />{' '}
               <ExternalLink href={DocLinks.AuditLogsDoc} />
             </p>

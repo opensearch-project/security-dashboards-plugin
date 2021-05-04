@@ -82,7 +82,7 @@ export function BackendRolePanel(props: {
   return (
     <PanelWithHeader
       headerText="Backend roles"
-      headerSubText="Backend roles are used to map users from external authentication systems, such as LDAP or SAML to Open Distro security roles."
+      headerSubText="Backend roles are used to map users from external authentication systems, such as LDAP or SAML to OpenSearch security roles."
       helpLink={DocLinks.AttributeBasedSecurityDoc}
       optional
     >

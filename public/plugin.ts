@@ -96,8 +96,8 @@ export class OpendistroSecurityPlugin
           return renderApp(coreStart, depsStart as AppPluginStartDependencies, params, config);
         },
         category: {
-          id: 'odfe',
-          label: 'Open Distro for Elasticsearch',
+          id: 'opensearch',
+          label: 'OpenSearch Plugins',
           order: 2000,
         },
       });

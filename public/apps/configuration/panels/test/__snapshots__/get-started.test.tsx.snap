@@ -26,7 +26,7 @@ exports[`Get started (landing page) renders when backend configuration is disabl
         size="s"
       >
         <p>
-          The Open Distro for Elasticsearch security plugin lets you define the API calls that users can make and the data they can access. The most basic configuration consists of these steps.
+          The OpenSearch security plugin lets you define the API calls that users can make and the data they can access. The most basic configuration consists of these steps.
         </p>
       </EuiText>
       <EuiSpacer
@@ -150,7 +150,7 @@ exports[`Get started (landing page) renders when backend configuration is disabl
       >
         <p>
           <FormattedMessage
-            defaultMessage="Audit logs let you track user access to your Elasticsearch cluster and are useful for compliance purposes."
+            defaultMessage="Audit logs let you track user access to your OpenSearch cluster and are useful for compliance purposes."
             id="audit.logs.introduction"
             values={Object {}}
           />
@@ -227,7 +227,7 @@ exports[`Get started (landing page) renders when backend configuration is enable
         size="s"
       >
         <p>
-          The Open Distro for Elasticsearch security plugin lets you define the API calls that users can make and the data they can access. The most basic configuration consists of these steps.
+          The OpenSearch security plugin lets you define the API calls that users can make and the data they can access. The most basic configuration consists of these steps.
         </p>
       </EuiText>
       <EuiSpacer
@@ -424,7 +424,7 @@ exports[`Get started (landing page) renders when backend configuration is enable
       >
         <p>
           <FormattedMessage
-            defaultMessage="Audit logs let you track user access to your Elasticsearch cluster and are useful for compliance purposes."
+            defaultMessage="Audit logs let you track user access to your OpenSearch cluster and are useful for compliance purposes."
             id="audit.logs.introduction"
             values={Object {}}
           />
