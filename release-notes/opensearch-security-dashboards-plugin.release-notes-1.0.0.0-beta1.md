@@ -21,3 +21,4 @@
 * Update Contributing doc and add PR template [#724](https://github.com/opensearch-project/security-dashboards-plugin/pull/724)
 * change version back to beta1 [#748](https://github.com/opensearch-project/security-dashboards-plugin/pull/748)
 * Fix tests and document cleanup [#754](https://github.com/opensearch-project/security-dashboards-plugin/pull/754)
+* Update 1.0.0.0-beta1 release notes [#755](https://github.com/opensearch-project/security-dashboards-plugin/pull/755)
