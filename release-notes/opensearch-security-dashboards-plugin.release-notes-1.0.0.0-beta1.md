@@ -8,11 +8,12 @@
 
 ### Bug Fixes
 * Revert "Add opendistro/ism and rollup actions" [#714](https://github.com/opensearch-project/security-dashboards-plugin/pull/714)
-* Making sure SAML cookie uses saml session timeout value if it is available [#715](https://github.com/opensearch-project/security-dashboards-plugin/pull/715) [#717](https://github.com/opensearch-project/security-dashboards-plugin/pull/717)
+* Making sure SAML cookie uses saml session timeout value if it is available [#715](https://github.com/opensearch-project/security-dashboards-plugin/pull/715)
+* (Backport) Making sure SAML cookie uses saml session timeout value if it is available [#717](https://github.com/opensearch-project/security-dashboards-plugin/pull/717)
 * Cherry-pick fix of saving tenant option from main to 7.9.1 branch [#716](https://github.com/opensearch-project/security-dashboards-plugin/pull/716)
-* Save tenant selection by default and remove the checkbox [#722](https://github.com/opensearch-project/security-dashboards-plugin/pull/722)
 * Fix github integration test for 1.13.0.1 [#723](https://github.com/opensearch-project/security-dashboards-plugin/pull/723)
-* Updated logic for splitting SAML JWT token. This should not throw the… [#730](https://github.com/opensearch-project/security-dashboards-plugin/pull/730) [#731](https://github.com/opensearch-project/security-dashboards-plugin/pull/731)
+* Updated logic for splitting SAML JWT token [#730](https://github.com/opensearch-project/security-dashboards-plugin/pull/730)
+* (Backport) Updated logic for splitting SAML JWT token to 7.9.1 [#731](https://github.com/opensearch-project/security-dashboards-plugin/pull/731)
 * Fix ci and change artifact name [#745](https://github.com/opensearch-project/security-dashboards-plugin/pull/745)
 * fix text and remove svg content [#751](https://github.com/opensearch-project/security-dashboards-plugin/pull/751)
 * fix readme badge and audit log text [#753](https://github.com/opensearch-project/security-dashboards-plugin/pull/753)
