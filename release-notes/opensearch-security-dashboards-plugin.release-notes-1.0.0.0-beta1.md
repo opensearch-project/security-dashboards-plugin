@@ -8,7 +8,7 @@
 
 ### Bug Fixes
 * Revert "Add opendistro/ism and rollup actions" [#714](https://github.com/opensearch-project/security-dashboards-plugin/pull/714)
-* Making sure SAML cookie uses saml session timeout value if it is avai… [#715](https://github.com/opensearch-project/security-dashboards-plugin/pull/715) [#717](https://github.com/opensearch-project/security-dashboards-plugin/pull/717)
+* Making sure SAML cookie uses saml session timeout value if it is available [#715](https://github.com/opensearch-project/security-dashboards-plugin/pull/715) [#717](https://github.com/opensearch-project/security-dashboards-plugin/pull/717)
 * Cherry-pick fix of saving tenant option from main to 7.9.1 branch [#716](https://github.com/opensearch-project/security-dashboards-plugin/pull/716)
 * Save tenant selection by default and remove the checkbox [#722](https://github.com/opensearch-project/security-dashboards-plugin/pull/722)
 * Fix github integration test for 1.13.0.1 [#723](https://github.com/opensearch-project/security-dashboards-plugin/pull/723)
