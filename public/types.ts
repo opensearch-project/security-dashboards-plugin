@@ -16,9 +16,9 @@
 import { NavigationPublicPluginStart } from '../../../src/plugins/navigation/public';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface OpendistroSecurityPluginSetup {}
+export interface SecurityPluginSetup {}
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface OpendistroSecurityPluginStart {}
+export interface SecurityPluginStart {}
 
 export interface AppPluginStartDependencies {
   navigation: NavigationPublicPluginStart;

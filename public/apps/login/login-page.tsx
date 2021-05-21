@@ -27,7 +27,7 @@ import {
 } from '@elastic/eui';
 import { CoreStart } from '../../../../../src/core/public';
 import { ClientConfigType } from '../../types';
-import defaultBrandImage from '../../assets/open_distro_for_elasticsearch_logo_h.svg';
+import defaultBrandImage from '../../assets/opensearch_logo_h.svg';
 import { validateCurrentPassword } from '../../utils/login-utils';
 
 interface LoginPageDeps {

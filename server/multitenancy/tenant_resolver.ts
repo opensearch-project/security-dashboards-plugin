@@ -77,7 +77,7 @@ export function resolveTenant(
  */
 export function isMultitenantPath(request: OpenSearchDashboardsRequest): boolean {
   return (
-    request.url.pathname?.startsWith('/elasticsearch') ||
+    request.url.pathname?.startsWith('/opensearch') ||
     request.url.pathname?.startsWith('/api') ||
     request.url.pathname?.startsWith('/app') ||
     // short url path

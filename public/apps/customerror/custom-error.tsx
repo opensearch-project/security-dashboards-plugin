@@ -19,7 +19,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route } from 'react-router-dom';
 import { ERROR_MISSING_ROLE_PATH } from '../../../common';
-import defaultBrandImage from '../../assets/open_distro_for_elasticsearch_logo_h.svg';
+import defaultBrandImage from '../../assets/opensearch_logo_h.svg';
 import { ClientConfigType } from '../../types';
 import './_index.scss';
 

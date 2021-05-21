@@ -17,11 +17,11 @@
 export default function (Client: any, config: any, components: any) {
   const ca = components.clientAction.factory;
 
-  if (!Client.prototype.opendistro_security) {
-    Client.prototype.opendistro_security = components.clientAction.namespaceFactory();
+  if (!Client.prototype.opensearch_security) {
+    Client.prototype.opensearch_security = components.clientAction.namespaceFactory();
   }
 
-  Client.prototype.opendistro_security.prototype.restapiinfo = ca({
+  Client.prototype.opensearch_security.prototype.restapiinfo = ca({
     url: {
       fmt: '/_opendistro/_security/api/permissionsinfo',
     },
@@ -30,7 +30,7 @@ export default function (Client: any, config: any, components: any) {
   /**
    * list all field mappings for all indices.
    */
-  Client.prototype.opendistro_security.prototype.indices = ca({
+  Client.prototype.opensearch_security.prototype.indices = ca({
     url: {
       fmt: '/_all/_mapping/field/*',
     },
@@ -47,7 +47,7 @@ export default function (Client: any, config: any, components: any) {
    *   }
    * }
    */
-  Client.prototype.opendistro_security.prototype.listResource = ca({
+  Client.prototype.opensearch_security.prototype.listResource = ca({
     url: {
       fmt: '/_opendistro/_security/api/<%=resourceName%>',
       req: {
@@ -72,7 +72,7 @@ export default function (Client: any, config: any, components: any) {
    *   "message": "User username created"
    * }
    */
-  Client.prototype.opendistro_security.prototype.saveResource = ca({
+  Client.prototype.opensearch_security.prototype.saveResource = ca({
     method: 'PUT',
     needBody: true,
     url: {
@@ -100,7 +100,7 @@ export default function (Client: any, config: any, components: any) {
    *   "message": "Username updated."
    * }
    */
-  Client.prototype.opendistro_security.prototype.saveResourceWithoutId = ca({
+  Client.prototype.opensearch_security.prototype.saveResourceWithoutId = ca({
     method: 'PUT',
     needBody: true,
     url: {
@@ -125,7 +125,7 @@ export default function (Client: any, config: any, components: any) {
    *   }
    * }
    */
-  Client.prototype.opendistro_security.prototype.getResource = ca({
+  Client.prototype.opensearch_security.prototype.getResource = ca({
     method: 'GET',
     url: {
       fmt: '/_opendistro/_security/api/<%=resourceName%>/<%=id%>',
@@ -145,7 +145,7 @@ export default function (Client: any, config: any, components: any) {
   /**
    * Deletes a Security resource instance.
    */
-  Client.prototype.opendistro_security.prototype.deleteResource = ca({
+  Client.prototype.opensearch_security.prototype.deleteResource = ca({
     method: 'DELETE',
     url: {
       fmt: '/_opendistro/_security/api/<%=resourceName%>/<%=id%>',
@@ -165,7 +165,7 @@ export default function (Client: any, config: any, components: any) {
   /**
    * Deletes a Security resource instance.
    */
-  Client.prototype.opendistro_security.prototype.clearCache = ca({
+  Client.prototype.opensearch_security.prototype.clearCache = ca({
     method: 'DELETE',
     url: {
       fmt: '/_opendistro/_security/api/cache',
@@ -175,7 +175,7 @@ export default function (Client: any, config: any, components: any) {
   /**
    * Validate query.
    */
-  Client.prototype.opendistro_security.prototype.validateDls = ca({
+  Client.prototype.opensearch_security.prototype.validateDls = ca({
     method: 'POST',
     needBody: true,
     url: {
@@ -186,7 +186,7 @@ export default function (Client: any, config: any, components: any) {
   /**
    * Gets index mapping.
    */
-  Client.prototype.opendistro_security.prototype.getIndexMappings = ca({
+  Client.prototype.opensearch_security.prototype.getIndexMappings = ca({
     method: 'GET',
     needBody: true,
     url: {
@@ -203,7 +203,7 @@ export default function (Client: any, config: any, components: any) {
   /**
    * Gets audit log configuration.
    */
-  Client.prototype.opendistro_security.prototype.getAudit = ca({
+  Client.prototype.opensearch_security.prototype.getAudit = ca({
     method: 'GET',
     url: {
       fmt: '/_opendistro/_security/api/audit',
@@ -213,7 +213,7 @@ export default function (Client: any, config: any, components: any) {
   /**
    * Updates audit log configuration.
    */
-  Client.prototype.opendistro_security.prototype.saveAudit = ca({
+  Client.prototype.opensearch_security.prototype.saveAudit = ca({
     method: 'PUT',
     needBody: true,
     url: {

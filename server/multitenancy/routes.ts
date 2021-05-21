@@ -17,7 +17,7 @@ import { schema } from '@osd/config-schema';
 import { AllHtmlEntities } from 'html-entities';
 import { IRouter, SessionStorageFactory } from '../../../../src/core/server';
 import { SecuritySessionCookie } from '../session/security_cookie';
-import { SecurityClient } from '../backend/opendistro_security_client';
+import { SecurityClient } from '../backend/opensearch_security_client';
 
 export function setupMultitenantRoutes(
   router: IRouter,
