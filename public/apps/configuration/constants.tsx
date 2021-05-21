@@ -211,43 +211,41 @@ export const RoleViewTenantInvalidText = 'N/A';
 // External Links
 export const DocLinks = {
   BackendConfigurationDoc:
-    'https://opendistro.github.io/for-elasticsearch-docs/docs/security/configuration/configuration/',
+    'https://docs-beta.opensearch.org/docs/security/configuration/configuration/',
   BackendConfigurationAuthenticationDoc:
-    'https://opendistro.github.io/for-elasticsearch-docs/docs/security/configuration/configuration/#authentication',
+    'https://docs-beta.opensearch.org/docs/security/configuration/configuration/#authentication',
   BackendConfigurationAuthorizationDoc:
-    'https://opendistro.github.io/for-elasticsearch-docs/docs/security/configuration/configuration/#authorization',
-  AuthenticationFlowDoc:
-    'https://opendistro.github.io/for-elasticsearch-docs/docs/security/configuration/concepts/',
-  UsersAndRolesDoc:
-    'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/users-roles/',
+    'https://docs-beta.opensearch.org/docs/security/configuration/configuration/#authorization',
+  AuthenticationFlowDoc: 'https://docs-beta.opensearch.org/docs/security/configuration/concepts/',
+  UsersAndRolesDoc: 'https://docs-beta.opensearch.org/docs/security/access-control/users-roles/',
   CreateRolesDoc:
-    'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/users-roles/#create-roles',
+    'https://docs-beta.opensearch.org/docs/security/access-control/users-roles/#create-roles',
   MapUsersToRolesDoc:
-    'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/users-roles/#map-users-to-roles',
+    'https://docs-beta.opensearch.org/docs/security/access-control/users-roles/#map-users-to-roles',
   CreateUsersDoc:
-    'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/users-roles/#create-users',
+    'https://docs-beta.opensearch.org/docs/security/access-control/users-roles/#create-users',
   AuditLogsDoc: translateMessage(
     'audit.logs.docLink',
-    'https://opendistro.github.io/for-elasticsearch-docs/docs/security/audit-logs/'
+    'https://docs-beta.opensearch.org/docs/security/audit-logs/'
   ),
   AuditLogsStorageDoc: translateMessage(
     'audit.logs.storageDocLink',
-    'https://opendistro.github.io/for-elasticsearch-docs/docs/security/audit-logs/storage-types/'
+    'https://docs-beta.opensearch.org/docs/security/audit-logs/storage-types/'
   ),
   PermissionsDoc:
-    'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/default-action-groups/',
+    'https://docs-beta.opensearch.org/docs/security/access-control/default-action-groups/',
   ClusterPermissionsDoc:
-    'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/default-action-groups/#cluster-level',
+    'https://docs-beta.opensearch.org/docs/security/access-control/default-action-groups/#cluster-level',
   IndexPermissionsDoc:
-    'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/default-action-groups/#index-level',
+    'https://docs-beta.opensearch.org/docs/security/access-control/default-action-groups/#index-level',
   DocumentLevelSecurityDoc:
-    'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/document-level-security/',
+    'https://docs-beta.opensearch.org/docs/security/access-control/document-level-security/',
   TenantPermissionsDoc:
-    'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/multi-tenancy/',
+    'https://docs-beta.opensearch.org/docs/security/access-control/multi-tenancy/',
   AttributeBasedSecurityDoc:
-    'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/document-level-security/#attribute-based-security',
+    'https://docs-beta.opensearch.org/docs/security/access-control/document-level-security/#attribute-based-security',
   BackendRoleDoc:
-    'https://opendistro.github.io/for-elasticsearch-docs/docs/security/access-control/users-roles/#map-users-to-roles',
+    'https://docs-beta.opensearch.org/docs/security/access-control/users-roles/#map-users-to-roles',
 };
 
 export enum ToolTipContent {

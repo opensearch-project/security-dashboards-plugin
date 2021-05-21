@@ -47,7 +47,7 @@ Install the plugin to OpenSearch-Dashboards cluster with the following commands:
 
 ## Documentation
 
-Please refer to the [technical documentation](https://opendistro.github.io/for-elasticsearch-docs) for detailed information on installing and configuring opendistro-elasticsearch-security plugin.
+Please refer to the [technical documentation](https://docs-beta.opensearch.org/) for detailed information on installing and configuring opensearch plugin.
 
 ## License
 
