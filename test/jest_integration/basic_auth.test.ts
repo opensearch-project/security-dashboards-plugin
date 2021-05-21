@@ -197,8 +197,7 @@ describe('start OpenSearch Dashboards server', () => {
     const response = await osdTestServer.request
       .get(root, '/auth/anonymous')
       .unset(AUTHORIZATION_HEADER_NAME);
-    expect(response.status).toEqual(200);
-    expect(response.body.username).toEqual('opendistro_security_anonymous');
+    expect(response.status).toEqual(302);
   });
 
   it('anonymous disabled', async () => {
@@ -206,6 +205,6 @@ describe('start OpenSearch Dashboards server', () => {
       .get(anonymousDisabledRoot, '/auth/anonymous')
       .unset(AUTHORIZATION_HEADER_NAME);
 
-    expect(response.status).toEqual(400);
+    expect(response.status).toEqual(302);
   });
 });
