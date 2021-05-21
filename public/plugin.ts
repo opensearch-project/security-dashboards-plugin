@@ -39,8 +39,8 @@ import {
 import {
   AppPluginStartDependencies,
   ClientConfigType,
-  OpendistroSecurityPluginSetup,
-  OpendistroSecurityPluginStart,
+  SecurityPluginSetup,
+  SecurityPluginStart,
 } from './types';
 import { addTenantToShareURL } from './services/shared-link';
 
@@ -62,12 +62,11 @@ const APP_ID_DASHBOARDS = 'dashboards';
 const APP_ID_OPENSEARCH_DASHBOARDS = 'kibana';
 const APP_LIST_FOR_READONLY_ROLE = [APP_ID_HOME, APP_ID_DASHBOARDS, APP_ID_OPENSEARCH_DASHBOARDS];
 
-export class OpendistroSecurityPlugin
-  implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
+export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPluginStart> {
   // @ts-ignore : initializerContext not used
   constructor(private readonly initializerContext: PluginInitializerContext) {}
 
-  public async setup(core: CoreSetup): Promise<OpendistroSecurityPluginSetup> {
+  public async setup(core: CoreSetup): Promise<SecurityPluginSetup> {
     const apiPermission = await hasApiPermission(core);
 
     const config = this.initializerContext.config.get<ClientConfigType>();
@@ -142,7 +141,7 @@ export class OpendistroSecurityPlugin
     return {};
   }
 
-  public start(core: CoreStart): OpendistroSecurityPluginStart {
+  public start(core: CoreStart): SecurityPluginStart {
     const config = this.initializerContext.config.get<ClientConfigType>();
 
     setupTopNavButton(core, config);

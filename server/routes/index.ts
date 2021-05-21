@@ -248,7 +248,7 @@ export function defineRoutes(router: IRouter) {
       const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opendistro_security.listResource', {
+        esResp = await client.callAsCurrentUser('opensearch_security.listResource', {
           resourceName: request.params.resourceName,
         });
         return response.ok({
@@ -353,7 +353,7 @@ export function defineRoutes(router: IRouter) {
       const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opendistro_security.getResource', {
+        esResp = await client.callAsCurrentUser('opensearch_security.getResource', {
           resourceName: request.params.resourceName,
           id: request.params.id,
         });
@@ -387,7 +387,7 @@ export function defineRoutes(router: IRouter) {
       const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opendistro_security.deleteResource', {
+        esResp = await client.callAsCurrentUser('opensearch_security.deleteResource', {
           resourceName: request.params.resourceName,
           id: request.params.id,
         });
@@ -435,7 +435,7 @@ export function defineRoutes(router: IRouter) {
       const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opendistro_security.saveResourceWithoutId', {
+        esResp = await client.callAsCurrentUser('opensearch_security.saveResourceWithoutId', {
           resourceName: request.params.resourceName,
           body: request.body,
         });
@@ -479,7 +479,7 @@ export function defineRoutes(router: IRouter) {
       const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opendistro_security.saveResource', {
+        esResp = await client.callAsCurrentUser('opensearch_security.saveResource', {
           resourceName: request.params.resourceName,
           id: request.params.id,
           body: request.body,
@@ -532,7 +532,7 @@ export function defineRoutes(router: IRouter) {
       const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opendistro_security.authinfo');
+        esResp = await client.callAsCurrentUser('opensearch_security.authinfo');
 
         return response.ok({
           body: esResp,
@@ -612,7 +612,7 @@ export function defineRoutes(router: IRouter) {
 
       let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opendistro_security.getAudit');
+        esResp = await client.callAsCurrentUser('opensearch_security.getAudit');
 
         return response.ok({
           body: esResp,
@@ -692,7 +692,7 @@ export function defineRoutes(router: IRouter) {
       const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opendistro_security.saveAudit', {
+        esResp = await client.callAsCurrentUser('opensearch_security.saveAudit', {
           body: request.body,
         });
         return response.ok({
@@ -720,7 +720,7 @@ export function defineRoutes(router: IRouter) {
       const client = context.security_plugin.esClient.asScoped(request);
       let esResponse;
       try {
-        esResponse = await client.callAsCurrentUser('opendistro_security.clearCache');
+        esResponse = await client.callAsCurrentUser('opensearch_security.clearCache');
         return response.ok({
           body: {
             message: esResponse.message,
@@ -751,7 +751,7 @@ export function defineRoutes(router: IRouter) {
     async (context, request, response) => {
       const client = context.security_plugin.esClient.asScoped(request);
       try {
-        const esResponse = await client.callAsCurrentUser('opendistro_security.restapiinfo');
+        const esResponse = await client.callAsCurrentUser('opensearch_security.restapiinfo');
         return response.ok({
           body: esResponse,
         });
@@ -782,7 +782,7 @@ export function defineRoutes(router: IRouter) {
     async (context, request, response) => {
       const client = context.security_plugin.esClient.asScoped(request);
       try {
-        const esResponse = await client.callAsCurrentUser('opendistro_security.validateDls', {
+        const esResponse = await client.callAsCurrentUser('opensearch_security.validateDls', {
           body: request.body,
         });
         return response.ok({
@@ -812,7 +812,7 @@ export function defineRoutes(router: IRouter) {
     async (context, request, response) => {
       const client = context.security_plugin.esClient.asScoped(request);
       try {
-        const esResponse = await client.callAsCurrentUser('opendistro_security.getIndexMappings', {
+        const esResponse = await client.callAsCurrentUser('opensearch_security.getIndexMappings', {
           index: request.body.index.join(','),
           ignore_unavailable: true,
           allow_no_indices: true,
@@ -841,7 +841,7 @@ export function defineRoutes(router: IRouter) {
     async (context, request, response) => {
       const client = context.security_plugin.esClient.asScoped(request);
       try {
-        const esResponse = await client.callAsCurrentUser('opendistro_security.indices');
+        const esResponse = await client.callAsCurrentUser('opensearch_security.indices');
         return response.ok({
           body: esResponse,
         });

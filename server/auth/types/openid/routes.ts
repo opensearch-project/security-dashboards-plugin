@@ -26,7 +26,7 @@ import {
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
 import { OpenIdAuthConfig } from './openid_auth';
-import { SecurityClient } from '../../../backend/opendistro_security_client';
+import { SecurityClient } from '../../../backend/opensearch_security_client';
 import { getBaseRedirectUrl, callTokenEndpoint, composeLogoutUrl } from './helper';
 import { validateNextUrl } from '../../../utils/next_url';
 

@@ -26,13 +26,13 @@ import {
   SharedGlobalConfig,
 } from '../../../src/core/server';
 
-import { OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart } from './types';
+import { SecurityPluginSetup, SecurityPluginStart } from './types';
 import { defineRoutes } from './routes';
 import { SecurityPluginConfigType } from '.';
-import opendistroSecurityConfiguratoinPlugin from './backend/opendistro_security_configuration_plugin';
-import opendistroSecurityPlugin from './backend/opendistro_security_plugin';
+import opensearchSecurityConfiguratoinPlugin from './backend/opensearch_security_configuration_plugin';
+import opensearchSecurityPlugin from './backend/opensearch_security_plugin';
 import { SecuritySessionCookie, getSecurityCookieOptions } from './session/security_cookie';
-import { SecurityClient } from './backend/opendistro_security_client';
+import { SecurityClient } from './backend/opensearch_security_client';
 import {
   SavedObjectsSerializer,
   ISavedObjectTypeRegistry,
@@ -65,8 +65,7 @@ declare module 'opensearch-dashboards/server' {
   }
 }
 
-export class OpendistroSecurityPlugin
-  implements Plugin<OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart> {
+export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPluginStart> {
   private readonly logger: Logger;
   // FIXME: keep an reference of admin client so that it can be used in start(), better to figureout a
   //        decent way to get adminClient in start. (maybe using getStartServices() from setup?)
@@ -89,7 +88,7 @@ export class OpendistroSecurityPlugin
     const esClient: ILegacyClusterClient = core.opensearch.legacy.createClient(
       'opendistro_security',
       {
-        plugins: [opendistroSecurityConfiguratoinPlugin, opendistroSecurityPlugin],
+        plugins: [opensearchSecurityConfiguratoinPlugin, opensearchSecurityPlugin],
       }
     );
 

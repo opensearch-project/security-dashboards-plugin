@@ -26,7 +26,7 @@ export class SecurityClient {
     try {
       const esResponse = await this.esClient
         .asScoped(request)
-        .callAsCurrentUser('opendistro_security.authinfo', {
+        .callAsCurrentUser('opensearch_security.authinfo', {
           headers: {
             authorization: `Basic ${authHeader}`,
           },
@@ -66,7 +66,7 @@ export class SecurityClient {
       // meanwhile, do we really need to save all headers in cookie?
       const esResponse = await this.esClient
         .asScoped(request)
-        .callAsCurrentUser('opendistro_security.authinfo', {
+        .callAsCurrentUser('opensearch_security.authinfo', {
           headers,
         });
       return {
@@ -89,7 +89,7 @@ export class SecurityClient {
     try {
       const esResponse = await this.esClient
         .asScoped(request)
-        .callAsCurrentUser('opendistro_security.authinfo', {
+        .callAsCurrentUser('opensearch_security.authinfo', {
           headers: additionalAuthHeaders,
         });
       return {
@@ -108,7 +108,7 @@ export class SecurityClient {
     try {
       return await this.esClient
         .asScoped(request)
-        .callAsCurrentUser('opendistro_security.authinfo', {
+        .callAsCurrentUser('opensearch_security.authinfo', {
           headers,
         });
     } catch (error) {
@@ -121,7 +121,7 @@ export class SecurityClient {
     try {
       return await this.esClient
         .asScoped(request)
-        .callAsCurrentUser('opendistro_security.multitenancyinfo');
+        .callAsCurrentUser('opensearch_security.multitenancyinfo');
     } catch (error) {
       throw new Error(error.message);
     }
@@ -129,7 +129,7 @@ export class SecurityClient {
 
   public async getTenantInfoWithInternalUser() {
     try {
-      return this.esClient.callAsInternalUser('opendistro_security.tenantinfo');
+      return this.esClient.callAsInternalUser('opensearch_security.tenantinfo');
     } catch (error) {
       throw new Error(error.message);
     }
@@ -139,7 +139,7 @@ export class SecurityClient {
     try {
       return await this.esClient
         .asScoped(request)
-        .callAsCurrentUser('opendistro_security.tenantinfo');
+        .callAsCurrentUser('opensearch_security.tenantinfo');
     } catch (error) {
       throw new Error(error.message);
     }
@@ -148,7 +148,7 @@ export class SecurityClient {
   public async getSamlHeader(request: OpenSearchDashboardsRequest) {
     try {
       // response is expected to be an error
-      await this.esClient.asScoped(request).callAsCurrentUser('opendistro_security.authinfo');
+      await this.esClient.asScoped(request).callAsCurrentUser('opensearch_security.authinfo');
     } catch (error) {
       // the error looks like
       // wwwAuthenticateDirective:
@@ -193,7 +193,7 @@ export class SecurityClient {
       acsEndpoint,
     };
     try {
-      return await this.esClient.asScoped().callAsCurrentUser('opendistro_security.authtoken', {
+      return await this.esClient.asScoped().callAsCurrentUser('opensearch_security.authtoken', {
         body,
       });
     } catch (error) {

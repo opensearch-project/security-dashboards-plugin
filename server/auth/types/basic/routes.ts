@@ -21,7 +21,7 @@ import {
 } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
 import { User } from '../../user';
-import { SecurityClient } from '../../../backend/opendistro_security_client';
+import { SecurityClient } from '../../../backend/opensearch_security_client';
 import { API_AUTH_LOGIN, API_AUTH_LOGOUT, LOGIN_PAGE_URI } from '../../../../common';
 import { resolveTenant } from '../../../multitenancy/tenant_resolver';
 

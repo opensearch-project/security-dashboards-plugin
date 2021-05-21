@@ -14,6 +14,6 @@
  */
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface OpendistroSecurityPluginSetup {}
+export interface SecurityPluginSetup {}
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface OpendistroSecurityPluginStart {}
+export interface SecurityPluginStart {}

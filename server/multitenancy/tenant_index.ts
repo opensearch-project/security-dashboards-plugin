@@ -28,7 +28,7 @@ import {
 } from '../../../../src/core/server/saved_objects/migrations/core';
 import { createIndexMap } from '../../../../src/core/server/saved_objects/migrations/core/build_index_map';
 import { mergeTypes } from '../../../../src/core/server/saved_objects/migrations/opensearch_dashboards/opensearch_dashboards_migrator';
-import { SecurityClient } from '../backend/opendistro_security_client';
+import { SecurityClient } from '../backend/opensearch_security_client';
 
 export async function setupIndexTemplate(
   esClient: OpenSearchClient,

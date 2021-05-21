@@ -15,7 +15,7 @@
 
 import { schema, TypeOf } from '@osd/config-schema';
 import { PluginInitializerContext, PluginConfigDescriptor } from '../../../src/core/server';
-import { OpendistroSecurityPlugin } from './plugin';
+import { SecurityPlugin } from './plugin';
 
 export const configSchema = schema.object({
   enabled: schema.boolean({ defaultValue: true }),
@@ -172,7 +172,7 @@ export const configSchema = schema.object({
   ),
   ui: schema.object({
     basicauth: schema.object({
-      // the login config here is the same as old config `opendistro_security.basicauth.login`
+      // the login config here is the same as old config `_security.basicauth.login`
       // Since we are now rendering login page to browser app, so move these config to browser side.
       login: schema.object({
         title: schema.string({ defaultValue: 'Please login to OpenSearch Dashboards' }),
@@ -218,7 +218,7 @@ export const config: PluginConfigDescriptor<SecurityPluginConfigType> = {
 //  as well as, OpenSearchDashboards Platform `plugin()` initializer.
 
 export function plugin(initializerContext: PluginInitializerContext) {
-  return new OpendistroSecurityPlugin(initializerContext);
+  return new SecurityPlugin(initializerContext);
 }
 
-export { OpendistroSecurityPluginSetup, OpendistroSecurityPluginStart } from './types';
+export { SecurityPluginSetup, SecurityPluginStart } from './types';

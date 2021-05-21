@@ -17,7 +17,6 @@ import { parse } from 'url';
 import { CoreStart } from 'opensearch-dashboards/public';
 import { API_ENDPOINT_MULTITENANCY } from '../apps/configuration/constants';
 
-// refer to https://github.com/opendistro-for-elasticsearch/security-opensearch-dashboards-plugin/blob/master/public/chrome/multitenancy/enable_multitenancy.js
 export async function addTenantToShareURL(core: CoreStart) {
   let tenant = '';
   try {
