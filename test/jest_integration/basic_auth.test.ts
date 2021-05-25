@@ -168,8 +168,7 @@ describe('start kibana server', () => {
     const response = await kbnTestServer.request
       .get(root, '/auth/anonymous')
       .unset(AUTHORIZATION_HEADER_NAME);
-    expect(response.status).toEqual(200);
-    expect(response.body.username).toEqual('opendistro_security_anonymous');
+    expect(response.status).toEqual(302);
   });
 
   it('anonymous disabled', async () => {
@@ -202,7 +201,7 @@ describe('start kibana server', () => {
     const response = await kbnTestServer.request
       .get(anonymousDisabledRoot, '/auth/anonymous')
       .unset(AUTHORIZATION_HEADER_NAME);
-    expect(response.status).toEqual(400);
-    await anonymousDisabledRoot.shutdown();
+
+    expect(response.status).toEqual(302);
   });
 });
