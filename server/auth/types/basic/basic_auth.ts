@@ -106,18 +106,26 @@ export class BasicAuthentication extends AuthenticationType {
   ): KibanaResponse {
     // TODO: do the samething for other auth types?
     // return 302 for /app
-    const pathname = request.url.pathname || '';
-    if (pathname.startsWith('/app/') || pathname === '/') {
-      const nextUrlParam = composeNextUrlQeuryParam(
-        request,
-        this.coreSetup.http.basePath.serverBasePath
-      );
-      const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`;
-      return response.redirected({
-        headers: {
-          location: `${redirectLocation}`,
-        },
-      });
+    if (this.isPageRequest(request)) {
+      if (this.config.auth.anonymous_auth_enabled && request.url.pathname !== '/app/login') {
+        const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}/auth/anonymous?${request.url.pathname}`;
+        return response.redirected({
+          headers: {
+            location: `${redirectLocation}`,
+          },
+        });
+      } else {
+        const nextUrlParam = composeNextUrlQeuryParam(
+          request,
+          this.coreSetup.http.basePath.serverBasePath
+        );
+        const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`;
+        return response.redirected({
+          headers: {
+            location: `${redirectLocation}`,
+          },
+        });
+      }
     } else {
       return response.unauthorized({
         body: `Authentication required`,
@@ -132,5 +140,10 @@ export class BasicAuthentication extends AuthenticationType {
     const headers: any = {};
     Object.assign(headers, { authorization: cookie.credentials?.authHeaderValue });
     return headers;
+  }
+
+  isPageRequest(request: KibanaRequest) {
+    const path = request.url.pathname || '/';
+    return path.startsWith('/app/') || path === '/' || path.startsWith('/goto/');
   }
 }
