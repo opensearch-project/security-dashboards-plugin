@@ -3,6 +3,7 @@
 ### Enhancements
 * Naming convention: change opendistro to opensearch [#764](https://github.com/opensearch-project/security-dashboards-plugin/pull/764)
 * add svg content [#766](https://github.com/opensearch-project/security-dashboards-plugin/pull/766)
+* Point OpenSearch Dashboards to to new back end APIs [#770](https://github.com/opensearch-project/security-dashboards-plugin/pull/770)
 
 
 ### Bug Fixes
