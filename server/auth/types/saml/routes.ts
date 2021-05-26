@@ -84,7 +84,7 @@ export class SamlAuthRoutes {
 
     this.router.post(
       {
-        path: `/_plugins/_security/saml/acs`,
+        path: `/_opendistro/_security/saml/acs`,
         validate: {
           body: schema.any(),
         },
