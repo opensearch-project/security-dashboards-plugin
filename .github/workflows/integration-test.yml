@@ -31,7 +31,7 @@ jobs:
         with:
           repository: 'opensearch-project/OpenSearch'
           path: OpenSearch
-          ref: '1.x'
+          ref: '1.0'
 
       - name: Build OpenSearch
         working-directory: ./OpenSearch
@@ -57,10 +57,6 @@ jobs:
         run: |
           cat > os-ep.sh <<EOF
           yes | opensearch-plugin install file:///docker-host/security-plugin.zip
-          sed -i "s/#kibana:/kibana:/g" plugins/opensearch-security/securityconfig/config.yml
-          sed -i "s/#multitenancy_enabled: true/  multitenancy_enabled: true/g" plugins/opensearch-security/securityconfig/config.yml
-          sed -i "s/#server_username: kibanaserver/  server_username: kibanaserver/g" plugins/opensearch-security/securityconfig/config.yml
-          sed -i "s/#index: '.kibana'/  index: '.opensearch_dashboards'/g" plugins/opensearch-security/securityconfig/config.yml
           chmod +x plugins/opensearch-security/tools/install_demo_configuration.sh
           yes | plugins/opensearch-security/tools/install_demo_configuration.sh
           echo "plugins.security.unsupported.restapi.allow_securityconfig_modification: true" >> /opensearch/config/opensearch.yml
