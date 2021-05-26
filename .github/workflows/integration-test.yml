@@ -75,18 +75,6 @@ jobs:
           ENTRYPOINT /docker-host/os-ep.sh
           EOF
           docker run -d -p 9200:9200 -p 9600:9600 -i opensearch-test:latest
-          
-      - name: Check OpenSearch Running
-        continue-on-error: true
-        run: sleep 30 && curl -XGET https://localhost:9200 -u 'admin:admin' -k
-
-      - name: Check OpenSearch Running
-        continue-on-error: true
-        run: sleep 30 && curl -XGET https://localhost:9200 -u 'admin:admin' -k
-
-      - name: Check OpenSearch Running
-        continue-on-error: true
-        run: sleep 30 && curl -XGET https://localhost:9200 -u 'admin:admin' -k
 
       - name: Checkout OpenSearch Dashboard
         uses: actions/checkout@v2
