@@ -14,4 +14,4 @@
 ### Maintenance
 * move issue templates to ISSUE_TEMPLATE [#758](https://github.com/opensearch-project/security-dashboards-plugin/pull/758)
 * Update issue template with multiple labels [#756](https://github.com/opensearch-project/security-dashboards-plugin/pull/756)
-* Update 1.0.0.0-rc1 release notes [#755](https://github.com/opensearch-project/security-dashboards-plugin/pull/755)
+* Update 1.0.0.0-rc1 release notes [#769](https://github.com/opensearch-project/security-dashboards-plugin/pull/769)
