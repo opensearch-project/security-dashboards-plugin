@@ -23,7 +23,7 @@ export default function (Client: any, config: any, components: any) {
 
   Client.prototype.opensearch_security.prototype.restapiinfo = ca({
     url: {
-      fmt: '/_opensearch/_security/api/permissionsinfo',
+      fmt: '/_plugins/_security/api/permissionsinfo',
     },
   });
 
@@ -49,7 +49,7 @@ export default function (Client: any, config: any, components: any) {
    */
   Client.prototype.opensearch_security.prototype.listResource = ca({
     url: {
-      fmt: '/_opensearch/_security/api/<%=resourceName%>',
+      fmt: '/_plugins/_security/api/<%=resourceName%>',
       req: {
         resourceName: {
           type: 'string',
@@ -76,7 +76,7 @@ export default function (Client: any, config: any, components: any) {
     method: 'PUT',
     needBody: true,
     url: {
-      fmt: '/_opensearch/_security/api/<%=resourceName%>/<%=id%>',
+      fmt: '/_plugins/_security/api/<%=resourceName%>/<%=id%>',
       req: {
         resourceName: {
           type: 'string',
@@ -104,7 +104,7 @@ export default function (Client: any, config: any, components: any) {
     method: 'PUT',
     needBody: true,
     url: {
-      fmt: '/_opensearch/_security/api/<%=resourceName%>',
+      fmt: '/_plugins/_security/api/<%=resourceName%>',
       req: {
         resourceName: {
           type: 'string',
@@ -128,7 +128,7 @@ export default function (Client: any, config: any, components: any) {
   Client.prototype.opensearch_security.prototype.getResource = ca({
     method: 'GET',
     url: {
-      fmt: '/_opensearch/_security/api/<%=resourceName%>/<%=id%>',
+      fmt: '/_plugins/_security/api/<%=resourceName%>/<%=id%>',
       req: {
         resourceName: {
           type: 'string',
@@ -148,7 +148,7 @@ export default function (Client: any, config: any, components: any) {
   Client.prototype.opensearch_security.prototype.deleteResource = ca({
     method: 'DELETE',
     url: {
-      fmt: '/_opensearch/_security/api/<%=resourceName%>/<%=id%>',
+      fmt: '/_plugins/_security/api/<%=resourceName%>/<%=id%>',
       req: {
         resourceName: {
           type: 'string',
@@ -168,7 +168,7 @@ export default function (Client: any, config: any, components: any) {
   Client.prototype.opensearch_security.prototype.clearCache = ca({
     method: 'DELETE',
     url: {
-      fmt: '/_opensearch/_security/api/cache',
+      fmt: '/_plugins/_security/api/cache',
     },
   });
 
@@ -206,7 +206,7 @@ export default function (Client: any, config: any, components: any) {
   Client.prototype.opensearch_security.prototype.getAudit = ca({
     method: 'GET',
     url: {
-      fmt: '/_opensearch/_security/api/audit',
+      fmt: '/_plugins/_security/api/audit',
     },
   });
 
@@ -217,7 +217,7 @@ export default function (Client: any, config: any, components: any) {
     method: 'PUT',
     needBody: true,
     url: {
-      fmt: '/_opensearch/_security/api/audit/config',
+      fmt: '/_plugins/_security/api/audit/config',
     },
   });
 }

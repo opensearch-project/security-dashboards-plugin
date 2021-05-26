@@ -26,7 +26,7 @@ export default function (Client: any, config: any, components: any) {
    */
   Client.prototype.opensearch_security.prototype.authinfo = ca({
     url: {
-      fmt: '/_opensearch/_security/authinfo',
+      fmt: '/_plugins/_security/authinfo',
     },
   });
 
@@ -44,7 +44,7 @@ export default function (Client: any, config: any, components: any) {
    */
   Client.prototype.opensearch_security.prototype.multitenancyinfo = ca({
     url: {
-      fmt: '/_opensearch/_security/kibanainfo',
+      fmt: '/_plugins/_security/dashboardsinfo',
     },
   });
 
@@ -56,7 +56,7 @@ export default function (Client: any, config: any, components: any) {
    */
   Client.prototype.opensearch_security.prototype.tenantinfo = ca({
     url: {
-      fmt: '/_opensearch/_security/tenantinfo',
+      fmt: '/_plugins/_security/tenantinfo',
     },
   });
 
@@ -67,7 +67,7 @@ export default function (Client: any, config: any, components: any) {
     method: 'POST',
     needBody: true,
     url: {
-      fmt: '/_opensearch/_security/api/authtoken',
+      fmt: '/_plugins/_security/api/authtoken',
     },
   });
 }

@@ -84,7 +84,7 @@ export class SamlAuthRoutes {
 
     this.router.post(
       {
-        path: `/_opensearch/_security/saml/acs`,
+        path: `/_plugins/_security/saml/acs`,
         validate: {
           body: schema.any(),
         },
@@ -162,7 +162,7 @@ export class SamlAuthRoutes {
 
     this.router.post(
       {
-        path: `/_opensearch/_security/saml/acs/idpinitiated`,
+        path: `/_opendistro/_security/saml/acs/idpinitiated`,
         validate: {
           body: schema.any(),
         },
@@ -171,7 +171,7 @@ export class SamlAuthRoutes {
         },
       },
       async (context, request, response) => {
-        const acsEndpoint = `${this.coreSetup.http.basePath.serverBasePath}/_opensearch/_security/saml/acs/idpinitiated`;
+        const acsEndpoint = `${this.coreSetup.http.basePath.serverBasePath}/_opendistro/_security/saml/acs/idpinitiated`;
         try {
           const credentials = await this.securityClient.authToken(
             undefined,
