@@ -1,4 +1,4 @@
-## Version 1.0.0.0-beta1
+## Version 1.0.0.0-rc1
 
 ### Enhancements
 * add svg content [#766](https://github.com/opensearch-project/security-dashboards-plugin/pull/766)
