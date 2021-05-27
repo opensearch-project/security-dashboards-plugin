@@ -1,9 +1,9 @@
 {
   "name": "opensearch-security-dashboards",
-  "version": "1.0.0.0-beta1",
+  "version": "1.0.0.0-rc1",
   "main": "target/plugins/opensearch_security_dashboards",
   "opensearchDashboards": {
-    "version": "1.0.0-beta1",
+    "version": "1.0.0-rc1",
     "templateVersion": "1.0.0"
   },
   "license": "Apache-2.0",
