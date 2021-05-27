@@ -89,11 +89,11 @@ jobs:
           cd ./OpenSearch-Dashboards
           mkdir -p plugins
       
-      # - name: Checkout OpenSearch Dashboard Security plugin
-      #   uses: actions/checkout@v2
-      #   with:
-      #     path: OpenSearch-Dashboards/plugins/security-dashboards-plugin
-      #     ref: ${{ github.ref }}
+      - name: Checkout OpenSearch Dashboard Security plugin
+        uses: actions/checkout@v2
+        with:
+          path: OpenSearch-Dashboards/plugins/security-dashboards-plugin
+          ref: ${{ github.ref }}
 
       - name: Check OpenSearch Running
         continue-on-error: true
