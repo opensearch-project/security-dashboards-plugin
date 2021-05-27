@@ -66,7 +66,7 @@ jobs:
           docker build -t opensearch-test:latest -f- . <<EOF
           FROM ubuntu:latest
           COPY --chown=1001:1001 os-ep.sh /docker-host/
-          COPY --chown=1001:1001 security/target/releases/opensearch-security-1.0.0.0-beta1.zip /docker-host/security-plugin.zip
+          COPY --chown=1001:1001 security/target/releases/opensearch-security-1.0.0.0-rc1.zip /docker-host/security-plugin.zip
           COPY --chown=1001:1001 opensearch* /opensearch/
           RUN chmod +x /docker-host/os-ep.sh
           RUN useradd -u 1001 -s /sbin/nologin opensearch
