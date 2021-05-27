@@ -12,3 +12,5 @@
 * Update issue template with multiple labels [#756](https://github.com/opensearch-project/security-dashboards-plugin/pull/756)
 * Naming convention change in repo [#764](https://github.com/opensearch-project/security-dashboards-plugin/pull/764)
 * Point document links to opensearch.org [#763](https://github.com/opensearch-project/security-dashboards-plugin/pull/763)
+* Create release notes for rc-1 and Bump version to 1.0.0.0-rc1 [#771](https://github.com/opensearch-project/security-dashboards-plugin/pull/771)
+* Point OpenSearch Dashboards to to new back end APIs [#770](https://github.com/opensearch-project/security-dashboards-plugin/pull/770)
