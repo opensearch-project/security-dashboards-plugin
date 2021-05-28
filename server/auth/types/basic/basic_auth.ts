@@ -28,7 +28,7 @@ import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { BasicAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
-import { LOGIN_PAGE_URI } from '../../../../common';
+import { LOGIN_PAGE_URI_WITH_REDIRECT } from '../../../../common';
 import { composeNextUrlQeuryParam } from '../../../utils/next_url';
 
 export class BasicAuthentication extends AuthenticationType {
@@ -119,7 +119,7 @@ export class BasicAuthentication extends AuthenticationType {
           request,
           this.coreSetup.http.basePath.serverBasePath
         );
-        const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`;
+        const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI_WITH_REDIRECT}`;
         return response.redirected({
           headers: {
             location: `${redirectLocation}`,

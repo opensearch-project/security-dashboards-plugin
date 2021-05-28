@@ -22,7 +22,7 @@ import {
 import { SecurityPluginConfigType } from '../../..';
 import { User } from '../../user';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
-import { API_AUTH_LOGIN, API_AUTH_LOGOUT, LOGIN_PAGE_URI } from '../../../../common';
+import { API_AUTH_LOGIN, API_AUTH_LOGOUT, LOGIN_PAGE_URI, LOGIN_PAGE_URI_WITH_REDIRECT } from '../../../../common';
 import { resolveTenant } from '../../../multitenancy/tenant_resolver';
 
 export class BasicAuthRoutes {
@@ -178,7 +178,7 @@ export class BasicAuthRoutes {
             );
             return response.redirected({
               headers: {
-                location: `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}`,
+                location: `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI_WITH_REDIRECT}`,
               },
             });
           }
@@ -214,7 +214,7 @@ export class BasicAuthRoutes {
           );
           return response.redirected({
             headers: {
-              location: `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}`,
+              location: `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI_WITH_REDIRECT}`,
             },
           });
         }
