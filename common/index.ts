@@ -23,7 +23,6 @@ export const API_PREFIX = '/api/v1';
 export const CONFIGURATION_API_PREFIX = 'configuration';
 export const API_ENDPOINT_AUTHINFO = API_PREFIX + '/auth/authinfo';
 export const LOGIN_PAGE_URI = '/app/' + APP_ID_LOGIN;
-export const LOGIN_PAGE_URI_WITH_REDIRECT = LOGIN_PAGE_URI + '?nextUrl=%2F';
 export const CUSTOM_ERROR_PAGE_URI = '/app/' + APP_ID_CUSTOMERROR;
 export const API_AUTH_LOGIN = '/auth/login';
 export const API_AUTH_LOGOUT = '/auth/logout';
