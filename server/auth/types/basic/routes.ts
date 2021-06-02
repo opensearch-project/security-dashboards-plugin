@@ -178,7 +178,7 @@ export class BasicAuthRoutes {
             );
             return response.redirected({
               headers: {
-                location: `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}`,
+                location: `${this.coreSetup.http.basePath.serverBasePath}`,
               },
             });
           }
@@ -214,7 +214,7 @@ export class BasicAuthRoutes {
           );
           return response.redirected({
             headers: {
-              location: `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}`,
+              location: `${this.coreSetup.http.basePath.serverBasePath}`,
             },
           });
         }
