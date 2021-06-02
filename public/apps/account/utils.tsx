@@ -29,5 +29,6 @@ export async function fetchAccountInfoSafe(http: HttpStart): Promise<AccountInfo
 
 export async function logout(http: HttpStart): Promise<void> {
   await http.post(API_AUTH_LOGOUT);
-  window.location.href = `${http.basePath.serverBasePath}/app/login`;
+  const nextUrl = encodeURIComponent(http.basePath.serverBasePath);
+  window.location.href = `${http.basePath.serverBasePath}/app/login?nextUrl=${nextUrl}`;
 }
