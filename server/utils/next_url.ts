@@ -15,7 +15,7 @@
 
 import { cloneDeep } from 'lodash';
 import { format } from 'url';
-import { stringify } from 'querystring';
+import { ParsedUrlQuery, stringify } from 'querystring';
 import { OpenSearchDashboardsRequest } from 'opensearch-dashboards/server';
 
 export function composeNextUrlQeuryParam(
@@ -26,6 +26,10 @@ export function composeNextUrlQeuryParam(
   url.pathname = `${basePath}${url.pathname}`;
   const nextUrl = format(url);
   return stringify({ nextUrl });
+}
+
+export interface ParsedUrlQueryParams extends ParsedUrlQuery {
+  nextUrl: string;
 }
 
 export const INVALID_NEXT_URL_PARAMETER_MESSAGE = 'Invalid nextUrl parameter.';
