@@ -119,7 +119,7 @@ export class BasicAuthentication extends AuthenticationType {
           request,
           this.coreSetup.http.basePath.serverBasePath
         );
-        const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`; 
+        const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`;
         return response.redirected({
           headers: {
             location: `${redirectLocation}`,
