@@ -21,6 +21,7 @@ import { User } from '../../user';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { API_AUTH_LOGIN, API_AUTH_LOGOUT, LOGIN_PAGE_URI } from '../../../../common';
 import { resolveTenant } from '../../../multitenancy/tenant_resolver';
+import { ParsedUrlQueryParams } from '../../../utils/next_url';
 
 export class BasicAuthRoutes {
   constructor(
@@ -157,9 +158,10 @@ export class BasicAuthRoutes {
         if (this.config.auth.anonymous_auth_enabled) {
           let user: User;
           const path: string = `${request.url.path}`;
-          let redirectUrl = '/';
-          if (path.includes('?')) {
-            redirectUrl = path.substr(path.indexOf('?') + 1);
+          let redirectUrl: string = this.coreSetup.http.basePath.serverBasePath;
+          const requestQuery = request.url.query as ParsedUrlQueryParams;
+          if (requestQuery.nextUrl !== undefined) {
+            redirectUrl = requestQuery.nextUrl;
           }
           context.security_plugin.logger.info('The Redirect Path is ' + redirectUrl);
           try {
@@ -197,7 +199,7 @@ export class BasicAuthRoutes {
 
           return response.redirected({
             headers: {
-              location: `${this.coreSetup.http.basePath.serverBasePath}${redirectUrl}`,
+              location: `${redirectUrl}`,
             },
           });
         } else {

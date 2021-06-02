@@ -107,18 +107,18 @@ export class BasicAuthentication extends AuthenticationType {
     // TODO: do the samething for other auth types?
     // return 302 for /app
     if (this.isPageRequest(request)) {
-      if (this.config.auth.anonymous_auth_enabled && request.url.pathname !== '/app/login') {
-        const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}/auth/anonymous?${request.url.pathname}`;
+      const nextUrlParam = composeNextUrlQeuryParam(
+        request,
+        this.coreSetup.http.basePath.serverBasePath
+      );
+      if (this.config.auth.anonymous_auth_enabled) {
+        const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}/auth/anonymous?${nextUrlParam}`;
         return response.redirected({
           headers: {
             location: `${redirectLocation}`,
           },
         });
       } else {
-        const nextUrlParam = composeNextUrlQeuryParam(
-          request,
-          this.coreSetup.http.basePath.serverBasePath
-        );
         const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`;
         return response.redirected({
           headers: {
