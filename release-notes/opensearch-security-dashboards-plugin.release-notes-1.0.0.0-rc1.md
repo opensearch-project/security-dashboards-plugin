@@ -6,6 +6,7 @@
 
 ### Bug Fixes
 * Fixing JSON parsing in SAML for strings that contain '\' character [#749](https://github.com/opensearch-project/security-dashboards-plugin/pull/749)
+* Fix login redirect [#777](https://github.com/opensearch-project/security-dashboards-plugin/pull/777)
 
 ### Maintenance
 * move issue templates to ISSUE_TEMPLATE [#758](https://github.com/opensearch-project/security-dashboards-plugin/pull/758)
