@@ -14,7 +14,7 @@
  */
 
 import { HttpStart } from 'opensearch-dashboards/public';
-import { API_AUTH_LOGOUT, LOGIN_PAGE_URI } from '../../../common';
+import { API_AUTH_LOGOUT } from '../../../common';
 import { API_ENDPOINT_ACCOUNT_INFO } from './constants';
 import { AccountInfo } from './types';
 import { httpGet, httpGetWithIgnores, httpPost } from '../configuration/utils/request-utils';
@@ -32,8 +32,7 @@ export async function logout(http: HttpStart, logoutUrl?: string): Promise<void>
   await httpPost(http, API_AUTH_LOGOUT);
   setShouldShowTenantPopup(null);
   const nextUrl = encodeURIComponent(http.basePath.get());
-  window.location.href =
-    logoutUrl || http.basePath.serverBasePath;
+  window.location.href = logoutUrl || http.basePath.serverBasePath;
 }
 
 export async function updateNewPassword(
