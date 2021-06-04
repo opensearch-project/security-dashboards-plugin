@@ -31,9 +31,9 @@ export async function fetchAccountInfoSafe(http: HttpStart): Promise<AccountInfo
 export async function logout(http: HttpStart, logoutUrl?: string): Promise<void> {
   await httpPost(http, API_AUTH_LOGOUT);
   setShouldShowTenantPopup(null);
-  const nextUrl = encodeURIComponent(http.basePath.serverBasePath);
+  const nextUrl = encodeURIComponent(http.basePath.get());
   window.location.href =
-    logoutUrl || `${http.basePath.serverBasePath}/app/login?nextUrl=${nextUrl}`;
+    logoutUrl || http.basePath.serverBasePath;
 }
 
 export async function updateNewPassword(
