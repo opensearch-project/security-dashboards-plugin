@@ -163,14 +163,13 @@ export class BasicAuthRoutes {
         },
       },
       async (context, request, response) => {
-        const serverBasePath = this.coreSetup.http.basePath.serverBasePath
-          ? this.coreSetup.http.basePath.serverBasePath
-          : '/';
         if (this.config.auth.anonymous_auth_enabled) {
           let user: User;
           const path: string = `${request.url.path}`;
           // If the request contains no redirect path, simply redirect to basepath.
-          let redirectUrl: string = serverBasePath;
+          let redirectUrl: string = this.coreSetup.http.basePath.serverBasePath
+            ? this.coreSetup.http.basePath.serverBasePath
+            : '/';
           const requestQuery = request.url.query as ParsedUrlQueryParams;
           if (requestQuery.nextUrl !== undefined) {
             redirectUrl = requestQuery.nextUrl;
@@ -184,7 +183,7 @@ export class BasicAuthRoutes {
             );
             return response.redirected({
               headers: {
-                location: `${serverBasePath}${LOGIN_PAGE_URI}`,
+                location: `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}`,
               },
             });
           }
@@ -220,7 +219,7 @@ export class BasicAuthRoutes {
           );
           return response.redirected({
             headers: {
-              location: `${serverBasePath}${LOGIN_PAGE_URI}`,
+              location: `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}`,
             },
           });
         }
