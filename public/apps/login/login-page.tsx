@@ -40,7 +40,9 @@ function redirect(serverBasePath: string) {
   const urlParams = new URLSearchParams(window.location.search);
   let nextUrl = urlParams.get('nextUrl');
   if (!nextUrl || nextUrl.toLowerCase().includes('//')) {
-    nextUrl = serverBasePath;
+    // Appending the next url with trailing slash. We do so because in case the serverBasePath is empty, we can simply
+    // redirect to '/'.
+    nextUrl = serverBasePath + '/';
   }
   window.location.href = nextUrl + window.location.hash;
 }
