@@ -29,5 +29,8 @@ export async function fetchAccountInfoSafe(http: HttpStart): Promise<AccountInfo
 
 export async function logout(http: HttpStart): Promise<void> {
   await http.post(API_AUTH_LOGOUT);
-  window.location.href = http.basePath.serverBasePath;
+  // When no basepath is set, we can take '/' as the basepath.
+  const basePath = http.basePath.serverBasePath ? http.basePath.serverBasePath : '/';
+  const nextUrl = encodeURIComponent(basePath);
+  window.location.href = `${http.basePath.serverBasePath}/app/login?nextUrl=${nextUrl}`;
 }
