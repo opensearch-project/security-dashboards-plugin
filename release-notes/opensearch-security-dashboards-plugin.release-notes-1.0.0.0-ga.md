@@ -1,4 +1,7 @@
-## Version 1.0.0.0-ga
+## Version 1.0.0.0
+
+### Maintenance
+* Remove rc1 postfixes ([#791](https://github.com/opensearch-project/security-dashboards-plugin/pull/791))
 
 ### Enhancements
 * Adding data-stream related permissions ([#784](https://github.com/opensearch-project/security-dashboards-plugin/pull/784))
