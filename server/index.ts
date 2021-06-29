@@ -39,7 +39,7 @@ export const configSchema = schema.object({
     secure: schema.boolean({ defaultValue: false }),
     name: schema.string({ defaultValue: 'security_authentication' }),
     password: schema.string({ defaultValue: 'security_cookie_default_password', minLength: 32 }),
-    ttl: schema.number({ defaultValue: 60 * 60 * 1000 }),
+    ttl: schema.number({ defaultValue: 5 * 60 * 1000 }),
     domain: schema.nullable(schema.string()),
     isSameSite: schema.oneOf(
       [
@@ -52,7 +52,7 @@ export const configSchema = schema.object({
     ),
   }),
   session: schema.object({
-    ttl: schema.number({ defaultValue: 60 * 60 * 1000 }),
+    ttl: schema.number({ defaultValue: 5 * 60 * 1000 }),
     keepalive: schema.boolean({ defaultValue: true }),
   }),
   auth: schema.object({
