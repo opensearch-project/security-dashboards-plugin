@@ -15,7 +15,7 @@
 
 import { cloneDeep } from 'lodash';
 import { format } from 'url';
-import { stringify } from 'querystring';
+import { ParsedUrlQuery, stringify } from 'querystring';
 import { KibanaRequest } from 'kibana/server';
 
 export function composeNextUrlQeuryParam(request: KibanaRequest, basePath: string): string {
@@ -52,3 +52,7 @@ export const validateNextUrl = (url: string | undefined): string | void => {
     }
   }
 };
+
+export interface ParsedUrlQueryParams extends ParsedUrlQuery {
+  nextUrl: string;
+}
