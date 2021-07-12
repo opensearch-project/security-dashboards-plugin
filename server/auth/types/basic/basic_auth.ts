@@ -104,17 +104,28 @@ export class BasicAuthentication extends AuthenticationType {
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
   ): KibanaResponse {
+    // TODO: do the samething for other auth types?
+    // return 302 for /app
     if (this.isPageRequest(request)) {
       const nextUrlParam = composeNextUrlQeuryParam(
         request,
         this.coreSetup.http.basePath.serverBasePath
       );
-      const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`;
-      return response.redirected({
-        headers: {
-          location: `${redirectLocation}`,
-        },
-      });
+      if (this.config.auth.anonymous_auth_enabled) {
+        const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}/auth/anonymous?${nextUrlParam}`;
+        return response.redirected({
+          headers: {
+            location: `${redirectLocation}`,
+          },
+        });
+      } else {
+        const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`;
+        return response.redirected({
+          headers: {
+            location: `${redirectLocation}`,
+          },
+        });
+      }
     } else {
       return response.unauthorized({
         body: `Authentication required`,
@@ -129,5 +140,10 @@ export class BasicAuthentication extends AuthenticationType {
     const headers: any = {};
     Object.assign(headers, { authorization: cookie.credentials?.authHeaderValue });
     return headers;
+  }
+
+  isPageRequest(request: KibanaRequest) {
+    const path = request.url.pathname || '/';
+    return path.startsWith('/app/') || path === '/' || path.startsWith('/goto/');
   }
 }

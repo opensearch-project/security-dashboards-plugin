@@ -24,6 +24,7 @@ import { User } from '../../user';
 import { SecurityClient } from '../../../backend/opendistro_security_client';
 import { API_AUTH_LOGIN, API_AUTH_LOGOUT, LOGIN_PAGE_URI } from '../../../../common';
 import { resolveTenant } from '../../../multitenancy/tenant_resolver';
+import { ParsedUrlQueryParams } from '../../../utils/next_url';
 
 export class BasicAuthRoutes {
   constructor(
@@ -164,13 +165,25 @@ export class BasicAuthRoutes {
       async (context, request, response) => {
         if (this.config.auth.anonymous_auth_enabled) {
           let user: User;
+          const path: string = `${request.url.path}`;
+          // If the request contains no redirect path, simply redirect to basepath.
+          let redirectUrl: string = this.coreSetup.http.basePath.serverBasePath
+            ? this.coreSetup.http.basePath.serverBasePath
+            : '/';
+          const requestQuery = request.url.query as ParsedUrlQueryParams;
+          if (requestQuery.nextUrl !== undefined) {
+            redirectUrl = requestQuery.nextUrl;
+          }
+          context.security_plugin.logger.info('The Redirect Path is ' + redirectUrl);
           try {
             user = await this.securityClient.authenticateWithHeaders(request, {});
           } catch (error) {
-            context.security_plugin.logger.error(`Failed authentication: ${error}`);
-            return response.unauthorized({
+            context.security_plugin.logger.error(
+              `Failed authentication: ${error}. Redirecting to Login Page`
+            );
+            return response.redirected({
               headers: {
-                'www-authenticate': error.message,
+                location: `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}`,
               },
             });
           }
@@ -195,20 +208,19 @@ export class BasicAuthRoutes {
           }
           this.sessionStorageFactory.asScoped(request).set(sessionStorage);
 
-          return response.ok({
-            body: {
-              username: user.username,
-              tenants: user.tenants,
-              roles: user.roles,
-              backendroles: user.backendRoles,
-              selectedTenants: this.config.multitenancy?.enabled
-                ? sessionStorage.tenant
-                : undefined,
+          return response.redirected({
+            headers: {
+              location: `${redirectUrl}`,
             },
           });
         } else {
-          return response.badRequest({
-            body: 'Anonymous auth is disabled.',
+          context.security_plugin.logger.error(
+            'Anonymous auth is disabled. Redirecting to Login Page'
+          );
+          return response.redirected({
+            headers: {
+              location: `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}`,
+            },
           });
         }
       }
