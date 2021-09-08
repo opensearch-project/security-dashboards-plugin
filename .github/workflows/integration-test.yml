@@ -35,7 +35,7 @@ jobs:
 
       - name: Build OpenSearch
         working-directory: ./OpenSearch
-        run: ./gradlew publishToMavenLocal -Dbuild.snapshot=false
+        run: ./gradlew publishToMavenLocal
 
       - name: Checkout security
         uses: actions/checkout@v2
