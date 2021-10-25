@@ -116,6 +116,7 @@ export class BasicAuthRoutes {
           const selectTenant = resolveTenant(
             request,
             user.username,
+            user.roles,
             user.tenants,
             this.config,
             sessionStorage
@@ -200,6 +201,7 @@ export class BasicAuthRoutes {
             const selectTenant = resolveTenant(
               request,
               user.username,
+              user.roles,
               user.tenants,
               this.config,
               sessionStorage
