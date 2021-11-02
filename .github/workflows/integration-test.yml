@@ -50,8 +50,9 @@ jobs:
 
       - name: Download OpenSearch Core
         run: |
-          wget https://artifacts.opensearch.org/snapshots/core/opensearch/1.2.0-SNAPSHOT/opensearch-min-1.2.0-SNAPSHOT-linux-x64-latest.tar.gz
+          wget https://artifacts.opensearch.org/snapshots/core/opensearch/1.1.0-SNAPSHOT/opensearch-min-1.1.0-SNAPSHOT-linux-x64-latest.tar.gz
           tar -xzf opensearch-*.tar.gz
+          rm -f opensearch-*.tar.gz
 
       - name: Run OpenSearch with plugin
         run: |
