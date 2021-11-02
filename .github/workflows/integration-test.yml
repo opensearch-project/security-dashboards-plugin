@@ -31,7 +31,7 @@ jobs:
         with:
           repository: 'opensearch-project/OpenSearch'
           path: OpenSearch
-          ref: '1.1'
+          ref: '1.x'
 
       - name: Build OpenSearch
         working-directory: ./OpenSearch
@@ -50,7 +50,7 @@ jobs:
 
       - name: Download OpenSearch Core
         run: |
-          wget https://artifacts.opensearch.org/snapshots/core/opensearch/1.1.0-SNAPSHOT/opensearch-min-1.1.0-SNAPSHOT-linux-x64-latest.tar.gz
+          wget https://artifacts.opensearch.org/snapshots/core/opensearch/1.2.0-SNAPSHOT/opensearch-min-1.2.0-SNAPSHOT-linux-x64-latest.tar.gz
           tar -xzf opensearch-*.tar.gz
 
       - name: Run OpenSearch with plugin
@@ -66,7 +66,7 @@ jobs:
           docker build -t opensearch-test:latest -f- . <<EOF
           FROM ubuntu:latest
           COPY --chown=1001:1001 os-ep.sh /docker-host/
-          COPY --chown=1001:1001 security/target/releases/opensearch-security-1.1.0.0-SNAPSHOT.zip /docker-host/security-plugin.zip
+          COPY --chown=1001:1001 security/target/releases/opensearch-security-1.2.0.0-SNAPSHOT.zip /docker-host/security-plugin.zip
           COPY --chown=1001:1001 opensearch* /opensearch/
           RUN chmod +x /docker-host/os-ep.sh
           RUN useradd -u 1001 -s /sbin/nologin opensearch
@@ -81,7 +81,7 @@ jobs:
         with:
           path: OpenSearch-Dashboards
           repository: opensearch-project/OpenSearch-Dashboards
-          ref: '1.1'
+          ref: '1.x'
           fetch-depth: 0
       
       - name: Create plugins dir
