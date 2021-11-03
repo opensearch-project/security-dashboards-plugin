@@ -51,9 +51,23 @@ export type IAuthHandlerConstructor = new (
 ) => IAuthenticationType;
 
 export abstract class AuthenticationType implements IAuthenticationType {
-  protected static readonly ROUTES_TO_IGNORE: string[] = [
-    '/api/core/capabilities', // FIXME: need to figureout how to bypass this API call
+  protected static readonly ROUTES_TO_IGNORE: string[] = ['/app/login'];
+
+  // Workaround: Some routes are called from pages that do not
+  // have / require a logged in user, like "login", "logout" and "customerror".
+  // However, these routes can also be called from "within" Dashboards,
+  // for example on app/home, where we need an authenticated user.
+  // As a workaround, exclude these routes for login, logout etc.,
+  // but let them pass on other pages, like app/home
+  protected static readonly ROUTES_TO_IGNORE_FROM_UNAUTHENTICATED_PAGES: string[] = [
+    '/api/core/capabilities',
+  ];
+
+  // On these pages, ignore the ROUTES_TO_IGNORE_FROM_UNAUTHENTICATED_PAGES routes
+  protected static readonly UNAUTHENTICATED_PAGES: string[] = [
     '/app/login',
+    '/app/logout',
+    '/app/customerror',
   ];
 
   protected static readonly REST_API_CALL_HEADER = 'osd-xsrf';
@@ -185,13 +199,27 @@ export abstract class AuthenticationType implements IAuthenticationType {
 
   authNotRequired(request: OpenSearchDashboardsRequest): boolean {
     const pathname = request.url.pathname;
+    const referer = request.headers.referer || '';
+
     if (!pathname) {
       return false;
     }
+
+    // exclude some routes from authentication only if they are called from pages
+    // where we do not have an authenticated user, like login. If called from any other
+    // page, run the authentication logic. This is to ensure that the /api/core/capabilities
+    // route gets authenticated when called from e.g. /app/home, but not on /login.
+    if (AuthenticationType.UNAUTHENTICATED_PAGES.some((path) => referer.includes(path))) {
+      if (AuthenticationType.ROUTES_TO_IGNORE_FROM_UNAUTHENTICATED_PAGES.includes(pathname)) {
+        return true;
+      }
+    }
+
     // allow requests to ignored routes
     if (AuthenticationType.ROUTES_TO_IGNORE.includes(pathname!)) {
       return true;
     }
+
     // allow requests to routes that doesn't require authentication
     if (this.config.auth.unauthenticated_routes.indexOf(pathname!) > -1) {
       // TODO: use opensearch-dashboards server user

@@ -43,6 +43,7 @@ import { getAuthenticationHandler } from './auth/auth_handler_factory';
 import { setupMultitenantRoutes } from './multitenancy/routes';
 import { defineAuthTypeRoutes } from './routes/auth_type_routes';
 import { createMigrationOpenSearchClient } from '../../../src/core/server/saved_objects/migrations/core';
+import { ReadOnlyCapabilitiesSwitcher } from './auth/read_only_capabilities_switcher';
 
 export interface SecurityPluginRequestContext {
   logger: Logger;
@@ -125,6 +126,15 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     if (config.multitenancy?.enabled) {
       setupMultitenantRoutes(router, securitySessionStorageFactory, this.securityClient);
     }
+
+    // this switcher checks whether the user has a read-only role or if the selected tenant is read-only.
+    // If so, it disables all known write controls in the UI.
+    const readOnlyCapabilitiesSwitcher = new ReadOnlyCapabilitiesSwitcher(
+      this.logger,
+      config.readonly_mode?.roles
+    );
+
+    readOnlyCapabilitiesSwitcher.setup(core, this.securityClient);
 
     return {
       config$,
