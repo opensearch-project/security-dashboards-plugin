@@ -56,12 +56,12 @@ export function resolveTenant(
   } else {
     selectedTenant = undefined;
   }
-  const isReadonly = roles?.some((role) =>
-    config.readonly_mode?.roles.includes(role) || DEFAULT_READONLY_ROLES.includes(role)
+  const isReadonly = roles?.some(
+    (role) => config.readonly_mode?.roles.includes(role) || DEFAULT_READONLY_ROLES.includes(role)
   );
 
   const preferredTenants = config.multitenancy?.tenants.preferred;
-  const globalTenantEnabled = config.multitenancy?.tenants.enable_global || false;
+  const globalTenantEnabled = config.multitenancy?.tenants.enable_global;
   const privateTenantEnabled = config.multitenancy?.tenants.enable_private && !isReadonly;
 
   return resolve(

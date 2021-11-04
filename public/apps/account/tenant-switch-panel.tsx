@@ -122,8 +122,9 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
   const isPrivateEnabled = props.config.multitenancy.tenants.enable_private;
 
   const DEFAULT_READONLY_ROLES = ['kibana_read_only'];
-  const readonly = roles.some((role) =>
-    props.config.readonly_mode?.roles.includes(role) || DEFAULT_READONLY_ROLES.includes(role)
+  const readonly = roles.some(
+    (role) =>
+      props.config.readonly_mode?.roles.includes(role) || DEFAULT_READONLY_ROLES.includes(role)
   );
 
   const shouldDisableGlobal = !isGlobalEnabled || !tenants.includes(GLOBAL_TENANT_KEY_NAME);
