@@ -34,7 +34,7 @@ const mockAccountInfo = {
       ['user1']: true,
     },
     user_name: 'user1',
-    roles: ["readall", "readonly"],
+    roles: ['readall', 'readonly'],
     user_requested_tenant: '',
   },
 };
@@ -105,7 +105,7 @@ describe('Account menu -tenant switch panel', () => {
             ['tenant1']: true,
           },
           user_name: 'user1',
-          roles: ["role1", "role2"],
+          roles: ['role1', 'role2'],
           user_requested_tenant: '__user__',
         },
       };
@@ -133,7 +133,7 @@ describe('Account menu -tenant switch panel', () => {
             ['tenant1']: true,
           },
           user_name: 'user1',
-          roles: ["role1", "role2"],
+          roles: ['role1', 'role2'],
           user_requested_tenant: 'tenant1',
         },
       };
@@ -376,11 +376,11 @@ describe('Account menu -tenant switch panel', () => {
     });
 
     it('renders when user has read only role', (done) => {
-      useState.mockImplementationOnce(() => [["readonly"], setState]);
+      useState.mockImplementationOnce(() => [['readonly'], setState]);
       useState.mockImplementationOnce(() => ['', setState]);
       const config = {
         readonly_mode: {
-          roles: ["readonly"]
+          roles: ['readonly'],
         },
         multitenancy: {
           enabled: true,
@@ -405,11 +405,11 @@ describe('Account menu -tenant switch panel', () => {
     });
 
     it('renders when user has default read only role', (done) => {
-      useState.mockImplementationOnce(() => [["kibana_read_only"], setState]);
+      useState.mockImplementationOnce(() => [['kibana_read_only'], setState]);
       useState.mockImplementationOnce(() => ['', setState]);
       const config = {
         readonly_mode: {
-          roles: []
+          roles: [],
         },
         multitenancy: {
           enabled: true,
