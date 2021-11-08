@@ -1,5 +1,0 @@
-## Version 1.2.0.0
-
-### Maintenance
-* Removing default integtest.sh [#829](https://github.com/opensearch-project/security-dashboards-plugin/pull/829)
-* Bump version to 1.2.0.0 ([#850](https://github.com/opensearch-project/security-dashboards-plugin/pull/850))
