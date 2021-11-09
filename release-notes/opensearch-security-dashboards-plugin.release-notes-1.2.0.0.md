@@ -5,6 +5,7 @@
 *  Add observability cluster permissions ([#851](https://github.com/opensearch-project/security-dashboards-plugin/pull/851))
 
 ### Maintenance
+* Updated copyright notices ([#847](https://github.com/opensearch-project/security-dashboards-plugin/pull/847))
 * Removing default integtest.sh ([#829](https://github.com/opensearch-project/security-dashboards-plugin/pull/829))
 * Bump version to 1.2.0.0 ([#850](https://github.com/opensearch-project/security-dashboards-plugin/pull/850))
 *  Adding DCO check to repo. Closes [#835](https://github.com/opensearch-project/security-dashboards-plugin/pull/835) ([#839](https://github.com/opensearch-project/security-dashboards-plugin/pull/839))
