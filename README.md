@@ -4,7 +4,9 @@
 
 <img src="https://opensearch.org/assets/brand/SVG/Logo/opensearch_logo_default.svg" height="64px"/>
 
-- [OpenSearch Common Utils](#opensearch-common-utils)
+- [OpenSearch-Dashboards Security Plugin](#opensearch-dashboards-security-plugin)
+- [Basic features](#basic-features)
+- [Documentation](#documentation)
 - [Contributing](#contributing)
 - [Getting Help](#getting-help)
 - [Code of Conduct](#code-of-conduct)
@@ -46,3 +48,11 @@ This project has adopted the [Amazon Open Source Code of Conduct](CODE_OF_CONDUC
 ## Security
 
 If you discover a potential security issue in this project we ask that you notify AWS/Amazon Security via our [vulnerability reporting page](http://aws.amazon.com/security/vulnerability-reporting/). Please do **not** create a public GitHub issue.
+
+## License
+
+This code is licensed under the Apache 2.0 License. 
+
+## Copyright
+
+Copyright OpenSearch Contributors. See [NOTICE](NOTICE.txt) for details.
