@@ -21,6 +21,7 @@ jobs:
           path: OpenSearch-Dashboards
           repository: opensearch-project/OpenSearch-Dashboards
           fetch-depth: 0
+          ref: '1.2'
       - name: Create plugins dir
         run: |
           cd ./OpenSearch-Dashboards
