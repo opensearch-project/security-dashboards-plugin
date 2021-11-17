@@ -20,12 +20,13 @@ jobs:
         with:
           path: OpenSearch-Dashboards
           repository: opensearch-project/OpenSearch-Dashboards
+          ref: '1.2'
           fetch-depth: 0
       - name: Create plugins dir
         run: |
           cd ./OpenSearch-Dashboards
           mkdir -p plugins
-      - name: Checkout
+      - name: Checkout OpenSearch Dashboard Security plugin
         uses: actions/checkout@v2
         with:
           path: OpenSearch-Dashboards/plugins/security-dashboards-plugin

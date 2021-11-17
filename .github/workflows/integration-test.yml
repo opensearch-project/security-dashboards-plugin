@@ -26,25 +26,14 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Checkout OpenSearch
-        uses: actions/checkout@v2
-        with:
-          repository: 'opensearch-project/OpenSearch'
-          path: OpenSearch
-          ref: '1.x'
-
-      - name: Build OpenSearch
-        working-directory: ./OpenSearch
-        run: ./gradlew publishToMavenLocal
-
-      - name: Checkout security
+      - name: Checkout security plugin
         uses: actions/checkout@v2
         with:
           repository: 'opensearch-project/security'
           path: security
           ref: 'main'
 
-      - name: Package
+      - name: Build security plugin
         working-directory: ./security
         run: mvn -B clean package -Padvanced -DskipTests
 
@@ -82,7 +71,7 @@ jobs:
         with:
           path: OpenSearch-Dashboards
           repository: opensearch-project/OpenSearch-Dashboards
-          ref: '1.x'
+          ref: '1.2'
           fetch-depth: 0
       
       - name: Create plugins dir
