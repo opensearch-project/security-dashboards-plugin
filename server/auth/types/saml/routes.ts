@@ -131,8 +131,7 @@ export class SamlAuthRoutes {
             context.security_plugin.logger.error('JWT token payload not found');
           }
           const tokenPayload = JSON.parse(
-            Buffer.from(payloadEncoded, 'base64').toString()
-          );
+            Buffer.from(payloadEncoded, 'base64').toString());
           if (tokenPayload.exp) {
             expiryTime = parseInt(tokenPayload.exp, 10) * 1000;
           }
@@ -190,8 +189,7 @@ export class SamlAuthRoutes {
             context.security_plugin.logger.error('JWT token payload not found');
           }
           const tokenPayload = JSON.parse(
-            Buffer.from(payloadEncoded, 'base64').toString()
-          );
+            Buffer.from(payloadEncoded, 'base64').toString());
           if (tokenPayload.exp) {
             expiryTime = parseInt(tokenPayload.exp, 10) * 1000;
           }
