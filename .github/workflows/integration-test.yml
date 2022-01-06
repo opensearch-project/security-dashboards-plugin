@@ -13,35 +13,14 @@ jobs:
     name: Run integration tests
     runs-on: ubuntu-latest
     steps:
-      # build backend plugin
-      - name: Set up JDK 14
-        uses: actions/setup-java@v1
-        with:
-          java-version: 14.0.x
-
-      - name: Cache Maven packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-
-      - name: Checkout security plugin
-        uses: actions/checkout@v2
-        with:
-          repository: 'opensearch-project/security'
-          path: security
-          ref: 'main'
-
-      - name: Build security plugin
-        working-directory: ./security
-        run: mvn -B clean package -Padvanced -DskipTests
-
       - name: Download OpenSearch Core
         run: |
-          wget https://artifacts.opensearch.org/snapshots/core/opensearch/1.2.0-SNAPSHOT/opensearch-min-1.2.0-SNAPSHOT-linux-x64-latest.tar.gz
+          wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/1.3.0/488/linux/x64/builds/opensearch/dist/opensearch-min-1.3.0-linux-x64.tar.gz
           tar -xzf opensearch-*.tar.gz
           rm -f opensearch-*.tar.gz
+
+      - name: Download OpenSearch Security Plugin
+        run: wget -O opensearch-security.zip https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/1.3.0/488/linux/x64/builds/opensearch/plugins/opensearch-security-1.3.0.0.zip
 
       - name: Run OpenSearch with plugin
         run: |
@@ -56,7 +35,7 @@ jobs:
           docker build -t opensearch-test:latest -f- . <<EOF
           FROM ubuntu:latest
           COPY --chown=1001:1001 os-ep.sh /docker-host/
-          COPY --chown=1001:1001 security/target/releases/opensearch-security-1.2.0.0-SNAPSHOT.zip /docker-host/security-plugin.zip
+          COPY --chown=1001:1001 opensearch-security.zip /docker-host/security-plugin.zip
           COPY --chown=1001:1001 opensearch* /opensearch/
           RUN chmod +x /docker-host/os-ep.sh
           RUN useradd -u 1001 -s /sbin/nologin opensearch
