@@ -58,20 +58,13 @@ opensearch_security.cookie.secure: false
 
 Note that at this point running `yarn start` will fail, as we still don't have the security plugin installed in Dashboards. We are ready to install it now.
 
-## Building
-
-First create a fork of this repo and clone it locally under the `plugins` directory of the previously cloned OpenSearch Dashboards project, and build the plugin:
-
-```
-cd plugins
-git clone git@github.com:opensearch-project/security-dashboards-plugin.git
-cd security-dashboards-plugin
-yarn build
-```
-
-We should be able to run Dashboards now changing back to its base directory and running `yarn start`. Navigating to the URL given as console output (something like `http://localhost:5601/omf`) you should now be able to log in with user `admin` and password `admin`.
+`./opensearch-dashboards-plugin install file:///path/to/security/target/releases/opensearch-security-dashboards-plugin-<version>.zip`
 
 
-## Submitting Changes
+## Backports
 
-See [CONTRIBUTING](CONTRIBUTING.md).
+The Github workflow in [`backport.yml`](.github/workflows/backport.yml) creates backport PRs automatically when the 
+original PR with an appropriate label `backport <backport-branch-name>` is merged to main with the backport workflow 
+run successfully on the PR. For example, if a PR on main needs to be backported to `1.x` branch, add a label 
+`backport 1.x` to the PR and make sure the backport workflow runs on the PR along with other checks. Once this PR is 
+merged to main, the workflow will create a backport PR to the `1.x` branch.
