@@ -64,6 +64,7 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
             });
             tenant = savedTenant;
             shouldShowTenantPopup = false;
+            window.location.reload();
           }
         }
       } catch (e) {
