@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Download OpenSearch Core
         run: |
-          wget https://TBD/opensearch-min-2.0.0-linux-x64.tar.gz
+          wget https://artifacts.opensearch.org/snapshots/core/opensearch/2.0.0-SNAPSHOT/opensearch-min-2.0.0-SNAPSHOT-linux-x64-latest.tar.gz
           tar -xzf opensearch-*.tar.gz
           rm -f opensearch-*.tar.gz
 
