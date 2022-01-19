@@ -58,8 +58,22 @@ opensearch_security.cookie.secure: false
 
 Note that at this point running `yarn start` will fail, as we still don't have the security plugin installed in Dashboards. We are ready to install it now.
 
-`./opensearch-dashboards-plugin install file:///path/to/security/target/releases/opensearch-security-dashboards-plugin-<version>.zip`
+## Building
 
+First create a fork of this repo and clone it locally under the `plugins` directory of the previously cloned OpenSearch Dashboards project, and build the plugin:
+
+```
+cd plugins
+git clone git@github.com:opensearch-project/security-dashboards-plugin.git
+cd security-dashboards-plugin
+yarn build
+```
+
+We should be able to run Dashboards now changing back to its base directory and running `yarn start`. Navigating to the URL given as console output (something like `http://localhost:5601/omf`) you should now be able to log in with user `admin` and password `admin`.
+
+## Submitting Changes
+
+See [CONTRIBUTING](CONTRIBUTING.md).
 
 ## Backports
 
