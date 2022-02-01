@@ -6,9 +6,19 @@ So you want to contribute code to this project? Excellent! We're glad you're her
 - [Submitting Changes](#submitting-changes)
 
 ## Prerequisites
-This project runs as a plugin of [OpenSearch Dashboards](**https://github.com/opensearch-project/OpenSearch-Dashboards) and needs an [OpenSearch server](https://github.com/opensearch-project/OpenSearch) running with the [Security Plugin](https://github.com/opensearch-project/security) installed. At the time of this writing there is a strict version check between these components, so we recommend running all of them from their respective branches with matching versions (this will also ensure they work well together before we cut a new release.)
 
-As a prerequisite, please follow [the developer guide of the Security Plugin](https://github.com/opensearch-project/security/blob/main/DEVELOPER_GUIDE.md). This will leave you with a running OpenSearch server with security enabled. For the sake of this guide, let's assume the latest versions at the time of writing (`1.3.0-SNAPSHOT` for OpenSearch and OpenSearch Dashboards, and `1.3.0.0-SNAPSHOT` for both backend and frontend (this repo) security plugins.) Update the config file (`config/opensearch.yml`) to look like this one:
+This project is as a plugin of [OpenSearch-Dashboards](**https://github.com/opensearch-project/OpenSearch-Dashboards). It requires an [OpenSearch](https://github.com/opensearch-project/OpenSearch) server running with the [Security](https://github.com/opensearch-project/security) plugin installed. At the time of this writing there is a strict version check between these components, so we recommend running all of them from their respective branches with matching versions (this will also ensure they work well together before we cut a new release.)
+
+As a prerequisite, please follow [the developer guide of the Security Plugin](https://github.com/opensearch-project/security/blob/main/DEVELOPER_GUIDE.md). This will get a OpenSearch server running with security plugin enabled. 
+
+**IMPORTANT**: Throughout this guide we will be using 1.x branches as our source for all 4 repos (OpenSearch, OpenSearch-Dashboards, security and security-dashboards-plugin).
+
+> NOTE: If you are following this guide by the dot, please make sure that source code that you compile for OpenSearch project using `./gradlew localDistro` is done from [1.x branch](https://github.com/opensearch-project/OpenSearch/tree/1.x)
+
+\
+For the sake of this guide, let's assume that the latest versions (`1.3.0-SNAPSHOT` for OpenSearch and OpenSearch Dashboards, and `1.3.0.0-SNAPSHOT` for the backend and the frontend of this Security plugin).
+
+Next, ensure that the config file (`config/opensearch.yml`) in the OpenSearch home directory where you copied the source code using the [dev-guide](https://github.com/opensearch-project/security/blob/main/DEVELOPER_GUIDE.md#:~:text=export%20OPENSEARCH_HOME%3D~/Test/opensearch%2D1.3.0%2DSNAPSHOT) (basically `cd $OPENSEARCH_HOME`) contains this:
 
 ```yaml
 ######## Start OpenSearch Security Demo Configuration ########
@@ -39,7 +49,15 @@ node.max_local_storage_nodes: 3
 ######## End OpenSearch Security Demo Configuration ########
 ```
 
-Next, we need to check out OpenSearch Dashboards from the branch matching our version, in this example that would be the [1.x branch](https://github.com/opensearch-project/OpenSearch-Dashboards/tree/1.x). Follow the [developer guide](https://github.com/opensearch-project/OpenSearch-Dashboards/blob/1.x/DEVELOPER_GUIDE.md) and replace the version of  `opensearch-dashboards.yml` there with this:
+
+**Please Note** : This project runs on node `10.24.1` and so when installing node please ensure that you install this version. You can do so by running 
+```script 
+nvm install 10.24.1
+```
+
+
+Next, checkout the [1.x branch](https://github.com/opensearch-project/OpenSearch-Dashboards/tree/1.x) from OpenSearch-Dashboards repo. Follow the [developer guide](https://github.com/opensearch-project/OpenSearch-Dashboards/blob/1.x/DEVELOPER_GUIDE.md) and replace the version of `opensearch-dashboards.yml` there with this:
+
 
 ```yaml
 server.host: "0"
@@ -56,20 +74,31 @@ opensearch_security.readonly_mode.roles: ["kibana_read_only"]
 opensearch_security.cookie.secure: false
 ```
 
-Note that at this point running `yarn start` will fail, as we still don't have the security plugin installed in Dashboards. We are ready to install it now.
+\
+Note that at this point `yarn start` will fail, as we still don't have the security plugin installed in the Dashboards. We are ready to install it now.
+
 
 ## Building
 
-First create a fork of this repo and clone it locally under the `plugins` directory of the previously cloned OpenSearch Dashboards project, and build the plugin:
+Change to the `plugins` directory of the locally cloned Opensearch Dashboards directory.
+```
+cd <your-path-to>/OpenSearch-Dashboards
+cd plugins
+```
+
+Create a fork of this repo and clone it locally under the `plugins` directory, and build the plugin:
 
 ```
 cd plugins
-git clone git@github.com:opensearch-project/security-dashboards-plugin.git
+git clone git@github.com:<your-git-username>/security-dashboards-plugin.git
 cd security-dashboards-plugin
 yarn build
 ```
 
-We should be able to run Dashboards now changing back to its base directory and running `yarn start`. Navigating to the URL given as console output (something like `http://localhost:5601/omf`) you should now be able to log in with user `admin` and password `admin`.
+Next, go to the base directory and run `yarn osd bootstrap` to install any additional packages introduced by the security plugin. (If you do not run this, `yarn start` might fail with an error like `Cannot find module xxxxx`)
+
+
+Now, from the base directory and run `yarn start`. This should start dashboard UI successfully. `Cmd+click` the url in the console output (It should look something like `http://0:5601/omf`). Once the page loads, you should be able to log in with user `admin` and password `admin`.
 
 ## Submitting Changes
 
