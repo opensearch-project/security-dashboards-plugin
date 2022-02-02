@@ -7,7 +7,7 @@ So you want to contribute code to this project? Excellent! We're glad you're her
 
 ## Prerequisites
 
-This project is as a plugin of [OpenSearch-Dashboards](**https://github.com/opensearch-project/OpenSearch-Dashboards). It requires an [OpenSearch](https://github.com/opensearch-project/OpenSearch) server running with the [Security](https://github.com/opensearch-project/security) plugin installed. At the time of this writing there is a strict version check between these components, so we recommend running all of them from their respective branches with matching versions (this will also ensure they work well together before we cut a new release.)
+This project is a plugin of [OpenSearch-Dashboards](**https://github.com/opensearch-project/OpenSearch-Dashboards). It requires an [OpenSearch](https://github.com/opensearch-project/OpenSearch) server running with the [Security](https://github.com/opensearch-project/security) plugin installed. At the time of this writing there is a strict version check between these components, so we recommend running all of them from their respective branches with matching versions (this will also ensure they work well together before we cut a new release.)
 
 As a prerequisite, please follow [the developer guide of the Security Plugin](https://github.com/opensearch-project/security/blob/main/DEVELOPER_GUIDE.md). This will get a OpenSearch server running with security plugin enabled. 
 
@@ -50,7 +50,7 @@ node.max_local_storage_nodes: 3
 ```
 
 
-**Please Note** : This project runs on node `10.24.1` and so when installing node please ensure that you install this version. You can do so by running 
+**Please Note** : This project runs on node `10.24.1` (refer to the `.nvmrc` or `.node-version` file in the base directory for correct version) and so when installing node please ensure that you install this version. You can do so by running 
 ```script 
 nvm install 10.24.1
 ```
