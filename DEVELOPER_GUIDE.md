@@ -11,7 +11,6 @@ This project is a plugin of [OpenSearch-Dashboards](**https://github.com/opensea
 
 As a prerequisite, please follow [the developer guide of the Security Plugin](https://github.com/opensearch-project/security/blob/main/DEVELOPER_GUIDE.md). This will get a OpenSearch server running with security plugin enabled. 
 
-**IMPORTANT**: Throughout this guide we will be using 1.x branches as our source for all 4 repos (OpenSearch, OpenSearch-Dashboards, security and security-dashboards-plugin).
 
 > NOTE: If you are following this guide by the dot, please make sure that source code that you compile for OpenSearch project using `./gradlew localDistro` is done from [1.x branch](https://github.com/opensearch-project/OpenSearch/tree/1.x)
 
@@ -50,9 +49,9 @@ node.max_local_storage_nodes: 3
 ```
 
 
-**Please Note** : This project runs on node `10.24.1` (refer to the `.nvmrc` or `.node-version` file in the base directory for correct version) and so when installing node please ensure that you install this version. You can do so by running 
+**Please Note** : This project runs on node `10.24.1` at the time of writing this guide (refer to the `.nvmrc` or `.node-version` file in the base directory for correct version) and so when installing node please ensure that you install this version. You can do so by running 
 ```script 
-nvm install 10.24.1
+nvm use --install
 ```
 
 
