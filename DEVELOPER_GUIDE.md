@@ -12,7 +12,25 @@ This project is a plugin of [OpenSearch-Dashboards](**https://github.com/opensea
 As a prerequisite, please follow [the developer guide of the Security Plugin](https://github.com/opensearch-project/security/blob/main/DEVELOPER_GUIDE.md). This will get a OpenSearch server running with security plugin enabled. 
 
 
-> NOTE: If you are following this guide by the dot, please make sure that source code that you compile for OpenSearch project using `./gradlew localDistro` is done from [1.x branch](https://github.com/opensearch-project/OpenSearch/tree/1.x)
+> NOTE: If you are following this guide by the dot, please make sure that source code that you compile for OpenSearch project using `./gradlew localDistro` is done from [1.x branch](https://github.com/opensearch-project/OpenSearch/tree/1.x).
+
+
+At present there are following branches available to choose from for the setup:
+
+### **Back-end**
+
+| OpenSearch<br>branch | Security Plugin<br>branch  | OpenSearch<br>version  |
+|--------              |---                         |---                  |
+| [1.x](https://github.com/opensearch-project/OpenSearch/tree/1.x) | [main](https://github.com/opensearch-project/security/) | [v1.3.0](https://github.com/opensearch-project/OpenSearch/blob/6eda740be744846f7aa0b2674820b5ed9b6be17e/buildSrc/version.properties#L1) |
+| [main](https://github.com/opensearch-project/OpenSearch) | (under development) | [v2.0.0](https://github.com/opensearch-project/OpenSearch/blob/1e5d98329eaa76d1aea19306242e6fa74b840b75/buildSrc/version.properties#L1) |
+
+<br>
+
+### **Front-end**
+| OpenSearch Dashboards<br>branch | Security Dashboards Plugin<br>branch  | OpenSearch Dashboards<br>version  |
+| ---         | ---                         | ---                  |
+| [1.x](https://github.com/opensearch-project/OpenSearch-Dashboards/tree/1.x) | [main](https://github.com/opensearch-project/security-dashboards-plugin/) | [v1.3.0](https://github.com/opensearch-project/OpenSearch-Dashboards/blob/b82f214babf7ef8db4a9705b7b51a912f779184c/package.json#L14) |
+| [main](https://github.com/opensearch-project/OpenSearch-Dashboards) | (under development) | [v2.0.0](https://github.com/opensearch-project/OpenSearch-Dashboards/blob/0c3f901c569838b2708a079d058c7d09970b944c/package.json#L14) |
 
 \
 For the sake of this guide, let's assume that the latest versions (`1.3.0-SNAPSHOT` for OpenSearch and OpenSearch Dashboards, and `1.3.0.0-SNAPSHOT` for the backend and the frontend of this Security plugin).
