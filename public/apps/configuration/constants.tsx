@@ -1,5 +1,5 @@
 /*
- *   Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *   Copyright OpenSearch Contributors
  *
  *   Licensed under the Apache License, Version 2.0 (the "License").
  *   You may not use this file except in compliance with the License.
@@ -44,7 +44,9 @@ export const CLUSTER_PERMISSIONS: string[] = [
   'cluster:admin/opendistro/ad/detector/stats',
   'cluster:admin/opendistro/ad/detector/write',
   'cluster:admin/opendistro/ad/detectors/get',
+  'cluster:admin/opendistro/ad/detector/validate',
   'cluster:admin/opendistro/ad/result/search',
+  'cluster:admin/opendistro/ad/result/topAnomalies',
   'cluster:admin/opendistro/ad/tasks/search',
   'cluster:admin/opendistro/alerting/alerts/ack',
   'cluster:admin/opendistro/alerting/alerts/get',
@@ -89,6 +91,10 @@ export const CLUSTER_PERMISSIONS: string[] = [
   'cluster:admin/opendistro/reports/instance/list',
   'cluster:admin/opendistro/reports/instance/get',
   'cluster:admin/opendistro/reports/menu/download',
+  'cluster:admin/opensearch/observability/create',
+  'cluster:admin/opensearch/observability/delete',
+  'cluster:admin/opensearch/observability/get',
+  'cluster:admin/opensearch/observability/update',
   'cluster:admin/reindex/rethrottle',
   'cluster:admin/repository/delete',
   'cluster:admin/repository/get',

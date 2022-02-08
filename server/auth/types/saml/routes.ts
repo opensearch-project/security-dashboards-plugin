@@ -1,5 +1,5 @@
 /*
- *   Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *   Copyright OpenSearch Contributors
  *
  *   Licensed under the Apache License, Version 2.0 (the "License").
  *   You may not use this file except in compliance with the License.
@@ -130,9 +130,7 @@ export class SamlAuthRoutes {
           if (!payloadEncoded) {
             context.security_plugin.logger.error('JWT token payload not found');
           }
-          const tokenPayload = JSON.parse(
-            Buffer.from(payloadEncoded, 'base64').toString().replace('\\', '\\\\')
-          );
+          const tokenPayload = JSON.parse(Buffer.from(payloadEncoded, 'base64').toString());
           if (tokenPayload.exp) {
             expiryTime = parseInt(tokenPayload.exp, 10) * 1000;
           }
@@ -189,9 +187,7 @@ export class SamlAuthRoutes {
           if (!payloadEncoded) {
             context.security_plugin.logger.error('JWT token payload not found');
           }
-          const tokenPayload = JSON.parse(
-            Buffer.from(payloadEncoded, 'base64').toString().replace('\\', '\\\\')
-          );
+          const tokenPayload = JSON.parse(Buffer.from(payloadEncoded, 'base64').toString());
           if (tokenPayload.exp) {
             expiryTime = parseInt(tokenPayload.exp, 10) * 1000;
           }
