@@ -135,6 +135,7 @@ export const configSchema = schema.object({
       root_ca: schema.string({ defaultValue: '' }),
       verify_hostnames: schema.boolean({ defaultValue: true }),
       refresh_tokens: schema.boolean({ defaultValue: true }),
+      trust_dynamic_headers: schema.boolean({ defaultValue: false }),
     })
   ),
   proxycache: schema.maybe(
