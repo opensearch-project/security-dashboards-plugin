@@ -20,7 +20,7 @@ jobs:
         with:
           path: OpenSearch-Dashboards
           repository: opensearch-project/OpenSearch-Dashboards
-          ref: '1.x'
+          ref: 'main'
           fetch-depth: 0
       - name: Create plugins dir
         run: |
