@@ -1,14 +1,5 @@
 name: Unit Tests
 
-on:
-  pull_request:
-    branches:
-      - main
-      - 1.*
-  push:
-    branches:
-      - main
-
 jobs:
   tests:
     name: Run unit tests
