@@ -171,7 +171,7 @@ export class BasicAuthRoutes {
             ? this.coreSetup.http.basePath.serverBasePath
             : '/';
           const requestQuery = request.url.query as ParsedUrlQueryParams;
-          if (requestQuery.nextUrl !== undefined) {
+          if (requestQuery?.nextUrl !== undefined) {
             redirectUrl = requestQuery.nextUrl;
           }
           context.security_plugin.logger.info('The Redirect Path is ' + redirectUrl);
