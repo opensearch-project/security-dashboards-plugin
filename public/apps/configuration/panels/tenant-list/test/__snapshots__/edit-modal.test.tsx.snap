@@ -2,6 +2,7 @@
 
 exports[`Permission edit modal Submit button text should be Create when user is creating tenant 1`] = `
 <EuiButtonDisplay
+  baseClassName="euiButton"
   disabled={false}
   element="button"
   fill={true}
@@ -16,6 +17,7 @@ exports[`Permission edit modal Submit button text should be Create when user is 
 
 exports[`Permission edit modal Submit button text should be Save when user is updating tenant 1`] = `
 <EuiButtonDisplay
+  baseClassName="euiButton"
   disabled={false}
   element="button"
   fill={true}

@@ -24,5 +24,11 @@ exports[`Navigation panel renders 1`] = `
       },
     ]
   }
+  mobileBreakpoints={
+    Array [
+      "xs",
+      "s",
+    ]
+  }
 />
 `;

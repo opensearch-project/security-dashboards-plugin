@@ -1,13 +1,6 @@
 name: Unit Tests
 
-on:
-  pull_request:
-    branches:
-      - main
-      - 1.*
-  push:
-    branches:
-      - main
+on: [push, pull_request]
 
 jobs:
   tests:
@@ -20,7 +13,7 @@ jobs:
         with:
           path: OpenSearch-Dashboards
           repository: opensearch-project/OpenSearch-Dashboards
-          ref: '1.x'
+          ref: 'main'
           fetch-depth: 0
       - name: Create plugins dir
         run: |
