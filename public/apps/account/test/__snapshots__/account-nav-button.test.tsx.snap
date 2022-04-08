@@ -16,7 +16,7 @@ exports[`Account navigation button renders 1`] = `
     id="actionsMenu"
     isOpen={false}
     onClick={[Function]}
-    ownFocus={false}
+    ownFocus={true}
     panelPaddingSize="s"
   >
     <EuiContextMenuPanel

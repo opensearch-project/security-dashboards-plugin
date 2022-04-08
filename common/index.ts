@@ -44,5 +44,6 @@ export enum AuthType {
  */
 export function isValidResourceName(resourceName: string): boolean {
   // see: https://javascript.info/regexp-unicode
-  return !/[\p{C}%]/u.test(resourceName) && resourceName.length > 0;
+  const exp = new RegExp('[\\p{C}%]', 'u');
+  return !exp.test(resourceName) && resourceName.length > 0;
 }

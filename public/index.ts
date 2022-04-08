@@ -12,9 +12,6 @@
  *   express or implied. See the License for the specific language governing
  *   permissions and limitations under the License.
  */
-
-import './index.scss';
-
 import { SecurityPlugin } from './plugin';
 import { PluginInitializerContext } from '../../../src/core/public';
 
