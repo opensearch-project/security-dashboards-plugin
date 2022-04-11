@@ -42,9 +42,12 @@ export function resolveTenant(
   cookie: SecuritySessionCookie
 ): string | undefined {
   let selectedTenant: string | undefined;
-  const query: any = request.url.query as any;
-  if (query && (query.security_tenant || query.securitytenant)) {
-    selectedTenant = query.security_tenant ? query.security_tenant : query.securitytenant;
+  const security_tenant = request?.url?.searchParams?.get('security_tenant');
+  const securitytenant = request?.url?.searchParams?.get('securitytenant');
+  if (security_tenant) {
+    selectedTenant = security_tenant;
+  } else if (securitytenant) {
+    selectedTenant = securitytenant;
   } else if (request.headers.securitytenant || request.headers.security_tenant) {
     selectedTenant = request.headers.securitytenant
       ? (request.headers.securitytenant as string)

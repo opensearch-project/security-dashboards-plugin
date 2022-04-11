@@ -165,14 +165,15 @@ export class BasicAuthRoutes {
       async (context, request, response) => {
         if (this.config.auth.anonymous_auth_enabled) {
           let user: User;
-          const path: string = `${request.url.path}`;
+          const path: string = `${request.url.pathname}`;
           // If the request contains no redirect path, simply redirect to basepath.
           let redirectUrl: string = this.coreSetup.http.basePath.serverBasePath
             ? this.coreSetup.http.basePath.serverBasePath
             : '/';
-          const requestQuery = request.url.query as ParsedUrlQueryParams;
-          if (requestQuery?.nextUrl !== undefined) {
-            redirectUrl = requestQuery.nextUrl;
+          const requestQuery = request.url.searchParams;
+          const nextUrl = requestQuery?.get('nextUrl');
+          if (nextUrl) {
+            redirectUrl = nextUrl;
           }
           context.security_plugin.logger.info('The Redirect Path is ' + redirectUrl);
           try {
