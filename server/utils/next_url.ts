@@ -13,19 +13,25 @@
  *   permissions and limitations under the License.
  */
 
-import { cloneDeep } from 'lodash';
-import { format } from 'url';
-import { ParsedUrlQuery, stringify } from 'querystring';
+import { parse } from 'url';
+import { ParsedUrlQuery } from 'querystring';
 import { OpenSearchDashboardsRequest } from 'opensearch-dashboards/server';
 
-export function composeNextUrlQeuryParam(
+export function composeNextUrlQueryParam(
   request: OpenSearchDashboardsRequest,
   basePath: string
 ): string {
-  const url = cloneDeep(request.url);
-  url.pathname = `${basePath}${url.pathname}`;
-  const nextUrl = format(url);
-  return stringify({ nextUrl });
+  try {
+    const currentUrl = request.url.toString();
+    const parsedUrl = parse(currentUrl, true);
+    const nextUrl = parsedUrl?.path;
+    if (!!nextUrl && nextUrl != '/' ) {
+      return `nextUrl=${basePath}${nextUrl}`;
+    }
+  } catch (error) {
+    /* Ignore errors from parsing */
+  }
+  return '';
 }
 
 export interface ParsedUrlQueryParams extends ParsedUrlQuery {
