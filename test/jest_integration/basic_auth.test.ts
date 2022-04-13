@@ -208,6 +208,11 @@ describe('start OpenSearch Dashboards server', () => {
     expect(response.status).toEqual(302);
   });
 
+  it('enforce authentication on api/status route', async () => {
+    const response = await osdTestServer.request.get(root, '/api/status');
+    expect(response.status).toEqual(401);
+  });
+
   it('can access api/status route with admin credential', async () => {
     const response = await osdTestServer.request
       .get(root, '/api/status')
