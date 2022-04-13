@@ -207,4 +207,55 @@ describe('start OpenSearch Dashboards server', () => {
 
     expect(response.status).toEqual(302);
   });
+
+  it('can access api/status route with admin credential', async () => {
+    const response = await osdTestServer.request
+      .get(root, '/api/status')
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
+    expect(response.status).toEqual(200);
+  it('redirect for home follows login', async () => {
+    const response = await osdTestServer.request
+      .get(root, '/app/home#/')
+      .unset(AUTHORIZATION_HEADER_NAME);
+
+    expect(response.status).toEqual(302);
+    expect(response.header.location).toEqual('/auth/anonymous?nextUrl=%2Fapp%2Fhome');
+
+    const response2 = await osdTestServer.request
+      .get(root, response.header.location)
+      .unset(AUTHORIZATION_HEADER_NAME);
+
+    expect(response2.status).toEqual(302);
+    expect(response2.header.location).toEqual('/app/login?nextUrl=%2Fapp%2Fhome');
+
+    const response3 = await osdTestServer.request
+      .get(root, response2.header.location)
+      .unset(AUTHORIZATION_HEADER_NAME);
+
+    expect(response3.status).toEqual(200);
+  });
+
+  it('redirects to an object ignores after hash', async () => {
+    const startingPath = `/app/dashboards#/view/edf84fe0-e1a0-11e7-b6d5-4dc382ef7f5b`;
+    const expectedPath = `/app/login?nextUrl=%2Fapp%2Fdashboards`;
+
+    const response = await osdTestServer.request
+      .get(root, startingPath)
+      .unset(AUTHORIZATION_HEADER_NAME);
+
+    expect(response.status).toEqual(302);
+
+    const response2 = await osdTestServer.request
+      .get(root, response.header.location)
+      .unset(AUTHORIZATION_HEADER_NAME);
+
+    expect(response2.status).toEqual(302);
+    expect(response2.header.location).toEqual(expectedPath);
+
+    const response3 = await osdTestServer.request
+      .get(root, response2.header.location)
+      .unset(AUTHORIZATION_HEADER_NAME);
+
+    expect(response3.status).toEqual(200);
+  });
 });

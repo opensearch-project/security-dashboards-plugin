@@ -39,7 +39,7 @@ describe('test composeNextUrlQueryParam', () => {
         },
         ''
       )
-    ).toEqual('nextUrl=/alpha/major/foxtrot');
+    ).toEqual('nextUrl=%2Falpha%2Fmajor%2Ffoxtrot');
   });
 
   test('base, no path', () => {
@@ -61,7 +61,7 @@ describe('test composeNextUrlQueryParam', () => {
         },
         'xyz'
       )
-    ).toEqual('nextUrl=xyz/alpha/major/foxtrot');
+    ).toEqual('nextUrl=xyz%2Falpha%2Fmajor%2Ffoxtrot');
   });
 });
 

@@ -16,6 +16,7 @@
 import { parse } from 'url';
 import { ParsedUrlQuery } from 'querystring';
 import { OpenSearchDashboardsRequest } from 'opensearch-dashboards/server';
+import { encodeUriQuery } from '../../../../src/plugins/opensearch_dashboards_utils/common/url/encode_uri_query';
 
 export function composeNextUrlQueryParam(
   request: OpenSearchDashboardsRequest,
@@ -25,8 +26,9 @@ export function composeNextUrlQueryParam(
     const currentUrl = request.url.toString();
     const parsedUrl = parse(currentUrl, true);
     const nextUrl = parsedUrl?.path;
+
     if (!!nextUrl && nextUrl != '/' ) {
-      return `nextUrl=${basePath}${nextUrl}`;
+      return `nextUrl=${encodeUriQuery(basePath + nextUrl)}`;
     }
   } catch (error) {
     /* Ignore errors from parsing */
