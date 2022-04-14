@@ -213,6 +213,8 @@ describe('start OpenSearch Dashboards server', () => {
       .get(root, '/api/status')
       .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
     expect(response.status).toEqual(200);
+  });
+  
   it('redirect for home follows login', async () => {
     const response = await osdTestServer.request
       .get(root, '/app/home#/')
