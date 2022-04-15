@@ -81,7 +81,7 @@ export class JwtAuthentication extends AuthenticationType {
     }
 
     const urlParamName = this.config.jwt?.url_param;
-    if (urlParamName && (request.url.searchParams.get('urlParamName'))) {
+    if (urlParamName && request.url.searchParams.get('urlParamName')) {
       return true;
     }
 

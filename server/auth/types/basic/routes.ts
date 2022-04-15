@@ -224,7 +224,7 @@ export class BasicAuthRoutes {
               location: `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}`,
             },
           });
-        }q
+        }
       }
     );
   }

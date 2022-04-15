@@ -27,7 +27,7 @@ export function composeNextUrlQueryParam(
     const parsedUrl = parse(currentUrl, true);
     const nextUrl = parsedUrl?.path;
 
-    if (!!nextUrl && nextUrl != '/' ) {
+    if (!!nextUrl && nextUrl !== '/') {
       return `nextUrl=${encodeUriQuery(basePath + nextUrl)}`;
     }
   } catch (error) {
