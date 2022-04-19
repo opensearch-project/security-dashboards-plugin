@@ -29,7 +29,7 @@ import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { BasicAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
 import { LOGIN_PAGE_URI } from '../../../../common';
-import { composeNextUrlQeuryParam } from '../../../utils/next_url';
+import { composeNextUrlQueryParam } from '../../../utils/next_url';
 
 export class BasicAuthentication extends AuthenticationType {
   private static readonly AUTH_HEADER_NAME: string = 'authorization';
@@ -107,7 +107,7 @@ export class BasicAuthentication extends AuthenticationType {
     toolkit: AuthToolkit
   ): OpenSearchDashboardsResponse {
     if (this.isPageRequest(request)) {
-      const nextUrlParam = composeNextUrlQeuryParam(
+      const nextUrlParam = composeNextUrlQueryParam(
         request,
         this.coreSetup.http.basePath.serverBasePath
       );

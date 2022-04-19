@@ -2,6 +2,10 @@ name: Integration Tests
 
 on: [push, pull_request]
 
+env:
+  TEST_BROWSER_HEADLESS: 1
+  CI: 1
+
 jobs:
   tests:
     name: Run integration tests

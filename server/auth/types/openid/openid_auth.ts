@@ -34,7 +34,7 @@ import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { OpenIdAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
 import { callTokenEndpoint } from './helper';
-import { composeNextUrlQeuryParam } from '../../../utils/next_url';
+import { composeNextUrlQueryParam } from '../../../utils/next_url';
 
 export interface OpenIdAuthConfig {
   authorizationEndpoint?: string;
@@ -212,7 +212,7 @@ export class OpenIdAuthentication extends AuthenticationType {
   ): IOpenSearchDashboardsResponse {
     if (this.isPageRequest(request)) {
       // nextUrl is a key value pair
-      const nextUrl = composeNextUrlQeuryParam(
+      const nextUrl = composeNextUrlQueryParam(
         request,
         this.coreSetup.http.basePath.serverBasePath
       );

@@ -13,7 +13,57 @@
  *   permissions and limitations under the License.
  */
 
-import { validateNextUrl, INVALID_NEXT_URL_PARAMETER_MESSAGE } from './next_url';
+import {
+  composeNextUrlQueryParam,
+  validateNextUrl,
+  INVALID_NEXT_URL_PARAMETER_MESSAGE,
+} from './next_url';
+
+describe('test composeNextUrlQueryParam', () => {
+  test('no base, no path', () => {
+    expect(
+      composeNextUrlQueryParam(
+        {
+          url: 'http://localhost:123',
+        },
+        ''
+      )
+    ).toEqual('');
+  });
+
+  test('no base, path', () => {
+    expect(
+      composeNextUrlQueryParam(
+        {
+          url: 'http://localhost:123/alpha/major/foxtrot',
+        },
+        ''
+      )
+    ).toEqual('nextUrl=%2Falpha%2Fmajor%2Ffoxtrot');
+  });
+
+  test('base, no path', () => {
+    expect(
+      composeNextUrlQueryParam(
+        {
+          url: 'http://localhost:123',
+        },
+        'xyz'
+      )
+    ).toEqual('');
+  });
+
+  test('base, path', () => {
+    expect(
+      composeNextUrlQueryParam(
+        {
+          url: 'http://localhost:123/alpha/major/foxtrot',
+        },
+        'xyz'
+      )
+    ).toEqual('nextUrl=xyz%2Falpha%2Fmajor%2Ffoxtrot');
+  });
+});
 
 /* eslint-disable no-script-url */
 describe('test validateNextUrl', () => {
