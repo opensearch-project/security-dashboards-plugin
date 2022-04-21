@@ -1,4 +1,4 @@
-## Version 2.0.0.0
+## 2022-04-20 Version 2.0.0.0-rc1
 
 ### Enhancements
 * Change 2.0-alpha1 to 2.0-rc1. ([#946](https://github.com/opensearch-project/security-dashboards-plugin/pull/946))
