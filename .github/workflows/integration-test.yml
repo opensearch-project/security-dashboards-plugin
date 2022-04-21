@@ -2,6 +2,10 @@ name: Integration Tests
 
 on: [push, pull_request]
 
+env:
+  TEST_BROWSER_HEADLESS: 1
+  CI: 1
+
 jobs:
   tests:
     name: Run integration tests
@@ -9,12 +13,12 @@ jobs:
     steps:
       - name: Download OpenSearch Core
         run: |
-          wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/2.0.0-alpha1/latest/linux/x64/builds/opensearch/dist/opensearch-min-2.0.0-alpha1-linux-x64.tar.gz
+          wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/2.0.0-rc1/latest/linux/x64/tar/builds/opensearch/dist/opensearch-min-2.0.0-rc1-linux-x64.tar.gz
           tar -xzf opensearch-*.tar.gz
           rm -f opensearch-*.tar.gz
           
       - name: Download OpenSearch Security Plugin
-        run: wget -O opensearch-security.zip https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/2.0.0-alpha1/latest/linux/x64/builds/opensearch/plugins/opensearch-security-2.0.0.0-alpha1.zip
+        run: wget -O opensearch-security.zip https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/2.0.0-rc1/latest/linux/x64/tar/builds/opensearch/plugins/opensearch-security-2.0.0.0-rc1.zip
         
 
       - name: Run OpenSearch with plugin

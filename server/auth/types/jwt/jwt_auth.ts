@@ -57,7 +57,7 @@ export class JwtAuthentication extends AuthenticationType {
   private getTokenFromUrlParam(request: OpenSearchDashboardsRequest): string | undefined {
     const urlParamName = this.config.jwt?.url_param;
     if (urlParamName) {
-      const token = (request.url.query as ParsedUrlQuery)[urlParamName];
+      const token = request.url.searchParams.get('urlParamName');
       return (token as string) || undefined;
     }
     return undefined;
@@ -81,7 +81,7 @@ export class JwtAuthentication extends AuthenticationType {
     }
 
     const urlParamName = this.config.jwt?.url_param;
-    if (urlParamName && (request.url.query as ParsedUrlQuery)[urlParamName]) {
+    if (urlParamName && request.url.searchParams.get('urlParamName')) {
       return true;
     }
 

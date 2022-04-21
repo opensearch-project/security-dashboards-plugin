@@ -42,13 +42,16 @@ export function resolveTenant(
   cookie: SecuritySessionCookie
 ): string | undefined {
   let selectedTenant: string | undefined;
-  const query: any = request.url.query as any;
-  if (query && (query.security_tenant || query.securitytenant)) {
-    selectedTenant = query.security_tenant ? query.security_tenant : query.securitytenant;
-  } else if (request.headers.securitytenant || request.headers.security_tenant) {
+  const securityTenant_ = request?.url?.searchParams?.get('securityTenant_');
+  const securitytenant = request?.url?.searchParams?.get('securitytenant');
+  if (securityTenant_) {
+    selectedTenant = securityTenant_;
+  } else if (securitytenant) {
+    selectedTenant = securitytenant;
+  } else if (request.headers.securitytenant || request.headers.securityTenant_) {
     selectedTenant = request.headers.securitytenant
       ? (request.headers.securitytenant as string)
-      : (request.headers.security_tenant as string);
+      : (request.headers.securityTenant_ as string);
   } else if (isValidTenant(cookie.tenant)) {
     selectedTenant = cookie.tenant;
   } else {
