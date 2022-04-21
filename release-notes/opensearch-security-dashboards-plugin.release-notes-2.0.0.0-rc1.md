@@ -8,6 +8,7 @@
 
 ### Bug fixes
 * Fix broken `nextUrl=` parameter logic ([#940](https://github.com/opensearch-project/security-dashboards-plugin/pull/940))
+* Fix 'openserach' typo in constants.tsx ([#953](https://github.com/opensearch-project/security-dashboards-plugin/pull/953))
 
 ### Maintenance
 * Revert "Enforce authentication on api/status route by default (#943)" ([#950](https://github.com/opensearch-project/security-dashboards-plugin/pull/950))
