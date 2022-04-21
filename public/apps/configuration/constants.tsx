@@ -96,7 +96,7 @@ export const CLUSTER_PERMISSIONS: string[] = [
   'cluster:admin/opensearch/ml/models/get',
   'cluster:admin/opensearch/ml/models/search',
   'cluster:admin/opensearch/ml/predict',
-  'cluster:admin/openserach/ml/stats/nodes',
+  'cluster:admin/opensearch/ml/stats/nodes',
   'cluster:admin/opensearch/ml/tasks/delete',
   'cluster:admin/opensearch/ml/tasks/get',
   'cluster:admin/opensearch/ml/tasks/search',
