@@ -5,6 +5,9 @@ on: [push, pull_request]
 env:
   TEST_BROWSER_HEADLESS: 1
   CI: 1
+  OPENSEARCH_DASHBOARDS_VERSION: 2.0
+  OPENSEARCH_CORE_VERSION: 2.0
+  OPENSEARCH_CORE_VERSION_QUALIFIER: ${{ OPENSEARCH_CORE_VERSION }}.0
 
 jobs:
   tests:
@@ -13,12 +16,14 @@ jobs:
     steps:
       - name: Download OpenSearch Core
         run: |
-          wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/2.0.0-rc1/latest/linux/x64/tar/builds/opensearch/dist/opensearch-min-2.0.0-rc1-linux-x64.tar.gz
+          wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/$OPENSEARCH_CORE_VERSION_QUALIFIER/latest/linux/x64/tar/builds/opensearch/dist/opensearch-min-$OPENSEARCH_CORE_VERSION_QUALIFIER-linux-x64.tar.gz
           tar -xzf opensearch-*.tar.gz
           rm -f opensearch-*.tar.gz
           
       - name: Download OpenSearch Security Plugin
-        run: wget -O opensearch-security.zip https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/2.0.0-rc1/latest/linux/x64/tar/builds/opensearch/plugins/opensearch-security-2.0.0.0-rc1.zip
+        run: |
+          OPENSEARCH_SECURITY_VERSION_QUALIFIER='${{ env.OPENSEARCH_CORE_VERSION }}.0.0'
+          wget -O opensearch-security.zip https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/$OPENSEARCH_CORE_VERSION_QUALIFIER/latest/linux/x64/tar/builds/opensearch/plugins/opensearch-security-$OPENSEARCH_SECURITY_VERSION_QUALIFIER.zip
         
 
       - name: Run OpenSearch with plugin
@@ -61,7 +66,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: OpenSearch-Dashboards/plugins/security-dashboards-plugin
-          ref: ${{ github.ref }}
+          ref: ${{ env.OPENSEARCH_DASHBOARDS_VERSION }}
 
       - name: Check OpenSearch Running
         continue-on-error: true
