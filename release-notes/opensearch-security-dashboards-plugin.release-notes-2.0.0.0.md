@@ -1,5 +1,7 @@
 ## 2022-05-24 Version 2.0.0.0
 
+Compatible with Opensearch-Dashboards 2.0.0
+
 ### Enhancements
 * Change 2.0-alpha1 to 2.0-rc1. ([#946](https://github.com/opensearch-project/security-dashboards-plugin/pull/946))
 * Make Git ignore .idea/ folder ([#944](https://github.com/opensearch-project/security-dashboards-plugin/pull/944))
