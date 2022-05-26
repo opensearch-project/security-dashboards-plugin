@@ -58,13 +58,13 @@ export class SamlAuthentication extends AuthenticationType {
     return escape(path);
   }
 
-  private redirectToLoginUri(request: OpenSearchDashboardsRequest, toolkit: AuthToolkit) {
+  private redirectSAMlCapture = (request: OpenSearchDashboardsRequest, toolkit: AuthToolkit) => {
     const nextUrl = this.generateNextUrl(request);
     const clearOldVersionCookie = clearOldVersionCookieValue(this.config);
     return toolkit.redirected({
-      location: `${this.coreSetup.http.basePath.serverBasePath}/auth/saml/login?nextUrl=${nextUrl}`,
+      location: `${this.coreSetup.http.basePath.serverBasePath}/auth/saml/captureUrlFragment?nextUrl=${nextUrl}`,
       'set-cookie': clearOldVersionCookie,
-    });
+    })
   }
 
   private setupRoutes(): void {
@@ -112,7 +112,7 @@ export class SamlAuthentication extends AuthenticationType {
     toolkit: AuthToolkit
   ): IOpenSearchDashboardsResponse | AuthResult {
     if (this.isPageRequest(request)) {
-      return this.redirectToLoginUri(request, toolkit);
+      return this.redirectSAMlCapture(request, toolkit);
     } else {
       return response.unauthorized();
     }
