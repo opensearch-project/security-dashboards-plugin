@@ -31,6 +31,8 @@ export async function fetchAccountInfoSafe(http: HttpStart): Promise<AccountInfo
 export async function logout(http: HttpStart, logoutUrl?: string): Promise<void> {
   await httpPost(http, API_AUTH_LOGOUT);
   setShouldShowTenantPopup(null);
+  // Clear everything in the sessionStorage since they can contain sensitive information
+  sessionStorage.clear();
   // When no basepath is set, we can take '/' as the basepath.
   const basePath = http.basePath.serverBasePath ? http.basePath.serverBasePath : '/';
   const nextUrl = encodeURIComponent(basePath);
