@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { composeLogoutUrl } from './helper';
+import { composeLogoutUrl, getRootUrl } from './helper';
 
 describe('test OIDC helper utility', () => {
   test('test compose logout url', () => {
@@ -54,5 +54,87 @@ describe('test OIDC helper utility', () => {
     expect('https://idp.com/path?a=b&key=value').toEqual(
       composeLogoutUrl(customLogoutUrl, idpEndSessionUrl, additionalQuery)
     );
+  });
+
+  test('test root url when trusted header unset', () => {
+    const config = {
+      openid: {
+        trust_dynamic_headers: false,
+      },
+    };
+
+    const core = {
+      http: {
+        getServerInfo: () => {
+          return {
+            hostname: 'server.com',
+            port: 80,
+            protocol: 'http',
+          };
+        },
+      },
+    };
+
+    const request = {
+      headers: {
+        'x-forwarded-host': 'dashboards.com:443',
+        'x-forwarded-proto': 'https',
+      },
+    };
+
+    expect('http://server.com:80').toEqual(getRootUrl(config, core, request));
+  });
+
+  test('test root url when trusted header set', () => {
+    const config = {
+      openid: {
+        trust_dynamic_headers: true,
+      },
+    };
+
+    const core = {
+      http: {
+        getServerInfo: () => {
+          return {
+            hostname: 'server.com',
+            port: 80,
+            protocol: 'http',
+          };
+        },
+      },
+    };
+
+    const request = {
+      headers: {
+        'x-forwarded-host': 'dashboards.com:443',
+        'x-forwarded-proto': 'https',
+      },
+    };
+
+    expect('https://dashboards.com:443').toEqual(getRootUrl(config, core, request));
+  });
+
+  test('test root url when trusted header set and no HTTP header', () => {
+    const config = {
+      openid: {
+        trust_dynamic_headers: true,
+      },
+    };
+
+    const core = {
+      http: {
+        getServerInfo: () => {
+          return {
+            hostname: 'server.com',
+            port: 80,
+            protocol: 'http',
+          };
+        },
+      },
+    };
+
+    const request = { headers: {} };
+
+    expect('http://server.com:80').toEqual(getRootUrl(config, core, request));
   });
 });
