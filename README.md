@@ -1,12 +1,13 @@
-[![Unit tests](https://github.com/opensearch-project/security-dashboards-plugin/workflows/Unit%20Tests/badge.svg?branch=main)](https://github.com/opensearch-project/security-dashboards-plugin/actions)
-[![Integration tests](https://github.com/opensearch-project/security-dashboards-plugin/workflows/Integration%20Tests/badge.svg?branch=main)](https://github.com/opensearch-project/security-dashboards-plugin/actions)
-[![codecov](https://codecov.io/gh/opensearch-project/security-dashboards-plugin/branch/main/graphs/badge.svg)](https://github.com/opensearch-project/security-dashboards-plugin)
+[![Unit tests](https://github.com/opensearch-project/security-dashboards-plugin/workflows/Unit%20Tests/badge.svg?branch=main)](https://github.com/opensearch-project/security-dashboards-plugin/actions)[![Integration tests](https://github.com/opensearch-project/security-dashboards-plugin/workflows/Integration%20Tests/badge.svg?branch=main)](https://github.com/opensearch-project/security-dashboards-plugin/actions)[![codecov](https://codecov.io/gh/opensearch-project/security-dashboards-plugin/branch/main/graphs/badge.svg)](https://github.com/opensearch-project/security-dashboards-plugin)
 
 <img src="https://opensearch.org/assets/brand/SVG/Logo/opensearch_logo_default.svg" height="64px"/>
 
-- [OpenSearch-Dashboards Security Plugin](#opensearch-dashboards-security-plugin)
-- [Basic features](#basic-features)
-- [Documentation](#documentation)
+# OpenSearch Dashboards Security Plugin
+
+This plugin for OpenSearch Dashboards adds a configuration management UI for the OpenSearch Security features, as well as authentication, session management and multi-tenancy support to your secured cluster.
+
+- [Features](#features)
+- [Installation](#installation)
 - [Contributing](#contributing)
 - [Getting Help](#getting-help)
 - [Code of Conduct](#code-of-conduct)
@@ -14,32 +15,27 @@
 - [License](#license)
 - [Copyright](#copyright)
 
+## Features
 
-# OpenSearch-Dashboards Security Plugin
-
-This plugin for OpenSearch-Dashboards adds a configuration management UI for the OpenSearch Security features, as well as authentication, session management and multi-tenancy support to your secured cluster.
-
-## Basic features
-
-* OpenSearch-Dashboards authentication for OpenSearch
-* OpenSearch-Dashboards session management
+* OpenSearch Dashboards authentication for OpenSearch
+* OpenSearch Dashboards session management
 * OpenSearch Security configuration UI
-* Multi-tenancy support for OpenSearch-Dashboards
+* Multi-tenancy support for OpenSearch Dashboards
 * OpenSearch audit logging configuration UI
 
-## Documentation
+## Installation
 
-Please refer to the [technical documentation](https://docs-beta.opensearch.org/) for detailed information on installing and configuring opensearch plugin.
+The OpenSearch Dashboards Security Plugin comes bundled by default as part of the OpenSearch Dashboards distribution. Please refer to the [installation guide](https://opensearch.org/docs/latest/dashboards/install/index/) and  [technical documentation](https://opensearch.org/docs/latest/security-plugin/index/) for detailed information on installing and configuring the OpenSearch Security Plugin.
 
 ## Contributing
 
-See [developer guide](DEVELOPER_GUIDE.md) and [how to contribute to this project](CONTRIBUTING.md). 
+See [developer guide](DEVELOPER_GUIDE.md) and [how to contribute to this project](CONTRIBUTING.md).
 
 ## Getting Help
 
 If you find a bug, or have a feature request, please don't hesitate to open an issue in this repository.
 
-For more information, see [project website](https://opensearch.org/) and [documentation](https://docs-beta.opensearch.org/). If you need help and are unsure where to open an issue, try [forums](https://discuss.opendistrocommunity.dev/).
+For more information, see [project website](https://opensearch.org/) and [documentation](https://opensearch.org/docs/latest). If you need help and are unsure where to open an issue, try [forums](https://discuss.opendistrocommunity.dev/).
 
 ## Code of Conduct
 

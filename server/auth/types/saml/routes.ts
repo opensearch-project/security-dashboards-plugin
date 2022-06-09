@@ -14,21 +14,18 @@
  */
 
 import { schema } from '@osd/config-schema';
-import {
-  IRouter,
-  SessionStorageFactory,
-  OpenSearchDashboardsRequest,
-} from '../../../../../../src/core/server';
+import { IRouter, SessionStorageFactory } from '../../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
+import { API_AUTH_LOGOUT } from '../../../../common';
 import { CoreSetup } from '../../../../../../src/core/server';
 import { validateNextUrl } from '../../../utils/next_url';
+import { AuthType } from '../../../../common/index';
 
 export class SamlAuthRoutes {
   constructor(
     private readonly router: IRouter,
-    // @ts-ignore: unused variable
     private readonly config: SecurityPluginConfigType,
     private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
     private readonly securityClient: SecurityClient,
@@ -38,7 +35,7 @@ export class SamlAuthRoutes {
   public setupRoutes() {
     this.router.get(
       {
-        path: `/auth/saml/login`,
+        path: '/auth/saml/login',
         validate: {
           query: schema.object({
             nextUrl: schema.maybe(
@@ -84,7 +81,7 @@ export class SamlAuthRoutes {
 
     this.router.post(
       {
-        path: `/_opendistro/_security/saml/acs`,
+        path: '/_plugins/_security/saml/acs',
         validate: {
           body: schema.any(),
         },
@@ -130,9 +127,7 @@ export class SamlAuthRoutes {
           if (!payloadEncoded) {
             context.security_plugin.logger.error('JWT token payload not found');
           }
-          const tokenPayload = JSON.parse(
-            Buffer.from(payloadEncoded, 'base64').toString().replace('\\', '\\\\')
-          );
+          const tokenPayload = JSON.parse(Buffer.from(payloadEncoded, 'base64').toString());
           if (tokenPayload.exp) {
             expiryTime = parseInt(tokenPayload.exp, 10) * 1000;
           }
@@ -141,7 +136,7 @@ export class SamlAuthRoutes {
             credentials: {
               authHeaderValue: credentials.authorization,
             },
-            authType: 'saml', // TODO: create constant
+            authType: AuthType.SAML,
             expiryTime,
           };
           this.sessionStorageFactory.asScoped(request).set(cookie);
@@ -162,7 +157,7 @@ export class SamlAuthRoutes {
 
     this.router.post(
       {
-        path: `/_opendistro/_security/saml/acs/idpinitiated`,
+        path: '/_plugins/_security/saml/acs/idpinitiated',
         validate: {
           body: schema.any(),
         },
@@ -171,7 +166,7 @@ export class SamlAuthRoutes {
         },
       },
       async (context, request, response) => {
-        const acsEndpoint = `${this.coreSetup.http.basePath.serverBasePath}/_opendistro/_security/saml/acs/idpinitiated`;
+        const acsEndpoint = `${this.coreSetup.http.basePath.serverBasePath}/_plugins/_security/saml/acs/idpinitiated`;
         try {
           const credentials = await this.securityClient.authToken(
             undefined,
@@ -189,9 +184,7 @@ export class SamlAuthRoutes {
           if (!payloadEncoded) {
             context.security_plugin.logger.error('JWT token payload not found');
           }
-          const tokenPayload = JSON.parse(
-            Buffer.from(payloadEncoded, 'base64').toString().replace('\\', '\\\\')
-          );
+          const tokenPayload = JSON.parse(Buffer.from(payloadEncoded, 'base64').toString());
           if (tokenPayload.exp) {
             expiryTime = parseInt(tokenPayload.exp, 10) * 1000;
           }
@@ -201,7 +194,7 @@ export class SamlAuthRoutes {
             credentials: {
               authHeaderValue: credentials.authorization,
             },
-            authType: 'saml', // TODO: create constant
+            authType: AuthType.SAML,
             expiryTime,
           };
           this.sessionStorageFactory.asScoped(request).set(cookie);
@@ -221,7 +214,7 @@ export class SamlAuthRoutes {
 
     this.router.get(
       {
-        path: `/auth/logout`,
+        path: API_AUTH_LOGOUT,
         validate: false,
       },
       async (context, request, response) => {
