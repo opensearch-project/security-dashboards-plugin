@@ -245,6 +245,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
     const selectedTenant = resolveTenant(
       request,
       authInfo.user_name,
+      authInfo.roles,
       authInfo.tenants,
       this.config,
       cookie

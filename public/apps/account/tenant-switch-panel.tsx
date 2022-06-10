@@ -58,6 +58,7 @@ export const CUSTOM_TENANT_RADIO_ID = 'custom';
 export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
   const [tenants, setTenants] = React.useState<string[]>([]);
   const [username, setUsername] = React.useState<string>('');
+  const [roles, setRoles] = React.useState<string[]>([]);
   const [errorCallOut, setErrorCallOut] = React.useState<string>('');
   const [tenantSwitchRadioIdSelected, setTenantSwitchRadioIdSelected] = React.useState<string>();
   const [selectedCustomTenantOption, setSelectedCustomTenantOption] = React.useState<
@@ -81,6 +82,8 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
     const fetchData = async () => {
       try {
         const accountInfo = await fetchAccountInfo(props.coreStart.http);
+        setRoles(accountInfo.data.roles);
+
         const tenantsInfo = accountInfo.data.tenants || {};
         setTenants(keys(tenantsInfo));
 
@@ -118,6 +121,12 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
   const isGlobalEnabled = props.config.multitenancy.tenants.enable_global;
   const isPrivateEnabled = props.config.multitenancy.tenants.enable_private;
 
+  const DEFAULT_READONLY_ROLES = ['kibana_read_only'];
+  const readonly = roles.some(
+    (role) =>
+      props.config.readonly_mode?.roles.includes(role) || DEFAULT_READONLY_ROLES.includes(role)
+  );
+
   const shouldDisableGlobal = !isGlobalEnabled || !tenants.includes(GLOBAL_TENANT_KEY_NAME);
   const getGlobalDisabledInstruction = () => {
     if (!isGlobalEnabled) {
@@ -130,7 +139,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
   };
 
   // The key for private tenant is the user name.
-  const shouldDisablePrivate = !isPrivateEnabled || !tenants.includes(username);
+  const shouldDisablePrivate = !isPrivateEnabled || !tenants.includes(username) || readonly;
   const getPrivateDisabledInstruction = () => {
     if (!isPrivateEnabled) {
       return 'Contact the administrator to enable private tenant.';
@@ -138,6 +147,10 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
 
     if (!tenants.includes(username)) {
       return 'Contact the administrator to get access to private tenant.';
+    }
+
+    if (readonly) {
+      return 'Your account has read-only privileges only, using the private tenant is not possible.';
     }
   };
 
