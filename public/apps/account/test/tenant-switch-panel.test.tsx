@@ -34,6 +34,7 @@ const mockAccountInfo = {
       ['user1']: true,
     },
     user_name: 'user1',
+    roles: ['readall', 'readonly'],
     user_requested_tenant: '',
   },
 };
@@ -104,6 +105,7 @@ describe('Account menu -tenant switch panel', () => {
             ['tenant1']: true,
           },
           user_name: 'user1',
+          roles: ['role1', 'role2'],
           user_requested_tenant: '__user__',
         },
       };
@@ -131,6 +133,7 @@ describe('Account menu -tenant switch panel', () => {
             ['tenant1']: true,
           },
           user_name: 'user1',
+          roles: ['role1', 'role2'],
           user_requested_tenant: 'tenant1',
         },
       };
@@ -239,10 +242,11 @@ describe('Account menu -tenant switch panel', () => {
     beforeEach(() => {
       useState.mockImplementationOnce(() => [keys(mockAccountInfo.data.tenants), setState]);
       useState.mockImplementationOnce(() => [mockAccountInfo.data.user_name, setState]);
-      useState.mockImplementationOnce(() => ['', setState]);
     });
 
     it('should handle tenant confirmation on "confirm" button click when selected tenant is Global tenant', () => {
+      useState.mockImplementationOnce(() => [[], setState]);
+      useState.mockImplementationOnce(() => ['', setState]);
       useState.mockImplementationOnce(() => [GLOBAL_TENANT_RADIO_ID, setState]);
       useState.mockImplementationOnce(() => ['', setState]);
       const component = shallow(
@@ -258,6 +262,8 @@ describe('Account menu -tenant switch panel', () => {
     });
 
     it('should handle tenant confirmation on "confirm" button click when selected tenant is Private tenant', () => {
+      useState.mockImplementationOnce(() => [[], setState]);
+      useState.mockImplementationOnce(() => ['', setState]);
       useState.mockImplementationOnce(() => [PRIVATE_TENANT_RADIO_ID, setState]);
       useState.mockImplementationOnce(() => ['', setState]);
       const component = shallow(
@@ -273,6 +279,8 @@ describe('Account menu -tenant switch panel', () => {
     });
 
     it('should handle tenant confirmation on "confirm" button click when selected tenant is Custom tenant', () => {
+      useState.mockImplementationOnce(() => [[], setState]);
+      useState.mockImplementationOnce(() => ['', setState]);
       useState.mockImplementationOnce(() => [CUSTOM_TENANT_RADIO_ID, setState]);
       useState.mockImplementationOnce(() => [[{ label: 'tenant1' }], setState]);
       const component = shallow(
@@ -288,6 +296,8 @@ describe('Account menu -tenant switch panel', () => {
     });
 
     it('should set error call out when error occurred while changing the tenant', (done) => {
+      useState.mockImplementationOnce(() => [[], setState]);
+      useState.mockImplementationOnce(() => ['', setState]);
       useState.mockImplementationOnce(() => [GLOBAL_TENANT_RADIO_ID, setState]);
       useState.mockImplementationOnce(() => ['', setState]);
       (selectTenant as jest.Mock).mockImplementationOnce(() => {
@@ -347,6 +357,64 @@ describe('Account menu -tenant switch panel', () => {
           enabled: true,
           tenants: {
             enable_private: false,
+            enable_global: true,
+          },
+        },
+      };
+      const component = shallow(
+        <TenantSwitchPanel
+          coreStart={mockCoreStart as any}
+          handleClose={handleClose}
+          handleSwitchAndClose={handleSwitchAndClose}
+          config={config as any}
+        />
+      );
+      process.nextTick(() => {
+        expect(component).toMatchSnapshot();
+        done();
+      });
+    });
+
+    it('renders when user has read only role', (done) => {
+      useState.mockImplementationOnce(() => [['readonly'], setState]);
+      useState.mockImplementationOnce(() => ['', setState]);
+      const config = {
+        readonly_mode: {
+          roles: ['readonly'],
+        },
+        multitenancy: {
+          enabled: true,
+          tenants: {
+            enable_private: true,
+            enable_global: true,
+          },
+        },
+      };
+      const component = shallow(
+        <TenantSwitchPanel
+          coreStart={mockCoreStart as any}
+          handleClose={handleClose}
+          handleSwitchAndClose={handleSwitchAndClose}
+          config={config as any}
+        />
+      );
+      process.nextTick(() => {
+        expect(component).toMatchSnapshot();
+        done();
+      });
+    });
+
+    it('renders when user has default read only role', (done) => {
+      useState.mockImplementationOnce(() => [['kibana_read_only'], setState]);
+      useState.mockImplementationOnce(() => ['', setState]);
+      const config = {
+        readonly_mode: {
+          roles: [],
+        },
+        multitenancy: {
+          enabled: true,
+          tenants: {
+            enable_private: true,
             enable_global: true,
           },
         },
