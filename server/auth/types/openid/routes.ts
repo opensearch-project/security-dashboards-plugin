@@ -178,8 +178,11 @@ export class OpenIdAuthRoutes {
           });
         } catch (error) {
           context.security_plugin.logger.error(`OpenId authentication failed: ${error}`);
-          // redirect to login
-          return this.redirectToLogin(request, response);
+          if(error.toString().toLowerCase().includes("authentication exception")){
+            return response.unauthorized();
+          }else{
+            return this.redirectToLogin(request, response);
+          }
         }
       }
     );
