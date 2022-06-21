@@ -178,9 +178,9 @@ export class OpenIdAuthRoutes {
           });
         } catch (error) {
           context.security_plugin.logger.error(`OpenId authentication failed: ${error}`);
-          if(error.toString().toLowerCase().includes("authentication exception")){
+          if (error.toString().toLowerCase().includes('authentication exception')) {
             return response.unauthorized();
-          }else{
+          } else {
             return this.redirectToLogin(request, response);
           }
         }
