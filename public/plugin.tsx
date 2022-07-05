@@ -15,6 +15,14 @@
 
 import { BehaviorSubject } from 'rxjs';
 import {
+  SavedObjectsManagementColumn,
+  SavedObjectsManagementRecord,
+} from 'src/plugins/saved_objects_management/public';
+import { EuiTableFieldDataColumnType } from '@elastic/eui';
+import { string } from 'joi';
+import React from 'react';
+import { i18n } from '@osd/i18n';
+import {
   AppMountParameters,
   AppStatus,
   AppUpdater,
@@ -37,10 +45,11 @@ import {
   excludeFromDisabledTransportCategories,
 } from './apps/configuration/panels/audit-logging/constants';
 import {
-  AppPluginStartDependencies,
+  SecurityPluginStartDependencies,
   ClientConfigType,
   SecurityPluginSetup,
   SecurityPluginStart,
+  SecurityPluginSetupDependencies,
 } from './types';
 import { addTenantToShareURL } from './services/shared-link';
 import { interceptError } from './utils/logout-utils';
@@ -63,11 +72,21 @@ const APP_ID_DASHBOARDS = 'dashboards';
 const APP_ID_OPENSEARCH_DASHBOARDS = 'kibana';
 const APP_LIST_FOR_READONLY_ROLE = [APP_ID_HOME, APP_ID_DASHBOARDS, APP_ID_OPENSEARCH_DASHBOARDS];
 
-export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPluginStart> {
+export class SecurityPlugin
+  implements
+    Plugin<
+      SecurityPluginSetup,
+      SecurityPluginStart,
+      SecurityPluginSetupDependencies,
+      SecurityPluginStartDependencies
+    > {
   // @ts-ignore : initializerContext not used
   constructor(private readonly initializerContext: PluginInitializerContext) {}
 
-  public async setup(core: CoreSetup): Promise<SecurityPluginSetup> {
+  public async setup(
+    core: CoreSetup,
+    deps: SecurityPluginSetupDependencies
+  ): Promise<SecurityPluginSetup> {
     const apiPermission = await hasApiPermission(core);
 
     const config = this.initializerContext.config.get<ClientConfigType>();
@@ -93,7 +112,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
           excludeFromDisabledTransportCategories(config.disabledTransportCategories.exclude);
           excludeFromDisabledRestCategories(config.disabledRestCategories.exclude);
 
-          return renderApp(coreStart, depsStart as AppPluginStartDependencies, params, config);
+          return renderApp(coreStart, depsStart as SecurityPluginStartDependencies, params, config);
         },
         category: {
           id: 'opensearch',
@@ -138,11 +157,35 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
       })
     );
 
+    if (config.multitenancy.enable_aggregation_view) {
+      deps.savedObjectsManagement.columns.register(({
+        id: 'tenant_column',
+        euiColumn: {
+          field: 'namespaces',
+          name: <div>Tenant</div>,
+          dataType: 'string',
+          render: (value: any[][]) => {
+            let text = value[0][0];
+            if (text === null || text === '') {
+              text = 'Global';
+            } else if (text.startsWith('__user__')) {
+              text = 'Private';
+            }
+            text = i18n.translate('savedObjectsManagement.objectsTable.table.columnTenantName', {
+              defaultMessage: text,
+            });
+            return <div>{text}</div>;
+          },
+        },
+        loadData: () => {},
+      } as unknown) as SavedObjectsManagementColumn<string>);
+    }
+
     // Return methods that should be available to other plugins
     return {};
   }
 
-  public start(core: CoreStart): SecurityPluginStart {
+  public start(core: CoreStart, deps: SecurityPluginStartDependencies): SecurityPluginStart {
     const config = this.initializerContext.config.get<ClientConfigType>();
 
     setupTopNavButton(core, config);
@@ -157,6 +200,11 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     if (config.multitenancy.enabled) {
       addTenantToShareURL(core);
     }
+
+    if (config.multitenancy.enable_aggregation_view) {
+      const columns = deps.savedObjectsManagement.columns.getAll();
+    }
+
     return {};
   }
 
