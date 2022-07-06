@@ -30,10 +30,10 @@ describe('Account navigation button', () => {
 
   const config = {
     multitenancy: {
-      enabled: 'true',
+      enabled: true,
       tenants: {
-        enable_private: 'true',
-        enable_global: 'true',
+        enable_private: true,
+        enable_global: true,
       },
     },
     auth: {
@@ -100,5 +100,45 @@ describe('Account navigation button', () => {
   it('should set isPopoverOpen to true when click on Avatar in header section', () => {
     component.find('[data-test-subj="account-popover"]').simulate('click');
     expect(setState).toBeCalledTimes(1);
+  });
+});
+
+describe('Account navigation button, multitenancy disabled', () => {
+  const mockCoreStart = {
+    http: 1,
+  };
+
+  const config = {
+    multitenancy: {
+      enabled: false,
+    },
+    auth: {
+      type: 'dummy',
+    },
+  };
+
+  const userName = 'user1';
+  const setState = jest.fn();
+  const useStateSpy = jest.spyOn(React, 'useState');
+
+  beforeEach(() => {
+    useStateSpy.mockImplementation((init) => [init, setState]);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should not set modal when show popup is true', () => {
+    (getShouldShowTenantPopup as jest.Mock).mockReturnValueOnce(true);
+    shallow(
+      <AccountNavButton
+        coreStart={mockCoreStart}
+        isInternalUser={true}
+        username={userName}
+        config={config as any}
+      />
+    );
+    expect(setState).toBeCalledTimes(0);
   });
 });
