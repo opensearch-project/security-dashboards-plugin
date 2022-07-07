@@ -35,7 +35,6 @@ describe('test jwt auth library', () => {
   }
 
   test('test getTokenFromUrlParam', () => {
-
     const config = {
       jwt: {
         header: 'Authorization',
@@ -50,13 +49,11 @@ describe('test jwt auth library', () => {
     };
 
     const expectedToken = 'testtoken';
-    const token = auth.getTokenFromUrlParam(request)
+    const token = auth.getTokenFromUrlParam(request);
     expect(token).toEqual(expectedToken);
-    
   });
 
   test('test getTokenFromUrlParam incorrect url_param', () => {
-
     const config = {
       jwt: {
         header: 'Authorization',
@@ -73,6 +70,5 @@ describe('test jwt auth library', () => {
     const expectedToken = undefined;
     const token = auth.getTokenFromUrlParam(request);
     expect(token).toEqual(expectedToken);
-
   });
 });
