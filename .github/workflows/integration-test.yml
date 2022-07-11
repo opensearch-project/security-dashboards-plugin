@@ -13,12 +13,12 @@ jobs:
     steps:
       - name: Download OpenSearch Core
         run: |
-          wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/2.0.0/latest/linux/x64/tar/builds/opensearch/dist/opensearch-min-2.0.0-linux-x64.tar.gz
+          wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/2.1.0/latest/linux/x64/tar/builds/opensearch/dist/opensearch-min-2.1.0-linux-x64.tar.gz
           tar -xzf opensearch-*.tar.gz
           rm -f opensearch-*.tar.gz
           
       - name: Download OpenSearch Security Plugin
-        run: wget -O opensearch-security.zip https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/2.0.0/latest/linux/x64/tar/builds/opensearch/plugins/opensearch-security-2.0.0.0.zip
+        run: wget -O opensearch-security.zip https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/2.1.0/latest/linux/x64/tar/builds/opensearch/plugins/opensearch-security-2.1.0.0.zip
         
 
       - name: Run OpenSearch with plugin
@@ -49,7 +49,7 @@ jobs:
         with:
           path: OpenSearch-Dashboards
           repository: opensearch-project/OpenSearch-Dashboards
-          ref: '2.0'
+          ref: '2.x'
           fetch-depth: 0
       
       - name: Create plugins dir

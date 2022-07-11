@@ -338,3 +338,231 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
   </EuiModal>
 </EuiOverlayMask>
 `;
+
+exports[`Account menu -tenant switch panel confirm button and renders renders when user has default read only role 1`] = `
+<EuiOverlayMask>
+  <EuiModal
+    data-test-subj="tenant-switch-modal"
+    onClose={[MockFunction]}
+  >
+    <EuiSpacer />
+    <EuiModalBody>
+      <EuiTitle>
+        <h4>
+          Select your tenant
+        </h4>
+      </EuiTitle>
+      <EuiSpacer />
+      <EuiText
+        color="subdued"
+        size="s"
+      >
+        Tenants are useful for safely sharing your work with other OpenSearch Dashboards users. You can switch your tenant anytime by clicking the user avatar on top right.
+      </EuiText>
+      <EuiSpacer />
+      <EuiRadioGroup
+        data-test-subj="tenant-switch-radios"
+        name="tenantSwitchRadios"
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "disabled": false,
+              "id": "global",
+              "label": <React.Fragment>
+                Global
+                <EuiText
+                  size="s"
+                >
+                  The global tenant is shared between every OpenSearch Dashboards user.
+                </EuiText>
+                <EuiSpacer />
+              </React.Fragment>,
+            },
+            Object {
+              "disabled": true,
+              "id": "private",
+              "label": <React.Fragment>
+                Private
+                <EuiText
+                  size="s"
+                >
+                  The private tenant is exclusive to each user and can't be shared. You might use the private tenant for exploratory work.
+                </EuiText>
+                <i>
+                  Your account has read-only privileges only, using the private tenant is not possible.
+                </i>
+                <EuiSpacer />
+              </React.Fragment>,
+            },
+            Object {
+              "disabled": false,
+              "id": "custom",
+              "label": <React.Fragment>
+                Choose from custom
+              </React.Fragment>,
+            },
+          ]
+        }
+      />
+      <EuiComboBox
+        async={false}
+        compressed={false}
+        fullWidth={false}
+        isClearable={true}
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "label": "tenant1",
+            },
+          ]
+        }
+        selectedOptions={Array []}
+        singleSelection={
+          Object {
+            "asPlainText": true,
+          }
+        }
+        sortMatchesBy="none"
+        style={
+          Object {
+            "marginLeft": "24px",
+          }
+        }
+      />
+      <EuiSpacer />
+      <EuiSpacer />
+    </EuiModalBody>
+    <EuiModalFooter>
+      <EuiButtonEmpty
+        onClick={[MockFunction]}
+      >
+        Cancel
+      </EuiButtonEmpty>
+      <EuiButton
+        data-test-subj="confirm"
+        disabled={false}
+        fill={true}
+        onClick={[Function]}
+      >
+        Confirm
+      </EuiButton>
+    </EuiModalFooter>
+  </EuiModal>
+</EuiOverlayMask>
+`;
+
+exports[`Account menu -tenant switch panel confirm button and renders renders when user has read only role 1`] = `
+<EuiOverlayMask>
+  <EuiModal
+    data-test-subj="tenant-switch-modal"
+    onClose={[MockFunction]}
+  >
+    <EuiSpacer />
+    <EuiModalBody>
+      <EuiTitle>
+        <h4>
+          Select your tenant
+        </h4>
+      </EuiTitle>
+      <EuiSpacer />
+      <EuiText
+        color="subdued"
+        size="s"
+      >
+        Tenants are useful for safely sharing your work with other OpenSearch Dashboards users. You can switch your tenant anytime by clicking the user avatar on top right.
+      </EuiText>
+      <EuiSpacer />
+      <EuiRadioGroup
+        data-test-subj="tenant-switch-radios"
+        name="tenantSwitchRadios"
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "disabled": false,
+              "id": "global",
+              "label": <React.Fragment>
+                Global
+                <EuiText
+                  size="s"
+                >
+                  The global tenant is shared between every OpenSearch Dashboards user.
+                </EuiText>
+                <EuiSpacer />
+              </React.Fragment>,
+            },
+            Object {
+              "disabled": true,
+              "id": "private",
+              "label": <React.Fragment>
+                Private
+                <EuiText
+                  size="s"
+                >
+                  The private tenant is exclusive to each user and can't be shared. You might use the private tenant for exploratory work.
+                </EuiText>
+                <i>
+                  Your account has read-only privileges only, using the private tenant is not possible.
+                </i>
+                <EuiSpacer />
+              </React.Fragment>,
+            },
+            Object {
+              "disabled": false,
+              "id": "custom",
+              "label": <React.Fragment>
+                Choose from custom
+              </React.Fragment>,
+            },
+          ]
+        }
+      />
+      <EuiComboBox
+        async={false}
+        compressed={false}
+        fullWidth={false}
+        isClearable={true}
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "label": "tenant1",
+            },
+          ]
+        }
+        selectedOptions={Array []}
+        singleSelection={
+          Object {
+            "asPlainText": true,
+          }
+        }
+        sortMatchesBy="none"
+        style={
+          Object {
+            "marginLeft": "24px",
+          }
+        }
+      />
+      <EuiSpacer />
+      <EuiSpacer />
+    </EuiModalBody>
+    <EuiModalFooter>
+      <EuiButtonEmpty
+        onClick={[MockFunction]}
+      >
+        Cancel
+      </EuiButtonEmpty>
+      <EuiButton
+        data-test-subj="confirm"
+        disabled={false}
+        fill={true}
+        onClick={[Function]}
+      >
+        Confirm
+      </EuiButton>
+    </EuiModalFooter>
+  </EuiModal>
+</EuiOverlayMask>
+`;

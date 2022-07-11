@@ -89,7 +89,11 @@ export class OpenIdAuthRoutes {
           const query: any = {
             client_id: this.config.openid?.client_id,
             response_type: 'code',
-            redirect_uri: `${getBaseRedirectUrl(this.config, this.core)}/auth/openid/login`,
+            redirect_uri: `${getBaseRedirectUrl(
+              this.config,
+              this.core,
+              request
+            )}/auth/openid/login`,
             state: nonce,
             scope: this.openIdAuthConfig.scope,
           };
@@ -133,7 +137,7 @@ export class OpenIdAuthRoutes {
         const query: any = {
           grant_type: 'authorization_code',
           code: request.query.code,
-          redirect_uri: `${getBaseRedirectUrl(this.config, this.core)}/auth/openid/login`,
+          redirect_uri: `${getBaseRedirectUrl(this.config, this.core, request)}/auth/openid/login`,
           client_id: clientId,
           client_secret: clientSecret,
         };
@@ -174,8 +178,11 @@ export class OpenIdAuthRoutes {
           });
         } catch (error) {
           context.security_plugin.logger.error(`OpenId authentication failed: ${error}`);
-          // redirect to login
-          return this.redirectToLogin(request, response);
+          if (error.toString().toLowerCase().includes('authentication exception')) {
+            return response.unauthorized();
+          } else {
+            return this.redirectToLogin(request, response);
+          }
         }
       }
     );
@@ -192,7 +199,7 @@ export class OpenIdAuthRoutes {
         // authHeaderValue is the bearer header, e.g. "Bearer <auth_token>"
         const token = cookie?.credentials.authHeaderValue.split(' ')[1]; // get auth token
         const logoutQueryParams = {
-          post_logout_redirect_uri: getBaseRedirectUrl(this.config, this.core),
+          post_logout_redirect_uri: getBaseRedirectUrl(this.config, this.core, request),
           id_token_hint: token,
         };
 

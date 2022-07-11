@@ -17,6 +17,7 @@ import wreck from '@hapi/wreck';
 import { parse, stringify } from 'querystring';
 import { CoreSetup } from 'opensearch-dashboards/server';
 import { SecurityPluginConfigType } from '../../..';
+import { OpenSearchDashboardsRequest } from '../../../../../../src/core/server';
 
 export function parseTokenResponse(payload: Buffer) {
   const payloadString = payload.toString();
@@ -30,19 +31,45 @@ export function parseTokenResponse(payload: Buffer) {
   return parse(payloadString);
 }
 
-export function getBaseRedirectUrl(config: SecurityPluginConfigType, core: CoreSetup): string {
+export function getRootUrl(
+  config: SecurityPluginConfigType,
+  core: CoreSetup,
+  request: OpenSearchDashboardsRequest
+): string {
+  const host = core.http.getServerInfo().hostname;
+  const port = core.http.getServerInfo().port;
+  let protocol = core.http.getServerInfo().protocol;
+  let httpHost = `${host}:${port}`;
+
+  if (config.openid?.trust_dynamic_headers) {
+    const xForwardedHost = (request.headers['x-forwarded-host'] as string) || undefined;
+    const xForwardedProto = (request.headers['x-forwarded-proto'] as string) || undefined;
+    if (xForwardedHost) {
+      httpHost = xForwardedHost;
+    }
+    if (xForwardedProto) {
+      protocol = xForwardedProto;
+    }
+  }
+
+  return `${protocol}://${httpHost}`;
+}
+
+export function getBaseRedirectUrl(
+  config: SecurityPluginConfigType,
+  core: CoreSetup,
+  request: OpenSearchDashboardsRequest
+): string {
   if (config.openid?.base_redirect_url) {
     const baseRedirectUrl = config.openid.base_redirect_url;
     return baseRedirectUrl.endsWith('/') ? baseRedirectUrl.slice(0, -1) : baseRedirectUrl;
   }
 
-  const host = core.http.getServerInfo().hostname;
-  const port = core.http.getServerInfo().port;
-  const protocol = core.http.getServerInfo().protocol;
+  const rootUrl = getRootUrl(config, core, request);
   if (core.http.basePath.serverBasePath) {
-    return `${protocol}://${host}:${port}${core.http.basePath.serverBasePath}`;
+    return `${rootUrl}${core.http.basePath.serverBasePath}`;
   }
-  return `${protocol}://${host}:${port}`;
+  return rootUrl;
 }
 
 export async function callTokenEndpoint(
