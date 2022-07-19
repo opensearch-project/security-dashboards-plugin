@@ -55,6 +55,7 @@ plugins.security.allow_default_init_securityindex: true
 plugins.security.authcz.admin_dn:
 - CN=kirk,OU=client,O=client,L=test, C=de
 
+plugins.security.unsupported.restapi.allow_securityconfig_modification: true
 plugins.security.audit.type: internal_opensearch
 plugins.security.enable_snapshot_restore_privilege: true
 plugins.security.check_snapshot_restore_write_privileges: true
