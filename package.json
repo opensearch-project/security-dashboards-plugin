@@ -17,6 +17,7 @@
     "lint:es": "node ../../scripts/eslint",
     "lint:style": "node ../../scripts/stylelint",
     "lint": "yarn run lint:es && yarn run lint:style",
+    "pretest:jest_server": "node ./test/jest_integration/runIdpServer.js &",
     "test:jest_server": "node ./test/run_jest_tests.js --config ./test/jest.config.server.js",
     "test:jest_ui": "node ./test/run_jest_tests.js --config ./test/jest.config.ui.js"
   },
@@ -25,7 +26,9 @@
     "typescript": "4.0.2",
     "gulp-rename": "2.0.0",
     "@testing-library/react-hooks": "^7.0.2",
-    "@types/hapi__wreck": "^15.0.1"
+    "@types/hapi__wreck": "^15.0.1",
+    "selenium-webdriver": "^4.3.0",
+    "saml-idp": "^1.2.1"
   },
   "dependencies": {
     "@hapi/wreck": "^17.1.0",

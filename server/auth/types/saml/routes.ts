@@ -83,7 +83,8 @@ export class SamlAuthRoutes {
 
     this.router.post(
       {
-        path: '/_plugins/_security/saml/acs',
+        // need to change to /_opendistro to execute the tests.
+        path: '/_opendistro/_security/saml/acs',
         validate: {
           body: schema.any(),
         },
@@ -145,11 +146,14 @@ export class SamlAuthRoutes {
           };
           this.sessionStorageFactory.asScoped(request).set(cookie);
           if (redirectHash) {
-           return response.redirected({
-             headers: {
-               location: `${this.coreSetup.http.basePath.serverBasePath}/auth/saml/redirectUrlFragment?nextUrl=${escape(nextUrl)}`,
-             }
-           })
+            console.log('The server base path is : ' + this.coreSetup.http.basePath.serverBasePath);
+            return response.redirected({
+              headers: {
+                location: `${
+                  this.coreSetup.http.basePath.serverBasePath
+                }/auth/saml/redirectUrlFragment?nextUrl=${escape(nextUrl)}`,
+              },
+            });
           } else {
             return response.redirected({
               headers: {
@@ -328,8 +332,6 @@ export class SamlAuthRoutes {
         });
       }
     );
-
-
 
     this.router.get(
       {

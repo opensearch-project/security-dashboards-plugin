@@ -54,18 +54,19 @@ export class SamlAuthentication extends AuthenticationType {
   private generateNextUrl(request: OpenSearchDashboardsRequest): string {
     const path =
       this.coreSetup.http.basePath.serverBasePath +
-      (request.url.path || '/app/opensearch-dashboards');
+      (request.url.pathname || '/app/opensearch-dashboards');
     return escape(path);
   }
 
+  // Check if we can get the previous tenant information from the expired cookie.
   private redirectSAMlCapture = (request: OpenSearchDashboardsRequest, toolkit: AuthToolkit) => {
     const nextUrl = this.generateNextUrl(request);
     const clearOldVersionCookie = clearOldVersionCookieValue(this.config);
     return toolkit.redirected({
       location: `${this.coreSetup.http.basePath.serverBasePath}/auth/saml/captureUrlFragment?nextUrl=${nextUrl}`,
       'set-cookie': clearOldVersionCookie,
-    })
-  }
+    });
+  };
 
   private setupRoutes(): void {
     const samlAuthRoutes = new SamlAuthRoutes(
@@ -97,6 +98,7 @@ export class SamlAuthentication extends AuthenticationType {
     };
   }
 
+  // Can be improved to check if the token is expiring.
   async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean> {
     return (
       cookie.authType === this.type &&
