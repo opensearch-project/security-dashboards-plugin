@@ -14,18 +14,21 @@
  */
 
 import { schema } from '@osd/config-schema';
-import { IRouter, SessionStorageFactory } from '../../../../../../src/core/server';
+import {
+  IRouter,
+  SessionStorageFactory,
+  OpenSearchDashboardsRequest,
+} from '../../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
-import { API_AUTH_LOGOUT } from '../../../../common';
 import { CoreSetup } from '../../../../../../src/core/server';
 import { validateNextUrl } from '../../../utils/next_url';
-import { AuthType } from '../../../../common/index';
 
 export class SamlAuthRoutes {
   constructor(
     private readonly router: IRouter,
+    // @ts-ignore: unused variable
     private readonly config: SecurityPluginConfigType,
     private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
     private readonly securityClient: SecurityClient,
@@ -35,7 +38,7 @@ export class SamlAuthRoutes {
   public setupRoutes() {
     this.router.get(
       {
-        path: '/auth/saml/login',
+        path: `/auth/saml/login`,
         validate: {
           query: schema.object({
             nextUrl: schema.maybe(
@@ -81,7 +84,7 @@ export class SamlAuthRoutes {
 
     this.router.post(
       {
-        path: '/_plugins/_security/saml/acs',
+        path: `/_opendistro/_security/saml/acs`,
         validate: {
           body: schema.any(),
         },
@@ -136,7 +139,7 @@ export class SamlAuthRoutes {
             credentials: {
               authHeaderValue: credentials.authorization,
             },
-            authType: AuthType.SAML,
+            authType: 'saml', // TODO: create constant
             expiryTime,
           };
           this.sessionStorageFactory.asScoped(request).set(cookie);
@@ -157,7 +160,7 @@ export class SamlAuthRoutes {
 
     this.router.post(
       {
-        path: '/_plugins/_security/saml/acs/idpinitiated',
+        path: `/_opendistro/_security/saml/acs/idpinitiated`,
         validate: {
           body: schema.any(),
         },
@@ -166,7 +169,7 @@ export class SamlAuthRoutes {
         },
       },
       async (context, request, response) => {
-        const acsEndpoint = `${this.coreSetup.http.basePath.serverBasePath}/_plugins/_security/saml/acs/idpinitiated`;
+        const acsEndpoint = `${this.coreSetup.http.basePath.serverBasePath}/_opendistro/_security/saml/acs/idpinitiated`;
         try {
           const credentials = await this.securityClient.authToken(
             undefined,
@@ -194,7 +197,7 @@ export class SamlAuthRoutes {
             credentials: {
               authHeaderValue: credentials.authorization,
             },
-            authType: AuthType.SAML,
+            authType: 'saml', // TODO: create constant
             expiryTime,
           };
           this.sessionStorageFactory.asScoped(request).set(cookie);
@@ -214,7 +217,7 @@ export class SamlAuthRoutes {
 
     this.router.get(
       {
-        path: API_AUTH_LOGOUT,
+        path: `/auth/logout`,
         validate: false,
       },
       async (context, request, response) => {
