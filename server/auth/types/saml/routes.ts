@@ -43,6 +43,7 @@ export class SamlAuthRoutes {
                 validate: validateNextUrl,
               })
             ),
+            redirectHash: schema.string(),
           }),
         },
         options: {
@@ -64,6 +65,7 @@ export class SamlAuthRoutes {
             saml: {
               nextUrl: request.query.nextUrl,
               requestId: samlHeader.requestId,
+              redirectHash: request.query.redirectHash === 'true',
             },
           };
           this.sessionStorageFactory.asScoped(request).set(cookie);
@@ -92,6 +94,7 @@ export class SamlAuthRoutes {
       async (context, request, response) => {
         let requestId: string = '';
         let nextUrl: string = '/';
+        let redirectHash: boolean = false;
         try {
           const cookie = await this.sessionStorageFactory.asScoped(request).get();
           if (cookie) {
@@ -99,6 +102,7 @@ export class SamlAuthRoutes {
             nextUrl =
               cookie.saml?.nextUrl ||
               `${this.coreSetup.http.basePath.serverBasePath}/app/opensearch-dashboards`;
+            redirectHash = cookie.saml?.redirectHash || false;
           }
           if (!requestId) {
             return response.badRequest({
@@ -140,11 +144,22 @@ export class SamlAuthRoutes {
             expiryTime,
           };
           this.sessionStorageFactory.asScoped(request).set(cookie);
-          return response.redirected({
-            headers: {
-              location: nextUrl,
-            },
-          });
+          if (redirectHash) {
+            console.log('The server base path is : ' + this.coreSetup.http.basePath.serverBasePath);
+            return response.redirected({
+              headers: {
+                location: `${
+                  this.coreSetup.http.basePath.serverBasePath
+                }/auth/saml/redirectUrlFragment?nextUrl=${escape(nextUrl)}`,
+              },
+            });
+          } else {
+            return response.redirected({
+              headers: {
+                location: nextUrl,
+              },
+            });
+          }
         } catch (error) {
           context.security_plugin.logger.error(
             `SAML SP initiated authentication workflow failed: ${error}`
@@ -209,6 +224,111 @@ export class SamlAuthRoutes {
           );
         }
         return response.internalError();
+      }
+    );
+
+    this.coreSetup.http.resources.register(
+      {
+        path: '/auth/saml/captureUrlFragment',
+        validate: {
+          query: schema.object({
+            nextUrl: schema.maybe(
+              schema.string({
+                validate: validateNextUrl,
+              })
+            ),
+          }),
+        },
+        options: {
+          authRequired: false,
+        },
+      },
+      async (context, request, response) => {
+        this.sessionStorageFactory.asScoped(request).clear();
+        const serverBasePath = this.coreSetup.http.basePath.serverBasePath;
+        return response.renderHtml({
+          body: `
+            <!DOCTYPE html>
+            <title>OSD SAML Capture</title>
+            <link rel="icon" href="data:,">
+            <script src="${serverBasePath}/auth/saml/captureUrlFragment.js"></script>
+          `,
+        });
+      }
+    );
+
+    this.coreSetup.http.resources.register(
+      {
+        path: '/auth/saml/captureUrlFragment.js',
+        validate: false,
+        options: {
+          authRequired: false,
+        },
+      },
+      async (context, request, response) => {
+        this.sessionStorageFactory.asScoped(request).clear();
+        return response.renderJs({
+          body: `let samlHash=window.location.hash.toString();
+                 let redirectHash = false;
+                 if (samlHash !== "") {
+                    window.localStorage.removeItem('samlHash');
+                    window.localStorage.setItem('samlHash', samlHash);
+                     redirectHash = true;
+                  }
+                 let params = new URLSearchParams(window.location.search);
+                 let nextUrl = params.get("nextUrl");
+                 finalUrl = "login?nextUrl=" + encodeURIComponent(nextUrl);
+                 finalUrl += "&redirectHash=" + encodeURIComponent(redirectHash);
+                 window.location.replace(finalUrl);
+
+                `,
+        });
+      }
+    );
+
+    this.coreSetup.http.resources.register(
+      {
+        path: '/auth/saml/redirectUrlFragment',
+        validate: {
+          query: schema.object({
+            nextUrl: schema.any(),
+          }),
+        },
+        options: {
+          authRequired: true,
+        },
+      },
+      async (context, request, response) => {
+        const serverBasePath = this.coreSetup.http.basePath.serverBasePath;
+        return response.renderHtml({
+          body: `
+            <!DOCTYPE html>
+            <title>OSD SAML Success</title>
+            <link rel="icon" href="data:,">
+            <script src="${serverBasePath}/auth/saml/redirectUrlFragment.js"></script>
+          `,
+        });
+      }
+    );
+
+    this.coreSetup.http.resources.register(
+      {
+        path: '/auth/saml/redirectUrlFragment.js',
+        validate: false,
+        options: {
+          authRequired: true,
+        },
+      },
+      async (context, request, response) => {
+        return response.renderJs({
+          body: `let samlHash=window.localStorage.getItem('samlHash');
+                 window.localStorage.removeItem('samlHash');
+                 let params = new URLSearchParams(window.location.search);
+                 let nextUrl = params.get("nextUrl");
+                 finalUrl = nextUrl + samlHash;
+                 window.location.replace(finalUrl);
+                `,
+        });
       }
     );
 
