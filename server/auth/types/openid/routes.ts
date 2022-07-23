@@ -164,7 +164,7 @@ export class OpenIdAuthRoutes {
               expires_at: expirationDate, // expiresIn is in second
             },
             authType: 'openid',
-            expiryTime: expirationDate, // must expire with the token
+            expiryTime: Date.now() + this.config.session.ttl,
           };
           if (this.config.openid?.refresh_tokens && tokenResponse.refreshToken) {
             Object.assign(sessionStorage.credentials, {
