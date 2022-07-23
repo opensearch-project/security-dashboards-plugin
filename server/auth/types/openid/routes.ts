@@ -149,6 +149,7 @@ export class OpenIdAuthRoutes {
             query,
             this.wreckClient
           );
+
           const user = await this.securityClient.authenticateWithHeader(
             request,
             this.openIdAuthConfig.authHeaderName as string,
