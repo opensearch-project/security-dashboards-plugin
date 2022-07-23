@@ -120,3 +120,17 @@ export interface TokenResponse {
   refreshToken?: string;
   expiresIn?: number;
 }
+
+export function getExpirationDate(idToken: string | undefined) {
+  if (!idToken) {
+    throw new Error("Invalid token");
+  }
+  else{
+    const parts = idToken.split(".");
+    if (parts.length!=3) {
+      throw new Error("Invalid token");
+    }
+    const claim = JSON.parse(Buffer.from(parts[1], 'base64').toString());
+    return Date.now() + claim.exp * 1000;
+  }
+}
