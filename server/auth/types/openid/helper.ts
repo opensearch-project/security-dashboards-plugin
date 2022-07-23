@@ -131,6 +131,6 @@ export function getExpirationDate(idToken: string | undefined) {
       throw new Error("Invalid token");
     }
     const claim = JSON.parse(Buffer.from(parts[1], 'base64').toString());
-    return Date.now() + claim.exp * 1000;
+    return claim.exp * 1000;
   }
 }

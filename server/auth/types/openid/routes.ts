@@ -161,7 +161,7 @@ export class OpenIdAuthRoutes {
             username: user.username,
             credentials: {
               authHeaderValue: `Bearer ${tokenResponse.idToken}`,
-              expires_at: expirationDate, // expiresIn is in second
+              expires_at: expirationDate,
             },
             authType: 'openid',
             expiryTime: Date.now() + this.config.session.ttl,
