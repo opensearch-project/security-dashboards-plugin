@@ -156,7 +156,8 @@ export class OpenIdAuthRoutes {
           );
 
           // set to cookie
-          let expirationDate = getExpirationDate(tokenResponse.idToken);
+          let expirationDate = tokenResponse.idToken ? getExpirationDate(tokenResponse.idToken)
+            : Date.now() + tokenResponse.expiresIn! * 1000;
           const sessionStorage: SecuritySessionCookie = {
             username: user.username,
             credentials: {
