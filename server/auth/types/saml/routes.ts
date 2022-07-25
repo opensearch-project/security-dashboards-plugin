@@ -230,6 +230,8 @@ export class SamlAuthRoutes {
       }
     );
 
+    // captureUrlFragment is the first route that will be invoked in the SP initiated login.
+    // This route will execute the captureUrlFragment.js script.
     this.coreSetup.http.resources.register(
       {
         path: '/auth/saml/captureUrlFragment',
@@ -260,6 +262,7 @@ export class SamlAuthRoutes {
       }
     );
 
+    // This script will store the URL Hash in browser's local storage.
     this.coreSetup.http.resources.register(
       {
         path: '/auth/saml/captureUrlFragment.js',
@@ -289,6 +292,9 @@ export class SamlAuthRoutes {
       }
     );
 
+    //  Once the User is authenticated via the '_opendistro/_security/saml/acs' route,
+    //  the browser will be redirected to '/auth/saml/redirectUrlFragment' route,
+    //  which will execute the redirectUrlFragment.js.
     this.coreSetup.http.resources.register(
       {
         path: '/auth/saml/redirectUrlFragment',
@@ -314,6 +320,8 @@ export class SamlAuthRoutes {
       }
     );
 
+    // This script will pop the Hash from local storage if it exists.
+    // And forward the browser to the next url.
     this.coreSetup.http.resources.register(
       {
         path: '/auth/saml/redirectUrlFragment.js',
