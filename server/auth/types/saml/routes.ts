@@ -148,7 +148,6 @@ export class SamlAuthRoutes {
           };
           this.sessionStorageFactory.asScoped(request).set(cookie);
           if (redirectHash) {
-            console.log('The server base path is : ' + this.coreSetup.http.basePath.serverBasePath);
             return response.redirected({
               headers: {
                 location: `${
