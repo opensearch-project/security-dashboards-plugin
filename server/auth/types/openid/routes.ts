@@ -29,7 +29,7 @@ import { OpenIdAuthConfig } from './openid_auth';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
 import { getBaseRedirectUrl, callTokenEndpoint, composeLogoutUrl } from './helper';
 import { validateNextUrl } from '../../../utils/next_url';
-import { getExpirationDate } from "./helper";
+import { getExpirationDate } from './helper';
 
 export class OpenIdAuthRoutes {
   private static readonly NONCE_LENGTH: number = 22;
@@ -156,7 +156,8 @@ export class OpenIdAuthRoutes {
           );
 
           // set to cookie
-          let expirationDate = tokenResponse.idToken ? getExpirationDate(tokenResponse.idToken)
+          let expirationDate = tokenResponse.idToken
+            ? getExpirationDate(tokenResponse.idToken)
             : Date.now() + tokenResponse.expiresIn! * 1000;
           const sessionStorage: SecuritySessionCookie = {
             username: user.username,

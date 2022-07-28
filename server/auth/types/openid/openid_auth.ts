@@ -35,7 +35,7 @@ import { OpenIdAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
 import { callTokenEndpoint } from './helper';
 import { composeNextUrlQueryParam } from '../../../utils/next_url';
-import { getExpirationDate } from "./helper";
+import { getExpirationDate } from './helper';
 
 export interface OpenIdAuthConfig {
   authorizationEndpoint?: string;
