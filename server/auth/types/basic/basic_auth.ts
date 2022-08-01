@@ -70,14 +70,20 @@ export class BasicAuthentication extends AuthenticationType {
     return {};
   }
 
-  getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
+  async getCookie(request: OpenSearchDashboardsRequest, authInfo: any): Promise<SecuritySessionCookie> {
+    const sessionStore = await this.sessionStorageFactory.asScoped(request).get();
+    const reqAuthType = sessionStore?.authType;
+    console.log("basic reqAuthType::");
+    console.log(reqAuthType);
+
     if (
       this.config.auth.anonymous_auth_enabled &&
       authInfo.user_name === 'opendistro_security_anonymous'
     ) {
       return {
         username: authInfo.user_name,
-        authType: this.type,
+        //authType: this.type,
+        authType: reqAuthType,
         expiryTime: Date.now() + this.config.session.ttl,
         isAnonymousAuth: true,
       };
@@ -87,7 +93,8 @@ export class BasicAuthentication extends AuthenticationType {
       credentials: {
         authHeaderValue: request.headers[BasicAuthentication.AUTH_HEADER_NAME],
       },
-      authType: this.type,
+       //authType: this.type,
+      authType: reqAuthType,
       expiryTime: Date.now() + this.config.session.ttl,
     };
   }

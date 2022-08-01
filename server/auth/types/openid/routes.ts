@@ -48,6 +48,8 @@ export class OpenIdAuthRoutes {
     response: OpenSearchDashboardsResponseFactory
   ) {
     this.sessionStorageFactory.asScoped(request).clear();
+    console.log("openid redirectToLogin location::");
+    console.log(`${this.core.http.basePath.serverBasePath}/auth/openid/login`);
     return response.redirected({
       headers: {
         location: `${this.core.http.basePath.serverBasePath}/auth/openid/login`,
@@ -82,7 +84,7 @@ export class OpenIdAuthRoutes {
       },
       async (context, request, response) => {
         // implementation refers to https://github.com/hapijs/bell/blob/master/lib/oauth.js
-
+        console.log("Enter oidc Login Page::");
         // Sign-in initialization
         if (!request.query.code) {
           const nonce = randomString(OpenIdAuthRoutes.NONCE_LENGTH);
@@ -96,12 +98,18 @@ export class OpenIdAuthRoutes {
 
           const queryString = stringify(query);
           const location = `${this.openIdAuthConfig.authorizationEndpoint}?${queryString}`;
+          console.log("openid location:::");
+          console.log(`${this.openIdAuthConfig.authorizationEndpoint}`);
+          console.log(location);
           const cookie: SecuritySessionCookie = {
             oidc: {
               state: nonce,
               nextUrl: request.query.nextUrl || '/',
             },
+            authType: 'openid'
           };
+          console.log("oidc cookie::");
+          console.log(cookie);
           this.sessionStorageFactory.asScoped(request).set(cookie);
           return response.redirected({
             headers: {
@@ -121,7 +129,10 @@ export class OpenIdAuthRoutes {
             !cookie.oidc?.state ||
             cookie.oidc.state !== (request.query as any).state
           ) {
+            console.log("cookie is invalid");
             return this.redirectToLogin(request, response);
+          }else{
+            console.log("Cookie is valid::");
           }
         } catch (error) {
           return this.redirectToLogin(request, response);
@@ -167,6 +178,8 @@ export class OpenIdAuthRoutes {
             });
           }
           this.sessionStorageFactory.asScoped(request).set(sessionStorage);
+          console.log("location nextUrl::");
+          console.log(nextUrl);
           return response.redirected({
             headers: {
               location: nextUrl,
@@ -201,7 +214,8 @@ export class OpenIdAuthRoutes {
           this.openIdAuthConfig.endSessionEndpoint,
           logoutQueryParams
         );
-
+        console.log("endSessionUrl location::");
+        console.log(endSessionUrl);
         return response.redirected({
           headers: {
             location: endSessionUrl,

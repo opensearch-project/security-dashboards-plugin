@@ -24,8 +24,9 @@ import { ClientConfigType } from '../../types';
 export function renderApp(
   coreStart: CoreStart,
   params: AppMountParameters,
-  config: ClientConfigType['ui']['basicauth']['login']
+  config: ClientConfigType['ui']['basicauth']['login'],
+  authType: ClientConfigType['auth']['type']
 ) {
-  ReactDOM.render(<LoginPage http={coreStart.http} config={config} />, params.element);
+  ReactDOM.render(<LoginPage http={coreStart.http} config={config} authType={authType}/>, params.element);
   return () => ReactDOM.unmountComponentAtNode(params.element);
 }

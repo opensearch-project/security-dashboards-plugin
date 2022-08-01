@@ -14,7 +14,7 @@
  */
 
 import { HttpStart } from 'opensearch-dashboards/public';
-import { httpPost } from '../apps/configuration/utils/request-utils';
+import { httpGet, httpPost } from '../apps/configuration/utils/request-utils';
 
 export async function validateCurrentPassword(
   http: HttpStart,
@@ -23,6 +23,13 @@ export async function validateCurrentPassword(
 ): Promise<void> {
   await httpPost(http, '/auth/login', {
     username: userName,
-    password: currentPassword,
+    password: currentPassword
   });
+}
+
+export async function validateExternalAuth(
+  http: HttpStart,
+  authType: string,
+): Promise<void> {
+  await httpGet(http, '/auth/openid/login');
 }

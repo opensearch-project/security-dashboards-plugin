@@ -27,6 +27,9 @@ import { resolveTenant } from '../../../multitenancy/tenant_resolver';
 import { encodeUriQuery } from '../../../../../../src/plugins/opensearch_dashboards_utils/common/url/encode_uri_query';
 
 export class BasicAuthRoutes {
+  static setupRoutes() {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     private readonly router: IRouter,
     private readonly config: SecurityPluginConfigType,
@@ -72,6 +75,7 @@ export class BasicAuthRoutes {
         },
       },
       async (context, request, response) => {
+        console.log("Enter Basic Login Page::");
         const forbiddenUsernames: string[] = this.config.auth.forbidden_usernames;
         if (forbiddenUsernames.indexOf(request.body.username) > -1) {
           context.security_plugin.logger.error(
@@ -131,6 +135,7 @@ export class BasicAuthRoutes {
             roles: user.roles,
             backendroles: user.backendRoles,
             selectedTenants: this.config.multitenancy?.enabled ? sessionStorage.tenant : undefined,
+            sessionCookie: sessionStorage
           },
         });
       }

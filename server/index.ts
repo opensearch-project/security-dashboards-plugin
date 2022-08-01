@@ -59,15 +59,39 @@ export const configSchema = schema.object({
     type: schema.string({
       defaultValue: '',
       validate(value) {
+        /*
         if (
           !['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache'].includes(
             value
           )
         ) {
           return `allowed auth.type are ['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache']`;
-        }
+        }*/
       },
     }),
+/*
+    type: schema.arrayOf({schema.string(), {
+      defaultValue: [],
+      egtAuthType =(values)=>{
+        validate(value) {
+          let authTypes = [];
+          for(let i=0; i<values.length; i++){
+              if (
+                ['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache'].includes(
+                  values[i]
+                )
+              ) {
+                authTypes.push(values[i]);
+              }
+          }
+          if(authTypes.length > 0){
+            return "authTypes";
+          }else{
+            return `allowed auth.type are ['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache']`;
+          }
+        }
+      }
+    }),*/
     anonymous_auth_enabled: schema.boolean({ defaultValue: false }),
     unauthenticated_routes: schema.arrayOf(schema.string(), {
       defaultValue: ['/api/reporting/stats'],
@@ -123,7 +147,8 @@ export const configSchema = schema.object({
       // TODO: test if siblingRef() works here
       // client_id is required when auth.type is openid
       client_id: schema.conditional(
-        schema.siblingRef('auth.type'),
+        //schema.siblingRef('auth.type'),
+        schema.siblingRef('openid'),
         'openid',
         schema.string(),
         schema.maybe(schema.string())

@@ -74,8 +74,11 @@ export abstract class AuthenticationType implements IAuthenticationType {
     this.type = '';
   }
 
+ 
   public authHandler: AuthenticationHandler = async (request, response, toolkit) => {
     // skip auth for APIs that do not require auth
+    //console.log("authenticationType:: request::");
+    //console.log(request);
     if (this.authNotRequired(request)) {
       return toolkit.authenticated();
     }
@@ -90,8 +93,12 @@ export abstract class AuthenticationType implements IAuthenticationType {
     let authInfo: any | undefined;
     // if this is an REST API call, suppose the request includes necessary auth header
     // see https://www.elastic.co/guide/en/opensearch-dashboards/master/using-api.html
+
+    
     if (this.requestIncludesAuthInfo(request)) {
+      // auth header exist in request, try auth header
       try {
+        console.log("Enter validate header::");
         const additonalAuthHeader = this.getAdditionalAuthHeader(request);
         Object.assign(authHeaders, additonalAuthHeader);
         authInfo = await this.securityClient.authinfo(request, additonalAuthHeader);
@@ -113,12 +120,16 @@ export abstract class AuthenticationType implements IAuthenticationType {
       // no auth header in request, try cookie
       try {
         cookie = await this.sessionStorageFactory.asScoped(request).get();
+        console.log("cookie::");
+        console.log(cookie);
       } catch (error) {
-        this.logger.error(`Error parsing cookie: ${error.message}`);
+        //this.logger.error(`Error parsing cookie: ${error.message}`);
         cookie = undefined;
       }
 
       if (!cookie || !(await this.isValidCookie(cookie))) {
+        console.log("before handleunauth::cookie");
+        console.log(cookie);
         // clear cookie
         this.sessionStorageFactory.asScoped(request).clear();
 
@@ -130,7 +141,8 @@ export abstract class AuthenticationType implements IAuthenticationType {
         }
 
         // send to auth workflow
-        return this.handleUnauthedRequest(request, response, toolkit);
+        console.log("Enter handle Unauthented::");
+        return await this.handleUnauthedRequest(request, response, toolkit);
       }
 
       // extend session expiration time
@@ -140,6 +152,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
       }
       // cookie is valid
       // build auth header
+      console.log("Enter buildAuthCookie");
       const authHeadersFromCookie = this.buildAuthHeaderFromCookie(cookie!);
       Object.assign(authHeaders, authHeadersFromCookie);
       const additonalAuthHeader = this.getAdditionalAuthHeader(request);
@@ -166,13 +179,14 @@ export abstract class AuthenticationType implements IAuthenticationType {
           this.sessionStorageFactory.asScoped(request).set(cookie!);
         }
       } catch (error) {
-        this.logger.error(`Failed to resolve user tenant: ${error}`);
+        //this.logger.error(`Failed to resolve user tenant: ${error}`);
+        console.log("Failed to resolve user tenant");
         if (error instanceof UnauthenticatedError) {
           if (request.url.pathname && request.url.pathname.startsWith('/bundles/')) {
             return toolkit.notHandled();
           }
           this.sessionStorageFactory.asScoped(request).clear();
-          return this.handleUnauthedRequest(request, response, toolkit);
+          return await this.handleUnauthedRequest(request, response, toolkit);
         }
         throw error;
       }
@@ -235,7 +249,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
   protected abstract getCookie(
     request: OpenSearchDashboardsRequest,
     authInfo: any
-  ): SecuritySessionCookie;
+  ): Promise<SecuritySessionCookie>;
   protected abstract async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean>;
   protected abstract handleUnauthedRequest(
     request: OpenSearchDashboardsRequest,

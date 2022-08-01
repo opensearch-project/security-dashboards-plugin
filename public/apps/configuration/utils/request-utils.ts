@@ -16,6 +16,8 @@
 import { HttpStart, HttpHandler } from 'opensearch-dashboards/public';
 
 export async function request<T>(requestFunc: HttpHandler, url: string, body?: object): Promise<T> {
+  console.log("Request Body::");
+  console.log(body);
   if (body) {
     return (await requestFunc(url, { body: JSON.stringify(body) })) as T;
   }

@@ -28,15 +28,20 @@ import {
 import { CoreStart } from '../../../../../src/core/public';
 import { ClientConfigType } from '../../types';
 import defaultBrandImage from '../../assets/opensearch_logo_h.svg';
-import { validateCurrentPassword } from '../../utils/login-utils';
+import { validateCurrentPassword, validateExternalAuth } from '../../utils/login-utils';
+import { Console } from 'console';
 
 interface LoginPageDeps {
   http: CoreStart['http'];
   config: ClientConfigType['ui']['basicauth']['login'];
+  authType: ClientConfigType['auth']['type'];
 }
 
 function redirect(serverBasePath: string) {
   // navigate to nextUrl
+  console.log("fetch:: window.location.search:: ");
+  console.log(window.location.search);
+
   const urlParams = new URLSearchParams(window.location.search);
   let nextUrl = urlParams.get('nextUrl');
   if (!nextUrl || nextUrl.toLowerCase().includes('//')) {
@@ -44,6 +49,10 @@ function redirect(serverBasePath: string) {
     // redirect to '/'.
     nextUrl = serverBasePath + '/';
   }
+  console.log("nextUrl::");
+  console.log(nextUrl);
+  console.log("redirect window.location::");
+  console.log(window.location);
   window.location.href = nextUrl + window.location.hash;
 }
 
@@ -51,14 +60,24 @@ export function LoginPage(props: LoginPageDeps) {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [loginFailed, setloginFailed] = useState(false);
+  const [externalLoginFailed, setExternalLoginFailed] = useState(false);
   const [usernameValidationFailed, setUsernameValidationFailed] = useState(false);
   const [passwordValidationFailed, setPasswordValidationFailed] = useState(false);
+  const [currentAuthType, setCurrentAuthType] = useState('');
 
   let errorLabel = null;
   if (loginFailed) {
     errorLabel = (
       <EuiText id="error" color="danger" textAlign="center">
         <b>Invalid username or password, please try again</b>
+      </EuiText>
+    );
+  }
+
+  if (externalLoginFailed) {
+    errorLabel = (
+      <EuiText id="error" color="danger" textAlign="center">
+        <b>External Authentication failed, please try again</b>
       </EuiText>
     );
   }
@@ -83,8 +102,19 @@ export function LoginPage(props: LoginPageDeps) {
       return;
     }
 
+    setCurrentAuthType('basicauth');
     try {
+      console.log("props::");
+      console.log(props);
+      console.log("currentAuthType::");
+      console.log(currentAuthType);
+
       await validateCurrentPassword(props.http, username, password);
+      console.log("Redirect for Basic Auth::");
+      console.log(props.http.basePath.serverBasePath);
+      console.log("currentAuthType::");
+      console.log(currentAuthType);
+
       redirect(props.http.basePath.serverBasePath);
     } catch (error) {
       console.log(error);
@@ -92,6 +122,117 @@ export function LoginPage(props: LoginPageDeps) {
       return;
     }
   };
+
+  const handleSocialSignInSubmit = async (e: any) => {
+    e.preventDefault();
+
+    // Clear errors
+    setExternalLoginFailed(false);
+    //setCurrentAuthType('openid');
+    try {
+      //console.log("currentAuthType::");
+      //console.log(currentAuthType);
+      await validateExternalAuth(props.http, currentAuthType);
+
+      console.log("Redirect for OIDC Auth::");
+      console.log(props.http.basePath.serverBasePath);
+      redirect(props.http.basePath.serverBasePath);
+    } catch (error) {
+      console.log(error);
+      setExternalLoginFailed(true);
+      return;
+    }
+  };
+
+  const formOptions = (options: string) =>{
+    console.log("options:: ");
+    console.log(options);
+    const optArr = options.split(",");
+
+    var formBody = [];
+    for(var i=0; i<optArr.length; i++){
+      switch(optArr[i]){
+        case "basicauth":
+          formBody.push (
+            <EuiFormRow>
+            <EuiFieldText
+              data-test-subj="user-name"
+              placeholder="Username"
+              prepend={<EuiIcon type="user" />}
+              onChange={(e) => setUsername(e.target.value)}
+              value={username}
+              isInvalid={usernameValidationFailed}
+            />
+          </EuiFormRow>
+          );
+          formBody.push(
+            <EuiFormRow isInvalid={passwordValidationFailed}>
+              <EuiFieldText
+                data-test-subj="password"
+                placeholder="Password"
+                prepend={<EuiIcon type="lock" />}
+                type="password"
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
+                isInvalid={usernameValidationFailed}
+              />
+            </EuiFormRow>
+          );
+          formBody.push(
+            <EuiFormRow>
+              <EuiButton
+                data-test-subj="submit"
+                fill
+                size="s"
+                type="submit"
+                className={props.config.buttonstyle || 'btn-login'}
+                onClick={handleSubmit}
+              >
+                Log In
+              </EuiButton>
+            </EuiFormRow>
+          );
+          break;
+        case "openid":
+          formBody.push  (
+            <EuiFormRow>
+            <EuiButton
+              data-test-subj="submit"
+              fill
+              size="s"
+              //type="prime"
+              className={props.config.buttonstyle || 'btn-login'}
+              //onClick={handleSocialSignInSubmit}
+              href="/auth/openid/login"
+            >
+              Log In With Google
+            </EuiButton>
+          </EuiFormRow>
+          );
+          break;
+          case "saml":
+            formBody.push  (
+              <EuiFormRow>
+              <EuiButton
+                data-test-subj="submit"
+                fill
+                size="s"
+                type="submit"
+                className={props.config.buttonstyle || 'btn-login'}
+                onClick={handleSocialSignInSubmit}
+              >
+                Log In With Git
+              </EuiButton>
+            </EuiFormRow>
+            );
+            break;
+        default: 
+          formBody.push("");
+          break;
+      }
+    }
+    return formBody;
+  }
 
   // TODO: Get brand image from server config
   return (
@@ -110,39 +251,7 @@ export function LoginPage(props: LoginPageDeps) {
       </EuiText>
       <EuiSpacer size="s" />
       <EuiForm component="form">
-        <EuiFormRow>
-          <EuiFieldText
-            data-test-subj="user-name"
-            placeholder="Username"
-            prepend={<EuiIcon type="user" />}
-            onChange={(e) => setUsername(e.target.value)}
-            value={username}
-            isInvalid={usernameValidationFailed}
-          />
-        </EuiFormRow>
-        <EuiFormRow isInvalid={passwordValidationFailed}>
-          <EuiFieldText
-            data-test-subj="password"
-            placeholder="Password"
-            prepend={<EuiIcon type="lock" />}
-            type="password"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-            isInvalid={usernameValidationFailed}
-          />
-        </EuiFormRow>
-        <EuiFormRow>
-          <EuiButton
-            data-test-subj="submit"
-            fill
-            size="s"
-            type="submit"
-            className={props.config.buttonstyle || 'btn-login'}
-            onClick={handleSubmit}
-          >
-            Log In
-          </EuiButton>
-        </EuiFormRow>
+        {formOptions(props.authType)}
         {errorLabel}
       </EuiForm>
     </EuiListGroup>
