@@ -121,15 +121,18 @@ export interface TokenResponse {
   expiresIn?: number;
 }
 
-export function getExpirationDate(idToken: string | undefined) {
-  if (!idToken) {
+export function getExpirationDate(tokenResponse: TokenResponse | undefined) {
+  if (!tokenResponse) {
     throw new Error('Invalid token');
-  } else {
+  } else if (tokenResponse.idToken) {
+    const idToken = tokenResponse.idToken;
     const parts = idToken.split('.');
     if (parts.length !== 3) {
       throw new Error('Invalid token');
     }
     const claim = JSON.parse(Buffer.from(parts[1], 'base64').toString());
     return claim.exp * 1000;
+  } else {
+    return Date.now() + tokenResponse.expiresIn! * 1000;
   }
 }

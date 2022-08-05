@@ -190,7 +190,7 @@ export class OpenIdAuthentication extends AuthenticationType {
           cookie.credentials = {
             authHeaderValue: `Bearer ${refreshTokenResponse.idToken}`,
             refresh_token: refreshTokenResponse.refreshToken,
-            expires_at: getExpirationDate(refreshTokenResponse.idToken), // expiresIn is in second
+            expires_at: getExpirationDate(refreshTokenResponse), // expiresIn is in second
           };
           return true;
         } else {
