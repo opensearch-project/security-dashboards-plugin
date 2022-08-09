@@ -16,7 +16,7 @@
 import React from 'react';
 import { EuiButtonEmpty } from '@elastic/eui';
 import { HttpStart } from 'opensearch-dashboards/public';
-import { logout } from './utils';
+import { logout, samlLogout } from './utils';
 
 export function LogoutButton(props: {
   authType: string;
@@ -24,7 +24,7 @@ export function LogoutButton(props: {
   divider: JSX.Element;
   logoutUrl?: string;
 }) {
-  if (props.authType === 'openid' || props.authType === 'saml') {
+  if (props.authType === 'openid') {
     return (
       <div>
         {props.divider}
@@ -38,6 +38,20 @@ export function LogoutButton(props: {
         </EuiButtonEmpty>
       </div>
     );
+  } else if (props.authType === 'saml') {
+    return (
+      <div>
+        {props.divider}
+        <EuiButtonEmpty
+          data-test-subj="log-out-2"
+          color="danger"
+          size="xs"
+          onClick={() => samlLogout(props.http)}
+        >
+          Log out
+        </EuiButtonEmpty>
+      </div>
+    );
   } else if (props.authType === 'proxy') {
     return <div />;
   } else {
@@ -45,7 +59,7 @@ export function LogoutButton(props: {
       <div>
         {props.divider}
         <EuiButtonEmpty
-          data-test-subj="log-out-2"
+          data-test-subj="log-out-3"
           color="danger"
           size="xs"
           onClick={() => logout(props.http, props.logoutUrl)}
