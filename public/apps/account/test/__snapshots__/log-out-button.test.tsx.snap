@@ -20,7 +20,7 @@ exports[`Account menu - Log out button renders renders when auth type is SAML 1`
   <EuiButtonEmpty
     color="danger"
     data-test-subj="log-out-2"
-    href="/auth/logout"
+    onClick={[Function]}
     size="xs"
   >
     Log out
