@@ -29,7 +29,7 @@ export function LogoutButton(props: {
       <div>
         {props.divider}
         <EuiButtonEmpty
-          data-test-subj="log-out-1"
+          data-test-subj="log-out-2"
           color="danger"
           size="xs"
           href={`${props.http.basePath.serverBasePath}/auth/logout`}
@@ -43,7 +43,7 @@ export function LogoutButton(props: {
       <div>
         {props.divider}
         <EuiButtonEmpty
-          data-test-subj="log-out-2"
+          data-test-subj="log-out-1"
           color="danger"
           size="xs"
           onClick={() => samlLogout(props.http)}
