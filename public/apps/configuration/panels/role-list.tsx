@@ -71,7 +71,7 @@ const columns: Array<EuiBasicTableColumn<RoleListing>> = [
   },
   {
     field: 'indexPermissions',
-    name: 'Index permissions',
+    name: 'Index',
     render: truncatedListView(tableItemsUIProps),
     truncateText: true,
   },
@@ -202,7 +202,7 @@ export function RoleList(props: AppDependencies) {
         {
           type: 'field_value_selection',
           field: 'indexPermissions',
-          name: 'Index permissions',
+          name: 'Index',
           multiSelect: 'or',
           options: buildSearchFilterOptions(roleData, 'indexPermissions'),
         },
