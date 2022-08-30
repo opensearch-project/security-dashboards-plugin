@@ -16,14 +16,14 @@
 import * as osdTestServer from '../../../../src/core/test_helpers/osd_server';
 import { Root } from '../../../../src/core/server/root';
 import { resolve } from 'path';
-import { describe, expect, it, beforeAll, afterAll, afterEach, test } from '@jest/globals';
+import { describe, expect, it, beforeAll, afterAll } from '@jest/globals';
 import {
   ADMIN_CREDENTIALS,
   OPENSEARCH_DASHBOARDS_SERVER_USER,
   OPENSEARCH_DASHBOARDS_SERVER_PASSWORD,
 } from '../constant';
 import wreck from '@hapi/wreck';
-import { Builder, By, until, ThenableWebDriver } from 'selenium-webdriver';
+import { Builder, By, until } from 'selenium-webdriver';
 import { Options } from 'selenium-webdriver/firefox';
 
 describe('start OpenSearch Dashboards server', () => {
