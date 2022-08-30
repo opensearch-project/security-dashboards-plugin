@@ -14,21 +14,18 @@
  */
 
 import { schema } from '@osd/config-schema';
-import {
-  IRouter,
-  SessionStorageFactory,
-  OpenSearchDashboardsRequest,
-} from '../../../../../../src/core/server';
+import { IRouter, SessionStorageFactory } from '../../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
+import { API_AUTH_LOGOUT } from '../../../../common';
 import { CoreSetup } from '../../../../../../src/core/server';
 import { validateNextUrl } from '../../../utils/next_url';
+import { AuthType } from '../../../../common/index';
 
 export class SamlAuthRoutes {
   constructor(
     private readonly router: IRouter,
-    // @ts-ignore: unused variable
     private readonly config: SecurityPluginConfigType,
     private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
     private readonly securityClient: SecurityClient,
@@ -38,7 +35,7 @@ export class SamlAuthRoutes {
   public setupRoutes() {
     this.router.get(
       {
-        path: `/auth/saml/login`,
+        path: '/auth/saml/login',
         validate: {
           query: schema.object({
             nextUrl: schema.maybe(
@@ -86,7 +83,8 @@ export class SamlAuthRoutes {
 
     this.router.post(
       {
-        path: `/_opendistro/_security/saml/acs`,
+        // need to change to /_opendistro to execute the tests.
+        path: '/_opendistro/_security/saml/acs',
         validate: {
           body: schema.any(),
         },
@@ -143,11 +141,12 @@ export class SamlAuthRoutes {
             credentials: {
               authHeaderValue: credentials.authorization,
             },
-            authType: 'saml', // TODO: create constant
+            authType: AuthType.SAML,
             expiryTime,
           };
           this.sessionStorageFactory.asScoped(request).set(cookie);
           if (redirectHash) {
+            console.log('The server base path is : ' + this.coreSetup.http.basePath.serverBasePath);
             return response.redirected({
               headers: {
                 location: `${
@@ -174,7 +173,7 @@ export class SamlAuthRoutes {
 
     this.router.post(
       {
-        path: `/_opendistro/_security/saml/acs/idpinitiated`,
+        path: '/_plugins/_security/saml/acs/idpinitiated',
         validate: {
           body: schema.any(),
         },
@@ -183,7 +182,7 @@ export class SamlAuthRoutes {
         },
       },
       async (context, request, response) => {
-        const acsEndpoint = `${this.coreSetup.http.basePath.serverBasePath}/_opendistro/_security/saml/acs/idpinitiated`;
+        const acsEndpoint = `${this.coreSetup.http.basePath.serverBasePath}/_plugins/_security/saml/acs/idpinitiated`;
         try {
           const credentials = await this.securityClient.authToken(
             undefined,
@@ -211,7 +210,7 @@ export class SamlAuthRoutes {
             credentials: {
               authHeaderValue: credentials.authorization,
             },
-            authType: 'saml', // TODO: create constant
+            authType: AuthType.SAML,
             expiryTime,
           };
           this.sessionStorageFactory.asScoped(request).set(cookie);
@@ -229,8 +228,6 @@ export class SamlAuthRoutes {
       }
     );
 
-    // captureUrlFragment is the first route that will be invoked in the SP initiated login.
-    // This route will execute the captureUrlFragment.js script.
     this.coreSetup.http.resources.register(
       {
         path: '/auth/saml/captureUrlFragment',
@@ -261,7 +258,6 @@ export class SamlAuthRoutes {
       }
     );
 
-    // This script will store the URL Hash in browser's local storage.
     this.coreSetup.http.resources.register(
       {
         path: '/auth/saml/captureUrlFragment.js',
@@ -291,9 +287,6 @@ export class SamlAuthRoutes {
       }
     );
 
-    //  Once the User is authenticated via the '_opendistro/_security/saml/acs' route,
-    //  the browser will be redirected to '/auth/saml/redirectUrlFragment' route,
-    //  which will execute the redirectUrlFragment.js.
     this.coreSetup.http.resources.register(
       {
         path: '/auth/saml/redirectUrlFragment',
@@ -319,8 +312,6 @@ export class SamlAuthRoutes {
       }
     );
 
-    // This script will pop the Hash from local storage if it exists.
-    // And forward the browser to the next url.
     this.coreSetup.http.resources.register(
       {
         path: '/auth/saml/redirectUrlFragment.js',
@@ -344,7 +335,7 @@ export class SamlAuthRoutes {
 
     this.router.get(
       {
-        path: `/auth/logout`,
+        path: API_AUTH_LOGOUT,
         validate: false,
       },
       async (context, request, response) => {
