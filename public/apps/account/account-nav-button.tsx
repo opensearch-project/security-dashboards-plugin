@@ -93,7 +93,11 @@ export function AccountNavButton(props: {
           <EuiListGroupItem
             color="subdued"
             key="tenant"
-            label={<EuiText size="xs" id="tenantName">{resolveTenantName(props.tenant || '', username)}</EuiText>}
+            label={
+              <EuiText size="xs" id="tenantName">
+                {resolveTenantName(props.tenant || '', username)}
+              </EuiText>
+            }
           />
         </EuiFlexItem>
       </EuiFlexGroup>
