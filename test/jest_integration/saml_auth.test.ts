@@ -120,7 +120,7 @@ describe('start OpenSearch Dashboards server', () => {
     );
     const responseBody = (getConfigResponse.payload as Buffer).toString();
     config = JSON.parse(responseBody).config;
-    const saml_config = {
+    const samlConfig = {
       http_enabled: true,
       transport_enabled: false,
       order: 5,
@@ -145,7 +145,7 @@ describe('start OpenSearch Dashboards server', () => {
       },
     };
     try {
-      config.dynamic!.authc!.saml_auth_domain = saml_config;
+      config.dynamic!.authc!.saml_auth_domain = samlConfig;
       config.dynamic!.authc!.basic_internal_auth_domain.http_authenticator.challenge = false;
       config.dynamic!.http!.anonymous_auth_enabled = false;
       await wreck.put('https://localhost:9200/_plugins/_security/api/securityconfig/config', {
@@ -226,22 +226,19 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   it('Login to app/opensearch_dashboards_overview#/ when SAML is enabled', async () => {
-    let driver = getDriver().build();
+    const driver = getDriver().build();
     await driver.get('http://localhost:5601/app/opensearch_dashboards_overview#/');
     await driver.findElement(By.id('btn-sign-in')).click();
-    await driver.wait(
-      until.elementsLocated(By.xpath(pageTitleXPath)),
-      10000
-    );
+    await driver.wait(until.elementsLocated(By.xpath(pageTitleXPath)), 10000);
 
-    let cookie = await driver.manage().getCookies();
+    const cookie = await driver.manage().getCookies();
     expect(cookie.length).toEqual(2);
     await driver.manage().deleteAllCookies();
     await driver.quit();
   });
 
   it('Login to app/dev_tools#/console when SAML is enabled', async () => {
-    let driver = getDriver().build();
+    const driver = getDriver().build();
     await driver.get('http://localhost:5601/app/dev_tools#/console');
     await driver.findElement(By.id('btn-sign-in')).click();
 
@@ -252,45 +249,39 @@ describe('start OpenSearch Dashboards server', () => {
       10000
     );
 
-    let cookie = await driver.manage().getCookies();
+    const cookie = await driver.manage().getCookies();
     expect(cookie.length).toEqual(2);
     await driver.manage().deleteAllCookies();
     await driver.quit();
   });
 
   it('Login to Dashboard with Hash', async () => {
-    let url_with_hash = `http://localhost:5601/app/dashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(filters:!(),refreshInterval:(pause:!f,value:900000),time:(from:now-24h,to:now))&_a=(description:'Analyze%20mock%20flight%20data%20for%20OpenSearch-Air,%20Logstash%20Airways,%20OpenSearch%20Dashboards%20Airlines%20and%20BeatsWest',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'%5BFlights%5D%20Global%20Flight%20Dashboard',viewMode:view)`;
-    let driver = getDriver().build();
+    const urlWithHash = `http://localhost:5601/app/dashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(filters:!(),refreshInterval:(pause:!f,value:900000),time:(from:now-24h,to:now))&_a=(description:'Analyze%20mock%20flight%20data%20for%20OpenSearch-Air,%20Logstash%20Airways,%20OpenSearch%20Dashboards%20Airlines%20and%20BeatsWest',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'%5BFlights%5D%20Global%20Flight%20Dashboard',viewMode:view)`;
+    const driver = getDriver().build();
     await driver.manage().deleteAllCookies();
-    await driver.get(url_with_hash);
-    await driver.wait(
-      until.elementsLocated(By.xpath('/html/body/nav/div/div[1]/a/i/span')),
-      60000
-    );
+    await driver.get(urlWithHash);
+    await driver.wait(until.elementsLocated(By.xpath('/html/body/nav/div/div[1]/a/i/span')), 60000);
     await driver.findElement(By.xpath(signInBtnXPath)).click();
     await driver.wait(
       until.elementsLocated(By.xpath('/html/body/div[1]/div/header/div/div[2]')),
       20000
     );
-    let window_hash = await driver.getCurrentUrl();
-    expect(window_hash).toEqual(url_with_hash);
-    let cookie = await driver.manage().getCookies();
+    const windowHash = await driver.getCurrentUrl();
+    expect(windowHash).toEqual(urlWithHash);
+    const cookie = await driver.manage().getCookies();
     expect(cookie.length).toEqual(2);
     await driver.manage().deleteAllCookies();
     await driver.quit();
   });
 
   it('Testing Tenancy IT', async () => {
-    let driver = getDriver().build();
+    const driver = getDriver().build();
 
     await driver.get('http://localhost:5601/app/opensearch_dashboards_overview#/');
 
     await driver.findElement(By.xpath(signInBtnXPath)).click();
 
-    await driver.wait(
-      until.elementsLocated(By.xpath(pageTitleXPath)),
-      10000
-    );
+    await driver.wait(until.elementsLocated(By.xpath(pageTitleXPath)), 10000);
 
     await driver.wait(
       until.elementsLocated(By.xpath('//button[@aria-label="Closes this modal window"]')),
@@ -333,12 +324,8 @@ describe('start OpenSearch Dashboards server', () => {
     await driver.manage().deleteAllCookies();
     await driver.quit();
   });
-
 });
 
-
 function getDriver() {
-  return new Builder()
-      .forBrowser('firefox')
-      .setFirefoxOptions(new Options().headless());
+  return new Builder().forBrowser('firefox').setFirefoxOptions(new Options().headless());
 }

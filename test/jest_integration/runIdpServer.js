@@ -5,4 +5,3 @@ runServer({
   acsUrl: 'http://localhost:5601/_opendistro/_security/saml/acs',
   audience: 'https://localhost:9200',
 });
-
