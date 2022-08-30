@@ -67,7 +67,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
   constructor(private readonly initializerContext: PluginInitializerContext) {}
 
   public async setup(core: CoreSetup): Promise<SecurityPluginSetup> {
-    console.log("public plugin.ts core:: ");
+    console.log('public plugin.ts core:: ');
     console.log(core);
 
     const apiPermission = await hasApiPermission(core);
@@ -75,13 +75,13 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     const config = this.initializerContext.config.get<ClientConfigType>();
 
     const accountInfo = (await fetchAccountInfoSafe(core.http))?.data;
-    console.log("accountInfo");
+    console.log('accountInfo');
     console.log(accountInfo);
 
     const isReadonly = accountInfo?.roles.some((role) =>
       (config.readonly_mode?.roles || DEFAULT_READONLY_ROLES).includes(role)
     );
-    console.log("apiPermission::");
+    console.log('apiPermission::');
     console.log(apiPermission);
     if (apiPermission) {
       core.application.register({
@@ -118,12 +118,13 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
         const { renderApp } = await import('./apps/login/login-app');
         // @ts-ignore depsStart not used.
         const [coreStart, depsStart] = await core.getStartServices();
-        console.log("public:: plugin.ts:: core.application.register.login-app::");
+        console.log('public:: plugin.ts:: core.application.register.login-app::');
         console.log(coreStart);
         console.log(params);
         console.log(config.ui.basicauth.login);
         console.log(config.auth.type);
-        return renderApp(coreStart, params, config.ui.basicauth.login, config.auth.type);
+        console.log(config.ui);
+        return renderApp(coreStart, params, config.ui.basicauth.login, config.auth.type, config);
       },
     });
 
@@ -162,7 +163,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
       // logout the user when getting 401 unauthorized, e.g. when session timed out.
       core.http.intercept({
         responseError: (httpErrorResponse, controller) => {
-          console.log("public:: plugin.ts:: window.location.pathname::");
+          console.log('public:: plugin.ts:: window.location.pathname::');
           console.log(window.location.pathname);
           if (
             httpErrorResponse.response?.status === 401 &&

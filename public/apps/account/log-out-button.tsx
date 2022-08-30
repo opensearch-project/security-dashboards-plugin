@@ -24,6 +24,9 @@ export function LogoutButton(props: {
   divider: JSX.Element;
   logoutUrl?: string;
 }) {
+  console.log('Logout Button::');
+  console.log('Logout Button::props.authType');
+  console.log(props.authType);
   if (props.authType === 'openid' || props.authType === 'saml') {
     return (
       <div>

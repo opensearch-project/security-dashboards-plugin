@@ -59,39 +59,22 @@ export const configSchema = schema.object({
     type: schema.string({
       defaultValue: '',
       validate(value) {
-        /*
-        if (
-          !['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache'].includes(
-            value
-          )
-        ) {
-          return `allowed auth.type are ['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache']`;
-        }*/
-      },
-    }),
-/*
-    type: schema.arrayOf({schema.string(), {
-      defaultValue: [],
-      egtAuthType =(values)=>{
-        validate(value) {
-          let authTypes = [];
-          for(let i=0; i<values.length; i++){
-              if (
-                ['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache'].includes(
-                  values[i]
-                )
-              ) {
-                authTypes.push(values[i]);
-              }
-          }
-          if(authTypes.length > 0){
-            return "authTypes";
-          }else{
+        const authTypeArr = value.split(',');
+
+        if (authTypeArr.length > 1 && !authTypeArr.includes('basicauth')) {
+          return `basicauth is mandatory`;
+        }
+        authTypeArr.forEach(function (authVal) {
+          if (
+            !['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache'].includes(
+              authVal
+            )
+          ) {
             return `allowed auth.type are ['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache']`;
           }
-        }
-      }
-    }),*/
+        });
+      },
+    }),
     anonymous_auth_enabled: schema.boolean({ defaultValue: false }),
     unauthenticated_routes: schema.arrayOf(schema.string(), {
       defaultValue: ['/api/reporting/stats'],
@@ -147,7 +130,7 @@ export const configSchema = schema.object({
       // TODO: test if siblingRef() works here
       // client_id is required when auth.type is openid
       client_id: schema.conditional(
-        //schema.siblingRef('auth.type'),
+        // schema.siblingRef('auth.type'),
         schema.siblingRef('openid'),
         'openid',
         schema.string(),
@@ -206,6 +189,22 @@ export const configSchema = schema.object({
             'If you have forgotten your username or password, please ask your system administrator',
         }),
         showbrandimage: schema.boolean({ defaultValue: true }),
+        brandimage: schema.string({ defaultValue: '' }),
+        buttonstyle: schema.string({ defaultValue: '' }),
+      }),
+    }),
+    openid: schema.object({
+      login: schema.object({
+        buttonname: schema.string({ defaultValue: 'Default:: Login with Single-SignOn' }),
+        showbrandimage: schema.boolean({ defaultValue: false }),
+        brandimage: schema.string({ defaultValue: '' }),
+        buttonstyle: schema.string({ defaultValue: '' }),
+      }),
+    }),
+    saml: schema.object({
+      login: schema.object({
+        buttonname: schema.string({ defaultValue: 'Default:: Login with Single-SignOn' }),
+        showbrandimage: schema.boolean({ defaultValue: false }),
         brandimage: schema.string({ defaultValue: '' }),
         buttonstyle: schema.string({ defaultValue: '' }),
       }),

@@ -16,6 +16,7 @@ import { schema } from '@osd/config-schema';
 import { randomString } from '@hapi/cryptiles';
 import { stringify } from 'querystring';
 import wreck from '@hapi/wreck';
+import { Client } from '@opensearch-project/opensearch';
 import {
   IRouter,
   SessionStorageFactory,
@@ -23,7 +24,10 @@ import {
   OpenSearchDashboardsResponseFactory,
   OpenSearchDashboardsRequest,
 } from '../../../../../../src/core/server';
-import { clearOldVersionCookieValue, SecuritySessionCookie } from '../../../session/security_cookie';
+import {
+  clearOldVersionCookieValue,
+  SecuritySessionCookie,
+} from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
 import { OpenIdAuthConfig } from '../openid/openid_auth';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
@@ -32,10 +36,10 @@ import { validateNextUrl } from '../../../utils/next_url';
 import { API_AUTH_LOGIN, API_AUTH_LOGOUT, AuthType, LOGIN_PAGE_URI } from '../../../../common';
 import { User } from '../../user';
 import { encodeUriQuery } from '../../../../../../src/plugins/opensearch_dashboards_utils/common/url/encode_uri_query';
-import { OpenIdAuthRoutes} from '../openid/routes';
-import { BasicAuthRoutes} from '../basic/routes';
+import { OpenIdAuthRoutes } from '../openid/routes';
+import { BasicAuthRoutes } from '../basic/routes';
 import { resolveTenant } from '../../../multitenancy/tenant_resolver';
-import { Client } from '@opensearch-project/opensearch';
+import { SamlAuthRoutes } from '../saml/routes';
 
 export class MultiAuthRoutes {
   private static readonly NONCE_LENGTH: number = 22;
@@ -47,32 +51,42 @@ export class MultiAuthRoutes {
     private readonly openIdAuthConfig: OpenIdAuthConfig,
     private readonly securityClient: SecurityClient,
     private readonly coreSetup: CoreSetup,
-    private readonly wreckClient: typeof wreck, 
+    private readonly wreckClient: typeof wreck,
     private readonly authTypes: string
   ) {}
 
-
   public setupBasicRoutes() {
-      const basicRoute = new BasicAuthRoutes(
-        this.router,
-        this.config,
-        this.sessionStorageFactory,
-        this.securityClient,
-        this.coreSetup
-      );
-      basicRoute.setupRoutes();
+    const basicRoute = new BasicAuthRoutes(
+      this.router,
+      this.config,
+      this.sessionStorageFactory,
+      this.securityClient,
+      this.coreSetup
+    );
+    basicRoute.setupRoutes();
   }
 
   public setupOidcRoutes(openIdAuthConfig: OpenIdAuthConfig, wreckClient: typeof wreck) {
     const oidcRoute = new OpenIdAuthRoutes(
-        this.router,
-        this.config,
-        this.sessionStorageFactory,
-        openIdAuthConfig,
-        this.securityClient,
-        this.coreSetup,
-        wreckClient
+      this.router,
+      this.config,
+      this.sessionStorageFactory,
+      openIdAuthConfig,
+      this.securityClient,
+      this.coreSetup,
+      wreckClient
     );
     oidcRoute.setupRoutes();
+  }
+
+  public setupSamlRoutes() {
+    const samlAuthRoutes = new SamlAuthRoutes(
+      this.router,
+      this.config,
+      this.sessionStorageFactory,
+      this.securityClient,
+      this.coreSetup
+    );
+    samlAuthRoutes.setupRoutes();
   }
 }

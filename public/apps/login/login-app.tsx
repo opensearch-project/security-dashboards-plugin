@@ -25,8 +25,14 @@ export function renderApp(
   coreStart: CoreStart,
   params: AppMountParameters,
   config: ClientConfigType['ui']['basicauth']['login'],
-  authType: ClientConfigType['auth']['type']
+  authType: ClientConfigType['auth']['type'],
+  // configOp: ClientConfigType['ui']
+  configOp: ClientConfigType
 ) {
-  ReactDOM.render(<LoginPage http={coreStart.http} config={config} authType={authType}/>, params.element);
+  // ReactDOM.render(<LoginPage http={coreStart.http} config={config} configOp={configOp} authType={authType}/>, params.element);
+  ReactDOM.render(
+    <LoginPage http={coreStart.http} config={config} authType={authType} configOp={configOp} />,
+    params.element
+  );
   return () => ReactDOM.unmountComponentAtNode(params.element);
 }

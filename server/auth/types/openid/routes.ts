@@ -48,7 +48,7 @@ export class OpenIdAuthRoutes {
     response: OpenSearchDashboardsResponseFactory
   ) {
     this.sessionStorageFactory.asScoped(request).clear();
-    console.log("openid redirectToLogin location::");
+    console.log('openid redirectToLogin location::');
     console.log(`${this.core.http.basePath.serverBasePath}/auth/openid/login`);
     return response.redirected({
       headers: {
@@ -84,7 +84,7 @@ export class OpenIdAuthRoutes {
       },
       async (context, request, response) => {
         // implementation refers to https://github.com/hapijs/bell/blob/master/lib/oauth.js
-        console.log("Enter oidc Login Page::");
+        console.log('Enter oidc Login Page::');
         // Sign-in initialization
         if (!request.query.code) {
           const nonce = randomString(OpenIdAuthRoutes.NONCE_LENGTH);
@@ -98,7 +98,7 @@ export class OpenIdAuthRoutes {
 
           const queryString = stringify(query);
           const location = `${this.openIdAuthConfig.authorizationEndpoint}?${queryString}`;
-          console.log("openid location:::");
+          console.log('openid location:::');
           console.log(`${this.openIdAuthConfig.authorizationEndpoint}`);
           console.log(location);
           const cookie: SecuritySessionCookie = {
@@ -106,9 +106,9 @@ export class OpenIdAuthRoutes {
               state: nonce,
               nextUrl: request.query.nextUrl || '/',
             },
-            authType: 'openid'
+            authType: 'openid',
           };
-          console.log("oidc cookie::");
+          console.log('oidc cookie::');
           console.log(cookie);
           this.sessionStorageFactory.asScoped(request).set(cookie);
           return response.redirected({
@@ -129,10 +129,10 @@ export class OpenIdAuthRoutes {
             !cookie.oidc?.state ||
             cookie.oidc.state !== (request.query as any).state
           ) {
-            console.log("cookie is invalid");
+            console.log('cookie is invalid');
             return this.redirectToLogin(request, response);
-          }else{
-            console.log("Cookie is valid::");
+          } else {
+            console.log('Cookie is valid::');
           }
         } catch (error) {
           return this.redirectToLogin(request, response);
@@ -178,7 +178,7 @@ export class OpenIdAuthRoutes {
             });
           }
           this.sessionStorageFactory.asScoped(request).set(sessionStorage);
-          console.log("location nextUrl::");
+          console.log('location nextUrl::');
           console.log(nextUrl);
           return response.redirected({
             headers: {
@@ -192,7 +192,7 @@ export class OpenIdAuthRoutes {
         }
       }
     );
-
+    /*
     this.router.get(
       {
         path: `/auth/logout`,
@@ -209,6 +209,9 @@ export class OpenIdAuthRoutes {
           id_token_hint: token,
         };
 
+        console.log("logoutQueryParams::");
+        console.log(logoutQueryParams);
+
         const endSessionUrl = composeLogoutUrl(
           this.config.openid?.logout_url,
           this.openIdAuthConfig.endSessionEndpoint,
@@ -222,6 +225,6 @@ export class OpenIdAuthRoutes {
           },
         });
       }
-    );
+    );*/
   }
 }

@@ -18,7 +18,7 @@ import { PluginInitializerContext } from '../../../src/core/public';
 // This exports static code and TypeScript types,
 // as well as, OpenSearchDashboards Platform `plugin()` initializer.
 export function plugin(initializerContext: PluginInitializerContext) {
-  console.log("public::index.ts::initializerContext::");
+  console.log('public::index.ts::initializerContext::');
   console.log(initializerContext);
   return new SecurityPlugin(initializerContext);
 }

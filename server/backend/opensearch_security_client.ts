@@ -148,6 +148,8 @@ export class SecurityClient {
   public async getSamlHeader(request: OpenSearchDashboardsRequest) {
     try {
       // response is expected to be an error
+      console.log('Enter getSamlHeader::');
+      console.log(request);
       await this.esClient.asScoped(request).callAsCurrentUser('opensearch_security.authinfo');
     } catch (error) {
       // the error looks like
@@ -157,6 +159,10 @@ export class SecurityClient {
       //     location="https://<your-auth-domain.com>/api/saml2/v1/sso?SAMLRequest=<some-encoded-string>"
       //     requestId="<request_id>"
       //   '
+
+      console.log('getSamlHeader:: error::');
+      console.log(error);
+
       if (!error.wwwAuthenticateDirective) {
         throw error;
       }

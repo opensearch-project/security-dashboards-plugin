@@ -107,7 +107,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     });
 
     // setup auth
-    const auth: IAuthenticationType= getAuthenticationHandler(
+    const auth: IAuthenticationType = getAuthenticationHandler(
       config.auth.type,
       router,
       config,
@@ -120,7 +120,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
       Option1: single handler
       Option2: multiple handler
     */
-    
+    console.log('registerAuth(auth.authHandler)::');
     core.http.registerAuth(auth.authHandler);
 
     // Register server side APIs

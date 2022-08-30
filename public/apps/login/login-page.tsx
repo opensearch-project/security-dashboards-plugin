@@ -25,21 +25,22 @@ import {
   EuiForm,
   EuiFormRow,
 } from '@elastic/eui';
+import { Console } from 'console';
 import { CoreStart } from '../../../../../src/core/public';
 import { ClientConfigType } from '../../types';
 import defaultBrandImage from '../../assets/opensearch_logo_h.svg';
 import { validateCurrentPassword, validateExternalAuth } from '../../utils/login-utils';
-import { Console } from 'console';
 
 interface LoginPageDeps {
   http: CoreStart['http'];
   config: ClientConfigType['ui']['basicauth']['login'];
   authType: ClientConfigType['auth']['type'];
+  configOp: ClientConfigType;
 }
 
 function redirect(serverBasePath: string) {
   // navigate to nextUrl
-  console.log("fetch:: window.location.search:: ");
+  console.log('fetch:: window.location.search:: ');
   console.log(window.location.search);
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -49,10 +50,10 @@ function redirect(serverBasePath: string) {
     // redirect to '/'.
     nextUrl = serverBasePath + '/';
   }
-  console.log("nextUrl::");
-  console.log(nextUrl);
-  console.log("redirect window.location::");
-  console.log(window.location);
+  // console.log("nextUrl::");
+  // console.log(nextUrl);
+  // console.log("redirect window.location::");
+  // console.log(window.location);
   window.location.href = nextUrl + window.location.hash;
 }
 
@@ -63,7 +64,7 @@ export function LoginPage(props: LoginPageDeps) {
   const [externalLoginFailed, setExternalLoginFailed] = useState(false);
   const [usernameValidationFailed, setUsernameValidationFailed] = useState(false);
   const [passwordValidationFailed, setPasswordValidationFailed] = useState(false);
-  const [currentAuthType, setCurrentAuthType] = useState('');
+  // const [currentAuthType, setCurrentAuthType] = useState('');
 
   let errorLabel = null;
   if (loginFailed) {
@@ -102,18 +103,18 @@ export function LoginPage(props: LoginPageDeps) {
       return;
     }
 
-    setCurrentAuthType('basicauth');
+    // setCurrentAuthType('basicauth');
     try {
-      console.log("props::");
+      console.log('props::');
       console.log(props);
-      console.log("currentAuthType::");
-      console.log(currentAuthType);
+      console.log('currentAuthType::');
+      // console.log(currentAuthType);
 
       await validateCurrentPassword(props.http, username, password);
-      console.log("Redirect for Basic Auth::");
+      console.log('Redirect for Basic Auth::');
       console.log(props.http.basePath.serverBasePath);
-      console.log("currentAuthType::");
-      console.log(currentAuthType);
+      console.log('currentAuthType::');
+      // console.log(currentAuthType);
 
       redirect(props.http.basePath.serverBasePath);
     } catch (error) {
@@ -122,7 +123,7 @@ export function LoginPage(props: LoginPageDeps) {
       return;
     }
   };
-
+  /*
   const handleSocialSignInSubmit = async (e: any) => {
     e.preventDefault();
 
@@ -143,27 +144,31 @@ export function LoginPage(props: LoginPageDeps) {
       return;
     }
   };
-
-  const formOptions = (options: string) =>{
-    console.log("options:: ");
+*/
+  const formOptions = (options: string) => {
+    console.log('options:: ');
     console.log(options);
-    const optArr = options.split(",");
+    if (!options) {
+      options = 'basicauth';
+    }
+    const optArr = options.split(',');
 
-    var formBody = [];
-    for(var i=0; i<optArr.length; i++){
-      switch(optArr[i]){
-        case "basicauth":
-          formBody.push (
+    let formBody = [];
+    const formBodyOp = [];
+    for (let i = 0; i < optArr.length; i++) {
+      switch (optArr[i]) {
+        case 'basicauth':
+          formBody.push(
             <EuiFormRow>
-            <EuiFieldText
-              data-test-subj="user-name"
-              placeholder="Username"
-              prepend={<EuiIcon type="user" />}
-              onChange={(e) => setUsername(e.target.value)}
-              value={username}
-              isInvalid={usernameValidationFailed}
-            />
-          </EuiFormRow>
+              <EuiFieldText
+                data-test-subj="user-name"
+                placeholder="Username"
+                prepend={<EuiIcon type="user" />}
+                onChange={(e) => setUsername(e.target.value)}
+                value={username}
+                isInvalid={usernameValidationFailed}
+              />
+            </EuiFormRow>
           );
           formBody.push(
             <EuiFormRow isInvalid={passwordValidationFailed}>
@@ -192,47 +197,85 @@ export function LoginPage(props: LoginPageDeps) {
               </EuiButton>
             </EuiFormRow>
           );
+          if (optArr.length > 1) {
+            formBody.push(<EuiSpacer size="s" />);
+            formBody.push(
+              <EuiText size="m" textAlign="center">
+                Or
+              </EuiText>
+            );
+            formBody.push(<EuiSpacer size="s" />);
+          }
           break;
-        case "openid":
-          formBody.push  (
+        case 'openid':
+          formBodyOp.push(
             <EuiFormRow>
-            <EuiButton
-              data-test-subj="submit"
-              fill
-              size="s"
-              //type="prime"
-              className={props.config.buttonstyle || 'btn-login'}
-              //onClick={handleSocialSignInSubmit}
-              href="/auth/openid/login"
-            >
-              Log In With Google
-            </EuiButton>
-          </EuiFormRow>
-          );
-          break;
-          case "saml":
-            formBody.push  (
-              <EuiFormRow>
               <EuiButton
-                data-test-subj="submit"
-                fill
+                // data-test-subj="submit"
                 size="s"
-                type="submit"
-                className={props.config.buttonstyle || 'btn-login'}
-                onClick={handleSocialSignInSubmit}
+                // type="prime"
+                className={props.configOp.ui.openid.login.buttonstyle || 'btn-login'}
+                // onClick={handleSocialSignInSubmit}
+                href="/auth/openid/login"
+                iconType={
+                  props.configOp.ui.openid.login.showbrandimage
+                    ? props.configOp.ui.openid.login.brandimage
+                    : ''
+                }
               >
-                Log In With Git
+                {props.configOp.ui.openid.login.buttonname}
               </EuiButton>
             </EuiFormRow>
-            );
-            break;
-        default: 
-          formBody.push("");
+          );
+          break;
+        case 'saml':
+          formBodyOp.push(
+            <EuiFormRow>
+              <EuiButton
+                // data-test-subj="submit"
+                size="s"
+                // type="submit"
+                className={props.configOp.ui.saml.login.buttonstyle || 'btn-login'}
+                // onClick={handleSocialSignInSubmit}
+                href="/auth/saml/login"
+                iconType={
+                  props.configOp.ui.saml.login.showbrandimage
+                    ? props.configOp.ui.saml.login.brandimage
+                    : ''
+                }
+              >
+                {props.configOp.ui.saml.login.buttonname}
+              </EuiButton>
+            </EuiFormRow>
+          );
+          break;
+        default:
+          formBody.push('');
           break;
       }
     }
+    /*
+    if(props.configOp.auth.anonymous_auth_enabled){
+        formBodyOp.push  (
+          <EuiFormRow>
+          <EuiButton
+            //data-test-subj="submit"
+            size="s"
+            //type="prime"
+            className={props.configOp.ui.openid.login.buttonstyle || 'btn-login'}
+            //onClick={handleSocialSignInSubmit}
+            onClick={handleSubmit}
+            //href="/auth/anonymous"
+            iconType={props.configOp.ui.openid.login.showbrandimage? props.configOp.ui.openid.login.brandimage: ""}
+          >
+            Log In as Anonymous
+          </EuiButton>
+        </EuiFormRow>
+        );
+    }*/
+    formBody = formBody.concat(formBodyOp);
     return formBody;
-  }
+  };
 
   // TODO: Get brand image from server config
   return (
@@ -249,7 +292,7 @@ export function LoginPage(props: LoginPageDeps) {
         {props.config.subtitle ||
           'If you have forgotten your username or password, please ask your system administrator'}
       </EuiText>
-      <EuiSpacer size="s" />
+      <EuiSpacer size="m" />
       <EuiForm component="form">
         {formOptions(props.authType)}
         {errorLabel}

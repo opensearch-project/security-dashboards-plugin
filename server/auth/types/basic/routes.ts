@@ -75,7 +75,7 @@ export class BasicAuthRoutes {
         },
       },
       async (context, request, response) => {
-        console.log("Enter Basic Login Page::");
+        console.log('Enter Basic Login Page::');
         const forbiddenUsernames: string[] = this.config.auth.forbidden_usernames;
         if (forbiddenUsernames.indexOf(request.body.username) > -1) {
           context.security_plugin.logger.error(
@@ -135,7 +135,7 @@ export class BasicAuthRoutes {
             roles: user.roles,
             backendroles: user.backendRoles,
             selectedTenants: this.config.multitenancy?.enabled ? sessionStorage.tenant : undefined,
-            sessionCookie: sessionStorage
+            sessionCookie: sessionStorage,
           },
         });
       }

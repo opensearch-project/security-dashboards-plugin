@@ -53,6 +53,8 @@ export class SamlAuthRoutes {
         },
       },
       async (context, request, response) => {
+        console.log('request.auth.isAuthenticated::');
+        console.log(request.auth.isAuthenticated);
         if (request.auth.isAuthenticated) {
           return response.redirected({
             headers: {
@@ -63,13 +65,21 @@ export class SamlAuthRoutes {
 
         try {
           const samlHeader = await this.securityClient.getSamlHeader(request);
+          console.log('samlHeader::');
+          console.log(samlHeader);
+          console.log(request.query.nextUrl);
           const cookie: SecuritySessionCookie = {
             saml: {
-              nextUrl: request.query.nextUrl,
+              // nextUrl: request.query.nextUrl,
+              nextUrl: '/app/opensearch-dashboards',
               requestId: samlHeader.requestId,
             },
           };
+          console.log('cookie::');
+          console.log(cookie);
           this.sessionStorageFactory.asScoped(request).set(cookie);
+          console.log('request after set cookie::');
+          console.log(request);
           return response.redirected({
             headers: {
               location: samlHeader.location,
@@ -93,10 +103,16 @@ export class SamlAuthRoutes {
         },
       },
       async (context, request, response) => {
+        console.log('/_opendistro/_security/saml/acs :: path::');
+        console.log(request.url);
+        console.log(request);
         let requestId: string = '';
         let nextUrl: string = '/';
         try {
           const cookie = await this.sessionStorageFactory.asScoped(request).get();
+          console.log('cookie::');
+          console.log(cookie);
+          console.log(request.headers.cookie);
           if (cookie) {
             requestId = cookie.saml?.requestId || '';
             nextUrl =
@@ -223,6 +239,8 @@ export class SamlAuthRoutes {
       async (context, request, response) => {
         try {
           const authInfo = await this.securityClient.authinfo(request);
+          console.log('SAML authInfo::');
+          console.log(authInfo);
           this.sessionStorageFactory.asScoped(request).clear();
           // TODO: need a default logout page
           const redirectUrl =

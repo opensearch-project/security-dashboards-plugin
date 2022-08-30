@@ -27,7 +27,7 @@ import {
   OpenIdAuthentication,
   ProxyAuthentication,
   SamlAuthentication,
-  MultipleAuthentication
+  MultipleAuthentication,
 } from './types';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { IAuthenticationType, IAuthHandlerConstructor } from './types/authentication_type';
@@ -41,10 +41,11 @@ function createAuthentication(
   router: IRouter,
   esClient: ILegacyClusterClient,
   coreSetup: CoreSetup,
-  authArr: string[],
+  // authArr: string[],
   logger: Logger
 ): IAuthenticationType {
-  return new ctor(config, sessionStorageFactory, router, esClient, coreSetup, authArr, logger);
+  // return new ctor(config, sessionStorageFactory, router, esClient, coreSetup, authArr, logger);
+  return new ctor(config, sessionStorageFactory, router, esClient, coreSetup, logger);
 }
 
 export function getAuthenticationHandler(
@@ -56,51 +57,51 @@ export function getAuthenticationHandler(
   securitySessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
   logger: Logger
 ): IAuthenticationType {
-    console.log("authType");
-    console.log(authType);
-    const authArr = authType.split(",");
-    console.log("authArr");
-    console.log(authArr);
+  console.log('authType');
+  console.log(authType);
+  const authArr = authType.split(',');
+  console.log('authArr');
+  console.log(authArr);
 
-    let authHandlerType: IAuthHandlerConstructor;
-    if(authArr.length == 1){
-        switch (authArr[0]) {
-          case '':
-          case AuthType.BASIC:
-            console.log("Create Basic Router");
-            authHandlerType = BasicAuthentication;
-            break;
-          case AuthType.JWT:
-            authHandlerType = JwtAuthentication;
-            break;
-          case AuthType.OPEN_ID:
-            console.log("Create OPENID Router");
-            authHandlerType = OpenIdAuthentication;
-            break;
-          case AuthType.SAML:
-            authHandlerType = SamlAuthentication;
-            break;
-          case AuthType.PROXY:
-            authHandlerType = ProxyAuthentication;
-            break;
-          default:
-            throw new Error(`Unsupported authentication type: ${authArr[0]}`);
-        }
-    }else{
-       authHandlerType = MultipleAuthentication;
+  let authHandlerType: IAuthHandlerConstructor;
+  if (authArr.length === 1) {
+    switch (authArr[0]) {
+      case '':
+      case AuthType.BASIC:
+        console.log('Create Basic Router');
+        authHandlerType = BasicAuthentication;
+        break;
+      case AuthType.JWT:
+        authHandlerType = JwtAuthentication;
+        break;
+      case AuthType.OPEN_ID:
+        console.log('Create OPENID Router');
+        authHandlerType = OpenIdAuthentication;
+        break;
+      case AuthType.SAML:
+        console.log('Create SAML Router');
+        authHandlerType = SamlAuthentication;
+        break;
+      case AuthType.PROXY:
+        authHandlerType = ProxyAuthentication;
+        break;
+      default:
+        throw new Error(`Unsupported authentication type: ${authArr[0]}`);
     }
-      
-    const auth: IAuthenticationType = createAuthentication(
-        authHandlerType,
-        config,
-        securitySessionStorageFactory,
-        router,
-        esClient,
-        core,
-        authArr,
-        logger
-    );
-    
-    return auth;
+  } else {
+    authHandlerType = MultipleAuthentication;
   }
 
+  const auth: IAuthenticationType = createAuthentication(
+    authHandlerType,
+    config,
+    securitySessionStorageFactory,
+    router,
+    esClient,
+    core,
+    // authArr,
+    logger
+  );
+
+  return auth;
+}

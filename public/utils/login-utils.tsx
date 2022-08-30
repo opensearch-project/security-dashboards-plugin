@@ -23,13 +23,10 @@ export async function validateCurrentPassword(
 ): Promise<void> {
   await httpPost(http, '/auth/login', {
     username: userName,
-    password: currentPassword
+    password: currentPassword,
   });
 }
 
-export async function validateExternalAuth(
-  http: HttpStart,
-  authType: string,
-): Promise<void> {
-  await httpGet(http, '/auth/openid/login');
+export async function validateExternalAuth(http: HttpStart, authType: string): Promise<void> {
+  await httpGet(http, '/auth/saml/login');
 }

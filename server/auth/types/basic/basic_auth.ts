@@ -70,10 +70,13 @@ export class BasicAuthentication extends AuthenticationType {
     return {};
   }
 
-  async getCookie(request: OpenSearchDashboardsRequest, authInfo: any): Promise<SecuritySessionCookie> {
+  async getCookie(
+    request: OpenSearchDashboardsRequest,
+    authInfo: any
+  ): Promise<SecuritySessionCookie> {
     const sessionStore = await this.sessionStorageFactory.asScoped(request).get();
     const reqAuthType = sessionStore?.authType;
-    console.log("basic reqAuthType::");
+    console.log('basic reqAuthType::');
     console.log(reqAuthType);
 
     if (
@@ -82,7 +85,7 @@ export class BasicAuthentication extends AuthenticationType {
     ) {
       return {
         username: authInfo.user_name,
-        //authType: this.type,
+        // authType: this.type,
         authType: reqAuthType,
         expiryTime: Date.now() + this.config.session.ttl,
         isAnonymousAuth: true,
@@ -93,7 +96,7 @@ export class BasicAuthentication extends AuthenticationType {
       credentials: {
         authHeaderValue: request.headers[BasicAuthentication.AUTH_HEADER_NAME],
       },
-       //authType: this.type,
+      // authType: this.type,
       authType: reqAuthType,
       expiryTime: Date.now() + this.config.session.ttl,
     };

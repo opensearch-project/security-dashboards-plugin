@@ -115,7 +115,7 @@ export class OpenIdAuthentication extends AuthenticationType {
       wreckHttpsOption.ca = [fs.readFileSync(this.config.openid.root_ca)];
     }
     if (this.config.openid?.verify_hostnames === false) {
-      //this.logger.debug(`openId auth 'verify_hostnames' option is off.`);
+      // this.logger.debug(`openId auth 'verify_hostnames' option is off.`);
       wreckHttpsOption.checkServerIdentity = (host: string, cert: PeerCertificate) => {
         return undefined;
       };
@@ -143,10 +143,13 @@ export class OpenIdAuthentication extends AuthenticationType {
     return {};
   }
 
-  async getCookie(request: OpenSearchDashboardsRequest, authInfo: any): Promise<SecuritySessionCookie> {
+  async getCookie(
+    request: OpenSearchDashboardsRequest,
+    authInfo: any
+  ): Promise<SecuritySessionCookie> {
     const sessionStore = await this.sessionStorageFactory.asScoped(request).get();
     const reqAuthType = sessionStore?.authType;
-    console.log("reqAuthType::");
+    console.log('reqAuthType::');
     console.log(reqAuthType);
 
     return {
@@ -214,14 +217,14 @@ export class OpenIdAuthentication extends AuthenticationType {
     request: OpenSearchDashboardsRequest,
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
-  ): IOpenSearchDashboardsResponse{
+  ): IOpenSearchDashboardsResponse {
     if (this.isPageRequest(request)) {
       // nextUrl is a key value pair
       const nextUrl = composeNextUrlQueryParam(
         request,
         this.coreSetup.http.basePath.serverBasePath
       );
-      console.log("oidc auth redirect uri");
+      console.log('oidc auth redirect uri');
       console.log(`${this.coreSetup.http.basePath.serverBasePath}/auth/openid/login?${nextUrl}`);
       return response.redirected({
         headers: {
@@ -239,6 +242,8 @@ export class OpenIdAuthentication extends AuthenticationType {
     if (authHeaderValue) {
       header.authorization = authHeaderValue;
     }
+    console.log('oidc header::');
+    console.log(header);
     return header;
   }
 }

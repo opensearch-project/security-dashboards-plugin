@@ -55,12 +55,16 @@ export class SamlAuthentication extends AuthenticationType {
     const path =
       this.coreSetup.http.basePath.serverBasePath +
       (request.url.path || '/app/opensearch-dashboards');
+    console.log('generateNextUrl:: path::');
+    console.log(path);
     return escape(path);
   }
 
   private redirectToLoginUri(request: OpenSearchDashboardsRequest, toolkit: AuthToolkit) {
     const nextUrl = this.generateNextUrl(request);
     const clearOldVersionCookie = clearOldVersionCookieValue(this.config);
+    console.log('nextUrl::');
+    console.log(nextUrl);
     return toolkit.redirected({
       location: `${this.coreSetup.http.basePath.serverBasePath}/auth/saml/login?nextUrl=${nextUrl}`,
       'set-cookie': clearOldVersionCookie,
@@ -79,6 +83,8 @@ export class SamlAuthentication extends AuthenticationType {
   }
 
   requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean {
+    console.log('saml request.headers::');
+    console.log(request.headers);
     return request.headers[SamlAuthentication.AUTH_HEADER_NAME] ? true : false;
   }
 
@@ -86,13 +92,22 @@ export class SamlAuthentication extends AuthenticationType {
     return {};
   }
 
-  getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
+  async getCookie(
+    request: OpenSearchDashboardsRequest,
+    authInfo: any
+  ): Promise<SecuritySessionCookie> {
+    const sessionStore = await this.sessionStorageFactory.asScoped(request).get();
+    const reqAuthType = sessionStore?.authType;
+    console.log('reqAuthType::');
+    console.log(reqAuthType);
+
     return {
       username: authInfo.user_name,
       credentials: {
         authHeaderValue: request.headers[SamlAuthentication.AUTH_HEADER_NAME],
       },
-      authType: this.type,
+      // authType: this.type,
+      authType: reqAuthType,
       expiryTime: Date.now() + this.config.session.ttl,
     };
   }
@@ -111,16 +126,23 @@ export class SamlAuthentication extends AuthenticationType {
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
   ): IOpenSearchDashboardsResponse | AuthResult {
+    console.log('saml request::');
+    console.log(request);
     if (this.isPageRequest(request)) {
+      console.log('this.isPageRequest(request)::true');
       return this.redirectToLoginUri(request, toolkit);
     } else {
+      console.log('this.isPageRequest(request)::false');
       return response.unauthorized();
     }
   }
 
   buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any {
+    console.log('Enter buildAuthHeaderFromCookie::');
     const headers: any = {};
     headers[SamlAuthentication.AUTH_HEADER_NAME] = cookie.credentials?.authHeaderValue;
+    console.log('headers::');
+    console.log(headers);
     return headers;
   }
 }

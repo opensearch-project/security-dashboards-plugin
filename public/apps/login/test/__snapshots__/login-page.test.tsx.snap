@@ -28,7 +28,7 @@ exports[`Login page renders renders with config value 1`] = `
     SubTitle1
   </EuiText>
   <EuiSpacer
-    size="s"
+    size="m"
   />
   <EuiForm
     component="form"
@@ -123,7 +123,7 @@ exports[`Login page renders renders with default value 1`] = `
     If you have forgotten your username or password, please ask your system administrator
   </EuiText>
   <EuiSpacer
-    size="s"
+    size="m"
   />
   <EuiForm
     component="form"
