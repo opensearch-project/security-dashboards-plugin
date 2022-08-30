@@ -28,8 +28,14 @@ import { Options } from 'selenium-webdriver/firefox';
 
 describe('start OpenSearch Dashboards server', () => {
   let root: Root;
-  let driver: ThenableWebDriver;
   let config;
+
+  // XPath Constants
+  const userIconBtnXPath = '//button[@id="user-icon-btn"]';
+  const signInBtnXPath = '//*[@id="btn-sign-in"]';
+  const skipWelcomeBtnXPath = '//button[@data-test-subj="skipWelcomeScreen"]';
+  const tenantNameLabelXPath = '//*[@id="tenantName"]';
+  const pageTitleXPath = '//*[@id="osdOverviewPageHeader__title"]';
 
   beforeAll(async () => {
     root = osdTestServer.createRootWithSettings(
@@ -78,10 +84,6 @@ describe('start OpenSearch Dashboards server', () => {
     await root.start();
 
     console.log('Starting the Selenium Web Driver');
-    driver = new Builder()
-      .forBrowser('firefox')
-      .setFirefoxOptions(new Options().headless())
-      .build();
     await wreck.patch('https://localhost:9200/_plugins/_security/api/rolesmapping/all_access', {
       payload: [
         {
@@ -221,23 +223,25 @@ describe('start OpenSearch Dashboards server', () => {
       });
     // shutdown OpenSearchDashboards server
     await root.shutdown();
-    await driver.quit();
   });
 
   it('Login to app/opensearch_dashboards_overview#/ when SAML is enabled', async () => {
+    let driver = getDriver().build();
     await driver.get('http://localhost:5601/app/opensearch_dashboards_overview#/');
     await driver.findElement(By.id('btn-sign-in')).click();
     await driver.wait(
-      until.elementsLocated(By.xpath('//*[@id="osdOverviewPageHeader__title"]')),
+      until.elementsLocated(By.xpath(pageTitleXPath)),
       10000
     );
 
     let cookie = await driver.manage().getCookies();
     expect(cookie.length).toEqual(2);
     await driver.manage().deleteAllCookies();
+    await driver.quit();
   });
 
   it('Login to app/dev_tools#/console when SAML is enabled', async () => {
+    let driver = getDriver().build();
     await driver.get('http://localhost:5601/app/dev_tools#/console');
     await driver.findElement(By.id('btn-sign-in')).click();
 
@@ -251,34 +255,90 @@ describe('start OpenSearch Dashboards server', () => {
     let cookie = await driver.manage().getCookies();
     expect(cookie.length).toEqual(2);
     await driver.manage().deleteAllCookies();
+    await driver.quit();
   });
 
   it('Login to Dashboard with Hash', async () => {
     let url_with_hash = `http://localhost:5601/app/dashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(filters:!(),refreshInterval:(pause:!f,value:900000),time:(from:now-24h,to:now))&_a=(description:'Analyze%20mock%20flight%20data%20for%20OpenSearch-Air,%20Logstash%20Airways,%20OpenSearch%20Dashboards%20Airlines%20and%20BeatsWest',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'%5BFlights%5D%20Global%20Flight%20Dashboard',viewMode:view)`;
-    let driver2 = new Builder()
-      .forBrowser('firefox')
-      .setFirefoxOptions(new Options().headless())
-      .build();
-    await driver2.manage().deleteAllCookies();
-    await driver2.get(url_with_hash);
-    await driver2.wait(
+    let driver = getDriver().build();
+    await driver.manage().deleteAllCookies();
+    await driver.get(url_with_hash);
+    await driver.wait(
       until.elementsLocated(By.xpath('/html/body/nav/div/div[1]/a/i/span')),
       60000
     );
-    await driver2.findElement(By.xpath('//*[@id="btn-sign-in"]')).click();
-    await driver2.wait(
+    await driver.findElement(By.xpath(signInBtnXPath)).click();
+    await driver.wait(
       until.elementsLocated(By.xpath('/html/body/div[1]/div/header/div/div[2]')),
       20000
     );
-    let window_hash = await driver2.getCurrentUrl();
+    let window_hash = await driver.getCurrentUrl();
     expect(window_hash).toEqual(url_with_hash);
-    let cookie = await driver2.manage().getCookies();
+    let cookie = await driver.manage().getCookies();
     expect(cookie.length).toEqual(2);
-    await driver2.manage().deleteAllCookies();
+    await driver.manage().deleteAllCookies();
+    await driver.quit();
   });
 
-  afterEach(async () => {
+  it('Testing Tenancy IT', async () => {
+    let driver = getDriver().build();
+
+    await driver.get('http://localhost:5601/app/opensearch_dashboards_overview#/');
+
+    await driver.findElement(By.xpath(signInBtnXPath)).click();
+
+    await driver.wait(
+      until.elementsLocated(By.xpath(pageTitleXPath)),
+      10000
+    );
+
+    await driver.wait(
+      until.elementsLocated(By.xpath('//button[@aria-label="Closes this modal window"]')),
+      10000
+    );
+
+    // Select Global Tenant Radio Button
+    const radio = await driver.findElement(By.xpath('//input[@id="global"]'));
+    await driver.executeScript('arguments[0].scrollIntoView(true);', radio);
+    await driver.executeScript('arguments[0].click();', radio);
+
+    await driver.findElement(By.xpath('//button[@data-test-subj="confirm"]')).click();
+
+    await driver.wait(until.elementsLocated(By.xpath(userIconBtnXPath)), 10000);
+
+    await driver.findElement(By.xpath(userIconBtnXPath)).click();
+
+    await driver.findElement(By.xpath('//*[@data-test-subj="log-out-1"]')).click();
+
+    // RELOGIN AND CHECK TENANT
+
+    await driver.wait(until.elementsLocated(By.xpath(signInBtnXPath)), 10000);
+
+    await driver.findElement(By.xpath(signInBtnXPath)).click();
+
+    await driver.wait(until.elementsLocated(By.xpath(skipWelcomeBtnXPath)), 10000);
+
+    await driver.findElement(By.xpath(skipWelcomeBtnXPath)).click();
+
+    await driver.findElement(By.xpath(userIconBtnXPath)).click();
+
+    await driver.wait(until.elementsLocated(By.xpath(tenantNameLabelXPath)), 10000);
+
+    const tenantName = await driver.findElement(By.xpath(tenantNameLabelXPath)).getText();
+
+    console.log('Tenant after login is %s', tenantName);
+
+    expect(tenantName).toEqual('Global');
+
     await driver.manage().deleteAllCookies();
-    console.log('Remove cookies from previous tests.');
+    await driver.quit();
   });
+
 });
+
+
+function getDriver() {
+  return new Builder()
+      .forBrowser('firefox')
+      .setFirefoxOptions(new Options().headless());
+}
