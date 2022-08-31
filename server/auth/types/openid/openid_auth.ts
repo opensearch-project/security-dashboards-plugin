@@ -35,6 +35,7 @@ import { OpenIdAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
 import { callTokenEndpoint } from './helper';
 import { composeNextUrlQueryParam } from '../../../utils/next_url';
+import { getExpirationDate } from './helper';
 
 export interface OpenIdAuthConfig {
   authorizationEndpoint?: string;
@@ -189,7 +190,7 @@ export class OpenIdAuthentication extends AuthenticationType {
           cookie.credentials = {
             authHeaderValue: `Bearer ${refreshTokenResponse.idToken}`,
             refresh_token: refreshTokenResponse.refreshToken,
-            expires_at: Date.now() + refreshTokenResponse.expiresIn! * 1000, // expiresIn is in second
+            expires_at: getExpirationDate(refreshTokenResponse), // expiresIn is in second
           };
           return true;
         } else {
