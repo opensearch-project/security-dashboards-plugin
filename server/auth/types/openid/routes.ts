@@ -29,6 +29,7 @@ import { OpenIdAuthConfig } from './openid_auth';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
 import { getBaseRedirectUrl, callTokenEndpoint, composeLogoutUrl } from './helper';
 import { validateNextUrl } from '../../../utils/next_url';
+import { getExpirationDate } from './helper';
 
 export class OpenIdAuthRoutes {
   private static readonly NONCE_LENGTH: number = 22;
@@ -148,7 +149,6 @@ export class OpenIdAuthRoutes {
             query,
             this.wreckClient
           );
-
           const user = await this.securityClient.authenticateWithHeader(
             request,
             this.openIdAuthConfig.authHeaderName as string,
@@ -160,7 +160,7 @@ export class OpenIdAuthRoutes {
             username: user.username,
             credentials: {
               authHeaderValue: `Bearer ${tokenResponse.idToken}`,
-              expires_at: Date.now() + tokenResponse.expiresIn! * 1000, // expiresIn is in second
+              expires_at: getExpirationDate(tokenResponse),
             },
             authType: 'openid',
             expiryTime: Date.now() + this.config.session.ttl,
