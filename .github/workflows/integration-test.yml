@@ -113,6 +113,7 @@ jobs:
           yarn test:jest_server --coverage
           
       - name: Debug loggers     
+        run: |
           echo -e "Printing the Security Config\n"
           curl -XGET https://localhost:9200/_plugins/_security/api/securityconfig -u 'admin:admin' -k
           echo -e "\n\nPrinting the Settings"
