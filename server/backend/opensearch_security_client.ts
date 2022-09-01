@@ -157,6 +157,9 @@ export class SecurityClient {
       //     location="https://<your-auth-domain.com>/api/saml2/v1/sso?SAMLRequest=<some-encoded-string>"
       //     requestId="<request_id>"
       //   '
+
+      console.log('Recieved error from authinfo API', error);
+
       if (!error.wwwAuthenticateDirective) {
         throw error;
       }
