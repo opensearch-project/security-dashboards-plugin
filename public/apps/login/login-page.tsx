@@ -254,8 +254,8 @@ export function LoginPage(props: LoginPageDeps) {
           break;
       }
     }
-    /*
-    if(props.configOp.auth.anonymous_auth_enabled){
+    
+    if(props.configOp!.auth!.anonymous_auth_enabled){
         formBodyOp.push  (
           <EuiFormRow>
           <EuiButton
@@ -264,15 +264,15 @@ export function LoginPage(props: LoginPageDeps) {
             //type="prime"
             className={props.configOp.ui.openid.login.buttonstyle || 'btn-login'}
             //onClick={handleSocialSignInSubmit}
-            onClick={handleSubmit}
-            //href="/auth/anonymous"
+            //onClick={handleSubmit}
+            href="/auth/anonymous"
             iconType={props.configOp.ui.openid.login.showbrandimage? props.configOp.ui.openid.login.brandimage: ""}
           >
             Log In as Anonymous
           </EuiButton>
         </EuiFormRow>
         );
-    }*/
+    }
     formBody = formBody.concat(formBodyOp);
     return formBody;
   };

@@ -71,9 +71,6 @@ export function getAuthenticationHandler(
         console.log('Create Basic Router');
         authHandlerType = BasicAuthentication;
         break;
-      case AuthType.JWT:
-        authHandlerType = JwtAuthentication;
-        break;
       case AuthType.OPEN_ID:
         console.log('Create OPENID Router');
         authHandlerType = OpenIdAuthentication;
@@ -81,9 +78,6 @@ export function getAuthenticationHandler(
       case AuthType.SAML:
         console.log('Create SAML Router');
         authHandlerType = SamlAuthentication;
-        break;
-      case AuthType.PROXY:
-        authHandlerType = ProxyAuthentication;
         break;
       default:
         throw new Error(`Unsupported authentication type: ${authArr[0]}`);

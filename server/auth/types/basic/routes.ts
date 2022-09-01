@@ -180,8 +180,12 @@ export class BasicAuthRoutes {
             redirectUrl = nextUrl;
           }
           context.security_plugin.logger.info('The Redirect Path is ' + redirectUrl);
+          console.log("/auth/anonymous:: request::");
+          console.log(request);
           try {
             user = await this.securityClient.authenticateWithHeaders(request, {});
+            console.log("user::");
+            console.log(user);
           } catch (error) {
             context.security_plugin.logger.error(
               `Failed authentication: ${error}. Redirecting to Login Page`
@@ -194,7 +198,7 @@ export class BasicAuthRoutes {
               },
             });
           }
-
+          console.log("/auth/anonymous:: sessionStorage::");
           this.sessionStorageFactory.asScoped(request).clear();
           const sessionStorage: SecuritySessionCookie = {
             username: user.username,
@@ -202,7 +206,7 @@ export class BasicAuthRoutes {
             isAnonymousAuth: true,
             expiryTime: Date.now() + this.config.session.ttl,
           };
-
+          console.log(sessionStorage);
           if (this.config.multitenancy?.enabled) {
             const selectTenant = resolveTenant(
               request,

@@ -349,6 +349,8 @@ export class MultipleAuthentication extends AuthenticationType {
       );
 
       console.log(nextUrlParam);
+
+      /*
       if (this.config.auth.anonymous_auth_enabled) {
         const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}/auth/anonymous?${nextUrlParam}`;
         return response.redirected({
@@ -366,6 +368,15 @@ export class MultipleAuthentication extends AuthenticationType {
           },
         });
       }
+      */
+      const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`;
+      console.log('redirectLocation::');
+      console.log(redirectLocation);
+      return response.redirected({
+        headers: {
+          location: `${redirectLocation}`,
+        },
+      });
     } else {
       return response.unauthorized({
         body: `Authentication required`,

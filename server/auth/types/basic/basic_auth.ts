@@ -121,6 +121,8 @@ export class BasicAuthentication extends AuthenticationType {
         request,
         this.coreSetup.http.basePath.serverBasePath
       );
+      console.log("Basic auth:: nextUrlParam::");
+      console.log(nextUrlParam);
       if (this.config.auth.anonymous_auth_enabled) {
         const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}/auth/anonymous?${nextUrlParam}`;
         return response.redirected({
