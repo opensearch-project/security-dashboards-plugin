@@ -16,14 +16,14 @@
 import * as osdTestServer from '../../../../src/core/test_helpers/osd_server';
 import { Root } from '../../../../src/core/server/root';
 import { resolve } from 'path';
-import { describe, expect, it, beforeAll, afterAll, afterEach, test } from '@jest/globals';
+import { describe, expect, it, beforeAll, afterAll } from '@jest/globals';
 import {
   ADMIN_CREDENTIALS,
   OPENSEARCH_DASHBOARDS_SERVER_USER,
   OPENSEARCH_DASHBOARDS_SERVER_PASSWORD,
 } from '../constant';
 import wreck from '@hapi/wreck';
-import { Builder, By, until, ThenableWebDriver } from 'selenium-webdriver';
+import { Builder, By, until } from 'selenium-webdriver';
 import { Options } from 'selenium-webdriver/firefox';
 
 describe('start OpenSearch Dashboards server', () => {
@@ -53,6 +53,11 @@ describe('start OpenSearch Dashboards server', () => {
               '/_opendistro/_security/saml/logout',
             ],
           },
+        },
+        // TODO Disable logging before merging PR
+        logging: {
+          silent: false,
+          verbose: true,
         },
         opensearch: {
           hosts: ['https://localhost:9200'],
@@ -88,7 +93,6 @@ describe('start OpenSearch Dashboards server', () => {
     await root.setup();
     await root.start();
 
-    console.log('Starting the Selenium Web Driver');
     await wreck.patch('https://localhost:9200/_plugins/_security/api/rolesmapping/all_access', {
       payload: [
         {
@@ -322,12 +326,12 @@ describe('start OpenSearch Dashboards server', () => {
 
     const tenantName = await driver.findElement(By.xpath(tenantNameLabelXPath)).getText();
 
+    await driver.manage().deleteAllCookies();
+    await driver.quit();
+
     console.log('Tenant after login is %s', tenantName);
 
     expect(tenantName).toEqual('Global');
-
-    await driver.manage().deleteAllCookies();
-    await driver.quit();
   });
 });
 
