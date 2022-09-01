@@ -18,7 +18,6 @@ import config from '../../../src/dev/jest/config';
 export default {
   ...config,
   roots: ['<rootDir>/plugins/security-dashboards-plugin'],
-  //for now only run saml integration test.
   testMatch: ['**/test/jest_integration/**/*.test.ts', '**/server/**/*.test.ts'],
   testPathIgnorePatterns: config.testPathIgnorePatterns.filter(
     (pattern) => !pattern.includes('integration_tests')
