@@ -42,7 +42,7 @@ jobs:
           WORKDIR /opensearch/
           ENTRYPOINT /docker-host/os-ep.sh
           EOF
-          docker run --network=host -d -p 9200:9200 -p 9600:9600 -e "discovery.type=single-node" -i opensearch-test:latest
+          docker run --name oss --network=host -d -e "discovery.type=single-node" -i opensearch-test:latest
 
       - name: Checkout OpenSearch Dashboard
         uses: actions/checkout@v2
@@ -107,6 +107,7 @@ jobs:
       
       - name: Run integration tests
         run: |
+          docker logs oss
           echo "check if opensearch is ready"
           curl -XGET https://localhost:9200 -u 'admin:admin' -k
           cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
