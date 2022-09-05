@@ -158,8 +158,6 @@ export class SecurityClient {
       //     requestId="<request_id>"
       //   '
 
-      console.log('Recieved error from authinfo API', error);
-
       if (!error.wwwAuthenticateDirective) {
         throw error;
       }

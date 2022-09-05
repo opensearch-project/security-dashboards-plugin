@@ -54,10 +54,9 @@ describe('start OpenSearch Dashboards server', () => {
             ],
           },
         },
-        // TODO Disable logging before merging PR
         logging: {
-          silent: false,
-          verbose: true,
+          silent: true,
+          verbose: false,
         },
         opensearch: {
           hosts: ['https://localhost:9200'],
@@ -168,7 +167,6 @@ describe('start OpenSearch Dashboards server', () => {
     } catch (error) {
       console.log('Got an error!!', error.stack);
     }
-    console.log('The Config Response is : ' + JSON.stringify(config));
   });
 
   afterAll(async () => {
@@ -283,7 +281,7 @@ describe('start OpenSearch Dashboards server', () => {
     await driver.quit();
   });
 
-  it('Testing Tenancy IT', async () => {
+  it('Tenancy persisted after Logout in SAML', async () => {
     const driver = getDriver().build();
 
     await driver.get('http://localhost:5601/app/opensearch_dashboards_overview#/');
@@ -328,8 +326,6 @@ describe('start OpenSearch Dashboards server', () => {
 
     await driver.manage().deleteAllCookies();
     await driver.quit();
-
-    console.log('Tenant after login is %s', tenantName);
 
     expect(tenantName).toEqual('Global');
   });
