@@ -42,7 +42,7 @@ jobs:
           WORKDIR /opensearch/
           ENTRYPOINT /docker-host/os-ep.sh
           EOF
-          docker run -p 9200:9200 -p 9600:9600 -i opensearch-test:latest
+          docker run -d --network=host -e "discovery.type=single-node" -e "plugins.security.unsupported.restapi.allow_securityconfig_modification=true" -i opensearchproject/opensearch:2.2.0
 
       - name: Checkout OpenSearch Dashboard
         uses: actions/checkout@v2
