@@ -42,7 +42,7 @@ jobs:
           WORKDIR /opensearch/
           ENTRYPOINT /docker-host/os-ep.sh
           EOF
-          docker run --network=host -e "discovery.type=single-node" -i opensearch-test:latest
+          docker run --network=host -i opensearch-test:latest
 
       - name: Checkout OpenSearch Dashboard
         uses: actions/checkout@v2
