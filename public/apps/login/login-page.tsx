@@ -254,7 +254,7 @@ export function LoginPage(props: LoginPageDeps) {
           break;
       }
     }
-/*
+    /*
     if (props.configOp!.auth && props.configOp!.auth!.anonymous_auth_enabled) {
       formBodyOp.push(
         <EuiFormRow>
