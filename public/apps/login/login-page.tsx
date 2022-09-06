@@ -254,25 +254,29 @@ export function LoginPage(props: LoginPageDeps) {
           break;
       }
     }
-    
-    if(props.configOp!.auth!.anonymous_auth_enabled){
-        formBodyOp.push  (
-          <EuiFormRow>
+/*
+    if (props.configOp!.auth && props.configOp!.auth!.anonymous_auth_enabled) {
+      formBodyOp.push(
+        <EuiFormRow>
           <EuiButton
-            //data-test-subj="submit"
+            // data-test-subj="submit"
             size="s"
-            //type="prime"
+            // type="prime"
             className={props.configOp.ui.openid.login.buttonstyle || 'btn-login'}
-            //onClick={handleSocialSignInSubmit}
-            //onClick={handleSubmit}
+            // onClick={handleSocialSignInSubmit}
+            // onClick={handleSubmit}
             href="/auth/anonymous"
-            iconType={props.configOp.ui.openid.login.showbrandimage? props.configOp.ui.openid.login.brandimage: ""}
+            iconType={
+              props.configOp.ui.openid.login.showbrandimage
+                ? props.configOp.ui.openid.login.brandimage
+                : ''
+            }
           >
             Log In as Anonymous
           </EuiButton>
         </EuiFormRow>
-        );
-    }
+      );
+    }*/
     formBody = formBody.concat(formBodyOp);
     return formBody;
   };

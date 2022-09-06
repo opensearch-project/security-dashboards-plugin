@@ -180,11 +180,11 @@ export class BasicAuthRoutes {
             redirectUrl = nextUrl;
           }
           context.security_plugin.logger.info('The Redirect Path is ' + redirectUrl);
-          console.log("/auth/anonymous:: request::");
+          console.log('/auth/anonymous:: request::');
           console.log(request);
           try {
             user = await this.securityClient.authenticateWithHeaders(request, {});
-            console.log("user::");
+            console.log('user::');
             console.log(user);
           } catch (error) {
             context.security_plugin.logger.error(
@@ -198,7 +198,7 @@ export class BasicAuthRoutes {
               },
             });
           }
-          console.log("/auth/anonymous:: sessionStorage::");
+          console.log('/auth/anonymous:: sessionStorage::');
           this.sessionStorageFactory.asScoped(request).clear();
           const sessionStorage: SecuritySessionCookie = {
             username: user.username,
