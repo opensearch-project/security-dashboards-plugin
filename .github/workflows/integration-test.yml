@@ -42,7 +42,7 @@ jobs:
           WORKDIR /opensearch/
           ENTRYPOINT /docker-host/os-ep.sh
           EOF
-          docker run -d -p 9200:9200 -p 9600:9600 -i opensearch-test:latest
+          docker run --name oss -d --network=host -i opensearch-test:latest
 
       - name: Checkout OpenSearch Dashboard
         uses: actions/checkout@v2
@@ -65,7 +65,10 @@ jobs:
 
       - name: Check OpenSearch Running
         continue-on-error: true
-        run: curl -XGET https://localhost:9200 -u 'admin:admin' -k
+        run: | 
+          docker logs oss
+          curl -XGET https://localhost:9200 -u 'admin:admin' -k
+
 
       # - name: Get OpenSearch Dashboards version
       #   id: osd_version
