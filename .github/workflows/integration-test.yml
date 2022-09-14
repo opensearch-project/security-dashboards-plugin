@@ -13,13 +13,13 @@ jobs:
     steps:
       - name: Download OpenSearch Core
         run: |
-          wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/2.3.0/latest/linux/x64/tar/builds/opensearch/dist/opensearch-min-2.3.0-linux-x64.tar.gz
+          wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/2.4.0/latest/linux/x64/tar/builds/opensearch/dist/opensearch-min-2.4.0-linux-x64.tar.gz
           tar -xzf opensearch-*.tar.gz
           rm -f opensearch-*.tar.gz
           
       - name: Download OpenSearch Security Plugin
-        run: wget -O opensearch-security.zip https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/2.3.0/latest/linux/x64/tar/builds/opensearch/plugins/opensearch-security-2.3.0.0.zip
-
+        run: wget -O opensearch-security.zip https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/2.4.0/latest/linux/x64/tar/builds/opensearch/plugins/opensearch-security-2.4.0.0.zip
+        
 
       - name: Run OpenSearch with plugin
         run: |
