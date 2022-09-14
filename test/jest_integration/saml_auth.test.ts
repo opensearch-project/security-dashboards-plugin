@@ -326,7 +326,6 @@ describe('start OpenSearch Dashboards server', () => {
 
     await driver.manage().deleteAllCookies();
     await driver.quit();
-
   });
 });
 
