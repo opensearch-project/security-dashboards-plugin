@@ -36,6 +36,7 @@ describe('start OpenSearch Dashboards server', () => {
   const skipWelcomeBtnXPath = '//button[@data-test-subj="skipWelcomeScreen"]';
   const tenantNameLabelXPath = '//*[@id="tenantName"]';
   const pageTitleXPath = '//*[@id="osdOverviewPageHeader__title"]';
+  const browser = 'firefox';
 
   beforeAll(async () => {
     root = osdTestServer.createRootWithSettings(
@@ -165,7 +166,8 @@ describe('start OpenSearch Dashboards server', () => {
         },
       });
     } catch (error) {
-      console.log('Got an error!!', error.stack);
+      console.log('Got an error while updating security config!!', error.stack);
+      fail(error);
     }
   });
 
@@ -250,9 +252,7 @@ describe('start OpenSearch Dashboards server', () => {
     await driver.findElement(By.id('btn-sign-in')).click();
 
     await driver.wait(
-      until.elementsLocated(
-        By.xpath('/html/body/div[1]/div/div/div/div[2]/div/main/div[1]/span/button/span')
-      ),
+      until.elementsLocated(By.xpath('//*[@data-test-subj="sendRequestButton"]')),
       10000
     );
 
