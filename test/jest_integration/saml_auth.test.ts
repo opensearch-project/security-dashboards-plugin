@@ -267,8 +267,8 @@ describe('start OpenSearch Dashboards server', () => {
     const driver = getDriver().build();
     await driver.manage().deleteAllCookies();
     await driver.get(urlWithHash);
-    await driver.wait(until.elementsLocated(By.xpath('/html/body/nav/div/div[1]/a/i/span')), 60000);
     await driver.findElement(By.xpath(signInBtnXPath)).click();
+    // TODO Use a better XPath.
     await driver.wait(
       until.elementsLocated(By.xpath('/html/body/div[1]/div/header/div/div[2]')),
       20000
