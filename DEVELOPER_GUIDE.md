@@ -118,6 +118,8 @@ Next, go to the base directory and run `yarn osd bootstrap` to install any addit
 
 Now, from the base directory and run `yarn start`. This should start dashboard UI successfully. `Cmd+click` the url in the console output (It should look something like `http://0:5601/omf`). Once the page loads, you should be able to log in with user `admin` and password `admin`.
 
+To run selenium based integration tests, download and export the firefox web-driver to your PATH. Also, run `node scripts/build_opensearch_dashboards_platform_plugins.js` or `yarn start` before running the tests. This is essential to generate the bundles.  
+
 ## Submitting Changes
 
 See [CONTRIBUTING](CONTRIBUTING.md).
