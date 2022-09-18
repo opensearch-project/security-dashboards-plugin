@@ -36,7 +36,9 @@ describe('start OpenSearch Dashboards server', () => {
   const skipWelcomeBtnXPath = '//button[@data-test-subj="skipWelcomeScreen"]';
   const tenantNameLabelXPath = '//*[@id="tenantName"]';
   const pageTitleXPath = '//*[@id="osdOverviewPageHeader__title"]';
+  // Browser Settings
   const browser = 'firefox';
+  const options = new Options().headless();
 
   beforeAll(async () => {
     root = osdTestServer.createRootWithSettings(
@@ -235,7 +237,7 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   it('Login to app/opensearch_dashboards_overview#/ when SAML is enabled', async () => {
-    const driver = getDriver().build();
+    const driver = getDriver(browser, options).build();
     await driver.get('http://localhost:5601/app/opensearch_dashboards_overview#/');
     await driver.findElement(By.id('btn-sign-in')).click();
     await driver.wait(until.elementsLocated(By.xpath(pageTitleXPath)), 10000);
@@ -247,7 +249,7 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   it('Login to app/dev_tools#/console when SAML is enabled', async () => {
-    const driver = getDriver().build();
+    const driver = getDriver(browser, options).build();
     await driver.get('http://localhost:5601/app/dev_tools#/console');
     await driver.findElement(By.id('btn-sign-in')).click();
 
@@ -264,7 +266,7 @@ describe('start OpenSearch Dashboards server', () => {
 
   it('Login to Dashboard with Hash', async () => {
     const urlWithHash = `http://localhost:5601/app/dashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(filters:!(),refreshInterval:(pause:!f,value:900000),time:(from:now-24h,to:now))&_a=(description:'Analyze%20mock%20flight%20data%20for%20OpenSearch-Air,%20Logstash%20Airways,%20OpenSearch%20Dashboards%20Airlines%20and%20BeatsWest',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'%5BFlights%5D%20Global%20Flight%20Dashboard',viewMode:view)`;
-    const driver = getDriver().build();
+    const driver = getDriver(browser, options).build();
     await driver.manage().deleteAllCookies();
     await driver.get(urlWithHash);
     await driver.findElement(By.xpath(signInBtnXPath)).click();
@@ -282,7 +284,7 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   it('Tenancy persisted after Logout in SAML', async () => {
-    const driver = getDriver().build();
+    const driver = getDriver(browser, options).build();
 
     await driver.get('http://localhost:5601/app/opensearch_dashboards_overview#/');
 
@@ -332,6 +334,6 @@ describe('start OpenSearch Dashboards server', () => {
   });
 });
 
-function getDriver() {
-  return new Builder().forBrowser('firefox').setFirefoxOptions(new Options().headless());
+function getDriver(browser: string, options: Options) {
+  return new Builder().forBrowser(browser).setFirefoxOptions(options);
 }
