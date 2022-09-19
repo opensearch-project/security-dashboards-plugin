@@ -42,7 +42,7 @@ jobs:
           WORKDIR /opensearch/
           ENTRYPOINT /docker-host/os-ep.sh
           EOF
-          docker run -d -p 9200:9200 -p 9600:9600 -i opensearch-test:latest
+          docker run -d --network=host -i opensearch-test:latest
 
       - name: Checkout OpenSearch Dashboard
         uses: actions/checkout@v2
@@ -103,6 +103,7 @@ jobs:
         run: |
           cd ./OpenSearch-Dashboards
           yarn osd bootstrap
+          node scripts/build_opensearch_dashboards_platform_plugins.js
       
       - name: Run integration tests
         run: |
