@@ -28,6 +28,7 @@ plugins.security.allow_default_init_securityindex: true
 plugins.security.authcz.admin_dn:
 - CN=kirk,OU=client,O=client,L=test, C=de
 
+plugins.security.unsupported.restapi.allow_securityconfig_modification: true
 plugins.security.audit.type: internal_opensearch
 plugins.security.enable_snapshot_restore_privilege: true
 plugins.security.check_snapshot_restore_write_privileges: true
@@ -70,6 +71,8 @@ yarn build
 ```
 
 We should be able to run Dashboards now changing back to its base directory and running `yarn start`. Navigating to the URL given as console output (something like `http://localhost:5601/omf`) you should now be able to log in with user `admin` and password `admin`.
+
+To run selenium based integration tests, download and export the firefox web-driver to your PATH. Also, run `node scripts/build_opensearch_dashboards_platform_plugins.js` or `yarn start` before running the tests. This is essential to generate the bundles.  
 
 ## Submitting Changes
 

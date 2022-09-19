@@ -58,7 +58,8 @@ export class SamlAuthentication extends AuthenticationType {
     return escape(path);
   }
 
-  private redirectToLoginUri(request: OpenSearchDashboardsRequest, toolkit: AuthToolkit) {
+  // Check if we can get the previous tenant information from the expired cookie.
+  private redirectSAMlCapture = (request: OpenSearchDashboardsRequest, toolkit: AuthToolkit) => {
     const nextUrl = this.generateNextUrl(request);
     const clearOldVersionCookie = clearOldVersionCookieValue(this.config);
     return toolkit.redirected({
@@ -97,6 +98,7 @@ export class SamlAuthentication extends AuthenticationType {
     };
   }
 
+  // Can be improved to check if the token is expiring.
   async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean> {
     return (
       cookie.authType === this.type &&
@@ -112,7 +114,7 @@ export class SamlAuthentication extends AuthenticationType {
     toolkit: AuthToolkit
   ): IOpenSearchDashboardsResponse | AuthResult {
     if (this.isPageRequest(request)) {
-      return this.redirectToLoginUri(request, toolkit);
+      return this.redirectSAMlCapture(request, toolkit);
     } else {
       return response.unauthorized();
     }
