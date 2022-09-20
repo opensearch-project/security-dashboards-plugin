@@ -9,6 +9,6 @@ jobs:
     steps:
       - name: Check for the existence of the OpenSearch Security Plugin artifact
         env:
-          opensearch_version: 2.3.0
-          opensearch_security_plugin_version: 2.3.0.0
+          opensearch_version: 2.3.1
+          opensearch_security_plugin_version: 2.3.1.0
         run: wget -S --spider https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${opensearch_version}/latest/linux/x64/tar/builds/opensearch/plugins/opensearch-security-${opensearch_security_plugin_version}.zip || (echo "Please make sure security plugin has been bumped to the same version and added to manifest." && exit 1)
