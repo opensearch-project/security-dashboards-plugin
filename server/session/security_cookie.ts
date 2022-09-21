@@ -36,6 +36,7 @@ export interface SecuritySessionCookie {
   saml?: {
     requestId?: string;
     nextUrl?: string;
+    redirectHash?: boolean;
   };
 }
 
