@@ -32,19 +32,62 @@ describe('Login page', () => {
 
   describe('renders', () => {
     it('renders with config value', () => {
-      const config: ClientConfigType['ui']['basicauth']['login'] = {
-        title: 'Title1',
-        subtitle: 'SubTitle1',
-        showbrandimage: true,
-        brandimage: 'http://localhost:5601/images/test.png',
-        buttonstyle: 'test-btn-style',
+      const config: ClientConfigType = {
+        ui: {
+          basicauth: {
+            login: {
+              title: 'Title1',
+              subtitle: 'SubTitle1',
+              showbrandimage: true,
+              brandimage: 'http://localhost:5601/images/test.png',
+              buttonstyle: 'test-btn-style',
+            },
+          },
+          openid: {
+            login: {
+              buttonname: 'Title2',
+              showbrandimage: true,
+              brandimage: 'http://localhost:5601/images/test.png',
+              buttonstyle: 'test-btn-style',
+            },
+          },
+          saml: {
+            login: {
+              buttonname: 'Title2',
+              showbrandimage: true,
+              brandimage: 'http://localhost:5601/images/test.png',
+              buttonstyle: 'test-btn-style',
+            },
+          },
+          autologout: true,
+          backend_configurable: true,
+        },
+        auth: {
+          type: 'basicauth',
+          logout_url: '/auth/logout',
+          anonymous_auth_enabled: false,
+        },
       };
       const component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
       expect(component).toMatchSnapshot();
     });
 
     it('renders with default value', () => {
-      const component = shallow(<LoginPage http={mockHttpStart as any} config={{} as any} />);
+      const config: ClientConfigType = {
+        ui: {
+          basicauth: {
+            login: {
+              showbrandimage: true,
+            },
+          },
+        },
+        auth: {
+          type: 'basicauth',
+          // logout_url: "/auth/logout",
+          anonymous_auth_enabled: false,
+        },
+      };
+      const component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
       expect(component).toMatchSnapshot();
     });
   });
@@ -53,10 +96,23 @@ describe('Login page', () => {
     let component;
     const setState = jest.fn();
     const useState = jest.spyOn(React, 'useState');
-
+    const config: ClientConfigType = {
+      ui: {
+        basicauth: {
+          login: {
+            showbrandimage: true,
+          },
+        },
+      },
+      auth: {
+        type: 'basicauth',
+        // logout_url: "/auth/logout",
+        anonymous_auth_enabled: false,
+      },
+    };
     beforeEach(() => {
       useState.mockImplementation((initialValue) => [initialValue, setState]);
-      component = shallow(<LoginPage http={mockHttpStart as any} config={{} as any} />);
+      component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
     });
 
     it('should update user name field on change event', () => {
@@ -80,11 +136,24 @@ describe('Login page', () => {
     let component;
     const useState = jest.spyOn(React, 'useState');
     const setState = jest.fn();
-
+    const config: ClientConfigType = {
+      ui: {
+        basicauth: {
+          login: {
+            showbrandimage: true,
+          },
+        },
+      },
+      auth: {
+        type: 'basicauth',
+        // logout_url: "/auth/logout",
+        anonymous_auth_enabled: false,
+      },
+    };
     beforeEach(() => {
       useState.mockImplementation(() => ['user1', setState]);
       useState.mockImplementation(() => ['password1', setState]);
-      component = shallow(<LoginPage http={mockHttpStart as any} config={{} as any} />);
+      component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
     });
 
     it('submit click event', () => {

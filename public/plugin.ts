@@ -111,7 +111,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
         const { renderApp } = await import('./apps/login/login-app');
         // @ts-ignore depsStart not used.
         const [coreStart, depsStart] = await core.getStartServices();
-        return renderApp(coreStart, params, config.ui.basicauth.login);
+        return renderApp(coreStart, params, config);
       },
     });
 

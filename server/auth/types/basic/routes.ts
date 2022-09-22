@@ -89,7 +89,7 @@ export class BasicAuthRoutes {
             username: request.body.username,
             password: request.body.password,
           });
-        } catch (error) {
+        } catch (error: any) {
           context.security_plugin.logger.error(`Failed authentication: ${error}`);
           return response.unauthorized({
             headers: {
@@ -132,6 +132,7 @@ export class BasicAuthRoutes {
             roles: user.roles,
             backendroles: user.backendRoles,
             selectedTenants: this.config.multitenancy?.enabled ? sessionStorage.tenant : undefined,
+            sessionCookie: sessionStorage,
           },
         });
       }

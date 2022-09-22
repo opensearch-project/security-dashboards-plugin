@@ -1,11 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Account menu - Log out button renders renders when auth type is MultiAuth 1`] = `
+<div>
+  <EuiButtonEmpty
+    color="danger"
+    data-test-subj="log-out-2"
+    onClick={[Function]}
+    size="xs"
+  >
+    Log out
+  </EuiButtonEmpty>
+</div>
+`;
+
 exports[`Account menu - Log out button renders renders when auth type is OpenId 1`] = `
 <div>
   <EuiButtonEmpty
     color="danger"
     data-test-subj="log-out-1"
-    href="/auth/logout"
+    href="/auth/openid/logout"
     size="xs"
   >
     Log out
@@ -20,7 +33,7 @@ exports[`Account menu - Log out button renders renders when auth type is SAML 1`
   <EuiButtonEmpty
     color="danger"
     data-test-subj="log-out-1"
-    href="/auth/logout"
+    href="/auth/saml/logout"
     size="xs"
   >
     Log out

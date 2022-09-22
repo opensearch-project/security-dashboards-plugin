@@ -104,6 +104,11 @@ exports[`Login page renders renders with default value 1`] = `
 <EuiListGroup
   className="login-wrapper"
 >
+  <EuiImage
+    alt=""
+    size="fullWidth"
+    url="test-file-stub"
+  />
   <EuiSpacer
     size="s"
   />

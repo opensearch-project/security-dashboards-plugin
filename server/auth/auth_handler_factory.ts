@@ -27,6 +27,7 @@ import {
   OpenIdAuthentication,
   ProxyAuthentication,
   SamlAuthentication,
+  MultipleAuthentication,
 } from './types';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { IAuthenticationType, IAuthHandlerConstructor } from './types/authentication_type';
@@ -54,25 +55,33 @@ export function getAuthenticationHandler(
   logger: Logger
 ): IAuthenticationType {
   let authHandlerType: IAuthHandlerConstructor;
-  switch (authType) {
-    case '':
-    case 'basicauth':
-      authHandlerType = BasicAuthentication;
-      break;
-    case AuthType.JWT:
-      authHandlerType = JwtAuthentication;
-      break;
-    case AuthType.OPEN_ID:
-      authHandlerType = OpenIdAuthentication;
-      break;
-    case AuthType.SAML:
-      authHandlerType = SamlAuthentication;
-      break;
-    case AuthType.PROXY:
-      authHandlerType = ProxyAuthentication;
-      break;
-    default:
-      throw new Error(`Unsupported authentication type: ${authType}`);
+  if (!authType || authType.length === 0) {
+    authType = AuthType.BASIC;
+  }
+  const authArr = authType.split(',').map((item: string) => item.trim().toLowerCase());
+  if (authArr.length === 1) {
+    switch (authArr[0]) {
+      case '':
+      case AuthType.BASIC:
+        authHandlerType = BasicAuthentication;
+        break;
+      case AuthType.JWT:
+        authHandlerType = JwtAuthentication;
+        break;
+      case AuthType.OPEN_ID:
+        authHandlerType = OpenIdAuthentication;
+        break;
+      case AuthType.SAML:
+        authHandlerType = SamlAuthentication;
+        break;
+      case AuthType.PROXY:
+        authHandlerType = ProxyAuthentication;
+        break;
+      default:
+        throw new Error(`Unsupported authentication type: ${authArr[0]}`);
+    }
+  } else {
+    authHandlerType = MultipleAuthentication;
   }
   const auth: IAuthenticationType = createAuthentication(
     authHandlerType,

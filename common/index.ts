@@ -26,8 +26,19 @@ export const LOGIN_PAGE_URI = '/app/' + APP_ID_LOGIN;
 export const CUSTOM_ERROR_PAGE_URI = '/app/' + APP_ID_CUSTOMERROR;
 export const API_AUTH_LOGIN = '/auth/login';
 export const API_AUTH_LOGOUT = '/auth/logout';
+export const OPENID_AUTH_LOGIN = '/auth/openid/login';
+export const SAML_AUTH_LOGIN = '/auth/saml/login';
+export const ANONYMOUS_AUTH_LOGIN = '/auth/anonymous';
+export const SAML_AUTH_LOGIN_WITH_FRAGMENT = '/auth/saml/captureUrlFragment?nextUrl=%2F';
+
+export const OPENID_AUTH_LOGOUT = '/auth/openid/logout';
+export const SAML_AUTH_LOGOUT = '/auth/saml/logout';
+export const ANONYMOUS_AUTH_LOGOUT = '/auth/anonymous/out';
 
 export const ERROR_MISSING_ROLE_PATH = '/missing-role';
+export const AUTH_HEADER_NAME = 'authorization';
+export const AUTH_GRANT_TYPE = 'authorization_code';
+export const AUTH_RESPONSE_TYPE = 'code';
 
 export enum AuthType {
   BASIC = 'basicauth',

@@ -16,6 +16,7 @@
 import { schema, TypeOf } from '@osd/config-schema';
 import { PluginInitializerContext, PluginConfigDescriptor } from '../../../src/core/server';
 import { SecurityPlugin } from './plugin';
+import { AuthType, SAML_AUTH_LOGIN } from '../common';
 
 export const configSchema = schema.object({
   enabled: schema.boolean({ defaultValue: true }),
@@ -59,13 +60,23 @@ export const configSchema = schema.object({
     type: schema.string({
       defaultValue: '',
       validate(value) {
-        if (
-          !['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache'].includes(
-            value
-          )
-        ) {
-          return `allowed auth.type are ['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache']`;
+        if (!value || value.length === 0) {
+          return `authentication type is not configurred properly`;
         }
+
+        const authTypeArr = value.split(',').map((item: string) => item.trim().toLowerCase());
+        if (authTypeArr.length > 1 && !authTypeArr.includes('basicauth')) {
+          return `basicauth is mandatory`;
+        }
+        authTypeArr.forEach(function (authVal) {
+          if (
+            !['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache'].includes(
+              authVal
+            )
+          ) {
+            return `allowed auth.type are ['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache']`;
+          }
+        });
       },
     }),
     anonymous_auth_enabled: schema.boolean({ defaultValue: false }),
@@ -182,6 +193,22 @@ export const configSchema = schema.object({
             'If you have forgotten your username or password, please ask your system administrator',
         }),
         showbrandimage: schema.boolean({ defaultValue: true }),
+        brandimage: schema.string({ defaultValue: '' }),
+        buttonstyle: schema.string({ defaultValue: '' }),
+      }),
+    }),
+    openid: schema.object({
+      login: schema.object({
+        buttonname: schema.string({ defaultValue: 'Log In With Single Sign-On' }),
+        showbrandimage: schema.boolean({ defaultValue: false }),
+        brandimage: schema.string({ defaultValue: '' }),
+        buttonstyle: schema.string({ defaultValue: '' }),
+      }),
+    }),
+    saml: schema.object({
+      login: schema.object({
+        buttonname: schema.string({ defaultValue: 'Log In With Single Sign-On' }),
+        showbrandimage: schema.boolean({ defaultValue: false }),
         brandimage: schema.string({ defaultValue: '' }),
         buttonstyle: schema.string({ defaultValue: '' }),
       }),

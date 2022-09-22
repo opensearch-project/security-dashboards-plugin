@@ -104,7 +104,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
         }
 
         this.sessionStorageFactory.asScoped(request).set(cookie);
-      } catch (error) {
+      } catch (error: any) {
         return response.unauthorized({
           body: error.message,
         });
@@ -113,11 +113,10 @@ export abstract class AuthenticationType implements IAuthenticationType {
       // no auth header in request, try cookie
       try {
         cookie = await this.sessionStorageFactory.asScoped(request).get();
-      } catch (error) {
+      } catch (error: any) {
         this.logger.error(`Error parsing cookie: ${error.message}`);
         cookie = undefined;
       }
-
       if (!cookie || !(await this.isValidCookie(cookie))) {
         // clear cookie
         this.sessionStorageFactory.asScoped(request).clear();
@@ -209,7 +208,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
     if (!authInfo) {
       try {
         authInfo = await this.securityClient.authinfo(request, authHeader);
-      } catch (error) {
+      } catch (error: any) {
         throw new UnauthenticatedError(error);
       }
     }
@@ -236,8 +235,8 @@ export abstract class AuthenticationType implements IAuthenticationType {
   protected abstract getCookie(
     request: OpenSearchDashboardsRequest,
     authInfo: any
-  ): SecuritySessionCookie;
-  protected abstract async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean>;
+  ): Promise<SecuritySessionCookie>;
+  protected abstract isValidCookie(cookie: SecuritySessionCookie): Promise<boolean>;
   protected abstract handleUnauthedRequest(
     request: OpenSearchDashboardsRequest,
     response: LifecycleResponseFactory,

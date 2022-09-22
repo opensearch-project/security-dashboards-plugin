@@ -24,6 +24,7 @@ import { SecurityPluginConfigType } from '../../..';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
 import { CoreSetup } from '../../../../../../src/core/server';
 import { validateNextUrl } from '../../../utils/next_url';
+import { AuthType, SAML_AUTH_LOGIN, SAML_AUTH_LOGOUT } from '../../../../common';
 
 export class SamlAuthRoutes {
   constructor(
@@ -38,7 +39,7 @@ export class SamlAuthRoutes {
   public setupRoutes() {
     this.router.get(
       {
-        path: `/auth/saml/login`,
+        path: SAML_AUTH_LOGIN,
         validate: {
           query: schema.object({
             nextUrl: schema.maybe(
@@ -46,7 +47,7 @@ export class SamlAuthRoutes {
                 validate: validateNextUrl,
               })
             ),
-            redirectHash: schema.string(),
+            redirectHash: schema.string({ defaultValue: 'false' }),
           }),
         },
         options: {
@@ -63,10 +64,11 @@ export class SamlAuthRoutes {
         }
 
         try {
-          const samlHeader = await this.securityClient.getSamlHeader(request);
+          const samlHeader: any = await this.securityClient.getSamlHeader(request);
+
           const cookie: SecuritySessionCookie = {
             saml: {
-              nextUrl: request.query.nextUrl,
+              nextUrl: request.query.nextUrl ? request.query.nextUrl : '/',
               requestId: samlHeader.requestId,
               redirectHash: request.query.redirectHash === 'true',
             },
@@ -100,6 +102,7 @@ export class SamlAuthRoutes {
         let redirectHash: boolean = false;
         try {
           const cookie = await this.sessionStorageFactory.asScoped(request).get();
+
           if (cookie) {
             requestId = cookie.saml?.requestId || '';
             nextUrl =
@@ -107,6 +110,7 @@ export class SamlAuthRoutes {
               `${this.coreSetup.http.basePath.serverBasePath}/app/opensearch-dashboards`;
             redirectHash = cookie.saml?.redirectHash || false;
           }
+
           if (!requestId) {
             return response.badRequest({
               body: 'Invalid requestId',
@@ -123,6 +127,7 @@ export class SamlAuthRoutes {
             request.body.SAMLResponse,
             undefined
           );
+
           const user = await this.securityClient.authenticateWithHeader(
             request,
             'authorization',
@@ -135,6 +140,7 @@ export class SamlAuthRoutes {
             context.security_plugin.logger.error('JWT token payload not found');
           }
           const tokenPayload = JSON.parse(Buffer.from(payloadEncoded, 'base64').toString());
+
           if (tokenPayload.exp) {
             expiryTime = parseInt(tokenPayload.exp, 10) * 1000;
           }
@@ -143,9 +149,10 @@ export class SamlAuthRoutes {
             credentials: {
               authHeaderValue: credentials.authorization,
             },
-            authType: 'saml', // TODO: create constant
+            authType: AuthType.SAML, // TODO: create constant
             expiryTime,
           };
+
           this.sessionStorageFactory.asScoped(request).set(cookie);
           if (redirectHash) {
             return response.redirected({
@@ -211,7 +218,7 @@ export class SamlAuthRoutes {
             credentials: {
               authHeaderValue: credentials.authorization,
             },
-            authType: 'saml', // TODO: create constant
+            authType: AuthType.SAML, // TODO: create constant
             expiryTime,
           };
           this.sessionStorageFactory.asScoped(request).set(cookie);
@@ -285,7 +292,6 @@ export class SamlAuthRoutes {
                  finalUrl = "login?nextUrl=" + encodeURIComponent(nextUrl);
                  finalUrl += "&redirectHash=" + encodeURIComponent(redirectHash);
                  window.location.replace(finalUrl);
-
                 `,
         });
       }
@@ -344,7 +350,7 @@ export class SamlAuthRoutes {
 
     this.router.get(
       {
-        path: `/auth/logout`,
+        path: SAML_AUTH_LOGOUT,
         validate: false,
       },
       async (context, request, response) => {
