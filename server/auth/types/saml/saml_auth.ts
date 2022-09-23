@@ -54,7 +54,7 @@ export class SamlAuthentication extends AuthenticationType {
   private generateNextUrl(request: OpenSearchDashboardsRequest): string {
     const path =
       this.coreSetup.http.basePath.serverBasePath +
-      (request.url.path || '/app/opensearch-dashboards');
+      (request.url.pathname || '/app/opensearch-dashboards');
     return escape(path);
   }
 
@@ -62,10 +62,10 @@ export class SamlAuthentication extends AuthenticationType {
     const nextUrl = this.generateNextUrl(request);
     const clearOldVersionCookie = clearOldVersionCookieValue(this.config);
     return toolkit.redirected({
-      location: `${this.coreSetup.http.basePath.serverBasePath}/auth/saml/login?nextUrl=${nextUrl}`,
+      location: `${this.coreSetup.http.basePath.serverBasePath}/auth/saml/captureUrlFragment?nextUrl=${nextUrl}`,
       'set-cookie': clearOldVersionCookie,
     });
-  }
+  };
 
   private setupRoutes(): void {
     const samlAuthRoutes = new SamlAuthRoutes(
