@@ -58,7 +58,6 @@ export class SamlAuthentication extends AuthenticationType {
     return escape(path);
   }
 
-  // Check if we can get the previous tenant information from the expired cookie.
   private redirectSAMlCapture = (request: OpenSearchDashboardsRequest, toolkit: AuthToolkit) => {
     const nextUrl = this.generateNextUrl(request);
     const clearOldVersionCookie = clearOldVersionCookieValue(this.config);
