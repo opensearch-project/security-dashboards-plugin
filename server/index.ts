@@ -16,7 +16,7 @@
 import { schema, TypeOf } from '@osd/config-schema';
 import { PluginInitializerContext, PluginConfigDescriptor } from '../../../src/core/server';
 import { SecurityPlugin } from './plugin';
-
+import { AuthType, SAML_AUTH_LOGIN } from '../common';
 
 export const configSchema = schema.object({
   enabled: schema.boolean({ defaultValue: true }),
