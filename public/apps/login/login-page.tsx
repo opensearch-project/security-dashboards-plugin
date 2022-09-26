@@ -160,7 +160,6 @@ export function LoginPage(props: LoginPageDeps) {
               <EuiFormRow>
                 <EuiButton
                   data-test-subj="submit"
-                  fill
                   size="s"
                   type="prime"
                   className={props.config.ui.basicauth.login.buttonstyle || 'btn-login'}
@@ -178,9 +177,9 @@ export function LoginPage(props: LoginPageDeps) {
           }
 
           if (optArr.length > 1) {
-            formBody.push(<EuiSpacer size="m" />);
+            formBody.push(<EuiSpacer size="xs" />);
             formBody.push(<EuiHorizontalRule size="full" margin="xl" />);
-            formBody.push(<EuiSpacer size="m" />);
+            formBody.push(<EuiSpacer size="xs" />);
           }
           break;
         }
@@ -214,7 +213,6 @@ export function LoginPage(props: LoginPageDeps) {
                 type="submit"
                 className={props.config.ui.saml.login.buttonstyle || 'btn-login'}
                 href={SAML_AUTH_LOGIN_WITH_FRAGMENT}
-                // href="/auth/saml/captureUrlFragment?nextUrl=%2F"
                 iconType={
                   props.config.ui.saml.login.showbrandimage
                     ? props.config.ui.saml.login.brandimage
