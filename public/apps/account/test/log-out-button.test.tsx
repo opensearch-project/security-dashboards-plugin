@@ -68,7 +68,7 @@ describe('Account menu - Log out button', () => {
     const component = shallow(
       <LogoutButton authType="dummy" http={mockHttpStart} divider={mockDivider} />
     );
-    component.find('[data-test-subj="log-out-2"]').simulate('click');
+    component.find('[data-test-subj="log-out-3"]').simulate('click');
 
     expect(logout).toBeCalled();
   });
