@@ -93,7 +93,7 @@ exports[`Login page renders renders with config value 1`] = `
         size="s"
         type="submit"
       >
-        Log In
+        Log in
       </EuiButton>
     </EuiFormRow>
   </EuiForm>
@@ -116,7 +116,7 @@ exports[`Login page renders renders with default value 1`] = `
     size="m"
     textAlign="center"
   >
-    Please login to OpenSearch Dashboards
+    Log in to OpenSearch Dashboards
   </EuiText>
   <EuiSpacer
     size="s"
@@ -125,7 +125,7 @@ exports[`Login page renders renders with default value 1`] = `
     size="s"
     textAlign="center"
   >
-    If you have forgotten your username or password, please ask your system administrator
+    If you have forgotten your username or password, contact your system administrator.
   </EuiText>
   <EuiSpacer
     size="s"
@@ -193,7 +193,7 @@ exports[`Login page renders renders with default value 1`] = `
         size="s"
         type="submit"
       >
-        Log In
+        Log in
       </EuiButton>
     </EuiFormRow>
   </EuiForm>

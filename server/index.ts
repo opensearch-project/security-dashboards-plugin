@@ -17,7 +17,6 @@ import { schema, TypeOf } from '@osd/config-schema';
 import { PluginInitializerContext, PluginConfigDescriptor } from '../../../src/core/server';
 import { SecurityPlugin } from './plugin';
 
-
 export const configSchema = schema.object({
   enabled: schema.boolean({ defaultValue: true }),
   allow_client_certificates: schema.boolean({ defaultValue: false }),
@@ -61,12 +60,12 @@ export const configSchema = schema.object({
       defaultValue: '',
       validate(value) {
         if (!value || value.length === 0) {
-          return `authentication type is not configurred properly`;
+          return `Authentication type is not configurred properly.`;
         }
 
         const authTypeArr = value.split(',').map((item: string) => item.trim().toLowerCase());
         if (authTypeArr.length > 1 && !authTypeArr.includes('basicauth')) {
-          return `basicauth is mandatory`;
+          return `basicauth is mandatory.`;
         }
         authTypeArr.forEach(function (authVal) {
           if (
@@ -95,15 +94,15 @@ export const configSchema = schema.object({
       headers: schema.arrayOf(schema.string(), { defaultValue: [] }),
       show_for_parameter: schema.string({ defaultValue: '' }),
       valid_redirects: schema.arrayOf(schema.string(), { defaultValue: [] }),
-      button_text: schema.string({ defaultValue: 'Login with provider' }),
+      button_text: schema.string({ defaultValue: 'Log in with provider' }),
       buttonstyle: schema.string({ defaultValue: '' }),
     }),
     loadbalancer_url: schema.maybe(schema.string()),
     login: schema.object({
-      title: schema.string({ defaultValue: 'Please login to OpenSearch Dashboards' }),
+      title: schema.string({ defaultValue: 'Log in to OpenSearch Dashboards' }),
       subtitle: schema.string({
         defaultValue:
-          'If you have forgotten your username or password, please ask your system administrator',
+          'If you have forgotten your username or password, contact your system administrator.',
       }),
       showbrandimage: schema.boolean({ defaultValue: true }),
       brandimage: schema.string({ defaultValue: '' }), // TODO: update brand image
@@ -187,10 +186,10 @@ export const configSchema = schema.object({
       // the login config here is the same as old config `_security.basicauth.login`
       // Since we are now rendering login page to browser app, so move these config to browser side.
       login: schema.object({
-        title: schema.string({ defaultValue: 'Please login to OpenSearch Dashboards' }),
+        title: schema.string({ defaultValue: 'Log in to OpenSearch Dashboards' }),
         subtitle: schema.string({
           defaultValue:
-            'If you have forgotten your username or password, please ask your system administrator',
+            'If you have forgotten your username or password, contact your system administrator.',
         }),
         showbrandimage: schema.boolean({ defaultValue: true }),
         brandimage: schema.string({ defaultValue: '' }),
@@ -199,7 +198,7 @@ export const configSchema = schema.object({
     }),
     openid: schema.object({
       login: schema.object({
-        buttonname: schema.string({ defaultValue: 'Log In With Single Sign-On' }),
+        buttonname: schema.string({ defaultValue: 'Log in with single sign-on' }),
         showbrandimage: schema.boolean({ defaultValue: false }),
         brandimage: schema.string({ defaultValue: '' }),
         buttonstyle: schema.string({ defaultValue: '' }),
@@ -207,7 +206,7 @@ export const configSchema = schema.object({
     }),
     saml: schema.object({
       login: schema.object({
-        buttonname: schema.string({ defaultValue: 'Log In With Single Sign-On' }),
+        buttonname: schema.string({ defaultValue: 'Log in with single sign-on' }),
         showbrandimage: schema.boolean({ defaultValue: false }),
         brandimage: schema.string({ defaultValue: '' }),
         buttonstyle: schema.string({ defaultValue: '' }),

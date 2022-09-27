@@ -98,7 +98,7 @@ export function LoginPage(props: LoginPageDeps) {
     } catch (error) {
       console.log(error);
       setloginFailed(true);
-      setloginError('Invalid username or password, please try again');
+      setloginError('Invalid username or password. Please try again.');
       return;
     }
   };
@@ -150,7 +150,7 @@ export function LoginPage(props: LoginPageDeps) {
                 className={props.config.ui.basicauth.login.buttonstyle || 'btn-login'}
                 onClick={handleSubmit}
               >
-                Log In
+                Log in
               </EuiButton>
             </EuiFormRow>
           );
@@ -170,7 +170,7 @@ export function LoginPage(props: LoginPageDeps) {
                       : ''
                   }
                 >
-                  Log In as Anonymous
+                  Log in as anonymous
                 </EuiButton>
               </EuiFormRow>
             );
@@ -213,7 +213,6 @@ export function LoginPage(props: LoginPageDeps) {
                 type="submit"
                 className={props.config.ui.saml.login.buttonstyle || 'btn-login'}
                 href={SAML_AUTH_LOGIN_WITH_FRAGMENT}
-                // href="/auth/saml/captureUrlFragment?nextUrl=%2F"
                 iconType={
                   props.config.ui.saml.login.showbrandimage
                     ? props.config.ui.saml.login.brandimage
@@ -229,7 +228,7 @@ export function LoginPage(props: LoginPageDeps) {
         default: {
           setloginFailed(true);
           setloginError(
-            `Authentication Type: ${optArr[i]} is not supported for multiple authentication`
+            `Authentication Type: ${optArr[i]} is not supported for multiple authentication.`
           );
           break;
         }
@@ -252,12 +251,12 @@ export function LoginPage(props: LoginPageDeps) {
       )}
       <EuiSpacer size="s" />
       <EuiText size="m" textAlign="center">
-        {props.config.ui.basicauth.login.title || 'Please login to OpenSearch Dashboards'}
+        {props.config.ui.basicauth.login.title || 'Log in to OpenSearch Dashboards'}
       </EuiText>
       <EuiSpacer size="s" />
       <EuiText size="s" textAlign="center">
         {props.config.ui.basicauth.login.subtitle ||
-          'If you have forgotten your username or password, please ask your system administrator'}
+          'If you have forgotten your username or password, contact your system administrator.'}
       </EuiText>
       <EuiSpacer size="s" />
       <EuiForm component="form">
