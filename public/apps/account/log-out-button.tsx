@@ -32,7 +32,7 @@ export function LogoutButton(props: {
           data-test-subj="log-out-2"
           color="danger"
           size="xs"
-          href={`${props.http.basePath.serverBasePath}/auth/logout`}
+          href={`${props.http.basePath.serverBasePath}/auth/openid/logout`}
         >
           Log out
         </EuiButtonEmpty>
