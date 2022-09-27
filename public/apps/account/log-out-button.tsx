@@ -16,7 +16,7 @@
 import React from 'react';
 import { EuiButtonEmpty } from '@elastic/eui';
 import { HttpStart } from 'opensearch-dashboards/public';
-import { logout } from './utils';
+import { logout, samlLogout } from './utils';
 
 export function LogoutButton(props: {
   authType: string;
@@ -24,11 +24,21 @@ export function LogoutButton(props: {
   divider: JSX.Element;
   logoutUrl?: string;
 }) {
-  const currentAuthType: string = props.authType.trim().toLowerCase();
-
-  if (currentAuthType === 'openid' || currentAuthType === 'saml') {
-    sessionStorage.clear();
-
+  if (props.authType === 'openid') {
+    return (
+      <div>
+        {props.divider}
+        <EuiButtonEmpty
+          data-test-subj="log-out-2"
+          color="danger"
+          size="xs"
+          href={`${props.http.basePath.serverBasePath}/auth/logout`}
+        >
+          Log out
+        </EuiButtonEmpty>
+      </div>
+    );
+  } else if (props.authType === 'saml') {
     return (
       <div>
         {props.divider}
@@ -36,20 +46,20 @@ export function LogoutButton(props: {
           data-test-subj="log-out-1"
           color="danger"
           size="xs"
-          href={`${props.http.basePath.serverBasePath}/auth/${currentAuthType}/logout`}
+          onClick={() => samlLogout(props.http)}
         >
           Log out
         </EuiButtonEmpty>
       </div>
     );
-  } else if (currentAuthType === 'proxy') {
+  } else if (props.authType === 'proxy') {
     return <div />;
   } else {
     return (
       <div>
         {props.divider}
         <EuiButtonEmpty
-          data-test-subj="log-out-2"
+          data-test-subj="log-out-3"
           color="danger"
           size="xs"
           onClick={() => logout(props.http, props.logoutUrl)}
