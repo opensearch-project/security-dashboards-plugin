@@ -72,6 +72,47 @@ describe('Login page', () => {
       expect(component).toMatchSnapshot();
     });
 
+    it('renders with config value for multiauth', () => {
+      const config: ClientConfigType = {
+        ui: {
+          basicauth: {
+            login: {
+              title: 'Title1',
+              subtitle: 'SubTitle1',
+              showbrandimage: true,
+              brandimage: 'http://localhost:5601/images/test.png',
+              buttonstyle: 'test-btn-style',
+            },
+          },
+          openid: {
+            login: {
+              buttonname: 'Title2',
+              showbrandimage: true,
+              brandimage: 'http://localhost:5601/images/test.png',
+              buttonstyle: 'test-btn-style',
+            },
+          },
+          saml: {
+            login: {
+              buttonname: 'Title2',
+              showbrandimage: true,
+              brandimage: 'http://localhost:5601/images/test.png',
+              buttonstyle: 'test-btn-style',
+            },
+          },
+          autologout: true,
+          backend_configurable: true,
+        },
+        auth: {
+          type: 'basicauth,openid,saml',
+          logout_url: '/auth/logout',
+          anonymous_auth_enabled: false,
+        },
+      };
+      const component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
+      expect(component).toMatchSnapshot();
+    });
+
     it('renders with default value', () => {
       const config: ClientConfigType = {
         ui: {
@@ -83,7 +124,6 @@ describe('Login page', () => {
         },
         auth: {
           type: 'basicauth',
-          // logout_url: "/auth/logout",
           anonymous_auth_enabled: false,
         },
       };
@@ -106,7 +146,6 @@ describe('Login page', () => {
       },
       auth: {
         type: 'basicauth',
-        // logout_url: "/auth/logout",
         anonymous_auth_enabled: false,
       },
     };
@@ -146,7 +185,6 @@ describe('Login page', () => {
       },
       auth: {
         type: 'basicauth',
-        // logout_url: "/auth/logout",
         anonymous_auth_enabled: false,
       },
     };

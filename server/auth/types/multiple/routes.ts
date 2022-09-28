@@ -45,7 +45,6 @@ export class MultiAuthRoutes {
   }
 
   public setupOidcRoutes(openIdAuthConfig: OpenIdAuthConfig, wreckClient: typeof wreck) {
-    console.log('Multi Auth:: OIDC:: setupOidcRoutes::');
     const oidcRoute = new OpenIdAuthRoutes(
       this.router,
       this.config,
@@ -59,7 +58,6 @@ export class MultiAuthRoutes {
   }
 
   public setupSamlRoutes() {
-    console.log('Multi Auth:: SAML:: setupSamlRoutes::');
     const samlAuthRoutes = new SamlAuthRoutes(
       this.router,
       this.config,

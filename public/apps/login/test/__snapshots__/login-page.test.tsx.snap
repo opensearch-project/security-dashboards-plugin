@@ -100,6 +100,154 @@ exports[`Login page renders renders with config value 1`] = `
 </EuiListGroup>
 `;
 
+exports[`Login page renders renders with config value for multiauth 1`] = `
+<EuiListGroup
+  className="login-wrapper"
+>
+  <EuiImage
+    alt=""
+    size="fullWidth"
+    url="http://localhost:5601/images/test.png"
+  />
+  <EuiSpacer
+    size="s"
+  />
+  <EuiText
+    size="m"
+    textAlign="center"
+  >
+    Title1
+  </EuiText>
+  <EuiSpacer
+    size="s"
+  />
+  <EuiText
+    size="s"
+    textAlign="center"
+  >
+    SubTitle1
+  </EuiText>
+  <EuiSpacer
+    size="s"
+  />
+  <EuiForm
+    component="form"
+  >
+    <EuiFormRow
+      describedByIds={Array []}
+      display="row"
+      fullWidth={false}
+      hasChildLabel={true}
+      hasEmptyLabelSpace={false}
+      labelType="label"
+    >
+      <EuiFieldText
+        data-test-subj="user-name"
+        isInvalid={false}
+        onChange={[Function]}
+        placeholder="Username"
+        prepend={
+          <EuiIcon
+            type="user"
+          />
+        }
+        value=""
+      />
+    </EuiFormRow>
+    <EuiFormRow
+      describedByIds={Array []}
+      display="row"
+      fullWidth={false}
+      hasChildLabel={true}
+      hasEmptyLabelSpace={false}
+      isInvalid={false}
+      labelType="label"
+    >
+      <EuiFieldText
+        data-test-subj="password"
+        isInvalid={false}
+        onChange={[Function]}
+        placeholder="Password"
+        prepend={
+          <EuiIcon
+            type="lock"
+          />
+        }
+        type="password"
+        value=""
+      />
+    </EuiFormRow>
+    <EuiFormRow
+      describedByIds={Array []}
+      display="row"
+      fullWidth={false}
+      hasChildLabel={true}
+      hasEmptyLabelSpace={false}
+      labelType="label"
+    >
+      <EuiButton
+        className="test-btn-style"
+        data-test-subj="submit"
+        fill={true}
+        onClick={[Function]}
+        size="s"
+        type="submit"
+      >
+        Log in
+      </EuiButton>
+    </EuiFormRow>
+    <EuiSpacer
+      size="xs"
+    />
+    <EuiHorizontalRule
+      margin="xl"
+      size="full"
+    />
+    <EuiSpacer
+      size="xs"
+    />
+    <EuiFormRow
+      describedByIds={Array []}
+      display="row"
+      fullWidth={false}
+      hasChildLabel={true}
+      hasEmptyLabelSpace={false}
+      labelType="label"
+    >
+      <EuiButton
+        className="test-btn-style"
+        data-test-subj="submit"
+        href="/auth/openid/login"
+        iconType="http://localhost:5601/images/test.png"
+        size="s"
+        type="prime"
+      >
+        Title2
+      </EuiButton>
+    </EuiFormRow>
+    <EuiFormRow
+      describedByIds={Array []}
+      display="row"
+      fullWidth={false}
+      hasChildLabel={true}
+      hasEmptyLabelSpace={false}
+      labelType="label"
+    >
+      <EuiButton
+        className="test-btn-style"
+        data-test-subj="submit"
+        href="/auth/saml/captureUrlFragment?nextUrl=%2F"
+        iconType="http://localhost:5601/images/test.png"
+        size="s"
+        type="submit"
+      >
+        Title2
+      </EuiButton>
+    </EuiFormRow>
+  </EuiForm>
+</EuiListGroup>
+`;
+
 exports[`Login page renders renders with default value 1`] = `
 <EuiListGroup
   className="login-wrapper"

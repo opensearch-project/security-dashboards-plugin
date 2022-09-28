@@ -79,7 +79,6 @@ export class MultipleAuthentication extends AuthenticationType {
     );
 
     const authArr = this.authTypes.split(',').map((item: string) => item.trim());
-    console.log('multiauth authArr::', authArr);
 
     for (let i = 0; i < authArr.length; i++) {
       switch (authArr[i]) {
@@ -89,15 +88,11 @@ export class MultipleAuthentication extends AuthenticationType {
           break;
         }
         case AuthType.OPEN_ID: {
-          console.log('Multi Auth:: OIDC::');
-          // const wreckClient = this.createWreckClient();
           await this.oidcConfigSetup(this.wreckClient);
-          console.log('this.openIdAuthConfig:: ', this.openIdAuthConfig);
           routes.setupOidcRoutes(this.openIdAuthConfig, this.wreckClient);
           break;
         }
         case AuthType.SAML: {
-          console.log('Multi Auth:: SAML::');
           routes.setupSamlRoutes();
           break;
         }
@@ -125,7 +120,6 @@ export class MultipleAuthentication extends AuthenticationType {
   ): Promise<SecuritySessionCookie> {
     const sessionStore = await this.sessionStorageFactory.asScoped(request).get();
     const reqAuthType = sessionStore?.authType;
-    console.log('Enter getCookie reqAuthType:: ', reqAuthType);
 
     if (
       reqAuthType === AuthType.BASIC &&
@@ -194,14 +188,9 @@ export class MultipleAuthentication extends AuthenticationType {
     this.openIdAuthConfig.authorizationEndpoint = payload.authorization_endpoint;
     this.openIdAuthConfig.tokenEndpoint = payload.token_endpoint;
     this.openIdAuthConfig.endSessionEndpoint = payload.end_session_endpoint || undefined;
-
-    // return this.openIdAuthConfig;
   }
 
   async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean> {
-    console.log('Enter isValidCookie reqAuthType:: ');
-    console.log(cookie.authType);
-
     if (cookie.authType === AuthType.BASIC) {
       const result =
         cookie.authType === AuthType.BASIC &&
@@ -275,18 +264,13 @@ export class MultipleAuthentication extends AuthenticationType {
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
   ): OpenSearchDashboardsResponse {
-    console.log('Enter handle Unauthented::multi');
-    console.log('this.isPageRequest(request)::', this.isPageRequest(request));
-
     if (this.isPageRequest(request)) {
       const nextUrlParam = composeNextUrlQueryParam(
         request,
         this.coreSetup.http.basePath.serverBasePath
       );
-      console.log('nextUrlParam:: ', nextUrlParam);
 
       const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`;
-      console.log('redirectLocation::', redirectLocation);
 
       return response.redirected({
         headers: {
