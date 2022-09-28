@@ -97,6 +97,7 @@ export class SamlAuthentication extends AuthenticationType {
     };
   }
 
+  // Can be improved to check if the token is expiring.
   async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean> {
     return (
       cookie.authType === this.type &&
