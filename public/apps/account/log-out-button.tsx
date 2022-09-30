@@ -29,6 +29,7 @@ export function LogoutButton(props: {
       <div>
         {props.divider}
         <EuiButtonEmpty
+          fullWidth
           data-test-subj="log-out-2"
           color="danger"
           size="xs"
@@ -43,6 +44,7 @@ export function LogoutButton(props: {
       <div>
         {props.divider}
         <EuiButtonEmpty
+          fullWidth
           data-test-subj="log-out-1"
           color="danger"
           size="xs"
@@ -59,6 +61,7 @@ export function LogoutButton(props: {
       <div>
         {props.divider}
         <EuiButtonEmpty
+          fullWidth
           data-test-subj="log-out-3"
           color="danger"
           size="xs"

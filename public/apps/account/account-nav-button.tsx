@@ -111,7 +111,7 @@ export function AccountNavButton(props: {
         View roles and identities
       </EuiButtonEmpty>
       {horizontalRule}
-      <EuiButtonEmpty data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
+      <EuiButtonEmpty fullWidth data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
         Switch tenants
       </EuiButtonEmpty>
       {props.isInternalUser && (
