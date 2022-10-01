@@ -29,31 +29,31 @@ jest.mock('./types', () => {
     BasicAuthentication: jest.fn().mockImplementation(() => {
       return {
         authHandler: () => {},
-        type: 'basicauth',
+        type: ['basicauth'],
       };
     }),
     JwtAuthentication: jest.fn().mockImplementation(() => {
       return {
         authHandler: () => {},
-        type: 'jwt',
+        type: ['jwt'],
       };
     }),
     OpenIdAuthentication: jest.fn().mockImplementation(() => {
       return {
         authHandler: () => {},
-        type: 'openid',
+        type: ['openid'],
       };
     }),
     ProxyAuthentication: jest.fn().mockImplementation(() => {
       return {
         authHandler: () => {},
-        type: 'proxy',
+        type: ['proxy'],
       };
     }),
     SamlAuthentication: jest.fn().mockImplementation(() => {
       return {
         authHandler: () => {},
-        type: 'saml',
+        type: ['saml'],
       };
     }),
   };
@@ -71,7 +71,7 @@ describe('test authentication factory', () => {
 
   test('get basic auth', () => {
     const auth = getAuthenticationHandler(
-      'basicauth',
+      ['basicauth'],
       router,
       config,
       core,
@@ -79,12 +79,12 @@ describe('test authentication factory', () => {
       sessionStorageFactory,
       logger
     );
-    expect(auth.type).toEqual('basicauth');
+    expect(auth.type[0]).toEqual('basicauth');
   });
 
   test('get basic auth with empty auth type', () => {
     const auth = getAuthenticationHandler(
-      '',
+      [''],
       router,
       config,
       core,
@@ -92,12 +92,12 @@ describe('test authentication factory', () => {
       sessionStorageFactory,
       logger
     );
-    expect(auth.type).toEqual('basicauth');
+    expect(auth.type[0]).toEqual('basicauth');
   });
 
   test('get jwt auth', () => {
     const auth = getAuthenticationHandler(
-      'jwt',
+      ['jwt'],
       router,
       config,
       core,
@@ -105,12 +105,12 @@ describe('test authentication factory', () => {
       sessionStorageFactory,
       logger
     );
-    expect(auth.type).toEqual('jwt');
+    expect(auth.type[0]).toEqual('jwt');
   });
 
   test('get openid auth', () => {
     const auth = getAuthenticationHandler(
-      'openid',
+      ['openid'],
       router,
       config,
       core,
@@ -118,12 +118,12 @@ describe('test authentication factory', () => {
       sessionStorageFactory,
       logger
     );
-    expect(auth.type).toEqual('openid');
+    expect(auth.type[0]).toEqual('openid');
   });
 
   test('get proxy auth', () => {
     const auth = getAuthenticationHandler(
-      'proxy',
+      ['proxy'],
       router,
       config,
       core,
@@ -131,12 +131,12 @@ describe('test authentication factory', () => {
       sessionStorageFactory,
       logger
     );
-    expect(auth.type).toEqual('proxy');
+    expect(auth.type[0]).toEqual('proxy');
   });
 
   test('get saml auth', () => {
     const auth = getAuthenticationHandler(
-      'saml',
+      ['saml'],
       router,
       config,
       core,
@@ -144,13 +144,13 @@ describe('test authentication factory', () => {
       sessionStorageFactory,
       logger
     );
-    expect(auth.type).toEqual('saml');
+    expect(auth.type[0]).toEqual('saml');
   });
 
   test('throws error for invalid auth type', () => {
     expect(() => {
       getAuthenticationHandler(
-        'invalid',
+        ['invalid'],
         router,
         config,
         core,

@@ -24,7 +24,7 @@ describe('test jwt auth library', () => {
 
   function getTestJWTAuthenticationHandlerWithConfig(config: SecurityPluginConfigType) {
     return getAuthenticationHandler(
-      'jwt',
+      ['jwt'],
       router,
       config,
       core,

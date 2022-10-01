@@ -24,11 +24,12 @@ jest.mock('../utils', () => ({
 
 describe('Account menu - Log out button', () => {
   enum authType {
-    OpenId = 'openid',
-    SAML = 'saml',
-    Proxy = 'proxy',
-    MultiAuth = 'basicauth,openid,saml',
+    OpenId = ['openid'],
+    SAML = ['saml'],
+    Proxy = ['proxy'],
+    MultiAuth = ['basicauth', 'openid', 'saml'],
   }
+
   const mockHttpStart = {
     basePath: {
       serverBasePath: '',

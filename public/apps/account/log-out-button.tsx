@@ -19,12 +19,12 @@ import { HttpStart } from 'opensearch-dashboards/public';
 import { logout, samlLogout } from './utils';
 
 export function LogoutButton(props: {
-  authType: string;
+  authType: string[];
   http: HttpStart;
   divider: JSX.Element;
   logoutUrl?: string;
 }) {
-  if (props.authType === 'openid') {
+  if (props.authType.length === 1 && props.authType[0] === 'openid') {
     return (
       <div>
         {props.divider}
@@ -38,7 +38,7 @@ export function LogoutButton(props: {
         </EuiButtonEmpty>
       </div>
     );
-  } else if (props.authType === 'saml') {
+  } else if (props.authType.length === 1 && props.authType[0] === 'saml') {
     return (
       <div>
         {props.divider}
@@ -52,7 +52,7 @@ export function LogoutButton(props: {
         </EuiButtonEmpty>
       </div>
     );
-  } else if (props.authType === 'proxy') {
+  } else if (props.authType.length === 1 && props.authType[0] === 'proxy') {
     return <div />;
   } else {
     return (

@@ -63,7 +63,7 @@ export function LoginPage(props: LoginPageDeps) {
   const [usernameValidationFailed, setUsernameValidationFailed] = useState(false);
   const [passwordValidationFailed, setPasswordValidationFailed] = useState(false);
 
-  let errorLabel = null;
+  let errorLabel: any = null;
   if (loginFailed) {
     errorLabel = (
       <EuiText id="error" color="danger" textAlign="center">
@@ -103,17 +103,12 @@ export function LoginPage(props: LoginPageDeps) {
     }
   };
 
-  const formOptions = (options: string) => {
-    if (!options) {
-      options = AuthType.BASIC;
-    }
-    const optArr = options.split(',').map((item: string) => item.trim().toLowerCase());
-
+  const formOptions = (options: string[]) => {
     let formBody = [];
     const formBodyOp = [];
 
-    for (let i = 0; i < optArr.length; i++) {
-      switch (optArr[i]) {
+    for (let i = 0; i < options.length; i++) {
+      switch (options[i].toLowerCase()) {
         case AuthType.BASIC: {
           formBody.push(
             <EuiFormRow>
@@ -176,7 +171,7 @@ export function LoginPage(props: LoginPageDeps) {
             );
           }
 
-          if (optArr.length > 1) {
+          if (options.length > 1) {
             formBody.push(<EuiSpacer size="xs" />);
             formBody.push(<EuiHorizontalRule size="full" margin="xl" />);
             formBody.push(<EuiSpacer size="xs" />);
@@ -228,7 +223,7 @@ export function LoginPage(props: LoginPageDeps) {
         default: {
           setloginFailed(true);
           setloginError(
-            `Authentication Type: ${optArr[i]} is not supported for multiple authentication.`
+            `Authentication Type: ${options[i]} is not supported for multiple authentication.`
           );
           break;
         }

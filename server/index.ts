@@ -14,6 +14,7 @@
  */
 
 import { schema, TypeOf } from '@osd/config-schema';
+import { Console } from 'console';
 import { PluginInitializerContext, PluginConfigDescriptor } from '../../../src/core/server';
 import { SecurityPlugin } from './plugin';
 
@@ -56,21 +57,27 @@ export const configSchema = schema.object({
     keepalive: schema.boolean({ defaultValue: true }),
   }),
   auth: schema.object({
-    type: schema.string({
-      defaultValue: '',
-      validate(value) {
+    type: schema.arrayOf(schema.string(), {
+      defaultValue: [],
+      validate(value: string[]) {
         if (!value || value.length === 0) {
           return `Authentication type is not configurred properly.`;
         }
 
-        const authTypeArr = value.split(',').map((item: string) => item.trim().toLowerCase());
-        if (authTypeArr.length > 1 && !authTypeArr.includes('basicauth')) {
-          return `basicauth is mandatory.`;
+        if (value.length > 1) {
+          const basicValidate = value.find((element) => {
+            return element.toLowerCase() === 'basicauth';
+          });
+
+          if (!basicValidate) {
+            return `basicauth is mandatory.`;
+          }
         }
-        authTypeArr.forEach(function (authVal) {
+
+        value.forEach(function (authVal) {
           if (
             !['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache'].includes(
-              authVal
+              authVal.toLowerCase()
             )
           ) {
             return `allowed auth.type are ['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache']`;

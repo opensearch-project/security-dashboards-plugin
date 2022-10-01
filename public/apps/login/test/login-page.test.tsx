@@ -63,7 +63,7 @@ describe('Login page', () => {
           backend_configurable: true,
         },
         auth: {
-          type: 'basicauth',
+          type: ['basicauth'],
           logout_url: '/auth/logout',
           anonymous_auth_enabled: false,
         },
@@ -104,7 +104,7 @@ describe('Login page', () => {
           backend_configurable: true,
         },
         auth: {
-          type: 'basicauth,openid,saml',
+          type: ['basicauth', 'openid', 'saml'],
           logout_url: '/auth/logout',
           anonymous_auth_enabled: false,
         },
@@ -123,7 +123,7 @@ describe('Login page', () => {
           },
         },
         auth: {
-          type: 'basicauth',
+          type: ['basicauth'],
           anonymous_auth_enabled: false,
         },
       };
@@ -145,7 +145,7 @@ describe('Login page', () => {
         },
       },
       auth: {
-        type: 'basicauth',
+        type: ['basicauth'],
         anonymous_auth_enabled: false,
       },
     };
@@ -184,7 +184,7 @@ describe('Login page', () => {
         },
       },
       auth: {
-        type: 'basicauth',
+        type: ['basicauth'],
         anonymous_auth_enabled: false,
       },
     };

@@ -50,7 +50,7 @@ export interface WreckHttpsOptions {
 }
 
 export class MultipleAuthentication extends AuthenticationType {
-  private authTypes: string;
+  private authTypes: string[];
   private openIdAuthConfig: OpenIdAuthConfig;
   private wreckClient: typeof wreck;
 
@@ -78,10 +78,8 @@ export class MultipleAuthentication extends AuthenticationType {
       this.coreSetup
     );
 
-    const authArr = this.authTypes.split(',').map((item: string) => item.trim());
-
-    for (let i = 0; i < authArr.length; i++) {
-      switch (authArr[i]) {
+    for (let i = 0; i < this.authTypes.length; i++) {
+      switch (this.authTypes[i].toLowerCase()) {
         case '':
         case AuthType.BASIC: {
           routes.setupBasicRoutes();
@@ -97,7 +95,7 @@ export class MultipleAuthentication extends AuthenticationType {
           break;
         }
         default: {
-          throw new Error(`Unsupported authentication type: ${authArr[i]}`);
+          throw new Error(`Unsupported authentication type: ${this.authTypes[i]}`);
         }
       }
     }

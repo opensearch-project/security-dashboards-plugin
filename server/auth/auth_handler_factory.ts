@@ -46,7 +46,7 @@ function createAuthentication(
 }
 
 export function getAuthenticationHandler(
-  authType: string,
+  authType: string[],
   router: IRouter,
   config: SecurityPluginConfigType,
   core: CoreSetup,
@@ -55,12 +55,9 @@ export function getAuthenticationHandler(
   logger: Logger
 ): IAuthenticationType {
   let authHandlerType: IAuthHandlerConstructor;
-  if (!authType || authType.length === 0) {
-    authType = AuthType.BASIC;
-  }
-  const authArr = authType.split(',').map((item: string) => item.trim().toLowerCase());
-  if (authArr.length === 1) {
-    switch (authArr[0]) {
+
+  if (authType.length === 1) {
+    switch (authType[0].toLowerCase()) {
       case '':
       case AuthType.BASIC:
         authHandlerType = BasicAuthentication;
@@ -78,7 +75,7 @@ export function getAuthenticationHandler(
         authHandlerType = ProxyAuthentication;
         break;
       default:
-        throw new Error(`Unsupported authentication type: ${authArr[0]}`);
+        throw new Error(`Unsupported authentication type: ${authType[0]}`);
     }
   } else {
     authHandlerType = MultipleAuthentication;
