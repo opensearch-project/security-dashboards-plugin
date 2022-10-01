@@ -58,7 +58,7 @@ export const configSchema = schema.object({
   }),
   auth: schema.object({
     type: schema.arrayOf(schema.string(), {
-      defaultValue: [],
+      defaultValue: [''],
       validate(value: string[]) {
         if (!value || value.length === 0) {
           return `Authentication type is not configurred properly.`;

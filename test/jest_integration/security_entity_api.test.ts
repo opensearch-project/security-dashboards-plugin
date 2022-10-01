@@ -287,6 +287,7 @@ describe('start OpenSearch Dashboards server', () => {
       .get(root, `/api/v1/configuration/account`)
       .unset(AUTHORIZATION_HEADER_NAME)
       .set('Cookie', securityAuthCookie);
+
     expect(getAccountWithCookieResponse.status).toEqual(200);
 
     const getAccountWithCredentialsResponse = await osdTestServer.request

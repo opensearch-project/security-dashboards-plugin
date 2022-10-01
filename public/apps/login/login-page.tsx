@@ -106,7 +106,9 @@ export function LoginPage(props: LoginPageDeps) {
   const formOptions = (options: string[]) => {
     let formBody = [];
     const formBodyOp = [];
-
+    if (options && options.length === 1 && options[0] === '') {
+      options = [`${AuthType.BASIC}`];
+    }
     for (let i = 0; i < options.length; i++) {
       switch (options[i].toLowerCase()) {
         case AuthType.BASIC: {
