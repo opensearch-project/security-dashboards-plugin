@@ -137,7 +137,7 @@ describe('start OpenSearch Dashboards server', () => {
       order: 5,
       http_authenticator: {
         challenge: true,
-        type: ['saml'],
+        type: 'saml',
         config: {
           idp: {
             metadata_url: 'http://localhost:7000/metadata',
