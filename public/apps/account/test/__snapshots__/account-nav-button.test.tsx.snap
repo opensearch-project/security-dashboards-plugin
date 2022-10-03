@@ -80,7 +80,7 @@ exports[`Account navigation button renders 1`] = `
         <EuiButtonEmpty
           data-test-subj="view-roles-and-identities"
           onClick={[Function]}
-          size="l"
+          size="xs"
         >
           View roles and identities
         </EuiButtonEmpty>
