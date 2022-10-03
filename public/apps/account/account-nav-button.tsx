@@ -113,7 +113,7 @@ export function AccountNavButton(props: {
       </EuiButtonEmpty>
       {horizontalRule}
       <EuiFlexItem grow={false} alignment="left">
-        <EuiButtonEmpty flush="left" data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
+        <EuiButtonEmpty textAlign="left" flush="left" data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
           Switch tenants
         </EuiButtonEmpty>
       </EuiFlexItem>
