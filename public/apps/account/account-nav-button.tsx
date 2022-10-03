@@ -78,6 +78,7 @@ export function AccountNavButton(props: {
         <EuiFlexItem grow={null}>
           <EuiAvatar name={username} />
         </EuiFlexItem>
+
         <EuiFlexItem>
           <EuiListGroup gutterSize="none">
             <EuiListGroupItem
