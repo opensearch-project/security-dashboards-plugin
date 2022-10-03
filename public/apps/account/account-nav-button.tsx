@@ -113,29 +113,31 @@ export function AccountNavButton(props: {
       </EuiButtonEmpty>
       {horizontalRule}
       <EuiFlexItem grow={true}>
-        <EuiButtonEmpty fullWidth  flush="left" data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
+        <EuiButtonEmpty flush="left" data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
           Switch tenants
         </EuiButtonEmpty>
       </EuiFlexItem>
       {props.isInternalUser && (
         <>
           {horizontalRule}
-          <EuiButtonEmpty
-            data-test-subj="reset-password"
-            size="xs"
-            onClick={() =>
-              setModal(
-                <PasswordResetPanel
-                  coreStart={props.coreStart}
-                  username={props.username}
-                  handleClose={() => setModal(null)}
-                  logoutUrl={props.config.auth.logout_url}
-                />
-              )
-            }
-          >
-            Reset password
-          </EuiButtonEmpty>
+          <EuiFlexItem grow={true}>
+            <EuiButtonEmpty
+              data-test-subj="reset-password"
+              size="xs"
+              onClick={() =>
+                setModal(
+                  <PasswordResetPanel
+                    coreStart={props.coreStart}
+                    username={props.username}
+                    handleClose={() => setModal(null)}
+                    logoutUrl={props.config.auth.logout_url}
+                  />
+                )
+              }
+            >
+              Reset password
+            </EuiButtonEmpty>
+          </EuiFlexItem>
         </>
       )}
       <LogoutButton
