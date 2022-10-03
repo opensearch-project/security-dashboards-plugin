@@ -112,7 +112,7 @@ export function AccountNavButton(props: {
         View roles and identities
       </EuiButtonEmpty>
       {horizontalRule}
-      <EuiButtonEmpty contentStyle={{width: '100%', height: '100%'}} fullWidth data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
+      <EuiButtonEmpty contentStyle={{width: '100%', height: '100%'}} hitSlop={{top: 20, bottom: 20, left: 50, right: 50}} fullWidth data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
         Switch tenants 1
       </EuiButtonEmpty>
       {horizontalRule}
