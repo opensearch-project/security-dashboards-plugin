@@ -140,7 +140,7 @@ export function AccountNavButton(props: {
           </EuiFlexItem>
         </>
       )}
-      <EuiFlexItem>
+      <EuiFlexItem fullWidth>
         <LogoutButton
           authType={props.config.auth.type}
           http={props.coreStart.http}
