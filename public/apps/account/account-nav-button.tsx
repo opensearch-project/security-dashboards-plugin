@@ -102,50 +102,52 @@ export function AccountNavButton(props: {
           />
         </EuiFlexItem>
       </EuiFlexGroup>
-
-      {horizontalRule}
-      <EuiButtonEmpty
-        data-test-subj="view-roles-and-identities"
-        size="xs"
-        onClick={() => setModal(<RoleInfoPanel {...props} handleClose={() => setModal(null)} />)}
-      >
-        View roles and identities
-      </EuiButtonEmpty>
-      {horizontalRule}
-      <EuiFlexItem grow={true}>
-        <EuiButtonEmpty flush="left" data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
-          Switch tenants
+      
+      <EuiFlexGroup alignItems="left">
+        {horizontalRule}
+        <EuiButtonEmpty
+          data-test-subj="view-roles-and-identities"
+          size="xs"
+          onClick={() => setModal(<RoleInfoPanel {...props} handleClose={() => setModal(null)} />)}
+        >
+          View roles and identities
         </EuiButtonEmpty>
-      </EuiFlexItem>
-      {props.isInternalUser && (
-        <>
         {horizontalRule}
         <EuiFlexItem grow={true}>
-          <EuiButtonEmpty
-            data-test-subj="reset-password"
-            size="xs"
-            onClick={() =>
-              setModal(
-                <PasswordResetPanel
-                  coreStart={props.coreStart}
-                  username={props.username}
-                  handleClose={() => setModal(null)}
-                  logoutUrl={props.config.auth.logout_url}
-                />
-              )
-            }
-          >
-            Reset password
+          <EuiButtonEmpty flush="left" data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
+            Switch tenants
           </EuiButtonEmpty>
         </EuiFlexItem>
-        </>
-      )}
-      <LogoutButton
-        authType={props.config.auth.type}
-        http={props.coreStart.http}
-        divider={horizontalRule}
-        logoutUrl={props.config.auth.logout_url}
-      />
+        {props.isInternalUser && (
+          <>
+          {horizontalRule}
+          <EuiFlexItem grow={true}>
+            <EuiButtonEmpty
+              data-test-subj="reset-password"
+              size="xs"
+              onClick={() =>
+                setModal(
+                  <PasswordResetPanel
+                    coreStart={props.coreStart}
+                    username={props.username}
+                    handleClose={() => setModal(null)}
+                    logoutUrl={props.config.auth.logout_url}
+                  />
+                )
+              }
+            >
+              Reset password
+            </EuiButtonEmpty>
+          </EuiFlexItem>
+          </>
+        )}
+        <LogoutButton
+          authType={props.config.auth.type}
+          http={props.coreStart.http}
+          divider={horizontalRule}
+          logoutUrl={props.config.auth.logout_url}
+        />
+      </EuiFlexGroup>
     </div>
   );
   return (
