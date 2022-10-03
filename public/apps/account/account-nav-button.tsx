@@ -106,13 +106,13 @@ export function AccountNavButton(props: {
       {horizontalRule}
       <EuiButtonEmpty
         data-test-subj="view-roles-and-identities"
-        size="l"
+        size="xs"
         onClick={() => setModal(<RoleInfoPanel {...props} handleClose={() => setModal(null)} />)}
       >
         View roles and identities
       </EuiButtonEmpty>
       {horizontalRule}
-      <EuiButtonEmpty fullWidth={true} data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
+      <EuiButtonEmpty grow={true} fullWidth data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
         Switch tenants 1
       </EuiButtonEmpty>
       {horizontalRule}
