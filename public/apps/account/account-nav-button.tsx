@@ -141,12 +141,14 @@ export function AccountNavButton(props: {
         </>
       )}
       <EuiFlexItem grow={true}>
-        <LogoutButton 
-          authType={props.config.auth.type}
-          http={props.coreStart.http}
-          divider={horizontalRule}
-          logoutUrl={props.config.auth.logout_url}
-        />
+        <EuiButtonEmpty>
+          <LogoutButton 
+            authType={props.config.auth.type}
+            http={props.coreStart.http}
+            divider={horizontalRule}
+            logoutUrl={props.config.auth.logout_url}
+          />
+        </EuiButtonEmpty>
       </EuiFlexItem>
     </div>
   );
