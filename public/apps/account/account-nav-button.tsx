@@ -112,7 +112,7 @@ export function AccountNavButton(props: {
         View roles and identities
       </EuiButtonEmpty>
       {horizontalRule}
-      <EuiFlexItem grow={false}>
+      <EuiFlexItem grow={false} alignment="left">
         <EuiButtonEmpty flush="left" data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
           Switch tenants
         </EuiButtonEmpty>
