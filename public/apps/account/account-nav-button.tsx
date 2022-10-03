@@ -103,7 +103,7 @@ export function AccountNavButton(props: {
         </EuiFlexItem>
       </EuiFlexGroup>
 
-    
+      {horizontalRule}
       <EuiButtonEmpty
         data-test-subj="view-roles-and-identities"
         size="xs"
@@ -111,17 +111,17 @@ export function AccountNavButton(props: {
       >
         View roles and identities
       </EuiButtonEmpty>
-
-      <EuiButtonEmpty grow={true} fullWidth data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
+      {horizontalRule}
+      <EuiButtonEmpty contentStyle={{width: '100%'}} fullWidth data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
         Switch tenants 1
       </EuiButtonEmpty>
-
+      {horizontalRule}
       <EuiButtonEmpty fullWidth={true} data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
         Switch tenants 2
       </EuiButtonEmpty>
       {props.isInternalUser && (
         <>
-         
+          {horizontalRule}
           <EuiButtonEmpty
             data-test-subj="reset-password"
             size="xs"
