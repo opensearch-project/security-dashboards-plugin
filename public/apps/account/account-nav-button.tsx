@@ -140,6 +140,7 @@ export function AccountNavButton(props: {
           </EuiFlexItem>
         </>
       )}
+        {horizontalRule}
       <EuiFlexItem grow={true}>
         <EuiButtonEmpty>
           <LogoutButton 
