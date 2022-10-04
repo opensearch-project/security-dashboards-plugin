@@ -118,25 +118,25 @@ export function AccountNavButton(props: {
       </EuiFlexItem>
       {props.isInternalUser && (
         <>
-        {horizontalRule}
-        <EuiFlexItem grow={true}>
-            <EuiButtonEmpty
-              data-test-subj="reset-password"
-              size="xs"
-              onClick={() =>
-                setModal(
-                  <PasswordResetPanel
-                    coreStart={props.coreStart}
-                    username={props.username}
-                    handleClose={() => setModal(null)}
-                    logoutUrl={props.config.auth.logout_url}
-                  />
-                )
-              }
-            >
-              Reset password
-            </EuiButtonEmpty>
-          </EuiFlexItem>
+          {horizontalRule}
+          <EuiFlexItem grow={true}>
+              <EuiButtonEmpty
+                data-test-subj="reset-password"
+                size="xs"
+                onClick={() =>
+                  setModal(
+                    <PasswordResetPanel
+                      coreStart={props.coreStart}
+                      username={props.username}
+                      handleClose={() => setModal(null)}
+                      logoutUrl={props.config.auth.logout_url}
+                    />
+                  )
+                }
+              >
+                Reset password
+              </EuiButtonEmpty>
+            </EuiFlexItem>
         </>
       )}
       {horizontalRule}
