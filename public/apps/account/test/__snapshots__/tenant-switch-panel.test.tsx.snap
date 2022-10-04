@@ -76,6 +76,7 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
             },
           ]
         }
+        placeholder="Select a custom tenant"
         selectedOptions={Array []}
         singleSelection={
           Object {
@@ -190,6 +191,7 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
             },
           ]
         }
+        placeholder="Select a custom tenant"
         selectedOptions={Array []}
         singleSelection={
           Object {
@@ -304,6 +306,7 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
             },
           ]
         }
+        placeholder="Select a custom tenant"
         selectedOptions={Array []}
         singleSelection={
           Object {
@@ -418,6 +421,7 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
             },
           ]
         }
+        placeholder="Select a custom tenant"
         selectedOptions={Array []}
         singleSelection={
           Object {
@@ -532,6 +536,7 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
             },
           ]
         }
+        placeholder="Select a custom tenant"
         selectedOptions={Array []}
         singleSelection={
           Object {
