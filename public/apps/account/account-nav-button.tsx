@@ -78,7 +78,6 @@ export function AccountNavButton(props: {
         <EuiFlexItem grow={null}>
           <EuiAvatar name={username} />
         </EuiFlexItem>
-
         <EuiFlexItem>
           <EuiListGroup gutterSize="none">
             <EuiListGroupItem
@@ -146,7 +145,6 @@ export function AccountNavButton(props: {
           <LogoutButton 
             authType={props.config.auth.type}
             http={props.coreStart.http}
-            divider={null}
             logoutUrl={props.config.auth.logout_url}
           />
         </EuiButtonEmpty>

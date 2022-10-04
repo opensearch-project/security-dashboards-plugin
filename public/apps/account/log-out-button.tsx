@@ -21,13 +21,11 @@ import { logout, samlLogout } from './utils';
 export function LogoutButton(props: {
   authType: string;
   http: HttpStart;
-  divider: JSX.Element;
   logoutUrl?: string;
 }) {
   if (props.authType === 'openid') {
     return (
       <div>
-        {props.divider}
         <EuiButtonEmpty
           fullWidth
           data-test-subj="log-out-2"
