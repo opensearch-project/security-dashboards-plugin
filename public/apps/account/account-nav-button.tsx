@@ -112,13 +112,13 @@ export function AccountNavButton(props: {
       </EuiButtonEmpty>
       {horizontalRule}
       <EuiFlexItem grow={false}>
-        <EuiButtonEmpty flush="left" data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
+        <EuiButtonEmpty data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
           Switch tenants
         </EuiButtonEmpty>
       </EuiFlexItem>
       {props.isInternalUser && (
         <>
-          {horizontalRule}
+        {horizontalRule}
         <EuiFlexItem grow={true}>
             <EuiButtonEmpty
               data-test-subj="reset-password"
