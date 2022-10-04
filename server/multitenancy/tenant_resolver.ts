@@ -48,7 +48,6 @@ export function resolveTenant(
   const securitytenant = request?.url?.searchParams?.get('securitytenant');
   // eslint-disable-next-line @typescript-eslint/naming-convention
   const security_tenant = request?.url?.searchParams?.get('security_tenant');
-
   if (securityTenant_) {
     selectedTenant = securityTenant_;
   } else if (securitytenant) {
