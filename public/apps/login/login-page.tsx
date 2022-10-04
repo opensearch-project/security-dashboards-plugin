@@ -188,7 +188,11 @@ export function LoginPage(props: LoginPageDeps) {
                 size="s"
                 type="prime"
                 className={props.config.ui.openid.login.buttonstyle || 'btn-login'}
-                href={OPENID_AUTH_LOGIN}
+                onClick={(e: any) => {
+                  e.preventDefault();
+                  sessionStorage.setItem('current_auth_type', AuthType.OPEN_ID);
+                  window.location.href = OPENID_AUTH_LOGIN;
+                }}
                 iconType={
                   props.config.ui.openid.login.showbrandimage
                     ? props.config.ui.openid.login.brandimage
@@ -209,7 +213,11 @@ export function LoginPage(props: LoginPageDeps) {
                 size="s"
                 type="submit"
                 className={props.config.ui.saml.login.buttonstyle || 'btn-login'}
-                href={SAML_AUTH_LOGIN_WITH_FRAGMENT}
+                onClick={(e: any) => {
+                  e.preventDefault();
+                  sessionStorage.setItem('current_auth_type', AuthType.SAML);
+                  window.location.href = SAML_AUTH_LOGIN_WITH_FRAGMENT;
+                }}
                 iconType={
                   props.config.ui.saml.login.showbrandimage
                     ? props.config.ui.saml.login.brandimage

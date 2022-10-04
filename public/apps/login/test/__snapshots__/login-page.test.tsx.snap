@@ -217,8 +217,8 @@ exports[`Login page renders renders with config value for multiauth 1`] = `
       <EuiButton
         className="test-btn-style"
         data-test-subj="submit"
-        href="/auth/openid/login"
         iconType="http://localhost:5601/images/test.png"
+        onClick={[Function]}
         size="s"
         type="prime"
       >
@@ -236,8 +236,8 @@ exports[`Login page renders renders with config value for multiauth 1`] = `
       <EuiButton
         className="test-btn-style"
         data-test-subj="submit"
-        href="/auth/saml/captureUrlFragment?nextUrl=%2F"
         iconType="http://localhost:5601/images/test.png"
+        onClick={[Function]}
         size="s"
         type="submit"
       >

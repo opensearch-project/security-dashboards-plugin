@@ -53,3 +53,16 @@ exports[`Account menu - Log out button renders renders when auth type is not Ope
   </EuiButtonEmpty>
 </div>
 `;
+
+exports[`Account menu - Log out button renders when auth type is MultiAuth 1`] = `
+<div>
+  <EuiButtonEmpty
+    color="danger"
+    data-test-subj="log-out-3"
+    onClick={[Function]}
+    size="xs"
+  >
+    Log out
+  </EuiButtonEmpty>
+</div>
+`;
