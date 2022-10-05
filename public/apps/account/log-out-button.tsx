@@ -20,16 +20,23 @@ import { logout, samlLogout } from './utils';
 import { AuthType, OPENID_AUTH_LOGOUT } from '../../../common';
 
 export function LogoutButton(props: {
-  authType: string[];
+  authType: string | string[];
   http: HttpStart;
   divider: JSX.Element;
   logoutUrl?: string;
 }) {
   const currentAuthType = sessionStorage.getItem('current_auth_type');
+  let authArr = [];
+
+  if (typeof props.authType === 'string') {
+    authArr.push(props.authType);
+  } else {
+    authArr = [...props.authType];
+  }
 
   if (
-    currentAuthType === AuthType.OPEN_ID ||
-    (props.authType.length === 1 && props.authType[0] === AuthType.OPEN_ID)
+    currentAuthType?.toLowerCase() === AuthType.OPEN_ID ||
+    (authArr.length === 1 && authArr[0].toLowerCase() === AuthType.OPEN_ID)
   ) {
     sessionStorage.removeItem('current_auth_type');
     return (
@@ -46,8 +53,8 @@ export function LogoutButton(props: {
       </div>
     );
   } else if (
-    currentAuthType === AuthType.SAML ||
-    (props.authType.length === 1 && props.authType[0] === AuthType.SAML)
+    currentAuthType?.toLowerCase() === AuthType.SAML ||
+    (authArr.length === 1 && authArr[0].toLowerCase() === AuthType.SAML)
   ) {
     sessionStorage.removeItem('current_auth_type');
     return (
@@ -63,7 +70,7 @@ export function LogoutButton(props: {
         </EuiButtonEmpty>
       </div>
     );
-  } else if (props.authType.length === 1 && props.authType[0] === AuthType.PROXY) {
+  } else if (authArr.length === 1 && authArr[0].toLowerCase() === AuthType.PROXY) {
     return <div />;
   } else {
     return (

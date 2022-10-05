@@ -103,14 +103,27 @@ export function LoginPage(props: LoginPageDeps) {
     }
   };
 
-  const formOptions = (options: string[]) => {
+  const formOptions = (options: string | string[]) => {
     let formBody = [];
     const formBodyOp = [];
-    if (options && options.length === 1 && options[0] === '') {
-      options = [`${AuthType.BASIC}`];
+    let authOpts = [];
+
+    if (typeof options === 'string') {
+      if (options === '') {
+        authOpts.push(AuthType.BASIC);
+      } else {
+        authOpts.push(options);
+      }
+    } else {
+      if (options && options.length === 1 && options[0] === '') {
+        authOpts.push(AuthType.BASIC);
+      } else {
+        authOpts = [...options];
+      }
     }
-    for (let i = 0; i < options.length; i++) {
-      switch (options[i].toLowerCase()) {
+
+    for (let i = 0; i < authOpts.length; i++) {
+      switch (authOpts[i].toLowerCase()) {
         case AuthType.BASIC: {
           formBody.push(
             <EuiFormRow>
@@ -152,28 +165,7 @@ export function LoginPage(props: LoginPageDeps) {
             </EuiFormRow>
           );
 
-          if (props.config.auth.anonymous_auth_enabled) {
-            formBody.push(
-              <EuiFormRow>
-                <EuiButton
-                  data-test-subj="submit"
-                  size="s"
-                  type="prime"
-                  className={props.config.ui.basicauth.login.buttonstyle || 'btn-login'}
-                  href={ANONYMOUS_AUTH_LOGIN}
-                  iconType={
-                    props.config.ui.basicauth.login.showbrandimage
-                      ? props.config.ui.basicauth.login.brandimage
-                      : ''
-                  }
-                >
-                  Log in as anonymous
-                </EuiButton>
-              </EuiFormRow>
-            );
-          }
-
-          if (options.length > 1) {
+          if (authOpts.length > 1) {
             formBody.push(<EuiSpacer size="xs" />);
             formBody.push(<EuiHorizontalRule size="full" margin="xl" />);
             formBody.push(<EuiSpacer size="xs" />);
@@ -233,7 +225,7 @@ export function LoginPage(props: LoginPageDeps) {
         default: {
           setloginFailed(true);
           setloginError(
-            `Authentication Type: ${options[i]} is not supported for multiple authentication.`
+            `Authentication Type: ${authOpts[i]} is not supported for multiple authentication.`
           );
           break;
         }

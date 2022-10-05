@@ -57,34 +57,65 @@ export const configSchema = schema.object({
     keepalive: schema.boolean({ defaultValue: true }),
   }),
   auth: schema.object({
-    type: schema.arrayOf(schema.string(), {
-      defaultValue: [''],
-      validate(value: string[]) {
-        if (!value || value.length === 0) {
-          return `Authentication type is not configurred properly.`;
-        }
+    type: schema.oneOf(
+      [
+        schema.arrayOf(schema.string(), {
+          defaultValue: [''],
+          validate(value: string[]) {
+            if (!value || value.length === 0) {
+              return `Authentication type is not configurred properly.`;
+            }
 
-        if (value.length > 1) {
-          const basicValidate = value.find((element) => {
-            return element.toLowerCase() === 'basicauth';
-          });
+            if (value.length > 1) {
+              const basicValidate = value.find((element) => {
+                return element.toLowerCase() === 'basicauth';
+              });
 
-          if (!basicValidate) {
-            return `basicauth is mandatory.`;
-          }
-        }
+              if (!basicValidate) {
+                return `Authentication type is not configurred properly. basicauth is mandatory.`;
+              }
+            }
 
-        value.forEach(function (authVal) {
-          if (
-            !['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache'].includes(
-              authVal.toLowerCase()
-            )
-          ) {
-            return `allowed auth.type are ['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache']`;
-          }
-        });
-      },
-    }),
+            value.forEach(function (authVal) {
+              if (
+                ![
+                  '',
+                  'basicauth',
+                  'jwt',
+                  'openid',
+                  'saml',
+                  'proxy',
+                  'kerberos',
+                  'proxycache',
+                ].includes(authVal.toLowerCase())
+              ) {
+                return `allowed auth.type are ['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache']`;
+              }
+            });
+          },
+        }),
+        schema.string({
+          defaultValue: '',
+          validate(value) {
+            if (
+              ![
+                '',
+                'basicauth',
+                'jwt',
+                'openid',
+                'saml',
+                'proxy',
+                'kerberos',
+                'proxycache',
+              ].includes(value.toLowerCase())
+            ) {
+              return `allowed auth.type are ['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache']`;
+            }
+          },
+        }),
+      ],
+      { defaultValue: '' }
+    ),
     anonymous_auth_enabled: schema.boolean({ defaultValue: false }),
     unauthenticated_routes: schema.arrayOf(schema.string(), {
       defaultValue: ['/api/reporting/stats'],

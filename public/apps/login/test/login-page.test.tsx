@@ -18,6 +18,7 @@ import React from 'react';
 import { ClientConfigType } from '../../../types';
 import { LoginPage } from '../login-page';
 import { validateCurrentPassword } from '../../../utils/login-utils';
+import { API_AUTH_LOGOUT } from '../../../../common';
 
 jest.mock('../../../utils/login-utils', () => ({
   validateCurrentPassword: jest.fn(),
@@ -64,7 +65,7 @@ describe('Login page', () => {
         },
         auth: {
           type: ['basicauth'],
-          logout_url: '/auth/logout',
+          logout_url: API_AUTH_LOGOUT,
           anonymous_auth_enabled: false,
         },
       };
@@ -105,7 +106,7 @@ describe('Login page', () => {
         },
         auth: {
           type: ['basicauth', 'openid', 'saml'],
-          logout_url: '/auth/logout',
+          logout_url: API_AUTH_LOGOUT,
           anonymous_auth_enabled: false,
         },
       };

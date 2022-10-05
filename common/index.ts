@@ -18,6 +18,7 @@ export const PLUGIN_NAME = 'security-dashboards-plugin';
 
 export const APP_ID_LOGIN = 'login';
 export const APP_ID_CUSTOMERROR = 'customerror';
+export const OPENDISTRO_SECURITY_ANONYMOUS = 'opendistro_security_anonymous';
 
 export const API_PREFIX = '/api/v1';
 export const CONFIGURATION_API_PREFIX = 'configuration';

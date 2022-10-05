@@ -30,7 +30,7 @@ import {
 import { OpenSearchDashboardsResponse } from 'src/core/server/http/router';
 import { SecurityPluginConfigType } from '../../..';
 import { AuthenticationType } from '../authentication_type';
-import { AuthType, LOGIN_PAGE_URI, AUTH_HEADER_NAME } from '../../../../common';
+import { AuthType, LOGIN_PAGE_URI, OPENDISTRO_SECURITY_ANONYMOUS } from '../../../../common';
 import { composeNextUrlQueryParam } from '../../../utils/next_url';
 import { callTokenEndpoint } from '../openid/helper';
 import { MultiAuthRoutes } from './routes';
@@ -50,7 +50,7 @@ export interface WreckHttpsOptions {
 }
 
 export class MultipleAuthentication extends AuthenticationType {
-  private authTypes: string[];
+  private authTypes: string | string[];
   private openIdAuthConfig: OpenIdAuthConfig;
   private wreckClient: typeof wreck;
 
@@ -122,7 +122,7 @@ export class MultipleAuthentication extends AuthenticationType {
     if (
       reqAuthType === AuthType.BASIC &&
       this.config.auth.anonymous_auth_enabled &&
-      authInfo.user_name === 'opendistro_security_anonymous'
+      authInfo.user_name === OPENDISTRO_SECURITY_ANONYMOUS
     ) {
       return {
         username: authInfo.user_name,
@@ -167,7 +167,6 @@ export class MultipleAuthentication extends AuthenticationType {
     }
   }
 
-  // private async oidcConfigSetup(wreckClient: typeof wreck) :Promise<OpenIdAuthConfig>{
   private async oidcConfigSetup(wreckClient: typeof wreck) {
     const authHeaderName: string = this.config.openid?.header || '';
     this.openIdAuthConfig.authHeaderName = authHeaderName;
@@ -191,7 +190,6 @@ export class MultipleAuthentication extends AuthenticationType {
   async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean> {
     if (cookie.authType === AuthType.BASIC) {
       const result =
-        cookie.authType === AuthType.BASIC &&
         cookie.expiryTime &&
         ((cookie.username && cookie.credentials?.authHeaderValue) ||
           (this.config.auth.anonymous_auth_enabled && cookie.isAnonymousAuth));
@@ -199,7 +197,6 @@ export class MultipleAuthentication extends AuthenticationType {
       return result;
     } else if (cookie.authType === AuthType.OPEN_ID) {
       if (
-        cookie.authType !== AuthType.OPEN_ID ||
         !cookie.username ||
         !cookie.expiryTime ||
         !cookie.credentials?.authHeaderValue ||
@@ -246,12 +243,7 @@ export class MultipleAuthentication extends AuthenticationType {
         return false;
       }
     } else if (cookie.authType === AuthType.SAML) {
-      return (
-        cookie.authType === AuthType.SAML &&
-        cookie.username &&
-        cookie.expiryTime &&
-        cookie.credentials?.authHeaderValue
-      );
+      return cookie.username && cookie.expiryTime && cookie.credentials?.authHeaderValue;
     } else {
       return false;
     }
@@ -268,11 +260,9 @@ export class MultipleAuthentication extends AuthenticationType {
         this.coreSetup.http.basePath.serverBasePath
       );
 
-      const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`;
-
       return response.redirected({
         headers: {
-          location: `${redirectLocation}`,
+          location: `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`,
         },
       });
     } else {

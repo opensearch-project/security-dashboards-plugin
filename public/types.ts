@@ -72,7 +72,7 @@ export interface ClientConfigType {
     };
   };
   auth: {
-    type: string[];
+    type: string | string[];
     logout_url: string;
     anonymous_auth_enabled: boolean;
   };

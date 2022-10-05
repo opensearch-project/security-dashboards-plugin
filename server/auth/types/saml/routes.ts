@@ -47,7 +47,7 @@ export class SamlAuthRoutes {
                 validate: validateNextUrl,
               })
             ),
-            redirectHash: schema.string({ defaultValue: 'false' }),
+            redirectHash: schema.string(),
           }),
         },
         options: {

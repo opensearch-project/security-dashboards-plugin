@@ -37,8 +37,6 @@ import {
   AUTH_RESPONSE_TYPE,
   OPENID_AUTH_LOGOUT,
 } from '../../../../common';
-import { User } from '../../user';
-import { resolveTenant } from '../../../multitenancy/tenant_resolver';
 
 export class OpenIdAuthRoutes {
   private static readonly NONCE_LENGTH: number = 22;
