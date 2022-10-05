@@ -1,6 +1,6 @@
-## 2022-10-04 Version 2.3.1.0
+## 2022-10-04 Version 2.3.0.0
 
-Compatible with Opensearch-Dashboards 2.3.1
+Compatible with Opensearch-Dashboards 2.3.0
 
 ### Bug Fixes
 * Use expiration of tokens from the id token ([#1040](https://github.com/opensearch-project/security-dashboards-plugin/pull/1040))
@@ -9,4 +9,4 @@ Compatible with Opensearch-Dashboards 2.3.1
 * Add prerequisite check github workflow ([#1083](https://github.com/opensearch-project/security-dashboards-plugin/pull/1083))
 
 ### Maintenance
-* Increment version to 2.3.1.0 ([#1068](https://github.com/opensearch-project/security-dashboards-plugin/pull/1068))
+* Increment version to 2.3.0.0 ([#1068](https://github.com/opensearch-project/security-dashboards-plugin/pull/1068))
