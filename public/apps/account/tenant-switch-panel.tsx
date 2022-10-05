@@ -232,6 +232,9 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
     }
   };
 
+  const invalidCustomTenant =
+    tenantSwitchRadioIdSelected === CUSTOM_TENANT_RADIO_ID && !selectedCustomTenantOption[0];
+
   let content;
 
   if (isMultiTenancyEnabled) {
@@ -249,6 +252,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
           In current EUI if put into the child of radio option, clicking in the combo box will not
           show the drop down list since the radio option consumes the click event. */}
         <EuiComboBox
+          placeholder="Select a custom tenant"
           options={customTenantOptions}
           singleSelection={{ asPlainText: true }}
           selectedOptions={selectedCustomTenantOption}
@@ -297,8 +301,8 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
 
           <EuiButton
             data-test-subj="confirm"
-            fill
-            disabled={!isMultiTenancyEnabled}
+            fill={isMultiTenancyEnabled && !invalidCustomTenant}
+            disabled={!isMultiTenancyEnabled || invalidCustomTenant}
             onClick={handleTenantConfirmation}
           >
             Confirm
