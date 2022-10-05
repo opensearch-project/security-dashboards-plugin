@@ -8,3 +8,4 @@
 | Dave Lago        | [davidlago](https://github.com/davidlago)             | Amazon      |
 | Peter Nied       | [peternied](https://github.com/peternied)             | Amazon      |
 | Craig Perkins    | [cwperks](https://github.com/cwperks)                 | Amazon      |
+| Ryan Liang       | [RyanL1997](https://github.com/RyanL1997)             | Amazon      |
