@@ -15,5 +15,5 @@
 | Maintainer | GitHub ID | Affiliation |
 | --------------- | --------- | ----------- |
 | Yan Zeng         | [zengyan-amazon](https://github.com/zengyan-amazon)   | Amazon      |
-| Bandini Bhopi         | [bandinib-amzn](https://github.com/bandinib-amzn)     | Amazon      |
+| Bandini Bhopi    | [bandinib-amzn](https://github.com/bandinib-amzn)     | Amazon      |
 | Tianle Huang     | [tianleh](https://github.com/tianleh)                 | Amazon      |
