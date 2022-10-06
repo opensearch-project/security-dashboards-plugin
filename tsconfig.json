@@ -2,6 +2,7 @@
   // extend OpenSearchDashboards's tsconfig, or use your own settings
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "jsx": "react",
     "esModuleInterop": true,
     "outDir": "./target",
     "allowUnusedLabels": true,

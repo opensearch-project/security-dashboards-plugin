@@ -18,17 +18,12 @@ import { EuiButtonEmpty } from '@elastic/eui';
 import { HttpStart } from 'opensearch-dashboards/public';
 import { logout, samlLogout } from './utils';
 
-export function LogoutButton(props: {
-  authType: string;
-  http: HttpStart;
-  divider: JSX.Element;
-  logoutUrl?: string;
-}) {
+export function LogoutButton(props: { authType: string; http: HttpStart; ogoutUrl?: string }) {
   if (props.authType === 'openid') {
     return (
       <div>
-        {props.divider}
         <EuiButtonEmpty
+          fullWidth
           data-test-subj="log-out-2"
           color="danger"
           size="xs"
@@ -43,6 +38,7 @@ export function LogoutButton(props: {
       <div>
         {props.divider}
         <EuiButtonEmpty
+          fullWidth
           data-test-subj="log-out-1"
           color="danger"
           size="xs"
@@ -59,6 +55,7 @@ export function LogoutButton(props: {
       <div>
         {props.divider}
         <EuiButtonEmpty
+          fullWidth
           data-test-subj="log-out-3"
           color="danger"
           size="xs"

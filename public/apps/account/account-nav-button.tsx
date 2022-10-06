@@ -111,36 +111,44 @@ export function AccountNavButton(props: {
         View roles and identities
       </EuiButtonEmpty>
       {horizontalRule}
-      <EuiButtonEmpty data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
-        Switch tenants
-      </EuiButtonEmpty>
+      <EuiFlexItem grow={false}>
+        <EuiButtonEmpty data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
+          Switch tenants
+        </EuiButtonEmpty>
+      </EuiFlexItem>
       {props.isInternalUser && (
         <>
           {horizontalRule}
-          <EuiButtonEmpty
-            data-test-subj="reset-password"
-            size="xs"
-            onClick={() =>
-              setModal(
-                <PasswordResetPanel
-                  coreStart={props.coreStart}
-                  username={props.username}
-                  handleClose={() => setModal(null)}
-                  logoutUrl={props.config.auth.logout_url}
-                />
-              )
-            }
-          >
-            Reset password
-          </EuiButtonEmpty>
+          <EuiFlexItem grow={true}>
+            <EuiButtonEmpty
+              data-test-subj="reset-password"
+              size="xs"
+              onClick={() =>
+                setModal(
+                  <PasswordResetPanel
+                    coreStart={props.coreStart}
+                    username={props.username}
+                    handleClose={() => setModal(null)}
+                    logoutUrl={props.config.auth.logout_url}
+                  />
+                )
+              }
+            >
+              Reset password
+            </EuiButtonEmpty>
+          </EuiFlexItem>
         </>
       )}
-      <LogoutButton
-        authType={props.config.auth.type}
-        http={props.coreStart.http}
-        divider={horizontalRule}
-        logoutUrl={props.config.auth.logout_url}
-      />
+      {horizontalRule}
+      <EuiFlexItem grow={true}>
+        <EuiButtonEmpty>
+          <LogoutButton
+            authType={props.config.auth.type}
+            http={props.coreStart.http}
+            logoutUrl={props.config.auth.logout_url}
+          />
+        </EuiButtonEmpty>
+      </EuiFlexItem>
     </div>
   );
   return (
