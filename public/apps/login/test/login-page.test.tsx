@@ -87,7 +87,7 @@ describe('Login page', () => {
           },
           openid: {
             login: {
-              buttonname: 'Title2',
+              buttonname: 'Button1',
               showbrandimage: true,
               brandimage: 'http://localhost:5601/images/test.png',
               buttonstyle: 'test-btn-style',
@@ -95,7 +95,7 @@ describe('Login page', () => {
           },
           saml: {
             login: {
-              buttonname: 'Title2',
+              buttonname: 'Button2',
               showbrandimage: true,
               brandimage: 'http://localhost:5601/images/test.png',
               buttonstyle: 'test-btn-style',

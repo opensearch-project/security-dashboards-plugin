@@ -29,7 +29,6 @@ describe('Account menu - Log out button', () => {
     Proxy = ['proxy'],
     MultiAuth = ['basicauth', 'openid', 'saml'],
   }
-
   const mockHttpStart = {
     basePath: {
       serverBasePath: '',

@@ -63,7 +63,6 @@ export class SamlAuthentication extends AuthenticationType {
   private redirectSAMlCapture = (request: OpenSearchDashboardsRequest, toolkit: AuthToolkit) => {
     const nextUrl = this.generateNextUrl(request);
     const clearOldVersionCookie = clearOldVersionCookieValue(this.config);
-
     return toolkit.redirected({
       location: `${this.coreSetup.http.basePath.serverBasePath}/auth/saml/captureUrlFragment?nextUrl=${nextUrl}`,
       'set-cookie': clearOldVersionCookie,

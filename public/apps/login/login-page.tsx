@@ -43,6 +43,13 @@ interface LoginPageDeps {
   config: ClientConfigType;
 }
 
+interface LoginButtonConfig {
+  buttonname: string;
+  showbrandimage: boolean;
+  brandimage: string;
+  buttonstyle: string;
+}
+
 function redirect(serverBasePath: string) {
   // navigate to nextUrl
   const urlParams = new URLSearchParams(window.location.search);
@@ -103,6 +110,31 @@ export function LoginPage(props: LoginPageDeps) {
     }
   };
 
+  const renderButton = (
+    authType: string,
+    loginEndPoint: string,
+    buttonConfig: LoginButtonConfig
+  ) => {
+    return (
+      <EuiFormRow>
+        <EuiButton
+          data-test-subj="submit"
+          size="s"
+          type="prime"
+          className={buttonConfig.buttonstyle || 'btn-login'}
+          onClick={(e: any) => {
+            e.preventDefault();
+            sessionStorage.setItem('current_auth_type', authType);
+            window.location.href = loginEndPoint;
+          }}
+          iconType={buttonConfig.showbrandimage ? buttonConfig.brandimage : ''}
+        >
+          {buttonConfig.buttonname}
+        </EuiButton>
+      </EuiFormRow>
+    );
+  };
+
   const formOptions = (options: string | string[]) => {
     let formBody = [];
     const formBodyOp = [];
@@ -112,7 +144,7 @@ export function LoginPage(props: LoginPageDeps) {
       if (options === '') {
         authOpts.push(AuthType.BASIC);
       } else {
-        authOpts.push(options);
+        authOpts.push(options.toLowerCase());
       }
     } else {
       if (options && options.length === 1 && options[0] === '') {
@@ -173,53 +205,15 @@ export function LoginPage(props: LoginPageDeps) {
           break;
         }
         case AuthType.OPEN_ID: {
-          formBodyOp.push(
-            <EuiFormRow>
-              <EuiButton
-                data-test-subj="submit"
-                size="s"
-                type="prime"
-                className={props.config.ui.openid.login.buttonstyle || 'btn-login'}
-                onClick={(e: any) => {
-                  e.preventDefault();
-                  sessionStorage.setItem('current_auth_type', AuthType.OPEN_ID);
-                  window.location.href = OPENID_AUTH_LOGIN;
-                }}
-                iconType={
-                  props.config.ui.openid.login.showbrandimage
-                    ? props.config.ui.openid.login.brandimage
-                    : ''
-                }
-              >
-                {props.config.ui.openid.login.buttonname}
-              </EuiButton>
-            </EuiFormRow>
-          );
+          const oidcConfig = props.config.ui[`${AuthType.OPEN_ID}`].login;
+
+          formBodyOp.push(renderButton(AuthType.OPEN_ID, OPENID_AUTH_LOGIN, oidcConfig));
           break;
         }
         case AuthType.SAML: {
-          formBodyOp.push(
-            <EuiFormRow>
-              <EuiButton
-                data-test-subj="submit"
-                size="s"
-                type="submit"
-                className={props.config.ui.saml.login.buttonstyle || 'btn-login'}
-                onClick={(e: any) => {
-                  e.preventDefault();
-                  sessionStorage.setItem('current_auth_type', AuthType.SAML);
-                  window.location.href = SAML_AUTH_LOGIN_WITH_FRAGMENT;
-                }}
-                iconType={
-                  props.config.ui.saml.login.showbrandimage
-                    ? props.config.ui.saml.login.brandimage
-                    : ''
-                }
-              >
-                {props.config.ui.saml.login.buttonname}
-              </EuiButton>
-            </EuiFormRow>
-          );
+          const samlConfig = props.config.ui[`${AuthType.SAML}`].login;
+
+          formBodyOp.push(renderButton(AuthType.SAML, SAML_AUTH_LOGIN_WITH_FRAGMENT, samlConfig));
           break;
         }
         default: {

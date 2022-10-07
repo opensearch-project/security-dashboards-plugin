@@ -109,6 +109,7 @@ export class MultipleAuthentication extends AuthenticationType {
   }
 
   getAdditionalAuthHeader(request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>) {
+    // This function is not used by basicauth, oidc and saml authentication, implementation is needed for jwt and proxy authentication.
     return {};
   }
 
@@ -184,7 +185,7 @@ export class MultipleAuthentication extends AuthenticationType {
 
     this.openIdAuthConfig.authorizationEndpoint = payload.authorization_endpoint;
     this.openIdAuthConfig.tokenEndpoint = payload.token_endpoint;
-    this.openIdAuthConfig.endSessionEndpoint = payload.end_session_endpoint || undefined;
+    this.openIdAuthConfig.endSessionEndpoint = payload.end_session_endpoint;
   }
 
   async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean> {

@@ -175,14 +175,12 @@ export class OpenIdAuthRoutes {
             authType: AuthType.OPEN_ID,
             expiryTime: Date.now() + this.config.session.ttl,
           };
-
           if (this.config.openid?.refresh_tokens && tokenResponse.refreshToken) {
             Object.assign(sessionStorage.credentials, {
               refresh_token: tokenResponse.refreshToken,
             });
           }
           this.sessionStorageFactory.asScoped(request).set(sessionStorage);
-
           return response.redirected({
             headers: {
               location: nextUrl,

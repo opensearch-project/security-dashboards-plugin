@@ -108,7 +108,6 @@ export function composeLogoutUrl(
 ) {
   const logoutEndpont = customLogoutUrl || idpEndsessionEndpoint;
   const logoutUrl = new URL(logoutEndpont!);
-
   Object.keys(additionalQueryParams).forEach((key) => {
     logoutUrl.searchParams.append(key, additionalQueryParams[key] as string);
   });

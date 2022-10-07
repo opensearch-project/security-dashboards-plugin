@@ -222,7 +222,7 @@ exports[`Login page renders renders with config value for multiauth 1`] = `
         size="s"
         type="prime"
       >
-        Title2
+        Button1
       </EuiButton>
     </EuiFormRow>
     <EuiFormRow
@@ -239,9 +239,9 @@ exports[`Login page renders renders with config value for multiauth 1`] = `
         iconType="http://localhost:5601/images/test.png"
         onClick={[Function]}
         size="s"
-        type="submit"
+        type="prime"
       >
-        Title2
+        Button2
       </EuiButton>
     </EuiFormRow>
   </EuiForm>

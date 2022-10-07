@@ -221,7 +221,6 @@ export class OpenIdAuthentication extends AuthenticationType {
         request,
         this.coreSetup.http.basePath.serverBasePath
       );
-
       return response.redirected({
         headers: {
           location: `${this.coreSetup.http.basePath.serverBasePath}${OPENID_AUTH_LOGIN}?${nextUrl}`,

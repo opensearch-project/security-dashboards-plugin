@@ -193,7 +193,6 @@ export class SecurityClient {
       SAMLResponse: samlResponse,
       acsEndpoint,
     };
-
     try {
       return await this.esClient.asScoped().callAsCurrentUser('opensearch_security.authtoken', {
         body,

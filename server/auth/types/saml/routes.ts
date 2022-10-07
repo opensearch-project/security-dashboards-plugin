@@ -65,7 +65,6 @@ export class SamlAuthRoutes {
 
         try {
           const samlHeader: any = await this.securityClient.getSamlHeader(request);
-
           const cookie: SecuritySessionCookie = {
             saml: {
               nextUrl: request.query.nextUrl ? request.query.nextUrl : '/',
@@ -102,7 +101,6 @@ export class SamlAuthRoutes {
         let redirectHash: boolean = false;
         try {
           const cookie = await this.sessionStorageFactory.asScoped(request).get();
-
           if (cookie) {
             requestId = cookie.saml?.requestId || '';
             nextUrl =
@@ -110,7 +108,6 @@ export class SamlAuthRoutes {
               `${this.coreSetup.http.basePath.serverBasePath}/app/opensearch-dashboards`;
             redirectHash = cookie.saml?.redirectHash || false;
           }
-
           if (!requestId) {
             return response.badRequest({
               body: 'Invalid requestId',
@@ -127,7 +124,6 @@ export class SamlAuthRoutes {
             request.body.SAMLResponse,
             undefined
           );
-
           const user = await this.securityClient.authenticateWithHeader(
             request,
             'authorization',
@@ -152,7 +148,6 @@ export class SamlAuthRoutes {
             authType: AuthType.SAML, // TODO: create constant
             expiryTime,
           };
-
           this.sessionStorageFactory.asScoped(request).set(cookie);
           if (redirectHash) {
             return response.redirected({
