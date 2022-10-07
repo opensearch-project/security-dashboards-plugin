@@ -38,6 +38,12 @@ export async function logout(http: HttpStart, logoutUrl?: string): Promise<void>
     logoutUrl || `${http.basePath.serverBasePath}/app/login?nextUrl=${nextUrl}`;
 }
 
+export async function samlLogout(http: HttpStart): Promise<void> {
+  // This will ensure tenancy is picked up from local storage in the next login.
+  setShouldShowTenantPopup(null);
+  window.location.href = `${http.basePath.serverBasePath}${API_AUTH_LOGOUT}`;
+}
+
 export async function updateNewPassword(
   http: HttpStart,
   newPassword: string,
