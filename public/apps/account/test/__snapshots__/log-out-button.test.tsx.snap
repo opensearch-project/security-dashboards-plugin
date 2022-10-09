@@ -26,9 +26,37 @@ exports[`Account menu - Log out button renders renders when auth type is OpenId 
 </div>
 `;
 
+exports[`Account menu - Log out button renders renders when auth type is OpenId: string array 1`] = `
+<div>
+  <EuiButtonEmpty
+    color="danger"
+    data-test-subj="log-out-2"
+    href="/auth/openid/logout"
+    size="xs"
+  >
+    Log out
+  </EuiButtonEmpty>
+</div>
+`;
+
 exports[`Account menu - Log out button renders renders when auth type is Proxy 1`] = `<div />`;
 
+exports[`Account menu - Log out button renders renders when auth type is Proxy: string array 1`] = `<div />`;
+
 exports[`Account menu - Log out button renders renders when auth type is SAML 1`] = `
+<div>
+  <EuiButtonEmpty
+    color="danger"
+    data-test-subj="log-out-1"
+    onClick={[Function]}
+    size="xs"
+  >
+    Log out
+  </EuiButtonEmpty>
+</div>
+`;
+
+exports[`Account menu - Log out button renders renders when auth type is SAML: string array 1`] = `
 <div>
   <EuiButtonEmpty
     color="danger"

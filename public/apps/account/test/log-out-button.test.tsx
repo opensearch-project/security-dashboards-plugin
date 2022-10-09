@@ -24,11 +24,12 @@ jest.mock('../utils', () => ({
 
 describe('Account menu - Log out button', () => {
   enum authType {
-    OpenId = ['openid'],
-    SAML = ['saml'],
-    Proxy = ['proxy'],
-    MultiAuth = ['basicauth', 'openid', 'saml'],
+    OpenId = 'openid',
+    SAML = 'saml',
+    Proxy = 'proxy',
   }
+  const MultiAuth = ['basicauth', 'openid', 'saml'];
+
   const mockHttpStart = {
     basePath: {
       serverBasePath: '',
@@ -38,7 +39,7 @@ describe('Account menu - Log out button', () => {
   describe('renders', () => {
     it('renders when auth type is MultiAuth', () => {
       const component = shallow(
-        <LogoutButton authType={authType.MultiAuth} http={mockHttpStart} divider={mockDivider} />
+        <LogoutButton authType={MultiAuth} http={mockHttpStart} divider={mockDivider} />
       );
       expect(component).toMatchSnapshot();
     });
@@ -50,6 +51,13 @@ describe('Account menu - Log out button', () => {
       expect(component).toMatchSnapshot();
     });
 
+    it('renders when auth type is OpenId: string array', () => {
+      const component = shallow(
+        <LogoutButton authType={['openid']} http={mockHttpStart} divider={mockDivider} />
+      );
+      expect(component).toMatchSnapshot();
+    });
+
     it('renders when auth type is SAML', () => {
       const component = shallow(
         <LogoutButton authType={authType.SAML} http={mockHttpStart} divider={mockDivider} />
@@ -57,9 +65,23 @@ describe('Account menu - Log out button', () => {
       expect(component).toMatchSnapshot();
     });
 
+    it('renders when auth type is SAML: string array', () => {
+      const component = shallow(
+        <LogoutButton authType={['saml']} http={mockHttpStart} divider={mockDivider} />
+      );
+      expect(component).toMatchSnapshot();
+    });
+
     it('renders when auth type is Proxy', () => {
       const component = shallow(
         <LogoutButton authType={authType.Proxy} http={mockHttpStart} divider={mockDivider} />
+      );
+      expect(component).toMatchSnapshot();
+    });
+
+    it('renders when auth type is Proxy: string array', () => {
+      const component = shallow(
+        <LogoutButton authType={['proxy']} http={mockHttpStart} divider={mockDivider} />
       );
       expect(component).toMatchSnapshot();
     });
