@@ -14,9 +14,27 @@
  */
 
 import { schema, TypeOf } from '@osd/config-schema';
-import { Console } from 'console';
 import { PluginInitializerContext, PluginConfigDescriptor } from '../../../src/core/server';
 import { SecurityPlugin } from './plugin';
+
+const validateAuthTye = (value: string[]) => {
+  const supportedAuthTypes = [
+    '',
+    'basicauth',
+    'jwt',
+    'openid',
+    'saml',
+    'proxy',
+    'kerberos',
+    'proxycache',
+  ];
+
+  value.forEach((authVal) => {
+    if (!supportedAuthTypes.includes(authVal.toLowerCase())) {
+      return `allowed auth.type are ${supportedAuthTypes}`;
+    }
+  });
+};
 
 export const configSchema = schema.object({
   enabled: schema.boolean({ defaultValue: true }),
@@ -76,41 +94,15 @@ export const configSchema = schema.object({
               }
             }
 
-            value.forEach(function (authVal) {
-              if (
-                ![
-                  '',
-                  'basicauth',
-                  'jwt',
-                  'openid',
-                  'saml',
-                  'proxy',
-                  'kerberos',
-                  'proxycache',
-                ].includes(authVal.toLowerCase())
-              ) {
-                return `allowed auth.type are ['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache']`;
-              }
-            });
+            validateAuthTye(value);
           },
         }),
         schema.string({
           defaultValue: '',
           validate(value) {
-            if (
-              ![
-                '',
-                'basicauth',
-                'jwt',
-                'openid',
-                'saml',
-                'proxy',
-                'kerberos',
-                'proxycache',
-              ].includes(value.toLowerCase())
-            ) {
-              return `allowed auth.type are ['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache']`;
-            }
+            const valArray: string[] = [];
+            valArray.push(value);
+            validateAuthTye(valArray);
           },
         }),
       ],

@@ -36,7 +36,7 @@ import { AuthenticationType } from '../authentication_type';
 import { callTokenEndpoint } from './helper';
 import { composeNextUrlQueryParam } from '../../../utils/next_url';
 import { getExpirationDate } from './helper';
-import { AuthType, LOGIN_PAGE_URI, OPENID_AUTH_LOGIN } from '../../../../common';
+import { AuthType, OPENID_AUTH_LOGIN } from '../../../../common';
 
 export interface OpenIdAuthConfig {
   authorizationEndpoint?: string;
