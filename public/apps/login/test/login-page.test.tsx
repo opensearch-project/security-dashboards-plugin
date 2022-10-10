@@ -54,6 +54,14 @@ const configUI = {
   backend_configurable: true,
 };
 
+const configUiDefault = {
+  basicauth: {
+    login: {
+      showbrandimage: true,
+    },
+  },
+};
+
 describe('Login page', () => {
   const mockHttpStart = {
     basePath: {
@@ -68,7 +76,6 @@ describe('Login page', () => {
         auth: {
           type: ['basicauth'],
           logout_url: API_AUTH_LOGOUT,
-          anonymous_auth_enabled: false,
         },
       };
       const component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
@@ -81,7 +88,6 @@ describe('Login page', () => {
         auth: {
           type: 'basicauth',
           logout_url: API_AUTH_LOGOUT,
-          anonymous_auth_enabled: false,
         },
       };
       const component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
@@ -94,7 +100,6 @@ describe('Login page', () => {
         auth: {
           type: ['basicauth', 'openid', 'saml'],
           logout_url: API_AUTH_LOGOUT,
-          anonymous_auth_enabled: false,
         },
       };
       const component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
@@ -103,16 +108,9 @@ describe('Login page', () => {
 
     it('renders with default value: string array', () => {
       const config: ClientConfigType = {
-        ui: {
-          basicauth: {
-            login: {
-              showbrandimage: true,
-            },
-          },
-        },
+        ui: configUiDefault,
         auth: {
           type: [''],
-          anonymous_auth_enabled: false,
         },
       };
       const component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
@@ -121,16 +119,9 @@ describe('Login page', () => {
 
     it('renders with default value: string', () => {
       const config: ClientConfigType = {
-        ui: {
-          basicauth: {
-            login: {
-              showbrandimage: true,
-            },
-          },
-        },
+        ui: configUiDefault,
         auth: {
           type: '',
-          anonymous_auth_enabled: false,
         },
       };
       const component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
@@ -143,16 +134,9 @@ describe('Login page', () => {
     const setState = jest.fn();
     const useState = jest.spyOn(React, 'useState');
     const config: ClientConfigType = {
-      ui: {
-        basicauth: {
-          login: {
-            showbrandimage: true,
-          },
-        },
-      },
+      ui: configUiDefault,
       auth: {
-        type: ['basicauth'],
-        anonymous_auth_enabled: false,
+        type: 'basicauth',
       },
     };
     beforeEach(() => {
@@ -182,16 +166,9 @@ describe('Login page', () => {
     const useState = jest.spyOn(React, 'useState');
     const setState = jest.fn();
     const config: ClientConfigType = {
-      ui: {
-        basicauth: {
-          login: {
-            showbrandimage: true,
-          },
-        },
-      },
+      ui: configUiDefault,
       auth: {
-        type: ['basicauth'],
-        anonymous_auth_enabled: false,
+        type: 'basicauth',
       },
     };
     beforeEach(() => {

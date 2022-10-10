@@ -74,7 +74,6 @@ export interface ClientConfigType {
   auth: {
     type: string | string[];
     logout_url: string;
-    anonymous_auth_enabled: boolean;
   };
   clusterPermissions: {
     include: string[];
