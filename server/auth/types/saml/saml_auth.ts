@@ -33,7 +33,7 @@ import {
 } from '../../../session/security_cookie';
 import { SamlAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
-import { AuthType} from '../../../../common';
+import { AuthType } from '../../../../common';
 
 export class SamlAuthentication extends AuthenticationType {
   public static readonly AUTH_HEADER_NAME = 'authorization';
