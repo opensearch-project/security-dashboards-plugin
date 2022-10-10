@@ -72,7 +72,7 @@ describe('start OpenSearch Dashboards server', () => {
         opensearch_security: {
           auth: {
             anonymous_auth_enabled: false,
-            type: ['saml'],
+            type: 'saml',
           },
           multitenancy: {
             enabled: true,
