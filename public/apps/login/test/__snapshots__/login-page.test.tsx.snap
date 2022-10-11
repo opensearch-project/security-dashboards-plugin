@@ -42,6 +42,7 @@ exports[`Login page renders renders with config value for multiauth 1`] = `
       labelType="label"
     >
       <EuiFieldText
+        aria-label="username_input"
         data-test-subj="user-name"
         isInvalid={false}
         onChange={[Function]}
@@ -64,6 +65,7 @@ exports[`Login page renders renders with config value for multiauth 1`] = `
       labelType="label"
     >
       <EuiFieldText
+        aria-label="password_input"
         data-test-subj="password"
         isInvalid={false}
         onChange={[Function]}
@@ -86,6 +88,7 @@ exports[`Login page renders renders with config value for multiauth 1`] = `
       labelType="label"
     >
       <EuiButton
+        aria-label="basicauth_login_button"
         className="test-btn-style"
         data-test-subj="submit"
         fill={true}
@@ -115,6 +118,7 @@ exports[`Login page renders renders with config value for multiauth 1`] = `
       labelType="label"
     >
       <EuiButton
+        aria-label="openid_login_button"
         className="test-btn-style"
         data-test-subj="submit"
         iconType="http://localhost:5601/images/test.png"
@@ -134,6 +138,7 @@ exports[`Login page renders renders with config value for multiauth 1`] = `
       labelType="label"
     >
       <EuiButton
+        aria-label="saml_login_button"
         className="test-btn-style"
         data-test-subj="submit"
         iconType="http://localhost:5601/images/test.png"
@@ -190,6 +195,7 @@ exports[`Login page renders renders with config value: string 1`] = `
       labelType="label"
     >
       <EuiFieldText
+        aria-label="username_input"
         data-test-subj="user-name"
         isInvalid={false}
         onChange={[Function]}
@@ -212,6 +218,7 @@ exports[`Login page renders renders with config value: string 1`] = `
       labelType="label"
     >
       <EuiFieldText
+        aria-label="password_input"
         data-test-subj="password"
         isInvalid={false}
         onChange={[Function]}
@@ -234,6 +241,7 @@ exports[`Login page renders renders with config value: string 1`] = `
       labelType="label"
     >
       <EuiButton
+        aria-label="basicauth_login_button"
         className="test-btn-style"
         data-test-subj="submit"
         fill={true}
@@ -290,6 +298,7 @@ exports[`Login page renders renders with config value: string array 1`] = `
       labelType="label"
     >
       <EuiFieldText
+        aria-label="username_input"
         data-test-subj="user-name"
         isInvalid={false}
         onChange={[Function]}
@@ -312,6 +321,7 @@ exports[`Login page renders renders with config value: string array 1`] = `
       labelType="label"
     >
       <EuiFieldText
+        aria-label="password_input"
         data-test-subj="password"
         isInvalid={false}
         onChange={[Function]}
@@ -334,6 +344,7 @@ exports[`Login page renders renders with config value: string array 1`] = `
       labelType="label"
     >
       <EuiButton
+        aria-label="basicauth_login_button"
         className="test-btn-style"
         data-test-subj="submit"
         fill={true}
@@ -390,6 +401,7 @@ exports[`Login page renders renders with default value: string 1`] = `
       labelType="label"
     >
       <EuiFieldText
+        aria-label="username_input"
         data-test-subj="user-name"
         isInvalid={false}
         onChange={[Function]}
@@ -412,6 +424,7 @@ exports[`Login page renders renders with default value: string 1`] = `
       labelType="label"
     >
       <EuiFieldText
+        aria-label="password_input"
         data-test-subj="password"
         isInvalid={false}
         onChange={[Function]}
@@ -434,6 +447,7 @@ exports[`Login page renders renders with default value: string 1`] = `
       labelType="label"
     >
       <EuiButton
+        aria-label="basicauth_login_button"
         className="btn-login"
         data-test-subj="submit"
         fill={true}
@@ -490,6 +504,7 @@ exports[`Login page renders renders with default value: string array 1`] = `
       labelType="label"
     >
       <EuiFieldText
+        aria-label="username_input"
         data-test-subj="user-name"
         isInvalid={false}
         onChange={[Function]}
@@ -512,6 +527,7 @@ exports[`Login page renders renders with default value: string array 1`] = `
       labelType="label"
     >
       <EuiFieldText
+        aria-label="password_input"
         data-test-subj="password"
         isInvalid={false}
         onChange={[Function]}
@@ -534,6 +550,7 @@ exports[`Login page renders renders with default value: string array 1`] = `
       labelType="label"
     >
       <EuiButton
+        aria-label="basicauth_login_button"
         className="btn-login"
         data-test-subj="submit"
         fill={true}

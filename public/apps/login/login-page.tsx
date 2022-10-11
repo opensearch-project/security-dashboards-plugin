@@ -115,10 +115,12 @@ export function LoginPage(props: LoginPageDeps) {
     loginEndPoint: string,
     buttonConfig: LoginButtonConfig
   ) => {
+    const buttonId = `${authType}_login_button`;
     return (
       <EuiFormRow>
         <EuiButton
           data-test-subj="submit"
+          aria-label={buttonId}
           size="s"
           type="prime"
           className={buttonConfig.buttonstyle || 'btn-login'}
@@ -161,6 +163,7 @@ export function LoginPage(props: LoginPageDeps) {
             <EuiFormRow>
               <EuiFieldText
                 data-test-subj="user-name"
+                aria-label="username_input"
                 placeholder="Username"
                 prepend={<EuiIcon type="user" />}
                 onChange={(e) => setUsername(e.target.value)}
@@ -173,6 +176,7 @@ export function LoginPage(props: LoginPageDeps) {
             <EuiFormRow isInvalid={passwordValidationFailed}>
               <EuiFieldText
                 data-test-subj="password"
+                aria-label="password_input"
                 placeholder="Password"
                 prepend={<EuiIcon type="lock" />}
                 type="password"
@@ -182,10 +186,12 @@ export function LoginPage(props: LoginPageDeps) {
               />
             </EuiFormRow>
           );
+          const buttonId = `${AuthType.BASIC}_login_button`;
           formBody.push(
             <EuiFormRow>
               <EuiButton
                 data-test-subj="submit"
+                aria-label={buttonId}
                 fill
                 size="s"
                 type="submit"
