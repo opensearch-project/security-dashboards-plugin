@@ -67,7 +67,7 @@ describe('start OpenSearch Dashboards server', () => {
             anonymous_auth_enabled: false,
             type: 'openid',
           },
-          openid:{
+          openid: {
             connect_url: 'https://dev-16628832.okta.com/.well-known/openid-configuration',
             client_id: '0oa566po99gotj46m5d7',
             client_secret: '4Gy9_NxFS2Xf97t4GRzkoRlyRAsApRwFcM6Zx9WB',
@@ -153,15 +153,18 @@ describe('start OpenSearch Dashboards server', () => {
       config.dynamic!.authc!.basic_internal_auth_domain.http_authenticator.challenge = false;
       config.dynamic!.http!.anonymous_auth_enabled = false;
 
-      const configOuput = await wreck.put('https://localhost:9200/_plugins/_security/api/securityconfig/config', {
-        payload: config,
-        rejectUnauthorized: false,
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: ADMIN_CREDENTIALS,
-        },
-      });
-      console.log("configOuput:: ", configOuput);
+      const configOuput = await wreck.put(
+        'https://localhost:9200/_plugins/_security/api/securityconfig/config',
+        {
+          payload: config,
+          rejectUnauthorized: false,
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: ADMIN_CREDENTIALS,
+          },
+        }
+      );
+      console.log('configOuput:: ', configOuput);
     } catch (error) {
       console.log('Got an error while updating security config!!', error.stack);
       fail(error);
@@ -238,7 +241,7 @@ describe('start OpenSearch Dashboards server', () => {
     await driver.wait(until.elementsLocated(By.xpath(pageTitleXPath)), 10000);
 
     const cookie = await driver.manage().getCookies();
-    console.log("cookie:: ", cookie);
+    console.log('cookie:: ', cookie);
     expect(cookie.length).toEqual(2);
     await driver.manage().deleteAllCookies();
     await driver.quit();
@@ -259,7 +262,7 @@ describe('start OpenSearch Dashboards server', () => {
     await driver.manage().deleteAllCookies();
     await driver.quit();
   });
-/*
+  /*
   it('Login to Dashboard with Hash', async () => {
     const urlWithHash = `http://localhost:5601/app/dashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(filters:!(),refreshInterval:(pause:!f,value:900000),time:(from:now-24h,to:now))&_a=(description:'Analyze%20mock%20flight%20data%20for%20OpenSearch-Air,%20Logstash%20Airways,%20OpenSearch%20Dashboards%20Airlines%20and%20BeatsWest',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'%5BFlights%5D%20Global%20Flight%20Dashboard',viewMode:view)`;
     const driver = getDriver(browser, options).build();

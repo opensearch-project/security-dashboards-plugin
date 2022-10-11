@@ -56,6 +56,12 @@ jest.mock('./types', () => {
         type: 'saml',
       };
     }),
+    MultipleAuthentication: jest.fn().mockImplementation(() => {
+      return {
+        authHandler: () => {},
+        type: ['openid', 'saml', 'basiauth'],
+      };
+    }),
   };
 });
 
@@ -69,7 +75,20 @@ describe('test authentication factory', () => {
 
   beforeEach(() => {});
 
-  test('get basic auth', () => {
+  test('get basic auth: string array', () => {
+    const auth = getAuthenticationHandler(
+      ['basicauth'],
+      router,
+      config,
+      core,
+      esClient,
+      sessionStorageFactory,
+      logger
+    );
+    expect(auth.type).toEqual('basicauth');
+  });
+
+  test('get basic auth: string', () => {
     const auth = getAuthenticationHandler(
       'basicauth',
       router,
@@ -82,7 +101,20 @@ describe('test authentication factory', () => {
     expect(auth.type).toEqual('basicauth');
   });
 
-  test('get basic auth with empty auth type', () => {
+  test('get basic auth with empty auth type: string array', () => {
+    const auth = getAuthenticationHandler(
+      [''],
+      router,
+      config,
+      core,
+      esClient,
+      sessionStorageFactory,
+      logger
+    );
+    expect(auth.type).toEqual('basicauth');
+  });
+
+  test('get basic auth with empty auth type: string', () => {
     const auth = getAuthenticationHandler(
       '',
       router,
@@ -95,7 +127,20 @@ describe('test authentication factory', () => {
     expect(auth.type).toEqual('basicauth');
   });
 
-  test('get jwt auth', () => {
+  test('get jwt auth: string array', () => {
+    const auth = getAuthenticationHandler(
+      ['jwt'],
+      router,
+      config,
+      core,
+      esClient,
+      sessionStorageFactory,
+      logger
+    );
+    expect(auth.type).toEqual('jwt');
+  });
+
+  test('get jwt auth: string', () => {
     const auth = getAuthenticationHandler(
       'jwt',
       router,
@@ -108,7 +153,7 @@ describe('test authentication factory', () => {
     expect(auth.type).toEqual('jwt');
   });
 
-  test('get openid auth', () => {
+  test('get openid auth: string', () => {
     const auth = getAuthenticationHandler(
       'openid',
       router,
@@ -121,7 +166,33 @@ describe('test authentication factory', () => {
     expect(auth.type).toEqual('openid');
   });
 
-  test('get proxy auth', () => {
+  test('get openid auth: string array', () => {
+    const auth = getAuthenticationHandler(
+      ['openid'],
+      router,
+      config,
+      core,
+      esClient,
+      sessionStorageFactory,
+      logger
+    );
+    expect(auth.type).toEqual('openid');
+  });
+
+  test('get proxy auth: string array', () => {
+    const auth = getAuthenticationHandler(
+      ['proxy'],
+      router,
+      config,
+      core,
+      esClient,
+      sessionStorageFactory,
+      logger
+    );
+    expect(auth.type).toEqual('proxy');
+  });
+
+  test('get proxy auth: string', () => {
     const auth = getAuthenticationHandler(
       'proxy',
       router,
@@ -134,7 +205,20 @@ describe('test authentication factory', () => {
     expect(auth.type).toEqual('proxy');
   });
 
-  test('get saml auth', () => {
+  test('get saml auth: string array', () => {
+    const auth = getAuthenticationHandler(
+      ['saml'],
+      router,
+      config,
+      core,
+      esClient,
+      sessionStorageFactory,
+      logger
+    );
+    expect(auth.type).toEqual('saml');
+  });
+
+  test('get saml auth: string', () => {
     const auth = getAuthenticationHandler(
       'saml',
       router,
@@ -147,7 +231,34 @@ describe('test authentication factory', () => {
     expect(auth.type).toEqual('saml');
   });
 
-  test('throws error for invalid auth type', () => {
+  test('get multi auth', () => {
+    const auth = getAuthenticationHandler(
+      ['openid', 'saml', 'basiauth'],
+      router,
+      config,
+      core,
+      esClient,
+      sessionStorageFactory,
+      logger
+    );
+    expect(auth.type).toEqual(['openid', 'saml', 'basiauth']);
+  });
+
+  test('throws error for invalid auth type: string array', () => {
+    expect(() => {
+      getAuthenticationHandler(
+        ['invalid'],
+        router,
+        config,
+        core,
+        esClient,
+        sessionStorageFactory,
+        logger
+      );
+    }).toThrow('Unsupported authentication type: invalid');
+  });
+
+  test('throws error for invalid auth type: string', () => {
     expect(() => {
       getAuthenticationHandler(
         'invalid',

@@ -18,10 +18,49 @@ import React from 'react';
 import { ClientConfigType } from '../../../types';
 import { LoginPage } from '../login-page';
 import { validateCurrentPassword } from '../../../utils/login-utils';
+import { API_AUTH_LOGOUT } from '../../../../common';
 
 jest.mock('../../../utils/login-utils', () => ({
   validateCurrentPassword: jest.fn(),
 }));
+
+const configUI = {
+  basicauth: {
+    login: {
+      title: 'Title1',
+      subtitle: 'SubTitle1',
+      showbrandimage: true,
+      brandimage: 'http://localhost:5601/images/test.png',
+      buttonstyle: 'test-btn-style',
+    },
+  },
+  openid: {
+    login: {
+      buttonname: 'Button1',
+      showbrandimage: true,
+      brandimage: 'http://localhost:5601/images/test.png',
+      buttonstyle: 'test-btn-style',
+    },
+  },
+  saml: {
+    login: {
+      buttonname: 'Button2',
+      showbrandimage: true,
+      brandimage: 'http://localhost:5601/images/test.png',
+      buttonstyle: 'test-btn-style',
+    },
+  },
+  autologout: true,
+  backend_configurable: true,
+};
+
+const configUiDefault = {
+  basicauth: {
+    login: {
+      showbrandimage: true,
+    },
+  },
+};
 
 describe('Login page', () => {
   const mockHttpStart = {
@@ -31,20 +70,61 @@ describe('Login page', () => {
   };
 
   describe('renders', () => {
-    it('renders with config value', () => {
-      const config: ClientConfigType['ui']['basicauth']['login'] = {
-        title: 'Title1',
-        subtitle: 'SubTitle1',
-        showbrandimage: true,
-        brandimage: 'http://localhost:5601/images/test.png',
-        buttonstyle: 'test-btn-style',
+    it('renders with config value: string array', () => {
+      const config: ClientConfigType = {
+        ui: configUI,
+        auth: {
+          type: ['basicauth'],
+          logout_url: API_AUTH_LOGOUT,
+        },
       };
       const component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
       expect(component).toMatchSnapshot();
     });
 
-    it('renders with default value', () => {
-      const component = shallow(<LoginPage http={mockHttpStart as any} config={{} as any} />);
+    it('renders with config value: string', () => {
+      const config: ClientConfigType = {
+        ui: configUI,
+        auth: {
+          type: 'basicauth',
+          logout_url: API_AUTH_LOGOUT,
+        },
+      };
+      const component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
+      expect(component).toMatchSnapshot();
+    });
+
+    it('renders with config value for multiauth', () => {
+      const config: ClientConfigType = {
+        ui: configUI,
+        auth: {
+          type: ['basicauth', 'openid', 'saml'],
+          logout_url: API_AUTH_LOGOUT,
+        },
+      };
+      const component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
+      expect(component).toMatchSnapshot();
+    });
+
+    it('renders with default value: string array', () => {
+      const config: ClientConfigType = {
+        ui: configUiDefault,
+        auth: {
+          type: [''],
+        },
+      };
+      const component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
+      expect(component).toMatchSnapshot();
+    });
+
+    it('renders with default value: string', () => {
+      const config: ClientConfigType = {
+        ui: configUiDefault,
+        auth: {
+          type: '',
+        },
+      };
+      const component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
       expect(component).toMatchSnapshot();
     });
   });
@@ -53,10 +133,15 @@ describe('Login page', () => {
     let component;
     const setState = jest.fn();
     const useState = jest.spyOn(React, 'useState');
-
+    const config: ClientConfigType = {
+      ui: configUiDefault,
+      auth: {
+        type: 'basicauth',
+      },
+    };
     beforeEach(() => {
       useState.mockImplementation((initialValue) => [initialValue, setState]);
-      component = shallow(<LoginPage http={mockHttpStart as any} config={{} as any} />);
+      component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
     });
 
     it('should update user name field on change event', () => {
@@ -80,11 +165,16 @@ describe('Login page', () => {
     let component;
     const useState = jest.spyOn(React, 'useState');
     const setState = jest.fn();
-
+    const config: ClientConfigType = {
+      ui: configUiDefault,
+      auth: {
+        type: 'basicauth',
+      },
+    };
     beforeEach(() => {
       useState.mockImplementation(() => ['user1', setState]);
       useState.mockImplementation(() => ['password1', setState]);
-      component = shallow(<LoginPage http={mockHttpStart as any} config={{} as any} />);
+      component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
     });
 
     it('submit click event', () => {

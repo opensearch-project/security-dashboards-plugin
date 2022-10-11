@@ -17,14 +17,28 @@ import React from 'react';
 import { EuiButtonEmpty } from '@elastic/eui';
 import { HttpStart } from 'opensearch-dashboards/public';
 import { logout, samlLogout } from './utils';
+import { AuthType, OPENID_AUTH_LOGOUT } from '../../../common';
 
 export function LogoutButton(props: {
-  authType: string;
+  authType: string | string[];
   http: HttpStart;
   divider: JSX.Element;
   logoutUrl?: string;
 }) {
-  if (props.authType === 'openid') {
+  const currentAuthType = sessionStorage.getItem('current_auth_type');
+  let authArr = [];
+
+  if (typeof props.authType === 'string') {
+    authArr.push(props.authType);
+  } else {
+    authArr = [...props.authType];
+  }
+
+  if (
+    currentAuthType?.toLowerCase() === AuthType.OPEN_ID ||
+    (authArr.length === 1 && authArr[0].toLowerCase() === AuthType.OPEN_ID)
+  ) {
+    sessionStorage.removeItem('current_auth_type');
     return (
       <div>
         {props.divider}
@@ -32,13 +46,17 @@ export function LogoutButton(props: {
           data-test-subj="log-out-2"
           color="danger"
           size="xs"
-          href={`${props.http.basePath.serverBasePath}/auth/logout`}
+          href={`${props.http.basePath.serverBasePath}${OPENID_AUTH_LOGOUT}`}
         >
           Log out
         </EuiButtonEmpty>
       </div>
     );
-  } else if (props.authType === 'saml') {
+  } else if (
+    currentAuthType?.toLowerCase() === AuthType.SAML ||
+    (authArr.length === 1 && authArr[0].toLowerCase() === AuthType.SAML)
+  ) {
+    sessionStorage.removeItem('current_auth_type');
     return (
       <div>
         {props.divider}
@@ -52,7 +70,7 @@ export function LogoutButton(props: {
         </EuiButtonEmpty>
       </div>
     );
-  } else if (props.authType === 'proxy') {
+  } else if (authArr.length === 1 && authArr[0].toLowerCase() === AuthType.PROXY) {
     return <div />;
   } else {
     return (

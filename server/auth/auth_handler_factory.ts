@@ -27,6 +27,7 @@ import {
   OpenIdAuthentication,
   ProxyAuthentication,
   SamlAuthentication,
+  MultipleAuthentication,
 } from './types';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { IAuthenticationType, IAuthHandlerConstructor } from './types/authentication_type';
@@ -45,7 +46,7 @@ function createAuthentication(
 }
 
 export function getAuthenticationHandler(
-  authType: string,
+  authType: string | string[],
   router: IRouter,
   config: SecurityPluginConfigType,
   core: CoreSetup,
@@ -54,25 +55,30 @@ export function getAuthenticationHandler(
   logger: Logger
 ): IAuthenticationType {
   let authHandlerType: IAuthHandlerConstructor;
-  switch (authType) {
-    case '':
-    case 'basicauth':
-      authHandlerType = BasicAuthentication;
-      break;
-    case AuthType.JWT:
-      authHandlerType = JwtAuthentication;
-      break;
-    case AuthType.OPEN_ID:
-      authHandlerType = OpenIdAuthentication;
-      break;
-    case AuthType.SAML:
-      authHandlerType = SamlAuthentication;
-      break;
-    case AuthType.PROXY:
-      authHandlerType = ProxyAuthentication;
-      break;
-    default:
-      throw new Error(`Unsupported authentication type: ${authType}`);
+  if (typeof authType === 'string' || authType.length === 1) {
+    const currType = typeof authType === 'string' ? authType : authType[0];
+    switch (currType.toLowerCase()) {
+      case '':
+      case AuthType.BASIC:
+        authHandlerType = BasicAuthentication;
+        break;
+      case AuthType.JWT:
+        authHandlerType = JwtAuthentication;
+        break;
+      case AuthType.OPEN_ID:
+        authHandlerType = OpenIdAuthentication;
+        break;
+      case AuthType.SAML:
+        authHandlerType = SamlAuthentication;
+        break;
+      case AuthType.PROXY:
+        authHandlerType = ProxyAuthentication;
+        break;
+      default:
+        throw new Error(`Unsupported authentication type: ${currType}`);
+    }
+  } else {
+    authHandlerType = MultipleAuthentication;
   }
   const auth: IAuthenticationType = createAuthentication(
     authHandlerType,
