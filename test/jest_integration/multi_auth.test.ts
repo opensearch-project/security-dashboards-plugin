@@ -35,6 +35,7 @@ describe('start OpenSearch Dashboards server', () => {
   const passwordXPath = '//input[@id="user-icon-btn"]';
   const loginXPath = '//button[@aria-label="basicauth_login_button"]';
   const oidcXPath = '//button[@aria-label="openid_login_button"]';
+  const idpLoginXPath = '//input[@value="Sign in"]';
   const samlXPath = '//button[@aria-label="saml_login_button"]';
 
   const userIconBtnXPath = '//button[@id="user-icon-btn"]';
@@ -78,7 +79,8 @@ describe('start OpenSearch Dashboards server', () => {
         opensearch_security: {
           auth: {
             anonymous_auth_enabled: false,
-            type: ['basicauth','openid','saml'],
+            //type: ['basicauth','openid','saml'],
+            type: 'basicauth',
           },
           openid:{
             connect_url: 'https://dev-16628832.okta.com/.well-known/openid-configuration',
@@ -295,8 +297,43 @@ describe('start OpenSearch Dashboards server', () => {
     expect(actualUrl).toEqual(expectedUrl);
     await driver.quit();
   });
-});
-  
+
+  it('Login when multiple authentication is enabled:: login with openid', async () => {
+    const driver = getDriver(browser, options).build();
+    await driver.get('http://localhost:5601');
+    driver.findElement(By.xpath(oidcXPath)).click();
+    
+    //const idpUrl = driver.getCurrentUrl();
+    const username = driver.findElement(By.id("input28"));
+    const password = driver.findElement(By.id("input36"));
+    username.sendKeys("aoguan@amazon.com");
+    password.sendKeys("Gazx!0605");
+    driver.findElement(By.xpath(idpLoginXPath)).click();
+
+    const expectedUrl = "http://localhost:5601/app/home#/";
+    const actualUrl = driver.getCurrentUrl();
+    expect(actualUrl).toEqual(expectedUrl);
+    await driver.quit();
+  });
+
+  it('Login when multiple authentication is enabled:: login with saml', async () => {
+    const driver = getDriver(browser, options).build();
+    await driver.get('http://localhost:5601');
+    driver.findElement(By.xpath(samlXPath)).click();
+    
+    //const idpUrl = driver.getCurrentUrl();
+    const username = driver.findElement(By.id("input28"));
+    const password = driver.findElement(By.id("input36"));
+    username.sendKeys("aoguan@amazon.com");
+    password.sendKeys("Gazx!0605");
+    driver.findElement(By.xpath(idpLoginXPath)).click();
+
+    const expectedUrl = "http://localhost:5601/app/home#/";
+    const actualUrl = driver.getCurrentUrl();
+    expect(actualUrl).toEqual(expectedUrl);
+    await driver.quit();
+  });
+
 
 function getDriver(browser: string, options: Options) {
   return new Builder().forBrowser(browser).setFirefoxOptions(options);
