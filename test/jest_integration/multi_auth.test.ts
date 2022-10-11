@@ -31,10 +31,10 @@ describe('start OpenSearch Dashboards server', () => {
   let config;
 
   // XPath Constants
-  const usernameXPath = '//input[@id="user-icon-btn"]';
-  const passwordXPath = '//input[@id="user-icon-btn"]';
-  const loginXPath = '//button[@aria-label="basicauth_login_button"]';
-  const oidcXPath = '//button[@aria-label="openid_login_button"]';
+  const usernameXPath = '//*[@aria-label="username_input"]';
+  const passwordXPath = '//*[@aria-label="password_input"]';
+  const loginXPath = '//*[@aria-label="basicauth_login_button"]';
+  const oidcXPath = '//*[@aria-label="openid_login_button"]';
   const idpLoginXPath = '//input[@value="Sign in"]';
   const samlXPath = '//button[@aria-label="saml_login_button"]';
 
@@ -79,8 +79,8 @@ describe('start OpenSearch Dashboards server', () => {
         opensearch_security: {
           auth: {
             anonymous_auth_enabled: false,
-            // type: ['basicauth','openid','saml'],
-            type: 'openid',
+            type: ['basicauth','openid','saml'],
+            //type: 'openid',
           },
           openid: {
             connect_url: 'https://dev-16628832.okta.com/.well-known/openid-configuration',
@@ -283,7 +283,7 @@ describe('start OpenSearch Dashboards server', () => {
     // shutdown OpenSearchDashboards server
     await root.shutdown();
   });
-  /*
+  
   it('Login when multiple authentication is enabled:: login with basicauth', async () => {
     const driver = getDriver(browser, options).build();
     await driver.get('http://localhost:5601');
@@ -297,7 +297,7 @@ describe('start OpenSearch Dashboards server', () => {
     const actualUrl = driver.getCurrentUrl();
     expect(actualUrl).toEqual(expectedUrl);
     await driver.quit();
-  });*/
+  });
 
   it('Login when multiple authentication is enabled:: login with openid', async () => {
     const driver = getDriver(browser, options).build();
@@ -316,7 +316,7 @@ describe('start OpenSearch Dashboards server', () => {
     expect(actualUrl).toEqual(expectedUrl);
     await driver.quit();
   });
-  /*
+  
   it('Login when multiple authentication is enabled:: login with saml', async () => {
     const driver = getDriver(browser, options).build();
     await driver.get('http://localhost:5601');
@@ -333,7 +333,7 @@ describe('start OpenSearch Dashboards server', () => {
     const actualUrl = driver.getCurrentUrl();
     expect(actualUrl).toEqual(expectedUrl);
     await driver.quit();
-  });*/
+  });
 });
 
 function getDriver(browser: string, options: Options) {
