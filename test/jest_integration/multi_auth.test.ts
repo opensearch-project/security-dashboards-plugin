@@ -332,8 +332,8 @@ describe('start OpenSearch Dashboards server', () => {
     const actualUrl = driver.getCurrentUrl();
     expect(actualUrl).toEqual(expectedUrl);
     await driver.quit();
-  });
-*/
+  });*/
+});
 
 function getDriver(browser: string, options: Options) {
   return new Builder().forBrowser(browser).setFirefoxOptions(options);
