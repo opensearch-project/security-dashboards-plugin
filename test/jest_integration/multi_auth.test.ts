@@ -298,7 +298,7 @@ describe('start OpenSearch Dashboards server', () => {
     expect(actualUrl).toEqual(expectedUrl);
     await driver.quit();
   });
-
+/*
   it('Login when multiple authentication is enabled:: login with openid', async () => {
     const driver = getDriver(browser, options).build();
     await driver.get('http://localhost:5601');
@@ -333,7 +333,7 @@ describe('start OpenSearch Dashboards server', () => {
     const actualUrl = driver.getCurrentUrl();
     expect(actualUrl).toEqual(expectedUrl);
     await driver.quit();
-  });
+  });*/
 });
 
 function getDriver(browser: string, options: Options) {
