@@ -211,14 +211,12 @@ export function LoginPage(props: LoginPageDeps) {
           break;
         }
         case AuthType.OPEN_ID: {
-          const oidcConfig = props.config.ui[`${AuthType.OPEN_ID}`].login;
-
+          const oidcConfig = props.config.ui[AuthType.OPEN_ID].login;
           formBodyOp.push(renderButton(AuthType.OPEN_ID, OPENID_AUTH_LOGIN, oidcConfig));
           break;
         }
         case AuthType.SAML: {
-          const samlConfig = props.config.ui[`${AuthType.SAML}`].login;
-
+          const samlConfig = props.config.ui[AuthType.SAML].login;
           formBodyOp.push(renderButton(AuthType.SAML, SAML_AUTH_LOGIN_WITH_FRAGMENT, samlConfig));
           break;
         }

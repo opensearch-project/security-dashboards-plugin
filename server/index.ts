@@ -17,7 +17,7 @@ import { schema, TypeOf } from '@osd/config-schema';
 import { PluginInitializerContext, PluginConfigDescriptor } from '../../../src/core/server';
 import { SecurityPlugin } from './plugin';
 
-const validateAuthTye = (value: string[]) => {
+const validateAuthType = (value: string[]) => {
   const supportedAuthTypes = [
     '',
     'basicauth',
@@ -94,7 +94,7 @@ export const configSchema = schema.object({
               }
             }
 
-            validateAuthTye(value);
+            validateAuthType(value);
           },
         }),
         schema.string({
@@ -102,7 +102,7 @@ export const configSchema = schema.object({
           validate(value) {
             const valArray: string[] = [];
             valArray.push(value);
-            validateAuthTye(valArray);
+            validateAuthType(valArray);
           },
         }),
       ],

@@ -80,7 +80,6 @@ export class MultipleAuthentication extends AuthenticationType {
 
     for (let i = 0; i < this.authTypes.length; i++) {
       switch (this.authTypes[i].toLowerCase()) {
-        case '':
         case AuthType.BASIC: {
           routes.setupBasicRoutes();
           break;
@@ -171,7 +170,6 @@ export class MultipleAuthentication extends AuthenticationType {
   private async oidcConfigSetup(wreckClient: typeof wreck) {
     const authHeaderName: string = this.config.openid?.header || '';
     this.openIdAuthConfig.authHeaderName = authHeaderName;
-
     const openIdConnectUrl: string = this.config.openid?.connect_url || '';
 
     let scope = this.config.openid!.scope;

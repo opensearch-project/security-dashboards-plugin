@@ -64,7 +64,7 @@ export class SamlAuthRoutes {
         }
 
         try {
-          const samlHeader: any = await this.securityClient.getSamlHeader(request);
+          const samlHeader = await this.securityClient.getSamlHeader(request);
           const { nextUrl = '/' } = request.query;
           const cookie: SecuritySessionCookie = {
             saml: {
