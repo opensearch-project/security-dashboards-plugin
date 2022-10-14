@@ -14,11 +14,11 @@
  */
 
 import { AppMountParameters, CoreStart } from '../../../../src/core/public';
-import { AppPluginStartDependencies, ClientConfigType } from '../types';
+import { SecurityPluginStartDependencies, ClientConfigType } from '../types';
 
 export interface AppDependencies {
   coreStart: CoreStart;
-  navigation: AppPluginStartDependencies;
+  navigation: SecurityPluginStartDependencies;
   params: AppMountParameters;
   config: ClientConfigType;
 }
