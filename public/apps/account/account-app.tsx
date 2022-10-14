@@ -20,7 +20,7 @@ import { AccountNavButton } from './account-nav-button';
 import { fetchAccountInfoSafe } from './utils';
 import { ClientConfigType } from '../../types';
 import { CUSTOM_ERROR_PAGE_URI, ERROR_MISSING_ROLE_PATH } from '../../../common';
-import { selectTenant } from '../configuration/utils/tenant-utils';
+import { fetchCurrentTenant, selectTenant } from '../configuration/utils/tenant-utils';
 import {
   getSavedTenant,
   getShouldShowTenantPopup,
@@ -37,6 +37,7 @@ function tenantSpecifiedInUrl() {
 
 export async function setupTopNavButton(coreStart: CoreStart, config: ClientConfigType) {
   const accountInfo = (await fetchAccountInfoSafe(coreStart.http))?.data;
+  const currentTenant = await fetchCurrentTenant(coreStart.http);
   if (accountInfo) {
     // Missing role error
     if (accountInfo.roles.length === 0 && !window.location.href.includes(CUSTOM_ERROR_PAGE_URI)) {
@@ -44,7 +45,12 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
         coreStart.http.basePath.serverBasePath + CUSTOM_ERROR_PAGE_URI + ERROR_MISSING_ROLE_PATH;
     }
 
-    let tenant = accountInfo.user_requested_tenant;
+    let tenant: string | undefined;
+    if (config.multitenancy.enable_aggregation_view) {
+      tenant = currentTenant;
+    } else {
+      tenant = accountInfo.user_requested_tenant;
+    }
     let shouldShowTenantPopup = true;
 
     if (tenantSpecifiedInUrl() || getShouldShowTenantPopup() === false) {
@@ -67,7 +73,7 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
             window.location.reload();
           }
         }
-      } catch (e) {
+      } catch (e: any) {
         constructErrorMessageAndLog(e, `Failed to switch to ${tenant} tenant.`);
       }
     }

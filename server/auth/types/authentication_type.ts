@@ -50,6 +50,25 @@ export type IAuthHandlerConstructor = new (
   logger: Logger
 ) => IAuthenticationType;
 
+export interface OpenSearchAuthInfo {
+  user: string;
+  user_name: string;
+  user_requested_tenant: string;
+  remote_address: string;
+  backend_roles: string[];
+  custom_attribute_names: string[];
+  roles: string[];
+  tenants: Record<string, boolean>;
+  principal: string | null;
+  peer_certificates: string | null;
+  sso_logout_url: string | null;
+}
+
+export interface OpenSearchDashboardsAuthState {
+  authInfo?: OpenSearchAuthInfo;
+  selectedTenant?: string;
+}
+
 export abstract class AuthenticationType implements IAuthenticationType {
   protected static readonly ROUTES_TO_IGNORE: string[] = [
     '/api/core/capabilities', // FIXME: need to figureout how to bypass this API call
@@ -72,6 +91,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
   ) {
     this.securityClient = new SecurityClient(esClient);
     this.type = '';
+    this.config = config;
   }
 
   public authHandler: AuthenticationHandler = async (request, response, toolkit) => {
@@ -79,6 +99,8 @@ export abstract class AuthenticationType implements IAuthenticationType {
     if (this.authNotRequired(request)) {
       return toolkit.authenticated();
     }
+
+    const authState: OpenSearchDashboardsAuthState = {};
 
     // if browser request, auth logic is:
     //   1. check if request includes auth header or paramter(e.g. jwt in url params) is present, if so, authenticate with auth header.
@@ -157,8 +179,16 @@ export abstract class AuthenticationType implements IAuthenticationType {
               'No available tenant for current user, please reach out to your system administrator',
           });
         }
+        authState.selectedTenant = tenant;
+
         // set tenant in header
-        Object.assign(authHeaders, { securitytenant: tenant });
+        if (this.config.multitenancy.enable_aggregation_view) {
+          const globalTenant = '';
+          // Store all saved objects in a single kibana index.
+          Object.assign(authHeaders, { securitytenant: globalTenant });
+        } else {
+          Object.assign(authHeaders, { securitytenant: tenant });
+        }
 
         // set tenant to cookie
         if (tenant !== cookie!.tenant) {
@@ -177,9 +207,14 @@ export abstract class AuthenticationType implements IAuthenticationType {
         throw error;
       }
     }
+    if (!authInfo) {
+      authInfo = await this.securityClient.authinfo(request, authHeaders);
+    }
+    authState.authInfo = authInfo;
 
     return toolkit.authenticated({
       requestHeaders: authHeaders,
+      state: authState,
     });
   };
 
