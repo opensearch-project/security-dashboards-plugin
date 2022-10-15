@@ -30,13 +30,7 @@ import { CoreStart } from '../../../../../src/core/public';
 import { ClientConfigType } from '../../types';
 import defaultBrandImage from '../../assets/opensearch_logo_h.svg';
 import { validateCurrentPassword } from '../../utils/login-utils';
-import {
-  AuthType,
-  OPENID_AUTH_LOGIN,
-  SAML_AUTH_LOGIN,
-  SAML_AUTH_LOGIN_WITH_FRAGMENT,
-  ANONYMOUS_AUTH_LOGIN,
-} from '../../../common';
+import { AuthType, OPENID_AUTH_LOGIN, SAML_AUTH_LOGIN_WITH_FRAGMENT } from '../../../common';
 
 interface LoginPageDeps {
   http: CoreStart['http'];
@@ -124,11 +118,7 @@ export function LoginPage(props: LoginPageDeps) {
           size="s"
           type="prime"
           className={buttonConfig.buttonstyle || 'btn-login'}
-          onClick={(e: any) => {
-            e.preventDefault();
-            sessionStorage.setItem('current_auth_type', authType);
-            window.location.href = loginEndPoint;
-          }}
+          href={loginEndPoint}
           iconType={buttonConfig.showbrandimage ? buttonConfig.brandimage : ''}
         >
           {buttonConfig.buttonname}

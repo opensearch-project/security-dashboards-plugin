@@ -20,25 +20,12 @@ import { logout, samlLogout } from './utils';
 import { AuthType, OPENID_AUTH_LOGOUT } from '../../../common';
 
 export function LogoutButton(props: {
-  authType: string | string[];
+  authType: string;
   http: HttpStart;
   divider: JSX.Element;
   logoutUrl?: string;
 }) {
-  const currentAuthType = sessionStorage.getItem('current_auth_type');
-  let authArr = [];
-
-  if (typeof props.authType === 'string') {
-    authArr.push(props.authType);
-  } else {
-    authArr = [...props.authType];
-  }
-
-  if (
-    currentAuthType?.toLowerCase() === AuthType.OPEN_ID ||
-    (authArr.length === 1 && authArr[0].toLowerCase() === AuthType.OPEN_ID)
-  ) {
-    sessionStorage.removeItem('current_auth_type');
+  if (props.authType === AuthType.OPEN_ID) {
     return (
       <div>
         {props.divider}
@@ -52,11 +39,7 @@ export function LogoutButton(props: {
         </EuiButtonEmpty>
       </div>
     );
-  } else if (
-    currentAuthType?.toLowerCase() === AuthType.SAML ||
-    (authArr.length === 1 && authArr[0].toLowerCase() === AuthType.SAML)
-  ) {
-    sessionStorage.removeItem('current_auth_type');
+  } else if (props.authType === AuthType.SAML) {
     return (
       <div>
         {props.divider}
@@ -70,7 +53,7 @@ export function LogoutButton(props: {
         </EuiButtonEmpty>
       </div>
     );
-  } else if (authArr.length === 1 && authArr[0].toLowerCase() === AuthType.PROXY) {
+  } else if (props.authType === AuthType.PROXY) {
     return <div />;
   } else {
     return (

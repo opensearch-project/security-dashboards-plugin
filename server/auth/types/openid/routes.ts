@@ -90,7 +90,6 @@ export class OpenIdAuthRoutes {
       },
       async (context, request, response) => {
         // implementation refers to https://github.com/hapijs/bell/blob/master/lib/oauth.js
-
         // Sign-in initialization
         if (!request.query.code) {
           const nonce = randomString(OpenIdAuthRoutes.NONCE_LENGTH);
@@ -123,7 +122,6 @@ export class OpenIdAuthRoutes {
         }
 
         // Authentication callback
-
         // validate state first
         let cookie;
         try {

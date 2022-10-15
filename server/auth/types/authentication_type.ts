@@ -117,6 +117,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
         this.logger.error(`Error parsing cookie: ${error.message}`);
         cookie = undefined;
       }
+
       if (!cookie || !(await this.isValidCookie(cookie))) {
         // clear cookie
         this.sessionStorageFactory.asScoped(request).clear();

@@ -27,6 +27,7 @@ import {
   setShouldShowTenantPopup,
 } from '../../utils/storage-utils';
 import { constructErrorMessageAndLog } from '../error-utils';
+import { fetchCurrentAuthType } from '../../utils/logout-utils';
 
 function tenantSpecifiedInUrl() {
   return (
@@ -36,6 +37,16 @@ function tenantSpecifiedInUrl() {
 }
 
 export async function setupTopNavButton(coreStart: CoreStart, config: ClientConfigType) {
+  const authType = config.auth?.type;
+  let currAuthType = '';
+  if (typeof authType === 'string') {
+    currAuthType = authType;
+  } else if (typeof authType === 'object' && authType.length === 1) {
+    currAuthType = authType[0];
+  } else {
+    currAuthType = (await fetchCurrentAuthType(coreStart.http))?.currentAuthType;
+  }
+
   const accountInfo = (await fetchAccountInfoSafe(coreStart.http))?.data;
   if (accountInfo) {
     // Missing role error
@@ -85,6 +96,7 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
             username={accountInfo.user_name}
             tenant={tenant}
             config={config}
+            currAuthType={currAuthType.toLowerCase()}
           />,
           element
         );

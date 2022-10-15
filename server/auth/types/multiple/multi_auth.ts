@@ -30,7 +30,12 @@ import {
 import { OpenSearchDashboardsResponse } from 'src/core/server/http/router';
 import { SecurityPluginConfigType } from '../../..';
 import { AuthenticationType } from '../authentication_type';
-import { AuthType, LOGIN_PAGE_URI, OPENDISTRO_SECURITY_ANONYMOUS } from '../../../../common';
+import {
+  ANONYMOUS_AUTH_LOGIN,
+  AuthType,
+  LOGIN_PAGE_URI,
+  OPENDISTRO_SECURITY_ANONYMOUS,
+} from '../../../../common';
 import { composeNextUrlQueryParam } from '../../../utils/next_url';
 import { callTokenEndpoint } from '../openid/helper';
 import { MultiAuthRoutes } from './routes';
@@ -116,8 +121,8 @@ export class MultipleAuthentication extends AuthenticationType {
     request: OpenSearchDashboardsRequest,
     authInfo: any
   ): Promise<SecuritySessionCookie> {
-    const sessionStore = await this.sessionStorageFactory.asScoped(request).get();
-    const reqAuthType = sessionStore?.authType;
+    const cookie = await this.sessionStorageFactory.asScoped(request).get();
+    const reqAuthType = cookie?.authType?.toLowerCase();
 
     if (
       reqAuthType === AuthType.BASIC &&
@@ -147,7 +152,7 @@ export class MultipleAuthentication extends AuthenticationType {
       wreckHttpsOption.ca = [fs.readFileSync(this.config.openid.root_ca)];
     }
     if (this.config.openid?.verify_hostnames === false) {
-      // his.logger.debug(`openId auth 'verify_hostnames' option is off.`);
+      // this.logger.debug(`openId auth 'verify_hostnames' option is off.`);
       wreckHttpsOption.checkServerIdentity = (host: string, cert: PeerCertificate) => {
         return undefined;
       };

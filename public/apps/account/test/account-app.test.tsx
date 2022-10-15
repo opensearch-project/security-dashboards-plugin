@@ -23,6 +23,7 @@ import {
 } from '../../../utils/storage-utils';
 import { fetchAccountInfoSafe } from '../utils';
 import { selectTenant } from '../../configuration/utils/tenant-utils';
+import { fetchCurrentAuthType } from '../../../utils/logout-utils';
 
 jest.mock('../../../utils/storage-utils', () => ({
   getShouldShowTenantPopup: jest.fn(),
@@ -32,6 +33,10 @@ jest.mock('../../../utils/storage-utils', () => ({
 
 jest.mock('../utils', () => ({
   fetchAccountInfoSafe: jest.fn(),
+}));
+
+jest.mock('../../../utils/logout-utils', () => ({
+  fetchCurrentAuthType: jest.fn(),
 }));
 
 jest.mock('../../configuration/utils/tenant-utils', () => ({
@@ -57,6 +62,7 @@ describe('Account app', () => {
 
   beforeAll(() => {
     (fetchAccountInfoSafe as jest.Mock).mockResolvedValue(mockAccountInfo);
+    (fetchCurrentAuthType as jest.Mock).mockResolvedValue('dummy');
   });
 
   it('Should skip if auto swich if securitytenant in url', (done) => {

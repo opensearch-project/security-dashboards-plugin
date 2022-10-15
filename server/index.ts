@@ -31,7 +31,9 @@ const validateAuthType = (value: string[]) => {
 
   value.forEach((authVal) => {
     if (!supportedAuthTypes.includes(authVal.toLowerCase())) {
-      return `allowed auth.type are ${supportedAuthTypes}`;
+      throw new Error(
+        `Unsupported authentication type: ${authVal}. Allowed auth.type are ${supportedAuthTypes}.`
+      );
     }
   });
 };
@@ -81,16 +83,16 @@ export const configSchema = schema.object({
           defaultValue: [''],
           validate(value: string[]) {
             if (!value || value.length === 0) {
-              return `Authentication type is not configurred properly.`;
+              return `Authentication type is not configured properly. At least one authentication type must be selected.`;
             }
 
             if (value.length > 1) {
-              const basicValidate = value.find((element) => {
+              const includeBasicAuth = value.find((element) => {
                 return element.toLowerCase() === 'basicauth';
               });
 
-              if (!basicValidate) {
-                return `Authentication type is not configurred properly. basicauth is mandatory.`;
+              if (!includeBasicAuth) {
+                return `Authentication type is not configured properly. basicauth is mandatory.`;
               }
             }
 
