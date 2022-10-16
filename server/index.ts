@@ -116,6 +116,7 @@ export const configSchema = schema.object({
     }),
     forbidden_usernames: schema.arrayOf(schema.string(), { defaultValue: [] }),
     logout_url: schema.string({ defaultValue: '' }),
+    multiple_auth_enabled: schema.boolean({ defaultValue: false }),
   }),
   basicauth: schema.object({
     enabled: schema.boolean({ defaultValue: true }),

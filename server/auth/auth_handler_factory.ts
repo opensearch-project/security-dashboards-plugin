@@ -78,7 +78,13 @@ export function getAuthenticationHandler(
         throw new Error(`Unsupported authentication type: ${currType}`);
     }
   } else {
-    authHandlerType = MultipleAuthentication;
+    if (config.auth.multiple_auth_enabled) {
+      authHandlerType = MultipleAuthentication;
+    } else {
+      throw new Error(
+        `Multiple Authnetication Mode is disabled. To enable this feature, please set up opensearch_security.auth.multiple_auth_enabled: true`
+      );
+    }
   }
   const auth: IAuthenticationType = createAuthentication(
     authHandlerType,

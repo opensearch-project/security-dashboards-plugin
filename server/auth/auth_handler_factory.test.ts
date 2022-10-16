@@ -60,6 +60,7 @@ jest.mock('./types', () => {
       return {
         authHandler: () => {},
         type: ['openid', 'saml', 'basiauth'],
+        multiple_auth_enabled: false,
       };
     }),
   };
@@ -231,7 +232,12 @@ describe('test authentication factory', () => {
     expect(auth.type).toEqual('saml');
   });
 
-  test('get multi auth', () => {
+  test('multiple_auth_enabled is on, get multi auth', () => {
+    config = {
+      auth: {
+        multiple_auth_enabled: true,
+      },
+    };
     const auth = getAuthenticationHandler(
       ['openid', 'saml', 'basiauth'],
       router,
@@ -242,6 +248,27 @@ describe('test authentication factory', () => {
       logger
     );
     expect(auth.type).toEqual(['openid', 'saml', 'basiauth']);
+  });
+
+  test('multiple_auth_enabled is off, get multi auth', () => {
+    config = {
+      auth: {
+        multiple_auth_enabled: false,
+      },
+    };
+    expect(() => {
+      getAuthenticationHandler(
+        ['openid', 'saml', 'basiauth'],
+        router,
+        config,
+        core,
+        esClient,
+        sessionStorageFactory,
+        logger
+      );
+    }).toThrow(
+      'Multiple Authnetication Mode is disabled. To enable this feature, please set up opensearch_security.auth.multiple_auth_enabled: true'
+    );
   });
 
   test('throws error for invalid auth type: string array', () => {
