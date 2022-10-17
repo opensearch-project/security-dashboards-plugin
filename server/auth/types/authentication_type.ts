@@ -26,6 +26,7 @@ import {
   IOpenSearchDashboardsResponse,
   AuthResult,
 } from 'opensearch-dashboards/server';
+import { any } from 'joi';
 import { SecurityPluginConfigType } from '../..';
 import { SecuritySessionCookie } from '../../session/security_cookie';
 import { SecurityClient } from '../../backend/opensearch_security_client';
@@ -101,6 +102,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
     }
 
     const authState: OpenSearchDashboardsAuthState = {};
+    const globalTenant = '';
 
     // if browser request, auth logic is:
     //   1. check if request includes auth header or paramter(e.g. jwt in url params) is present, if so, authenticate with auth header.
@@ -126,7 +128,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
         }
 
         this.sessionStorageFactory.asScoped(request).set(cookie);
-      } catch (error) {
+      } catch (error: any) {
         return response.unauthorized({
           body: error.message,
         });
@@ -135,7 +137,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
       // no auth header in request, try cookie
       try {
         cookie = await this.sessionStorageFactory.asScoped(request).get();
-      } catch (error) {
+      } catch (error: any) {
         this.logger.error(`Error parsing cookie: ${error.message}`);
         cookie = undefined;
       }
@@ -183,7 +185,6 @@ export abstract class AuthenticationType implements IAuthenticationType {
 
         // set tenant in header
         if (this.config.multitenancy.enable_aggregation_view) {
-          const globalTenant = '';
           // Store all saved objects in a single kibana index.
           Object.assign(authHeaders, { securitytenant: globalTenant });
         } else {
