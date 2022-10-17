@@ -46,15 +46,20 @@ export class SecuritySavedObjectsClientWrapper {
       (this.httpStart!.auth.get(wrapperOptions.request).state as OpenSearchDashboardsAuthState) ||
       {};
 
+    const selectedTenant = state.selectedTenant;
+    const username = state.authInfo?.user_name;
+    const globalTenant = '';
+    const defaultTenant = 'default';
+    const privateTenant = '__user__';
+
+    let namespaceValue = selectedTenant;
+
     const createWithNamespace = async <T = unknown>(
       type: string,
       attributes: T,
       options?: SavedObjectsCreateOptions
     ) => {
-      const selectedTenant = state.selectedTenant;
-      const username = state.authInfo?.user_name;
-      let namespaceValue = selectedTenant;
-      if (selectedTenant === '__user__') {
+      if (selectedTenant !== undefined && isPrivateTenant(selectedTenant)) {
         namespaceValue = selectedTenant + username;
       }
       _.assign(options, { namespace: [namespaceValue] });
@@ -65,10 +70,7 @@ export class SecuritySavedObjectsClientWrapper {
       objects: SavedObjectsBulkGetObject[] = [],
       options: SavedObjectsBaseOptions = {}
     ): Promise<SavedObjectsBulkResponse<T>> => {
-      const selectedTenant = state.selectedTenant;
-      const username = state.authInfo?.user_name;
-      let namespaceValue = selectedTenant;
-      if (selectedTenant === '__user__') {
+      if (selectedTenant !== undefined && isPrivateTenant(selectedTenant)) {
         namespaceValue = selectedTenant + username;
       }
       _.assign(options, { namespace: [namespaceValue] });
@@ -80,9 +82,9 @@ export class SecuritySavedObjectsClientWrapper {
     ): Promise<SavedObjectsFindResponse<T>> => {
       const tenants = state.authInfo?.tenants;
       const availableTenantNames = Object.keys(tenants!);
-      availableTenantNames.push('default');
-      availableTenantNames.push('');
-      availableTenantNames.push('__user__' + state.authInfo?.user_name);
+      availableTenantNames.push(defaultTenant);
+      availableTenantNames.push(globalTenant);
+      availableTenantNames.push(privateTenant + state.authInfo?.user_name);
       _.assign(options, { namespaces: availableTenantNames });
       return await wrapperOptions.client.find(options);
     };
@@ -92,10 +94,7 @@ export class SecuritySavedObjectsClientWrapper {
       id: string,
       options: SavedObjectsBaseOptions = {}
     ): Promise<SavedObject<T>> => {
-      const selectedTenant = state.selectedTenant;
-      const username = state.authInfo?.user_name;
-      let namespaceValue = selectedTenant;
-      if (selectedTenant === '__user__') {
+      if (selectedTenant !== undefined && isPrivateTenant(selectedTenant)) {
         namespaceValue = selectedTenant + username;
       }
       _.assign(options, { namespace: [namespaceValue] });
@@ -108,10 +107,7 @@ export class SecuritySavedObjectsClientWrapper {
       attributes: Partial<T>,
       options: SavedObjectsUpdateOptions = {}
     ): Promise<SavedObjectsUpdateResponse<T>> => {
-      const selectedTenant = state.selectedTenant;
-      const username = state.authInfo?.user_name;
-      let namespaceValue = selectedTenant;
-      if (selectedTenant === '__user__') {
+      if (selectedTenant !== undefined && isPrivateTenant(selectedTenant)) {
         namespaceValue = selectedTenant + username;
       }
       _.assign(options, { namespace: [namespaceValue] });
@@ -122,10 +118,7 @@ export class SecuritySavedObjectsClientWrapper {
       objects: Array<SavedObjectsBulkCreateObject<T>>,
       options?: SavedObjectsCreateOptions
     ): Promise<SavedObjectsBulkResponse<T>> => {
-      const selectedTenant = state.selectedTenant;
-      const username = state.authInfo?.user_name;
-      let namespaceValue = selectedTenant;
-      if (selectedTenant === '__user__') {
+      if (selectedTenant !== undefined && isPrivateTenant(selectedTenant)) {
         namespaceValue = selectedTenant + username;
       }
       _.assign(options, { namespace: [namespaceValue] });
@@ -136,10 +129,7 @@ export class SecuritySavedObjectsClientWrapper {
       objects: Array<SavedObjectsBulkUpdateObject<T>>,
       options?: SavedObjectsBulkUpdateOptions
     ): Promise<SavedObjectsBulkUpdateResponse<T>> => {
-      const selectedTenant = state.selectedTenant;
-      const username = state.authInfo?.user_name;
-      let namespaceValue = selectedTenant;
-      if (selectedTenant === '__user__') {
+      if (selectedTenant !== undefined && isPrivateTenant(selectedTenant)) {
         namespaceValue = selectedTenant + username;
       }
       _.assign(options, { namespace: [namespaceValue] });
@@ -151,10 +141,7 @@ export class SecuritySavedObjectsClientWrapper {
       id: string,
       options: SavedObjectsDeleteOptions = {}
     ) => {
-      const selectedTenant = state.selectedTenant;
-      const username = state.authInfo?.user_name;
-      let namespaceValue = selectedTenant;
-      if (selectedTenant === '__user__') {
+      if (selectedTenant !== undefined && isPrivateTenant(selectedTenant)) {
         namespaceValue = selectedTenant + username;
       }
       _.assign(options, { namespace: [namespaceValue] });
@@ -165,10 +152,7 @@ export class SecuritySavedObjectsClientWrapper {
       objects: SavedObjectsCheckConflictsObject[] = [],
       options: SavedObjectsBaseOptions = {}
     ): Promise<SavedObjectsCheckConflictsResponse> => {
-      const selectedTenant = state.selectedTenant;
-      const username = state.authInfo?.user_name;
-      let namespaceValue = selectedTenant;
-      if (selectedTenant === '__user__') {
+      if (selectedTenant !== undefined && isPrivateTenant(selectedTenant)) {
         namespaceValue = selectedTenant + username;
       }
       _.assign(options, { namespace: [namespaceValue] });
@@ -191,4 +175,8 @@ export class SecuritySavedObjectsClientWrapper {
       deleteFromNamespaces: wrapperOptions.client.deleteFromNamespaces,
     };
   };
+}
+
+function isPrivateTenant(selectedTenant: string | undefined) {
+  return selectedTenant === '__user__';
 }
