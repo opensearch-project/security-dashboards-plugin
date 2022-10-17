@@ -18,6 +18,7 @@ import { EuiButtonEmpty } from '@elastic/eui';
 import { HttpStart } from 'opensearch-dashboards/public';
 import { logout, samlLogout } from './utils';
 import { AuthType, OPENID_AUTH_LOGOUT } from '../../../common';
+import { setShouldShowTenantPopup } from '../../utils/storage-utils';
 
 export function LogoutButton(props: {
   authType: string;
@@ -26,6 +27,7 @@ export function LogoutButton(props: {
   logoutUrl?: string;
 }) {
   if (props.authType === AuthType.OPEN_ID) {
+    setShouldShowTenantPopup(null);
     return (
       <div>
         {props.divider}
@@ -54,6 +56,7 @@ export function LogoutButton(props: {
       </div>
     );
   } else if (props.authType === AuthType.PROXY) {
+    setShouldShowTenantPopup(null);
     return <div />;
   } else {
     return (
