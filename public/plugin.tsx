@@ -71,6 +71,9 @@ const APP_ID_DASHBOARDS = 'dashboards';
 // OpenSearchDashboards app is for legacy url migration
 const APP_ID_OPENSEARCH_DASHBOARDS = 'kibana';
 const APP_LIST_FOR_READONLY_ROLE = [APP_ID_HOME, APP_ID_DASHBOARDS, APP_ID_OPENSEARCH_DASHBOARDS];
+const GLOBAL_TENANT_RENDERING_TEXT = 'Global';
+const PRIVATE_TENANT_RENDERING_TEXT = 'Private';
+const GLOBAL_TENANT = '';
 
 export class SecurityPlugin
   implements
@@ -166,10 +169,10 @@ export class SecurityPlugin
           dataType: 'string',
           render: (value: any[][]) => {
             let text = value[0][0];
-            if (text === null || text === '') {
-              text = 'Global';
+            if (text === null || text === GLOBAL_TENANT) {
+              text = GLOBAL_TENANT_RENDERING_TEXT;
             } else if (text.startsWith('__user__')) {
-              text = 'Private';
+              text = PRIVATE_TENANT_RENDERING_TEXT;
             }
             text = i18n.translate('savedObjectsManagement.objectsTable.table.columnTenantName', {
               defaultMessage: text,
