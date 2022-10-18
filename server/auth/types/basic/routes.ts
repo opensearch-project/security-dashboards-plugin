@@ -233,21 +233,5 @@ export class BasicAuthRoutes {
         }
       }
     );
-
-    // Auth Type
-    this.router.get(
-      {
-        path: '/auth/type',
-        validate: false,
-      },
-      async (context, request, response) => {
-        const cookie = await this.sessionStorageFactory.asScoped(request).get();
-        return response.ok({
-          body: {
-            currentAuthType: cookie?.authType,
-          },
-        });
-      }
-    );
   }
 }

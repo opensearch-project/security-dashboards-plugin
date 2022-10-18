@@ -80,7 +80,7 @@ export class SamlAuthentication extends AuthenticationType {
     samlAuthRoutes.setupRoutes();
   }
 
-  requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean {
+  async requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): Promise<boolean> {
     return request.headers[SamlAuthentication.AUTH_HEADER_NAME] ? true : false;
   }
 

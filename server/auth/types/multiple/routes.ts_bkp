@@ -12,11 +12,15 @@
  *   express or implied. See the License for the specific language governing
  *   permissions and limitations under the License.
  */
-
+import wreck from '@hapi/wreck';
 import { IRouter, SessionStorageFactory, CoreSetup } from '../../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
+import { OpenIdAuthConfig } from '../openid/openid_auth';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
+import { OpenIdAuthRoutes } from '../openid/routes';
+import { BasicAuthRoutes } from '../basic/routes';
+import { SamlAuthRoutes } from '../saml/routes';
 
 export class MultiAuthRoutes {
   private static readonly NONCE_LENGTH: number = 22;
@@ -29,20 +33,38 @@ export class MultiAuthRoutes {
     private readonly coreSetup: CoreSetup
   ) {}
 
-  public setupRoutes() {
-    this.router.get(
-      {
-        path: '/auth/type',
-        validate: false,
-      },
-      async (context, request, response) => {
-        const cookie = await this.sessionStorageFactory.asScoped(request).get();
-        return response.ok({
-          body: {
-            currentAuthType: cookie?.authType,
-          },
-        });
-      }
+  public setupBasicRoutes() {
+    const basicRoute = new BasicAuthRoutes(
+      this.router,
+      this.config,
+      this.sessionStorageFactory,
+      this.securityClient,
+      this.coreSetup
     );
+    basicRoute.setupRoutes();
+  }
+
+  public setupOidcRoutes(openIdAuthConfig: OpenIdAuthConfig, wreckClient: typeof wreck) {
+    const oidcRoute = new OpenIdAuthRoutes(
+      this.router,
+      this.config,
+      this.sessionStorageFactory,
+      openIdAuthConfig,
+      this.securityClient,
+      this.coreSetup,
+      wreckClient
+    );
+    oidcRoute.setupRoutes();
+  }
+
+  public setupSamlRoutes() {
+    const samlAuthRoutes = new SamlAuthRoutes(
+      this.router,
+      this.config,
+      this.sessionStorageFactory,
+      this.securityClient,
+      this.coreSetup
+    );
+    samlAuthRoutes.setupRoutes();
   }
 }

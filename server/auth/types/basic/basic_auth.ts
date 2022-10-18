@@ -60,9 +60,9 @@ export class BasicAuthentication extends AuthenticationType {
   }
 
   // override functions inherited from AuthenticationType
-  requestIncludesAuthInfo(
+  async requestIncludesAuthInfo(
     request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
-  ): boolean {
+  ): Promise<boolean> {
     return request.headers[AUTH_HEADER_NAME] ? true : false;
   }
 

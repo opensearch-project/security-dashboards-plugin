@@ -137,7 +137,7 @@ export class OpenIdAuthentication extends AuthenticationType {
     }
   }
 
-  requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean {
+  async requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): Promise<boolean> {
     return request.headers.authorization ? true : false;
   }
 

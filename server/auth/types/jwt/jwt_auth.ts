@@ -73,9 +73,9 @@ export class JwtAuthentication extends AuthenticationType {
     return (request.headers[this.authHeaderName] as string) || undefined;
   }
 
-  protected requestIncludesAuthInfo(
+  async requestIncludesAuthInfo(
     request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
-  ): boolean {
+  ): Promise<boolean> {
     if (request.headers[this.authHeaderName]) {
       return true;
     }
@@ -87,9 +87,7 @@ export class JwtAuthentication extends AuthenticationType {
     return false;
   }
 
-  protected getAdditionalAuthHeader(
-    request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
-  ) {
+  getAdditionalAuthHeader(request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>) {
     const header: any = {};
     const token = this.getTokenFromUrlParam(request);
     if (token) {
@@ -98,10 +96,10 @@ export class JwtAuthentication extends AuthenticationType {
     return header;
   }
 
-  protected getCookie(
+  async getCookie(
     request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>,
     authInfo: any
-  ): SecuritySessionCookie {
+  ): Promise<SecuritySessionCookie> {
     return {
       username: authInfo.user_name,
       credentials: {
