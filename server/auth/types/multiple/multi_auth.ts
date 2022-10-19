@@ -21,8 +21,8 @@ import {
   Logger,
   LifecycleResponseFactory,
   AuthToolkit,
-} from 'opensearch-dashboards/server';
-import { OpenSearchDashboardsResponse } from 'src/core/server/http/router';
+} from '../../../../opensearch-dashboards/server';
+import { OpenSearchDashboardsResponse } from '../../../../../../src/core/server/http/router';
 import { SecurityPluginConfigType } from '../../..';
 import { AuthenticationType, IAuthenticationType } from '../authentication_type';
 import { AuthType, LOGIN_PAGE_URI } from '../../../../common';
@@ -174,9 +174,7 @@ export class MultipleAuthentication extends AuthenticationType {
         },
       });
     } else {
-      return response.unauthorized({
-        body: `Authentication required`,
-      });
+      return response.unauthorized();
     }
   }
 
