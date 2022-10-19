@@ -137,7 +137,7 @@ export class OpenIdAuthentication extends AuthenticationType {
     }
   }
 
-  async requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): Promise<boolean> {
+  requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean {
     return request.headers.authorization ? true : false;
   }
 
@@ -145,10 +145,7 @@ export class OpenIdAuthentication extends AuthenticationType {
     return {};
   }
 
-  async getCookie(
-    request: OpenSearchDashboardsRequest,
-    authInfo: any
-  ): Promise<SecuritySessionCookie> {
+  getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
     return {
       username: authInfo.user_name,
       credentials: {

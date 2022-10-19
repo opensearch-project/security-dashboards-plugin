@@ -73,9 +73,9 @@ export class JwtAuthentication extends AuthenticationType {
     return (request.headers[this.authHeaderName] as string) || undefined;
   }
 
-  async requestIncludesAuthInfo(
+  requestIncludesAuthInfo(
     request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
-  ): Promise<boolean> {
+  ): boolean {
     if (request.headers[this.authHeaderName]) {
       return true;
     }
@@ -96,10 +96,10 @@ export class JwtAuthentication extends AuthenticationType {
     return header;
   }
 
-  async getCookie(
+  getCookie(
     request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>,
     authInfo: any
-  ): Promise<SecuritySessionCookie> {
+  ): SecuritySessionCookie {
     return {
       username: authInfo.user_name,
       credentials: {

@@ -69,7 +69,7 @@ export class ProxyAuthentication extends AuthenticationType {
     routes.setupRoutes();
   }
 
-  async requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): Promise<boolean> {
+  requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean {
     return request.headers[ProxyAuthentication.XFF] && request.headers[this.userHeaderName]
       ? true
       : false;
@@ -89,10 +89,7 @@ export class ProxyAuthentication extends AuthenticationType {
     return authHeaders;
   }
 
-  async getCookie(
-    request: OpenSearchDashboardsRequest,
-    authInfo: any
-  ): Promise<SecuritySessionCookie> {
+  getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
     const cookie: SecuritySessionCookie = {
       username: authInfo.username,
       credentials: {},

@@ -102,17 +102,15 @@ export class MultipleAuthentication extends AuthenticationType {
   }
 
   // override functions inherited from AuthenticationType
-  async requestIncludesAuthInfo(
+  requestIncludesAuthInfo(
     request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
-  ): Promise<boolean> {
-    const cookie = await this.sessionStorageFactory.asScoped(request).get();
-    const reqAuthType = cookie?.authType?.toLowerCase();
-
-    if (reqAuthType && this.authHandlers.has(reqAuthType)) {
-      return this.authHandlers.get(reqAuthType)!.requestIncludesAuthInfo(request);
-    } else {
-      return false;
+  ): boolean {
+    for (const key of this.authHandlers.keys()) {
+      if (this.authHandlers.get(key)!.requestIncludesAuthInfo(request)) {
+        return true;
+      }
     }
+    return false;
   }
 
   async getAdditionalAuthHeader(
@@ -128,18 +126,8 @@ export class MultipleAuthentication extends AuthenticationType {
     }
   }
 
-  async getCookie(
-    request: OpenSearchDashboardsRequest,
-    authInfo: any
-  ): Promise<SecuritySessionCookie> {
-    const cookie = await this.sessionStorageFactory.asScoped(request).get();
-    const reqAuthType = cookie?.authType?.toLowerCase();
-
-    if (reqAuthType && this.authHandlers.has(reqAuthType)) {
-      return this.authHandlers.get(reqAuthType)!.getCookie(request, authInfo);
-    } else {
-      return {};
-    }
+  getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
+    return {};
   }
 
   async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean> {

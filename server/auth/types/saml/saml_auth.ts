@@ -80,7 +80,7 @@ export class SamlAuthentication extends AuthenticationType {
     samlAuthRoutes.setupRoutes();
   }
 
-  async requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): Promise<boolean> {
+  requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean {
     return request.headers[SamlAuthentication.AUTH_HEADER_NAME] ? true : false;
   }
 
@@ -88,10 +88,7 @@ export class SamlAuthentication extends AuthenticationType {
     return {};
   }
 
-  async getCookie(
-    request: OpenSearchDashboardsRequest,
-    authInfo: any
-  ): Promise<SecuritySessionCookie> {
+  getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
     return {
       username: authInfo.user_name,
       credentials: {

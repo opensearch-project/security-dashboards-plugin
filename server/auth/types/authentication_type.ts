@@ -90,12 +90,12 @@ export abstract class AuthenticationType implements IAuthenticationType {
     let authInfo: any | undefined;
     // if this is an REST API call, suppose the request includes necessary auth header
     // see https://www.elastic.co/guide/en/opensearch-dashboards/master/using-api.html
-    if (await this.requestIncludesAuthInfo(request)) {
+    if (this.requestIncludesAuthInfo(request)) {
       try {
         const additonalAuthHeader = this.getAdditionalAuthHeader(request);
         Object.assign(authHeaders, additonalAuthHeader);
         authInfo = await this.securityClient.authinfo(request, additonalAuthHeader);
-        cookie = await this.getCookie(request, authInfo);
+        cookie = this.getCookie(request, authInfo);
 
         // set tenant from cookie if exist
         const browserCookie = await this.sessionStorageFactory.asScoped(request).get();
@@ -231,12 +231,12 @@ export abstract class AuthenticationType implements IAuthenticationType {
   }
 
   // abstract functions for concrete auth types to implement
-  public abstract requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): Promise<boolean>;
+  public abstract requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean;
   public abstract getAdditionalAuthHeader(request: OpenSearchDashboardsRequest): any;
   public abstract getCookie(
     request: OpenSearchDashboardsRequest,
     authInfo: any
-  ): Promise<SecuritySessionCookie>;
+  ): SecuritySessionCookie;
   public abstract isValidCookie(cookie: SecuritySessionCookie): Promise<boolean>;
   protected abstract handleUnauthedRequest(
     request: OpenSearchDashboardsRequest,

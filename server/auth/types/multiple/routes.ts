@@ -31,6 +31,11 @@ export class MultiAuthRoutes {
       },
       async (context, request, response) => {
         const cookie = await this.sessionStorageFactory.asScoped(request).get();
+        if (!cookie) {
+          return response.badRequest({
+            body: 'Invalid cookie',
+          });
+        }
         return response.ok({
           body: {
             currentAuthType: cookie?.authType,

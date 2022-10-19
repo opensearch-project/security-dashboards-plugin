@@ -60,9 +60,9 @@ export class BasicAuthentication extends AuthenticationType {
   }
 
   // override functions inherited from AuthenticationType
-  async requestIncludesAuthInfo(
+  requestIncludesAuthInfo(
     request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
-  ): Promise<boolean> {
+  ): boolean {
     return request.headers[AUTH_HEADER_NAME] ? true : false;
   }
 
@@ -70,10 +70,7 @@ export class BasicAuthentication extends AuthenticationType {
     return {};
   }
 
-  async getCookie(
-    request: OpenSearchDashboardsRequest,
-    authInfo: any
-  ): Promise<SecuritySessionCookie> {
+  getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
     if (
       this.config.auth.anonymous_auth_enabled &&
       authInfo.user_name === OPENDISTRO_SECURITY_ANONYMOUS
