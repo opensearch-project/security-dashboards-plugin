@@ -19,7 +19,7 @@ import { CoreStart } from 'opensearch-dashboards/public';
 import { AccountNavButton } from './account-nav-button';
 import { fetchAccountInfoSafe } from './utils';
 import { ClientConfigType } from '../../types';
-import { CUSTOM_ERROR_PAGE_URI, ERROR_MISSING_ROLE_PATH } from '../../../common';
+import { AuthType, CUSTOM_ERROR_PAGE_URI, ERROR_MISSING_ROLE_PATH } from '../../../common';
 import { selectTenant } from '../configuration/utils/tenant-utils';
 import {
   getSavedTenant,
@@ -44,7 +44,12 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
   } else if (typeof authType === 'object' && authType.length === 1) {
     currAuthType = authType[0];
   } else {
-    currAuthType = (await fetchCurrentAuthType(coreStart.http))?.currentAuthType;
+    try {
+      currAuthType = (await fetchCurrentAuthType(coreStart.http))?.currentAuthType;
+    } catch (e) {
+      console.log(e);
+      currAuthType = AuthType.BASIC;
+    }
   }
 
   const accountInfo = (await fetchAccountInfoSafe(coreStart.http))?.data;
