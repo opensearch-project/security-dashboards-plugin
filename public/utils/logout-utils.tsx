@@ -19,7 +19,7 @@ import {
   HttpStart,
   IHttpInterceptController,
 } from '../../../../src/core/public';
-import { CUSTOM_ERROR_PAGE_URI, LOGIN_PAGE_URI } from '../../common';
+import { CUSTOM_ERROR_PAGE_URI, LOGIN_PAGE_URI, API_ENDPOINT_AUTHTYPE } from '../../common';
 import { httpGet } from '../apps/configuration/utils/request-utils';
 
 export function interceptError(logoutUrl: string, thisWindow: Window): any {
@@ -45,5 +45,5 @@ export function interceptError(logoutUrl: string, thisWindow: Window): any {
 }
 
 export async function fetchCurrentAuthType(http: HttpStart): Promise<any> {
-  return await httpGet(http, '/auth/type');
+  return await httpGet(http, API_ENDPOINT_AUTHTYPE);
 }

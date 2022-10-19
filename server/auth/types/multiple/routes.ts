@@ -13,26 +13,20 @@
  *   permissions and limitations under the License.
  */
 
-import { IRouter, SessionStorageFactory, CoreSetup } from '../../../../../../src/core/server';
+import { IRouter, SessionStorageFactory } from '../../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
-import { SecurityPluginConfigType } from '../../..';
-import { SecurityClient } from '../../../backend/opensearch_security_client';
+import { API_ENDPOINT_AUTHTYPE } from '../../../../common';
 
 export class MultiAuthRoutes {
-  private static readonly NONCE_LENGTH: number = 22;
-
   constructor(
     private readonly router: IRouter,
-    private readonly config: SecurityPluginConfigType,
-    private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
-    private readonly securityClient: SecurityClient,
-    private readonly coreSetup: CoreSetup
+    private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>
   ) {}
 
   public setupRoutes() {
     this.router.get(
       {
-        path: '/auth/type',
+        path: API_ENDPOINT_AUTHTYPE,
         validate: false,
       },
       async (context, request, response) => {

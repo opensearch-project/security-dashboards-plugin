@@ -30,7 +30,12 @@ import { CoreStart } from '../../../../../src/core/public';
 import { ClientConfigType } from '../../types';
 import defaultBrandImage from '../../assets/opensearch_logo_h.svg';
 import { validateCurrentPassword } from '../../utils/login-utils';
-import { AuthType, OPENID_AUTH_LOGIN, SAML_AUTH_LOGIN_WITH_FRAGMENT } from '../../../common';
+import {
+  ANONYMOUS_AUTH_LOGIN,
+  AuthType,
+  OPENID_AUTH_LOGIN,
+  SAML_AUTH_LOGIN_WITH_FRAGMENT,
+} from '../../../common';
 
 interface LoginPageDeps {
   http: CoreStart['http'];

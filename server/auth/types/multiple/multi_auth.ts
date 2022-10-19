@@ -53,13 +53,7 @@ export class MultipleAuthentication extends AuthenticationType {
   }
 
   private async init() {
-    const routes = new MultiAuthRoutes(
-      this.router,
-      this.config,
-      this.sessionStorageFactory,
-      this.securityClient,
-      this.coreSetup
-    );
+    const routes = new MultiAuthRoutes(this.router, this.sessionStorageFactory);
     routes.setupRoutes();
 
     for (let i = 0; i < this.authTypes.length; i++) {
