@@ -48,6 +48,7 @@ export enum AuthType {
   JWT = 'jwt',
   SAML = 'saml',
   PROXY = 'proxy',
+  ANONYMOUS = 'anonmyous',
 }
 
 /**

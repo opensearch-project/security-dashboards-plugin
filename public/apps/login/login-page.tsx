@@ -199,6 +199,13 @@ export function LoginPage(props: LoginPageDeps) {
           );
 
           if (authOpts.length > 1) {
+            if (props.config.auth.anonymous_auth_enabled) {
+              const anonymousConfig = props.config.ui[AuthType.ANONYMOUS].login;
+              formBody.push(
+                renderButton(AuthType.ANONYMOUS, ANONYMOUS_AUTH_LOGIN, anonymousConfig)
+              );
+            }
+
             formBody.push(<EuiSpacer size="xs" />);
             formBody.push(<EuiHorizontalRule size="full" margin="xl" />);
             formBody.push(<EuiSpacer size="xs" />);

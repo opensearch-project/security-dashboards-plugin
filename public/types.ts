@@ -45,6 +45,14 @@ export interface ClientConfigType {
         buttonstyle: string;
       };
     };
+    anonmyous: {
+      login: {
+        buttonname: string;
+        showbrandimage: boolean;
+        brandimage: string;
+        buttonstyle: string;
+      };
+    };
     openid: {
       login: {
         buttonname: string;
@@ -73,6 +81,7 @@ export interface ClientConfigType {
   };
   auth: {
     type: string | string[];
+    anonymous_auth_enabled: boolean;
     logout_url: string;
   };
   clusterPermissions: {
