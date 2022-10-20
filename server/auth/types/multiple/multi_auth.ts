@@ -33,10 +33,7 @@ import { BasicAuthentication, OpenIdAuthentication, SamlAuthentication } from '.
 
 export class MultipleAuthentication extends AuthenticationType {
   private authTypes: string | string[];
-  private BasicAuth!: AuthenticationType;
-  private SamlAuth!: AuthenticationType;
-  private OidcAuth!: AuthenticationType;
-  private authHandlers!: Map<string, AuthenticationType>;
+  private authHandlers: Map<string, AuthenticationType>;
 
   constructor(
     config: SecurityPluginConfigType,
@@ -59,7 +56,7 @@ export class MultipleAuthentication extends AuthenticationType {
     for (let i = 0; i < this.authTypes.length; i++) {
       switch (this.authTypes[i].toLowerCase()) {
         case AuthType.BASIC: {
-          this.BasicAuth = new BasicAuthentication(
+          const BasicAuth = new BasicAuthentication(
             this.config,
             this.sessionStorageFactory,
             this.router,
@@ -67,11 +64,11 @@ export class MultipleAuthentication extends AuthenticationType {
             this.coreSetup,
             this.logger
           );
-          this.authHandlers.set(AuthType.BASIC, this.BasicAuth);
+          this.authHandlers.set(AuthType.BASIC, BasicAuth);
           break;
         }
         case AuthType.OPEN_ID: {
-          this.OidcAuth = new OpenIdAuthentication(
+          const OidcAuth = new OpenIdAuthentication(
             this.config,
             this.sessionStorageFactory,
             this.router,
@@ -79,11 +76,11 @@ export class MultipleAuthentication extends AuthenticationType {
             this.coreSetup,
             this.logger
           );
-          this.authHandlers.set(AuthType.OPEN_ID, this.OidcAuth);
+          this.authHandlers.set(AuthType.OPEN_ID, OidcAuth);
           break;
         }
         case AuthType.SAML: {
-          this.SamlAuth = new SamlAuthentication(
+          const SamlAuth = new SamlAuthentication(
             this.config,
             this.sessionStorageFactory,
             this.router,
@@ -91,7 +88,7 @@ export class MultipleAuthentication extends AuthenticationType {
             this.coreSetup,
             this.logger
           );
-          this.authHandlers.set(AuthType.SAML, this.SamlAuth);
+          this.authHandlers.set(AuthType.SAML, SamlAuth);
           break;
         }
         default: {
