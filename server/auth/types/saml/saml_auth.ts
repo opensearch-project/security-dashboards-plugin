@@ -84,7 +84,7 @@ export class SamlAuthentication extends AuthenticationType {
     return request.headers[SamlAuthentication.AUTH_HEADER_NAME] ? true : false;
   }
 
-  getAdditionalAuthHeader(request: OpenSearchDashboardsRequest): any {
+  async getAdditionalAuthHeader(request: OpenSearchDashboardsRequest): Promise<any> {
     return {};
   }
 

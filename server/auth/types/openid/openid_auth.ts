@@ -141,7 +141,7 @@ export class OpenIdAuthentication extends AuthenticationType {
     return request.headers.authorization ? true : false;
   }
 
-  getAdditionalAuthHeader(request: OpenSearchDashboardsRequest): any {
+  async getAdditionalAuthHeader(request: OpenSearchDashboardsRequest): Promise<any> {
     return {};
   }
 

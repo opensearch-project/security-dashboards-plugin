@@ -66,7 +66,9 @@ export class BasicAuthentication extends AuthenticationType {
     return request.headers[AUTH_HEADER_NAME] ? true : false;
   }
 
-  getAdditionalAuthHeader(request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>) {
+  async getAdditionalAuthHeader(
+    request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
+  ): Promise<any> {
     return {};
   }
 

@@ -47,7 +47,6 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
     try {
       currAuthType = (await fetchCurrentAuthType(coreStart.http))?.currentAuthType;
     } catch (e) {
-      console.log(e);
       currAuthType = AuthType.BASIC;
     }
   }
