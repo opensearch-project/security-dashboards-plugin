@@ -29,10 +29,7 @@ import {
 import { SecurityPluginConfigType } from '../..';
 import { SecuritySessionCookie } from '../../session/security_cookie';
 import { SecurityClient } from '../../backend/opensearch_security_client';
-import {
-  resolveTenant,
-  isValidTenant,
-} from '../../multitenancy/tenant_resolver';
+import { resolveTenant, isValidTenant } from '../../multitenancy/tenant_resolver';
 import { UnauthenticatedError } from '../../errors';
 
 export interface IAuthenticationType {
