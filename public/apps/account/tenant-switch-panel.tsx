@@ -91,7 +91,6 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
         const currentUserName = accountInfo.data.user_name;
         setUsername(currentUserName);
 
-        // @ts-ignore
         let currentRawTenantName: string | undefined;
         if (props.config.multitenancy.enable_aggregation_view) {
           currentRawTenantName = props.tenant;

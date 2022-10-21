@@ -34,6 +34,7 @@ import {
   SavedObjectsUpdateOptions,
   SavedObjectsUpdateResponse,
 } from 'opensearch-dashboards/server';
+import { isPrivateTenant } from '../../public/apps/configuration/utils/tenant-utils';
 import { OpenSearchDashboardsAuthState } from '../auth/types/authentication_type';
 
 export class SecuritySavedObjectsClientWrapper {
@@ -175,8 +176,4 @@ export class SecuritySavedObjectsClientWrapper {
       deleteFromNamespaces: wrapperOptions.client.deleteFromNamespaces,
     };
   };
-}
-
-function isPrivateTenant(selectedTenant: string | undefined) {
-  return selectedTenant === '__user__';
 }

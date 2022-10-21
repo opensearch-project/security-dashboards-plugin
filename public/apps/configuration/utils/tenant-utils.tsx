@@ -36,9 +36,11 @@ import { httpDelete, httpGet, httpPost } from './request-utils';
 import { getResourceUrl } from './resource-utils';
 
 export const globalTenantName = 'global_tenant';
+export const GLOBAL_TENANT = '';
+export const PRIVATE_TENANT = '__user__';
 export const GLOBAL_USER_DICT: { [key: string]: string } = {
   Label: 'Global',
-  Value: '',
+  Value: GLOBAL_TENANT,
   Description: 'Everyone can see it',
 };
 
@@ -62,10 +64,10 @@ export function transformTenantData(
 ): Tenant[] {
   // @ts-ignore
   const tenantList: Tenant[] = map<Tenant, Tenant>(rawTenantData, (v: Tenant, k?: string) => ({
-    tenant: k === globalTenantName ? GLOBAL_USER_DICT.Label : k || '',
+    tenant: k === globalTenantName ? GLOBAL_USER_DICT.Label : k || GLOBAL_TENANT,
     reserved: v.reserved,
     description: k === globalTenantName ? GLOBAL_USER_DICT.Description : v.description,
-    tenantValue: k === globalTenantName ? GLOBAL_USER_DICT.Value : k || '',
+    tenantValue: k === globalTenantName ? GLOBAL_USER_DICT.Value : k || GLOBAL_TENANT,
   }));
   if (isPrivateEnabled) {
     // Insert Private Tenant in List
@@ -169,4 +171,12 @@ export function transformRoleTenantPermissions(
     tenant_patterns: tenantPermission.tenant_patterns,
     permissionType: getTenantPermissionType(tenantPermission.allowed_actions),
   }));
+}
+
+export function isPrivateTenant(selectedTenant: string | null) {
+  return selectedTenant !== null && selectedTenant?.startsWith(PRIVATE_TENANT);
+}
+
+export function isGlobalTenant(selectedTenant: string | null) {
+  return selectedTenant !== null && selectedTenant === GLOBAL_TENANT;
 }

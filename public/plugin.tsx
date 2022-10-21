@@ -53,6 +53,7 @@ import {
 } from './types';
 import { addTenantToShareURL } from './services/shared-link';
 import { interceptError } from './utils/logout-utils';
+import { isGlobalTenant, isPrivateTenant } from './apps/configuration/utils/tenant-utils';
 
 async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
   try {
@@ -73,8 +74,6 @@ const APP_ID_OPENSEARCH_DASHBOARDS = 'kibana';
 const APP_LIST_FOR_READONLY_ROLE = [APP_ID_HOME, APP_ID_DASHBOARDS, APP_ID_OPENSEARCH_DASHBOARDS];
 const GLOBAL_TENANT_RENDERING_TEXT = 'Global';
 const PRIVATE_TENANT_RENDERING_TEXT = 'Private';
-const GLOBAL_TENANT = '';
-const PRIVATE_TENANT = '__user__';
 
 export class SecurityPlugin
   implements
@@ -169,7 +168,7 @@ export class SecurityPlugin
           name: <div>Tenant</div>,
           dataType: 'string',
           render: (value: any[][]) => {
-            let text = value[0][0];
+            let text = value.flat()[0];
             if (isGlobalTenant(text)) {
               text = GLOBAL_TENANT_RENDERING_TEXT;
             } else if (isPrivateTenant(text)) {
@@ -204,21 +203,8 @@ export class SecurityPlugin
     if (config.multitenancy.enabled) {
       addTenantToShareURL(core);
     }
-
-    if (config.multitenancy.enable_aggregation_view) {
-      const columns = deps.savedObjectsManagement.columns.getAll();
-    }
-
     return {};
   }
 
   public stop() {}
-}
-
-function isPrivateTenant(selectedTenant: string) {
-  return selectedTenant.startsWith('__user__');
-}
-
-function isGlobalTenant(selectedTenant: string) {
-  return selectedTenant === null || selectedTenant === GLOBAL_TENANT;
 }

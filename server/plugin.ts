@@ -15,7 +15,6 @@
 
 import { first } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import _ from 'lodash';
 import {
   PluginInitializerContext,
   CoreSetup,
