@@ -43,6 +43,7 @@ export const PRIVATE_TENANT = '__user__';
 export const DEFAULT_TENANT = 'default';
 export const GLOBAL_TENANT_RENDERING_TEXT = 'Global';
 export const PRIVATE_TENANT_RENDERING_TEXT = 'Private';
+
 export const GLOBAL_USER_DICT: { [key: string]: string } = {
   Label: 'Global',
   Value: GLOBAL_TENANT,
@@ -185,6 +186,7 @@ export function isPrivateTenant(selectedTenant: string | null) {
 export function isGlobalTenant(selectedTenant: string | null) {
   return selectedTenant !== null && selectedTenant === GLOBAL_TENANT;
 }
+<<<<<<< HEAD
 
 export const tenantColumn = {
   id: 'tenant_column',
@@ -207,3 +209,5 @@ export const tenantColumn = {
   },
   loadData: () => {},
 };
+=======
+>>>>>>> dcf9248 (Resolve review comments)

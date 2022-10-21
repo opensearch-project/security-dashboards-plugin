@@ -97,7 +97,7 @@ export class SecuritySavedObjectsClientWrapper {
       if (isPrivateEnabled) {
         availableTenantNames.push(PRIVATE_TENANT + state.authInfo?.user_name);
       }
-      const typeToNamespacesMap = {};
+      const typeToNamespacesMap: any = {};
       if (selectedTenant === '__user__') {
         namespaceValue = selectedTenant + username;
       }
@@ -105,7 +105,7 @@ export class SecuritySavedObjectsClientWrapper {
       searchTypes.forEach((t) => {
         if (t === 'config') {
           if ('namespaces' in options) {
-            if (options.namespaces.includes(namespaceValue)) {
+            if (options.namespaces!.includes(namespaceValue!)) {
               typeToNamespacesMap[t] = [namespaceValue];
             }
           } else {
