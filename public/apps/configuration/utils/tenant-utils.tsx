@@ -38,6 +38,7 @@ import { getResourceUrl } from './resource-utils';
 export const globalTenantName = 'global_tenant';
 export const GLOBAL_TENANT = '';
 export const PRIVATE_TENANT = '__user__';
+export const DEFAULT_TENANT = 'default';
 export const GLOBAL_USER_DICT: { [key: string]: string } = {
   Label: 'Global',
   Value: GLOBAL_TENANT,

@@ -26,7 +26,6 @@ import {
   IOpenSearchDashboardsResponse,
   AuthResult,
 } from 'opensearch-dashboards/server';
-import { any } from 'joi';
 import { SecurityPluginConfigType } from '../..';
 import { SecuritySessionCookie } from '../../session/security_cookie';
 import { SecurityClient } from '../../backend/opensearch_security_client';
@@ -36,6 +35,7 @@ import {
   isValidTenant,
 } from '../../multitenancy/tenant_resolver';
 import { UnauthenticatedError } from '../../errors';
+import { GLOBAL_TENANT } from '../../../public/apps/configuration/utils/tenant-utils';
 
 export interface IAuthenticationType {
   type: string;
@@ -102,7 +102,6 @@ export abstract class AuthenticationType implements IAuthenticationType {
     }
 
     const authState: OpenSearchDashboardsAuthState = {};
-    const globalTenant = '';
 
     // if browser request, auth logic is:
     //   1. check if request includes auth header or paramter(e.g. jwt in url params) is present, if so, authenticate with auth header.
@@ -186,7 +185,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
         // set tenant in header
         if (this.config.multitenancy.enable_aggregation_view) {
           // Store all saved objects in a single kibana index.
-          Object.assign(authHeaders, { securitytenant: globalTenant });
+          Object.assign(authHeaders, { securitytenant: GLOBAL_TENANT });
         } else {
           Object.assign(authHeaders, { securitytenant: tenant });
         }
@@ -245,7 +244,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
     if (!authInfo) {
       try {
         authInfo = await this.securityClient.authinfo(request, authHeader);
-      } catch (error) {
+      } catch (error: any) {
         throw new UnauthenticatedError(error);
       }
     }

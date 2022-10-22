@@ -135,7 +135,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
 
     if (config.multitenancy.enable_aggregation_view) {
       core.savedObjects.addClientWrapper(
-        1,
+        2,
         'security-saved-object-client-wrapper',
         this.savedObjectClientWrapper.wrapperFactory
       );
@@ -151,10 +151,12 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
   public async start(core: CoreStart) {
     this.logger.debug('opendistro_security: Started');
 
-    this.savedObjectClientWrapper.httpStart = core.http;
-
     const config$ = this.initializerContext.config.create<SecurityPluginConfigType>();
     const config = await config$.pipe(first()).toPromise();
+
+    this.savedObjectClientWrapper.httpStart = core.http;
+    this.savedObjectClientWrapper.config = config;
+
     if (config.multitenancy?.enabled) {
       const globalConfig$: Observable<SharedGlobalConfig> = this.initializerContext.config.legacy
         .globalConfig$;

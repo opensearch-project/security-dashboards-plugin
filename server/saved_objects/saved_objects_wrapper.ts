@@ -34,11 +34,19 @@ import {
   SavedObjectsUpdateOptions,
   SavedObjectsUpdateResponse,
 } from 'opensearch-dashboards/server';
-import { isPrivateTenant } from '../../public/apps/configuration/utils/tenant-utils';
+import { Config } from 'packages/osd-config/target';
+import { SecurityPluginConfigType } from '..';
+import {
+  DEFAULT_TENANT,
+  GLOBAL_TENANT,
+  isPrivateTenant,
+  PRIVATE_TENANT,
+} from '../../public/apps/configuration/utils/tenant-utils';
 import { OpenSearchDashboardsAuthState } from '../auth/types/authentication_type';
 
 export class SecuritySavedObjectsClientWrapper {
   public httpStart?: HttpServiceStart;
+  public config?: SecurityPluginConfigType;
 
   constructor() {}
 
@@ -49,9 +57,8 @@ export class SecuritySavedObjectsClientWrapper {
 
     const selectedTenant = state.selectedTenant;
     const username = state.authInfo?.user_name;
-    const globalTenant = '';
-    const defaultTenant = 'default';
-    const privateTenant = '__user__';
+    const isGlobalEnabled = this.config!.multitenancy.tenants.enable_global;
+    const isPrivateEnabled = this.config!.multitenancy.tenants.enable_private;
 
     let namespaceValue = selectedTenant;
 
@@ -83,9 +90,13 @@ export class SecuritySavedObjectsClientWrapper {
     ): Promise<SavedObjectsFindResponse<T>> => {
       const tenants = state.authInfo?.tenants;
       const availableTenantNames = Object.keys(tenants!);
-      availableTenantNames.push(defaultTenant);
-      availableTenantNames.push(globalTenant);
-      availableTenantNames.push(privateTenant + state.authInfo?.user_name);
+      availableTenantNames.push(DEFAULT_TENANT);
+      if (isGlobalEnabled) {
+        availableTenantNames.push(GLOBAL_TENANT);
+      }
+      if (isPrivateEnabled) {
+        availableTenantNames.push(PRIVATE_TENANT + state.authInfo?.user_name);
+      }
       _.assign(options, { namespaces: availableTenantNames });
       return await wrapperOptions.client.find(options);
     };
