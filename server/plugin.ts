@@ -133,7 +133,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
       setupMultitenantRoutes(router, securitySessionStorageFactory, this.securityClient);
     }
 
-    if (config.multitenancy.enable_aggregation_view) {
+    if (config.multitenancy.enabled && config.multitenancy.enable_aggregation_view) {
       core.savedObjects.addClientWrapper(
         2,
         'security-saved-object-client-wrapper',

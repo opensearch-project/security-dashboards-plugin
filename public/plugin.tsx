@@ -14,12 +14,7 @@
  */
 
 import { BehaviorSubject } from 'rxjs';
-import {
-  SavedObjectsManagementColumn,
-  SavedObjectsManagementRecord,
-} from 'src/plugins/saved_objects_management/public';
-import { EuiTableFieldDataColumnType } from '@elastic/eui';
-import { string } from 'joi';
+import { SavedObjectsManagementColumn } from 'src/plugins/saved_objects_management/public';
 import React from 'react';
 import { i18n } from '@osd/i18n';
 import {
@@ -160,7 +155,7 @@ export class SecurityPlugin
       })
     );
 
-    if (config.multitenancy.enable_aggregation_view) {
+    if (config.multitenancy.enabled && config.multitenancy.enable_aggregation_view) {
       deps.savedObjectsManagement.columns.register(({
         id: 'tenant_column',
         euiColumn: {

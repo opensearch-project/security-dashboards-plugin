@@ -37,7 +37,6 @@ function tenantSpecifiedInUrl() {
 
 export async function setupTopNavButton(coreStart: CoreStart, config: ClientConfigType) {
   const accountInfo = (await fetchAccountInfoSafe(coreStart.http))?.data;
-  const currentTenant = await fetchCurrentTenant(coreStart.http);
   if (accountInfo) {
     // Missing role error
     if (accountInfo.roles.length === 0 && !window.location.href.includes(CUSTOM_ERROR_PAGE_URI)) {
@@ -46,11 +45,12 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
     }
 
     let tenant: string | undefined;
-    if (config.multitenancy.enable_aggregation_view) {
-      tenant = currentTenant;
+    if (config.multitenancy.enabled && config.multitenancy.enable_aggregation_view) {
+      tenant = await fetchCurrentTenant(coreStart.http);
     } else {
       tenant = accountInfo.user_requested_tenant;
     }
+
     let shouldShowTenantPopup = true;
 
     if (tenantSpecifiedInUrl() || getShouldShowTenantPopup() === false) {
