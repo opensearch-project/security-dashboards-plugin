@@ -153,7 +153,7 @@ export function IndexPermissionRow(props: {
             options={props.permisionOptionsSet}
             selectedOptions={props.value}
             onChange={props.onChangeHandler}
-            id="index-permission-box"
+            id="roles-index-permission-box"
           />
         </EuiFlexItem>
         {/* TODO: 'Browse and select' button with a pop-up modal for selection */}
