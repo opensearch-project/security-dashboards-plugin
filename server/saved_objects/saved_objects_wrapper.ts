@@ -36,17 +36,12 @@ import {
 } from 'opensearch-dashboards/server';
 import { Config } from 'packages/osd-config/target';
 import { SecurityPluginConfigType } from '..';
-import {
-  DEFAULT_TENANT,
-  GLOBAL_TENANT,
-  isPrivateTenant,
-  PRIVATE_TENANT,
-} from '../../public/apps/configuration/utils/tenant-utils';
+import { DEFAULT_TENANT, GLOBAL_TENANT, isPrivateTenant, PRIVATE_TENANT } from '../../public/apps/configuration/utils/tenant-utils';
 import { OpenSearchDashboardsAuthState } from '../auth/types/authentication_type';
 
 export class SecuritySavedObjectsClientWrapper {
   public httpStart?: HttpServiceStart;
-  public config?: SecurityPluginConfigType;
+  public config? : SecurityPluginConfigType;
 
   constructor() {}
 
@@ -57,7 +52,7 @@ export class SecuritySavedObjectsClientWrapper {
 
     const selectedTenant = state.selectedTenant;
     const username = state.authInfo?.user_name;
-    const isGlobalEnabled = this.config!.multitenancy.tenants.enable_global;
+    const isGlobalEnabled =  this.config!.multitenancy.tenants.enable_global;
     const isPrivateEnabled = this.config!.multitenancy.tenants.enable_private;
 
     let namespaceValue = selectedTenant;
