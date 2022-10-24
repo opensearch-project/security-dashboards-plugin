@@ -15,6 +15,8 @@
 
 import { HttpStart } from 'opensearch-dashboards/public';
 import { map } from 'lodash';
+import React from 'react';
+import { i18n } from '@osd/i18n';
 import {
   API_ENDPOINT_TENANTS,
   API_ENDPOINT_MULTITENANCY,
@@ -39,6 +41,8 @@ export const globalTenantName = 'global_tenant';
 export const GLOBAL_TENANT = '';
 export const PRIVATE_TENANT = '__user__';
 export const DEFAULT_TENANT = 'default';
+export const GLOBAL_TENANT_RENDERING_TEXT = 'Global';
+export const PRIVATE_TENANT_RENDERING_TEXT = 'Private';
 export const GLOBAL_USER_DICT: { [key: string]: string } = {
   Label: 'Global',
   Value: GLOBAL_TENANT,
@@ -181,3 +185,25 @@ export function isPrivateTenant(selectedTenant: string | null) {
 export function isGlobalTenant(selectedTenant: string | null) {
   return selectedTenant !== null && selectedTenant === GLOBAL_TENANT;
 }
+
+export const tenantColumn = {
+  id: 'tenant_column',
+  euiColumn: {
+    field: 'namespaces',
+    name: <div>Tenant</div>,
+    dataType: 'string',
+    render: (value: any[][]) => {
+      let text = value.flat()[0];
+      if (isGlobalTenant(text)) {
+        text = GLOBAL_TENANT_RENDERING_TEXT;
+      } else if (isPrivateTenant(text)) {
+        text = PRIVATE_TENANT_RENDERING_TEXT;
+      }
+      text = i18n.translate('savedObjectsManagement.objectsTable.table.columnTenantName', {
+        defaultMessage: text,
+      });
+      return <div>{text}</div>;
+    },
+  },
+  loadData: () => {},
+};
