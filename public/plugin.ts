@@ -15,8 +15,6 @@
 
 import { BehaviorSubject } from 'rxjs';
 import { SavedObjectsManagementColumn } from 'src/plugins/saved_objects_management/public';
-import React from 'react';
-import { i18n } from '@osd/i18n';
 import {
   AppMountParameters,
   AppStatus,
@@ -48,7 +46,7 @@ import {
 } from './types';
 import { addTenantToShareURL } from './services/shared-link';
 import { interceptError } from './utils/logout-utils';
-import { isGlobalTenant, isPrivateTenant } from './apps/configuration/utils/tenant-utils';
+import { tenantColumn } from './apps/configuration/utils/tenant-utils';
 
 async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
   try {
@@ -156,27 +154,9 @@ export class SecurityPlugin
     );
 
     if (config.multitenancy.enabled && config.multitenancy.enable_aggregation_view) {
-      deps.savedObjectsManagement.columns.register(({
-        id: 'tenant_column',
-        euiColumn: {
-          field: 'namespaces',
-          name: <div>Tenant</div>,
-          dataType: 'string',
-          render: (value: any[][]) => {
-            let text = value.flat()[0];
-            if (isGlobalTenant(text)) {
-              text = GLOBAL_TENANT_RENDERING_TEXT;
-            } else if (isPrivateTenant(text)) {
-              text = PRIVATE_TENANT_RENDERING_TEXT;
-            }
-            text = i18n.translate('savedObjectsManagement.objectsTable.table.columnTenantName', {
-              defaultMessage: text,
-            });
-            return <div>{text}</div>;
-          },
-        },
-        loadData: () => {},
-      } as unknown) as SavedObjectsManagementColumn<string>);
+      deps.savedObjectsManagement.columns.register(
+        (tenantColumn as unknown) as SavedObjectsManagementColumn<string>
+      );
     }
 
     // Return methods that should be available to other plugins
