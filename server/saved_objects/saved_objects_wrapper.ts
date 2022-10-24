@@ -38,6 +38,7 @@ import { Config } from 'packages/osd-config/target';
 import { SecurityPluginConfigType } from '..';
 import {
   DEFAULT_TENANT,
+  globalTenantName,
   GLOBAL_TENANT,
   isPrivateTenant,
   PRIVATE_TENANT,
@@ -95,7 +96,17 @@ export class SecuritySavedObjectsClientWrapper {
         availableTenantNames.push(GLOBAL_TENANT);
       }
       if (isPrivateEnabled) {
-        availableTenantNames.push(PRIVATE_TENANT + state.authInfo?.user_name);
+        availableTenantNames.push(PRIVATE_TENANT + username);
+      }
+      if (availableTenantNames.includes(globalTenantName)) {
+        let index = availableTenantNames.indexOf(globalTenantName);
+        if (index > -1) {
+          availableTenantNames.splice(index, 1);
+        }
+        index = availableTenantNames.indexOf(username!);
+        if (index > -1) {
+          availableTenantNames.splice(index, 1);
+        }
       }
       _.assign(options, { namespaces: availableTenantNames });
       return await wrapperOptions.client.find(options);
