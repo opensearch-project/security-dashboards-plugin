@@ -46,7 +46,11 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
 
     let tenant: string | undefined;
     if (config.multitenancy.enabled && config.multitenancy.enable_aggregation_view) {
-      tenant = await fetchCurrentTenant(coreStart.http);
+      try {
+        tenant = await fetchCurrentTenant(coreStart.http);
+      } catch (e) {
+        console.log(e);
+      }
     } else {
       tenant = accountInfo.user_requested_tenant;
     }
