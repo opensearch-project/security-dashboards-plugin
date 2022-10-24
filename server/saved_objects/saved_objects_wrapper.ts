@@ -97,7 +97,31 @@ export class SecuritySavedObjectsClientWrapper {
       if (isPrivateEnabled) {
         availableTenantNames.push(PRIVATE_TENANT + state.authInfo?.user_name);
       }
-      _.assign(options, { namespaces: availableTenantNames });
+      const typeToNamespacesMap = {};
+      if (selectedTenant === '__user__') {
+        namespaceValue = selectedTenant + username;
+      }
+      const searchTypes = Array.isArray(options.type) ? options.type : [options.type];
+      searchTypes.forEach((t) => {
+        if (t === 'config') {
+          if ('namespaces' in options) {
+            if (options.namespaces.includes(namespaceValue)) {
+              typeToNamespacesMap[t] = [namespaceValue];
+            }
+          } else {
+            typeToNamespacesMap[t] = [namespaceValue];
+          }
+        } else {
+          if ('namespaces' in options) {
+            typeToNamespacesMap[t] = options.namespaces;
+          } else {
+            typeToNamespacesMap[t] = availableTenantNames;
+          }
+        }
+      });
+      options.typeToNamespacesMap = new Map(Object.entries(typeToNamespacesMap));
+      options.type = '';
+      options.namespaces = [];
       return await wrapperOptions.client.find(options);
     };
 
