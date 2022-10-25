@@ -116,8 +116,8 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: ${{ env.FTR_PATH }}
-          repository: RyanL1997/opensearch-dashboards-functional-test
-          ref: 'saved-objects-test'
+          repository: opensearch-project/opensearch-dashboards-functional-test
+          ref: 'main'
 
       - name: Get Cypress version
         id: cypress_version
