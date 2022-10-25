@@ -108,19 +108,9 @@ export class SecuritySavedObjectsClientWrapper {
           availableTenantNames.splice(index, 1);
         }
       }
-      if (availableTenantNames.includes(globalTenantName)) {
-        let index = availableTenantNames.indexOf(globalTenantName);
-        if (index > -1) {
-          availableTenantNames.splice(index, 1);
-        }
-        index = availableTenantNames.indexOf(username!);
-        if (index > -1) {
-          availableTenantNames.splice(index, 1);
-        }
-      }
       const typeToNamespacesMap: any = {};
-      if (selectedTenant === '__user__') {
-        namespaceValue = selectedTenant + username;
+      if (isPrivateTenant(selectedTenant!)) {
+        namespaceValue = selectedTenant! + username;
       }
       const searchTypes = Array.isArray(options.type) ? options.type : [options.type];
       searchTypes.forEach((t) => {
