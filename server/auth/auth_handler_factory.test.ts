@@ -273,7 +273,7 @@ describe('test authentication factory', () => {
       );
     } catch (e) {
       const targetError =
-        'Error: Multiple Authnetication Mode is disabled. To enable this feature, please set up opensearch_security.auth.multiple_auth_enabled: true';
+        'Error: Multiple Authentication Mode is disabled. To enable this feature, please set up opensearch_security.auth.multiple_auth_enabled: true';
       expect(e.toString()).toEqual(targetError);
     }
   });
