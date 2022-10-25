@@ -54,11 +54,9 @@ export class ProxyAuthentication extends AuthenticationType {
 
     this.userHeaderName = this.config.proxycache?.user_header?.toLowerCase() || '';
     this.roleHeaderName = this.config.proxycache?.roles_header?.toLowerCase() || '';
-
-    this.setupRoutes();
   }
 
-  private setupRoutes() {
+  public async init() {
     const routes = new ProxyAuthRoutes(
       this.router,
       this.config,

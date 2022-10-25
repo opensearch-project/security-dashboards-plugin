@@ -39,6 +39,7 @@ import { UnauthenticatedError } from '../../errors';
 export interface IAuthenticationType {
   type: string;
   authHandler: AuthenticationHandler;
+  init: () => Promise<void>;
 }
 
 export type IAuthHandlerConstructor = new (
@@ -117,7 +118,6 @@ export abstract class AuthenticationType implements IAuthenticationType {
         this.logger.error(`Error parsing cookie: ${error.message}`);
         cookie = undefined;
       }
-
       if (!cookie || !(await this.isValidCookie(cookie))) {
         // clear cookie
         this.sessionStorageFactory.asScoped(request).clear();
@@ -244,4 +244,5 @@ export abstract class AuthenticationType implements IAuthenticationType {
     toolkit: AuthToolkit
   ): IOpenSearchDashboardsResponse | AuthResult;
   public abstract buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any;
+  public abstract init(): Promise<void>;
 }

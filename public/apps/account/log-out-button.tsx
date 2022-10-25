@@ -16,7 +16,7 @@
 import React from 'react';
 import { EuiButtonEmpty } from '@elastic/eui';
 import { HttpStart } from 'opensearch-dashboards/public';
-import { logout, samlLogout } from './utils';
+import { logout, openidLogout, samlLogout } from './utils';
 import { AuthType, OPENID_AUTH_LOGOUT } from '../../../common';
 import { setShouldShowTenantPopup } from '../../utils/storage-utils';
 
@@ -27,7 +27,6 @@ export function LogoutButton(props: {
   logoutUrl?: string;
 }) {
   if (props.authType === AuthType.OPEN_ID) {
-    setShouldShowTenantPopup(null);
     return (
       <div>
         {props.divider}
@@ -35,7 +34,7 @@ export function LogoutButton(props: {
           data-test-subj="log-out-2"
           color="danger"
           size="xs"
-          href={`${props.http.basePath.serverBasePath}${OPENID_AUTH_LOGOUT}`}
+          onClick={() => openidLogout(props.http)}
         >
           Log out
         </EuiButtonEmpty>

@@ -45,16 +45,14 @@ export class JwtAuthentication extends AuthenticationType {
   ) {
     super(config, sessionStorageFactory, router, esClient, coreSetup, logger);
     this.authHeaderName = this.config.jwt?.header.toLowerCase() || 'authorization';
-
-    this.init();
   }
 
-  private async init() {
+  public async init() {
     const routes = new JwtAuthRoutes(this.router, this.sessionStorageFactory);
     routes.setupRoutes();
   }
 
-  private getTokenFromUrlParam(request: OpenSearchDashboardsRequest): string | undefined {
+  public getTokenFromUrlParam(request: OpenSearchDashboardsRequest): string | undefined {
     const urlParamName = this.config.jwt?.url_param;
     if (urlParamName) {
       const token = request.url.searchParams.get(urlParamName);
@@ -63,7 +61,7 @@ export class JwtAuthentication extends AuthenticationType {
     return undefined;
   }
 
-  private getBearerToken(request: OpenSearchDashboardsRequest): string | undefined {
+  public getBearerToken(request: OpenSearchDashboardsRequest): string | undefined {
     const token = this.getTokenFromUrlParam(request);
     if (token) {
       return `Bearer ${token}`;

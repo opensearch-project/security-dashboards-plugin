@@ -44,11 +44,9 @@ export class BasicAuthentication extends AuthenticationType {
     logger: Logger
   ) {
     super(config, sessionStorageFactory, router, esClient, coreSetup, logger);
-
-    this.init();
   }
 
-  private async init() {
+  public async init() {
     const routes = new BasicAuthRoutes(
       this.router,
       this.config,

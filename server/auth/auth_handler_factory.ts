@@ -33,7 +33,7 @@ import { SecuritySessionCookie } from '../session/security_cookie';
 import { IAuthenticationType, IAuthHandlerConstructor } from './types/authentication_type';
 import { SecurityPluginConfigType } from '..';
 
-function createAuthentication(
+async function createAuthentication(
   ctor: IAuthHandlerConstructor,
   config: SecurityPluginConfigType,
   sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
@@ -41,11 +41,13 @@ function createAuthentication(
   esClient: ILegacyClusterClient,
   coreSetup: CoreSetup,
   logger: Logger
-): IAuthenticationType {
-  return new ctor(config, sessionStorageFactory, router, esClient, coreSetup, logger);
+): Promise<IAuthenticationType> {
+  const authHandler = new ctor(config, sessionStorageFactory, router, esClient, coreSetup, logger);
+  await authHandler.init();
+  return authHandler;
 }
 
-export function getAuthenticationHandler(
+export async function getAuthenticationHandler(
   authType: string | string[],
   router: IRouter,
   config: SecurityPluginConfigType,
@@ -53,7 +55,7 @@ export function getAuthenticationHandler(
   esClient: ILegacyClusterClient,
   securitySessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
   logger: Logger
-): IAuthenticationType {
+): Promise<IAuthenticationType> {
   let authHandlerType: IAuthHandlerConstructor;
   if (typeof authType === 'string' || authType.length === 1) {
     const currType = typeof authType === 'string' ? authType : authType[0];
@@ -86,7 +88,7 @@ export function getAuthenticationHandler(
       );
     }
   }
-  const auth: IAuthenticationType = createAuthentication(
+  const auth: IAuthenticationType = await createAuthentication(
     authHandlerType,
     config,
     securitySessionStorageFactory,

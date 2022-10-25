@@ -18,7 +18,7 @@ exports[`Account menu - Log out button renders renders when auth type is MultiAu
   <EuiButtonEmpty
     color="danger"
     data-test-subj="log-out-2"
-    href="/auth/openid/logout"
+    onClick={[Function]}
     size="xs"
   >
     Log out
@@ -44,7 +44,7 @@ exports[`Account menu - Log out button renders renders when auth type is OpenId 
   <EuiButtonEmpty
     color="danger"
     data-test-subj="log-out-2"
-    href="/auth/openid/logout"
+    onClick={[Function]}
     size="xs"
   >
     Log out

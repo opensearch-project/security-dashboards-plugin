@@ -25,7 +25,7 @@ import {
 import { OpenSearchDashboardsResponse } from '../../../../../../src/core/server/http/router';
 import { SecurityPluginConfigType } from '../../..';
 import { AuthenticationType, IAuthenticationType } from '../authentication_type';
-import { AuthType, LOGIN_PAGE_URI } from '../../../../common';
+import { ANONYMOUS_AUTH_LOGIN, AuthType, LOGIN_PAGE_URI } from '../../../../common';
 import { composeNextUrlQueryParam } from '../../../utils/next_url';
 import { MultiAuthRoutes } from './routes';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
@@ -46,10 +46,9 @@ export class MultipleAuthentication extends AuthenticationType {
     super(config, sessionStorageFactory, router, esClient, coreSetup, logger);
     this.authTypes = this.config.auth.type;
     this.authHandlers = new Map<string, AuthenticationType>();
-    this.init();
   }
 
-  private async init() {
+  public async init() {
     const routes = new MultiAuthRoutes(this.router, this.sessionStorageFactory);
     routes.setupRoutes();
 
@@ -64,6 +63,7 @@ export class MultipleAuthentication extends AuthenticationType {
             this.coreSetup,
             this.logger
           );
+          await BasicAuth.init();
           this.authHandlers.set(AuthType.BASIC, BasicAuth);
           break;
         }
@@ -76,6 +76,7 @@ export class MultipleAuthentication extends AuthenticationType {
             this.coreSetup,
             this.logger
           );
+          await OidcAuth.init();
           this.authHandlers.set(AuthType.OPEN_ID, OidcAuth);
           break;
         }
@@ -88,6 +89,7 @@ export class MultipleAuthentication extends AuthenticationType {
             this.coreSetup,
             this.logger
           );
+          await SamlAuth.init();
           this.authHandlers.set(AuthType.SAML, SamlAuth);
           break;
         }
@@ -147,6 +149,14 @@ export class MultipleAuthentication extends AuthenticationType {
         this.coreSetup.http.basePath.serverBasePath
       );
 
+      if (this.config.auth.anonymous_auth_enabled) {
+        const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${ANONYMOUS_AUTH_LOGIN}?${nextUrlParam}`;
+        return response.redirected({
+          headers: {
+            location: `${redirectLocation}`,
+          },
+        });
+      }
       return response.redirected({
         headers: {
           location: `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`,

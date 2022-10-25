@@ -14,7 +14,12 @@
  */
 
 import { HttpStart } from 'opensearch-dashboards/public';
-import { API_AUTH_LOGOUT, LOGIN_PAGE_URI, SAML_AUTH_LOGOUT } from '../../../common';
+import {
+  API_AUTH_LOGOUT,
+  LOGIN_PAGE_URI,
+  OPENID_AUTH_LOGOUT,
+  SAML_AUTH_LOGOUT,
+} from '../../../common';
 import { API_ENDPOINT_ACCOUNT_INFO } from './constants';
 import { AccountInfo } from './types';
 import { httpGet, httpGetWithIgnores, httpPost } from '../configuration/utils/request-utils';
@@ -44,6 +49,13 @@ export async function samlLogout(http: HttpStart): Promise<void> {
   // This will ensure tenancy is picked up from local storage in the next login.
   setShouldShowTenantPopup(null);
   window.location.href = `${http.basePath.serverBasePath}${SAML_AUTH_LOGOUT}`;
+}
+
+export async function openidLogout(http: HttpStart): Promise<void> {
+  // This will ensure tenancy is picked up from local storage in the next login.
+  setShouldShowTenantPopup(null);
+  sessionStorage.clear();
+  window.location.href = `${http.basePath.serverBasePath}${OPENID_AUTH_LOGOUT}`;
 }
 
 export async function updateNewPassword(

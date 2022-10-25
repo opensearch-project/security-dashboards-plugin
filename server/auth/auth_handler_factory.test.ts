@@ -13,7 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-import { getAuthenticationHandler } from './auth_handler_factory';
 import {
   IRouter,
   CoreSetup,
@@ -23,6 +22,7 @@ import {
 } from '../../../../src/core/server';
 import { SecurityPluginConfigType } from '..';
 import { SecuritySessionCookie } from '../session/security_cookie';
+import { getAuthenticationHandler } from './auth_handler_factory';
 
 jest.mock('./types', () => {
   return {
@@ -30,37 +30,42 @@ jest.mock('./types', () => {
       return {
         authHandler: () => {},
         type: 'basicauth',
+        init: () => {},
       };
     }),
     JwtAuthentication: jest.fn().mockImplementation(() => {
       return {
         authHandler: () => {},
         type: 'jwt',
+        init: () => {},
       };
     }),
     OpenIdAuthentication: jest.fn().mockImplementation(() => {
       return {
         authHandler: () => {},
         type: 'openid',
+        init: () => {},
       };
     }),
     ProxyAuthentication: jest.fn().mockImplementation(() => {
       return {
         authHandler: () => {},
         type: 'proxy',
+        init: () => {},
       };
     }),
     SamlAuthentication: jest.fn().mockImplementation(() => {
       return {
         authHandler: () => {},
         type: 'saml',
+        init: () => {},
       };
     }),
     MultipleAuthentication: jest.fn().mockImplementation(() => {
       return {
         authHandler: () => {},
         type: ['openid', 'saml', 'basiauth'],
-        multiple_auth_enabled: false,
+        init: () => {},
       };
     }),
   };
@@ -76,8 +81,8 @@ describe('test authentication factory', () => {
 
   beforeEach(() => {});
 
-  test('get basic auth: string array', () => {
-    const auth = getAuthenticationHandler(
+  test('get basic auth: string array', async () => {
+    const auth = await getAuthenticationHandler(
       ['basicauth'],
       router,
       config,
@@ -89,8 +94,8 @@ describe('test authentication factory', () => {
     expect(auth.type).toEqual('basicauth');
   });
 
-  test('get basic auth: string', () => {
-    const auth = getAuthenticationHandler(
+  test('get basic auth: string', async () => {
+    const auth = await getAuthenticationHandler(
       'basicauth',
       router,
       config,
@@ -102,8 +107,8 @@ describe('test authentication factory', () => {
     expect(auth.type).toEqual('basicauth');
   });
 
-  test('get basic auth with empty auth type: string array', () => {
-    const auth = getAuthenticationHandler(
+  test('get basic auth with empty auth type: string array', async () => {
+    const auth = await getAuthenticationHandler(
       [''],
       router,
       config,
@@ -115,8 +120,8 @@ describe('test authentication factory', () => {
     expect(auth.type).toEqual('basicauth');
   });
 
-  test('get basic auth with empty auth type: string', () => {
-    const auth = getAuthenticationHandler(
+  test('get basic auth with empty auth type: string', async () => {
+    const auth = await getAuthenticationHandler(
       '',
       router,
       config,
@@ -128,8 +133,8 @@ describe('test authentication factory', () => {
     expect(auth.type).toEqual('basicauth');
   });
 
-  test('get jwt auth: string array', () => {
-    const auth = getAuthenticationHandler(
+  test('get jwt auth: string array', async () => {
+    const auth = await getAuthenticationHandler(
       ['jwt'],
       router,
       config,
@@ -141,8 +146,8 @@ describe('test authentication factory', () => {
     expect(auth.type).toEqual('jwt');
   });
 
-  test('get jwt auth: string', () => {
-    const auth = getAuthenticationHandler(
+  test('get jwt auth: string', async () => {
+    const auth = await getAuthenticationHandler(
       'jwt',
       router,
       config,
@@ -154,8 +159,8 @@ describe('test authentication factory', () => {
     expect(auth.type).toEqual('jwt');
   });
 
-  test('get openid auth: string', () => {
-    const auth = getAuthenticationHandler(
+  test('get openid auth: string', async () => {
+    const auth = await getAuthenticationHandler(
       'openid',
       router,
       config,
@@ -167,8 +172,8 @@ describe('test authentication factory', () => {
     expect(auth.type).toEqual('openid');
   });
 
-  test('get openid auth: string array', () => {
-    const auth = getAuthenticationHandler(
+  test('get openid auth: string array', async () => {
+    const auth = await getAuthenticationHandler(
       ['openid'],
       router,
       config,
@@ -180,8 +185,8 @@ describe('test authentication factory', () => {
     expect(auth.type).toEqual('openid');
   });
 
-  test('get proxy auth: string array', () => {
-    const auth = getAuthenticationHandler(
+  test('get proxy auth: string array', async () => {
+    const auth = await getAuthenticationHandler(
       ['proxy'],
       router,
       config,
@@ -193,8 +198,8 @@ describe('test authentication factory', () => {
     expect(auth.type).toEqual('proxy');
   });
 
-  test('get proxy auth: string', () => {
-    const auth = getAuthenticationHandler(
+  test('get proxy auth: string', async () => {
+    const auth = await getAuthenticationHandler(
       'proxy',
       router,
       config,
@@ -206,8 +211,8 @@ describe('test authentication factory', () => {
     expect(auth.type).toEqual('proxy');
   });
 
-  test('get saml auth: string array', () => {
-    const auth = getAuthenticationHandler(
+  test('get saml auth: string array', async () => {
+    const auth = await getAuthenticationHandler(
       ['saml'],
       router,
       config,
@@ -219,8 +224,8 @@ describe('test authentication factory', () => {
     expect(auth.type).toEqual('saml');
   });
 
-  test('get saml auth: string', () => {
-    const auth = getAuthenticationHandler(
+  test('get saml auth: string', async () => {
+    const auth = await getAuthenticationHandler(
       'saml',
       router,
       config,
@@ -232,13 +237,13 @@ describe('test authentication factory', () => {
     expect(auth.type).toEqual('saml');
   });
 
-  test('multiple_auth_enabled is on, get multi auth', () => {
+  test('multiple_auth_enabled is on, get multi auth', async () => {
     config = {
       auth: {
         multiple_auth_enabled: true,
       },
     };
-    const auth = getAuthenticationHandler(
+    const auth = await getAuthenticationHandler(
       ['openid', 'saml', 'basiauth'],
       router,
       config,
@@ -250,14 +255,14 @@ describe('test authentication factory', () => {
     expect(auth.type).toEqual(['openid', 'saml', 'basiauth']);
   });
 
-  test('multiple_auth_enabled is off, get multi auth', () => {
+  test('multiple_auth_enabled is off, get multi auth', async () => {
     config = {
       auth: {
         multiple_auth_enabled: false,
       },
     };
-    expect(() => {
-      getAuthenticationHandler(
+    try {
+      await getAuthenticationHandler(
         ['openid', 'saml', 'basiauth'],
         router,
         config,
@@ -266,14 +271,16 @@ describe('test authentication factory', () => {
         sessionStorageFactory,
         logger
       );
-    }).toThrow(
-      'Multiple Authnetication Mode is disabled. To enable this feature, please set up opensearch_security.auth.multiple_auth_enabled: true'
-    );
+    } catch (e) {
+      const targetError =
+        'Error: Multiple Authnetication Mode is disabled. To enable this feature, please set up opensearch_security.auth.multiple_auth_enabled: true';
+      expect(e.toString()).toEqual(targetError);
+    }
   });
 
-  test('throws error for invalid auth type: string array', () => {
-    expect(() => {
-      getAuthenticationHandler(
+  test('throws error for invalid auth type: string array', async () => {
+    try {
+      await getAuthenticationHandler(
         ['invalid'],
         router,
         config,
@@ -282,12 +289,15 @@ describe('test authentication factory', () => {
         sessionStorageFactory,
         logger
       );
-    }).toThrow('Unsupported authentication type: invalid');
+    } catch (e) {
+      const targetError = 'Error: Unsupported authentication type: invalid';
+      expect(e.toString()).toEqual(targetError);
+    }
   });
 
-  test('throws error for invalid auth type: string', () => {
-    expect(() => {
-      getAuthenticationHandler(
+  test('throws error for invalid auth type: string', async () => {
+    try {
+      await getAuthenticationHandler(
         'invalid',
         router,
         config,
@@ -296,6 +306,9 @@ describe('test authentication factory', () => {
         sessionStorageFactory,
         logger
       );
-    }).toThrow('Unsupported authentication type: invalid');
+    } catch (e) {
+      const targetError = 'Error: Unsupported authentication type: invalid';
+      expect(e.toString()).toEqual(targetError);
+    }
   });
 });

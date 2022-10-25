@@ -49,7 +49,6 @@ export class SamlAuthentication extends AuthenticationType {
     logger: Logger
   ) {
     super(config, sessionStorageFactory, router, esClient, coreSetup, logger);
-    this.setupRoutes();
   }
 
   private generateNextUrl(request: OpenSearchDashboardsRequest): string {
@@ -69,7 +68,7 @@ export class SamlAuthentication extends AuthenticationType {
     });
   };
 
-  private setupRoutes(): void {
+  public async init() {
     const samlAuthRoutes = new SamlAuthRoutes(
       this.router,
       this.config,

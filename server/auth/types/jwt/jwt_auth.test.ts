@@ -22,8 +22,8 @@ describe('test jwt auth library', () => {
   let sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>;
   let logger: Logger;
 
-  function getTestJWTAuthenticationHandlerWithConfig(config: SecurityPluginConfigType) {
-    return getAuthenticationHandler(
+  async function getTestJWTAuthenticationHandlerWithConfig(config: SecurityPluginConfigType) {
+    return await getAuthenticationHandler(
       'jwt',
       router,
       config,
@@ -34,14 +34,14 @@ describe('test jwt auth library', () => {
     );
   }
 
-  test('test getTokenFromUrlParam', () => {
+  test('test getTokenFromUrlParam', async () => {
     const config = {
       jwt: {
         header: 'Authorization',
         url_param: 'authorization',
       },
     };
-    const auth = getTestJWTAuthenticationHandlerWithConfig(config);
+    const auth = await getTestJWTAuthenticationHandlerWithConfig(config);
 
     const url = new URL('http://localhost:5601/app/api/v1/auth/authinfo?authorization=testtoken');
     const request = {
@@ -53,14 +53,14 @@ describe('test jwt auth library', () => {
     expect(token).toEqual(expectedToken);
   });
 
-  test('test getTokenFromUrlParam incorrect url_param', () => {
+  test('test getTokenFromUrlParam incorrect url_param', async () => {
     const config = {
       jwt: {
         header: 'Authorization',
         url_param: 'urlParamName',
       },
     };
-    const auth = getTestJWTAuthenticationHandlerWithConfig(config);
+    const auth = await getTestJWTAuthenticationHandlerWithConfig(config);
 
     const url = new URL('http://localhost:5601/app/api/v1/auth/authinfo?authorization=testtoken');
     const request = {

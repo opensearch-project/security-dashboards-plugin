@@ -107,7 +107,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     });
 
     // setup auth
-    const auth: IAuthenticationType = getAuthenticationHandler(
+    const auth: IAuthenticationType = await getAuthenticationHandler(
       config.auth.type,
       router,
       config,
@@ -159,7 +159,6 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
         this.logger
       );
     }
-
     return {
       es: core.opensearch.legacy,
     };
