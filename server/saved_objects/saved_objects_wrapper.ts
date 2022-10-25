@@ -133,7 +133,7 @@ export class SecuritySavedObjectsClientWrapper {
       options.typeToNamespacesMap = new Map(Object.entries(typeToNamespacesMap));
       options.type = '';
       options.namespaces = [];
-      
+
       return await wrapperOptions.client.find(options);
     };
 
