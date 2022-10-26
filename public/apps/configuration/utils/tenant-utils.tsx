@@ -180,6 +180,10 @@ export function transformRoleTenantPermissions(
 }
 
 export function isPrivateTenant(selectedTenant: string | null) {
+  return selectedTenant !== null && selectedTenant === PRIVATE_TENANT;
+}
+
+export function isRenderingPrivateTenant(selectedTenant: string | null) {
   return selectedTenant !== null && selectedTenant?.startsWith(PRIVATE_TENANT);
 }
 
@@ -197,7 +201,7 @@ export const tenantColumn = {
       let text = value.flat()[0];
       if (isGlobalTenant(text)) {
         text = GLOBAL_TENANT_RENDERING_TEXT;
-      } else if (isPrivateTenant(text)) {
+      } else if (isRenderingPrivateTenant(text)) {
         text = PRIVATE_TENANT_RENDERING_TEXT;
       }
       text = i18n.translate('savedObjectsManagement.objectsTable.table.columnTenantName', {
