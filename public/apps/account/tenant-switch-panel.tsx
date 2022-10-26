@@ -35,7 +35,7 @@ import React from 'react';
 import { ClientConfigType } from '../../types';
 import {
   RESOLVED_GLOBAL_TENANT,
-  PRIVATE_TENANT_SYMBOLTE_TENANT,
+  RESOLVED_PRIVATE_TENANT,
   resolveTenantName,
   selectTenant,
 } from '../configuration/utils/tenant-utils';
@@ -220,7 +220,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
     } else if (tenantSwitchRadioIdSelected === PRIVATE_TENANT_RADIO_ID) {
       tenantName = '__user__';
     } else if (tenantSwitchRadioIdSelected === CUSTOM_TENANT_RADIO_ID) {
-      if (selectedCPRIVATE_TENANT_SYMBOLion) {
+      if (selectedCustomTenantOption) {
         tenantName = selectedCustomTenantOption[0].label;
       }
     }
