@@ -22,8 +22,8 @@ describe('test jwt auth library', () => {
   let sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>;
   let logger: Logger;
 
-  async function getTestJWTAuthenticationHandlerWithConfig(config: SecurityPluginConfigType) {
-    return await getAuthenticationHandler(
+  function getTestJWTAuthenticationHandlerWithConfig(config: SecurityPluginConfigType) {
+    return getAuthenticationHandler(
       'jwt',
       router,
       config,

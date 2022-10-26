@@ -115,6 +115,7 @@ export class MultipleAuthentication extends AuthenticationType {
   async getAdditionalAuthHeader(
     request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
   ): Promise<any> {
+    // To Do: refactor this method to improve the effiency to get cookie, get cookie from input parameter
     const cookie = await this.sessionStorageFactory.asScoped(request).get();
     const reqAuthType = cookie?.authType?.toLowerCase();
 
