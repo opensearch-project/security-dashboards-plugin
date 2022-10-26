@@ -39,9 +39,9 @@ import { SecurityPluginConfigType } from '..';
 import {
   DEFAULT_TENANT,
   globalTenantName,
-  GLOBAL_TENANT,
+  GLOBAL_TENANT_SYMBOL,
   isPrivateTenant,
-  PRIVATE_TENANT,
+  PRIVATE_TENANT_SYMBOL,
 } from '../../public/apps/configuration/utils/tenant-utils';
 import { OpenSearchDashboardsAuthState } from '../auth/types/authentication_type';
 
@@ -68,8 +68,8 @@ export class SecuritySavedObjectsClientWrapper {
       attributes: T,
       options?: SavedObjectsCreateOptions
     ) => {
-      if (selectedTenant !== undefined && isPrivateEnabled && isPrivateTenant(selectedTenant)) {
-        namespaceValue = selectedTenant + username;
+      if (this.isAPrivateTenant(selectedTenant, isPrivateEnabled)) {
+        namespaceValue = selectedTenant! + username;
       }
       _.assign(options, { namespace: [namespaceValue] });
       return await wrapperOptions.client.create(type, attributes, options);
@@ -79,8 +79,8 @@ export class SecuritySavedObjectsClientWrapper {
       objects: SavedObjectsBulkGetObject[] = [],
       options: SavedObjectsBaseOptions = {}
     ): Promise<SavedObjectsBulkResponse<T>> => {
-      if (selectedTenant !== undefined && isPrivateEnabled && isPrivateTenant(selectedTenant)) {
-        namespaceValue = selectedTenant + username;
+      if (this.isAPrivateTenant(selectedTenant, isPrivateEnabled)) {
+        namespaceValue = selectedTenant! + username;
       }
       _.assign(options, { namespace: [namespaceValue] });
       return await wrapperOptions.client.bulkGet(objects, options);
@@ -93,10 +93,10 @@ export class SecuritySavedObjectsClientWrapper {
       const availableTenantNames = Object.keys(tenants!);
       availableTenantNames.push(DEFAULT_TENANT);
       if (isGlobalEnabled) {
-        availableTenantNames.push(GLOBAL_TENANT);
+        availableTenantNames.push(GLOBAL_TENANT_SYMBOL);
       }
       if (isPrivateEnabled) {
-        availableTenantNames.push(PRIVATE_TENANT + username);
+        availableTenantNames.push(PRIVATE_TENANT_SYMBOL + username);
       }
       if (availableTenantNames.includes(globalTenantName)) {
         let index = availableTenantNames.indexOf(globalTenantName);
@@ -142,8 +142,8 @@ export class SecuritySavedObjectsClientWrapper {
       id: string,
       options: SavedObjectsBaseOptions = {}
     ): Promise<SavedObject<T>> => {
-      if (selectedTenant !== undefined && isPrivateEnabled && isPrivateTenant(selectedTenant)) {
-        namespaceValue = selectedTenant + username;
+      if (this.isAPrivateTenant(selectedTenant, isPrivateEnabled)) {
+        namespaceValue = selectedTenant! + username;
       }
       _.assign(options, { namespace: [namespaceValue] });
       return await wrapperOptions.client.get(type, id, options);
@@ -155,8 +155,8 @@ export class SecuritySavedObjectsClientWrapper {
       attributes: Partial<T>,
       options: SavedObjectsUpdateOptions = {}
     ): Promise<SavedObjectsUpdateResponse<T>> => {
-      if (selectedTenant !== undefined && isPrivateEnabled && isPrivateTenant(selectedTenant)) {
-        namespaceValue = selectedTenant + username;
+      if (this.isAPrivateTenant(selectedTenant, isPrivateEnabled)) {
+        namespaceValue = selectedTenant! + username;
       }
       _.assign(options, { namespace: [namespaceValue] });
       return await wrapperOptions.client.update(type, id, attributes, options);
@@ -166,8 +166,8 @@ export class SecuritySavedObjectsClientWrapper {
       objects: Array<SavedObjectsBulkCreateObject<T>>,
       options?: SavedObjectsCreateOptions
     ): Promise<SavedObjectsBulkResponse<T>> => {
-      if (selectedTenant !== undefined && isPrivateEnabled && isPrivateTenant(selectedTenant)) {
-        namespaceValue = selectedTenant + username;
+      if (this.isAPrivateTenant(selectedTenant, isPrivateEnabled)) {
+        namespaceValue = selectedTenant! + username;
       }
       _.assign(options, { namespace: [namespaceValue] });
       return await wrapperOptions.client.bulkCreate(objects, options);
@@ -177,8 +177,8 @@ export class SecuritySavedObjectsClientWrapper {
       objects: Array<SavedObjectsBulkUpdateObject<T>>,
       options?: SavedObjectsBulkUpdateOptions
     ): Promise<SavedObjectsBulkUpdateResponse<T>> => {
-      if (selectedTenant !== undefined && isPrivateEnabled && isPrivateTenant(selectedTenant)) {
-        namespaceValue = selectedTenant + username;
+      if (this.isAPrivateTenant(selectedTenant, isPrivateEnabled)) {
+        namespaceValue = selectedTenant! + username;
       }
       _.assign(options, { namespace: [namespaceValue] });
       return await wrapperOptions.client.bulkUpdate(objects, options);
@@ -189,8 +189,8 @@ export class SecuritySavedObjectsClientWrapper {
       id: string,
       options: SavedObjectsDeleteOptions = {}
     ) => {
-      if (selectedTenant !== undefined && isPrivateEnabled && isPrivateTenant(selectedTenant)) {
-        namespaceValue = selectedTenant + username;
+      if (this.isAPrivateTenant(selectedTenant, isPrivateEnabled)) {
+        namespaceValue = selectedTenant! + username;
       }
       _.assign(options, { namespace: [namespaceValue] });
       return await wrapperOptions.client.delete(type, id, options);
@@ -200,8 +200,8 @@ export class SecuritySavedObjectsClientWrapper {
       objects: SavedObjectsCheckConflictsObject[] = [],
       options: SavedObjectsBaseOptions = {}
     ): Promise<SavedObjectsCheckConflictsResponse> => {
-      if (selectedTenant !== undefined && isPrivateEnabled && isPrivateTenant(selectedTenant)) {
-        namespaceValue = selectedTenant + username;
+      if (this.isAPrivateTenant(selectedTenant, isPrivateEnabled)) {
+        namespaceValue = selectedTenant! + username;
       }
       _.assign(options, { namespace: [namespaceValue] });
       return await wrapperOptions.client.checkConflicts(objects, options);
@@ -223,4 +223,8 @@ export class SecuritySavedObjectsClientWrapper {
       deleteFromNamespaces: wrapperOptions.client.deleteFromNamespaces,
     };
   };
+
+  private isAPrivateTenant(selectedTenant: string | undefined, isPrivateEnabled: boolean) {
+    return selectedTenant !== undefined && isPrivateEnabled && isPrivateTenant(selectedTenant);
+  }
 }

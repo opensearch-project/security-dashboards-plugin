@@ -35,7 +35,7 @@ import {
   isValidTenant,
 } from '../../multitenancy/tenant_resolver';
 import { UnauthenticatedError } from '../../errors';
-import { GLOBAL_TENANT } from '../../../public/apps/configuration/utils/tenant-utils';
+import { GLOBAL_TENANT_SYMBOL } from '../../../public/apps/configuration/utils/tenant-utils';
 
 export interface IAuthenticationType {
   type: string;
@@ -185,7 +185,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
         // set tenant in header
         if (this.config.multitenancy.enabled && this.config.multitenancy.enable_aggregation_view) {
           // Store all saved objects in a single kibana index.
-          Object.assign(authHeaders, { securitytenant: GLOBAL_TENANT });
+          Object.assign(authHeaders, { securitytenant: GLOBAL_TENANT_SYMBOL });
         } else {
           Object.assign(authHeaders, { securitytenant: tenant });
         }
