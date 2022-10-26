@@ -58,6 +58,13 @@ export async function openidLogout(http: HttpStart): Promise<void> {
   window.location.href = `${http.basePath.serverBasePath}${OPENID_AUTH_LOGOUT}`;
 }
 
+export async function externalLogout(http: HttpStart, logoutEndpoint: string): Promise<void> {
+  // This will ensure tenancy is picked up from local storage in the next login.
+  setShouldShowTenantPopup(null);
+  sessionStorage.clear();
+  window.location.href = `${http.basePath.serverBasePath}${logoutEndpoint}`;
+}
+
 export async function updateNewPassword(
   http: HttpStart,
   newPassword: string,

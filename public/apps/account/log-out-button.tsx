@@ -16,8 +16,8 @@
 import React from 'react';
 import { EuiButtonEmpty } from '@elastic/eui';
 import { HttpStart } from 'opensearch-dashboards/public';
-import { logout, openidLogout, samlLogout } from './utils';
-import { AuthType, OPENID_AUTH_LOGOUT } from '../../../common';
+import { externalLogout, logout, openidLogout, samlLogout } from './utils';
+import { AuthType, OPENID_AUTH_LOGOUT, SAML_AUTH_LOGOUT } from '../../../common';
 import { setShouldShowTenantPopup } from '../../utils/storage-utils';
 
 export function LogoutButton(props: {
@@ -34,7 +34,7 @@ export function LogoutButton(props: {
           data-test-subj="log-out-2"
           color="danger"
           size="xs"
-          onClick={() => openidLogout(props.http)}
+          onClick={() => externalLogout(props.http, OPENID_AUTH_LOGOUT)}
         >
           Log out
         </EuiButtonEmpty>
@@ -48,7 +48,7 @@ export function LogoutButton(props: {
           data-test-subj="log-out-1"
           color="danger"
           size="xs"
-          onClick={() => samlLogout(props.http)}
+          onClick={() => externalLogout(props.http, SAML_AUTH_LOGOUT)}
         >
           Log out
         </EuiButtonEmpty>
