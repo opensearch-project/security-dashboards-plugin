@@ -229,7 +229,7 @@ export const configSchema = schema.object({
         buttonstyle: schema.string({ defaultValue: '' }),
       }),
     }),
-    anonmyous: schema.object({
+    anonymous: schema.object({
       login: schema.object({
         buttonname: schema.string({ defaultValue: 'Log in as anonymous' }),
         showbrandimage: schema.boolean({ defaultValue: false }),
