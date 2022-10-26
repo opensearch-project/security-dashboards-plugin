@@ -45,7 +45,7 @@ export interface ClientConfigType {
         buttonstyle: string;
       };
     };
-    anonmyous: {
+    anonymous: {
       login: {
         buttonname: string;
         showbrandimage: boolean;

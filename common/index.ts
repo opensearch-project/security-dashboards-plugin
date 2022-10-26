@@ -35,7 +35,7 @@ export const SAML_AUTH_LOGIN_WITH_FRAGMENT = '/auth/saml/captureUrlFragment?next
 
 export const OPENID_AUTH_LOGOUT = '/auth/openid/logout';
 export const SAML_AUTH_LOGOUT = '/auth/saml/logout';
-export const ANONYMOUS_AUTH_LOGOUT = '/auth/anonymous/out';
+export const ANONYMOUS_AUTH_LOGOUT = '/auth/anonymous/logout';
 
 export const ERROR_MISSING_ROLE_PATH = '/missing-role';
 export const AUTH_HEADER_NAME = 'authorization';
@@ -48,7 +48,7 @@ export enum AuthType {
   JWT = 'jwt',
   SAML = 'saml',
   PROXY = 'proxy',
-  ANONYMOUS = 'anonmyous',
+  ANONYMOUS = 'anonymous',
 }
 
 /**

@@ -109,7 +109,7 @@ export function LoginPage(props: LoginPageDeps) {
     }
   };
 
-  const renderButton = (
+  const renderLoginButton = (
     authType: string,
     loginEndPoint: string,
     buttonConfig: LoginButtonConfig
@@ -202,7 +202,7 @@ export function LoginPage(props: LoginPageDeps) {
             if (props.config.auth.anonymous_auth_enabled) {
               const anonymousConfig = props.config.ui[AuthType.ANONYMOUS].login;
               formBody.push(
-                renderButton(AuthType.ANONYMOUS, ANONYMOUS_AUTH_LOGIN, anonymousConfig)
+                renderLoginButton(AuthType.ANONYMOUS, ANONYMOUS_AUTH_LOGIN, anonymousConfig)
               );
             }
 
@@ -214,12 +214,14 @@ export function LoginPage(props: LoginPageDeps) {
         }
         case AuthType.OPEN_ID: {
           const oidcConfig = props.config.ui[AuthType.OPEN_ID].login;
-          formBodyOp.push(renderButton(AuthType.OPEN_ID, OPENID_AUTH_LOGIN, oidcConfig));
+          formBodyOp.push(renderLoginButton(AuthType.OPEN_ID, OPENID_AUTH_LOGIN, oidcConfig));
           break;
         }
         case AuthType.SAML: {
           const samlConfig = props.config.ui[AuthType.SAML].login;
-          formBodyOp.push(renderButton(AuthType.SAML, SAML_AUTH_LOGIN_WITH_FRAGMENT, samlConfig));
+          formBodyOp.push(
+            renderLoginButton(AuthType.SAML, SAML_AUTH_LOGIN_WITH_FRAGMENT, samlConfig)
+          );
           break;
         }
         default: {
