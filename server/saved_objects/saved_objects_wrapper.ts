@@ -68,9 +68,7 @@ export class SecuritySavedObjectsClientWrapper {
       attributes: T,
       options?: SavedObjectsCreateOptions
     ) => {
-      if (this.isAPrivateTenant(selectedTenant, isPrivateEnabled)) {
-        namespaceValue = selectedTenant! + username;
-      }
+      namespaceValue = this.getNamespaceValue(selectedTenant, isPrivateEnabled, username);
       _.assign(options, { namespace: [namespaceValue] });
       return await wrapperOptions.client.create(type, attributes, options);
     };
@@ -79,9 +77,7 @@ export class SecuritySavedObjectsClientWrapper {
       objects: SavedObjectsBulkGetObject[] = [],
       options: SavedObjectsBaseOptions = {}
     ): Promise<SavedObjectsBulkResponse<T>> => {
-      if (this.isAPrivateTenant(selectedTenant, isPrivateEnabled)) {
-        namespaceValue = selectedTenant! + username;
-      }
+      namespaceValue = this.getNamespaceValue(selectedTenant, isPrivateEnabled, username);
       _.assign(options, { namespace: [namespaceValue] });
       return await wrapperOptions.client.bulkGet(objects, options);
     };
@@ -91,7 +87,7 @@ export class SecuritySavedObjectsClientWrapper {
     ): Promise<SavedObjectsFindResponse<T>> => {
       const tenants = state.authInfo?.tenants;
       const availableTenantNames = Object.keys(tenants!);
-      availableTenantNames.push(DEFAULT_TENANT);
+      availableTenantNames.push(DEFAULT_TENANT); // The value of namespace is "default" if saved objects are created when opensearch_security.multitenancy.enable_aggregation_view is set to false. So adding it to find.
       if (isGlobalEnabled) {
         availableTenantNames.push(GLOBAL_TENANT_SYMBOL);
       }
@@ -114,22 +110,15 @@ export class SecuritySavedObjectsClientWrapper {
       }
       const searchTypes = Array.isArray(options.type) ? options.type : [options.type];
       searchTypes.forEach((t) => {
-        if (t === 'config') {
-          if ('namespaces' in options) {
-            if (options.namespaces!.includes(namespaceValue!)) {
-              typeToNamespacesMap[t] = [namespaceValue];
-            }
-          } else {
-            typeToNamespacesMap[t] = [namespaceValue];
-          }
+        if ('namespaces' in options) {
+          typeToNamespacesMap[t] = options.namespaces;
         } else {
-          if ('namespaces' in options) {
-            typeToNamespacesMap[t] = options.namespaces;
-          } else {
-            typeToNamespacesMap[t] = availableTenantNames;
-          }
+          typeToNamespacesMap[t] = availableTenantNames;
         }
       });
+      if ('config' in typeToNamespacesMap) {
+        typeToNamespacesMap.config = [namespaceValue];
+      }
       options.typeToNamespacesMap = new Map(Object.entries(typeToNamespacesMap));
       options.type = '';
       options.namespaces = [];
@@ -142,9 +131,7 @@ export class SecuritySavedObjectsClientWrapper {
       id: string,
       options: SavedObjectsBaseOptions = {}
     ): Promise<SavedObject<T>> => {
-      if (this.isAPrivateTenant(selectedTenant, isPrivateEnabled)) {
-        namespaceValue = selectedTenant! + username;
-      }
+      namespaceValue = this.getNamespaceValue(selectedTenant, isPrivateEnabled, username);
       _.assign(options, { namespace: [namespaceValue] });
       return await wrapperOptions.client.get(type, id, options);
     };
@@ -155,9 +142,7 @@ export class SecuritySavedObjectsClientWrapper {
       attributes: Partial<T>,
       options: SavedObjectsUpdateOptions = {}
     ): Promise<SavedObjectsUpdateResponse<T>> => {
-      if (this.isAPrivateTenant(selectedTenant, isPrivateEnabled)) {
-        namespaceValue = selectedTenant! + username;
-      }
+      namespaceValue = this.getNamespaceValue(selectedTenant, isPrivateEnabled, username);
       _.assign(options, { namespace: [namespaceValue] });
       return await wrapperOptions.client.update(type, id, attributes, options);
     };
@@ -166,9 +151,7 @@ export class SecuritySavedObjectsClientWrapper {
       objects: Array<SavedObjectsBulkCreateObject<T>>,
       options?: SavedObjectsCreateOptions
     ): Promise<SavedObjectsBulkResponse<T>> => {
-      if (this.isAPrivateTenant(selectedTenant, isPrivateEnabled)) {
-        namespaceValue = selectedTenant! + username;
-      }
+      namespaceValue = this.getNamespaceValue(selectedTenant, isPrivateEnabled, username);
       _.assign(options, { namespace: [namespaceValue] });
       return await wrapperOptions.client.bulkCreate(objects, options);
     };
@@ -177,9 +160,7 @@ export class SecuritySavedObjectsClientWrapper {
       objects: Array<SavedObjectsBulkUpdateObject<T>>,
       options?: SavedObjectsBulkUpdateOptions
     ): Promise<SavedObjectsBulkUpdateResponse<T>> => {
-      if (this.isAPrivateTenant(selectedTenant, isPrivateEnabled)) {
-        namespaceValue = selectedTenant! + username;
-      }
+      namespaceValue = this.getNamespaceValue(selectedTenant, isPrivateEnabled, username);
       _.assign(options, { namespace: [namespaceValue] });
       return await wrapperOptions.client.bulkUpdate(objects, options);
     };
@@ -189,9 +170,7 @@ export class SecuritySavedObjectsClientWrapper {
       id: string,
       options: SavedObjectsDeleteOptions = {}
     ) => {
-      if (this.isAPrivateTenant(selectedTenant, isPrivateEnabled)) {
-        namespaceValue = selectedTenant! + username;
-      }
+      namespaceValue = this.getNamespaceValue(selectedTenant, isPrivateEnabled, username);
       _.assign(options, { namespace: [namespaceValue] });
       return await wrapperOptions.client.delete(type, id, options);
     };
@@ -200,9 +179,7 @@ export class SecuritySavedObjectsClientWrapper {
       objects: SavedObjectsCheckConflictsObject[] = [],
       options: SavedObjectsBaseOptions = {}
     ): Promise<SavedObjectsCheckConflictsResponse> => {
-      if (this.isAPrivateTenant(selectedTenant, isPrivateEnabled)) {
-        namespaceValue = selectedTenant! + username;
-      }
+      namespaceValue = this.getNamespaceValue(selectedTenant, isPrivateEnabled, username);
       _.assign(options, { namespace: [namespaceValue] });
       return await wrapperOptions.client.checkConflicts(objects, options);
     };
@@ -226,5 +203,17 @@ export class SecuritySavedObjectsClientWrapper {
 
   private isAPrivateTenant(selectedTenant: string | undefined, isPrivateEnabled: boolean) {
     return selectedTenant !== undefined && isPrivateEnabled && isPrivateTenant(selectedTenant);
+  }
+
+  private getNamespaceValue(
+    selectedTenant: string | undefined,
+    isPrivateEnabled: boolean,
+    username: string | undefined
+  ) {
+    let namespaceValue = selectedTenant;
+    if (this.isAPrivateTenant(selectedTenant, isPrivateEnabled)) {
+      namespaceValue = selectedTenant! + username;
+    }
+    return namespaceValue;
   }
 }

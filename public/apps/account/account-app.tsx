@@ -49,6 +49,7 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
       try {
         tenant = await fetchCurrentTenant(coreStart.http);
       } catch (e) {
+        tenant = undefined;
         console.log(e);
       }
     }
