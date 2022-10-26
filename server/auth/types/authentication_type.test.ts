@@ -84,7 +84,6 @@ describe('test tenant header', () => {
       authenticated: jest.fn((value) => value),
     };
     const result = await dummyAuthType.authHandler(request, response, toolkit);
-    console.log(result);
     expect(result.requestHeaders.securitytenant).toEqual('dummy_tenant');
   });
 
@@ -97,7 +96,6 @@ describe('test tenant header', () => {
       authenticated: jest.fn((value) => value),
     };
     const result = await dummyAuthType.authHandler(request, response, toolkit);
-    console.log(result);
     expect(result.requestHeaders.securitytenant).toEqual('dummy_tenant');
   });
 });
