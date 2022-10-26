@@ -38,15 +38,15 @@ import { httpDelete, httpGet, httpPost } from './request-utils';
 import { getResourceUrl } from './resource-utils';
 
 export const globalTenantName = 'global_tenant';
-export const GLOBAL_TENANT = '';
-export const PRIVATE_TENANT = '__user__';
+export const GLOBAL_TENANT_SYMBOL = '';
+export const PRIVATE_TENANT_SYMBOL = '__user__';
 export const DEFAULT_TENANT = 'default';
 export const GLOBAL_TENANT_RENDERING_TEXT = 'Global';
 export const PRIVATE_TENANT_RENDERING_TEXT = 'Private';
 
 export const GLOBAL_USER_DICT: { [key: string]: string } = {
   Label: 'Global',
-  Value: GLOBAL_TENANT,
+  Value: GLOBAL_TENANT_SYMBOL,
   Description: 'Everyone can see it',
 };
 
@@ -70,10 +70,10 @@ export function transformTenantData(
 ): Tenant[] {
   // @ts-ignore
   const tenantList: Tenant[] = map<Tenant, Tenant>(rawTenantData, (v: Tenant, k?: string) => ({
-    tenant: k === globalTenantName ? GLOBAL_USER_DICT.Label : k || GLOBAL_TENANT,
+    tenant: k === globalTenantName ? GLOBAL_USER_DICT.Label : k || GLOBAL_TENANT_SYMBOL,
     reserved: v.reserved,
     description: k === globalTenantName ? GLOBAL_USER_DICT.Description : v.description,
-    tenantValue: k === globalTenantName ? GLOBAL_USER_DICT.Value : k || GLOBAL_TENANT,
+    tenantValue: k === globalTenantName ? GLOBAL_USER_DICT.Value : k || GLOBAL_TENANT_SYMBOL,
   }));
   if (isPrivateEnabled) {
     // Insert Private Tenant in List
@@ -180,15 +180,15 @@ export function transformRoleTenantPermissions(
 }
 
 export function isPrivateTenant(selectedTenant: string | null) {
-  return selectedTenant !== null && selectedTenant === PRIVATE_TENANT;
+  return selectedTenant !== null && selectedTenant === PRIVATE_TENANT_SYMBOL;
 }
 
 export function isRenderingPrivateTenant(selectedTenant: string | null) {
-  return selectedTenant !== null && selectedTenant?.startsWith(PRIVATE_TENANT);
+  return selectedTenant !== null && selectedTenant?.startsWith(PRIVATE_TENANT_SYMBOL);
 }
 
 export function isGlobalTenant(selectedTenant: string | null) {
-  return selectedTenant !== null && selectedTenant === GLOBAL_TENANT;
+  return selectedTenant !== null && selectedTenant === GLOBAL_TENANT_SYMBOL;
 }
 
 export const tenantColumn = {

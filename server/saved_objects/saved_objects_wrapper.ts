@@ -39,9 +39,9 @@ import { SecurityPluginConfigType } from '..';
 import {
   DEFAULT_TENANT,
   globalTenantName,
-  GLOBAL_TENANT,
+  GLOBAL_TENANT_SYMBOL,
   isPrivateTenant,
-  PRIVATE_TENANT,
+  PRIVATE_TENANT_SYMBOL,
 } from '../../public/apps/configuration/utils/tenant-utils';
 import { OpenSearchDashboardsAuthState } from '../auth/types/authentication_type';
 
@@ -93,10 +93,10 @@ export class SecuritySavedObjectsClientWrapper {
       const availableTenantNames = Object.keys(tenants!);
       availableTenantNames.push(DEFAULT_TENANT);
       if (isGlobalEnabled) {
-        availableTenantNames.push(GLOBAL_TENANT);
+        availableTenantNames.push(GLOBAL_TENANT_SYMBOL);
       }
       if (isPrivateEnabled) {
-        availableTenantNames.push(PRIVATE_TENANT + username);
+        availableTenantNames.push(PRIVATE_TENANT_SYMBOL + username);
       }
       if (availableTenantNames.includes(globalTenantName)) {
         let index = availableTenantNames.indexOf(globalTenantName);
