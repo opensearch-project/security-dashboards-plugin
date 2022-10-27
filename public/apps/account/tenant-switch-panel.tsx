@@ -48,6 +48,7 @@ interface TenantSwitchPanelProps {
   handleClose: () => void;
   handleSwitchAndClose: () => void;
   config: ClientConfigType;
+  tenant: string;
 }
 
 const GLOBAL_TENANT_KEY_NAME = 'global_tenant';
@@ -90,8 +91,12 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
         const currentUserName = accountInfo.data.user_name;
         setUsername(currentUserName);
 
-        // @ts-ignore
-        const currentRawTenantName = accountInfo.data.user_requested_tenant;
+        let currentRawTenantName: string | undefined;
+        if (props.config.multitenancy.enable_aggregation_view) {
+          currentRawTenantName = props.tenant;
+        } else {
+          currentRawTenantName = accountInfo.data.user_requested_tenant;
+        }
         setCurrentTenant(currentRawTenantName || '', currentUserName);
       } catch (e) {
         // TODO: switch to better error display.
@@ -100,7 +105,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
     };
 
     fetchData();
-  }, [props.coreStart.http]);
+  }, [props.coreStart.http, props.tenant, props.config.multitenancy]);
 
   // Custom tenant super select related.
   const onCustomTenantChange = (selectedOption: EuiComboBoxOptionOption[]) => {

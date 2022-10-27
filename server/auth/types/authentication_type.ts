@@ -35,6 +35,7 @@ import {
   isValidTenant,
 } from '../../multitenancy/tenant_resolver';
 import { UnauthenticatedError } from '../../errors';
+import { GLOBAL_TENANT_SYMBOL } from '../../../public/apps/configuration/utils/tenant-utils';
 
 export interface IAuthenticationType {
   type: string;
@@ -49,6 +50,25 @@ export type IAuthHandlerConstructor = new (
   coreSetup: CoreSetup,
   logger: Logger
 ) => IAuthenticationType;
+
+export interface OpenSearchAuthInfo {
+  user: string;
+  user_name: string;
+  user_requested_tenant: string;
+  remote_address: string;
+  backend_roles: string[];
+  custom_attribute_names: string[];
+  roles: string[];
+  tenants: Record<string, boolean>;
+  principal: string | null;
+  peer_certificates: string | null;
+  sso_logout_url: string | null;
+}
+
+export interface OpenSearchDashboardsAuthState {
+  authInfo?: OpenSearchAuthInfo;
+  selectedTenant?: string;
+}
 
 export abstract class AuthenticationType implements IAuthenticationType {
   protected static readonly ROUTES_TO_IGNORE: string[] = [
@@ -72,6 +92,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
   ) {
     this.securityClient = new SecurityClient(esClient);
     this.type = '';
+    this.config = config;
   }
 
   public authHandler: AuthenticationHandler = async (request, response, toolkit) => {
@@ -79,6 +100,8 @@ export abstract class AuthenticationType implements IAuthenticationType {
     if (this.authNotRequired(request)) {
       return toolkit.authenticated();
     }
+
+    const authState: OpenSearchDashboardsAuthState = {};
 
     // if browser request, auth logic is:
     //   1. check if request includes auth header or paramter(e.g. jwt in url params) is present, if so, authenticate with auth header.
@@ -104,7 +127,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
         }
 
         this.sessionStorageFactory.asScoped(request).set(cookie);
-      } catch (error) {
+      } catch (error: any) {
         return response.unauthorized({
           body: error.message,
         });
@@ -113,7 +136,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
       // no auth header in request, try cookie
       try {
         cookie = await this.sessionStorageFactory.asScoped(request).get();
-      } catch (error) {
+      } catch (error: any) {
         this.logger.error(`Error parsing cookie: ${error.message}`);
         cookie = undefined;
       }
@@ -157,8 +180,15 @@ export abstract class AuthenticationType implements IAuthenticationType {
               'No available tenant for current user, please reach out to your system administrator',
           });
         }
+        authState.selectedTenant = tenant;
+
         // set tenant in header
-        Object.assign(authHeaders, { securitytenant: tenant });
+        if (this.config.multitenancy.enabled && this.config.multitenancy.enable_aggregation_view) {
+          // Store all saved objects in a single kibana index.
+          Object.assign(authHeaders, { securitytenant: GLOBAL_TENANT_SYMBOL });
+        } else {
+          Object.assign(authHeaders, { securitytenant: tenant });
+        }
 
         // set tenant to cookie
         if (tenant !== cookie!.tenant) {
@@ -177,9 +207,14 @@ export abstract class AuthenticationType implements IAuthenticationType {
         throw error;
       }
     }
+    if (!authInfo) {
+      authInfo = await this.securityClient.authinfo(request, authHeaders);
+    }
+    authState.authInfo = authInfo;
 
     return toolkit.authenticated({
       requestHeaders: authHeaders,
+      state: authState,
     });
   };
 
@@ -209,7 +244,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
     if (!authInfo) {
       try {
         authInfo = await this.securityClient.authinfo(request, authHeader);
-      } catch (error) {
+      } catch (error: any) {
         throw new UnauthenticatedError(error);
       }
     }
