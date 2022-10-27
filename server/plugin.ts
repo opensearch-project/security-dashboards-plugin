@@ -159,6 +159,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
         this.logger
       );
     }
+
     return {
       es: core.opensearch.legacy,
     };
