@@ -22,8 +22,8 @@ import {
   getSavedTenant,
 } from '../../../utils/storage-utils';
 import { fetchAccountInfoSafe } from '../utils';
-import { selectTenant } from '../../configuration/utils/tenant-utils';
 import { fetchCurrentAuthType } from '../../../utils/logout-utils';
+import { fetchCurrentTenant, selectTenant } from '../../configuration/utils/tenant-utils';
 
 jest.mock('../../../utils/storage-utils', () => ({
   getShouldShowTenantPopup: jest.fn(),
@@ -41,6 +41,7 @@ jest.mock('../../../utils/logout-utils', () => ({
 
 jest.mock('../../configuration/utils/tenant-utils', () => ({
   selectTenant: jest.fn(),
+  fetchCurrentTenant: jest.fn(),
 }));
 
 describe('Account app', () => {
@@ -52,6 +53,12 @@ describe('Account app', () => {
     },
   };
 
+  const mockConfig = {
+    multitenancy: {
+      enable_aggregation_view: true,
+    },
+  };
+
   const mockAccountInfo = {
     data: {
       roles: {
@@ -60,9 +67,12 @@ describe('Account app', () => {
     },
   };
 
+  const mockTenant = 'test1';
+
   beforeAll(() => {
     (fetchAccountInfoSafe as jest.Mock).mockResolvedValue(mockAccountInfo);
     (fetchCurrentAuthType as jest.Mock).mockResolvedValue('dummy');
+    (fetchCurrentTenant as jest.Mock).mockResolvedValue(mockTenant);
   });
 
   it('Should skip if auto swich if securitytenant in url', (done) => {
@@ -71,7 +81,7 @@ describe('Account app', () => {
     delete window.location;
     window.location = new URL('http://www.example.com?securitytenant=abc') as any;
 
-    setupTopNavButton(mockCoreStart, {} as any);
+    setupTopNavButton(mockCoreStart, mockConfig as any);
 
     process.nextTick(() => {
       expect(setShouldShowTenantPopup).toBeCalledWith(false);
@@ -83,7 +93,7 @@ describe('Account app', () => {
   it('Should switch to saved tenant when securitytenant not in url', (done) => {
     (getSavedTenant as jest.Mock).mockReturnValueOnce('tenant1');
 
-    setupTopNavButton(mockCoreStart, {} as any);
+    setupTopNavButton(mockCoreStart, mockConfig as any);
 
     process.nextTick(() => {
       expect(getSavedTenant).toBeCalledTimes(1);
@@ -98,7 +108,7 @@ describe('Account app', () => {
   it('Should show tenant selection popup when neither securitytenant in url nor saved tenant', (done) => {
     (getSavedTenant as jest.Mock).mockReturnValueOnce(null);
 
-    setupTopNavButton(mockCoreStart, {} as any);
+    setupTopNavButton(mockCoreStart, mockConfig as any);
 
     process.nextTick(() => {
       expect(getSavedTenant).toBeCalledTimes(1);

@@ -14,6 +14,7 @@
  */
 
 import { BehaviorSubject } from 'rxjs';
+import { SavedObjectsManagementColumn } from 'src/plugins/saved_objects_management/public';
 import {
   AppMountParameters,
   AppStatus,
@@ -37,13 +38,15 @@ import {
   excludeFromDisabledTransportCategories,
 } from './apps/configuration/panels/audit-logging/constants';
 import {
-  AppPluginStartDependencies,
+  SecurityPluginStartDependencies,
   ClientConfigType,
   SecurityPluginSetup,
   SecurityPluginStart,
+  SecurityPluginSetupDependencies,
 } from './types';
 import { addTenantToShareURL } from './services/shared-link';
 import { interceptError } from './utils/logout-utils';
+import { tenantColumn } from './apps/configuration/utils/tenant-utils';
 
 async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
   try {
@@ -62,12 +65,24 @@ const APP_ID_DASHBOARDS = 'dashboards';
 // OpenSearchDashboards app is for legacy url migration
 const APP_ID_OPENSEARCH_DASHBOARDS = 'kibana';
 const APP_LIST_FOR_READONLY_ROLE = [APP_ID_HOME, APP_ID_DASHBOARDS, APP_ID_OPENSEARCH_DASHBOARDS];
+const GLOBAL_TENANT_RENDERING_TEXT = 'Global';
+const PRIVATE_TENANT_RENDERING_TEXT = 'Private';
 
-export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPluginStart> {
+export class SecurityPlugin
+  implements
+    Plugin<
+      SecurityPluginSetup,
+      SecurityPluginStart,
+      SecurityPluginSetupDependencies,
+      SecurityPluginStartDependencies
+    > {
   // @ts-ignore : initializerContext not used
   constructor(private readonly initializerContext: PluginInitializerContext) {}
 
-  public async setup(core: CoreSetup): Promise<SecurityPluginSetup> {
+  public async setup(
+    core: CoreSetup,
+    deps: SecurityPluginSetupDependencies
+  ): Promise<SecurityPluginSetup> {
     const apiPermission = await hasApiPermission(core);
 
     const config = this.initializerContext.config.get<ClientConfigType>();
@@ -93,7 +108,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
           excludeFromDisabledTransportCategories(config.disabledTransportCategories.exclude);
           excludeFromDisabledRestCategories(config.disabledRestCategories.exclude);
 
-          return renderApp(coreStart, depsStart as AppPluginStartDependencies, params, config);
+          return renderApp(coreStart, depsStart as SecurityPluginStartDependencies, params, config);
         },
         category: {
           id: 'opensearch',
@@ -138,11 +153,17 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
       })
     );
 
+    if (config.multitenancy.enabled && config.multitenancy.enable_aggregation_view) {
+      deps.savedObjectsManagement.columns.register(
+        (tenantColumn as unknown) as SavedObjectsManagementColumn<string>
+      );
+    }
+
     // Return methods that should be available to other plugins
     return {};
   }
 
-  public start(core: CoreStart): SecurityPluginStart {
+  public start(core: CoreStart, deps: SecurityPluginStartDependencies): SecurityPluginStart {
     const config = this.initializerContext.config.get<ClientConfigType>();
 
     setupTopNavButton(core, config);

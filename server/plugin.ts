@@ -38,11 +38,15 @@ import {
   ISavedObjectTypeRegistry,
 } from '../../../src/core/server/saved_objects';
 import { setupIndexTemplate, migrateTenantIndices } from './multitenancy/tenant_index';
-import { IAuthenticationType } from './auth/types/authentication_type';
+import {
+  IAuthenticationType,
+  OpenSearchDashboardsAuthState,
+} from './auth/types/authentication_type';
 import { getAuthenticationHandler } from './auth/auth_handler_factory';
 import { setupMultitenantRoutes } from './multitenancy/routes';
 import { defineAuthTypeRoutes } from './routes/auth_type_routes';
 import { createMigrationOpenSearchClient } from '../../../src/core/server/saved_objects/migrations/core';
+import { SecuritySavedObjectsClientWrapper } from './saved_objects/saved_objects_wrapper';
 
 export interface SecurityPluginRequestContext {
   logger: Logger;
@@ -73,8 +77,11 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
   // @ts-ignore: property not initialzied in constructor
   private securityClient: SecurityClient;
 
+  private savedObjectClientWrapper: SecuritySavedObjectsClientWrapper;
+
   constructor(private readonly initializerContext: PluginInitializerContext) {
     this.logger = initializerContext.logger.get();
+    this.savedObjectClientWrapper = new SecuritySavedObjectsClientWrapper();
   }
 
   public async setup(core: CoreSetup) {
@@ -126,6 +133,14 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
       setupMultitenantRoutes(router, securitySessionStorageFactory, this.securityClient);
     }
 
+    if (config.multitenancy.enabled && config.multitenancy.enable_aggregation_view) {
+      core.savedObjects.addClientWrapper(
+        2,
+        'security-saved-object-client-wrapper',
+        this.savedObjectClientWrapper.wrapperFactory
+      );
+    }
+
     return {
       config$,
       securityConfigClient: esClient,
@@ -135,8 +150,13 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
   // TODO: add more logs
   public async start(core: CoreStart) {
     this.logger.debug('opendistro_security: Started');
+
     const config$ = this.initializerContext.config.create<SecurityPluginConfigType>();
     const config = await config$.pipe(first()).toPromise();
+
+    this.savedObjectClientWrapper.httpStart = core.http;
+    this.savedObjectClientWrapper.config = config;
+
     if (config.multitenancy?.enabled) {
       const globalConfig$: Observable<SharedGlobalConfig> = this.initializerContext.config.legacy
         .globalConfig$;
@@ -161,6 +181,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     }
 
     return {
+      http: core.http,
       es: core.opensearch.legacy,
     };
   }
