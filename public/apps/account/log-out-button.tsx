@@ -16,7 +16,7 @@
 import React from 'react';
 import { EuiButtonEmpty } from '@elastic/eui';
 import { HttpStart } from 'opensearch-dashboards/public';
-import { externalLogout, logout, openidLogout, samlLogout } from './utils';
+import { externalLogout, logout } from './utils';
 import { AuthType, OPENID_AUTH_LOGOUT, SAML_AUTH_LOGOUT } from '../../../common';
 import { setShouldShowTenantPopup } from '../../utils/storage-utils';
 

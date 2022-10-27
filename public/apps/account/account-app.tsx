@@ -41,7 +41,7 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
   let currAuthType = '';
   if (typeof authType === 'string') {
     currAuthType = authType;
-  } else if (typeof authType === 'object' && authType.length === 1) {
+  } else if (Array.isArray(authType) && authType.length === 1) {
     currAuthType = authType[0];
   } else {
     try {
