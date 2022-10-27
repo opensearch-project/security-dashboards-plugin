@@ -19,12 +19,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { I18nProvider } from '@osd/i18n/react';
 import { AppMountParameters, CoreStart } from '../../../../../src/core/public';
-import { AppPluginStartDependencies, ClientConfigType } from '../../types';
+import { SecurityPluginStartDependencies, ClientConfigType } from '../../types';
 import { AppRouter } from './app-router';
 
 export function renderApp(
   coreStart: CoreStart,
-  navigation: AppPluginStartDependencies,
+  navigation: SecurityPluginStartDependencies,
   params: AppMountParameters,
   config: ClientConfigType
 ) {
