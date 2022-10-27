@@ -61,9 +61,10 @@ export function AccountNavButton(props: {
             setModal(null);
             window.location.reload();
           }}
+          tenant={props.tenant!}
         />
       ),
-    [props.config, props.coreStart]
+    [props.config, props.coreStart, props.tenant]
   );
 
   // Check if the tenant modal should be shown on load
