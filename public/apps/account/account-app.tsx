@@ -20,7 +20,7 @@ import { AccountNavButton } from './account-nav-button';
 import { fetchAccountInfoSafe } from './utils';
 import { ClientConfigType } from '../../types';
 import { CUSTOM_ERROR_PAGE_URI, ERROR_MISSING_ROLE_PATH } from '../../../common';
-import { selectTenant } from '../configuration/utils/tenant-utils';
+import { fetchCurrentTenant, selectTenant } from '../configuration/utils/tenant-utils';
 import {
   getSavedTenant,
   getShouldShowTenantPopup,
@@ -44,7 +44,16 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
         coreStart.http.basePath.serverBasePath + CUSTOM_ERROR_PAGE_URI + ERROR_MISSING_ROLE_PATH;
     }
 
-    let tenant = accountInfo.user_requested_tenant;
+    let tenant: string | undefined;
+    if (config.multitenancy.enabled) {
+      try {
+        tenant = await fetchCurrentTenant(coreStart.http);
+      } catch (e) {
+        tenant = undefined;
+        console.log(e);
+      }
+    }
+
     let shouldShowTenantPopup = true;
 
     if (tenantSpecifiedInUrl() || getShouldShowTenantPopup() === false) {
@@ -67,7 +76,7 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
             window.location.reload();
           }
         }
-      } catch (e) {
+      } catch (e: any) {
         constructErrorMessageAndLog(e, `Failed to switch to ${tenant} tenant.`);
       }
     }

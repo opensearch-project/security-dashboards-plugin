@@ -14,14 +14,23 @@
  */
 
 import { NavigationPublicPluginStart } from '../../../src/plugins/navigation/public';
+import {
+  SavedObjectsManagementPluginSetup,
+  SavedObjectsManagementPluginStart,
+} from '../../../src/plugins/saved_objects_management/public';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SecurityPluginSetup {}
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SecurityPluginStart {}
 
-export interface AppPluginStartDependencies {
+export interface SecurityPluginSetupDependencies {
+  savedObjectsManagement: SavedObjectsManagementPluginSetup;
+}
+
+export interface SecurityPluginStartDependencies {
   navigation: NavigationPublicPluginStart;
+  savedObjectsManagement: SavedObjectsManagementPluginStart;
 }
 
 export interface AuthInfo {
@@ -49,6 +58,7 @@ export interface ClientConfigType {
     backend_configurable: boolean;
   };
   multitenancy: {
+    enable_aggregation_view: boolean;
     enabled: boolean;
     tenants: {
       enable_private: boolean;

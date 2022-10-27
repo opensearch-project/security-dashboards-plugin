@@ -15,6 +15,8 @@
 
 import { HttpStart } from 'opensearch-dashboards/public';
 import { map } from 'lodash';
+import React from 'react';
+import { i18n } from '@osd/i18n';
 import {
   API_ENDPOINT_TENANTS,
   API_ENDPOINT_MULTITENANCY,
@@ -36,9 +38,15 @@ import { httpDelete, httpGet, httpPost } from './request-utils';
 import { getResourceUrl } from './resource-utils';
 
 export const globalTenantName = 'global_tenant';
+export const GLOBAL_TENANT_SYMBOL = '';
+export const PRIVATE_TENANT_SYMBOL = '__user__';
+export const DEFAULT_TENANT = 'default';
+export const GLOBAL_TENANT_RENDERING_TEXT = 'Global';
+export const PRIVATE_TENANT_RENDERING_TEXT = 'Private';
+
 export const GLOBAL_USER_DICT: { [key: string]: string } = {
   Label: 'Global',
-  Value: '',
+  Value: GLOBAL_TENANT_SYMBOL,
   Description: 'Everyone can see it',
 };
 
@@ -62,10 +70,10 @@ export function transformTenantData(
 ): Tenant[] {
   // @ts-ignore
   const tenantList: Tenant[] = map<Tenant, Tenant>(rawTenantData, (v: Tenant, k?: string) => ({
-    tenant: k === globalTenantName ? GLOBAL_USER_DICT.Label : k || '',
+    tenant: k === globalTenantName ? GLOBAL_USER_DICT.Label : k || GLOBAL_TENANT_SYMBOL,
     reserved: v.reserved,
     description: k === globalTenantName ? GLOBAL_USER_DICT.Description : v.description,
-    tenantValue: k === globalTenantName ? GLOBAL_USER_DICT.Value : k || '',
+    tenantValue: k === globalTenantName ? GLOBAL_USER_DICT.Value : k || GLOBAL_TENANT_SYMBOL,
   }));
   if (isPrivateEnabled) {
     // Insert Private Tenant in List
@@ -170,3 +178,37 @@ export function transformRoleTenantPermissions(
     permissionType: getTenantPermissionType(tenantPermission.allowed_actions),
   }));
 }
+
+export function isPrivateTenant(selectedTenant: string | null) {
+  return selectedTenant !== null && selectedTenant === PRIVATE_TENANT_SYMBOL;
+}
+
+export function isRenderingPrivateTenant(selectedTenant: string | null) {
+  return selectedTenant !== null && selectedTenant?.startsWith(PRIVATE_TENANT_SYMBOL);
+}
+
+export function isGlobalTenant(selectedTenant: string | null) {
+  return selectedTenant !== null && selectedTenant === GLOBAL_TENANT_SYMBOL;
+}
+
+export const tenantColumn = {
+  id: 'tenant_column',
+  euiColumn: {
+    field: 'namespaces',
+    name: <div>Tenant</div>,
+    dataType: 'string',
+    render: (value: any[][]) => {
+      let text = value.flat()[0];
+      if (isGlobalTenant(text)) {
+        text = GLOBAL_TENANT_RENDERING_TEXT;
+      } else if (isRenderingPrivateTenant(text)) {
+        text = PRIVATE_TENANT_RENDERING_TEXT;
+      }
+      text = i18n.translate('savedObjectsManagement.objectsTable.table.columnTenantName', {
+        defaultMessage: text,
+      });
+      return <div>{text}</div>;
+    },
+  },
+  loadData: () => {},
+};
