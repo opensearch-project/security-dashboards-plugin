@@ -179,6 +179,33 @@ export function transformRoleTenantPermissions(
   }));
 }
 
+export function getNamespacesToRegister(accountInfo: any) {
+  const tenants = accountInfo.tenants || {};
+  const availableTenantNames = Object.keys(tenants!);
+  const namespacesToRegister = availableTenantNames.map((tenant) => {
+    if (tenant === globalTenantName) {
+      return {
+        id: GLOBAL_USER_DICT.Value,
+        name: GLOBAL_USER_DICT.Label,
+      };
+    } else if (tenant === accountInfo.user_name) {
+      return {
+        id: `${PRIVATE_USER_DICT.Value}${accountInfo.user_name}`,
+        name: PRIVATE_USER_DICT.Label,
+      };
+    }
+    return {
+      id: tenant,
+      name: tenant,
+    };
+  });
+  namespacesToRegister.push({
+    id: DEFAULT_TENANT,
+    name: DEFAULT_TENANT,
+  });
+  return namespacesToRegister;
+}
+
 export function isPrivateTenant(selectedTenant: string | null) {
   return selectedTenant !== null && selectedTenant === PRIVATE_TENANT_SYMBOL;
 }

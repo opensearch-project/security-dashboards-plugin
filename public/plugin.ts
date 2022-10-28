@@ -46,7 +46,7 @@ import {
 } from './types';
 import { addTenantToShareURL } from './services/shared-link';
 import { interceptError } from './utils/logout-utils';
-import { tenantColumn } from './apps/configuration/utils/tenant-utils';
+import { tenantColumn, getNamespacesToRegister } from './apps/configuration/utils/tenant-utils';
 
 async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
   try {
@@ -157,6 +157,13 @@ export class SecurityPlugin
       deps.savedObjectsManagement.columns.register(
         (tenantColumn as unknown) as SavedObjectsManagementColumn<string>
       );
+      if (!!accountInfo) {
+        const namespacesToRegister = getNamespacesToRegister(accountInfo);
+        deps.savedObjectsManagement.namespaces.registerAlias("Tenant");
+        namespacesToRegister.forEach((ns) => {
+          deps.savedObjectsManagement.namespaces.register(ns as SavedObjectsManagementNamespace);
+        });
+      }
     }
 
     // Return methods that should be available to other plugins

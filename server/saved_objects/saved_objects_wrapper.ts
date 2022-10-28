@@ -116,9 +116,14 @@ export class SecuritySavedObjectsClientWrapper {
           typeToNamespacesMap[t] = availableTenantNames;
         }
       });
-      if ('config' in typeToNamespacesMap) {
-        typeToNamespacesMap.config = [namespaceValue];
+      if (searchTypes.includes('config')) {
+        if (!options.namespaces || options.namespaces.includes(namespaceValue)) {
+          typeToNamespacesMap.config = [namespaceValue];
+        } else {
+          delete typeToNamespacesMap.config
+        }
       }
+
       options.typeToNamespacesMap = new Map(Object.entries(typeToNamespacesMap));
       options.type = '';
       options.namespaces = [];
