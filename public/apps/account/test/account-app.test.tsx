@@ -25,7 +25,6 @@ import { fetchAccountInfoSafe } from '../utils';
 import { fetchCurrentAuthType } from '../../../utils/logout-utils';
 import { fetchCurrentTenant, selectTenant } from '../../configuration/utils/tenant-utils';
 
-
 jest.mock('../../../utils/storage-utils', () => ({
   getShouldShowTenantPopup: jest.fn(),
   setShouldShowTenantPopup: jest.fn(),
