@@ -29,11 +29,7 @@ import {
 import { SecurityPluginConfigType } from '../..';
 import { SecuritySessionCookie } from '../../session/security_cookie';
 import { SecurityClient } from '../../backend/opensearch_security_client';
-import {
-  isMultitenantPath,
-  resolveTenant,
-  isValidTenant,
-} from '../../multitenancy/tenant_resolver';
+import { resolveTenant, isValidTenant } from '../../multitenancy/tenant_resolver';
 import { UnauthenticatedError } from '../../errors';
 
 export interface IAuthenticationType {
@@ -147,7 +143,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
     }
 
     // resolve tenant if necessary
-    if (this.config.multitenancy?.enabled && isMultitenantPath(request)) {
+    if (this.config.multitenancy?.enabled) {
       try {
         const tenant = await this.resolveTenant(request, cookie!, authHeaders, authInfo);
         // return 401 if no tenant available
