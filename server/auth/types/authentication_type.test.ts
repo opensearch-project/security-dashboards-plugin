@@ -60,7 +60,15 @@ describe('test tenant header', () => {
     }),
   };
   const router = jest.fn();
-  const esClient = jest.fn();
+  const esClient = {
+    asScoped: jest.fn().mockImplementation(() => {
+      return {
+        callAsCurrentUser: jest.fn().mockImplementation(() => {
+          return { username: 'dummy-username' };
+        }),
+      };
+    }),
+  };
   const coreSetup = jest.fn();
   const logger = {
     error: jest.fn(),
