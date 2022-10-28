@@ -33,6 +33,7 @@ import {
 } from '../../../session/security_cookie';
 import { SamlAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
+import { AuthType } from '../../../../common';
 
 export class SamlAuthentication extends AuthenticationType {
   public static readonly AUTH_HEADER_NAME = 'authorization';
@@ -48,7 +49,6 @@ export class SamlAuthentication extends AuthenticationType {
     logger: Logger
   ) {
     super(config, sessionStorageFactory, router, esClient, coreSetup, logger);
-    this.setupRoutes();
   }
 
   private generateNextUrl(request: OpenSearchDashboardsRequest): string {
@@ -68,7 +68,7 @@ export class SamlAuthentication extends AuthenticationType {
     });
   };
 
-  private setupRoutes(): void {
+  public async init() {
     const samlAuthRoutes = new SamlAuthRoutes(
       this.router,
       this.config,
@@ -83,7 +83,7 @@ export class SamlAuthentication extends AuthenticationType {
     return request.headers[SamlAuthentication.AUTH_HEADER_NAME] ? true : false;
   }
 
-  getAdditionalAuthHeader(request: OpenSearchDashboardsRequest): any {
+  async getAdditionalAuthHeader(request: OpenSearchDashboardsRequest): Promise<any> {
     return {};
   }
 
@@ -93,7 +93,7 @@ export class SamlAuthentication extends AuthenticationType {
       credentials: {
         authHeaderValue: request.headers[SamlAuthentication.AUTH_HEADER_NAME],
       },
-      authType: this.type,
+      authType: AuthType.SAML,
       expiryTime: Date.now() + this.config.session.ttl,
     };
   }
@@ -101,7 +101,7 @@ export class SamlAuthentication extends AuthenticationType {
   // Can be improved to check if the token is expiring.
   async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean> {
     return (
-      cookie.authType === this.type &&
+      cookie.authType === AuthType.SAML &&
       cookie.username &&
       cookie.expiryTime &&
       cookie.credentials?.authHeaderValue

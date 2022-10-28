@@ -35,6 +35,7 @@ import { UnauthenticatedError } from '../../errors';
 export interface IAuthenticationType {
   type: string;
   authHandler: AuthenticationHandler;
+  init: () => Promise<void>;
 }
 
 export type IAuthHandlerConstructor = new (
@@ -91,7 +92,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
         const additonalAuthHeader = this.getAdditionalAuthHeader(request);
         Object.assign(authHeaders, additonalAuthHeader);
         authInfo = await this.securityClient.authinfo(request, additonalAuthHeader);
-        cookie = await this.getCookie(request, authInfo);
+        cookie = this.getCookie(request, authInfo);
 
         // set tenant from cookie if exist
         const browserCookie = await this.sessionStorageFactory.asScoped(request).get();
@@ -227,17 +228,18 @@ export abstract class AuthenticationType implements IAuthenticationType {
   }
 
   // abstract functions for concrete auth types to implement
-  protected abstract requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean;
-  protected abstract getAdditionalAuthHeader(request: OpenSearchDashboardsRequest): any;
-  protected abstract getCookie(
+  public abstract requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean;
+  public abstract getAdditionalAuthHeader(request: OpenSearchDashboardsRequest): Promise<any>;
+  public abstract getCookie(
     request: OpenSearchDashboardsRequest,
     authInfo: any
   ): SecuritySessionCookie;
-  protected abstract async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean>;
+  public abstract isValidCookie(cookie: SecuritySessionCookie): Promise<boolean>;
   protected abstract handleUnauthedRequest(
     request: OpenSearchDashboardsRequest,
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
   ): IOpenSearchDashboardsResponse | AuthResult;
-  protected abstract buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any;
+  public abstract buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any;
+  public abstract init(): Promise<void>;
 }

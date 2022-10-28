@@ -42,6 +42,7 @@ export function AccountNavButton(props: {
   username: string;
   tenant?: string;
   config: ClientConfigType;
+  currAuthType: string;
 }) {
   const [isPopoverOpen, setPopoverOpen] = React.useState<boolean>(false);
   const [modal, setModal] = React.useState<React.ReactNode>(null);
@@ -136,7 +137,7 @@ export function AccountNavButton(props: {
         </>
       )}
       <LogoutButton
-        authType={props.config.auth.type}
+        authType={props.currAuthType}
         http={props.coreStart.http}
         divider={horizontalRule}
         logoutUrl={props.config.auth.logout_url}

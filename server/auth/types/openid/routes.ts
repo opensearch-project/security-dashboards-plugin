@@ -30,6 +30,14 @@ import { SecurityClient } from '../../../backend/opensearch_security_client';
 import { getBaseRedirectUrl, callTokenEndpoint, composeLogoutUrl } from './helper';
 import { validateNextUrl } from '../../../utils/next_url';
 import { getExpirationDate } from './helper';
+import {
+  AuthType,
+  OPENID_AUTH_LOGIN,
+  AUTH_GRANT_TYPE,
+  AUTH_RESPONSE_TYPE,
+  OPENID_AUTH_LOGOUT,
+  LOGIN_PAGE_URI,
+} from '../../../../common';
 
 export class OpenIdAuthRoutes {
   private static readonly NONCE_LENGTH: number = 22;
@@ -51,7 +59,7 @@ export class OpenIdAuthRoutes {
     this.sessionStorageFactory.asScoped(request).clear();
     return response.redirected({
       headers: {
-        location: `${this.core.http.basePath.serverBasePath}/auth/openid/login`,
+        location: `${this.core.http.basePath.serverBasePath}${OPENID_AUTH_LOGIN}`,
       },
     });
   }
@@ -59,7 +67,7 @@ export class OpenIdAuthRoutes {
   public setupRoutes() {
     this.router.get(
       {
-        path: `/auth/openid/login`,
+        path: OPENID_AUTH_LOGIN,
         validate: {
           query: schema.object(
             {
@@ -83,22 +91,20 @@ export class OpenIdAuthRoutes {
       },
       async (context, request, response) => {
         // implementation refers to https://github.com/hapijs/bell/blob/master/lib/oauth.js
-
         // Sign-in initialization
         if (!request.query.code) {
           const nonce = randomString(OpenIdAuthRoutes.NONCE_LENGTH);
           const query: any = {
             client_id: this.config.openid?.client_id,
-            response_type: 'code',
+            response_type: AUTH_RESPONSE_TYPE,
             redirect_uri: `${getBaseRedirectUrl(
               this.config,
               this.core,
               request
-            )}/auth/openid/login`,
+            )}${OPENID_AUTH_LOGIN}`,
             state: nonce,
             scope: this.openIdAuthConfig.scope,
           };
-
           const queryString = stringify(query);
           const location = `${this.openIdAuthConfig.authorizationEndpoint}?${queryString}`;
           const cookie: SecuritySessionCookie = {
@@ -106,6 +112,7 @@ export class OpenIdAuthRoutes {
               state: nonce,
               nextUrl: request.query.nextUrl || '/',
             },
+            authType: AuthType.OPEN_ID,
           };
           this.sessionStorageFactory.asScoped(request).set(cookie);
           return response.redirected({
@@ -116,7 +123,6 @@ export class OpenIdAuthRoutes {
         }
 
         // Authentication callback
-
         // validate state first
         let cookie;
         try {
@@ -132,13 +138,16 @@ export class OpenIdAuthRoutes {
           return this.redirectToLogin(request, response);
         }
         const nextUrl: string = cookie.oidc.nextUrl;
-
         const clientId = this.config.openid?.client_id;
         const clientSecret = this.config.openid?.client_secret;
         const query: any = {
-          grant_type: 'authorization_code',
+          grant_type: AUTH_GRANT_TYPE,
           code: request.query.code,
-          redirect_uri: `${getBaseRedirectUrl(this.config, this.core, request)}/auth/openid/login`,
+          redirect_uri: `${getBaseRedirectUrl(
+            this.config,
+            this.core,
+            request
+          )}${OPENID_AUTH_LOGIN}`,
           client_id: clientId,
           client_secret: clientSecret,
         };
@@ -162,7 +171,7 @@ export class OpenIdAuthRoutes {
               authHeaderValue: `Bearer ${tokenResponse.idToken}`,
               expires_at: getExpirationDate(tokenResponse),
             },
-            authType: 'openid',
+            authType: AuthType.OPEN_ID,
             expiryTime: Date.now() + this.config.session.ttl,
           };
           if (this.config.openid?.refresh_tokens && tokenResponse.refreshToken) {
@@ -176,7 +185,7 @@ export class OpenIdAuthRoutes {
               location: nextUrl,
             },
           });
-        } catch (error) {
+        } catch (error: any) {
           context.security_plugin.logger.error(`OpenId authentication failed: ${error}`);
           if (error.toString().toLowerCase().includes('authentication exception')) {
             return response.unauthorized();
@@ -189,7 +198,7 @@ export class OpenIdAuthRoutes {
 
     this.router.get(
       {
-        path: `/auth/logout`,
+        path: OPENID_AUTH_LOGOUT,
         validate: false,
       },
       async (context, request, response) => {
@@ -198,11 +207,11 @@ export class OpenIdAuthRoutes {
 
         // authHeaderValue is the bearer header, e.g. "Bearer <auth_token>"
         const token = cookie?.credentials.authHeaderValue.split(' ')[1]; // get auth token
+        const nextUrl = getBaseRedirectUrl(this.config, this.core, request);
         const logoutQueryParams = {
-          post_logout_redirect_uri: getBaseRedirectUrl(this.config, this.core, request),
+          post_logout_redirect_uri: `${nextUrl}`,
           id_token_hint: token,
         };
-
         const endSessionUrl = composeLogoutUrl(
           this.config.openid?.logout_url,
           this.openIdAuthConfig.endSessionEndpoint,

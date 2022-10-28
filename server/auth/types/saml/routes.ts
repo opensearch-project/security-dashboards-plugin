@@ -24,6 +24,7 @@ import { SecurityPluginConfigType } from '../../..';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
 import { CoreSetup } from '../../../../../../src/core/server';
 import { validateNextUrl } from '../../../utils/next_url';
+import { AuthType, SAML_AUTH_LOGIN, SAML_AUTH_LOGOUT } from '../../../../common';
 
 export class SamlAuthRoutes {
   constructor(
@@ -38,7 +39,7 @@ export class SamlAuthRoutes {
   public setupRoutes() {
     this.router.get(
       {
-        path: `/auth/saml/login`,
+        path: SAML_AUTH_LOGIN,
         validate: {
           query: schema.object({
             nextUrl: schema.maybe(
@@ -64,6 +65,7 @@ export class SamlAuthRoutes {
 
         try {
           const samlHeader = await this.securityClient.getSamlHeader(request);
+          // const { nextUrl = '/' } = request.query;
           const cookie: SecuritySessionCookie = {
             saml: {
               nextUrl: request.query.nextUrl,
@@ -135,6 +137,7 @@ export class SamlAuthRoutes {
             context.security_plugin.logger.error('JWT token payload not found');
           }
           const tokenPayload = JSON.parse(Buffer.from(payloadEncoded, 'base64').toString());
+
           if (tokenPayload.exp) {
             expiryTime = parseInt(tokenPayload.exp, 10) * 1000;
           }
@@ -143,7 +146,7 @@ export class SamlAuthRoutes {
             credentials: {
               authHeaderValue: credentials.authorization,
             },
-            authType: 'saml', // TODO: create constant
+            authType: AuthType.SAML, // TODO: create constant
             expiryTime,
           };
           this.sessionStorageFactory.asScoped(request).set(cookie);
@@ -211,7 +214,7 @@ export class SamlAuthRoutes {
             credentials: {
               authHeaderValue: credentials.authorization,
             },
-            authType: 'saml', // TODO: create constant
+            authType: AuthType.SAML, // TODO: create constant
             expiryTime,
           };
           this.sessionStorageFactory.asScoped(request).set(cookie);
@@ -285,7 +288,6 @@ export class SamlAuthRoutes {
                  finalUrl = "login?nextUrl=" + encodeURIComponent(nextUrl);
                  finalUrl += "&redirectHash=" + encodeURIComponent(redirectHash);
                  window.location.replace(finalUrl);
-
                 `,
         });
       }
@@ -344,7 +346,7 @@ export class SamlAuthRoutes {
 
     this.router.get(
       {
-        path: `/auth/logout`,
+        path: SAML_AUTH_LOGOUT,
         validate: false,
       },
       async (context, request, response) => {

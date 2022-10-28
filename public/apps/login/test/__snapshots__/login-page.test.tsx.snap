@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Login page renders renders with config value 1`] = `
+exports[`Login page renders renders with config value for multiauth 1`] = `
 <EuiListGroup
   className="login-wrapper"
 >
@@ -42,6 +42,7 @@ exports[`Login page renders renders with config value 1`] = `
       labelType="label"
     >
       <EuiFieldText
+        aria-label="username_input"
         data-test-subj="user-name"
         isInvalid={false}
         onChange={[Function]}
@@ -64,6 +65,7 @@ exports[`Login page renders renders with config value 1`] = `
       labelType="label"
     >
       <EuiFieldText
+        aria-label="password_input"
         data-test-subj="password"
         isInvalid={false}
         onChange={[Function]}
@@ -86,6 +88,7 @@ exports[`Login page renders renders with config value 1`] = `
       labelType="label"
     >
       <EuiButton
+        aria-label="basicauth_login_button"
         className="test-btn-style"
         data-test-subj="submit"
         fill={true}
@@ -93,17 +96,72 @@ exports[`Login page renders renders with config value 1`] = `
         size="s"
         type="submit"
       >
-        Log In
+        Log in
+      </EuiButton>
+    </EuiFormRow>
+    <EuiSpacer
+      size="xs"
+    />
+    <EuiHorizontalRule
+      margin="xl"
+      size="full"
+    />
+    <EuiSpacer
+      size="xs"
+    />
+    <EuiFormRow
+      describedByIds={Array []}
+      display="row"
+      fullWidth={false}
+      hasChildLabel={true}
+      hasEmptyLabelSpace={false}
+      labelType="label"
+    >
+      <EuiButton
+        aria-label="openid_login_button"
+        className="test-btn-style"
+        data-test-subj="submit"
+        href="/auth/openid/login"
+        iconType="http://localhost:5601/images/test.png"
+        size="s"
+        type="prime"
+      >
+        Button1
+      </EuiButton>
+    </EuiFormRow>
+    <EuiFormRow
+      describedByIds={Array []}
+      display="row"
+      fullWidth={false}
+      hasChildLabel={true}
+      hasEmptyLabelSpace={false}
+      labelType="label"
+    >
+      <EuiButton
+        aria-label="saml_login_button"
+        className="test-btn-style"
+        data-test-subj="submit"
+        href="/auth/saml/captureUrlFragment?nextUrl=%2F"
+        iconType="http://localhost:5601/images/test.png"
+        size="s"
+        type="prime"
+      >
+        Button2
       </EuiButton>
     </EuiFormRow>
   </EuiForm>
 </EuiListGroup>
 `;
 
-exports[`Login page renders renders with default value 1`] = `
+exports[`Login page renders renders with config value: string 1`] = `
 <EuiListGroup
   className="login-wrapper"
 >
+  <EuiImage
+    alt=""
+    size="fullWidth"
+    url="http://localhost:5601/images/test.png"
+  />
   <EuiSpacer
     size="s"
   />
@@ -111,7 +169,7 @@ exports[`Login page renders renders with default value 1`] = `
     size="m"
     textAlign="center"
   >
-    Please login to OpenSearch Dashboards
+    Title1
   </EuiText>
   <EuiSpacer
     size="s"
@@ -120,7 +178,7 @@ exports[`Login page renders renders with default value 1`] = `
     size="s"
     textAlign="center"
   >
-    If you have forgotten your username or password, please ask your system administrator
+    SubTitle1
   </EuiText>
   <EuiSpacer
     size="s"
@@ -137,6 +195,7 @@ exports[`Login page renders renders with default value 1`] = `
       labelType="label"
     >
       <EuiFieldText
+        aria-label="username_input"
         data-test-subj="user-name"
         isInvalid={false}
         onChange={[Function]}
@@ -159,6 +218,7 @@ exports[`Login page renders renders with default value 1`] = `
       labelType="label"
     >
       <EuiFieldText
+        aria-label="password_input"
         data-test-subj="password"
         isInvalid={false}
         onChange={[Function]}
@@ -181,6 +241,213 @@ exports[`Login page renders renders with default value 1`] = `
       labelType="label"
     >
       <EuiButton
+        aria-label="basicauth_login_button"
+        className="test-btn-style"
+        data-test-subj="submit"
+        fill={true}
+        onClick={[Function]}
+        size="s"
+        type="submit"
+      >
+        Log in
+      </EuiButton>
+    </EuiFormRow>
+  </EuiForm>
+</EuiListGroup>
+`;
+
+exports[`Login page renders renders with config value: string array 1`] = `
+<EuiListGroup
+  className="login-wrapper"
+>
+  <EuiImage
+    alt=""
+    size="fullWidth"
+    url="http://localhost:5601/images/test.png"
+  />
+  <EuiSpacer
+    size="s"
+  />
+  <EuiText
+    size="m"
+    textAlign="center"
+  >
+    Title1
+  </EuiText>
+  <EuiSpacer
+    size="s"
+  />
+  <EuiText
+    size="s"
+    textAlign="center"
+  >
+    SubTitle1
+  </EuiText>
+  <EuiSpacer
+    size="s"
+  />
+  <EuiForm
+    component="form"
+  >
+    <EuiFormRow
+      describedByIds={Array []}
+      display="row"
+      fullWidth={false}
+      hasChildLabel={true}
+      hasEmptyLabelSpace={false}
+      labelType="label"
+    >
+      <EuiFieldText
+        aria-label="username_input"
+        data-test-subj="user-name"
+        isInvalid={false}
+        onChange={[Function]}
+        placeholder="Username"
+        prepend={
+          <EuiIcon
+            type="user"
+          />
+        }
+        value=""
+      />
+    </EuiFormRow>
+    <EuiFormRow
+      describedByIds={Array []}
+      display="row"
+      fullWidth={false}
+      hasChildLabel={true}
+      hasEmptyLabelSpace={false}
+      isInvalid={false}
+      labelType="label"
+    >
+      <EuiFieldText
+        aria-label="password_input"
+        data-test-subj="password"
+        isInvalid={false}
+        onChange={[Function]}
+        placeholder="Password"
+        prepend={
+          <EuiIcon
+            type="lock"
+          />
+        }
+        type="password"
+        value=""
+      />
+    </EuiFormRow>
+    <EuiFormRow
+      describedByIds={Array []}
+      display="row"
+      fullWidth={false}
+      hasChildLabel={true}
+      hasEmptyLabelSpace={false}
+      labelType="label"
+    >
+      <EuiButton
+        aria-label="basicauth_login_button"
+        className="test-btn-style"
+        data-test-subj="submit"
+        fill={true}
+        onClick={[Function]}
+        size="s"
+        type="submit"
+      >
+        Log in
+      </EuiButton>
+    </EuiFormRow>
+  </EuiForm>
+</EuiListGroup>
+`;
+
+exports[`Login page renders renders with default value: string 1`] = `
+<EuiListGroup
+  className="login-wrapper"
+>
+  <EuiImage
+    alt=""
+    size="fullWidth"
+    url="test-file-stub"
+  />
+  <EuiSpacer
+    size="s"
+  />
+  <EuiText
+    size="m"
+    textAlign="center"
+  >
+    Log in to OpenSearch Dashboards
+  </EuiText>
+  <EuiSpacer
+    size="s"
+  />
+  <EuiText
+    size="s"
+    textAlign="center"
+  >
+    If you have forgotten your username or password, contact your system administrator.
+  </EuiText>
+  <EuiSpacer
+    size="s"
+  />
+  <EuiForm
+    component="form"
+  >
+    <EuiFormRow
+      describedByIds={Array []}
+      display="row"
+      fullWidth={false}
+      hasChildLabel={true}
+      hasEmptyLabelSpace={false}
+      labelType="label"
+    >
+      <EuiFieldText
+        aria-label="username_input"
+        data-test-subj="user-name"
+        isInvalid={false}
+        onChange={[Function]}
+        placeholder="Username"
+        prepend={
+          <EuiIcon
+            type="user"
+          />
+        }
+        value=""
+      />
+    </EuiFormRow>
+    <EuiFormRow
+      describedByIds={Array []}
+      display="row"
+      fullWidth={false}
+      hasChildLabel={true}
+      hasEmptyLabelSpace={false}
+      isInvalid={false}
+      labelType="label"
+    >
+      <EuiFieldText
+        aria-label="password_input"
+        data-test-subj="password"
+        isInvalid={false}
+        onChange={[Function]}
+        placeholder="Password"
+        prepend={
+          <EuiIcon
+            type="lock"
+          />
+        }
+        type="password"
+        value=""
+      />
+    </EuiFormRow>
+    <EuiFormRow
+      describedByIds={Array []}
+      display="row"
+      fullWidth={false}
+      hasChildLabel={true}
+      hasEmptyLabelSpace={false}
+      labelType="label"
+    >
+      <EuiButton
+        aria-label="basicauth_login_button"
         className="btn-login"
         data-test-subj="submit"
         fill={true}
@@ -188,7 +455,110 @@ exports[`Login page renders renders with default value 1`] = `
         size="s"
         type="submit"
       >
-        Log In
+        Log in
+      </EuiButton>
+    </EuiFormRow>
+  </EuiForm>
+</EuiListGroup>
+`;
+
+exports[`Login page renders renders with default value: string array 1`] = `
+<EuiListGroup
+  className="login-wrapper"
+>
+  <EuiImage
+    alt=""
+    size="fullWidth"
+    url="test-file-stub"
+  />
+  <EuiSpacer
+    size="s"
+  />
+  <EuiText
+    size="m"
+    textAlign="center"
+  >
+    Log in to OpenSearch Dashboards
+  </EuiText>
+  <EuiSpacer
+    size="s"
+  />
+  <EuiText
+    size="s"
+    textAlign="center"
+  >
+    If you have forgotten your username or password, contact your system administrator.
+  </EuiText>
+  <EuiSpacer
+    size="s"
+  />
+  <EuiForm
+    component="form"
+  >
+    <EuiFormRow
+      describedByIds={Array []}
+      display="row"
+      fullWidth={false}
+      hasChildLabel={true}
+      hasEmptyLabelSpace={false}
+      labelType="label"
+    >
+      <EuiFieldText
+        aria-label="username_input"
+        data-test-subj="user-name"
+        isInvalid={false}
+        onChange={[Function]}
+        placeholder="Username"
+        prepend={
+          <EuiIcon
+            type="user"
+          />
+        }
+        value=""
+      />
+    </EuiFormRow>
+    <EuiFormRow
+      describedByIds={Array []}
+      display="row"
+      fullWidth={false}
+      hasChildLabel={true}
+      hasEmptyLabelSpace={false}
+      isInvalid={false}
+      labelType="label"
+    >
+      <EuiFieldText
+        aria-label="password_input"
+        data-test-subj="password"
+        isInvalid={false}
+        onChange={[Function]}
+        placeholder="Password"
+        prepend={
+          <EuiIcon
+            type="lock"
+          />
+        }
+        type="password"
+        value=""
+      />
+    </EuiFormRow>
+    <EuiFormRow
+      describedByIds={Array []}
+      display="row"
+      fullWidth={false}
+      hasChildLabel={true}
+      hasEmptyLabelSpace={false}
+      labelType="label"
+    >
+      <EuiButton
+        aria-label="basicauth_login_button"
+        className="btn-login"
+        data-test-subj="submit"
+        fill={true}
+        onClick={[Function]}
+        size="s"
+        type="submit"
+      >
+        Log in
       </EuiButton>
     </EuiFormRow>
   </EuiForm>
