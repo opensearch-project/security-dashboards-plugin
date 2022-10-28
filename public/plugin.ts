@@ -159,7 +159,7 @@ export class SecurityPlugin
       );
       if (!!accountInfo) {
         const namespacesToRegister = getNamespacesToRegister(accountInfo);
-        deps.savedObjectsManagement.namespaces.registerAlias("Tenant");
+        deps.savedObjectsManagement.namespaces.registerAlias('Tenant');
         namespacesToRegister.forEach((ns) => {
           deps.savedObjectsManagement.namespaces.register(ns as SavedObjectsManagementNamespace);
         });

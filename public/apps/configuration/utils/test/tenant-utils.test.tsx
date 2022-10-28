@@ -287,30 +287,30 @@ describe('Tenant list utils', () => {
   describe('get list of namespaces to register', () => {
     it('resolves to list of namespaces with a custom tenant', () => {
       const authInfo = {
-        'user_name': 'user1',
-        'tenants': {
-          'global_tenant': true,
-          'user1_tenant': true,
-          'user1': true,
+        user_name: 'user1',
+        tenants: {
+          global_tenant: true,
+          user1_tenant: true,
+          user1: true,
         },
-      }
+      };
       const expectedNamespaces = [
         {
-          'id': GLOBAL_USER_DICT.Value,
-          'name': GLOBAL_USER_DICT.Label,
+          id: GLOBAL_USER_DICT.Value,
+          name: GLOBAL_USER_DICT.Label,
         },
         {
-          'id': 'user1_tenant',
-          'name': 'user1_tenant',
+          id: 'user1_tenant',
+          name: 'user1_tenant',
         },
         {
-          'id': `${PRIVATE_USER_DICT.Value}user1`,
-          'name': PRIVATE_USER_DICT.Label,
+          id: `${PRIVATE_USER_DICT.Value}user1`,
+          name: PRIVATE_USER_DICT.Label,
         },
         {
-          'id': 'default',
-          'name': 'default',
-        }
+          id: 'default',
+          name: 'default',
+        },
       ];
       const result = getNamespacesToRegister(authInfo);
       expect(result).toMatchObject(expectedNamespaces);
@@ -318,25 +318,25 @@ describe('Tenant list utils', () => {
 
     it('resolves to list of namespaces without a custom tenant', () => {
       const authInfo = {
-        'user_name': 'user1',
-        'tenants': {
-          'global_tenant': true,
-          'user1': true,
+        user_name: 'user1',
+        tenants: {
+          global_tenant: true,
+          user1: true,
         },
-      }
+      };
       const expectedNamespaces = [
         {
-          'id': GLOBAL_USER_DICT.Value,
-          'name': GLOBAL_USER_DICT.Label,
+          id: GLOBAL_USER_DICT.Value,
+          name: GLOBAL_USER_DICT.Label,
         },
         {
-          'id': `${PRIVATE_USER_DICT.Value}user1`,
-          'name': PRIVATE_USER_DICT.Label,
+          id: `${PRIVATE_USER_DICT.Value}user1`,
+          name: PRIVATE_USER_DICT.Label,
         },
         {
-          'id': 'default',
-          'name': 'default',
-        }
+          id: 'default',
+          name: 'default',
+        },
       ];
       const result = getNamespacesToRegister(authInfo);
       expect(result).toMatchObject(expectedNamespaces);

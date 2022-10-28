@@ -120,7 +120,7 @@ export class SecuritySavedObjectsClientWrapper {
         if (!options.namespaces || options.namespaces.includes(namespaceValue)) {
           typeToNamespacesMap.config = [namespaceValue];
         } else {
-          delete typeToNamespacesMap.config
+          delete typeToNamespacesMap.config;
         }
       }
 
