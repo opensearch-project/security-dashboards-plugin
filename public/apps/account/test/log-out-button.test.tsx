@@ -27,7 +27,9 @@ describe('Account menu - Log out button', () => {
     OpenId = 'openid',
     SAML = 'saml',
     Proxy = 'proxy',
+    Basic = 'basicauth',
   }
+
   const mockHttpStart = {
     basePath: {
       serverBasePath: '',
@@ -35,6 +37,27 @@ describe('Account menu - Log out button', () => {
   };
   const mockDivider = <></>;
   describe('renders', () => {
+    it('renders when auth type is MultiAuth: openid', () => {
+      const component = shallow(
+        <LogoutButton authType={authType.OpenId} http={mockHttpStart} divider={mockDivider} />
+      );
+      expect(component).toMatchSnapshot();
+    });
+
+    it('renders when auth type is MultiAuth: saml', () => {
+      const component = shallow(
+        <LogoutButton authType={authType.SAML} http={mockHttpStart} divider={mockDivider} />
+      );
+      expect(component).toMatchSnapshot();
+    });
+
+    it('renders when auth type is MultiAuth: basicauth', () => {
+      const component = shallow(
+        <LogoutButton authType={authType.Basic} http={mockHttpStart} divider={mockDivider} />
+      );
+      expect(component).toMatchSnapshot();
+    });
+
     it('renders when auth type is OpenId', () => {
       const component = shallow(
         <LogoutButton authType={authType.OpenId} http={mockHttpStart} divider={mockDivider} />

@@ -45,11 +45,9 @@ export class JwtAuthentication extends AuthenticationType {
   ) {
     super(config, sessionStorageFactory, router, esClient, coreSetup, logger);
     this.authHeaderName = this.config.jwt?.header.toLowerCase() || 'authorization';
-
-    this.init();
   }
 
-  private async init() {
+  public async init() {
     const routes = new JwtAuthRoutes(this.router, this.sessionStorageFactory);
     routes.setupRoutes();
   }
@@ -73,7 +71,7 @@ export class JwtAuthentication extends AuthenticationType {
     return (request.headers[this.authHeaderName] as string) || undefined;
   }
 
-  protected requestIncludesAuthInfo(
+  requestIncludesAuthInfo(
     request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
   ): boolean {
     if (request.headers[this.authHeaderName]) {
@@ -87,9 +85,9 @@ export class JwtAuthentication extends AuthenticationType {
     return false;
   }
 
-  protected getAdditionalAuthHeader(
+  async getAdditionalAuthHeader(
     request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
-  ) {
+  ): Promise<any> {
     const header: any = {};
     const token = this.getTokenFromUrlParam(request);
     if (token) {
@@ -98,7 +96,7 @@ export class JwtAuthentication extends AuthenticationType {
     return header;
   }
 
-  protected getCookie(
+  getCookie(
     request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>,
     authInfo: any
   ): SecuritySessionCookie {
