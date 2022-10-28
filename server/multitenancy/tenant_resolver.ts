@@ -82,25 +82,6 @@ export function resolveTenant(
   );
 }
 
-/**
- * Determines whether the request requires tenant info.
- * @param request opensearch-dashboards request.
- *
- * @returns true if the request requires tenant info, otherwise false.
- */
-export function isMultitenantPath(request: OpenSearchDashboardsRequest): boolean {
-  return (
-    request.url.pathname?.startsWith('/opensearch') ||
-    request.url.pathname?.startsWith('/api') ||
-    request.url.pathname?.startsWith('/app') ||
-    // short url path
-    request.url.pathname?.startsWith('/goto') ||
-    // bootstrap.js depends on tenant info to fetch opensearch-dashboards configs in tenant index
-    (request.url.pathname?.indexOf('bootstrap.js') || -1) > -1 ||
-    request.url.pathname === '/'
-  );
-}
-
 function resolve(
   username: string,
   requestedTenant: string | undefined,
