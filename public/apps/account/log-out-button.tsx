@@ -16,7 +16,9 @@
 import React from 'react';
 import { EuiButtonEmpty } from '@elastic/eui';
 import { HttpStart } from 'opensearch-dashboards/public';
-import { logout, samlLogout } from './utils';
+import { externalLogout, logout } from './utils';
+import { AuthType, OPENID_AUTH_LOGOUT, SAML_AUTH_LOGOUT } from '../../../common';
+import { setShouldShowTenantPopup } from '../../utils/storage-utils';
 
 export function LogoutButton(props: {
   authType: string;
@@ -24,7 +26,7 @@ export function LogoutButton(props: {
   divider: JSX.Element;
   logoutUrl?: string;
 }) {
-  if (props.authType === 'openid') {
+  if (props.authType === AuthType.OPEN_ID) {
     return (
       <div>
         {props.divider}
@@ -32,13 +34,13 @@ export function LogoutButton(props: {
           data-test-subj="log-out-2"
           color="danger"
           size="xs"
-          href={`${props.http.basePath.serverBasePath}/auth/logout`}
+          onClick={() => externalLogout(props.http, OPENID_AUTH_LOGOUT)}
         >
           Log out
         </EuiButtonEmpty>
       </div>
     );
-  } else if (props.authType === 'saml') {
+  } else if (props.authType === AuthType.SAML) {
     return (
       <div>
         {props.divider}
@@ -46,13 +48,14 @@ export function LogoutButton(props: {
           data-test-subj="log-out-1"
           color="danger"
           size="xs"
-          onClick={() => samlLogout(props.http)}
+          onClick={() => externalLogout(props.http, SAML_AUTH_LOGOUT)}
         >
           Log out
         </EuiButtonEmpty>
       </div>
     );
-  } else if (props.authType === 'proxy') {
+  } else if (props.authType === AuthType.PROXY) {
+    setShouldShowTenantPopup(null);
     return <div />;
   } else {
     return (

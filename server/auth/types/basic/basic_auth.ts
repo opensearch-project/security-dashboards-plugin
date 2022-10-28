@@ -28,12 +28,12 @@ import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { BasicAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
-import { LOGIN_PAGE_URI } from '../../../../common';
+import { LOGIN_PAGE_URI, ANONYMOUS_AUTH_LOGIN } from '../../../../common';
 import { composeNextUrlQueryParam } from '../../../utils/next_url';
+import { AUTH_HEADER_NAME, AuthType, OPENDISTRO_SECURITY_ANONYMOUS } from '../../../../common';
 
 export class BasicAuthentication extends AuthenticationType {
-  private static readonly AUTH_HEADER_NAME: string = 'authorization';
-  public readonly type: string = 'basicauth';
+  public readonly type: string = AuthType.BASIC;
 
   constructor(
     config: SecurityPluginConfigType,
@@ -44,11 +44,9 @@ export class BasicAuthentication extends AuthenticationType {
     logger: Logger
   ) {
     super(config, sessionStorageFactory, router, esClient, coreSetup, logger);
-
-    this.init();
   }
 
-  private async init() {
+  public async init() {
     const routes = new BasicAuthRoutes(
       this.router,
       this.config,
@@ -63,17 +61,19 @@ export class BasicAuthentication extends AuthenticationType {
   requestIncludesAuthInfo(
     request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
   ): boolean {
-    return request.headers[BasicAuthentication.AUTH_HEADER_NAME] ? true : false;
+    return request.headers[AUTH_HEADER_NAME] ? true : false;
   }
 
-  getAdditionalAuthHeader(request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>) {
+  async getAdditionalAuthHeader(
+    request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
+  ): Promise<any> {
     return {};
   }
 
   getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
     if (
       this.config.auth.anonymous_auth_enabled &&
-      authInfo.user_name === 'opendistro_security_anonymous'
+      authInfo.user_name === OPENDISTRO_SECURITY_ANONYMOUS
     ) {
       return {
         username: authInfo.user_name,
@@ -85,7 +85,7 @@ export class BasicAuthentication extends AuthenticationType {
     return {
       username: authInfo.user_name,
       credentials: {
-        authHeaderValue: request.headers[BasicAuthentication.AUTH_HEADER_NAME],
+        authHeaderValue: request.headers[AUTH_HEADER_NAME],
       },
       authType: this.type,
       expiryTime: Date.now() + this.config.session.ttl,
@@ -112,7 +112,7 @@ export class BasicAuthentication extends AuthenticationType {
         this.coreSetup.http.basePath.serverBasePath
       );
       if (this.config.auth.anonymous_auth_enabled) {
-        const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}/auth/anonymous?${nextUrlParam}`;
+        const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${ANONYMOUS_AUTH_LOGIN}?${nextUrlParam}`;
         return response.redirected({
           headers: {
             location: `${redirectLocation}`,
