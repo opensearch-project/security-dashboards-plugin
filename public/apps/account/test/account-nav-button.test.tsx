@@ -56,6 +56,7 @@ describe('Account navigation button', () => {
         username={userName}
         tenant="tenant1"
         config={config as any}
+        currAuthType={'dummy'}
       />
     );
   });
@@ -77,6 +78,7 @@ describe('Account navigation button', () => {
         username={userName}
         tenant="tenant1"
         config={config as any}
+        currAuthType={'dummy'}
       />
     );
     expect(setState).toBeCalledTimes(1);
@@ -137,6 +139,7 @@ describe('Account navigation button, multitenancy disabled', () => {
         isInternalUser={true}
         username={userName}
         config={config as any}
+        currAuthType={'dummy'}
       />
     );
     expect(setState).toBeCalledTimes(0);

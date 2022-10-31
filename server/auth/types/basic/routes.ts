@@ -22,7 +22,12 @@ import {
 import { SecurityPluginConfigType } from '../../..';
 import { User } from '../../user';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
-import { API_AUTH_LOGIN, API_AUTH_LOGOUT, LOGIN_PAGE_URI } from '../../../../common';
+import {
+  ANONYMOUS_AUTH_LOGIN,
+  API_AUTH_LOGIN,
+  API_AUTH_LOGOUT,
+  LOGIN_PAGE_URI,
+} from '../../../../common';
 import { resolveTenant } from '../../../multitenancy/tenant_resolver';
 import { encodeUriQuery } from '../../../../../../src/plugins/opensearch_dashboards_utils/common/url/encode_uri_query';
 
@@ -89,7 +94,7 @@ export class BasicAuthRoutes {
             username: request.body.username,
             password: request.body.password,
           });
-        } catch (error) {
+        } catch (error: any) {
           context.security_plugin.logger.error(`Failed authentication: ${error}`);
           return response.unauthorized({
             headers: {
@@ -124,7 +129,6 @@ export class BasicAuthRoutes {
           sessionStorage.tenant = selectTenant;
         }
         this.sessionStorageFactory.asScoped(request).set(sessionStorage);
-
         return response.ok({
           body: {
             username: user.username,
@@ -157,7 +161,7 @@ export class BasicAuthRoutes {
     // anonymous auth
     this.router.get(
       {
-        path: `/auth/anonymous`,
+        path: ANONYMOUS_AUTH_LOGIN,
         validate: false,
         options: {
           authRequired: false,

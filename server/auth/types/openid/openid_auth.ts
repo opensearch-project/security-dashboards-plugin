@@ -36,6 +36,7 @@ import { AuthenticationType } from '../authentication_type';
 import { callTokenEndpoint } from './helper';
 import { composeNextUrlQueryParam } from '../../../utils/next_url';
 import { getExpirationDate } from './helper';
+import { AuthType, OPENID_AUTH_LOGIN } from '../../../../common';
 
 export interface OpenIdAuthConfig {
   authorizationEndpoint?: string;
@@ -52,7 +53,7 @@ export interface WreckHttpsOptions {
 }
 
 export class OpenIdAuthentication extends AuthenticationType {
-  public readonly type: string = 'openid';
+  public readonly type: string = AuthType.OPEN_ID;
 
   private openIdAuthConfig: OpenIdAuthConfig;
   private authHeaderName: string;
@@ -81,11 +82,9 @@ export class OpenIdAuthentication extends AuthenticationType {
       scope = `openid ${scope}`;
     }
     this.openIdAuthConfig.scope = scope;
-
-    this.init();
   }
 
-  private async init() {
+  public async init() {
     try {
       const response = await this.wreckClient.get(this.openIdConnectUrl);
       const payload = JSON.parse(response.payload as string);
@@ -104,7 +103,7 @@ export class OpenIdAuthentication extends AuthenticationType {
         this.wreckClient
       );
       routes.setupRoutes();
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error); // TODO: log more info
       throw new Error('Failed when trying to obtain the endpoints from your IdP');
     }
@@ -140,7 +139,7 @@ export class OpenIdAuthentication extends AuthenticationType {
     return request.headers.authorization ? true : false;
   }
 
-  getAdditionalAuthHeader(request: OpenSearchDashboardsRequest): any {
+  async getAdditionalAuthHeader(request: OpenSearchDashboardsRequest): Promise<any> {
     return {};
   }
 
@@ -196,7 +195,7 @@ export class OpenIdAuthentication extends AuthenticationType {
         } else {
           return false;
         }
-      } catch (error) {
+      } catch (error: any) {
         this.logger.error(error);
         return false;
       }
@@ -219,7 +218,7 @@ export class OpenIdAuthentication extends AuthenticationType {
       );
       return response.redirected({
         headers: {
-          location: `${this.coreSetup.http.basePath.serverBasePath}/auth/openid/login?${nextUrl}`,
+          location: `${this.coreSetup.http.basePath.serverBasePath}${OPENID_AUTH_LOGIN}?${nextUrl}`,
         },
       });
     } else {
