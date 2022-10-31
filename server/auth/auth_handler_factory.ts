@@ -27,12 +27,13 @@ import {
   OpenIdAuthentication,
   ProxyAuthentication,
   SamlAuthentication,
+  MultipleAuthentication,
 } from './types';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { IAuthenticationType, IAuthHandlerConstructor } from './types/authentication_type';
 import { SecurityPluginConfigType } from '..';
 
-function createAuthentication(
+async function createAuthentication(
   ctor: IAuthHandlerConstructor,
   config: SecurityPluginConfigType,
   sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
@@ -40,41 +41,54 @@ function createAuthentication(
   esClient: ILegacyClusterClient,
   coreSetup: CoreSetup,
   logger: Logger
-): IAuthenticationType {
-  return new ctor(config, sessionStorageFactory, router, esClient, coreSetup, logger);
+): Promise<IAuthenticationType> {
+  const authHandler = new ctor(config, sessionStorageFactory, router, esClient, coreSetup, logger);
+  await authHandler.init();
+  return authHandler;
 }
 
-export function getAuthenticationHandler(
-  authType: string,
+export async function getAuthenticationHandler(
+  authType: string | string[],
   router: IRouter,
   config: SecurityPluginConfigType,
   core: CoreSetup,
   esClient: ILegacyClusterClient,
   securitySessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
   logger: Logger
-): IAuthenticationType {
+): Promise<IAuthenticationType> {
   let authHandlerType: IAuthHandlerConstructor;
-  switch (authType) {
-    case '':
-    case 'basicauth':
-      authHandlerType = BasicAuthentication;
-      break;
-    case AuthType.JWT:
-      authHandlerType = JwtAuthentication;
-      break;
-    case AuthType.OPEN_ID:
-      authHandlerType = OpenIdAuthentication;
-      break;
-    case AuthType.SAML:
-      authHandlerType = SamlAuthentication;
-      break;
-    case AuthType.PROXY:
-      authHandlerType = ProxyAuthentication;
-      break;
-    default:
-      throw new Error(`Unsupported authentication type: ${authType}`);
+  if (typeof authType === 'string' || authType.length === 1) {
+    const currType = typeof authType === 'string' ? authType : authType[0];
+    switch (currType.toLowerCase()) {
+      case '':
+      case AuthType.BASIC:
+        authHandlerType = BasicAuthentication;
+        break;
+      case AuthType.JWT:
+        authHandlerType = JwtAuthentication;
+        break;
+      case AuthType.OPEN_ID:
+        authHandlerType = OpenIdAuthentication;
+        break;
+      case AuthType.SAML:
+        authHandlerType = SamlAuthentication;
+        break;
+      case AuthType.PROXY:
+        authHandlerType = ProxyAuthentication;
+        break;
+      default:
+        throw new Error(`Unsupported authentication type: ${currType}`);
+    }
+  } else {
+    if (config.auth.multiple_auth_enabled) {
+      authHandlerType = MultipleAuthentication;
+    } else {
+      throw new Error(
+        `Multiple Authentication Mode is disabled. To enable this feature, please set up opensearch_security.auth.multiple_auth_enabled: true`
+      );
+    }
   }
-  const auth: IAuthenticationType = createAuthentication(
+  const auth: IAuthenticationType = await createAuthentication(
     authHandlerType,
     config,
     securitySessionStorageFactory,
