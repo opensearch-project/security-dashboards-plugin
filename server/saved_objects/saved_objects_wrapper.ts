@@ -108,9 +108,6 @@ export class SecuritySavedObjectsClientWrapper {
         namespaceValue = selectedTenant! + username;
       }
       if (options.namespaces !== undefined) {
-        if (options.namespaces === '_all') {
-          options.namespaces = availableTenantNames;
-        }
         const namespacesToInclude = Array.isArray(options.namespaces)
           ? options.namespaces
           : [options.namespaces];
