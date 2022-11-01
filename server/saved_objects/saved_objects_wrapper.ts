@@ -107,7 +107,7 @@ export class SecuritySavedObjectsClientWrapper {
       if (isPrivateTenant(selectedTenant!)) {
         namespaceValue = selectedTenant! + username;
       }
-      if (options.namespaces !== undefined && options.namespaces !== null) {
+      if (!!options.namespaces) {
         const namespacesToInclude = Array.isArray(options.namespaces)
           ? options.namespaces
           : [options.namespaces];
