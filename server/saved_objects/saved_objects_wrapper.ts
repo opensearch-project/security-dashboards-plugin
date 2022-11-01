@@ -107,14 +107,20 @@ export class SecuritySavedObjectsClientWrapper {
       if (isPrivateTenant(selectedTenant!)) {
         namespaceValue = selectedTenant! + username;
       }
-      if (options.namespaces && options.namespaces.length > 0) {
+      if (options.namespaces !== undefined) {
+        if (options.namespaces === '_all') {
+          options.namespaces = availableTenantNames;
+        }
+        const namespacesToInclude = Array.isArray(options.namespaces)
+          ? options.namespaces
+          : [options.namespaces];
         const typeToNamespacesMap: any = {};
         const searchTypes = Array.isArray(options.type) ? options.type : [options.type];
         searchTypes.forEach((t) => {
-          typeToNamespacesMap[t] = options.namespaces;
+          typeToNamespacesMap[t] = namespacesToInclude;
         });
         if (searchTypes.includes('config')) {
-          if (options.namespaces.includes(namespaceValue)) {
+          if (namespacesToInclude.includes(namespaceValue)) {
             typeToNamespacesMap.config = [namespaceValue];
           } else {
             delete typeToNamespacesMap.config;
