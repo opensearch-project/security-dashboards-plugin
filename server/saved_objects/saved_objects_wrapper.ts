@@ -36,14 +36,14 @@ import {
 } from 'opensearch-dashboards/server';
 import { Config } from 'packages/osd-config/target';
 import { SecurityPluginConfigType } from '..';
+import { globalTenantName } from '../../public/apps/configuration/utils/tenant-utils';
+import { OpenSearchDashboardsAuthState } from '../auth/types/authentication_type';
 import {
   DEFAULT_TENANT,
-  globalTenantName,
   GLOBAL_TENANT_SYMBOL,
   isPrivateTenant,
   PRIVATE_TENANT_SYMBOL,
-} from '../../public/apps/configuration/utils/tenant-utils';
-import { OpenSearchDashboardsAuthState } from '../auth/types/authentication_type';
+} from '../../common';
 
 export class SecuritySavedObjectsClientWrapper {
   public httpStart?: HttpServiceStart;

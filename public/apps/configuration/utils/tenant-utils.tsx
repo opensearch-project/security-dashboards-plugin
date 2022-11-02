@@ -18,31 +18,34 @@ import { map } from 'lodash';
 import React from 'react';
 import { i18n } from '@osd/i18n';
 import {
-  API_ENDPOINT_TENANTS,
   API_ENDPOINT_MULTITENANCY,
+  API_ENDPOINT_TENANTS,
   RoleViewTenantInvalidText,
+  TENANT_READ_PERMISSION,
+  TENANT_WRITE_PERMISSION,
 } from '../constants';
 import {
   DataObject,
   ObjectsMessage,
-  Tenant,
-  TenantUpdate,
-  TenantSelect,
-  RoleTenantPermissionView,
-  RoleTenantPermissionDetail,
-  TenantPermissionType,
   RoleTenantPermission,
+  RoleTenantPermissionDetail,
+  RoleTenantPermissionView,
+  Tenant,
+  TenantPermissionType,
+  TenantSelect,
+  TenantUpdate,
 } from '../types';
-import { TENANT_READ_PERMISSION, TENANT_WRITE_PERMISSION } from '../constants';
 import { httpDelete, httpGet, httpPost } from './request-utils';
 import { getResourceUrl } from './resource-utils';
+import {
+  GLOBAL_TENANT_RENDERING_TEXT,
+  GLOBAL_TENANT_SYMBOL,
+  isGlobalTenant,
+  isRenderingPrivateTenant,
+  PRIVATE_TENANT_RENDERING_TEXT,
+} from '../../../../common';
 
 export const globalTenantName = 'global_tenant';
-export const GLOBAL_TENANT_SYMBOL = '';
-export const PRIVATE_TENANT_SYMBOL = '__user__';
-export const DEFAULT_TENANT = 'default';
-export const GLOBAL_TENANT_RENDERING_TEXT = 'Global';
-export const PRIVATE_TENANT_RENDERING_TEXT = 'Private';
 
 export const GLOBAL_USER_DICT: { [key: string]: string } = {
   Label: 'Global',
@@ -177,18 +180,6 @@ export function transformRoleTenantPermissions(
     tenant_patterns: tenantPermission.tenant_patterns,
     permissionType: getTenantPermissionType(tenantPermission.allowed_actions),
   }));
-}
-
-export function isPrivateTenant(selectedTenant: string | null) {
-  return selectedTenant !== null && selectedTenant === PRIVATE_TENANT_SYMBOL;
-}
-
-export function isRenderingPrivateTenant(selectedTenant: string | null) {
-  return selectedTenant !== null && selectedTenant?.startsWith(PRIVATE_TENANT_SYMBOL);
-}
-
-export function isGlobalTenant(selectedTenant: string | null) {
-  return selectedTenant !== null && selectedTenant === GLOBAL_TENANT_SYMBOL;
 }
 
 export const tenantColumn = {

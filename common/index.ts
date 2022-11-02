@@ -42,6 +42,12 @@ export const AUTH_HEADER_NAME = 'authorization';
 export const AUTH_GRANT_TYPE = 'authorization_code';
 export const AUTH_RESPONSE_TYPE = 'code';
 
+export const GLOBAL_TENANT_SYMBOL = '';
+export const PRIVATE_TENANT_SYMBOL = '__user__';
+export const DEFAULT_TENANT = 'default';
+export const GLOBAL_TENANT_RENDERING_TEXT = 'Global';
+export const PRIVATE_TENANT_RENDERING_TEXT = 'Private';
+
 export enum AuthType {
   BASIC = 'basicauth',
   OPEN_ID = 'openid',
@@ -60,4 +66,16 @@ export function isValidResourceName(resourceName: string): boolean {
   // see: https://javascript.info/regexp-unicode
   const exp = new RegExp('[\\p{C}%]', 'u');
   return !exp.test(resourceName) && resourceName.length > 0;
+}
+
+export function isPrivateTenant(selectedTenant: string | null) {
+  return selectedTenant !== null && selectedTenant === PRIVATE_TENANT_SYMBOL;
+}
+
+export function isRenderingPrivateTenant(selectedTenant: string | null) {
+  return selectedTenant !== null && selectedTenant?.startsWith(PRIVATE_TENANT_SYMBOL);
+}
+
+export function isGlobalTenant(selectedTenant: string | null) {
+  return selectedTenant !== null && selectedTenant === GLOBAL_TENANT_SYMBOL;
 }
