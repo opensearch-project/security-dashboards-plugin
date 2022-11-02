@@ -17,10 +17,7 @@ import { isEmpty, findKey, cloneDeep } from 'lodash';
 import { OpenSearchDashboardsRequest } from '../../../../src/core/server';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { SecurityPluginConfigType } from '..';
-import {
-  GLOBAL_TENANT_SYMBOL,
-  PRIVATE_TENANT_SYMBOL,
-} from '../../public/apps/configuration/utils/tenant-utils';
+import { GLOBAL_TENANT_SYMBOL, PRIVATE_TENANT_SYMBOL } from '../../common/tenant-utils';
 
 export const PRIVATE_TENANTS: string[] = [PRIVATE_TENANT_SYMBOL, 'private'];
 export const GLOBAL_TENANTS: string[] = ['global', GLOBAL_TENANT_SYMBOL];

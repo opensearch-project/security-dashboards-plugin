@@ -31,7 +31,7 @@ import { SecuritySessionCookie } from '../../session/security_cookie';
 import { SecurityClient } from '../../backend/opensearch_security_client';
 import { resolveTenant, isValidTenant } from '../../multitenancy/tenant_resolver';
 import { UnauthenticatedError } from '../../errors';
-import { GLOBAL_TENANT_SYMBOL } from '../../../public/apps/configuration/utils/tenant-utils';
+import { GLOBAL_TENANT_SYMBOL } from '../../../common/tenant-utils';
 
 export interface IAuthenticationType {
   type: string;

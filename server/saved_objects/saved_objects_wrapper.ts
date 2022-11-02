@@ -42,7 +42,7 @@ import {
   GLOBAL_TENANT_SYMBOL,
   isPrivateTenant,
   PRIVATE_TENANT_SYMBOL,
-} from '../../public/apps/configuration/utils/tenant-utils';
+} from '../../common/tenant-utils';
 import { OpenSearchDashboardsAuthState } from '../auth/types/authentication_type';
 
 export class SecuritySavedObjectsClientWrapper {
