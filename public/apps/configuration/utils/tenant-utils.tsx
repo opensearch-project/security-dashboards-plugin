@@ -38,6 +38,7 @@ import {
 import { httpDelete, httpGet, httpPost } from './request-utils';
 import { getResourceUrl } from './resource-utils';
 import {
+  DEFAULT_TENANT,
   GLOBAL_TENANT_RENDERING_TEXT,
   GLOBAL_TENANT_SYMBOL,
   globalTenantName,
