@@ -21,4 +21,3 @@ export function plugin(initializerContext: PluginInitializerContext) {
   return new SecurityPlugin(initializerContext);
 }
 export { SecurityPluginSetup, SecurityPluginStart } from './types';
-export { tenantColumn } from './apps/configuration/utils/tenant-utils';
