@@ -47,6 +47,7 @@ export const PRIVATE_TENANT_SYMBOL = '__user__';
 export const DEFAULT_TENANT = 'default';
 export const GLOBAL_TENANT_RENDERING_TEXT = 'Global';
 export const PRIVATE_TENANT_RENDERING_TEXT = 'Private';
+export const globalTenantName = 'global_tenant';
 
 export enum AuthType {
   BASIC = 'basicauth',

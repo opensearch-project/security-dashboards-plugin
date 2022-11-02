@@ -40,12 +40,11 @@ import { getResourceUrl } from './resource-utils';
 import {
   GLOBAL_TENANT_RENDERING_TEXT,
   GLOBAL_TENANT_SYMBOL,
+  globalTenantName,
   isGlobalTenant,
   isRenderingPrivateTenant,
   PRIVATE_TENANT_RENDERING_TEXT,
 } from '../../../../common';
-
-export const globalTenantName = 'global_tenant';
 
 export const GLOBAL_USER_DICT: { [key: string]: string } = {
   Label: 'Global',

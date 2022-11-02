@@ -36,11 +36,11 @@ import {
 } from 'opensearch-dashboards/server';
 import { Config } from 'packages/osd-config/target';
 import { SecurityPluginConfigType } from '..';
-import { globalTenantName } from '../../public/apps/configuration/utils/tenant-utils';
 import { OpenSearchDashboardsAuthState } from '../auth/types/authentication_type';
 import {
   DEFAULT_TENANT,
   GLOBAL_TENANT_SYMBOL,
+  globalTenantName,
   isPrivateTenant,
   PRIVATE_TENANT_SYMBOL,
 } from '../../common';
