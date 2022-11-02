@@ -38,6 +38,7 @@ import {
 import { httpDelete, httpGet, httpPost } from './request-utils';
 import { getResourceUrl } from './resource-utils';
 import {
+  DEFAULT_TENANT,
   GLOBAL_TENANT_RENDERING_TEXT,
   GLOBAL_TENANT_SYMBOL,
   globalTenantName,
@@ -179,6 +180,33 @@ export function transformRoleTenantPermissions(
     tenant_patterns: tenantPermission.tenant_patterns,
     permissionType: getTenantPermissionType(tenantPermission.allowed_actions),
   }));
+}
+
+export function getNamespacesToRegister(accountInfo: any) {
+  const tenants = accountInfo.tenants || {};
+  const availableTenantNames = Object.keys(tenants!);
+  const namespacesToRegister = availableTenantNames.map((tenant) => {
+    if (tenant === globalTenantName) {
+      return {
+        id: GLOBAL_USER_DICT.Value,
+        name: GLOBAL_USER_DICT.Label,
+      };
+    } else if (tenant === accountInfo.user_name) {
+      return {
+        id: `${PRIVATE_USER_DICT.Value}${accountInfo.user_name}`,
+        name: PRIVATE_USER_DICT.Label,
+      };
+    }
+    return {
+      id: tenant,
+      name: tenant,
+    };
+  });
+  namespacesToRegister.push({
+    id: DEFAULT_TENANT,
+    name: DEFAULT_TENANT,
+  });
+  return namespacesToRegister;
 }
 
 export const tenantColumn = {
