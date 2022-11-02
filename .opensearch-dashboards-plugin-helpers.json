@@ -2,8 +2,8 @@
   "buildSourcePatterns": [
     "package.json",
     "yarn.lock",
-    "kibana.json",
-    "{common,lib,server,webpackShims,translations,utils,target}/**/*",
+    "opensearch_dashboards.json",
+    "{common,lib,server,webpackShims,translations,utils,public,target}/**/*",
     "!*test*"
   ]
 }
