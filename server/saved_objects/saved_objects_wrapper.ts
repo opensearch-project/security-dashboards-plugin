@@ -104,24 +104,32 @@ export class SecuritySavedObjectsClientWrapper {
           availableTenantNames.splice(index, 1);
         }
       }
-      const typeToNamespacesMap: any = {};
       if (isPrivateTenant(selectedTenant!)) {
         namespaceValue = selectedTenant! + username;
       }
-      const searchTypes = Array.isArray(options.type) ? options.type : [options.type];
-      searchTypes.forEach((t) => {
-        if ('namespaces' in options) {
-          typeToNamespacesMap[t] = options.namespaces;
-        } else {
-          typeToNamespacesMap[t] = availableTenantNames;
+      if (!!options.namespaces) {
+        const namespacesToInclude = Array.isArray(options.namespaces)
+          ? options.namespaces
+          : [options.namespaces];
+        const typeToNamespacesMap: any = {};
+        const searchTypes = Array.isArray(options.type) ? options.type : [options.type];
+        searchTypes.forEach((t) => {
+          typeToNamespacesMap[t] = namespacesToInclude;
+        });
+        if (searchTypes.includes('config')) {
+          if (namespacesToInclude.includes(namespaceValue)) {
+            typeToNamespacesMap.config = [namespaceValue];
+          } else {
+            delete typeToNamespacesMap.config;
+          }
         }
-      });
-      if ('config' in typeToNamespacesMap) {
-        typeToNamespacesMap.config = [namespaceValue];
+
+        options.typeToNamespacesMap = new Map(Object.entries(typeToNamespacesMap));
+        options.type = '';
+        options.namespaces = [];
+      } else {
+        options.namespaces = [namespaceValue];
       }
-      options.typeToNamespacesMap = new Map(Object.entries(typeToNamespacesMap));
-      options.type = '';
-      options.namespaces = [];
 
       return await wrapperOptions.client.find(options);
     };
