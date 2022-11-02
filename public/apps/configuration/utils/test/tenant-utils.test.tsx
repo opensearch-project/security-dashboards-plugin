@@ -20,7 +20,6 @@ import {
   resolveTenantName,
   RESOLVED_GLOBAL_TENANT,
   RESOLVED_PRIVATE_TENANT,
-  globalTenantName,
   formatTenantName,
   transformRoleTenantPermissionData,
   getTenantPermissionType,
@@ -32,6 +31,7 @@ import {
   TENANT_WRITE_PERMISSION,
 } from '../../constants';
 import { TenantPermissionType } from '../../types';
+import { globalTenantName } from '../../../../../common';
 
 describe('Tenant list utils', () => {
   const expectedGlobalTenantListing = {
