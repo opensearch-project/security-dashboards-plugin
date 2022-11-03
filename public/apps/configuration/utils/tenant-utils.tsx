@@ -18,31 +18,34 @@ import { map } from 'lodash';
 import React from 'react';
 import { i18n } from '@osd/i18n';
 import {
-  API_ENDPOINT_TENANTS,
   API_ENDPOINT_MULTITENANCY,
+  API_ENDPOINT_TENANTS,
   RoleViewTenantInvalidText,
+  TENANT_READ_PERMISSION,
+  TENANT_WRITE_PERMISSION,
 } from '../constants';
 import {
   DataObject,
   ObjectsMessage,
-  Tenant,
-  TenantUpdate,
-  TenantSelect,
-  RoleTenantPermissionView,
-  RoleTenantPermissionDetail,
-  TenantPermissionType,
   RoleTenantPermission,
+  RoleTenantPermissionDetail,
+  RoleTenantPermissionView,
+  Tenant,
+  TenantPermissionType,
+  TenantSelect,
+  TenantUpdate,
 } from '../types';
-import { TENANT_READ_PERMISSION, TENANT_WRITE_PERMISSION } from '../constants';
 import { httpDelete, httpGet, httpPost } from './request-utils';
 import { getResourceUrl } from './resource-utils';
-
-export const globalTenantName = 'global_tenant';
-export const GLOBAL_TENANT_SYMBOL = '';
-export const PRIVATE_TENANT_SYMBOL = '__user__';
-export const DEFAULT_TENANT = 'default';
-export const GLOBAL_TENANT_RENDERING_TEXT = 'Global';
-export const PRIVATE_TENANT_RENDERING_TEXT = 'Private';
+import {
+  DEFAULT_TENANT,
+  GLOBAL_TENANT_RENDERING_TEXT,
+  GLOBAL_TENANT_SYMBOL,
+  globalTenantName,
+  isGlobalTenant,
+  isRenderingPrivateTenant,
+  PRIVATE_TENANT_RENDERING_TEXT,
+} from '../../../../common';
 
 export const GLOBAL_USER_DICT: { [key: string]: string } = {
   Label: 'Global',
@@ -179,16 +182,31 @@ export function transformRoleTenantPermissions(
   }));
 }
 
-export function isPrivateTenant(selectedTenant: string | null) {
-  return selectedTenant !== null && selectedTenant === PRIVATE_TENANT_SYMBOL;
-}
-
-export function isRenderingPrivateTenant(selectedTenant: string | null) {
-  return selectedTenant !== null && selectedTenant?.startsWith(PRIVATE_TENANT_SYMBOL);
-}
-
-export function isGlobalTenant(selectedTenant: string | null) {
-  return selectedTenant !== null && selectedTenant === GLOBAL_TENANT_SYMBOL;
+export function getNamespacesToRegister(accountInfo: any) {
+  const tenants = accountInfo.tenants || {};
+  const availableTenantNames = Object.keys(tenants!);
+  const namespacesToRegister = availableTenantNames.map((tenant) => {
+    if (tenant === globalTenantName) {
+      return {
+        id: GLOBAL_USER_DICT.Value,
+        name: GLOBAL_USER_DICT.Label,
+      };
+    } else if (tenant === accountInfo.user_name) {
+      return {
+        id: `${PRIVATE_USER_DICT.Value}${accountInfo.user_name}`,
+        name: PRIVATE_USER_DICT.Label,
+      };
+    }
+    return {
+      id: tenant,
+      name: tenant,
+    };
+  });
+  namespacesToRegister.push({
+    id: DEFAULT_TENANT,
+    name: DEFAULT_TENANT,
+  });
+  return namespacesToRegister;
 }
 
 export const tenantColumn = {
