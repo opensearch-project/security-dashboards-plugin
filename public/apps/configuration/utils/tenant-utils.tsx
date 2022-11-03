@@ -15,30 +15,41 @@
 
 import { HttpStart } from 'opensearch-dashboards/public';
 import { map } from 'lodash';
+import React from 'react';
+import { i18n } from '@osd/i18n';
 import {
-  API_ENDPOINT_TENANTS,
   API_ENDPOINT_MULTITENANCY,
+  API_ENDPOINT_TENANTS,
   RoleViewTenantInvalidText,
+  TENANT_READ_PERMISSION,
+  TENANT_WRITE_PERMISSION,
 } from '../constants';
 import {
   DataObject,
   ObjectsMessage,
-  Tenant,
-  TenantUpdate,
-  TenantSelect,
-  RoleTenantPermissionView,
-  RoleTenantPermissionDetail,
-  TenantPermissionType,
   RoleTenantPermission,
+  RoleTenantPermissionDetail,
+  RoleTenantPermissionView,
+  Tenant,
+  TenantPermissionType,
+  TenantSelect,
+  TenantUpdate,
 } from '../types';
-import { TENANT_READ_PERMISSION, TENANT_WRITE_PERMISSION } from '../constants';
 import { httpDelete, httpGet, httpPost } from './request-utils';
 import { getResourceUrl } from './resource-utils';
+import {
+  DEFAULT_TENANT,
+  GLOBAL_TENANT_RENDERING_TEXT,
+  GLOBAL_TENANT_SYMBOL,
+  globalTenantName,
+  isGlobalTenant,
+  isRenderingPrivateTenant,
+  PRIVATE_TENANT_RENDERING_TEXT,
+} from '../../../../common';
 
-export const globalTenantName = 'global_tenant';
 export const GLOBAL_USER_DICT: { [key: string]: string } = {
   Label: 'Global',
-  Value: '',
+  Value: GLOBAL_TENANT_SYMBOL,
   Description: 'Everyone can see it',
 };
 
@@ -62,10 +73,10 @@ export function transformTenantData(
 ): Tenant[] {
   // @ts-ignore
   const tenantList: Tenant[] = map<Tenant, Tenant>(rawTenantData, (v: Tenant, k?: string) => ({
-    tenant: k === globalTenantName ? GLOBAL_USER_DICT.Label : k || '',
+    tenant: k === globalTenantName ? GLOBAL_USER_DICT.Label : k || GLOBAL_TENANT_SYMBOL,
     reserved: v.reserved,
     description: k === globalTenantName ? GLOBAL_USER_DICT.Description : v.description,
-    tenantValue: k === globalTenantName ? GLOBAL_USER_DICT.Value : k || '',
+    tenantValue: k === globalTenantName ? GLOBAL_USER_DICT.Value : k || GLOBAL_TENANT_SYMBOL,
   }));
   if (isPrivateEnabled) {
     // Insert Private Tenant in List
@@ -170,3 +181,52 @@ export function transformRoleTenantPermissions(
     permissionType: getTenantPermissionType(tenantPermission.allowed_actions),
   }));
 }
+
+export function getNamespacesToRegister(accountInfo: any) {
+  const tenants = accountInfo.tenants || {};
+  const availableTenantNames = Object.keys(tenants!);
+  const namespacesToRegister = availableTenantNames.map((tenant) => {
+    if (tenant === globalTenantName) {
+      return {
+        id: GLOBAL_USER_DICT.Value,
+        name: GLOBAL_USER_DICT.Label,
+      };
+    } else if (tenant === accountInfo.user_name) {
+      return {
+        id: `${PRIVATE_USER_DICT.Value}${accountInfo.user_name}`,
+        name: PRIVATE_USER_DICT.Label,
+      };
+    }
+    return {
+      id: tenant,
+      name: tenant,
+    };
+  });
+  namespacesToRegister.push({
+    id: DEFAULT_TENANT,
+    name: DEFAULT_TENANT,
+  });
+  return namespacesToRegister;
+}
+
+export const tenantColumn = {
+  id: 'tenant_column',
+  euiColumn: {
+    field: 'namespaces',
+    name: <div>Tenant</div>,
+    dataType: 'string',
+    render: (value: any[][]) => {
+      let text = value.flat()[0];
+      if (isGlobalTenant(text)) {
+        text = GLOBAL_TENANT_RENDERING_TEXT;
+      } else if (isRenderingPrivateTenant(text)) {
+        text = PRIVATE_TENANT_RENDERING_TEXT;
+      }
+      text = i18n.translate('savedObjectsManagement.objectsTable.table.columnTenantName', {
+        defaultMessage: text,
+      });
+      return <div>{text}</div>;
+    },
+  },
+  loadData: () => {},
+};

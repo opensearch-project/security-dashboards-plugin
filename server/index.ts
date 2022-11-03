@@ -104,6 +104,7 @@ export const configSchema = schema.object({
     show_roles: schema.boolean({ defaultValue: false }),
     enable_filter: schema.boolean({ defaultValue: false }),
     debug: schema.boolean({ defaultValue: false }),
+    enable_aggregation_view: schema.boolean({ defaultValue: false }),
     tenants: schema.object({
       enable_private: schema.boolean({ defaultValue: true }),
       enable_global: schema.boolean({ defaultValue: true }),
