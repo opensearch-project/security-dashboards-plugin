@@ -17,6 +17,27 @@ import { schema, TypeOf } from '@osd/config-schema';
 import { PluginInitializerContext, PluginConfigDescriptor } from '../../../src/core/server';
 import { SecurityPlugin } from './plugin';
 
+const validateAuthType = (value: string[]) => {
+  const supportedAuthTypes = [
+    '',
+    'basicauth',
+    'jwt',
+    'openid',
+    'saml',
+    'proxy',
+    'kerberos',
+    'proxycache',
+  ];
+
+  value.forEach((authVal) => {
+    if (!supportedAuthTypes.includes(authVal.toLowerCase())) {
+      throw new Error(
+        `Unsupported authentication type: ${authVal}. Allowed auth.type are ${supportedAuthTypes}.`
+      );
+    }
+  });
+};
+
 export const configSchema = schema.object({
   enabled: schema.boolean({ defaultValue: true }),
   allow_client_certificates: schema.boolean({ defaultValue: false }),
@@ -56,24 +77,46 @@ export const configSchema = schema.object({
     keepalive: schema.boolean({ defaultValue: true }),
   }),
   auth: schema.object({
-    type: schema.string({
-      defaultValue: '',
-      validate(value) {
-        if (
-          !['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache'].includes(
-            value
-          )
-        ) {
-          return `allowed auth.type are ['', 'basicauth', 'jwt', 'openid', 'saml', 'proxy', 'kerberos', 'proxycache']`;
-        }
-      },
-    }),
+    type: schema.oneOf(
+      [
+        schema.arrayOf(schema.string(), {
+          defaultValue: [''],
+          validate(value: string[]) {
+            if (!value || value.length === 0) {
+              return `Authentication type is not configured properly. At least one authentication type must be selected.`;
+            }
+
+            if (value.length > 1) {
+              const includeBasicAuth = value.find((element) => {
+                return element.toLowerCase() === 'basicauth';
+              });
+
+              if (!includeBasicAuth) {
+                return `Authentication type is not configured properly. basicauth is mandatory.`;
+              }
+            }
+
+            validateAuthType(value);
+          },
+        }),
+        schema.string({
+          defaultValue: '',
+          validate(value) {
+            const valArray: string[] = [];
+            valArray.push(value);
+            validateAuthType(valArray);
+          },
+        }),
+      ],
+      { defaultValue: '' }
+    ),
     anonymous_auth_enabled: schema.boolean({ defaultValue: false }),
     unauthenticated_routes: schema.arrayOf(schema.string(), {
       defaultValue: ['/api/reporting/stats'],
     }),
     forbidden_usernames: schema.arrayOf(schema.string(), { defaultValue: [] }),
     logout_url: schema.string({ defaultValue: '' }),
+    multiple_auth_enabled: schema.boolean({ defaultValue: false }),
   }),
   basicauth: schema.object({
     enabled: schema.boolean({ defaultValue: true }),
@@ -84,15 +127,15 @@ export const configSchema = schema.object({
       headers: schema.arrayOf(schema.string(), { defaultValue: [] }),
       show_for_parameter: schema.string({ defaultValue: '' }),
       valid_redirects: schema.arrayOf(schema.string(), { defaultValue: [] }),
-      button_text: schema.string({ defaultValue: 'Login with provider' }),
+      button_text: schema.string({ defaultValue: 'Log in with provider' }),
       buttonstyle: schema.string({ defaultValue: '' }),
     }),
     loadbalancer_url: schema.maybe(schema.string()),
     login: schema.object({
-      title: schema.string({ defaultValue: 'Please login to OpenSearch Dashboards' }),
+      title: schema.string({ defaultValue: 'Log in to OpenSearch Dashboards' }),
       subtitle: schema.string({
         defaultValue:
-          'If you have forgotten your username or password, please ask your system administrator',
+          'If you have forgotten your username or password, contact your system administrator.',
       }),
       showbrandimage: schema.boolean({ defaultValue: true }),
       brandimage: schema.string({ defaultValue: '' }), // TODO: update brand image
@@ -177,12 +220,36 @@ export const configSchema = schema.object({
       // the login config here is the same as old config `_security.basicauth.login`
       // Since we are now rendering login page to browser app, so move these config to browser side.
       login: schema.object({
-        title: schema.string({ defaultValue: 'Please login to OpenSearch Dashboards' }),
+        title: schema.string({ defaultValue: 'Log in to OpenSearch Dashboards' }),
         subtitle: schema.string({
           defaultValue:
-            'If you have forgotten your username or password, please ask your system administrator',
+            'If you have forgotten your username or password, contact your system administrator.',
         }),
         showbrandimage: schema.boolean({ defaultValue: true }),
+        brandimage: schema.string({ defaultValue: '' }),
+        buttonstyle: schema.string({ defaultValue: '' }),
+      }),
+    }),
+    anonymous: schema.object({
+      login: schema.object({
+        buttonname: schema.string({ defaultValue: 'Log in as anonymous' }),
+        showbrandimage: schema.boolean({ defaultValue: false }),
+        brandimage: schema.string({ defaultValue: '' }),
+        buttonstyle: schema.string({ defaultValue: '' }),
+      }),
+    }),
+    openid: schema.object({
+      login: schema.object({
+        buttonname: schema.string({ defaultValue: 'Log in with single sign-on' }),
+        showbrandimage: schema.boolean({ defaultValue: false }),
+        brandimage: schema.string({ defaultValue: '' }),
+        buttonstyle: schema.string({ defaultValue: '' }),
+      }),
+    }),
+    saml: schema.object({
+      login: schema.object({
+        buttonname: schema.string({ defaultValue: 'Log in with single sign-on' }),
+        showbrandimage: schema.boolean({ defaultValue: false }),
         brandimage: schema.string({ defaultValue: '' }),
         buttonstyle: schema.string({ defaultValue: '' }),
       }),
