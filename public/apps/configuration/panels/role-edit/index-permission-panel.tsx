@@ -119,13 +119,16 @@ export function IndexPatternRow(props: {
 }) {
   return (
     <FormRow headerText="Index" helpText="Specify index pattern using *">
-      <EuiComboBox
-        noSuggestions
-        placeholder="Search for index name or type in index pattern"
-        selectedOptions={props.value}
-        onChange={props.onChangeHandler}
-        onCreateOption={props.onCreateHandler}
-      />
+      <EuiFlexItem className={LIMIT_WIDTH_INPUT_CLASS}>
+        <EuiComboBox
+          noSuggestions
+          placeholder="Search for index name or type in index pattern"
+          selectedOptions={props.value}
+          onChange={props.onChangeHandler}
+          onCreateOption={props.onCreateHandler}
+          id="index-input-box"
+        />
+      </EuiFlexItem>
     </FormRow>
   );
 }
@@ -150,6 +153,7 @@ export function IndexPermissionRow(props: {
             options={props.permisionOptionsSet}
             selectedOptions={props.value}
             onChange={props.onChangeHandler}
+            id="roles-index-permission-box"
           />
         </EuiFlexItem>
         {/* TODO: 'Browse and select' button with a pop-up modal for selection */}

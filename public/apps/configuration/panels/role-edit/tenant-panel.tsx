@@ -91,6 +91,7 @@ function generateTenantPermissionPanels(
               onChange={onValueChangeHandler('tenantPatterns')}
               onCreateOption={onCreateOptionHandler('tenantPatterns')}
               options={permisionOptionsSet}
+              id="roles-tenant-permission-box"
             />
           </EuiFlexItem>
           <EuiFlexItem style={{ maxWidth: '170px' }}>

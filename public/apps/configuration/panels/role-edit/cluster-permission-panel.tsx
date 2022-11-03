@@ -49,6 +49,7 @@ export function ClusterPermissionPanel(props: {
                 options={optionUniverse}
                 selectedOptions={state}
                 onChange={setState}
+                id="roles-cluster-permission-box"
               />
             </EuiFlexItem>
             {/* TODO: 'Browse and select' button with a pop-up modal for selection */}
