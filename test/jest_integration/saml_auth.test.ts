@@ -302,6 +302,8 @@ describe('start OpenSearch Dashboards server', () => {
     await driver.executeScript('arguments[0].scrollIntoView(true);', radio);
     await driver.executeScript('arguments[0].click();', radio);
 
+    await new Promise(r => setTimeout(r, 500));
+
     await driver.findElement(By.xpath('//button[@data-test-subj="confirm"]')).click();
 
     await driver.wait(until.elementsLocated(By.xpath(userIconBtnXPath)), 10000);
