@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Account navigation button renders 1`] = `
-<EuiHeaderSectionItemButton>
+<EuiHeaderSectionItemButton
+  id="user-icon-btn"
+>
   <EuiPopover
     anchorPosition="downCenter"
     button={
@@ -16,7 +18,7 @@ exports[`Account navigation button renders 1`] = `
     id="actionsMenu"
     isOpen={false}
     onClick={[Function]}
-    ownFocus={false}
+    ownFocus={true}
     panelPaddingSize="s"
   >
     <EuiContextMenuPanel
@@ -63,6 +65,7 @@ exports[`Account navigation button renders 1`] = `
               key="tenant"
               label={
                 <EuiText
+                  id="tenantName"
                   size="xs"
                 >
                   tenant1
