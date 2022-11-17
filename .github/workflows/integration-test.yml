@@ -46,12 +46,12 @@ jobs:
           repository: opensearch-project/OpenSearch-Dashboards
           ref: '1.3'
           fetch-depth: 0
-      
+
       - name: Create plugins dir
         run: |
           cd ./OpenSearch-Dashboards
           mkdir -p plugins
-      
+
       - name: Checkout OpenSearch Dashboard Security plugin
         uses: actions/checkout@v2
         with:
@@ -66,30 +66,30 @@ jobs:
       #   id: osd_version
       #   run: |
       #     echo "::set-output name=osd_version::$(jq -r '.opensearchDashboards.version' ./OpenSearch-Dashboards/plugins/security-dashboards-plugin/package.json)"
-      
+
       # - name: Check OpenSearch Dashboards release tag
       #   run: |
       #     cd ./OpenSearch-Dashboards
       #     git checkout tags/${{ steps.osd_version.outputs.osd_version }} -b v${{ steps.osd_version.outputs.osd_version }}
-      
+
       - name: Get node and yarn versions
         id: versions
         run: |
           echo "::set-output name=node_version::$(cat ./OpenSearch-Dashboards/.node-version)"
           echo "::set-output name=yarn_version::$(jq -r '.engines.yarn' ./OpenSearch-Dashboards/package.json)"
-      
+
       - name: Setup node
         uses: actions/setup-node@v1
         with:
           node-version: ${{ steps.versions.outputs.node_version }}
           registry-url: 'https://registry.npmjs.org'
-      
+
       - name: Install correct yarn version for OpenSearch Dashboards
         run: |
           npm uninstall -g yarn
           echo "Installing yarn ${{ steps.versions_step.outputs.yarn_version }}"
           npm i -g yarn@${{ steps.versions.outputs.yarn_version }}
-      
+
       - name: Check OpenSearch Running
         continue-on-error: true
         run: curl -XGET https://localhost:9200 -u 'admin:admin' -k
@@ -99,7 +99,7 @@ jobs:
           cd ./OpenSearch-Dashboards
           yarn osd bootstrap
           node scripts/build_opensearch_dashboards_platform_plugins.js
-      
+
       - name: Run integration tests
         run: |
           echo "check if opensearch is ready"
