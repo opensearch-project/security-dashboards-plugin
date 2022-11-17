@@ -88,7 +88,7 @@ jobs:
         run: |
           npm uninstall -g yarn
           echo "Installing yarn ${{ steps.versions_step.outputs.yarn_version }}"
-          npm i -g yarn@${{ steps.versions.outputs.yarn_version }}
+          npm i -g yarn@${{ steps.versions.outputs.yarn_version }} --ignore-engines
 
       - name: Check OpenSearch Running
         continue-on-error: true
