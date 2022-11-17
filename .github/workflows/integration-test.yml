@@ -98,7 +98,6 @@ jobs:
         run: |
           cd ./OpenSearch-Dashboards
           yarn osd bootstrap
-          node scripts/build_opensearch_dashboards_platform_plugins.js
 
       - name: Run integration tests
         run: |
