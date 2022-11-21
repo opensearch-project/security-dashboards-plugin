@@ -29,7 +29,7 @@
     "@types/hapi__wreck": "^15.0.1",
     "saml-idp": "^1.2.1",
     "samlp": "6.0.2",
-    "selenium-webdriver": "^4.0.0-alpha.7",
+    "selenium-webdriver": "3.6.0",
     "selfsigned": "^2.0.1"
   },
   "dependencies": {
@@ -38,6 +38,7 @@
     "html-entities": "1.3.1"
   },
   "resolutions": {
-    "samlp": "6.0.2"
+    "samlp": "6.0.2",
+    "selenium-webdriver": "3.6.0"
   }
 }
