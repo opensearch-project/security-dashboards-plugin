@@ -29,7 +29,7 @@
     "@types/hapi__wreck": "^15.0.1",
     "saml-idp": "^1.2.1",
     "selenium-webdriver": "^4.0.0-alpha.7",
-    "selfsigned": "^2.0.1",
+    "selfsigned": "^2.0.1"
   },
   "dependencies": {
     "@hapi/wreck": "^15.0.2",
