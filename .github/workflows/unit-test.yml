@@ -50,8 +50,6 @@ jobs:
       - name: Bootstrap OpenSearch Dashboards
         working-directory: ./OpenSearch-Dashboards
         run: |
-          ls -latr .
-          yarn install --frozen-lockfile
           yarn osd bootstrap --oss
       - name: Run lint
         run: |
