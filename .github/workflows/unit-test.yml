@@ -51,7 +51,7 @@ jobs:
         working-directory: ./OpenSearch-Dashboards
         run: |
           ls -latr .
-          yarn install
+          yarn install --frozen-lockfile
           yarn osd bootstrap --oss
       - name: Run lint
         run: |
