@@ -48,9 +48,9 @@ jobs:
           echo "Installing yarn ${{ steps.versions_step.outputs.yarn_version }}"
           npm i -g yarn@${{ steps.versions.outputs.yarn_version }}
       - name: Bootstrap OpenSearch Dashboards
+        working-directory: ./OpenSearch-Dashboards
         run: |
-          ls -latr ./OpenSearch-Dashboards
-          cd ./OpenSearch-Dashboards
+          ls -latr .
           yarn osd bootstrap --oss
       - name: Run lint
         run: |
