@@ -22,8 +22,7 @@
     "test:jest_ui": "node ./test/run_jest_tests.js --config ./test/jest.config.ui.js"
   },
   "resolutions": {
-    "samlp": "6.0.2",
-    "selenium-webdriver": "4.4.0"
+    "samlp": "6.0.2"
   },
   "devDependencies": {
     "@elastic/eslint-import-resolver-kibana": "link:../../packages/osd-eslint-import-resolver-opensearch-dashboards", 

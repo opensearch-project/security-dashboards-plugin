@@ -49,6 +49,7 @@ jobs:
           npm i -g yarn@${{ steps.versions.outputs.yarn_version }}
       - name: Bootstrap OpenSearch Dashboards
         run: |
+          ls -latr ./OpenSearch-Dashboards
           cd ./OpenSearch-Dashboards
           yarn osd bootstrap --oss
       - name: Run lint
