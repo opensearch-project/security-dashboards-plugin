@@ -1,104 +1,120 @@
-/*
- *   Copyright OpenSearch Contributors
- *
- *   Licensed under the Apache License, Version 2.0 (the "License").
- *   You may not use this file except in compliance with the License.
- *   A copy of the License is located at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *   or in the "license" file accompanying this file. This file is distributed
- *   on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- *   express or implied. See the License for the specific language governing
- *   permissions and limitations under the License.
- */
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
-import { shallow } from 'enzyme';
-import React from 'react';
-import { AccountNavButton } from '../account-nav-button';
-import { getShouldShowTenantPopup, setShouldShowTenantPopup } from '../../../utils/storage-utils';
-
-jest.mock('../../../utils/storage-utils', () => ({
-  getShouldShowTenantPopup: jest.fn(),
-  setShouldShowTenantPopup: jest.fn(),
-}));
-
-describe('Account navigation button', () => {
-  const mockCoreStart = {
-    http: 1,
-  };
-
-  const config = {
-    multitenancy: {
-      enabled: 'true',
-      tenants: {
-        enable_private: 'true',
-        enable_global: 'true',
-      },
-    },
-    auth: {
-      type: 'dummy',
-    },
-  };
-
-  const userName = 'user1';
-
-  let component;
-  const setState = jest.fn();
-  const useStateSpy = jest.spyOn(React, 'useState');
-
-  beforeEach(() => {
-    useStateSpy.mockImplementation((init) => [init, setState]);
-    component = shallow(
-      <AccountNavButton
-        coreStart={mockCoreStart}
-        isInternalUser={true}
-        username={userName}
-        tenant="tenant1"
-        config={config as any}
+exports[`Account navigation button renders 1`] = `
+<EuiHeaderSectionItemButton
+  id="user-icon-btn"
+>
+  <EuiPopover
+    anchorPosition="downCenter"
+    button={
+      <EuiAvatar
+        name="user1"
       />
-    );
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('renders', () => {
-    expect(component).toMatchSnapshot();
-  });
-
-  it('should set modal when show popup is true', () => {
-    (getShouldShowTenantPopup as jest.Mock).mockReturnValueOnce(true);
-    shallow(
-      <AccountNavButton
-        coreStart={mockCoreStart}
-        isInternalUser={true}
-        username={userName}
-        tenant="tenant1"
-        config={config as any}
-      />
-    );
-    expect(setState).toBeCalledTimes(1);
-  });
-
-  it('should set modal when click on "View roles and identities" button', () => {
-    component.find('[data-test-subj="view-roles-and-identities"]').simulate('click');
-    expect(setState).toBeCalledTimes(1);
-  });
-
-  it('should set modal when click on "Switch tenants" button', () => {
-    component.find('[data-test-subj="switch-tenants"]').simulate('click');
-    expect(setState).toBeCalledTimes(1);
-  });
-
-  it('should set modal when click on "Reset password" button', () => {
-    component.find('[data-test-subj="reset-password"]').simulate('click');
-    expect(setState).toBeCalledTimes(1);
-  });
-
-  it('should set isPopoverOpen to true when click on Avatar in header section', () => {
-    component.find('[data-test-subj="account-popover"]').simulate('click');
-    expect(setState).toBeCalledTimes(1);
-  });
-});
+    }
+    closePopover={[Function]}
+    data-test-subj="account-popover"
+    display="inlineBlock"
+    hasArrow={true}
+    id="actionsMenu"
+    isOpen={false}
+    onClick={[Function]}
+    ownFocus={true}
+    panelPaddingSize="s"
+  >
+    <EuiContextMenuPanel
+      hasFocus={true}
+      items={Array []}
+    >
+      <div
+        style={
+          Object {
+            "maxWidth": "256px",
+          }
+        }
+      >
+        <EuiFlexGroup
+          gutterSize="s"
+        >
+          <EuiFlexItem
+            grow={null}
+          >
+            <EuiAvatar
+              name="user1"
+            />
+          </EuiFlexItem>
+          <EuiFlexItem>
+            <EuiListGroup
+              gutterSize="none"
+            >
+              <EuiListGroupItem
+                key="username"
+                label={
+                  <EuiText
+                    size="s"
+                  >
+                    <h5>
+                      user1
+                    </h5>
+                  </EuiText>
+                }
+                wrapText={true}
+              />
+            </EuiListGroup>
+            <EuiListGroupItem
+              color="subdued"
+              key="tenant"
+              label={
+                <EuiText
+                  id="tenantName"
+                  size="xs"
+                >
+                  tenant1
+                </EuiText>
+              }
+            />
+          </EuiFlexItem>
+        </EuiFlexGroup>
+        <EuiHorizontalRule
+          margin="xs"
+        />
+        <EuiButtonEmpty
+          data-test-subj="view-roles-and-identities"
+          onClick={[Function]}
+          size="xs"
+        >
+          View roles and identities
+        </EuiButtonEmpty>
+        <EuiHorizontalRule
+          margin="xs"
+        />
+        <EuiButtonEmpty
+          data-test-subj="switch-tenants"
+          onClick={[Function]}
+          size="xs"
+        >
+          Switch tenants
+        </EuiButtonEmpty>
+        <EuiHorizontalRule
+          margin="xs"
+        />
+        <EuiButtonEmpty
+          data-test-subj="reset-password"
+          onClick={[Function]}
+          size="xs"
+        >
+          Reset password
+        </EuiButtonEmpty>
+        <LogoutButton
+          authType="dummy"
+          divider={
+            <EuiHorizontalRule
+              margin="xs"
+            />
+          }
+          http={1}
+        />
+      </div>
+    </EuiContextMenuPanel>
+  </EuiPopover>
+</EuiHeaderSectionItemButton>
+`;

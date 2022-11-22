@@ -15,7 +15,7 @@
     "build": "yarn plugin-helpers build && node build_tools/rename_zip.js",
     "start": "node ../../scripts/opensearch-dashboards --dev",
     "lint:es": "node ../../scripts/eslint",
-    "lint": "yarn run lint:es",
+    "lint": "yarn run lint:es && yarn run lint:style",
     "pretest:jest_server": "node ./test/jest_integration/runIdpServer.js &",
     "test:jest_server": "node ./test/run_jest_tests.js --config ./test/jest.config.server.js",
     "test:jest_ui": "node ./test/run_jest_tests.js --config ./test/jest.config.ui.js"
