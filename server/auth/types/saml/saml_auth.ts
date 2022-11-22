@@ -66,7 +66,7 @@ export class SamlAuthentication extends AuthenticationType {
       location: `${this.coreSetup.http.basePath.serverBasePath}/auth/saml/login?nextUrl=${nextUrl}`,
       'set-cookie': clearOldVersionCookie,
     });
-  }
+  };
 
   private setupRoutes(): void {
     const samlAuthRoutes = new SamlAuthRoutes(
