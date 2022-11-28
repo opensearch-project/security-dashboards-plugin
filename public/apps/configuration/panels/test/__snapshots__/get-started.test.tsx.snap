@@ -47,7 +47,7 @@ exports[`Get started (landing page) renders when backend configuration is disabl
                   Roles are reusable collections of permissions. The default roles are a great starting point, but you might need to create custom roles that meet your exact needs.
                    
                   <ExternalLink
-                    href="https://docs-beta.opensearch.org/docs/security/access-control/users-roles/#create-roles"
+                    href="https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/#create-roles"
                   />
                 </EuiText>
                 <EuiSpacer
@@ -93,7 +93,7 @@ exports[`Get started (landing page) renders when backend configuration is disabl
                   After a user successfully authenticates, the security plugin retrieves that user’s roles. You can map roles directly to users, but you can also map them to backend roles.
                    
                   <ExternalLink
-                    href="https://docs-beta.opensearch.org/docs/security/access-control/users-roles/#map-users-to-roles"
+                    href="https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/#map-users-to-roles"
                   />
                 </EuiText>
                 <EuiSpacer
@@ -156,7 +156,7 @@ exports[`Get started (landing page) renders when backend configuration is disabl
           />
            
           <ExternalLink
-            href="https://docs-beta.opensearch.org/docs/security/audit-logs/"
+            href="https://opensearch.org/docs/latest/security-plugin/audit-logs/"
           />
         </p>
         <EuiButton
@@ -276,7 +276,7 @@ exports[`Get started (landing page) renders when backend configuration is enable
                   </EuiCode>
                   section contains any backends to fetch backend roles from. The most common example of a backend role is an LDAP group. 
                   <ExternalLink
-                    href="https://docs-beta.opensearch.org/docs/security/configuration/concepts/"
+                    href="https://opensearch.org/docs/latest/security-plugin/configuration/concepts/"
                   />
                 </EuiText>
                 <EuiSpacer
@@ -291,7 +291,7 @@ exports[`Get started (landing page) renders when backend configuration is enable
                   >
                     <ExternalLinkButton
                       fill={true}
-                      href="https://docs-beta.opensearch.org/docs/security/configuration/configuration/"
+                      href="https://opensearch.org/docs/latest/security-plugin/configuration/configuration/"
                       text="Create config.yml"
                     />
                   </EuiFlexItem>
@@ -321,7 +321,7 @@ exports[`Get started (landing page) renders when backend configuration is enable
                   Roles are reusable collections of permissions. The default roles are a great starting point, but you might need to create custom roles that meet your exact needs.
                    
                   <ExternalLink
-                    href="https://docs-beta.opensearch.org/docs/security/access-control/users-roles/#create-roles"
+                    href="https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/#create-roles"
                   />
                 </EuiText>
                 <EuiSpacer
@@ -367,7 +367,7 @@ exports[`Get started (landing page) renders when backend configuration is enable
                   After a user successfully authenticates, the security plugin retrieves that user’s roles. You can map roles directly to users, but you can also map them to backend roles.
                    
                   <ExternalLink
-                    href="https://docs-beta.opensearch.org/docs/security/access-control/users-roles/#map-users-to-roles"
+                    href="https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/#map-users-to-roles"
                   />
                 </EuiText>
                 <EuiSpacer
@@ -430,7 +430,7 @@ exports[`Get started (landing page) renders when backend configuration is enable
           />
            
           <ExternalLink
-            href="https://docs-beta.opensearch.org/docs/security/audit-logs/"
+            href="https://opensearch.org/docs/latest/security-plugin/audit-logs/"
           />
         </p>
         <EuiButton
