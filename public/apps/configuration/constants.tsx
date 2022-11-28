@@ -265,8 +265,10 @@ export const DocLinks = {
     'https://opensearch.org/docs/latest/security-plugin/configuration/configuration/#authentication',
   BackendConfigurationAuthorizationDoc:
     'https://opensearch.org/docs/latest/security-plugin/configuration/configuration/#authorization',
-  AuthenticationFlowDoc: 'https://opensearch.org/docs/latest/security-plugin/configuration/concepts/',
-  UsersAndRolesDoc: 'https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/',
+  AuthenticationFlowDoc:
+    'https://opensearch.org/docs/latest/security-plugin/configuration/concepts/',
+  UsersAndRolesDoc:
+    'https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/',
   CreateRolesDoc:
     'https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/#create-roles',
   MapUsersToRolesDoc:
