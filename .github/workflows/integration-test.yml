@@ -11,6 +11,12 @@ jobs:
     name: Run integration tests
     runs-on: ubuntu-latest
     steps:
+      - uses: browser-actions/setup-geckodriver@latest
+      - run: geckodriver --version
+
+      - uses: browser-actions/setup-firefox@latest
+      - run: firefox --version
+
       - name: Download OpenSearch Core
         run: |
           wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/2.5.0/latest/linux/x64/tar/builds/opensearch/dist/opensearch-min-2.5.0-linux-x64.tar.gz
