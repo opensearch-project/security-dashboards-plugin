@@ -78,6 +78,8 @@ runs:
       working-directory: OpenSearch-Dashboards
       shell: bash
 
-    - run: yarn osd bootstrap --oss
-      working-directory: OpenSearch-Dashboards
-      shell: bash
+    - uses: nick-fields/retry@v2
+      with:
+        timeout_minutes: 20
+        max_attempts: 2
+        command: yarn --cwd OpenSearch-Dashboards osd bootstrap --oss
