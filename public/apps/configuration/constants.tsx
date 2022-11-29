@@ -267,8 +267,7 @@ export const DocLinks = {
     'https://opensearch.org/docs/latest/security-plugin/configuration/configuration/#authorization',
   AuthenticationFlowDoc:
     'https://opensearch.org/docs/latest/security-plugin/configuration/concepts/',
-  AccessControlDoc:
-    'https://opensearch.org/docs/latest/security-plugin/access-control/index/',
+  AccessControlDoc: 'https://opensearch.org/docs/latest/security-plugin/access-control/index/',
   UsersAndRolesDoc:
     'https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/',
   CreateRolesDoc:
