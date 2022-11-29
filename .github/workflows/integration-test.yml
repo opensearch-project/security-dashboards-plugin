@@ -17,6 +17,9 @@ jobs:
       - uses: browser-actions/setup-firefox@latest
       - run: firefox --version
 
+      - name: Checkout Branch
+        uses: actions/checkout@v2
+
       - name: Download OpenSearch Core
         run: |
           wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/3.0.0/latest/linux/x64/tar/builds/opensearch/dist/opensearch-min-3.0.0-linux-x64.tar.gz
@@ -26,7 +29,6 @@ jobs:
       - name: Download OpenSearch Security Plugin
         run: wget -O opensearch-security.zip https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/3.0.0/latest/linux/x64/tar/builds/opensearch/plugins/opensearch-security-3.0.0.0.zip
         
-
       - name: Run OpenSearch with plugin
         run: |
           cat > os-ep.sh <<EOF
@@ -49,13 +51,23 @@ jobs:
           ENTRYPOINT /docker-host/os-ep.sh
           EOF
           docker run -d --network=host -i opensearch-test:latest
-
-      - uses: actions/checkout@v2
+          
+     # - name: Checkout Branch
+     #   uses: actions/checkout@v2
+     # 
+     # - name: Run OpenSearch with Security Plugin
+     #   uses: ./.github/actions/install-opensearch
+     #   with:
+     #     opensearch_version: 3.0.0
+     #     security_plugin_version: 3.0.0.0
+     #     plugin-name: opensearch-security
+     #     plugin-start-script: install_demo_configuration
+     #     plugin-zip: security-plugin.zip
 
       - id: install-dashboards
         uses: ./.github/actions/install-dashboards
         with:
-           plugin_name: security-dashboards-plugin
+          plugin_name: security-dashboards-plugin
 
       - name: Start Dashboards in background
         run: node scripts/build_opensearch_dashboards_platform_plugins.js

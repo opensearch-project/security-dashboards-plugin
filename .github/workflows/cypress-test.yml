@@ -12,92 +12,30 @@ env:
 
 jobs:
   tests:
-    name: Run aggregation view cypress test
+    name: Run Cypress tests
     runs-on: ubuntu-latest
     steps:
-      - name: Download OpenSearch Core
-        run: |
-          wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/3.0.0/latest/linux/x64/tar/builds/opensearch/dist/opensearch-min-3.0.0-linux-x64.tar.gz
-          tar -xzf opensearch-*.tar.gz
-          rm -f opensearch-*.tar.gz
-          
-      - name: Download OpenSearch Security Plugin
-        run: wget -O opensearch-security.zip https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/3.0.0/latest/linux/x64/tar/builds/opensearch/plugins/opensearch-security-3.0.0.0.zip
-        
-
-      - name: Run OpenSearch with plugin
-        run: |
-          cat > os-ep.sh <<EOF
-          yes | opensearch-plugin install file:///docker-host/security-plugin.zip
-          chmod +x plugins/opensearch-security/tools/install_demo_configuration.sh
-          yes | plugins/opensearch-security/tools/install_demo_configuration.sh
-          echo "plugins.security.unsupported.restapi.allow_securityconfig_modification: true" >> /opensearch/config/opensearch.yml
-          chown 1001:1001 -R /opensearch
-          su -c "/opensearch/bin/opensearch" -s /bin/bash opensearch
-          EOF
-          docker build -t opensearch-test:latest -f- . <<EOF
-          FROM ubuntu:latest
-          COPY --chown=1001:1001 os-ep.sh /docker-host/
-          COPY --chown=1001:1001 opensearch-security.zip /docker-host/security-plugin.zip
-          COPY --chown=1001:1001 opensearch* /opensearch/
-          RUN chmod +x /docker-host/os-ep.sh
-          RUN useradd -u 1001 -s /sbin/nologin opensearch
-          ENV PATH="/opensearch/bin:${PATH}"
-          WORKDIR /opensearch/
-          ENTRYPOINT /docker-host/os-ep.sh
-          EOF
-          docker run -d -p 9200:9200 -p 9600:9600 -i opensearch-test:latest
-
-      - name: Checkout OpenSearch Dashboard
+      - name: Checkout Branch
         uses: actions/checkout@v2
+      
+      - name: Run OpenSearch with Security Plugin
+        uses: ./.github/actions/install-opensearch
         with:
-          path: OpenSearch-Dashboards
-          repository: opensearch-project/OpenSearch-Dashboards
-          ref: 'main'
-          fetch-depth: 0
-      
-      - name: Create plugins dir
-        run: |
-          cd ./OpenSearch-Dashboards
-          mkdir -p plugins
-      
-      - name: Checkout OpenSearch Dashboard Security plugin
-        uses: actions/checkout@v2
+          opensearch_version: 3.0.0
+          security_plugin_version: 3.0.0.0
+          plugin-name: opensearch-security
+          plugin-start-script: install_demo_configuration
+          plugin-zip: security-plugin.zip
+
+      - name: Run Dashboard with Security Dashboards Plugin
+        uses: ./.github/actions/install-dashboards
         with:
-          path: OpenSearch-Dashboards/plugins/security-dashboards-plugin
-          ref: ${{ github.ref }}
+          plugin_name: security-dashboards-plugin
 
-      - name: Check OpenSearch Running
-        continue-on-error: true
-        run: curl -XGET https://localhost:9200 -u 'admin:admin' -k
-
-      - name: Get node and yarn versions
-        id: versions
-        run: |
-          echo "::set-output name=node_version::$(cat ./OpenSearch-Dashboards/.node-version)"
-          echo "::set-output name=yarn_version::$(jq -r '.engines.yarn' ./OpenSearch-Dashboards/package.json)"
-      
-      - name: Setup node
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ steps.versions.outputs.node_version }}
-          registry-url: 'https://registry.npmjs.org'
-      
-      - name: Install correct yarn version for OpenSearch Dashboards
-        run: |
-          npm uninstall -g yarn
-          echo "Installing yarn ${{ steps.versions_step.outputs.yarn_version }}"
-          npm i -g yarn@${{ steps.versions.outputs.yarn_version }}
-      
-      - name: Check OpenSearch Running
-        continue-on-error: true
-        run: curl -XGET https://localhost:9200 -u 'admin:admin' -k
-
-      - name: Bootstrap OpenSearch Dashboards
+      - name: Configure and Run OpenSearch Dashboards
         continue-on-error: false
         run: |
           cd ./OpenSearch-Dashboards
-          yarn osd bootstrap
           echo 'server.host: "0.0.0.0"' >> ./config/opensearch_dashboards.yml
           echo 'opensearch.hosts: ["https://localhost:9200"]' >> ./config/opensearch_dashboards.yml
           echo 'opensearch.ssl.verificationMode: none' >> ./config/opensearch_dashboards.yml

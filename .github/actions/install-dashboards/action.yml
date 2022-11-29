@@ -15,7 +15,6 @@ outputs:
     description: "The directory where the plugin has been configured"
     value: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
 
-
 runs:
   using: "composite"
   steps:
@@ -25,7 +24,6 @@ runs:
 
     - id: determine-plugin-directory
       run: echo "::set-output name=plugin-directory::./OpenSearch-Dashboards/plugins/${{ inputs.plugin_name }}"
-      # run: echo "plugin-directory=./OpenSearch-Dashboards/plugins/${{ inputs.plugin_name }}" >> $GITHUB_OUTPUT
       shell: bash
 
     - uses: actions/checkout@v2
@@ -42,7 +40,6 @@ runs:
     - uses: actions/checkout@v2
       with:
         path: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
-        # ref: ${{ github.ref }}
 
     - id: osd-version
       continue-on-error: true
@@ -53,7 +50,7 @@ runs:
       shell: bash
 
     - id: branch-switch-if-possible
-      continue-on-error: true # Defaults onto main if the branch switch doesn't work
+      continue-on-error: true 
       if: ${{ steps.osd-version.outputs.osd-version }}
       run: git checkout ${{ steps.osd-version.outputs.osd-version }} || git checkout ${{ steps.osd-version.outputs.osd-x-version }}x
       working-directory: ./OpenSearch-Dashboards
