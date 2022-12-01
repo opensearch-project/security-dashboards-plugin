@@ -41,6 +41,7 @@ export async function setupIndexTemplate(
     await esClient.indices.putTemplate({
       name: 'tenant_template',
       body: {
+        order: 2147483647,
         index_patterns: [
           opensearchDashboardsIndex + '_-*_*',
           opensearchDashboardsIndex + '_0*_*',
