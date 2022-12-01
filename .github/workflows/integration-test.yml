@@ -7,6 +7,7 @@ env:
   CI: 1
   OPENSEARCH_VERSION: 3.0.0
   PLUGIN_NAME: opensearch-security
+  PLUGIN_VERSION: 3.0.0.0
 
 jobs:
   tests:
@@ -21,39 +22,9 @@ jobs:
 
       - uses: browser-actions/setup-firefox@latest
       - run: firefox --version
-
-      #- name: Download OpenSearch Core
-      #  run: |
-      #    wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/3.0.0/latest/linux/x64/tar/builds/opensearch/dist/opensearch-min-3.0.0-linux-x64.tar.gz
-      #    tar -xzf opensearch-*.tar.gz
-      #    rm -f opensearch-*.tar.gz
           
       - name: Download OpenSearch Security Plugin
-        run: wget --progress=bar:force:noscroll -O opensearch-security.zip https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/3.0.0/latest/linux/x64/tar/builds/opensearch/plugins/opensearch-security-3.0.0.0.zip
-      
-      #  
-      #- name: Run OpenSearch with plugin
-      #  run: |
-      #    cat > os-ep.sh <<EOF
-      #    yes | opensearch-plugin install file:///docker-host/security-plugin.zip
-      #    chmod +x plugins/opensearch-security/tools/install_demo_configuration.sh
-      #    yes | plugins/opensearch-security/tools/install_demo_configuration.sh
-      #    echo "plugins.security.unsupported.restapi.allow_securityconfig_modification: true" >> /opensearch/config/opensearch.yml
-      #    chown 1001:1001 -R /opensearch
-      #    su -c "/opensearch/bin/opensearch" -s /bin/bash opensearch
-      #    EOF
-      #    docker build -t opensearch-test:latest -f- . <<EOF
-      #    FROM ubuntu:latest
-      #    COPY --chown=1001:1001 os-ep.sh /docker-host/
-      #    COPY --chown=1001:1001 opensearch-security.zip /docker-host/security-plugin.zip
-      #    COPY --chown=1001:1001 opensearch* /opensearch/
-      #    RUN chmod +x /docker-host/os-ep.sh
-      #    RUN useradd -u 1001 -s /sbin/nologin opensearch
-      #    ENV PATH="/opensearch/bin:${PATH}"
-      #    WORKDIR /opensearch/
-      #    ENTRYPOINT /docker-host/os-ep.sh
-      #    EOF
-      #    docker run -d --network=host -i opensearch-test:latest
+        run: wget --progress=bar:force:noscroll -O opensearch-security.zip https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.OPENSEARCH_VERSION }}/latest/linux/x64/tar/builds/opensearch/plugins/${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip
       
       - name: Create Setup Script
         if: ${{ runner.os == 'Linux' }}
@@ -71,15 +42,6 @@ jobs:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugin-name: ${{ env.PLUGIN_NAME }}
           setup-script-name: setup
-
-      #- name: Run OpenSearch with Security Plugin
-      #  uses: opensearch-project/security/.github/actions/install-opensearch
-      #  with:
-      #    opensearch_version: 3.0.0
-      #    security_plugin_version: 3.0.0.0
-      #    plugin-name: opensearch-security
-      #    plugin-start-script: install_demo_configuration
-      #    plugin-zip: security-plugin.zip
 
       - id: install-dashboards
         uses: ./.github/actions/install-dashboards

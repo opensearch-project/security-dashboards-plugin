@@ -50,7 +50,7 @@ runs:
       shell: bash
 
     - id: branch-switch-if-possible
-      continue-on-error: true 
+      continue-on-error: true # Defaults onto main if the branch switch doesn't work
       if: ${{ steps.osd-version.outputs.osd-version }}
       run: git checkout ${{ steps.osd-version.outputs.osd-version }} || git checkout ${{ steps.osd-version.outputs.osd-x-version }}x
       working-directory: ./OpenSearch-Dashboards

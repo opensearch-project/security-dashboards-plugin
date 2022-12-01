@@ -9,6 +9,9 @@ env:
   START_CMD: 'node ../scripts/opensearch_dashboards --dev --no-base-path --no-watch --opensearch_security.multitenancy.enable_aggregation_view=true'
   OPENSEARCH_SNAPSHOT_CMD: 'node ../scripts/opensearch snapshot'
   SPEC: 'cypress/integration/plugins/security-dashboards-plugin/aggregation_view.js,'
+  OPENSEARCH_VERSION: 3.0.0
+  PLUGIN_NAME: opensearch-security
+  PLUGIN_VERSION: 3.0.0.0
 
 jobs:
   tests:
@@ -18,14 +21,24 @@ jobs:
       - name: Checkout Branch
         uses: actions/checkout@v2
       
-      - name: Run OpenSearch with Security Plugin
-        uses: ./.github/actions/install-opensearch
+      - name: Download OpenSearch Security Plugin
+        run: wget --progress=bar:force:noscroll -O opensearch-security.zip https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.OPENSEARCH_VERSION }}/latest/linux/x64/tar/builds/opensearch/plugins/${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip
+      
+      - name: Create Setup Script
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          cat > setup.sh <<'EOF'
+          chmod +x  ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/plugins/${{ env.PLUGIN_NAME }}/tools/install_demo_configuration.sh 
+          /bin/bash -c "yes | ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/plugins/${{ env.PLUGIN_NAME }}/tools/install_demo_configuration.sh"
+          EOF
+
+      - name: Run Opensearch with A Single Plugin
+        #uses: opensearch-project/security/.github/actions/start-opensearch-with-one-plugin@main
+        uses: RyanL1997/security/.github/actions/start-opensearch-with-one-plugin@security-reusable-action
         with:
-          opensearch_version: 3.0.0
-          security_plugin_version: 3.0.0.0
-          plugin-name: opensearch-security
-          plugin-start-script: install_demo_configuration
-          plugin-zip: security-plugin.zip
+          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
+          plugin-name: ${{ env.PLUGIN_NAME }}
+          setup-script-name: setup
 
       - name: Run Dashboard with Security Dashboards Plugin
         uses: ./.github/actions/install-dashboards
