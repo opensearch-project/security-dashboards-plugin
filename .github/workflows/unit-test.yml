@@ -3,7 +3,7 @@ name: Unit Tests
 on: [push, pull_request]
 
 jobs:
-  tests:
+  unit-tests:
     name: Run unit tests
     runs-on: ubuntu-latest
 
@@ -48,8 +48,8 @@ jobs:
           echo "Installing yarn ${{ steps.versions_step.outputs.yarn_version }}"
           npm i -g yarn@${{ steps.versions.outputs.yarn_version }}
       - name: Bootstrap OpenSearch Dashboards
+        working-directory: ./OpenSearch-Dashboards
         run: |
-          cd ./OpenSearch-Dashboards
           yarn osd bootstrap --oss
       - name: Run lint
         run: |
