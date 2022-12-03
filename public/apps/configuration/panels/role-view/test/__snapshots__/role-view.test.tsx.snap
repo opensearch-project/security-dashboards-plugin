@@ -168,7 +168,7 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
                     You can map two types of users: users and backend roles. A user can have its own backend role and host for an external authentication and authorization. A backend role directly maps to roles through an external authentication system.
                      
                     <ExternalLink
-                      href="https://docs-beta.opensearch.org/docs/security/access-control/users-roles/#map-users-to-roles"
+                      href="https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/#map-users-to-roles"
                     />
                   </EuiText>
                 </EuiPageContentHeaderSection>
@@ -364,7 +364,7 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
                   You can map two types of users: users and backend roles. A user can have its own backend role and host for an external authentication and authorization. A backend role directly maps to roles through an external authentication system.
                    
                   <ExternalLink
-                    href="https://docs-beta.opensearch.org/docs/security/access-control/users-roles/#map-users-to-roles"
+                    href="https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/#map-users-to-roles"
                   />
                 </EuiText>
               </EuiPageContentHeaderSection>
@@ -551,7 +551,7 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
                     You can map two types of users: users and backend roles. A user can have its own backend role and host for an external authentication and authorization. A backend role directly maps to roles through an external authentication system.
                      
                     <ExternalLink
-                      href="https://docs-beta.opensearch.org/docs/security/access-control/users-roles/#map-users-to-roles"
+                      href="https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/#map-users-to-roles"
                     />
                   </EuiText>
                 </EuiPageContentHeaderSection>
