@@ -100,7 +100,7 @@ export function ExternalIdentitiesPanel(props: {
     <PanelWithHeader
       headerText="Backend roles"
       headerSubText="Use a backend role to directly map to roles through an external authentication system."
-      helpLink={DocLinks.CreateUsersDoc}
+      helpLink={DocLinks.AccessControlDoc}
     >
       {panel}
       <EuiSpacer />
