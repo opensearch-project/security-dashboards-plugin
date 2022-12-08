@@ -13,6 +13,8 @@
  *   permissions and limitations under the License.
  */
 
+import { MAX_INTEGER } from '../../../common';
+
 describe('Tenant index template', () => {
   const mockOpenSearchClient = {
     indices: {
@@ -22,7 +24,7 @@ describe('Tenant index template', () => {
     },
   };
 
-  const order = 2147483647;
+  const order = MAX_INTEGER;
 
   it('put template', () => {
     const result = mockOpenSearchClient.indices.putTemplate({
