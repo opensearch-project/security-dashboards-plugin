@@ -29,6 +29,8 @@ export const API_AUTH_LOGOUT = '/auth/logout';
 
 export const ERROR_MISSING_ROLE_PATH = '/missing-role';
 
+export const MAX_INTEGER = 2147483647;
+
 export enum AuthType {
   BASIC = 'basicauth',
   OPEN_ID = 'openid',

@@ -30,6 +30,7 @@ import { createIndexMap } from '../../../../src/core/server/saved_objects/migrat
 import { mergeTypes } from '../../../../src/core/server/saved_objects/migrations/kibana/kibana_migrator';
 // import { MigrationLogger } from '../../../../src/core/server/saved_objects/migrations/core/migration_logger';
 import { SecurityClient } from '../backend/opendistro_security_client';
+import { MAX_INTEGER } from '../../common';
 
 export async function setupIndexTemplate(
   esClient: ILegacyClusterClient,
@@ -42,6 +43,8 @@ export async function setupIndexTemplate(
     await esClient.callAsInternalUser('indices.putTemplate', {
       name: 'tenant_template',
       body: {
+        // Setting order to the max value to avoid being overridden by custom templates.
+        order: MAX_INTEGER,
         index_patterns: [
           kibanaIndex + '_-*_*',
           kibanaIndex + '_0*_*',
