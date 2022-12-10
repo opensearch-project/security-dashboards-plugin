@@ -260,41 +260,44 @@ export const RoleViewTenantInvalidText = 'N/A';
 // External Links
 export const DocLinks = {
   BackendConfigurationDoc:
-    'https://docs-beta.opensearch.org/docs/security/configuration/configuration/',
+    'https://opensearch.org/docs/latest/security-plugin/configuration/configuration/',
   BackendConfigurationAuthenticationDoc:
-    'https://docs-beta.opensearch.org/docs/security/configuration/configuration/#authentication',
+    'https://opensearch.org/docs/latest/security-plugin/configuration/configuration/#authentication',
   BackendConfigurationAuthorizationDoc:
-    'https://docs-beta.opensearch.org/docs/security/configuration/configuration/#authorization',
-  AuthenticationFlowDoc: 'https://docs-beta.opensearch.org/docs/security/configuration/concepts/',
-  UsersAndRolesDoc: 'https://docs-beta.opensearch.org/docs/security/access-control/users-roles/',
+    'https://opensearch.org/docs/latest/security-plugin/configuration/configuration/#authorization',
+  AuthenticationFlowDoc:
+    'https://opensearch.org/docs/latest/security-plugin/configuration/concepts/',
+  AccessControlDoc: 'https://opensearch.org/docs/latest/security-plugin/access-control/index/',
+  UsersAndRolesDoc:
+    'https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/',
   CreateRolesDoc:
-    'https://docs-beta.opensearch.org/docs/security/access-control/users-roles/#create-roles',
+    'https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/#create-roles',
   MapUsersToRolesDoc:
-    'https://docs-beta.opensearch.org/docs/security/access-control/users-roles/#map-users-to-roles',
+    'https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/#map-users-to-roles',
   CreateUsersDoc:
-    'https://docs-beta.opensearch.org/docs/security/access-control/users-roles/#create-users',
+    'https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/#create-users',
   AuditLogsDoc: translateMessage(
     'audit.logs.docLink',
-    'https://docs-beta.opensearch.org/docs/security/audit-logs/'
+    'https://opensearch.org/docs/latest/security-plugin/audit-logs/'
   ),
   AuditLogsStorageDoc: translateMessage(
     'audit.logs.storageDocLink',
-    'https://docs-beta.opensearch.org/docs/security/audit-logs/storage-types/'
+    'https://opensearch.org/docs/latest/security-plugin/audit-logs/storage-types/'
   ),
   PermissionsDoc:
-    'https://docs-beta.opensearch.org/docs/security/access-control/default-action-groups/',
+    'https://opensearch.org/docs/latest/security-plugin/access-control/default-action-groups/',
   ClusterPermissionsDoc:
-    'https://docs-beta.opensearch.org/docs/security/access-control/default-action-groups/#cluster-level',
+    'https://opensearch.org/docs/latest/security-plugin/access-control/default-action-groups/#cluster-level',
   IndexPermissionsDoc:
-    'https://docs-beta.opensearch.org/docs/security/access-control/default-action-groups/#index-level',
+    'https://opensearch.org/docs/latest/security-plugin/access-control/default-action-groups/#index-level',
   DocumentLevelSecurityDoc:
-    'https://docs-beta.opensearch.org/docs/security/access-control/document-level-security/',
+    'https://opensearch.org/docs/latest/security-plugin/access-control/document-level-security/',
   TenantPermissionsDoc:
-    'https://docs-beta.opensearch.org/docs/security/access-control/multi-tenancy/',
+    'https://opensearch.org/docs/latest/security-plugin/multi-tenancy/multi-tenancy-config',
   AttributeBasedSecurityDoc:
-    'https://docs-beta.opensearch.org/docs/security/access-control/document-level-security/#attribute-based-security',
+    'https://opensearch.org/docs/latest/security-plugin/access-control/document-level-security/#attribute-based-security',
   BackendRoleDoc:
-    'https://docs-beta.opensearch.org/docs/security/access-control/users-roles/#map-users-to-roles',
+    'https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/#map-users-to-roles',
 };
 
 export enum ToolTipContent {
