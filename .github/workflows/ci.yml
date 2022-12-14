@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+      - opendistro-1.*
   push:
     branches:
       - main
