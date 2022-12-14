@@ -18,11 +18,17 @@ jobs:
         #os: [ ubuntu-latest , windows-latest ]
         os: [ windows-latest ]
         #os: [ ubuntu-latest ]
+        jdk: [11] #17
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout Branch
         uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.jdk }}
 
       - uses: browser-actions/setup-geckodriver@latest
       - run: geckodriver --version
