@@ -29,7 +29,7 @@ jobs:
 
       - uses: browser-actions/setup-firefox@latest
       - run: firefox --version
-          
+
       - name: Download OpenSearch Security Plugin on Linux
         if: ${{ runner.os == 'Linux' }}
         run: wget --progress=bar:force:noscroll -O opensearch-security.zip https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.OPENSEARCH_VERSION }}/6708/linux/x64/tar/builds/opensearch/plugins/${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip
@@ -60,7 +60,12 @@ jobs:
           Set-Content .\setup.bat -Value "powershell.exe -noexit -command `"echo 'y' | .\opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT\plugins\${{ env.PLUGIN_NAME }}\tools\install_demo_configuration.bat`""
           Get-Content .\setup.bat
 
-      #TODO: Translate ln:53 to pwsh command and add to Windows Setup ^
+      - name: Run Opensearch with A Single Plugin
+        uses: opensearch-project/security/.github/actions/start-opensearch-with-one-plugin@main
+        with:
+          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
+          plugin-name: ${{ env.PLUGIN_NAME }}
+          setup-script-name: setup
 
       - name: Run Opensearch with A Single Plugin
         uses: opensearch-project/security/.github/actions/start-opensearch-with-one-plugin@main
@@ -75,7 +80,6 @@ jobs:
           plugin_name: security-dashboards-plugin
 
       - name: Start Dashboards in background on Linux
-        if: ${{ runner.os == 'Linux' }}
         run: node scripts/build_opensearch_dashboards_platform_plugins.js
         working-directory: ${{ steps.install-dashboards.outputs.dashboards-directory }}
 
