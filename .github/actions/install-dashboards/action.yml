@@ -14,6 +14,7 @@ outputs:
   plugin-directory:
     description: "The directory where the plugin has been configured"
     value: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
+  
 
 runs:
   using: "composite"
@@ -33,28 +34,53 @@ runs:
         ref: 'main'
         fetch-depth: 0
 
-    - run: mkdir -p plugins
+    - name: Setup plugin directory for Linux
+      if: ${{ runner.os == 'Linux' }}
+      run: mkdir -p plugins
       working-directory: OpenSearch-Dashboards
       shell: bash
+
+    - name: Setup plugin directory for Windows
+      if: ${{ runner.os == 'Windows' }}
+      run: mkdir -p plugins
+      working-directory: OpenSearch-Dashboards
+      shell: pwsh
 
     - uses: actions/checkout@v2
       with:
         path: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
 
-    - id: osd-version
+    - id: osd-version-linux
+      if: ${{ runner.os == 'Linux' }}
       continue-on-error: true
       run: |
-        echo "::set-output name=osd-version::$(cat package.json | jq '.opensearchDashboards.version' | cut -c 2-4)"
+        echo "::set-output name=osd-version-linux::$(cat package.json | jq '.opensearchDashboards.version' | cut -c 2-4)"
         echo "::set-output name=osd-x-version::$(cat package.json | jq '.opensearchDashboards.version' | cut -c 2-3)"
       working-directory: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
       shell: bash
 
-    - id: branch-switch-if-possible
+    - id: osd-version-windows
+      if: ${{ runner.os == 'Windows' }}
+      continue-on-error: true
+      run: |
+        echo "::set-output name=osd-version-linux::$(cat package.json | jq '.opensearchDashboards.version' | cut -c 2-4)"
+        echo "::set-output name=osd-x-version::$(cat package.json | jq '.opensearchDashboards.version' | cut -c 2-3)"
+      working-directory: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
+      shell: pwsh
+
+    - id: branch-switch-if-possible-linux
       continue-on-error: true # Defaults onto main if the branch switch doesn't work
-      if: ${{ steps.osd-version.outputs.osd-version }}
-      run: git checkout ${{ steps.osd-version.outputs.osd-version }} || git checkout ${{ steps.osd-version.outputs.osd-x-version }}x
+      if: ${{ runner.os == 'Linux' && steps.osd-version-linux.outputs.osd-version-linux }}
+      run: git checkout ${{ steps.osd-version-linux.outputs.osd-version }} || git checkout ${{ steps.osd-version-linux.outputs.osd-x-version }}x
       working-directory: ./OpenSearch-Dashboards
       shell: bash
+    
+    - id: branch-switch-if-possible-windows
+      continue-on-error: true # Defaults onto main if the branch switch doesn't work
+      if: ${{ runner.os == 'Windows' && steps.osd-version-linux.outputs.osd-version-windows }}
+      run: git checkout ${{ steps.osd-version-windows.outputs.osd-version }} || git checkout ${{ steps.osd-version-windows.outputs.osd-x-version }}x
+      working-directory: ./OpenSearch-Dashboards
+      shell: pwsh
 
     - id: tool-versions
       run: |
@@ -68,14 +94,26 @@ runs:
         node-version: ${{ steps.tool-versions.outputs.node_version }}
         registry-url: 'https://registry.npmjs.org'
 
-    - run: |
+    - name: Setup Opensearch Dashboards on Linux
+      if: ${{ runner.os == 'Linux' }}
+      run: |
         npm uninstall -g yarn
         echo "Installing yarn ${{ steps.tool-versions.outputs.yarn_version }}"
         npm i -g yarn@${{ steps.tool-versions.outputs.yarn_version }}
       working-directory: OpenSearch-Dashboards
       shell: bash
 
-    - uses: nick-fields/retry@v2
+    - name: Setup Opensearch Dashboards on Windows
+      if: ${{ runner.os == 'Windows' }}
+      run: |
+        npm uninstall -g yarn
+        echo "Installing yarn ${{ steps.tool-versions.outputs.yarn_version }}"
+        npm i -g yarn@${{ steps.tool-versions.outputs.yarn_version }}
+      working-directory: OpenSearch-Dashboards
+      shell: pwsh
+
+    - name: Bootstrap the OpenSearch Dashboard
+      uses: nick-fields/retry@v2
       with:
         timeout_minutes: 20
         max_attempts: 2
