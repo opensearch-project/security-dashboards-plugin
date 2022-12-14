@@ -27,8 +27,12 @@ jobs:
       - uses: browser-actions/setup-geckodriver@latest
       - run: geckodriver --version
 
-      - uses: browser-actions/setup-firefox@latest
-      - run: firefox --version
+      # Browser-action version does not work on Windows
+      - name: Set up Firefox browser
+        uses: abhi1693/setup-browser@latest
+        with:
+          browser: firefox
+          version: latest
 
       - name: Download OpenSearch Security Plugin on Linux
         if: ${{ runner.os == 'Linux' }}
