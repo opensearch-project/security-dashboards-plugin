@@ -36,6 +36,7 @@ describe('start OpenSearch Dashboards server', () => {
   const skipWelcomeBtnXPath = '//button[@data-test-subj="skipWelcomeScreen"]';
   const tenantNameLabelXPath = '//*[@id="tenantName"]';
   const pageTitleXPath = '//*[@id="osdOverviewPageHeader__title"]';
+  const tenantSwitchBtnXPath = '//button[@data-test-subj="switch-tenants"]';
   // Browser Settings
   const browser = 'firefox';
   const options = new Options().headless();
@@ -327,11 +328,42 @@ describe('start OpenSearch Dashboards server', () => {
     await driver.wait(until.elementsLocated(By.xpath(tenantNameLabelXPath)), 10000);
 
     const tenantName = await driver.findElement(By.xpath(tenantNameLabelXPath)).getText();
+    const localStorageItem = await driver.executeScript(
+      `return window.localStorage.getItem("opendistro::security::tenant::saved")`
+    );
 
+    // Retry previous steps one more time if the webdriver doens't reload as expected
+    if (tenantName === 'Private' && localStorageItem === '""') {
+      await driver.wait(until.elementsLocated(By.xpath(tenantSwitchBtnXPath)), 10000);
+      await driver.findElement(By.xpath(tenantSwitchBtnXPath)).click();
+
+      await driver.executeScript('arguments[0].scrollIntoView(true);', radio);
+      await driver.executeScript('arguments[0].click();', radio);
+      await driver.wait(until.elementIsSelected(radio));
+
+      await driver.findElement(By.xpath('//button[@data-test-subj="confirm"]')).click();
+
+      await driver.wait(until.elementsLocated(By.xpath(userIconBtnXPath)), 10000);
+      await driver.findElement(By.xpath(userIconBtnXPath)).click();
+      await driver.findElement(By.xpath('//*[@data-test-subj="log-out-1"]')).click();
+
+      await driver.wait(until.elementsLocated(By.xpath(signInBtnXPath)), 10000);
+      await driver.findElement(By.xpath(signInBtnXPath)).click();
+
+      await driver.wait(until.elementsLocated(By.xpath(userIconBtnXPath)), 10000);
+      await driver.findElement(By.xpath(userIconBtnXPath)).click();
+      await driver.wait(until.elementsLocated(By.xpath(tenantNameLabelXPath)), 10000);
+
+      const newtenantName = await driver.findElement(By.xpath(tenantNameLabelXPath)).getText();
+      expect(newtenantName).toEqual('Global');
+    } else {
+      expect(localStorageItem).toEqual('""');
+      expect(tenantName).toEqual('Global');
+    }
     await driver.manage().deleteAllCookies();
     await driver.quit();
 
-    expect(tenantName).toEqual('Global');
+    expect(localStorageItem).toEqual('""');
   });
 });
 
