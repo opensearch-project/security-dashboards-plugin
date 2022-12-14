@@ -67,13 +67,6 @@ jobs:
           plugin-name: ${{ env.PLUGIN_NAME }}
           setup-script-name: setup
 
-      - name: Run Opensearch with A Single Plugin
-        uses: opensearch-project/security/.github/actions/start-opensearch-with-one-plugin@main
-        with:
-          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
-          plugin-name: ${{ env.PLUGIN_NAME }}
-          setup-script-name: setup
-
       - id: install-dashboards
         uses: ./.github/actions/install-dashboards
         with:
