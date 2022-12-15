@@ -88,6 +88,8 @@ runs:
         npm uninstall -g yarn
         echo "Installing yarn ${{ steps.tool-versions.outputs.yarn_version }}"
         npm i -g yarn@${{ steps.tool-versions.outputs.yarn_version }}
+        yarn cache clean
+        yarn add sha.js
       working-directory: OpenSearch-Dashboards
       shell: bash
 
@@ -97,6 +99,8 @@ runs:
         npm uninstall -g yarn
         echo "Installing yarn ${{ steps.tool-versions.outputs.yarn_version }}"
         npm i -g yarn@${{ steps.tool-versions.outputs.yarn_version }}
+        yarn cache clean
+        yarn add sha.js
       working-directory: OpenSearch-Dashboards
       shell: pwsh
 
