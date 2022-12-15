@@ -33,8 +33,16 @@ jobs:
       - uses: browser-actions/setup-geckodriver@latest
       - run: geckodriver --version
 
+      - name: Set up Firefox browser for Linux
+        if: ${{ runner.os == 'Linux' }}
+        uses: browser-actions/setup-firefox@latest
+        with:
+          browser: firefox
+          version: latest
+
       # Browser-action version does not work on Windows
-      - name: Set up Firefox browser
+      - name: Set up Firefox browser for Windows
+        if: ${{ runner.os == 'Windows' }}
         uses: abhi1693/setup-browser@main
         with:
           browser: firefox
