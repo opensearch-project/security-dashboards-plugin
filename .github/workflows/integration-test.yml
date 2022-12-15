@@ -43,7 +43,7 @@ jobs:
       # Browser-action version does not work on Windows
       - name: Set up Firefox browser for Windows
         if: ${{ runner.os == 'Windows' }}
-        uses: abhi1693/setup-browser@main
+        uses: RyanL1997/setup-browser@main
         with:
           browser: firefox
           version: latest
