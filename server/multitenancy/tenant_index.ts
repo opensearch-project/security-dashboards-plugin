@@ -29,6 +29,7 @@ import {
 import { createIndexMap } from '../../../../src/core/server/saved_objects/migrations/core/build_index_map';
 import { mergeTypes } from '../../../../src/core/server/saved_objects/migrations/opensearch_dashboards/opensearch_dashboards_migrator';
 import { SecurityClient } from '../backend/opensearch_security_client';
+import { MAX_INTEGER } from '../../common';
 
 export async function setupIndexTemplate(
   esClient: OpenSearchClient,
@@ -41,6 +42,8 @@ export async function setupIndexTemplate(
     await esClient.indices.putTemplate({
       name: 'tenant_template',
       body: {
+        // Setting order to the max value to avoid being overridden by custom templates.
+        order: MAX_INTEGER,
         index_patterns: [
           opensearchDashboardsIndex + '_-*_*',
           opensearchDashboardsIndex + '_0*_*',
