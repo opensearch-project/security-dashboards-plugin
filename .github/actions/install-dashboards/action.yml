@@ -34,18 +34,6 @@ runs:
         ref: 'main'
         fetch-depth: 0
 
-    - name: Setup plugin directory for Linux
-      if: ${{ runner.os == 'Linux' }}
-      run: mkdir -p plugins
-      working-directory: OpenSearch-Dashboards
-      shell: bash
-
-    - name: Setup plugin directory for Windows
-      if: ${{ runner.os == 'Windows' }}
-      run: mkdir -p plugins
-      working-directory: OpenSearch-Dashboards
-      shell: pwsh
-
     - uses: actions/checkout@v2
       with:
         path: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
