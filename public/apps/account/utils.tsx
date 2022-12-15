@@ -38,7 +38,6 @@ export async function logout(http: HttpStart, logoutUrl?: string): Promise<void>
     logoutUrl || `${http.basePath.serverBasePath}/app/login?nextUrl=${nextUrl}`;
 }
 
-
 export async function updateNewPassword(
   http: HttpStart,
   newPassword: string,
