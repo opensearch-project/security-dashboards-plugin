@@ -17,7 +17,7 @@
     "lint:es": "node ../../scripts/eslint",
     "lint:style": "node ../../scripts/stylelint",
     "lint": "yarn run lint:es && yarn run lint:style",
-    "pretest:jest_server": "node ./test/jest_integration/runIdpServer.js &",
+    "pretest:jest_server": "node ./test/jest_integration/runIdpServer.js",
     "test:jest_server": "node ./test/run_jest_tests.js --config ./test/jest.config.server.js",
     "test:jest_ui": "node ./test/run_jest_tests.js --config ./test/jest.config.ui.js"
   },
