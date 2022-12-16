@@ -70,6 +70,7 @@ jobs:
         run: |
           New-Item .\setup.bat -type file
           Set-Content .\setup.bat -Value "powershell.exe .\opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT\plugins\${{ env.PLUGIN_NAME }}\tools\install_demo_configuration.bat -y"
+          Add-Content -Path .\setup.bat -Value "echo plugins.security.unsupported.restapi.allow_securityconfig_modification: true >> .\opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT\config\opensearch.yml"
           Get-Content .\setup.bat
 
       - name: Run Opensearch with A Single Plugin
@@ -78,6 +79,10 @@ jobs:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugin-name: ${{ env.PLUGIN_NAME }}
           setup-script-name: setup
+
+      - name: Show Opensearch.yml
+        if: ${{ runner.os == 'Windows' }}
+        run: Get-Content .\opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT\config\opensearch.yml
 
       - id: install-dashboards
         uses: ./.github/actions/install-dashboards
