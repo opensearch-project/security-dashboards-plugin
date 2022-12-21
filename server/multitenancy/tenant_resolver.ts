@@ -79,7 +79,7 @@ export function resolveTenant(
   );
 }
 
-function resolve(
+export function resolve(
   username: string,
   requestedTenant: string | undefined,
   preferredTenants: string[] | undefined,
@@ -144,7 +144,7 @@ function resolve(
   }
 
   /**
-   * fall back to the first tenant in the available tenants
+   * Fall back to the first tenant in the available tenants
    * Under the condition of enabling multitenancy, if the user has disabled both 'Global' and 'Private' tenants:
    * it will remove the default global tenant key for custom tenant.
    */
@@ -153,7 +153,6 @@ function resolve(
     availableTenantsClone.hasOwnProperty(globalTenantName)
   ) {
     delete availableTenantsClone[globalTenantName];
-    return findKey(availableTenantsClone, () => true);
   }
   return findKey(availableTenantsClone, () => true);
 }
