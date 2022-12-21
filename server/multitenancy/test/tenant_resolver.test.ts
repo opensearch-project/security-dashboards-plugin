@@ -27,7 +27,7 @@ describe("Resolve tenants when multitenancy is enabled and both 'Global' and 'Pr
     );
   }
 
-  it('Resolve tenants list for admin user', () => {
+  it('Resolve tenant with custom tenants, Global and Private disabled', () => {
     const adminConfig = {
       username: 'admin',
       requestedTenant: 'admin_tenant',
@@ -41,7 +41,7 @@ describe("Resolve tenants when multitenancy is enabled and both 'Global' and 'Pr
     expect(adminResult).toEqual('admin_tenant');
   });
 
-  it('Resolve tenants list for non-admin user', () => {
+  it('Resolve tenant without custom tenants, Global and Private disabled', () => {
     const nonadminConfig = {
       username: 'testuser',
       requestedTenant: undefined,
