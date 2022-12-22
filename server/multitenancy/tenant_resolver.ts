@@ -17,7 +17,7 @@ import { isEmpty, findKey, cloneDeep } from 'lodash';
 import { OpenSearchDashboardsRequest } from '../../../../src/core/server';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { SecurityPluginConfigType } from '..';
-import { GLOBAL_TENANT_SYMBOL, PRIVATE_TENANT_SYMBOL } from '../../common';
+import { GLOBAL_TENANT_SYMBOL, PRIVATE_TENANT_SYMBOL, globalTenantName } from '../../common';
 
 export const PRIVATE_TENANTS: string[] = [PRIVATE_TENANT_SYMBOL, 'private'];
 export const GLOBAL_TENANTS: string[] = ['global', GLOBAL_TENANT_SYMBOL];
@@ -79,7 +79,7 @@ export function resolveTenant(
   );
 }
 
-function resolve(
+export function resolve(
   username: string,
   requestedTenant: string | undefined,
   preferredTenants: string[] | undefined,
@@ -143,7 +143,17 @@ function resolve(
     return PRIVATE_TENANT_SYMBOL;
   }
 
-  // fall back to the first tenant in the available tenants
+  /**
+   * Fall back to the first tenant in the available tenants
+   * Under the condition of enabling multitenancy, if the user has disabled both 'Global' and 'Private' tenants:
+   * it will remove the default global tenant key for custom tenant.
+   */
+  if (
+    Object.keys(availableTenantsClone).length > 1 &&
+    availableTenantsClone.hasOwnProperty(globalTenantName)
+  ) {
+    delete availableTenantsClone[globalTenantName];
+  }
   return findKey(availableTenantsClone, () => true);
 }
 
