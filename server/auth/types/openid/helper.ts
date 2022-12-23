@@ -72,6 +72,14 @@ export function getBaseRedirectUrl(
   return rootUrl;
 }
 
+export function getNextUrl(
+  config: SecurityPluginConfigType,
+  core: CoreSetup,
+  request: OpenSearchDashboardsRequest
+): string {
+  return request.query.nextUrl || getBaseRedirectUrl(config, core, request) || '/';
+}
+
 export async function callTokenEndpoint(
   tokenEndpoint: string,
   query: any,
