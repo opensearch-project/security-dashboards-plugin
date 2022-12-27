@@ -27,9 +27,14 @@ import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
 import { OpenIdAuthConfig } from './openid_auth';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
-import { getBaseRedirectUrl, callTokenEndpoint, composeLogoutUrl } from './helper';
+import {
+  getBaseRedirectUrl,
+  callTokenEndpoint,
+  composeLogoutUrl,
+  getNextUrl,
+  getExpirationDate,
+} from './helper';
 import { validateNextUrl } from '../../../utils/next_url';
-import { getExpirationDate } from './helper';
 import {
   AuthType,
   OPENID_AUTH_LOGIN,
@@ -110,7 +115,7 @@ export class OpenIdAuthRoutes {
           const cookie: SecuritySessionCookie = {
             oidc: {
               state: nonce,
-              nextUrl: request.query.nextUrl || '/',
+              nextUrl: getNextUrl(this.config, this.core, request),
             },
             authType: AuthType.OPEN_ID,
           };
