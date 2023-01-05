@@ -1,6 +1,6 @@
 name: Cypress Tests
 
-on: [] #push, pull_request
+on: [ push, pull_request ]
 
 env:
   TEST_BROWSER_HEADLESS: 1
@@ -20,11 +20,17 @@ jobs:
       fail-fast: false
       matrix:
         #os: [ ubuntu-latest , windows-latest ]
-        #os: [ windows-latest ]
-        # os: [ ubuntu-latest ]
+        os: [ windows-latest ]
+        #os: [ ubuntu-latest ]
+        jdk: [11] #17
     runs-on: ${{ matrix.os }}
 
     steps:
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.jdk }}
+
       - name: Checkout Branch
         uses: actions/checkout@v2
       
@@ -34,7 +40,7 @@ jobs:
       
       - name: Download OpenSearch Security Plugin on Windows
         if: ${{ runner.os == 'Windows' }}
-        run: wget --progress=bar:force:noscroll -O opensearch-security.zip https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.OPENSEARCH_VERSION }}/6708/windows/x64/tar/builds/opensearch/plugins/${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip
+        run: Invoke-WebRequest -Uri https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.OPENSEARCH_VERSION }}/6708/windows/x64/zip/builds/opensearch/plugins/${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip  -Outfile opensearch-security.zip
 
       - name: Create Setup Script for Linux
         if: ${{ runner.os == 'Linux' }}
@@ -78,8 +84,10 @@ jobs:
           echo 'opensearch_security.readonly_mode.roles: ["kibana_read_only"]' >> ./config/opensearch_dashboards.yml
           echo 'opensearch_security.cookie.secure: false' >> ./config/opensearch_dashboards.yml
           echo 'opensearch_security.multitenancy.enable_aggregation_view: true' >> ./config/opensearch_dashboards.yml
-          yarn start --no-base-path --no-watch &
-          sleep 300
+          cat ./config/opensearch_dashboards.yml
+          run node ../../scripts/opensearch-dashboards --dev --no-base-path &
+          sleep 500
+#yarn start --no-base-path --no-watch &
 
       - name: Checkout
         uses: actions/checkout@v2
