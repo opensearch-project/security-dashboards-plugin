@@ -85,9 +85,9 @@ jobs:
           echo 'opensearch_security.cookie.secure: false' >> ./config/opensearch_dashboards.yml
           echo 'opensearch_security.multitenancy.enable_aggregation_view: true' >> ./config/opensearch_dashboards.yml
           cat ./config/opensearch_dashboards.yml
-          run node ../../scripts/opensearch-dashboards --dev --no-base-path &
-          sleep 500
-#yarn start --no-base-path --no-watch &
+          yarn start --no-base-path --no-watch &
+          sleep 800
+        #run node ../../scripts/opensearch-dashboards --dev --no-base-path &
 
       - name: Checkout
         uses: actions/checkout@v2
