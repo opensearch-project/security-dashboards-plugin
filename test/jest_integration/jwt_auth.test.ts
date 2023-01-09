@@ -201,7 +201,7 @@ describe('start OpenSearch Dashboards server', () => {
         payload: [
           {
             op: 'remove',
-            path: '/config/dynamic/authc/saml_auth_domain',
+            path: '/config/dynamic/authc/jwt_auth_domain',
           },
         ],
         rejectUnauthorized: false,
