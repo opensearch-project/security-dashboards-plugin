@@ -88,9 +88,10 @@ jobs:
           cat ./config/opensearch_dashboards.yml
           yarn --cwd OpenSearch-Dashboards start --no-base-path --no-watch --oss &
           sleep 500
-        #cat osd.log
           curl -XGET http://localhost:5601 -L
-          
+        
+        #cat osd.log
+
         #run node ../../scripts/opensearch-dashboards --dev --no-base-path &
 
       - name: Checkout
