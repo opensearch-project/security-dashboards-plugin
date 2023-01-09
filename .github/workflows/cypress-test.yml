@@ -84,9 +84,12 @@ jobs:
           echo 'opensearch_security.readonly_mode.roles: ["kibana_read_only"]' >> ./config/opensearch_dashboards.yml
           echo 'opensearch_security.cookie.secure: false' >> ./config/opensearch_dashboards.yml
           echo 'opensearch_security.multitenancy.enable_aggregation_view: true' >> ./config/opensearch_dashboards.yml
+          echo 'logging.dest: osd.log' >> ./config/opensearch_dashboards.yml
           cat ./config/opensearch_dashboards.yml
           yarn start --no-base-path --no-watch &
           sleep 500
+          ls
+          cat osd.log
         #run node ../../scripts/opensearch-dashboards --dev --no-base-path &
 
       - name: Checkout
