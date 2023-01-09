@@ -36,11 +36,11 @@ jobs:
       
       - name: Download OpenSearch Security Plugin on Linux
         if: ${{ runner.os == 'Linux' }}
-        run: wget --progress=bar:force:noscroll -O opensearch-security.zip https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.OPENSEARCH_VERSION }}/6708/linux/x64/tar/builds/opensearch/plugins/${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip
+        run: wget --progress=bar:force:noscroll -O opensearch-security.zip https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.OPENSEARCH_VERSION }}/latest/linux/x64/tar/builds/opensearch/plugins/${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip
       
       - name: Download OpenSearch Security Plugin on Windows
         if: ${{ runner.os == 'Windows' }}
-        run: Invoke-WebRequest -Uri https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.OPENSEARCH_VERSION }}/6708/windows/x64/zip/builds/opensearch/plugins/${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip  -Outfile opensearch-security.zip
+        run: Invoke-WebRequest -Uri https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.OPENSEARCH_VERSION }}/latest/windows/x64/zip/builds/opensearch/plugins/${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip  -Outfile opensearch-security.zip
 
       - name: Create Setup Script for Linux
         if: ${{ runner.os == 'Linux' }}
@@ -86,7 +86,7 @@ jobs:
           echo 'opensearch_security.multitenancy.enable_aggregation_view: true' >> ./config/opensearch_dashboards.yml
           cat ./config/opensearch_dashboards.yml
           yarn start --no-base-path --no-watch &
-          sleep 800
+          sleep 500
         #run node ../../scripts/opensearch-dashboards --dev --no-base-path &
 
       - name: Checkout
@@ -106,3 +106,4 @@ jobs:
         with:
           working-directory: ${{ env.FTR_PATH }}
           command: yarn cypress:run-with-security-and-aggregation-view --browser chromium --spec ${{ env.SPEC }}
+          wait-on: 'http://localhost:5601'

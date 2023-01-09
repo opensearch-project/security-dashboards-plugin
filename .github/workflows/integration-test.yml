@@ -50,11 +50,11 @@ jobs:
 
       - name: Download OpenSearch Security Plugin on Linux
         if: ${{ runner.os == 'Linux' }}
-        run: wget --progress=bar:force:noscroll -O opensearch-security.zip https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.OPENSEARCH_VERSION }}/6708/linux/x64/tar/builds/opensearch/plugins/${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip
+        run: wget --progress=bar:force:noscroll -O opensearch-security.zip https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.OPENSEARCH_VERSION }}/latest/linux/x64/tar/builds/opensearch/plugins/${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip
       
       - name: Download OpenSearch Security Plugin on Windows
         if: ${{ runner.os == 'Windows' }}
-        run: Invoke-WebRequest -Uri https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.OPENSEARCH_VERSION }}/6708/windows/x64/zip/builds/opensearch/plugins/${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip  -Outfile opensearch-security.zip
+        run: Invoke-WebRequest -Uri https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.OPENSEARCH_VERSION }}/latest/windows/x64/zip/builds/opensearch/plugins/${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip  -Outfile opensearch-security.zip
 
       - name: Create Setup Script for Linux
         if: ${{ runner.os == 'Linux' }}
