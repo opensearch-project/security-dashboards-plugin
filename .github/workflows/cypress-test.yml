@@ -89,6 +89,8 @@ jobs:
           yarn --cwd OpenSearch-Dashboards start --no-base-path --no-watch --oss &
           sleep 500
           cat osd.log
+          curl -XGET http://localhost:5601 -L
+          
         #run node ../../scripts/opensearch-dashboards --dev --no-base-path &
 
       - name: Checkout
@@ -102,10 +104,11 @@ jobs:
         id: cypress_version
         run: |
           echo "::set-output name=cypress_version::$(cat ./${{ env.FTR_PATH }}/package.json | jq '.devDependencies.cypress' | tr -d '"')"
+          curl -XGET http://localhost:5601 -L
       
       - name: Run tests
         uses: cypress-io/github-action@v2
         with:
           working-directory: ${{ env.FTR_PATH }}
           command: yarn cypress:run-with-security-and-aggregation-view --browser chromium --spec ${{ env.SPEC }}
-          wait-on: 'http://localhost:5601'
+          #wait-on: 'http://localhost:5601'
