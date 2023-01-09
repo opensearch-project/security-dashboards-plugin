@@ -36,8 +36,9 @@ describe('start OpenSearch Dashboards server', () => {
   // Browser Settings
   const browser = 'firefox';
   const options = new Options().headless();
-  const signingKey = 'VGhpcyBpcyBhIHZlcnkgc2VjdXJlIHNlY3JldC4gTm8gb25lIHdpbGwgZXZlciBiZSBhYmxlIHRvIGd1ZXNzIGl0IQ==';
   const rawKey = 'This is a very secure secret. No one will ever be able to guess it!';
+  const b = Buffer.from(rawKey);
+  const signingKey = b.toString('base64');
 
   beforeAll(async () => {
     root = osdTestServer.createRootWithSettings(
@@ -221,11 +222,11 @@ describe('start OpenSearch Dashboards server', () => {
 
   it('Login to app/opensearch_dashboards_overview#/ when JWT is enabled', async () => {
     const payload = {
-     'sub': 'jwt_test',
-     'roles': 'admin,kibanauser'
+      sub: 'jwt_test',
+      roles: 'admin,kibanauser',
     };
 
-    const key = new TextEncoder().encode(rawKey)
+    const key = new TextEncoder().encode(rawKey);
 
     const token = await new SignJWT(payload) // details to  encode in the token
       .setProtectedHeader({ alg: 'HS256' }) // algorithm
@@ -243,11 +244,11 @@ describe('start OpenSearch Dashboards server', () => {
 
   it('Login to app/dev_tools#/console when JWT is enabled', async () => {
     const payload = {
-     'sub': 'jwt_test',
-     'roles': 'admin,kibanauser'
+      sub: 'jwt_test',
+      roles: 'admin,kibanauser',
     };
 
-    const key = new TextEncoder().encode(rawKey)
+    const key = new TextEncoder().encode(rawKey);
 
     const token = await new SignJWT(payload) // details to  encode in the token
       .setProtectedHeader({ alg: 'HS256' }) // algorithm
