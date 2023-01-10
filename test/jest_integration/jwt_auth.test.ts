@@ -35,7 +35,9 @@ describe('start OpenSearch Dashboards server', () => {
   const pageTitleXPath = '//*[@id="osdOverviewPageHeader__title"]';
   // Browser Settings
   const browser = 'firefox';
-  const options = new Options().headless();
+  //const options = new Options().headless();
+  const options = new Options();
+
   const rawKey = 'This is a very secure secret. No one will ever be able to guess it!';
   const b = Buffer.from(rawKey);
   const signingKey = b.toString('base64');
@@ -264,6 +266,56 @@ describe('start OpenSearch Dashboards server', () => {
 
     const cookie = await driver.manage().getCookies();
     expect(cookie.length).toEqual(1);
+    await driver.manage().deleteAllCookies();
+    await driver.quit();
+  });
+
+  it('Login to app/opensearch_dashboards_overview#/ when JWT is enabled with invalid token', async () => {
+    const payload = {
+      sub: 'jwt_test',
+      roles: 'admin,kibanauser',
+    };
+
+    const key = new TextEncoder().encode('wrongKey');
+
+    const token = await new SignJWT(payload) // details to  encode in the token
+      .setProtectedHeader({ alg: 'HS256' }) // algorithm
+      .setIssuedAt()
+      .sign(key);
+    const driver = getDriver(browser, options).build();
+    await driver.get(`http://localhost:5601/app/opensearch_dashboards_overview?token=${token}`);
+
+    const rep = await driver.getPageSource();
+    expect(rep).toContain('"statusCode":401,"error":"Unauthorized","message":"Authentication Exception"');
+
+    const cookie = await driver.manage().getCookies();
+    expect(cookie.length).toEqual(0);
+
+    await driver.manage().deleteAllCookies();
+    await driver.quit();
+  });
+
+  it('Login to app/dev_tools#/console when JWT is enabled with invalid token', async () => {
+    const payload = {
+      sub: 'jwt_test',
+      roles: 'admin,kibanauser',
+    };
+
+    const key = new TextEncoder().encode('wrongKey');
+
+    const token = await new SignJWT(payload) // details to  encode in the token
+      .setProtectedHeader({ alg: 'HS256' }) // algorithm
+      .setIssuedAt()
+      .sign(key);
+    const driver = getDriver(browser, options).build();
+    await driver.get(`http://localhost:5601/app/dev_tools?token=${token}`);
+
+    const rep = await driver.getPageSource();
+    expect(rep).toContain('"statusCode":401,"error":"Unauthorized","message":"Authentication Exception"');
+
+    const cookie = await driver.manage().getCookies();
+    expect(cookie.length).toEqual(0);
+
     await driver.manage().deleteAllCookies();
     await driver.quit();
   });
