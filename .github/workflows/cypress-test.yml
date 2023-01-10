@@ -88,6 +88,7 @@ jobs:
           cat ./config/opensearch_dashboards.yml
           yarn start --no-base-path --no-watch &
           sleep 500
+          cat osd.log
           curl -XGET http://localhost:5601 -L
         
         #cat osd.log
