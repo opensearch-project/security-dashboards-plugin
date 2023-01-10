@@ -112,7 +112,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
     // see https://www.elastic.co/guide/en/opensearch-dashboards/master/using-api.html
     if (this.requestIncludesAuthInfo(request)) {
       try {
-        const additonalAuthHeader = this.getAdditionalAuthHeader(request);
+        const additonalAuthHeader = await this.getAdditionalAuthHeader(request);
         Object.assign(authHeaders, additonalAuthHeader);
         authInfo = await this.securityClient.authinfo(request, additonalAuthHeader);
         cookie = this.getCookie(request, authInfo);
@@ -162,7 +162,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
       // build auth header
       const authHeadersFromCookie = this.buildAuthHeaderFromCookie(cookie!);
       Object.assign(authHeaders, authHeadersFromCookie);
-      const additonalAuthHeader = this.getAdditionalAuthHeader(request);
+      const additonalAuthHeader = await this.getAdditionalAuthHeader(request);
       Object.assign(authHeaders, additonalAuthHeader);
     }
 
