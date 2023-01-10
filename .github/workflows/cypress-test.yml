@@ -106,7 +106,7 @@ jobs:
         id: cypress_version
         run: |
           echo "::set-output name=cypress_version::$(cat ./${{ env.FTR_PATH }}/package.json | jq '.devDependencies.cypress' | tr -d '"')"
-          curl -XGET http://localhost:5601 -L
+          curl -XGET http://0.0.0.0:5601 -L
       
       - name: Run tests
         uses: cypress-io/github-action@v2
