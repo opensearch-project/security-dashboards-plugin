@@ -86,7 +86,7 @@ jobs:
           echo 'opensearch_security.multitenancy.enable_aggregation_view: true' >> ./config/opensearch_dashboards.yml
           echo 'logging.dest: osd.log' >> ./config/opensearch_dashboards.yml
           cat ./config/opensearch_dashboards.yml
-          yarn --cwd OpenSearch-Dashboards start --no-base-path --no-watch &
+          yarn start --no-base-path --no-watch &
           sleep 500
           curl -XGET http://localhost:5601 -L
         
