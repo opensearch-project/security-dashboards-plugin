@@ -120,7 +120,7 @@ export class MultipleAuthentication extends AuthenticationType {
     const reqAuthType = cookie?.authType?.toLowerCase();
 
     if (reqAuthType && this.authHandlers.has(reqAuthType)) {
-      return this.authHandlers.get(reqAuthType)!.getAdditionalAuthHeader(request);
+      return await this.authHandlers.get(reqAuthType)!.getAdditionalAuthHeader(request);
     } else {
       return {};
     }
