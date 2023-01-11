@@ -53,7 +53,7 @@ jobs:
         with:
           path: OpenSearch-Dashboards
           repository: opensearch-project/OpenSearch-Dashboards
-          ref: '2.x'
+          ref: '2.5'
           fetch-depth: 0
       
       - name: Create plugins dir
@@ -117,7 +117,7 @@ jobs:
         with:
           path: ${{ env.FTR_PATH }}
           repository: opensearch-project/opensearch-dashboards-functional-test
-          ref: '2.x'
+          ref: '2.5'
 
       - name: Get Cypress version
         id: cypress_version
