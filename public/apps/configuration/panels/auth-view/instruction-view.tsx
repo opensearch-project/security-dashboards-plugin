@@ -35,9 +35,9 @@ export function InstructionView(props: { config: ClientConfigType }) {
       <EuiText textAlign="center" size="xs" color="subdued" className="instruction-text">
         In order to use Security plugin, you must decide on authentication <EuiCode>authc</EuiCode>{' '}
         and authorization backends <EuiCode>authz</EuiCode>. Use{' '}
-        <EuiCode>plugins/opensearch-security/securityconfig/config.yml</EuiCode> to define how to
-        retrieve and verify the user credentials, and how to fetch additional roles from backend
-        system if needed.
+        <EuiCode>config/opensearch-security/config.yml</EuiCode> to define how to retrieve and
+        verify the user credentials, and how to fetch additional roles from backend system if
+        needed.
       </EuiText>
 
       <EuiSpacer />
