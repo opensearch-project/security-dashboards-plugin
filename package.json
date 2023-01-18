@@ -26,6 +26,7 @@
     "@testing-library/react-hooks": "^7.0.2",
     "@types/hapi__wreck": "^15.0.1",
     "gulp-rename": "2.0.0",
+    "jose": "^4.11.2",
     "saml-idp": "^1.2.1",
     "selenium-webdriver": "^4.0.0-alpha.7",
     "selfsigned": "^2.0.1",
