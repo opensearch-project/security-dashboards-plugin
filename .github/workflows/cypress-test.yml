@@ -87,6 +87,7 @@ jobs:
           nohup yarn start --no-base-path --no-watch &
           sleep 500
           cat osd.log
+        working-directory: ${{ steps.install-dashboards.outputs.dashboards-directory }}
 
         #cat osd.log
         #curl -XGET http://localhost:5601 -L
