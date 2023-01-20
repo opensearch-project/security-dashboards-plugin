@@ -84,12 +84,12 @@ jobs:
           echo 'opensearch_security.multitenancy.enable_aggregation_view: true' >> ./config/opensearch_dashboards.yml
           echo 'logging.dest: osd.log' >> ./config/opensearch_dashboards.yml
           cat ./config/opensearch_dashboards.yml
-          yarn start --no-base-path --no-watch &
+          nohup yarn start --no-base-path --no-watch &
           sleep 500
           cat osd.log
-          curl -XGET http://localhost:5601 -L
-        
+
         #cat osd.log
+        #curl -XGET http://localhost:5601 -L
 
         #run node ../../scripts/opensearch-dashboards --dev --no-base-path &
 
@@ -104,7 +104,8 @@ jobs:
         id: cypress_version
         run: |
           echo "::set-output name=cypress_version::$(cat ./${{ env.FTR_PATH }}/package.json | jq '.devDependencies.cypress' | tr -d '"')"
-          curl -XGET http://0.0.0.0:5601 -L
+          
+        #curl -XGET http://0.0.0.0:5601 -L
       
       - name: Run tests
         uses: cypress-io/github-action@v2
