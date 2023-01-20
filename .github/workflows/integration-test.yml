@@ -63,11 +63,19 @@ jobs:
           echo "plugins.security.unsupported.restapi.allow_securityconfig_modification: true" >> ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/config/opensearch.yml
           EOF
 
+      #- name: Create Setup Script for Windows
+      #  if: ${{ runner.os == 'Windows' }}
+      #  run: |
+      #    New-Item .\setup.bat -type file
+      #    Set-Content .\setup.bat -Value "powershell.exe .\opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT\plugins\${{ env.PLUGIN_NAME }}\tools\install_demo_configuration.bat -y"
+      #    Add-Content -Path .\setup.bat -Value "echo plugins.security.unsupported.restapi.allow_securityconfig_modification: true >> .\opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT\config\opensearch.yml"
+      #    Get-Content .\setup.bat
+      
       - name: Create Setup Script for Windows
         if: ${{ runner.os == 'Windows' }}
         run: |
           New-Item .\setup.bat -type file
-          Set-Content .\setup.bat -Value "powershell.exe .\opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT\plugins\${{ env.PLUGIN_NAME }}\tools\install_demo_configuration.bat -y"
+          Set-Content .\setup.bat -Value "powershell.exe -noexit -command `"echo 'y' | .\opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT\plugins\${{ env.PLUGIN_NAME }}\tools\install_demo_configuration.bat`""
           Add-Content -Path .\setup.bat -Value "echo plugins.security.unsupported.restapi.allow_securityconfig_modification: true >> .\opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT\config\opensearch.yml"
           Get-Content .\setup.bat
 
