@@ -88,11 +88,14 @@ jobs:
           sleep 500
           cat osd.log
           git clone https://github.com/opensearch-project/opensearch-dashboards-functional-test.git
+
+      - name: Clone Functional Test Repository and run Cypress test 
+        run: |
+          git clone https://github.com/opensearch-project/opensearch-dashboards-functional-test.git
           ls
           cd opensearch-dashboards-functional-test
           npm install cypress --save-dev
-          yarn cypress:run-with-security-and-aggregation-view --browser chrome --spec ${{ env.SPEC }}
-        working-directory: ${{ steps.install-dashboards.outputs.dashboards-directory }}
+          yarn cypress:run-with-security-and-aggregation-view --browser chrome --spec "cypress/integration/plugins/security-dashboards-plugin/aggregation_view.js"
 
         #cat osd.log
         #curl -XGET http://localhost:5601 -L
