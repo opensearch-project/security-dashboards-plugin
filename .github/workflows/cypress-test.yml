@@ -91,7 +91,7 @@ jobs:
           ls
           cd opensearch-dashboards-functional-test
           npm install cypress --save-dev
-          yarn cypress:run-with-security-and-aggregation-view --browser chromium --spec ${{ env.SPEC }}
+          yarn cypress:run-with-security-and-aggregation-view --browser chrome --spec ${{ env.SPEC }}
         working-directory: ${{ steps.install-dashboards.outputs.dashboards-directory }}
 
         #cat osd.log
