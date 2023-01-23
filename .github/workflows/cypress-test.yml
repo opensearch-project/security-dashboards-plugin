@@ -100,7 +100,7 @@ jobs:
           curl -XGET https://localhost:9200 -u 'admin:admin' -k
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: ${{ env.FTR_PATH }}
           repository: opensearch-project/opensearch-dashboards-functional-test
