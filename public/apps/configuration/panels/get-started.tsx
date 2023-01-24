@@ -41,7 +41,7 @@ const addBackendStep = {
     <>
       <EuiText size="s" color="subdued">
         Add authentication<EuiCode>(authc)</EuiCode>and authorization<EuiCode>(authz)</EuiCode>
-        information to<EuiCode>plugins/opensearch-security/securityconfig/config.yml</EuiCode>. The
+        information to<EuiCode>config/opensearch-security/config.yml</EuiCode>. The
         <EuiCode>authc</EuiCode> section contains the backends to check user credentials against.
         The <EuiCode>authz</EuiCode>
         section contains any backends to fetch backend roles from. The most common example of a
