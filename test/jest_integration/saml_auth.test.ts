@@ -42,6 +42,24 @@ describe('start OpenSearch Dashboards server', () => {
   const options = new Options().headless();
 
   beforeAll(async () => {
+    const { runServer } = require('saml-idp');
+
+    const { generate } = require('selfsigned');
+
+    const pems = generate(null, {
+      keySize: 2048,
+      clientCertificateCN: '/C=US/ST=California/L=San Francisco/O=JankyCo/CN=Test Identity Provider',
+      days: 7300,
+    });
+
+    // Create certificate pair on the fly and pass it to runServer
+    runServer({
+      acsUrl: 'http://localhost:5601/_opendistro/_security/saml/acs',
+      audience: 'https://localhost:9200',
+      cert: pems.cert,
+      key: pems.private.toString().replace(/\r\n/, '\n'),
+    });
+    
     root = osdTestServer.createRootWithSettings(
       {
         plugins: {
