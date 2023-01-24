@@ -56,8 +56,7 @@ jobs:
           Get-Content .\setup.bat
 
       - name: Run Opensearch with A Single Plugin
-        #uses: opensearch-project/security/.github/actions/start-opensearch-with-one-plugin@main
-        uses: RyanL1997/security/.github/actions/start-opensearch-with-one-plugin@extend-sleep-time
+        uses: opensearch-project/security/.github/actions/start-opensearch-with-one-plugin@main
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugin-name: ${{ env.PLUGIN_NAME }}
