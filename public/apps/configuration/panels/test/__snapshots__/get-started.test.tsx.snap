@@ -264,7 +264,7 @@ exports[`Get started (landing page) renders when backend configuration is enable
                   </EuiCode>
                   information to
                   <EuiCode>
-                    plugins/opensearch-security/securityconfig/config.yml
+                    config/opensearch-security/config.yml
                   </EuiCode>
                   . The
                   <EuiCode>
