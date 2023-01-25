@@ -67,7 +67,6 @@ jobs:
         with:
           plugin_name: security-dashboards-plugin
 
-      # TODO: Switch back to action for checkout after the fix of windows runner.
       - name: Configure and Run OpenSearch Dashboards with Cypress Test Cases
         run: |
           cd ./OpenSearch-Dashboards
@@ -82,11 +81,8 @@ jobs:
           echo 'opensearch_security.readonly_mode.roles: ["kibana_read_only"]' >> ./config/opensearch_dashboards.yml
           echo 'opensearch_security.cookie.secure: false' >> ./config/opensearch_dashboards.yml
           echo 'opensearch_security.multitenancy.enable_aggregation_view: true' >> ./config/opensearch_dashboards.yml
-          echo 'logging.dest: osd.log' >> ./config/opensearch_dashboards.yml
-          cat ./config/opensearch_dashboards.yml
           nohup yarn start --no-base-path --no-watch &
           sleep 500
-          cat osd.log
           git clone https://github.com/opensearch-project/opensearch-dashboards-functional-test.git
           cd opensearch-dashboards-functional-test
           npm install cypress --save-dev

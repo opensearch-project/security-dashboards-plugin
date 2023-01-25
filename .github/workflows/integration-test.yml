@@ -78,17 +78,12 @@ jobs:
           plugin-name: ${{ env.PLUGIN_NAME }}
           setup-script-name: setup
 
-      - name: Show Opensearch.yml
-        if: ${{ runner.os == 'Windows' }}
-        run: Get-Content .\opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT\config\opensearch.yml
-
       - id: install-dashboards
         uses: ./.github/actions/install-dashboards
         with:
           plugin_name: security-dashboards-plugin
 
       - name: Start Dashboards in background
-#     if: ${{ runner.os == 'Linux' }}
         run: node scripts/build_opensearch_dashboards_platform_plugins.js
         working-directory: ${{ steps.install-dashboards.outputs.dashboards-directory }}
 

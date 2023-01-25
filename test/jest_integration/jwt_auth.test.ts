@@ -286,6 +286,7 @@ describe('start OpenSearch Dashboards server', () => {
     const rep = await driver.getPageSource();
     expect(rep).toContain('401');
     expect(rep).toContain('Unauthorized');
+    expect(rep).toContain('Authentication Exception');
 
     const cookie = await driver.manage().getCookies();
     expect(cookie.length).toEqual(0);
@@ -312,6 +313,7 @@ describe('start OpenSearch Dashboards server', () => {
     const rep = await driver.getPageSource();
     expect(rep).toContain('401');
     expect(rep).toContain('Unauthorized');
+    expect(rep).toContain('Authentication Exception');
 
     const cookie = await driver.manage().getCookies();
     expect(cookie.length).toEqual(0);

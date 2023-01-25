@@ -40,7 +40,6 @@ runs:
 
     - id: osd-version-linux
       if: ${{ runner.os == 'Linux' }}
-      continue-on-error: true
       run: |
         echo "::set-output name=osd-version-linux::$(cat package.json | jq '.opensearchDashboards.version' | cut -c 2-4)"
         echo "::set-output name=osd-x-version::$(cat package.json | jq '.opensearchDashboards.version' | cut -c 2-3)"
@@ -49,7 +48,6 @@ runs:
 
     - id: osd-version-windows
       if: ${{ runner.os == 'Windows' }}
-      continue-on-error: true
       run: |
         echo "::set-output name=osd-version-linux::$(cat package.json | jq '.opensearchDashboards.version' | cut -c 2-4)"
         echo "::set-output name=osd-x-version::$(cat package.json | jq '.opensearchDashboards.version' | cut -c 2-3)"
