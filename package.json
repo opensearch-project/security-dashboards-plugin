@@ -22,7 +22,10 @@
     "test:jest_ui": "node ./test/run_jest_tests.js --config ./test/jest.config.ui.js"
   },
   "resolutions": {
-    "samlp": "6.0.2"
+    "samlp": "6.0.2",
+    "**/glob-parent": "^6.0.0",
+    "**/loader-utils": "^2.0.4",
+    "decode-uri-component": "^0.2.1"
   },
   "devDependencies": {
     "@elastic/eslint-import-resolver-kibana": "link:../../packages/osd-eslint-import-resolver-opensearch-dashboards", 
