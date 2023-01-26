@@ -28,16 +28,6 @@ runs:
       if: ${{ runner.os == 'Windows' }}
       with:
         url: https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ inputs.opensearch-version }}/latest/windows/x64/zip/builds/opensearch/plugins/${{ inputs.plugin-name }}-${{ inputs.plugin-version }}.zip
-    
-    #- name: Download OpenSearch Security Plugin on Linux
-    #  if: ${{ runner.os == 'Linux' }}
-    #  run: wget --progress=bar:force:noscroll -O opensearch-security.zip https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ inputs.opensearch-version }}/latest/linux/x64/tar/builds/opensearch/plugins/${{ inputs.plugin-name }}-${{ inputs.plugin-version }}.zip
-    #  shell: bash
-#
-    #- name: Download OpenSearch Security Plugin on Windows
-    #  if: ${{ runner.os == 'Windows' }}
-    #  run: Invoke-WebRequest -Uri https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ inputs.opensearch-version }}/latest/windows/x64/zip/builds/opensearch/plugins/${{ inputs.plugin-name }}-${{ inputs.plugin-version }}.zip -Outfile opensearch-security.zip
-    #  shell: pwsh
 
     - name: Rename the Plugin Files
       run: mv opensearch-security-${{ inputs.plugin-version }}.zip opensearch-security.zip
