@@ -47,7 +47,7 @@ jobs:
           version: latest
 
       - name: Download security plugin and create setup scripts
-        uses: ./.github/actions/download-security-plugin
+        uses: ./.github/actions/download-plugin
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugin-name: ${{ env.PLUGIN_NAME }}
