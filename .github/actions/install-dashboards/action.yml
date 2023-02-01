@@ -45,9 +45,9 @@ runs:
       working-directory: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
       shell: bash
 
-    - id: branch-switch-if-possible-linux
+    - id: branch-switch-if-possible
       continue-on-error: true # Defaults onto main if the branch switch doesn't work
-      if: ${{ steps.osd-version-linux.outputs.osd-version }}
+      if: ${{ steps.osd-version.outputs.osd-version }}
       run: git checkout ${{ steps.osd-version.outputs.osd-version }} || git checkout ${{ steps.osd-version.outputs.osd-x-version }}x
       working-directory: ./OpenSearch-Dashboards
       shell: bash

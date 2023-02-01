@@ -28,7 +28,7 @@ jobs:
         with:
           java-version: ${{ matrix.jdk }}
 
-      - uses: browser-actions/setup-geckodriver@3570fb
+      - uses: browser-actions/setup-geckodriver@latest
       - run: geckodriver --version
 
       - name: Set up Firefox browser
