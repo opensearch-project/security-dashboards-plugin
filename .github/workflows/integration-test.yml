@@ -16,7 +16,6 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest , windows-latest ]
-        jdk: [ 11, 17 ]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -26,9 +25,9 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: ${{ matrix.jdk }}
+          java-version: 11
 
-      - uses: browser-actions/setup-geckodriver@latest
+      - uses: browser-actions/setup-geckodriver@v0.0.0
       - run: geckodriver --version
 
       - name: Set up Firefox browser
