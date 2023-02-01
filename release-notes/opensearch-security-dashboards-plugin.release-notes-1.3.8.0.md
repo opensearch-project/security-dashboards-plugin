@@ -1,4 +1,4 @@
-## 2023-02-22 Version 1.3.8.0
+## 2023-02-02 Version 1.3.8.0
 
 Compatible with Opensearch-Dashboards 1.3.8
 
