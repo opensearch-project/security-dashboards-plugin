@@ -21,13 +21,13 @@ runs:
       uses: peternied/download-file@v2
       if: ${{ runner.os == 'Linux' }}
       with:
-        url: https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ inputs.opensearch-version }}/7028/linux/x64/tar/builds/opensearch/plugins/${{ inputs.plugin-name }}-${{ inputs.plugin-version }}.zip
+        url: https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ inputs.opensearch-version }}/latest/linux/x64/tar/builds/opensearch/plugins/${{ inputs.plugin-name }}-${{ inputs.plugin-version }}.zip
 
     - name: Download OpenSearch for Windows
       uses: peternied/download-file@v2
       if: ${{ runner.os == 'Windows' }}
       with:
-        url: https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ inputs.opensearch-version }}/7028/windows/x64/zip/builds/opensearch/plugins/${{ inputs.plugin-name }}-${{ inputs.plugin-version }}.zip
+        url: https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ inputs.opensearch-version }}/latest/windows/x64/zip/builds/opensearch/plugins/${{ inputs.plugin-name }}-${{ inputs.plugin-version }}.zip
 
     - name: Rename the Plugin Files
       run: mv opensearch-security-${{ inputs.plugin-version }}.zip opensearch-security.zip
