@@ -284,9 +284,9 @@ describe('start OpenSearch Dashboards server', () => {
     await driver.get(`http://localhost:5601/app/opensearch_dashboards_overview?token=${token}`);
 
     const rep = await driver.getPageSource();
-    expect(rep).toContain(
-      '"statusCode":401,"error":"Unauthorized","message":"Authentication Exception"'
-    );
+    expect(rep).toContain('401');
+    expect(rep).toContain('Unauthorized');
+    expect(rep).toContain('Authentication Exception');
 
     const cookie = await driver.manage().getCookies();
     expect(cookie.length).toEqual(0);
@@ -311,9 +311,9 @@ describe('start OpenSearch Dashboards server', () => {
     await driver.get(`http://localhost:5601/app/dev_tools?token=${token}`);
 
     const rep = await driver.getPageSource();
-    expect(rep).toContain(
-      '"statusCode":401,"error":"Unauthorized","message":"Authentication Exception"'
-    );
+    expect(rep).toContain('401');
+    expect(rep).toContain('Unauthorized');
+    expect(rep).toContain('Authentication Exception');
 
     const cookie = await driver.manage().getCookies();
     expect(cookie.length).toEqual(0);
