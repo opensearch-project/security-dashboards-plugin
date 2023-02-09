@@ -1,0 +1,82 @@
+name: 'Install Dashboards with Plugin'
+description: 'Installs OpenSearch Dashboard with a Plugin from github, then checkouts the correct dashboards version for the plugin, configures npm/yarn, and bootstraps Dashboards'
+
+inputs:
+  plugin_name:
+    description: 'The the name of the plugin to use, such as security-dashboards-plugin'
+    required: true
+
+outputs:
+  dashboards-directory:
+    description: "The directory where the dashboards has been configured"
+    value: ${{ steps.determine-dashboards-directory.outputs.dashboards-directory }}
+
+  plugin-directory:
+    description: "The directory where the plugin has been configured"
+    value: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
+  
+
+runs:
+  using: "composite"
+  steps:
+    - id: determine-dashboards-directory
+      run: echo "dashboards-directory=OpenSearch-Dashboards"  >> $GITHUB_OUTPUT
+      shell: bash
+
+    - id: determine-plugin-directory
+      run: echo "::set-output name=plugin-directory::./OpenSearch-Dashboards/plugins/${{ inputs.plugin_name }}"
+      shell: bash
+
+    - uses: actions/checkout@v2
+      with:
+        path: OpenSearch-Dashboards
+        repository: opensearch-project/OpenSearch-Dashboards
+        ref: 'main'
+        fetch-depth: 0
+
+    - uses: actions/checkout@v2
+      with:
+        path: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
+
+    - id: osd-version
+      run: |
+        echo "::set-output name=osd-version::$(cat package.json | jq '.opensearchDashboards.version' | cut -c 2-4)"
+        echo "::set-output name=osd-x-version::$(cat package.json | jq '.opensearchDashboards.version' | cut -c 2-3)"
+      working-directory: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
+      shell: bash
+
+    - id: branch-switch-if-possible
+      continue-on-error: true # Defaults onto main if the branch switch doesn't work
+      if: ${{ steps.osd-version.outputs.osd-version }}
+      run: git checkout ${{ steps.osd-version.outputs.osd-version }} || git checkout ${{ steps.osd-version.outputs.osd-x-version }}x
+      working-directory: ./OpenSearch-Dashboards
+      shell: bash
+
+    - id: tool-versions
+      run: |
+        echo "node_version=$(cat .node-version)" >> $GITHUB_OUTPUT
+        echo "yarn_version=$(jq -r '.engines.yarn' package.json)" >> $GITHUB_OUTPUT
+      working-directory: OpenSearch-Dashboards
+      shell: bash
+
+    - uses: actions/setup-node@v1
+      with:
+        node-version: ${{ steps.tool-versions.outputs.node_version }}
+        registry-url: 'https://registry.npmjs.org'
+
+    - name: Setup Opensearch Dashboards
+      run: |
+        npm uninstall -g yarn
+        echo "Installing yarn ${{ steps.tool-versions.outputs.yarn_version }}"
+        npm i -g yarn@${{ steps.tool-versions.outputs.yarn_version }}
+        yarn cache clean
+        yarn add sha.js
+      working-directory: OpenSearch-Dashboards
+      shell: bash
+
+    - name: Bootstrap the OpenSearch Dashboard
+      uses: nick-fields/retry@v2
+      with:
+        timeout_minutes: 20
+        max_attempts: 2
+        command: yarn --cwd OpenSearch-Dashboards osd bootstrap --oss
