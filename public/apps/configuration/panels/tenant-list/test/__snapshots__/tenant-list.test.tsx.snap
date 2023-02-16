@@ -35,7 +35,7 @@ exports[`Tenant list Action menu click Duplicate click 1`] = `
         >
           Tenants in OpenSearch Dashboards are spaces for saving index patterns, visualizations, dashboards, and other OpenSearch Dashboards objects. Use tenants to safely share your work with other OpenSearch Dashboards users. You can control which roles have access to a tenant and whether those roles have read or write access. The “Current” label indicates which tenant you are using now. Switch to another tenant anytime from your user profile, which is located on the top right of the screen. 
           <ExternalLink
-            href="https://docs-beta.opensearch.org/docs/security/access-control/multi-tenancy/"
+            href="https://opensearch.org/docs/latest/security-plugin/multi-tenancy/multi-tenancy-config"
           />
         </EuiText>
       </EuiPageContentHeaderSection>
@@ -221,7 +221,7 @@ exports[`Tenant list Action menu click Edit click 1`] = `
         >
           Tenants in OpenSearch Dashboards are spaces for saving index patterns, visualizations, dashboards, and other OpenSearch Dashboards objects. Use tenants to safely share your work with other OpenSearch Dashboards users. You can control which roles have access to a tenant and whether those roles have read or write access. The “Current” label indicates which tenant you are using now. Switch to another tenant anytime from your user profile, which is located on the top right of the screen. 
           <ExternalLink
-            href="https://docs-beta.opensearch.org/docs/security/access-control/multi-tenancy/"
+            href="https://opensearch.org/docs/latest/security-plugin/multi-tenancy/multi-tenancy-config"
           />
         </EuiText>
       </EuiPageContentHeaderSection>

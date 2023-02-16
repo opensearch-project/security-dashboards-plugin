@@ -288,7 +288,7 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
             />
              
             <ExternalLink
-              href="https://docs-beta.opensearch.org/docs/security/audit-logs/storage-types/"
+              href="https://opensearch.org/docs/latest/security-plugin/audit-logs/storage-types/"
             />
           </EuiText>
         </EuiFormRow>
