@@ -184,6 +184,7 @@ export const INDEX_PERMISSIONS: string[] = [
   'indices:admin/analyze',
   'indices:admin/cache/clear',
   'indices:admin/close',
+  'indices:admin/close*',
   'indices:admin/create',
   'indices:admin/data_stream/create',
   'indices:admin/data_stream/delete',
