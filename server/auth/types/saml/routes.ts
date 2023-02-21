@@ -25,6 +25,7 @@ import { SecurityClient } from '../../../backend/opensearch_security_client';
 import { CoreSetup } from '../../../../../../src/core/server';
 import { validateNextUrl } from '../../../utils/next_url';
 import { AuthType, SAML_AUTH_LOGIN, SAML_AUTH_LOGOUT } from '../../../../common';
+import { deflateValue } from '../../../utils/compression';
 
 export class SamlAuthRoutes {
   constructor(
@@ -141,10 +142,11 @@ export class SamlAuthRoutes {
           if (tokenPayload.exp) {
             expiryTime = parseInt(tokenPayload.exp, 10) * 1000;
           }
+          const compressedBuffer: Buffer = deflateValue(credentials.authorization);
           const cookie: SecuritySessionCookie = {
             username: user.username,
             credentials: {
-              authHeaderValue: credentials.authorization,
+              authHeaderValueCompressed: compressedBuffer.toString('base64'),
             },
             authType: AuthType.SAML, // TODO: create constant
             expiryTime,
@@ -209,10 +211,11 @@ export class SamlAuthRoutes {
             expiryTime = parseInt(tokenPayload.exp, 10) * 1000;
           }
 
+          const compressedBuffer: Buffer = deflateValue(credentials.authorization);
           const cookie: SecuritySessionCookie = {
             username: user.username,
             credentials: {
-              authHeaderValue: credentials.authorization,
+              authHeaderValueCompressed: compressedBuffer.toString('base64'),
             },
             authType: AuthType.SAML, // TODO: create constant
             expiryTime,

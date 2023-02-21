@@ -34,6 +34,10 @@ import {
 import { SamlAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
 import { AuthType } from '../../../../common';
+import {
+  deflateValue,
+  inflateValue
+} from '../../../utils/compression';
 
 export class SamlAuthentication extends AuthenticationType {
   public static readonly AUTH_HEADER_NAME = 'authorization';
@@ -91,7 +95,9 @@ export class SamlAuthentication extends AuthenticationType {
     return {
       username: authInfo.user_name,
       credentials: {
-        authHeaderValue: request.headers[SamlAuthentication.AUTH_HEADER_NAME],
+        authHeaderValueCompressed: deflateValue(
+          request.headers[SamlAuthentication.AUTH_HEADER_NAME] as string
+        ),
       },
       authType: AuthType.SAML,
       expiryTime: Date.now() + this.config.session.ttl,
@@ -104,7 +110,7 @@ export class SamlAuthentication extends AuthenticationType {
       cookie.authType === AuthType.SAML &&
       cookie.username &&
       cookie.expiryTime &&
-      cookie.credentials?.authHeaderValue
+      (cookie.credentials?.authHeaderValue || cookie.credentials?.authHeaderValueCompressed)
     );
   }
 
@@ -122,7 +128,21 @@ export class SamlAuthentication extends AuthenticationType {
 
   buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any {
     const headers: any = {};
-    headers[SamlAuthentication.AUTH_HEADER_NAME] = cookie.credentials?.authHeaderValue;
+    if (cookie.credentials?.authHeaderValueCompressed) {
+      try {
+        const uncompressedBuffer = inflateValue(
+          Buffer.from(cookie.credentials.authHeaderValueCompressed, 'base64')
+        );
+        headers[SamlAuthentication.AUTH_HEADER_NAME] = uncompressedBuffer.toString();
+      } catch (error) {
+        this.logger.error(error);
+        // @todo Re-throw?
+        // throw error;
+      }
+    } else {
+      headers[SamlAuthentication.AUTH_HEADER_NAME] = cookie.credentials?.authHeaderValue;
+    }
+
     return headers;
   }
 }
