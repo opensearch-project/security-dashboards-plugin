@@ -22,8 +22,6 @@ At present, there are the following branches available to choose from for the se
 | [2.x](https://github.com/opensearch-project/OpenSearch/tree/2.x) | [2.x](https://github.com/opensearch-project/security/tree/2.x) | [v2.X.X](https://github.com/opensearch-project/OpenSearch/blob/2.x/buildSrc/version.properties#L1) |
 | [main](https://github.com/opensearch-project/OpenSearch) | [main](https://github.com/opensearch-project/security)  | [v3.0.0](https://github.com/opensearch-project/OpenSearch/blob/main/buildSrc/version.properties#L1) |
 
-<br>
-
 ### **Front-end**
 | OpenSearch Dashboards<br>branch | Security Dashboards Plugin<br>branch  | OpenSearch Dashboards<br>version  |
 | ---         | ---                         | ---                  |
@@ -32,7 +30,7 @@ At present, there are the following branches available to choose from for the se
 | [main](https://github.com/opensearch-project/OpenSearch-Dashboards) | [main](https://github.com/opensearch-project/security-dashboards-plugin) | [v3.0.0](https://github.com/opensearch-project/OpenSearch-Dashboards/blob/main/package.json#L14) |
 
 \
-For the sake of this guide, let's assume that the latest version on main for OpenSearch, OpenSearch Dashboards, security and security-dashboards-plugin. If any of these repositories are unstable on the main branch, switch to the latest `[0-9]+\.x` branch which contains the latest unreleased version of the product. 
+For the sake of this guide, let's assume the latest version on main for OpenSearch, OpenSearch Dashboards, security and security-dashboards-plugin. If any of these repositories are unstable on the main branch, switch to the latest `[0-9]+\.x` branch which contains the latest unreleased version of the product. 
 
 Ensure that an OpenSearch cluster with the security plugin installed is running locally. If you followed the steps from [the developer guide of the Security Plugin](https://github.com/opensearch-project/security/blob/main/DEVELOPER_GUIDE.md), then you can verify this by running:
 
