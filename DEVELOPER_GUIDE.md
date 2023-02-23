@@ -18,15 +18,15 @@ At present, there are the following branches available to choose from for the se
 
 | OpenSearch<br>branch | Security Plugin<br>branch  | OpenSearch<br>version  |
 |--------              |---                         |---                  |
-| [1.3](https://github.com/opensearch-project/OpenSearch/tree/1.3) | [1.3](https://github.com/opensearch-project/security/tree/1.3) | [v1.3.X](https://github.com/opensearch-project/OpenSearch/blob/1.3/buildSrc/version.properties#L1) |
-| [2.x](https://github.com/opensearch-project/OpenSearch/tree/2.x) | [2.x](https://github.com/opensearch-project/security/tree/2.x) | [v2.X.X](https://github.com/opensearch-project/OpenSearch/blob/2.x/buildSrc/version.properties#L1) |
+| [1.3](https://github.com/opensearch-project/OpenSearch/tree/1.3) | [1.3](https://github.com/opensearch-project/security/tree/1.3) | [v1.3.x](https://github.com/opensearch-project/OpenSearch/blob/1.3/buildSrc/version.properties#L1) |
+| [2.x](https://github.com/opensearch-project/OpenSearch/tree/2.x) | [2.x](https://github.com/opensearch-project/security/tree/2.x) | [v2.x.y](https://github.com/opensearch-project/OpenSearch/blob/2.x/buildSrc/version.properties#L1) |
 | [main](https://github.com/opensearch-project/OpenSearch) | [main](https://github.com/opensearch-project/security)  | [v3.0.0](https://github.com/opensearch-project/OpenSearch/blob/main/buildSrc/version.properties#L1) |
 
 ### **Front-end**
 | OpenSearch Dashboards<br>branch | Security Dashboards Plugin<br>branch  | OpenSearch Dashboards<br>version  |
 | ---         | ---                         | ---                  |
-| [1.x](https://github.com/opensearch-project/OpenSearch-Dashboards/tree/1.3) | [1.3](https://github.com/opensearch-project/security-dashboards-plugin/tree/1.3) | [v1.3.X](https://github.com/opensearch-project/OpenSearch-Dashboards/blob/1.x/package.json#L14) |
-| [2.x](https://github.com/opensearch-project/OpenSearch-Dashboards/tree/2.x) | [2.x](https://github.com/opensearch-project/security-dashboards-plugin/tree/2.x) | [v2.X.X](https://github.com/opensearch-project/OpenSearch-Dashboards/blob/2.x/package.json#L14) |
+| [1.x](https://github.com/opensearch-project/OpenSearch-Dashboards/tree/1.3) | [1.3](https://github.com/opensearch-project/security-dashboards-plugin/tree/1.3) | [v1.3.x](https://github.com/opensearch-project/OpenSearch-Dashboards/blob/1.x/package.json#L14) |
+| [2.x](https://github.com/opensearch-project/OpenSearch-Dashboards/tree/2.x) | [2.x](https://github.com/opensearch-project/security-dashboards-plugin/tree/2.x) | [v2.x.y](https://github.com/opensearch-project/OpenSearch-Dashboards/blob/2.x/package.json#L14) |
 | [main](https://github.com/opensearch-project/OpenSearch-Dashboards) | [main](https://github.com/opensearch-project/security-dashboards-plugin) | [v3.0.0](https://github.com/opensearch-project/OpenSearch-Dashboards/blob/main/package.json#L14) |
 
 \
