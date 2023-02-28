@@ -56,7 +56,7 @@ Follow the [developer guide](https://github.com/opensearch-project/OpenSearch-Da
 
 
 ```yaml
-server.host: "0"
+server.host: "0.0.0.0"
 opensearch.hosts: ["https://localhost:9200"]
 opensearch.ssl.verificationMode: none
 opensearch.username: "kibanaserver"
