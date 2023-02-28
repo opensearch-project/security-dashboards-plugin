@@ -160,7 +160,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
       }
       // cookie is valid
       // build auth header
-      const authHeadersFromCookie = this.buildAuthHeaderFromCookie(cookie!);
+      const authHeadersFromCookie = this.buildAuthHeaderFromCookie(cookie!, request);
       Object.assign(authHeaders, authHeadersFromCookie);
       const additonalAuthHeader = await this.getAdditionalAuthHeader(request);
       Object.assign(authHeaders, additonalAuthHeader);
@@ -275,6 +275,6 @@ export abstract class AuthenticationType implements IAuthenticationType {
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
   ): IOpenSearchDashboardsResponse | AuthResult;
-  public abstract buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any;
+  public abstract buildAuthHeaderFromCookie(cookie: SecuritySessionCookie, request): any;
   public abstract init(): Promise<void>;
 }

@@ -168,7 +168,10 @@ export class MultipleAuthentication extends AuthenticationType {
     }
   }
 
-  buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any {
+  buildAuthHeaderFromCookie(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): any {
     const reqAuthType = cookie?.authType?.toLowerCase();
 
     if (reqAuthType && this.authHandlers.has(reqAuthType)) {

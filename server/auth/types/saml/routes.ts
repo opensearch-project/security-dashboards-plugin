@@ -25,6 +25,9 @@ import { SecurityClient } from '../../../backend/opensearch_security_client';
 import { CoreSetup } from '../../../../../../src/core/server';
 import { validateNextUrl } from '../../../utils/next_url';
 import { AuthType, SAML_AUTH_LOGIN, SAML_AUTH_LOGOUT } from '../../../../common';
+import { deflateValue } from '../../../utils/compression';
+
+import { splitValueIntoCookies, clearSplitCookies} from '../../../session/cookie_splitter';
 
 export class SamlAuthRoutes {
   constructor(
@@ -36,7 +39,7 @@ export class SamlAuthRoutes {
     private readonly coreSetup: CoreSetup
   ) {}
 
-  public setupRoutes() {
+  public setupRoutes(extraCookieName: string) {
     this.router.get(
       {
         path: SAML_AUTH_LOGIN,
@@ -141,10 +144,14 @@ export class SamlAuthRoutes {
           if (tokenPayload.exp) {
             expiryTime = parseInt(tokenPayload.exp, 10) * 1000;
           }
+
+          const compressedBuffer: Buffer = deflateValue(credentials.authorization);
+          splitValueIntoCookies(request, extraCookieName, compressedBuffer.toString('base64'));
+
           const cookie: SecuritySessionCookie = {
             username: user.username,
             credentials: {
-              authHeaderValue: credentials.authorization,
+              authHeaderValueCompressed: true,
             },
             authType: AuthType.SAML, // TODO: create constant
             expiryTime,
@@ -208,11 +215,13 @@ export class SamlAuthRoutes {
           if (tokenPayload.exp) {
             expiryTime = parseInt(tokenPayload.exp, 10) * 1000;
           }
+          const compressedBuffer: Buffer = deflateValue(credentials.authorization);
+          splitValueIntoCookies(request, extraCookieName, compressedBuffer.toString('base64'));
 
           const cookie: SecuritySessionCookie = {
             username: user.username,
             credentials: {
-              authHeaderValue: credentials.authorization,
+              authHeaderValueCompressed: true,
             },
             authType: AuthType.SAML, // TODO: create constant
             expiryTime,
@@ -352,6 +361,7 @@ export class SamlAuthRoutes {
       async (context, request, response) => {
         try {
           const authInfo = await this.securityClient.authinfo(request);
+          await clearSplitCookies(request, extraCookieName);
           this.sessionStorageFactory.asScoped(request).clear();
           // TODO: need a default logout page
           const redirectUrl =

@@ -34,11 +34,16 @@ import {
 import { SamlAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
 import { AuthType } from '../../../../common';
+import { deflateValue, inflateValue } from '../../../utils/compression';
+import { unsplitCookiesIntoValue } from '../../../session/cookie_splitter';
+import { Server } from '@hapi/hapi';
 
 export class SamlAuthentication extends AuthenticationType {
   public static readonly AUTH_HEADER_NAME = 'authorization';
 
   public readonly type: string = 'saml';
+
+  private readonly extraCookieName: string;
 
   constructor(
     config: SecurityPluginConfigType,
@@ -49,6 +54,25 @@ export class SamlAuthentication extends AuthenticationType {
     logger: Logger
   ) {
     super(config, sessionStorageFactory, router, esClient, coreSetup, logger);
+
+    // TODO: Using the session storage like this was probably not intended
+    // @ts-ignore
+    const hapiServer: Server = this.sessionStorageFactory.asScoped({}).server;
+    this.extraCookieName = this.config.cookie.name + '_saml';
+    const extraCookieSettings = {
+      isSecure: config.cookie.secure,
+      isSameSite: config.cookie.isSameSite,
+      password: config.cookie.password,
+      clearInvalid: false,
+      isHttpOnly: true,
+      // encoding: 'iron',
+      domain: config.cookie.domain,
+      path: this.coreSetup.http.basePath.serverBasePath || '/',
+    };
+
+    // TODO: The quantity of extra cookies could be configurable
+    hapiServer.states.add(this.extraCookieName + '_1', extraCookieSettings);
+    hapiServer.states.add(this.extraCookieName + '_2', extraCookieSettings);
   }
 
   private generateNextUrl(request: OpenSearchDashboardsRequest): string {
@@ -76,7 +100,7 @@ export class SamlAuthentication extends AuthenticationType {
       this.securityClient,
       this.coreSetup
     );
-    samlAuthRoutes.setupRoutes();
+    samlAuthRoutes.setupRoutes(this.extraCookieName);
   }
 
   requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean {
@@ -91,7 +115,9 @@ export class SamlAuthentication extends AuthenticationType {
     return {
       username: authInfo.user_name,
       credentials: {
-        authHeaderValue: request.headers[SamlAuthentication.AUTH_HEADER_NAME],
+        authHeaderValueCompressed: deflateValue(
+          request.headers[SamlAuthentication.AUTH_HEADER_NAME] as string
+        ),
       },
       authType: AuthType.SAML,
       expiryTime: Date.now() + this.config.session.ttl,
@@ -104,7 +130,7 @@ export class SamlAuthentication extends AuthenticationType {
       cookie.authType === AuthType.SAML &&
       cookie.username &&
       cookie.expiryTime &&
-      cookie.credentials?.authHeaderValue
+      (cookie.credentials?.authHeaderValue || cookie.credentials?.authHeaderValueCompressed)
     );
   }
 
@@ -120,9 +146,26 @@ export class SamlAuthentication extends AuthenticationType {
     }
   }
 
-  buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any {
+  buildAuthHeaderFromCookie(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): any {
     const headers: any = {};
-    headers[SamlAuthentication.AUTH_HEADER_NAME] = cookie.credentials?.authHeaderValue;
+
+    if (cookie.credentials?.authHeaderValueCompressed) {
+      try {
+        const fullCookieValue = unsplitCookiesIntoValue(request, this.extraCookieName);
+        const inflatedFullCookieValue = inflateValue(Buffer.from(fullCookieValue, 'base64'));
+        headers[SamlAuthentication.AUTH_HEADER_NAME] = inflatedFullCookieValue.toString();
+      } catch (error) {
+        this.logger.error(error);
+        // @todo Re-throw?
+        // throw error;
+      }
+    } else {
+      headers[SamlAuthentication.AUTH_HEADER_NAME] = cookie.credentials?.authHeaderValue;
+    }
+
     return headers;
   }
 }
