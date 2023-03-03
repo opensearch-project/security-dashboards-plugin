@@ -115,6 +115,7 @@ export function LoginPage(props: LoginPageDeps) {
     buttonConfig: LoginButtonConfig
   ) => {
     const buttonId = `${authType}_login_button`;
+    const loginEndPointWithPath = `${props.http.basePath.serverBasePath}${loginEndPoint}`;
     return (
       <EuiFormRow>
         <EuiButton
@@ -123,7 +124,7 @@ export function LoginPage(props: LoginPageDeps) {
           size="s"
           type="prime"
           className={buttonConfig.buttonstyle || 'btn-login'}
-          href={loginEndPoint}
+          href={loginEndPointWithPath}
           iconType={buttonConfig.showbrandimage ? buttonConfig.brandimage : ''}
         >
           {buttonConfig.buttonname}
