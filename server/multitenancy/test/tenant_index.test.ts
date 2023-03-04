@@ -34,11 +34,11 @@ describe('Tenant index template', () => {
         index_patterns: 'test_index_patterns_a',
         template: {
           settings: {
-            number_of_shards: 1
+            number_of_shards: 1,
           },
-        }
+        },
       },
     });
     expect(result.body.priority).toEqual(priority);
-  })
+  });
 });

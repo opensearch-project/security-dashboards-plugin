@@ -59,14 +59,12 @@ export async function setupIndexTemplate(
         ],
         template: {
           settings: {
-            number_of_shards: 1
+            number_of_shards: 1,
           },
-          mappings
-        }
-      }
+          mappings,
+        },
+      },
     });
-
-
   } catch (error) {
     logger.error(error);
     throw error;
