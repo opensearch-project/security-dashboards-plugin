@@ -39,11 +39,11 @@ export async function setupIndexTemplate(
 ) {
   const mappings: IndexMapping = buildActiveMappings(mergeTypes(typeRegistry.getAllTypes()));
   try {
-    await esClient.indices.putTemplate({
+    await esClient.indices.putIndexTemplate({
       name: 'tenant_template',
       body: {
-        // Setting order to the max value to avoid being overridden by custom templates.
-        order: MAX_INTEGER,
+        // Setting priority to the max value to avoid being overridden by custom index templates.
+        priority: MAX_INTEGER,
         index_patterns: [
           opensearchDashboardsIndex + '_-*_*',
           opensearchDashboardsIndex + '_0*_*',
@@ -57,10 +57,12 @@ export async function setupIndexTemplate(
           opensearchDashboardsIndex + '_8*_*',
           opensearchDashboardsIndex + '_9*_*',
         ],
-        settings: {
-          number_of_shards: 1,
+        template: {
+          settings: {
+            number_of_shards: 1,
+          },
+          mappings,
         },
-        mappings,
       },
     });
   } catch (error) {
