@@ -18,26 +18,27 @@ import { MAX_INTEGER } from '../../../common';
 describe('Tenant index template', () => {
   const mockESClient = {
     indices: {
-      putTemplate: jest.fn().mockImplementation((template) => {
+      putIndexTemplate: jest.fn().mockImplementation((template) => {
         return template;
       }),
     },
   };
 
-  const order = MAX_INTEGER;
+  const priority = MAX_INTEGER;
 
   it('put template', () => {
-    const result = mockESClient.indices.putTemplate({
+    const result = mockESClient.indices.putIndexTemplate({
       name: 'test_index_template_a',
       body: {
-        order,
+        priority,
         index_patterns: 'test_index_patterns_a',
-        mappings: {
-          dynamic: 'strict',
-          properties: { baz: { type: 'text' } },
+        template: {
+          settings: {
+            number_of_shards: 1,
+          },
         },
       },
     });
-    expect(result.body.order).toEqual(order);
+    expect(result.body.priority).toEqual(priority);
   });
 });
