@@ -5,9 +5,9 @@ on: [push, pull_request]
 env:
   TEST_BROWSER_HEADLESS: 1
   CI: 1
-  OPENSEARCH_VERSION: 2.6.0
+  OPENSEARCH_VERSION: 2.7.0
   PLUGIN_NAME: opensearch-security
-  PLUGIN_VERSION: 2.6.0.0
+  PLUGIN_VERSION: 2.7.0.0
 
 jobs:
   tests:
