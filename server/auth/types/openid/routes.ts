@@ -44,6 +44,13 @@ import {
   LOGIN_PAGE_URI,
 } from '../../../../common';
 
+import {
+  clearSplitCookies,
+  ExtraAuthStorageOptions,
+  getExtraAuthStorageValue,
+  setExtraAuthStorage,
+} from '../../../session/cookie_splitter';
+
 export class OpenIdAuthRoutes {
   private static readonly NONCE_LENGTH: number = 22;
 
@@ -69,7 +76,7 @@ export class OpenIdAuthRoutes {
     });
   }
 
-  public setupRoutes() {
+  public setupRoutes(extraCookiePrefix: string) {
     this.router.get(
       {
         path: OPENID_AUTH_LOGIN,
@@ -173,7 +180,7 @@ export class OpenIdAuthRoutes {
           const sessionStorage: SecuritySessionCookie = {
             username: user.username,
             credentials: {
-              authHeaderValue: `Bearer ${tokenResponse.idToken}`,
+              authHeaderValueExtra: true,
               expires_at: getExpirationDate(tokenResponse),
             },
             authType: AuthType.OPEN_ID,
@@ -184,6 +191,15 @@ export class OpenIdAuthRoutes {
               refresh_token: tokenResponse.refreshToken,
             });
           }
+
+          // if additional cookie storage is configured, update sessionStorage
+          if (this.config.openid) {
+            setExtraAuthStorage(request, `Bearer ${tokenResponse.idToken}`, {
+              cookiePrefix: this.config.openid!.extra_storage.cookie_prefix,
+              additionalCookies: this.config.openid!.extra_storage.additional_cookies,
+            });
+          }
+
           this.sessionStorageFactory.asScoped(request).set(sessionStorage);
           return response.redirected({
             headers: {
@@ -208,15 +224,31 @@ export class OpenIdAuthRoutes {
       },
       async (context, request, response) => {
         const cookie = await this.sessionStorageFactory.asScoped(request).get();
+        let tokenFromExtraStorage = '';
+
+        const extraAuthStorageOptions: ExtraAuthStorageOptions = {
+          cookiePrefix: extraCookiePrefix,
+          additionalCookies: this.config.openid!.extra_storage.additional_cookies,
+        };
+
+        if (cookie?.credentials?.authHeaderValueExtra) {
+          tokenFromExtraStorage = getExtraAuthStorageValue(request, extraAuthStorageOptions);
+        }
+
+        clearSplitCookies(request, extraAuthStorageOptions);
         this.sessionStorageFactory.asScoped(request).clear();
 
         // authHeaderValue is the bearer header, e.g. "Bearer <auth_token>"
-        const token = cookie?.credentials.authHeaderValue.split(' ')[1]; // get auth token
+        const token = tokenFromExtraStorage.length
+          ? tokenFromExtraStorage.split(' ')[1]
+          : cookie?.credentials.authHeaderValue.split(' ')[1]; // get auth token
         const nextUrl = getBaseRedirectUrl(this.config, this.core, request);
+
         const logoutQueryParams = {
           post_logout_redirect_uri: `${nextUrl}`,
           id_token_hint: token,
         };
+
         const endSessionUrl = composeLogoutUrl(
           this.config.openid?.logout_url,
           this.openIdAuthConfig.endSessionEndpoint,

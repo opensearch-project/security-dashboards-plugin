@@ -14,20 +14,18 @@
  */
 
 import { schema } from '@osd/config-schema';
-import {
-  IRouter,
-  SessionStorageFactory,
-  OpenSearchDashboardsRequest,
-} from '../../../../../../src/core/server';
+import { IRouter, SessionStorageFactory } from '../../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
 import { CoreSetup } from '../../../../../../src/core/server';
 import { validateNextUrl } from '../../../utils/next_url';
 import { AuthType, SAML_AUTH_LOGIN, SAML_AUTH_LOGOUT } from '../../../../common';
-import { deflateValue } from '../../../utils/compression';
 
-import { splitValueIntoCookies, clearSplitCookies} from '../../../session/cookie_splitter';
+import {
+  clearSplitCookies,
+  setExtraAuthStorage
+} from '../../../session/cookie_splitter';
 
 export class SamlAuthRoutes {
   constructor(
@@ -39,7 +37,9 @@ export class SamlAuthRoutes {
     private readonly coreSetup: CoreSetup
   ) {}
 
-  public setupRoutes(extraCookieName: string) {
+
+  public setupRoutes(extraCookiePrefix: string) {
+
     this.router.get(
       {
         path: SAML_AUTH_LOGIN,
@@ -145,18 +145,22 @@ export class SamlAuthRoutes {
             expiryTime = parseInt(tokenPayload.exp, 10) * 1000;
           }
 
-          const compressedBuffer: Buffer = deflateValue(credentials.authorization);
-          splitValueIntoCookies(request, extraCookieName, compressedBuffer.toString('base64'));
-
           const cookie: SecuritySessionCookie = {
             username: user.username,
             credentials: {
-              authHeaderValueCompressed: true,
+              authHeaderValueExtra: true,
             },
             authType: AuthType.SAML, // TODO: create constant
             expiryTime,
           };
+
+          setExtraAuthStorage(request, credentials.authorization, {
+            cookiePrefix: this.config.saml.extra_storage.cookie_prefix,
+            additionalCookies: this.config.saml!.extra_storage.additional_cookies,
+          });
+
           this.sessionStorageFactory.asScoped(request).set(cookie);
+
           if (redirectHash) {
             return response.redirected({
               headers: {
@@ -215,17 +219,21 @@ export class SamlAuthRoutes {
           if (tokenPayload.exp) {
             expiryTime = parseInt(tokenPayload.exp, 10) * 1000;
           }
-          const compressedBuffer: Buffer = deflateValue(credentials.authorization);
-          splitValueIntoCookies(request, extraCookieName, compressedBuffer.toString('base64'));
 
           const cookie: SecuritySessionCookie = {
             username: user.username,
             credentials: {
-              authHeaderValueCompressed: true,
+              authHeaderValueExtra: true,
             },
             authType: AuthType.SAML, // TODO: create constant
             expiryTime,
           };
+
+          setExtraAuthStorage(request, credentials.authorization, {
+            cookiePrefix: this.config.saml.extra_storage.cookie_prefix,
+            additionalCookies: this.config.saml!.extra_storage.additional_cookies,
+          });
+
           this.sessionStorageFactory.asScoped(request).set(cookie);
           return response.redirected({
             headers: {
@@ -361,7 +369,11 @@ export class SamlAuthRoutes {
       async (context, request, response) => {
         try {
           const authInfo = await this.securityClient.authinfo(request);
-          await clearSplitCookies(request, extraCookieName);
+          await clearSplitCookies(request, {
+              cookiePrefix: extraCookiePrefix,
+              additionalCookies: this.config.saml.extra_storage.additional_cookies
+            }
+          );
           this.sessionStorageFactory.asScoped(request).clear();
           // TODO: need a default logout page
           const redirectUrl =

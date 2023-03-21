@@ -15,6 +15,7 @@
 
 import { escape } from 'querystring';
 import { CoreSetup } from 'opensearch-dashboards/server';
+import { Server, ServerStateCookieOptions } from '@hapi/hapi';
 import { SecurityPluginConfigType } from '../../..';
 import {
   SessionStorageFactory,
@@ -34,16 +35,16 @@ import {
 import { SamlAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
 import { AuthType } from '../../../../common';
-import { deflateValue, inflateValue } from '../../../utils/compression';
-import { unsplitCookiesIntoValue } from '../../../session/cookie_splitter';
-import { Server } from '@hapi/hapi';
+
+import { setExtraAuthStorage, getExtraAuthStorageValue } from '../../../session/cookie_splitter';
 
 export class SamlAuthentication extends AuthenticationType {
   public static readonly AUTH_HEADER_NAME = 'authorization';
 
   public readonly type: string = 'saml';
 
-  private readonly extraCookieName: string;
+  private readonly extraCookiePrefix: string = ''; // TODO Why a default value?
+  private readonly useAdditionalCookies: boolean = false;
 
   constructor(
     config: SecurityPluginConfigType,
@@ -55,24 +56,29 @@ export class SamlAuthentication extends AuthenticationType {
   ) {
     super(config, sessionStorageFactory, router, esClient, coreSetup, logger);
 
-    // TODO: Using the session storage like this was probably not intended
-    // @ts-ignore
-    const hapiServer: Server = this.sessionStorageFactory.asScoped({}).server;
-    this.extraCookieName = this.config.cookie.name + '_saml';
-    const extraCookieSettings = {
-      isSecure: config.cookie.secure,
-      isSameSite: config.cookie.isSameSite,
-      password: config.cookie.password,
-      clearInvalid: false,
-      isHttpOnly: true,
-      // encoding: 'iron',
-      domain: config.cookie.domain,
-      path: this.coreSetup.http.basePath.serverBasePath || '/',
-    };
+    // Use extra cookie to store the SAML token?
+    if (this.config.saml?.extra_storage.additional_cookies > 0) {
+      this.useAdditionalCookies = true;
 
-    // TODO: The quantity of extra cookies could be configurable
-    hapiServer.states.add(this.extraCookieName + '_1', extraCookieSettings);
-    hapiServer.states.add(this.extraCookieName + '_2', extraCookieSettings);
+      // @ts-ignore
+      const hapiServer: Server = this.sessionStorageFactory.asScoped({}).server;
+
+      this.extraCookiePrefix = this.config.saml.extra_storage.cookie_prefix;
+      const extraCookieSettings: ServerStateCookieOptions = {
+        isSecure: config.cookie.secure,
+        isSameSite: config.cookie.isSameSite,
+        password: config.cookie.password,
+        domain: config.cookie.domain,
+        path: this.coreSetup.http.basePath.serverBasePath || '/',
+        clearInvalid: false,
+        isHttpOnly: true,
+        encoding: 'iron', // Same as hapi auth cookie
+      };
+
+      for (let i = 1; i <= this.config.saml.extra_storage.additional_cookies; i++) {
+        hapiServer.states.add(this.extraCookiePrefix + '_' + i, extraCookieSettings);
+      }
+    }
   }
 
   private generateNextUrl(request: OpenSearchDashboardsRequest): string {
@@ -100,7 +106,7 @@ export class SamlAuthentication extends AuthenticationType {
       this.securityClient,
       this.coreSetup
     );
-    samlAuthRoutes.setupRoutes(this.extraCookieName);
+    samlAuthRoutes.setupRoutes(this.extraCookiePrefix);
   }
 
   requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean {
@@ -112,12 +118,19 @@ export class SamlAuthentication extends AuthenticationType {
   }
 
   getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
+    const authorizationHeaderValue: string = request.headers[
+      SamlAuthentication.AUTH_HEADER_NAME
+      ] as string;
+
+    setExtraAuthStorage(request, authorizationHeaderValue, {
+      cookiePrefix: this.config.saml!.extra_storage.cookie_prefix,
+      additionalCookies: this.config.saml!.extra_storage.additional_cookies,
+    });
+
     return {
       username: authInfo.user_name,
       credentials: {
-        authHeaderValueCompressed: deflateValue(
-          request.headers[SamlAuthentication.AUTH_HEADER_NAME] as string
-        ),
+        authHeaderValueExtra: true,
       },
       authType: AuthType.SAML,
       expiryTime: Date.now() + this.config.session.ttl,
@@ -125,12 +138,15 @@ export class SamlAuthentication extends AuthenticationType {
   }
 
   // Can be improved to check if the token is expiring.
-  async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean> {
+  async isValidCookie(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): Promise<boolean> {
     return (
       cookie.authType === AuthType.SAML &&
       cookie.username &&
       cookie.expiryTime &&
-      (cookie.credentials?.authHeaderValue || cookie.credentials?.authHeaderValueCompressed)
+      (cookie.credentials?.authHeaderValue || this.getExtraAuthStorageValue(request, cookie))
     );
   }
 
@@ -146,17 +162,34 @@ export class SamlAuthentication extends AuthenticationType {
     }
   }
 
+  getExtraAuthStorageValue(request: OpenSearchDashboardsRequest, cookie: SecuritySessionCookie) {
+    let extraValue = '';
+    if (!cookie.credentials?.authHeaderValueExtra) {
+      return extraValue;
+    }
+
+    try {
+      extraValue = getExtraAuthStorageValue(request, {
+        cookiePrefix: this.extraCookiePrefix,
+        additionalCookies: this.config.saml!.extra_storage.additional_cookies,
+      });
+    } catch (error) {
+      this.logger.info(error);
+    }
+
+    return extraValue;
+  }
+
   buildAuthHeaderFromCookie(
     cookie: SecuritySessionCookie,
     request: OpenSearchDashboardsRequest
   ): any {
     const headers: any = {};
 
-    if (cookie.credentials?.authHeaderValueCompressed) {
+    if (cookie.credentials?.authHeaderValueExtra) {
       try {
-        const fullCookieValue = unsplitCookiesIntoValue(request, this.extraCookieName);
-        const inflatedFullCookieValue = inflateValue(Buffer.from(fullCookieValue, 'base64'));
-        headers[SamlAuthentication.AUTH_HEADER_NAME] = inflatedFullCookieValue.toString();
+        const extraAuthStorageValue = this.getExtraAuthStorageValue(request, cookie);
+        headers[SamlAuthentication.AUTH_HEADER_NAME] = extraAuthStorageValue;
       } catch (error) {
         this.logger.error(error);
         // @todo Re-throw?

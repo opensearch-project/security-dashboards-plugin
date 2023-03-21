@@ -29,6 +29,7 @@ import {
 import HTTP from 'http';
 import HTTPS from 'https';
 import { PeerCertificate } from 'tls';
+import { Server, ServerStateCookieOptions } from '@hapi/hapi';
 import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { OpenIdAuthRoutes } from './routes';
@@ -37,6 +38,7 @@ import { callTokenEndpoint } from './helper';
 import { composeNextUrlQueryParam } from '../../../utils/next_url';
 import { getExpirationDate } from './helper';
 import { AuthType, OPENID_AUTH_LOGIN } from '../../../../common';
+import { getExtraAuthStorageValue, setExtraAuthStorage } from '../../../session/cookie_splitter';
 
 export interface OpenIdAuthConfig {
   authorizationEndpoint?: string;
@@ -60,6 +62,9 @@ export class OpenIdAuthentication extends AuthenticationType {
   private openIdConnectUrl: string;
   private wreckClient: typeof wreck;
 
+  private readonly extraCookiePrefix: string = '';
+
+
   constructor(
     config: SecurityPluginConfigType,
     sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
@@ -69,6 +74,28 @@ export class OpenIdAuthentication extends AuthenticationType {
     logger: Logger
   ) {
     super(config, sessionStorageFactory, router, esClient, core, logger);
+
+    const openidConfig = this.config.openid;
+    if (openidConfig && openidConfig.extra_storage.additional_cookies > 0) {
+      // @ts-ignore
+      const hapiServer: Server = this.sessionStorageFactory.asScoped({}).server;
+
+      this.extraCookiePrefix = openidConfig.extra_storage.cookie_prefix;
+      const extraCookieSettings: ServerStateCookieOptions = {
+        isSecure: config.cookie.secure,
+        isSameSite: config.cookie.isSameSite,
+        password: config.cookie.password,
+        domain: config.cookie.domain,
+        path: this.coreSetup.http.basePath.serverBasePath || '/',
+        clearInvalid: false,
+        isHttpOnly: true,
+        encoding: 'iron', // Same as hapi auth cookie
+      };
+
+      for (let i = 1; i <= openidConfig.extra_storage.additional_cookies; i++) {
+        hapiServer.states.add(this.extraCookiePrefix + '_' + i, extraCookieSettings);
+      }
+    }
 
     this.wreckClient = this.createWreckClient();
 
@@ -102,7 +129,7 @@ export class OpenIdAuthentication extends AuthenticationType {
         this.coreSetup,
         this.wreckClient
       );
-      routes.setupRoutes();
+      routes.setupRoutes(this.extraCookiePrefix);
     } catch (error: any) {
       this.logger.error(error); // TODO: log more info
       throw new Error('Failed when trying to obtain the endpoints from your IdP');
@@ -144,10 +171,15 @@ export class OpenIdAuthentication extends AuthenticationType {
   }
 
   getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
+    setExtraAuthStorage(request, request.headers.authorization as string, {
+      cookiePrefix: this.config.openid!.extra_storage.cookie_prefix,
+      additionalCookies: this.config.openid!.extra_storage.additional_cookies,
+    });
+
     return {
       username: authInfo.user_name,
       credentials: {
-        authHeaderValue: request.headers.authorization,
+        authHeaderValueExtra: true,
       },
       authType: this.type,
       expiryTime: Date.now() + this.config.session.ttl,
@@ -155,16 +187,22 @@ export class OpenIdAuthentication extends AuthenticationType {
   }
 
   // TODO: Add token expiration check here
-  async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean> {
+  async isValidCookie(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): Promise<boolean> {
     if (
       cookie.authType !== this.type ||
       !cookie.username ||
       !cookie.expiryTime ||
-      !cookie.credentials?.authHeaderValue ||
+      (!cookie.credentials?.authHeaderValue &&
+        !this.getExtraAuthStorageValue(request, cookie)) ||
       !cookie.credentials?.expires_at
     ) {
       return false;
     }
+
+
     if (cookie.credentials?.expires_at > Date.now()) {
       return true;
     }
@@ -187,10 +225,17 @@ export class OpenIdAuthentication extends AuthenticationType {
         // if no id_token from refresh token call, maybe the Idp doesn't allow refresh id_token
         if (refreshTokenResponse.idToken) {
           cookie.credentials = {
-            authHeaderValue: `Bearer ${refreshTokenResponse.idToken}`,
+            // TODO: Refresh token will also need to be split
+            authHeaderValueExtra: true,
             refresh_token: refreshTokenResponse.refreshToken,
             expires_at: getExpirationDate(refreshTokenResponse), // expiresIn is in second
           };
+
+          setExtraAuthStorage(request, `Bearer ${refreshTokenResponse.idToken}`, {
+            cookiePrefix: this.config.openid!.extra_storage.cookie_prefix,
+            additionalCookies: this.config.openid!.extra_storage.additional_cookies,
+          });
+
           return true;
         } else {
           return false;
@@ -226,8 +271,40 @@ export class OpenIdAuthentication extends AuthenticationType {
     }
   }
 
-  buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any {
+  getExtraAuthStorageValue(request: OpenSearchDashboardsRequest, cookie: SecuritySessionCookie) {
+    let extraValue = '';
+    if (!cookie.credentials?.authHeaderValueExtra) {
+      return extraValue;
+    }
+
+    try {
+      extraValue = getExtraAuthStorageValue(request, {
+        cookiePrefix: this.extraCookiePrefix,
+        additionalCookies: this.config.openid!.extra_storage.additional_cookies,
+      });
+    } catch (error) {
+      this.logger.info(error);
+    }
+
+    return extraValue;
+  }
+
+  buildAuthHeaderFromCookie(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): any {
     const header: any = {};
+    if (cookie.credentials.authHeaderValueExtra) {
+      try {
+        const extraAuthStorageValue = this.getExtraAuthStorageValue(request, cookie);
+        header.authorization = extraAuthStorageValue;
+        return header;
+      } catch (error) {
+        this.logger.error(error);
+        // TODO Re-throw?
+        // throw error;
+      }
+    }
     const authHeaderValue = cookie.credentials?.authHeaderValue;
     if (authHeaderValue) {
       header.authorization = authHeaderValue;

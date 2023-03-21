@@ -130,10 +130,13 @@ export class MultipleAuthentication extends AuthenticationType {
     return {};
   }
 
-  async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean> {
+  async isValidCookie(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): Promise<boolean> {
     const reqAuthType = cookie?.authType?.toLowerCase();
     if (reqAuthType && this.authHandlers.has(reqAuthType)) {
-      return this.authHandlers.get(reqAuthType)!.isValidCookie(cookie);
+      return this.authHandlers.get(reqAuthType)!.isValidCookie(cookie, request);
     } else {
       return false;
     }
