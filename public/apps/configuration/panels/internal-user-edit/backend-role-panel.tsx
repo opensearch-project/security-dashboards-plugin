@@ -34,8 +34,9 @@ import { DocLinks, LIMIT_WIDTH_INPUT_CLASS } from '../../constants';
 function generateBackendRolesPanels(
   backendRoles: string[],
   setBackendRoles: Dispatch<SetStateAction<string[]>>,
-  lastRoleEmptyErrorMessage: string,
-  setLastRoleEmptyErrorMessage: Dispatch<SetStateAction<string>>
+  emptyRoleIndex: number,
+  roleEmptyErrorMessage: string,
+  setRoleEmptyErrorMessage: Dispatch<SetStateAction<string>>
 ) {
 
   const panels = backendRoles.map((backendRole, arrayIndex) => {
@@ -45,15 +46,15 @@ function generateBackendRolesPanels(
           <EuiFlexItem className={LIMIT_WIDTH_INPUT_CLASS}>
             <EuiFormRow
               label={arrayIndex === 0 ? 'Backend role' : ''}
-              error={lastRoleEmptyErrorMessage}
-              isInvalid={arrayIndex == backendRoles.length - 1 && !isEmpty(lastRoleEmptyErrorMessage)}>
+              error={roleEmptyErrorMessage}
+              isInvalid={arrayIndex === emptyRoleIndex && !isEmpty(roleEmptyErrorMessage)}>
               <EuiFieldText
-                isInvalid={arrayIndex == backendRoles.length - 1 && !isEmpty(lastRoleEmptyErrorMessage)}
+                isInvalid={arrayIndex == emptyRoleIndex && !isEmpty(roleEmptyErrorMessage)}
                 id={`backend-role-${arrayIndex}`}
                 value={backendRole}
                 onChange={(e) => {
                   updateElementInArrayHandler(setBackendRoles, [arrayIndex])(e.target.value);
-                  setLastRoleEmptyErrorMessage("");
+                  setRoleEmptyErrorMessage("");
                 }
                 }
                 placeholder="Type in backend role"
@@ -84,7 +85,8 @@ export function BackendRolePanel(props: {
   setState: Dispatch<SetStateAction<string[]>>;
 }) {
   const { state, setState } = props;
-  const [lastRoleEmptyErrorMessage, setLastRoleEmptyErrorMessage] = useState("");
+  const [roleEmptyErrorMessage, setRoleEmptyErrorMessage] = useState("");
+  const [emptyRoleIndex, setEmptyRoleIndex] = useState(-1);
   // Show one empty row if there is no data.
   if (isEmpty(state)) {
     setState(['']);
@@ -99,19 +101,20 @@ export function BackendRolePanel(props: {
       {generateBackendRolesPanels(
         state,
         setState,
-        lastRoleEmptyErrorMessage,
-        setLastRoleEmptyErrorMessage,
+        emptyRoleIndex,
+        roleEmptyErrorMessage,
+        setRoleEmptyErrorMessage,
       )}
       <EuiSpacer />
       <EuiButton
         id="backend-role-add-row"
         onClick={() => {
-          if (state[state.length - 1] === '') {
-            setLastRoleEmptyErrorMessage("Type a backend role before adding a new one")
+          if (state.indexOf('') != -1) {
+            setRoleEmptyErrorMessage("Type a backend role before adding a new one")
+            setEmptyRoleIndex(state.indexOf(''));
           } else {
-            setLastRoleEmptyErrorMessage("");
+            setRoleEmptyErrorMessage("");
             appendElementToArray(setState, [], '');
-
           }
         }}
       >
