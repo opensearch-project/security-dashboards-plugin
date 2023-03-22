@@ -22,35 +22,43 @@ import {
   EuiFormRow,
 } from '@elastic/eui';
 import { isEmpty } from 'lodash';
-import React, { Dispatch, Fragment, SetStateAction } from 'react';
+import React, { Dispatch, Fragment, SetStateAction, useState } from 'react';
 import {
   appendElementToArray,
   removeElementFromArray,
   updateElementInArrayHandler,
 } from '../../utils/array-state-utils';
 import { PanelWithHeader } from '../../utils/panel-with-header';
-import { FormRow } from '../../utils/form-row';
 import { DocLinks, LIMIT_WIDTH_INPUT_CLASS } from '../../constants';
 
 function generateBackendRolesPanels(
   backendRoles: string[],
-  setBackendRoles: Dispatch<SetStateAction<string[]>>
+  setBackendRoles: Dispatch<SetStateAction<string[]>>,
+  lastRoleEmptyErrorMessage: string,
+  setLastRoleEmptyErrorMessage: Dispatch<SetStateAction<string>>
 ) {
+
   const panels = backendRoles.map((backendRole, arrayIndex) => {
     return (
       <Fragment key={`backend-role-${arrayIndex}`}>
         <EuiFlexGroup>
           <EuiFlexItem className={LIMIT_WIDTH_INPUT_CLASS}>
-            <FormRow headerText={arrayIndex === 0 ? 'Backend role' : ''}>
+            <EuiFormRow
+              label={arrayIndex === 0 ? 'Backend role' : ''}
+              error={lastRoleEmptyErrorMessage}
+              isInvalid={arrayIndex == backendRoles.length - 1 && !isEmpty(lastRoleEmptyErrorMessage)}>
               <EuiFieldText
+                isInvalid={arrayIndex == backendRoles.length - 1 && !isEmpty(lastRoleEmptyErrorMessage)}
                 id={`backend-role-${arrayIndex}`}
                 value={backendRole}
-                onChange={(e) =>
-                  updateElementInArrayHandler(setBackendRoles, [arrayIndex])(e.target.value)
+                onChange={(e) => {
+                  updateElementInArrayHandler(setBackendRoles, [arrayIndex])(e.target.value);
+                  setLastRoleEmptyErrorMessage("");
+                }
                 }
                 placeholder="Type in backend role"
               />
-            </FormRow>
+            </EuiFormRow>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <EuiFormRow hasEmptyLabelSpace={arrayIndex === 0 ? true : false}>
@@ -67,6 +75,7 @@ function generateBackendRolesPanels(
       </Fragment>
     );
   });
+
   return <>{panels}</>;
 }
 
@@ -75,6 +84,7 @@ export function BackendRolePanel(props: {
   setState: Dispatch<SetStateAction<string[]>>;
 }) {
   const { state, setState } = props;
+  const [lastRoleEmptyErrorMessage, setLastRoleEmptyErrorMessage] = useState("");
   // Show one empty row if there is no data.
   if (isEmpty(state)) {
     setState(['']);
@@ -86,12 +96,23 @@ export function BackendRolePanel(props: {
       helpLink={DocLinks.AccessControlDoc}
       optional
     >
-      {generateBackendRolesPanels(state, setState)}
+      {generateBackendRolesPanels(
+        state,
+        setState,
+        lastRoleEmptyErrorMessage,
+        setLastRoleEmptyErrorMessage,
+      )}
       <EuiSpacer />
       <EuiButton
         id="backend-role-add-row"
         onClick={() => {
-          appendElementToArray(setState, [], '');
+          if (state[state.length - 1] === '') {
+            setLastRoleEmptyErrorMessage("Type a backend role before adding a new one")
+          } else {
+            setLastRoleEmptyErrorMessage("");
+            appendElementToArray(setState, [], '');
+
+          }
         }}
       >
         Add another backend role
