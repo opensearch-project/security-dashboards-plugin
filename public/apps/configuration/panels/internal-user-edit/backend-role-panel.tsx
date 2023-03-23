@@ -49,7 +49,7 @@ function generateBackendRolesPanels(
               error={roleEmptyErrorMessage}
               isInvalid={arrayIndex === emptyRoleIndex && !isEmpty(roleEmptyErrorMessage)}>
               <EuiFieldText
-                isInvalid={arrayIndex == emptyRoleIndex && !isEmpty(roleEmptyErrorMessage)}
+                isInvalid={arrayIndex === emptyRoleIndex && !isEmpty(roleEmptyErrorMessage)}
                 id={`backend-role-${arrayIndex}`}
                 value={backendRole}
                 onChange={(e) => {
@@ -109,7 +109,7 @@ export function BackendRolePanel(props: {
       <EuiButton
         id="backend-role-add-row"
         onClick={() => {
-          if (state.indexOf('') != -1) {
+          if (state.indexOf('') !== -1) {
             setRoleEmptyErrorMessage("Type a backend role before adding a new one")
             setEmptyRoleIndex(state.indexOf(''));
           } else {
