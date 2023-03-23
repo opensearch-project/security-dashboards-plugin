@@ -38,7 +38,6 @@ function generateBackendRolesPanels(
   roleEmptyErrorMessage: string,
   setRoleEmptyErrorMessage: Dispatch<SetStateAction<string>>
 ) {
-
   const panels = backendRoles.map((backendRole, arrayIndex) => {
     return (
       <Fragment key={`backend-role-${arrayIndex}`}>
@@ -47,16 +46,16 @@ function generateBackendRolesPanels(
             <EuiFormRow
               label={arrayIndex === 0 ? 'Backend role' : ''}
               error={roleEmptyErrorMessage}
-              isInvalid={arrayIndex === emptyRoleIndex && !isEmpty(roleEmptyErrorMessage)}>
+              isInvalid={arrayIndex === emptyRoleIndex && !isEmpty(roleEmptyErrorMessage)}
+            >
               <EuiFieldText
                 isInvalid={arrayIndex === emptyRoleIndex && !isEmpty(roleEmptyErrorMessage)}
                 id={`backend-role-${arrayIndex}`}
                 value={backendRole}
                 onChange={(e) => {
                   updateElementInArrayHandler(setBackendRoles, [arrayIndex])(e.target.value);
-                  setRoleEmptyErrorMessage("");
-                }
-                }
+                  setRoleEmptyErrorMessage('');
+                }}
                 placeholder="Type in backend role"
               />
             </EuiFormRow>
@@ -85,7 +84,7 @@ export function BackendRolePanel(props: {
   setState: Dispatch<SetStateAction<string[]>>;
 }) {
   const { state, setState } = props;
-  const [roleEmptyErrorMessage, setRoleEmptyErrorMessage] = useState("");
+  const [roleEmptyErrorMessage, setRoleEmptyErrorMessage] = useState('');
   const [emptyRoleIndex, setEmptyRoleIndex] = useState(-1);
   // Show one empty row if there is no data.
   if (isEmpty(state)) {
@@ -103,17 +102,17 @@ export function BackendRolePanel(props: {
         setState,
         emptyRoleIndex,
         roleEmptyErrorMessage,
-        setRoleEmptyErrorMessage,
+        setRoleEmptyErrorMessage
       )}
       <EuiSpacer />
       <EuiButton
         id="backend-role-add-row"
         onClick={() => {
           if (state.indexOf('') !== -1) {
-            setRoleEmptyErrorMessage("Type a backend role before adding a new one")
+            setRoleEmptyErrorMessage('Type a backend role before adding a new one');
             setEmptyRoleIndex(state.indexOf(''));
           } else {
-            setRoleEmptyErrorMessage("");
+            setRoleEmptyErrorMessage('');
             appendElementToArray(setState, [], '');
           }
         }}
