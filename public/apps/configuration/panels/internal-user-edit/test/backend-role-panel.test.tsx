@@ -27,7 +27,7 @@ jest.mock('../../../utils/array-state-utils', () => ({
   appendElementToArray: jest.fn(),
   removeElementFromArray: jest.fn(),
   updateElementInArrayHandler: jest.fn().mockReturnValue(jest.fn()),
-  setRoleEmptyErrorMessage: jest.fn()
+  setRoleEmptyErrorMessage: jest.fn(),
 }));
 
 describe('User editing - backend role panel', () => {
@@ -81,13 +81,11 @@ describe('User editing - backend role panel', () => {
       expect(component).toMatchSnapshot();
     });
 
-
     it('add backend role when one of the previous roles is blank', () => {
       const component = shallow(<BackendRolePanel state={sampleState} setState={setState} />);
       component.find('#backend-role-0').simulate('change', { target: { value: '' } });
       component.find('#backend-role-add-row').simulate('click');
       expect(component).toMatchSnapshot();
     });
-
   });
 });
