@@ -13,8 +13,8 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiFieldText, EuiFlexGroup } from '@elastic/eui';
-import { shallow } from 'enzyme';
+import { EuiFieldText, EuiFlexGroup, EuiFormRow } from '@elastic/eui';
+import { mount, shallow } from 'enzyme';
 import React from 'react';
 import {
   appendElementToArray,
@@ -27,6 +27,7 @@ jest.mock('../../../utils/array-state-utils', () => ({
   appendElementToArray: jest.fn(),
   removeElementFromArray: jest.fn(),
   updateElementInArrayHandler: jest.fn().mockReturnValue(jest.fn()),
+  setRoleEmptyErrorMessage: jest.fn(),
 }));
 
 describe('User editing - backend role panel', () => {
@@ -70,6 +71,21 @@ describe('User editing - backend role panel', () => {
       component.find('#backend-role-delete-0').simulate('click');
 
       expect(removeElementFromArray).toBeCalledWith(setState, [], 0);
+    });
+
+    // TODO: Fix the tests for backend role error message
+    it('add backend role when the previous role is blank', () => {
+      const component = shallow(<BackendRolePanel state={[]} setState={setState} />);
+      component.find('#backend-role-add-row').simulate('click');
+      component.find('#backend-role-add-row').simulate('click');
+      expect(component).toMatchSnapshot();
+    });
+
+    it('add backend role when one of the previous roles is blank', () => {
+      const component = shallow(<BackendRolePanel state={sampleState} setState={setState} />);
+      component.find('#backend-role-0').simulate('change', { target: { value: '' } });
+      component.find('#backend-role-add-row').simulate('click');
+      expect(component).toMatchSnapshot();
     });
   });
 });
