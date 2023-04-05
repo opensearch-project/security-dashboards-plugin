@@ -13,8 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-const shell = require('child_process').execSync;
-
 const packageJson = require('../package.json');
 const osdJson = require('../opensearch_dashboards.json');
 const pluginName = 'security-dashboards';
@@ -24,8 +22,5 @@ const newName = `build/${pluginName}-${packageJson.version}.zip`;
 
 console.log('rename ' + oldName + ' to ' + newName);
 
-
 const fs = require('fs');
 fs.renameSync(oldName, newName);
-
-
