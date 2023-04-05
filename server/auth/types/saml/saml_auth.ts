@@ -36,15 +36,16 @@ import { SamlAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
 import { AuthType } from '../../../../common';
 
-import { setExtraAuthStorage, getExtraAuthStorageValue } from '../../../session/cookie_splitter';
+import {
+  setExtraAuthStorage,
+  getExtraAuthStorageValue,
+  ExtraAuthStorageOptions,
+} from '../../../session/cookie_splitter';
 
 export class SamlAuthentication extends AuthenticationType {
   public static readonly AUTH_HEADER_NAME = 'authorization';
 
   public readonly type: string = 'saml';
-
-  private readonly extraCookiePrefix: string = ''; // TODO Why a default value?
-  private readonly useAdditionalCookies: boolean = false;
 
   constructor(
     config: SecurityPluginConfigType,
@@ -55,30 +56,6 @@ export class SamlAuthentication extends AuthenticationType {
     logger: Logger
   ) {
     super(config, sessionStorageFactory, router, esClient, coreSetup, logger);
-
-    // Use extra cookie to store the SAML token?
-    if (this.config.saml?.extra_storage.additional_cookies > 0) {
-      this.useAdditionalCookies = true;
-
-      // @ts-ignore
-      const hapiServer: Server = this.sessionStorageFactory.asScoped({}).server;
-
-      this.extraCookiePrefix = this.config.saml.extra_storage.cookie_prefix;
-      const extraCookieSettings: ServerStateCookieOptions = {
-        isSecure: config.cookie.secure,
-        isSameSite: config.cookie.isSameSite,
-        password: config.cookie.password,
-        domain: config.cookie.domain,
-        path: this.coreSetup.http.basePath.serverBasePath || '/',
-        clearInvalid: false,
-        isHttpOnly: true,
-        encoding: 'iron', // Same as hapi auth cookie
-      };
-
-      for (let i = 1; i <= this.config.saml.extra_storage.additional_cookies; i++) {
-        hapiServer.states.add(this.extraCookiePrefix + '_' + i, extraCookieSettings);
-      }
-    }
   }
 
   private generateNextUrl(request: OpenSearchDashboardsRequest): string {
@@ -99,6 +76,8 @@ export class SamlAuthentication extends AuthenticationType {
   };
 
   public async init() {
+    this.createExtraStorage();
+
     const samlAuthRoutes = new SamlAuthRoutes(
       this.router,
       this.config,
@@ -106,7 +85,38 @@ export class SamlAuthentication extends AuthenticationType {
       this.securityClient,
       this.coreSetup
     );
-    samlAuthRoutes.setupRoutes(this.extraCookiePrefix);
+    samlAuthRoutes.setupRoutes();
+  }
+
+  createExtraStorage() {
+    // @ts-ignore
+    const hapiServer: Server = this.sessionStorageFactory.asScoped({}).server;
+
+    const extraCookiePrefix = this.config.saml.extra_storage.cookie_prefix;
+    const extraCookieSettings: ServerStateCookieOptions = {
+      isSecure: this.config.cookie.secure,
+      isSameSite: this.config.cookie.isSameSite,
+      password: this.config.cookie.password,
+      domain: this.config.cookie.domain,
+      path: this.coreSetup.http.basePath.serverBasePath || '/',
+      clearInvalid: false,
+      isHttpOnly: true,
+      ignoreErrors: true,
+      encoding: 'iron', // Same as hapi auth cookie
+    };
+
+    for (let i = 1; i <= this.config.saml.extra_storage.additional_cookies; i++) {
+      hapiServer.states.add(extraCookiePrefix + i, extraCookieSettings);
+    }
+  }
+
+  private getExtraAuthStorageOptions(logger?: Logger): ExtraAuthStorageOptions {
+    // If we're here, we will always have the openid configuration
+    return {
+      cookiePrefix: this.config.saml.extra_storage.cookie_prefix,
+      additionalCookies: this.config.saml.extra_storage.additional_cookies,
+      logger,
+    };
   }
 
   requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean {
@@ -120,12 +130,13 @@ export class SamlAuthentication extends AuthenticationType {
   getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
     const authorizationHeaderValue: string = request.headers[
       SamlAuthentication.AUTH_HEADER_NAME
-      ] as string;
+    ] as string;
 
-    setExtraAuthStorage(request, authorizationHeaderValue, {
-      cookiePrefix: this.config.saml!.extra_storage.cookie_prefix,
-      additionalCookies: this.config.saml!.extra_storage.additional_cookies,
-    });
+    setExtraAuthStorage(
+      request,
+      authorizationHeaderValue,
+      this.getExtraAuthStorageOptions(this.logger)
+    );
 
     return {
       username: authInfo.user_name,
@@ -169,10 +180,7 @@ export class SamlAuthentication extends AuthenticationType {
     }
 
     try {
-      extraValue = getExtraAuthStorageValue(request, {
-        cookiePrefix: this.extraCookiePrefix,
-        additionalCookies: this.config.saml!.extra_storage.additional_cookies,
-      });
+      extraValue = getExtraAuthStorageValue(request, this.getExtraAuthStorageOptions(this.logger));
     } catch (error) {
       this.logger.info(error);
     }

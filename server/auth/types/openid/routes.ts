@@ -22,6 +22,7 @@ import {
   CoreSetup,
   OpenSearchDashboardsResponseFactory,
   OpenSearchDashboardsRequest,
+  Logger,
 } from '../../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
@@ -76,7 +77,16 @@ export class OpenIdAuthRoutes {
     });
   }
 
-  public setupRoutes(extraCookiePrefix: string) {
+  private getExtraAuthStorageOptions(logger?: Logger): ExtraAuthStorageOptions {
+    // If we're here, we will always have the openid configuration
+    return {
+      cookiePrefix: this.config.openid!.extra_storage.cookie_prefix,
+      additionalCookies: this.config.openid!.extra_storage.additional_cookies,
+      logger,
+    };
+  }
+
+  public setupRoutes() {
     this.router.get(
       {
         path: OPENID_AUTH_LOGIN,
@@ -192,13 +202,11 @@ export class OpenIdAuthRoutes {
             });
           }
 
-          // if additional cookie storage is configured, update sessionStorage
-          if (this.config.openid) {
-            setExtraAuthStorage(request, `Bearer ${tokenResponse.idToken}`, {
-              cookiePrefix: this.config.openid!.extra_storage.cookie_prefix,
-              additionalCookies: this.config.openid!.extra_storage.additional_cookies,
-            });
-          }
+          setExtraAuthStorage(
+            request,
+            `Bearer ${tokenResponse.idToken}`,
+            this.getExtraAuthStorageOptions(context.security_plugin.logger)
+          );
 
           this.sessionStorageFactory.asScoped(request).set(sessionStorage);
           return response.redirected({
@@ -226,10 +234,9 @@ export class OpenIdAuthRoutes {
         const cookie = await this.sessionStorageFactory.asScoped(request).get();
         let tokenFromExtraStorage = '';
 
-        const extraAuthStorageOptions: ExtraAuthStorageOptions = {
-          cookiePrefix: extraCookiePrefix,
-          additionalCookies: this.config.openid!.extra_storage.additional_cookies,
-        };
+        const extraAuthStorageOptions: ExtraAuthStorageOptions = this.getExtraAuthStorageOptions(
+          context.security_plugin.logger
+        );
 
         if (cookie?.credentials?.authHeaderValueExtra) {
           tokenFromExtraStorage = getExtraAuthStorageValue(request, extraAuthStorageOptions);

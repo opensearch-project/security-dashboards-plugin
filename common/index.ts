@@ -50,6 +50,7 @@ export const PRIVATE_TENANT_RENDERING_TEXT = 'Private';
 export const globalTenantName = 'global_tenant';
 
 export const MAX_INTEGER = 2147483647;
+export const MAX_LENGTH_OF_COOKIE_BYTES = 4000;
 
 export enum AuthType {
   BASIC = 'basicauth',

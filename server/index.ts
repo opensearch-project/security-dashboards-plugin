@@ -181,14 +181,17 @@ export const configSchema = schema.object({
       refresh_tokens: schema.boolean({ defaultValue: true }),
       trust_dynamic_headers: schema.boolean({ defaultValue: false }),
       extra_storage: schema.object({
-        cookie_prefix: schema.string({ defaultValue: 'security_authentication_oidc' }),
-        additional_cookies: schema.number({ min: 0, defaultValue: 3 }),
+        cookie_prefix: schema.string({
+          defaultValue: 'security_authentication_oidc',
+          minLength: 2,
+        }),
+        additional_cookies: schema.number({ min: 1, defaultValue: 5 }),
       }),
     })
   ),
   saml: schema.object({
     extra_storage: schema.object({
-      cookie_prefix: schema.string({ defaultValue: 'security_authentication_saml' }),
+      cookie_prefix: schema.string({ defaultValue: 'security_authentication_saml', minLength: 2 }),
       additional_cookies: schema.number({ min: 0, defaultValue: 3 }),
     }),
   }),

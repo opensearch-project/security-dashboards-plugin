@@ -38,7 +38,11 @@ import { callTokenEndpoint } from './helper';
 import { composeNextUrlQueryParam } from '../../../utils/next_url';
 import { getExpirationDate } from './helper';
 import { AuthType, OPENID_AUTH_LOGIN } from '../../../../common';
-import { getExtraAuthStorageValue, setExtraAuthStorage } from '../../../session/cookie_splitter';
+import {
+  ExtraAuthStorageOptions,
+  getExtraAuthStorageValue,
+  setExtraAuthStorage,
+} from '../../../session/cookie_splitter';
 
 export interface OpenIdAuthConfig {
   authorizationEndpoint?: string;
@@ -62,9 +66,6 @@ export class OpenIdAuthentication extends AuthenticationType {
   private openIdConnectUrl: string;
   private wreckClient: typeof wreck;
 
-  private readonly extraCookiePrefix: string = '';
-
-
   constructor(
     config: SecurityPluginConfigType,
     sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
@@ -74,28 +75,6 @@ export class OpenIdAuthentication extends AuthenticationType {
     logger: Logger
   ) {
     super(config, sessionStorageFactory, router, esClient, core, logger);
-
-    const openidConfig = this.config.openid;
-    if (openidConfig && openidConfig.extra_storage.additional_cookies > 0) {
-      // @ts-ignore
-      const hapiServer: Server = this.sessionStorageFactory.asScoped({}).server;
-
-      this.extraCookiePrefix = openidConfig.extra_storage.cookie_prefix;
-      const extraCookieSettings: ServerStateCookieOptions = {
-        isSecure: config.cookie.secure,
-        isSameSite: config.cookie.isSameSite,
-        password: config.cookie.password,
-        domain: config.cookie.domain,
-        path: this.coreSetup.http.basePath.serverBasePath || '/',
-        clearInvalid: false,
-        isHttpOnly: true,
-        encoding: 'iron', // Same as hapi auth cookie
-      };
-
-      for (let i = 1; i <= openidConfig.extra_storage.additional_cookies; i++) {
-        hapiServer.states.add(this.extraCookiePrefix + '_' + i, extraCookieSettings);
-      }
-    }
 
     this.wreckClient = this.createWreckClient();
 
@@ -120,6 +99,8 @@ export class OpenIdAuthentication extends AuthenticationType {
       this.openIdAuthConfig.tokenEndpoint = payload.token_endpoint;
       this.openIdAuthConfig.endSessionEndpoint = payload.end_session_endpoint || undefined;
 
+      this.createExtraStorage();
+
       const routes = new OpenIdAuthRoutes(
         this.router,
         this.config,
@@ -129,7 +110,8 @@ export class OpenIdAuthentication extends AuthenticationType {
         this.coreSetup,
         this.wreckClient
       );
-      routes.setupRoutes(this.extraCookiePrefix);
+
+      routes.setupRoutes();
     } catch (error: any) {
       this.logger.error(error); // TODO: log more info
       throw new Error('Failed when trying to obtain the endpoints from your IdP');
@@ -162,6 +144,37 @@ export class OpenIdAuthentication extends AuthenticationType {
     }
   }
 
+  createExtraStorage() {
+    // @ts-ignore
+    const hapiServer: Server = this.sessionStorageFactory.asScoped({}).server;
+
+    const extraCookiePrefix = this.config.openid!.extra_storage.cookie_prefix;
+    const extraCookieSettings: ServerStateCookieOptions = {
+      isSecure: this.config.cookie.secure,
+      isSameSite: this.config.cookie.isSameSite,
+      password: this.config.cookie.password,
+      domain: this.config.cookie.domain,
+      path: this.coreSetup.http.basePath.serverBasePath || '/',
+      clearInvalid: false,
+      isHttpOnly: true,
+      ignoreErrors: true,
+      encoding: 'iron', // Same as hapi auth cookie
+    };
+
+    for (let i = 1; i <= this.config.openid!.extra_storage.additional_cookies; i++) {
+      hapiServer.states.add(extraCookiePrefix + i, extraCookieSettings);
+    }
+  }
+
+  private getExtraAuthStorageOptions(): ExtraAuthStorageOptions {
+    // If we're here, we will always have the openid configuration
+    return {
+      cookiePrefix: this.config.openid!.extra_storage.cookie_prefix,
+      additionalCookies: this.config.openid!.extra_storage.additional_cookies,
+      logger: this.logger,
+    };
+  }
+
   requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean {
     return request.headers.authorization ? true : false;
   }
@@ -171,10 +184,11 @@ export class OpenIdAuthentication extends AuthenticationType {
   }
 
   getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
-    setExtraAuthStorage(request, request.headers.authorization as string, {
-      cookiePrefix: this.config.openid!.extra_storage.cookie_prefix,
-      additionalCookies: this.config.openid!.extra_storage.additional_cookies,
-    });
+    setExtraAuthStorage(
+      request,
+      request.headers.authorization as string,
+      this.getExtraAuthStorageOptions()
+    );
 
     return {
       username: authInfo.user_name,
@@ -195,13 +209,11 @@ export class OpenIdAuthentication extends AuthenticationType {
       cookie.authType !== this.type ||
       !cookie.username ||
       !cookie.expiryTime ||
-      (!cookie.credentials?.authHeaderValue &&
-        !this.getExtraAuthStorageValue(request, cookie)) ||
+      (!cookie.credentials?.authHeaderValue && !this.getExtraAuthStorageValue(request, cookie)) ||
       !cookie.credentials?.expires_at
     ) {
       return false;
     }
-
 
     if (cookie.credentials?.expires_at > Date.now()) {
       return true;
@@ -225,16 +237,16 @@ export class OpenIdAuthentication extends AuthenticationType {
         // if no id_token from refresh token call, maybe the Idp doesn't allow refresh id_token
         if (refreshTokenResponse.idToken) {
           cookie.credentials = {
-            // TODO: Refresh token will also need to be split
             authHeaderValueExtra: true,
             refresh_token: refreshTokenResponse.refreshToken,
             expires_at: getExpirationDate(refreshTokenResponse), // expiresIn is in second
           };
 
-          setExtraAuthStorage(request, `Bearer ${refreshTokenResponse.idToken}`, {
-            cookiePrefix: this.config.openid!.extra_storage.cookie_prefix,
-            additionalCookies: this.config.openid!.extra_storage.additional_cookies,
-          });
+          setExtraAuthStorage(
+            request,
+            `Bearer ${refreshTokenResponse.idToken}`,
+            this.getExtraAuthStorageOptions()
+          );
 
           return true;
         } else {
@@ -278,10 +290,7 @@ export class OpenIdAuthentication extends AuthenticationType {
     }
 
     try {
-      extraValue = getExtraAuthStorageValue(request, {
-        cookiePrefix: this.extraCookiePrefix,
-        additionalCookies: this.config.openid!.extra_storage.additional_cookies,
-      });
+      extraValue = getExtraAuthStorageValue(request, this.getExtraAuthStorageOptions());
     } catch (error) {
       this.logger.info(error);
     }
