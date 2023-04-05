@@ -23,13 +23,9 @@ const oldName = `build/${osdJson.id}-${osdJson.opensearchDashboardsVersion}.zip`
 const newName = `build/${pluginName}-${packageJson.version}.zip`;
 
 console.log('rename ' + oldName + ' to ' + newName);
-const os = require('os')
 
-if(os.type() == 'Windows_NT'){
-    const fs = require('fs');
-    fs.renameSync(oldName, newName);
-}else{
-    shell(`mv ${oldName} ${newName}`);
-}
+
+const fs = require('fs');
+fs.renameSync(oldName, newName);
 
 
