@@ -1,0 +1,125 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`User editing - backend role panel BackendRolePanel add backend role when one of the previous roles is blank 1`] = `
+<PanelWithHeader
+  headerSubText="Backend roles are used to map users from external authentication systems, such as LDAP or SAML to OpenSearch security roles."
+  headerText="Backend roles"
+  helpLink="https://opensearch.org/docs/latest/security-plugin/access-control/index/"
+  optional={true}
+>
+  <EuiFlexGroup>
+    <EuiFlexItem
+      className="limit-width-input"
+    >
+      <EuiFormRow
+        describedByIds={Array []}
+        display="row"
+        error=""
+        fullWidth={false}
+        hasChildLabel={true}
+        hasEmptyLabelSpace={false}
+        isInvalid={false}
+        label="Backend role"
+        labelType="label"
+      >
+        <EuiFieldText
+          id="backend-role-0"
+          isInvalid={false}
+          onChange={[Function]}
+          placeholder="Type in backend role"
+          value="admin"
+        />
+      </EuiFormRow>
+    </EuiFlexItem>
+    <EuiFlexItem
+      grow={false}
+    >
+      <EuiFormRow
+        describedByIds={Array []}
+        display="row"
+        fullWidth={false}
+        hasChildLabel={true}
+        hasEmptyLabelSpace={true}
+        labelType="label"
+      >
+        <EuiButton
+          color="danger"
+          id="backend-role-delete-0"
+          onClick={[Function]}
+        >
+          Remove
+        </EuiButton>
+      </EuiFormRow>
+    </EuiFlexItem>
+  </EuiFlexGroup>
+  <EuiFlexGroup>
+    <EuiFlexItem
+      className="limit-width-input"
+    >
+      <EuiFormRow
+        describedByIds={Array []}
+        display="row"
+        error=""
+        fullWidth={false}
+        hasChildLabel={true}
+        hasEmptyLabelSpace={false}
+        isInvalid={false}
+        label=""
+        labelType="label"
+      >
+        <EuiFieldText
+          id="backend-role-1"
+          isInvalid={false}
+          onChange={[Function]}
+          placeholder="Type in backend role"
+          value="HR"
+        />
+      </EuiFormRow>
+    </EuiFlexItem>
+    <EuiFlexItem
+      grow={false}
+    >
+      <EuiFormRow
+        describedByIds={Array []}
+        display="row"
+        fullWidth={false}
+        hasChildLabel={true}
+        hasEmptyLabelSpace={false}
+        labelType="label"
+      >
+        <EuiButton
+          color="danger"
+          id="backend-role-delete-1"
+          onClick={[Function]}
+        >
+          Remove
+        </EuiButton>
+      </EuiFormRow>
+    </EuiFlexItem>
+  </EuiFlexGroup>
+  <EuiSpacer />
+  <EuiButton
+    id="backend-role-add-row"
+    onClick={[Function]}
+  >
+    Add another backend role
+  </EuiButton>
+</PanelWithHeader>
+`;
+
+exports[`User editing - backend role panel BackendRolePanel add backend role when the previous role is blank 1`] = `
+<PanelWithHeader
+  headerSubText="Backend roles are used to map users from external authentication systems, such as LDAP or SAML to OpenSearch security roles."
+  headerText="Backend roles"
+  helpLink="https://opensearch.org/docs/latest/security-plugin/access-control/index/"
+  optional={true}
+>
+  <EuiSpacer />
+  <EuiButton
+    id="backend-role-add-row"
+    onClick={[Function]}
+  >
+    Add another backend role
+  </EuiButton>
+</PanelWithHeader>
+`;
