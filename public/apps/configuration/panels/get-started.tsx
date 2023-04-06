@@ -184,15 +184,14 @@ export function GetStarted(props: AppDependencies) {
 
           <EuiSpacer size="l" />
           {props.config.ui.backend_configurable && (
-            <EuiFlexGroup justifyContent="center">
-              <EuiFlexItem style={{ maxWidth: '600px' }}>
-                <EuiImage
-                  size="fullWidth"
-                  alt="Three steps to set up your security"
-                  url={securityStepsDiagram}
-                />
-              </EuiFlexItem>
-            </EuiFlexGroup>
+            <div className="text-center">
+              <EuiImage
+                size="xl"
+                alt="Three steps to set up your security"
+                url={securityStepsDiagram}
+                style={{ maxWidth: '100%', height: 'auto', width: 'auto' }}
+              />
+            </div>
           )}
 
           <EuiSpacer size="l" />
