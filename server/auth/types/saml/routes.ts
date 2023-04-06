@@ -379,7 +379,10 @@ export class SamlAuthRoutes {
       async (context, request, response) => {
         try {
           const authInfo = await this.securityClient.authinfo(request);
-          await clearSplitCookies(request, this.getExtraAuthStorageOptions(context.security_plugin.logger));
+          await clearSplitCookies(
+            request,
+            this.getExtraAuthStorageOptions(context.security_plugin.logger)
+          );
           this.sessionStorageFactory.asScoped(request).clear();
           // TODO: need a default logout page
           const redirectUrl =

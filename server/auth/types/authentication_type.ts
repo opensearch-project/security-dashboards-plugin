@@ -278,6 +278,9 @@ export abstract class AuthenticationType implements IAuthenticationType {
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
   ): IOpenSearchDashboardsResponse | AuthResult;
-  public abstract buildAuthHeaderFromCookie(cookie: SecuritySessionCookie, request: OpenSearchDashboardsRequest): any;
+  public abstract buildAuthHeaderFromCookie(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): any;
   public abstract init(): Promise<void>;
 }
