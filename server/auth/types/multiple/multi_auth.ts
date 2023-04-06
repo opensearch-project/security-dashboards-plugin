@@ -178,7 +178,7 @@ export class MultipleAuthentication extends AuthenticationType {
     const reqAuthType = cookie?.authType?.toLowerCase();
 
     if (reqAuthType && this.authHandlers.has(reqAuthType)) {
-      return this.authHandlers.get(reqAuthType)!.buildAuthHeaderFromCookie(cookie);
+      return this.authHandlers.get(reqAuthType)!.buildAuthHeaderFromCookie(cookie, request);
     } else {
       return {};
     }
