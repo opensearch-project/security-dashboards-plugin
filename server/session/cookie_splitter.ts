@@ -19,7 +19,7 @@ import {
   OpenSearchDashboardsRequest,
 } from '../../../../src/core/server/http/router';
 import { deflateValue, inflateValue } from '../utils/compression';
-import { MAX_LENGTH_OF_COOKIE_BYTES } from '../../common';
+import { ESTIMATED_IRON_COOKIE_OVERHEAD, MAX_LENGTH_OF_COOKIE_BYTES } from '../../common';
 
 export interface ExtraAuthStorageOptions {
   cookiePrefix: string;
@@ -74,7 +74,6 @@ export function setExtraAuthStorage(
     options.additionalCookies,
     options.logger
   );
-
 }
 
 export function splitValueIntoCookies(
@@ -89,7 +88,9 @@ export function splitValueIntoCookies(
    * Remember that an empty cookie is around 30 bytes
    */
 
-  const maxLengthPerCookie = Math.floor(MAX_LENGTH_OF_COOKIE_BYTES / 1.5);
+  const maxLengthPerCookie = Math.floor(
+    MAX_LENGTH_OF_COOKIE_BYTES / ESTIMATED_IRON_COOKIE_OVERHEAD
+  );
   const cookiesNeeded = value.length / maxLengthPerCookie; // Assume 1 bit per character since this value is encoded
   // If the amount of additional cookies aren't enough for our logic, we try to write the value anyway
   // TODO We could also consider throwing an error, since a failed cookie leads to weird redirects.
@@ -118,6 +119,7 @@ export function splitValueIntoCookies(
 
   values.forEach(async (cookieSplitValue: string, index: number) => {
     const cookieName: string = cookiePrefix + (index + 1);
+
     if (cookieSplitValue === '') {
       // Make sure we clean up cookies that are not needed for the given value
       (rawRequest.cookieAuth as CookieAuthWithResponseObject).h.unstate(cookieName);
@@ -145,7 +147,10 @@ export function unsplitCookiesIntoValue(
   return fullCookieValue;
 }
 
-export function clearSplitCookies(request: any, options: ExtraAuthStorageOptions): void {
+export function clearSplitCookies(
+  request: OpenSearchDashboardsRequest,
+  options: ExtraAuthStorageOptions
+): void {
   const rawRequest: HapiRequest = ensureRawRequest(request);
   for (let i = 1; i <= options.additionalCookies; i++) {
     const cookieName = options.cookiePrefix + i;
