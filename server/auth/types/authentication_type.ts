@@ -138,7 +138,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
         cookie = undefined;
       }
 
-      if (!cookie || !(await this.isValidCookie(cookie))) {
+      if (!cookie || !(await this.isValidCookie(cookie, request))) {
         // clear cookie
         this.sessionStorageFactory.asScoped(request).clear();
 
@@ -160,7 +160,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
       }
       // cookie is valid
       // build auth header
-      const authHeadersFromCookie = this.buildAuthHeaderFromCookie(cookie!);
+      const authHeadersFromCookie = this.buildAuthHeaderFromCookie(cookie!, request);
       Object.assign(authHeaders, authHeadersFromCookie);
       const additonalAuthHeader = await this.getAdditionalAuthHeader(request);
       Object.assign(authHeaders, additonalAuthHeader);
@@ -269,12 +269,18 @@ export abstract class AuthenticationType implements IAuthenticationType {
     request: OpenSearchDashboardsRequest,
     authInfo: any
   ): SecuritySessionCookie;
-  public abstract isValidCookie(cookie: SecuritySessionCookie): Promise<boolean>;
+  public abstract isValidCookie(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): Promise<boolean>;
   protected abstract handleUnauthedRequest(
     request: OpenSearchDashboardsRequest,
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
   ): IOpenSearchDashboardsResponse | AuthResult;
-  public abstract buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any;
+  public abstract buildAuthHeaderFromCookie(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): any;
   public abstract init(): Promise<void>;
 }

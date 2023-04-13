@@ -14,17 +14,19 @@
  */
 
 import { schema } from '@osd/config-schema';
-import {
-  IRouter,
-  SessionStorageFactory,
-  OpenSearchDashboardsRequest,
-} from '../../../../../../src/core/server';
+import { IRouter, SessionStorageFactory, Logger } from '../../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
 import { CoreSetup } from '../../../../../../src/core/server';
 import { validateNextUrl } from '../../../utils/next_url';
 import { AuthType, SAML_AUTH_LOGIN, SAML_AUTH_LOGOUT } from '../../../../common';
+
+import {
+  clearSplitCookies,
+  ExtraAuthStorageOptions,
+  setExtraAuthStorage,
+} from '../../../session/cookie_splitter';
 
 export class SamlAuthRoutes {
   constructor(
@@ -35,6 +37,15 @@ export class SamlAuthRoutes {
     private readonly securityClient: SecurityClient,
     private readonly coreSetup: CoreSetup
   ) {}
+
+  private getExtraAuthStorageOptions(logger?: Logger): ExtraAuthStorageOptions {
+    // If we're here, we will always have the openid configuration
+    return {
+      cookiePrefix: this.config.saml.extra_storage.cookie_prefix,
+      additionalCookies: this.config.saml.extra_storage.additional_cookies,
+      logger,
+    };
+  }
 
   public setupRoutes() {
     this.router.get(
@@ -141,15 +152,24 @@ export class SamlAuthRoutes {
           if (tokenPayload.exp) {
             expiryTime = parseInt(tokenPayload.exp, 10) * 1000;
           }
+
           const cookie: SecuritySessionCookie = {
             username: user.username,
             credentials: {
-              authHeaderValue: credentials.authorization,
+              authHeaderValueExtra: true,
             },
             authType: AuthType.SAML, // TODO: create constant
             expiryTime,
           };
+
+          setExtraAuthStorage(
+            request,
+            credentials.authorization,
+            this.getExtraAuthStorageOptions(context.security_plugin.logger)
+          );
+
           this.sessionStorageFactory.asScoped(request).set(cookie);
+
           if (redirectHash) {
             return response.redirected({
               headers: {
@@ -212,11 +232,18 @@ export class SamlAuthRoutes {
           const cookie: SecuritySessionCookie = {
             username: user.username,
             credentials: {
-              authHeaderValue: credentials.authorization,
+              authHeaderValueExtra: true,
             },
             authType: AuthType.SAML, // TODO: create constant
             expiryTime,
           };
+
+          setExtraAuthStorage(
+            request,
+            credentials.authorization,
+            this.getExtraAuthStorageOptions(context.security_plugin.logger)
+          );
+
           this.sessionStorageFactory.asScoped(request).set(cookie);
           return response.redirected({
             headers: {
@@ -352,6 +379,10 @@ export class SamlAuthRoutes {
       async (context, request, response) => {
         try {
           const authInfo = await this.securityClient.authinfo(request);
+          await clearSplitCookies(
+            request,
+            this.getExtraAuthStorageOptions(context.security_plugin.logger)
+          );
           this.sessionStorageFactory.asScoped(request).clear();
           // TODO: need a default logout page
           const redirectUrl =
