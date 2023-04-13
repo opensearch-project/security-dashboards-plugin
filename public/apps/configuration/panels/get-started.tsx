@@ -189,6 +189,7 @@ export function GetStarted(props: AppDependencies) {
                 size="xl"
                 alt="Three steps to set up your security"
                 url={securityStepsDiagram}
+                style={{ maxWidth: '100%', height: 'auto', width: 'auto' }}
               />
             </div>
           )}
