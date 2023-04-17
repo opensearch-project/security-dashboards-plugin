@@ -47,6 +47,7 @@ import {
 import { addTenantToShareURL } from './services/shared-link';
 import { interceptError } from './utils/logout-utils';
 import { tenantColumn, getNamespacesToRegister } from './apps/configuration/utils/tenant-utils';
+import { getDashboardsInfoSafe } from './utils/dashboards-info-utils';
 
 async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
   try {
@@ -88,6 +89,7 @@ export class SecurityPlugin
     const config = this.initializerContext.config.get<ClientConfigType>();
 
     const accountInfo = (await fetchAccountInfoSafe(core.http))?.data;
+    const multitenancyEnabled = (await getDashboardsInfoSafe(core.http))?.multitenancy_enabled;
     const isReadonly = accountInfo?.roles.some((role) =>
       (config.readonly_mode?.roles || DEFAULT_READONLY_ROLES).includes(role)
     );
@@ -153,7 +155,7 @@ export class SecurityPlugin
       })
     );
 
-    if (config.multitenancy.enabled && config.multitenancy.enable_aggregation_view) {
+    if (multitenancyEnabled && config.multitenancy.enable_aggregation_view) {
       deps.savedObjectsManagement.columns.register(
         (tenantColumn as unknown) as SavedObjectsManagementColumn<string>
       );
