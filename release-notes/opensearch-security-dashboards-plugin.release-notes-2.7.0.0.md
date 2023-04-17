@@ -2,16 +2,16 @@
 
 Compatible with Opensearch-Dashboards 2.7.0
 
-### Feature
+### Features
 
 * Dynamic tenancy configurations ([#1394](https://github.com/opensearch-project/security-dashboards-plugin/pull/1394))
 
-### Bug Fix
+### Bug Fixes
 
 * Fix No blank backend role before adding a new one in Create User page ([#1384](https://github.com/opensearch-project/security-dashboards-plugin/pull/1384))
 * Fix "Get started" image is not adaptive to the browser window size. ([#1396](https://github.com/opensearch-project/security-dashboards-plugin/pull/1396))
 
-### Enhancement
+### Enhancements
 
 * Replace legacy template with index template ([#1359](https://github.com/opensearch-project/security-dashboards-plugin/pull/1359))
 * Add loginEndPointWithPath ([#1358](https://github.com/opensearch-project/security-dashboards-plugin/pull/1358))
