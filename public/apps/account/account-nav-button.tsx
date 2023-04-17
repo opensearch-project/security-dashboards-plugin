@@ -62,18 +62,7 @@ export function AccountNavButton(props: {
           }}
           handleSwitchAndClose={() => {
             setModal(null);
-          const lastUrls = [];
-          for (let i = 0; i < sessionStorage.length; i++) {
-            const key = sessionStorage.key(i);
-            if (key?.startsWith('lastUrl')) {
-              lastUrls.push(key);
-            }
-          }
-          for (let i = 0; i < lastUrls.length; i++) {
-            sessionStorage.removeItem(lastUrls[i]);
-          }
-          
-          window.location.href = window.location.pathname;  
+            reloadAfterTenantSwitch();
           }}
           tenant={props.tenant!}
         />
@@ -83,9 +72,9 @@ export function AccountNavButton(props: {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        // setIsMultiTenancyEnabled(
-        //   (await getDashboardsInfo(props.coreStart.http)).multitenancy_enabled
-        // );
+        setIsMultiTenancyEnabled(
+          (await getDashboardsInfo(props.coreStart.http)).multitenancy_enabled
+        );
       } catch (e) {
         // TODO: switch to better error display.
         console.error(e);

@@ -155,11 +155,7 @@ export class SecurityPlugin
       })
     );
 
-    if (
-      multitenancyEnabled &&
-      config.multitenancy.enabled &&
-      config.multitenancy.enable_aggregation_view
-    ) {
+    if (multitenancyEnabled && config.multitenancy.enable_aggregation_view) {
       deps.savedObjectsManagement.columns.register(
         (tenantColumn as unknown) as SavedObjectsManagementColumn<string>
       );
