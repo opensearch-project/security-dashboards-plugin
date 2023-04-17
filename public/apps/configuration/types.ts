@@ -24,6 +24,8 @@ export enum ResourceType {
   users = 'users',
   permissions = 'permissions',
   tenants = 'tenants',
+  tenantsManageTab = 'tenantsManageTab',
+  tenantsConfigureTab = 'tenantsConfigureTab',
   auth = 'auth',
   auditLogging = 'auditLogging',
 }
@@ -33,6 +35,8 @@ export enum Action {
   create = 'create',
   edit = 'edit',
   duplicate = 'duplicate',
+  manage = 'manage',
+  configure = 'configure',
 }
 
 export enum SubAction {
