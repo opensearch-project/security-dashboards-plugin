@@ -45,7 +45,6 @@ export function SaveChangesModalGenerator(props: SaveChangesModalDeps) {
   ) {
     globalDefaultModal = (
       <EuiConfirmModal
-        // onClose={props.handleClose}
         style={{ width: 600 }}
         title="Change default tenant?"
         onCancel={props.handleClose}
