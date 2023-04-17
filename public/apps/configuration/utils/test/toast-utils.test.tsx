@@ -89,6 +89,7 @@ describe('Toast utils', () => {
       const result = createUnknownErrorToast('dummy', 'dummy_action');
       const expectedUnknownErrorToast: Toast = {
         id: 'dummy',
+        iconType: 'alert',
         color: 'danger',
         title: 'Failed to dummy_action',
         text:
