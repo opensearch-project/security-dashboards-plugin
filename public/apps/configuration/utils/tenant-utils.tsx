@@ -19,6 +19,7 @@ import React from 'react';
 import { i18n } from '@osd/i18n';
 import {
   API_ENDPOINT_MULTITENANCY,
+  API_ENDPOINT_TENANCY_CONFIGS,
   API_ENDPOINT_TENANTS,
   RoleViewTenantInvalidText,
   TENANT_READ_PERMISSION,
@@ -35,9 +36,10 @@ import {
   TenantSelect,
   TenantUpdate,
 } from '../types';
-import { httpDelete, httpGet, httpPost } from './request-utils';
+import { httpDelete, httpGet, httpPost, httpPut } from './request-utils';
 import { getResourceUrl } from './resource-utils';
 import {
+  API_ENDPOINT_DASHBOARDSINFO,
   DEFAULT_TENANT,
   GLOBAL_TENANT_RENDERING_TEXT,
   GLOBAL_TENANT_SYMBOL,
@@ -45,7 +47,9 @@ import {
   isGlobalTenant,
   isRenderingPrivateTenant,
   PRIVATE_TENANT_RENDERING_TEXT,
+  SAML_AUTH_LOGIN,
 } from '../../../../common';
+import { TenancyConfigSettings } from '../panels/tenancy-config/types';
 
 export const GLOBAL_USER_DICT: { [key: string]: string } = {
   Label: 'Global',
@@ -67,10 +71,7 @@ export async function fetchTenantNameList(http: HttpStart): Promise<string[]> {
   return Object.keys(await fetchTenants(http));
 }
 
-export function transformTenantData(
-  rawTenantData: DataObject<Tenant>,
-  isPrivateEnabled: boolean
-): Tenant[] {
+export function transformTenantData(rawTenantData: DataObject<Tenant>): Tenant[] {
   // @ts-ignore
   const tenantList: Tenant[] = map<Tenant, Tenant>(rawTenantData, (v: Tenant, k?: string) => ({
     tenant: k === globalTenantName ? GLOBAL_USER_DICT.Label : k || GLOBAL_TENANT_SYMBOL,
@@ -78,15 +79,12 @@ export function transformTenantData(
     description: k === globalTenantName ? GLOBAL_USER_DICT.Description : v.description,
     tenantValue: k === globalTenantName ? GLOBAL_USER_DICT.Value : k || GLOBAL_TENANT_SYMBOL,
   }));
-  if (isPrivateEnabled) {
-    // Insert Private Tenant in List
-    tenantList.splice(1, 0, {
-      tenant: PRIVATE_USER_DICT.Label,
-      reserved: true,
-      description: PRIVATE_USER_DICT.Description,
-      tenantValue: PRIVATE_USER_DICT.Value,
-    });
-  }
+  tenantList.splice(1, 0, {
+    tenant: PRIVATE_USER_DICT.Label,
+    reserved: true,
+    description: PRIVATE_USER_DICT.Description,
+    tenantValue: PRIVATE_USER_DICT.Value,
+  });
   return tenantList;
 }
 
@@ -100,6 +98,15 @@ export async function updateTenant(
   updateObject: TenantUpdate
 ) {
   return await httpPost(http, getResourceUrl(API_ENDPOINT_TENANTS, tenantName), updateObject);
+}
+
+export async function updateTenancyConfiguration(
+  http: HttpStart,
+  updatedTenancyConfig: TenancyConfigSettings
+) {
+  await httpPut(http, API_ENDPOINT_TENANCY_CONFIGS, updatedTenancyConfig);
+
+  return;
 }
 
 export async function requestDeleteTenant(http: HttpStart, tenants: string[]) {

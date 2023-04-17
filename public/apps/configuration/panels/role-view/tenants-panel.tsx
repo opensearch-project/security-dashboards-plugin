@@ -67,7 +67,7 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
     const fetchData = async () => {
       try {
         const rawTenantData = await fetchTenants(props.coreStart.http);
-        const processedTenantData = transformTenantData(rawTenantData, false);
+        const processedTenantData = transformTenantData(rawTenantData);
         setTenantPermissionDetail(
           transformRoleTenantPermissionData(props.tenantPermissions, processedTenantData)
         );
@@ -192,7 +192,7 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
     <>
       <PanelWithHeader
         headerText={headerText}
-        headerSubText="Tenants in OpenSearch Dashboards are spaces for saving index patterns, visualizations, dashboards, and other OpenSearch Dashboards objects. 
+        headerSubText="Tenants in OpenSearch Dashboards are spaces for saving index patterns, visualizations, dashboards, and other OpenSearch Dashboards objects.
         Tenants are useful for safely sharing your work with other OpenSearch Dashboards users. You can control which roles have access to a tenant and whether those roles have read or write access."
         helpLink={DocLinks.TenantPermissionsDoc}
         count={tenantPermissionDetail.length}

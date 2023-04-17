@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { TenantList } from '../tenant-list';
+import { ManageTab } from '../manage_tab';
 import { shallow } from 'enzyme';
 import React from 'react';
 import { EuiInMemoryTable } from '@elastic/eui';
@@ -21,6 +21,7 @@ import { useDeleteConfirmState } from '../../../utils/delete-confirm-modal-utils
 import { Tenant } from '../../../types';
 import { TenantEditModal } from '../edit-modal';
 import { TenantInstructionView } from '../tenant-instruction-view';
+import { getDashboardsInfo } from '../../../../../utils/dashboards-info-utils';
 
 jest.mock('../../../utils/tenant-utils');
 jest.mock('../../../../../utils/auth-info-utils');
@@ -37,6 +38,19 @@ jest.mock('../../../utils/toast-utils', () => ({
   getSuccessToastMessage: jest.fn(),
   createUnknownErrorToast: jest.fn(),
 }));
+
+jest.mock('../../../../../utils/dashboards-info-utils', () => ({
+  getDashboardsInfo: jest.fn().mockImplementation(() => {
+    return mockDashboardsInfo;
+  }),
+}));
+
+const mockDashboardsInfo = {
+  multitenancy_enabled: true,
+  private_tenant_enabled: true,
+  default_tenant: '',
+};
+
 // eslint-disable-next-line
 const mockTenantUtils = require('../../../utils/tenant-utils');
 // eslint-disable-next-line
@@ -46,6 +60,11 @@ describe('Tenant list', () => {
   const setState = jest.fn();
   const mockCoreStart = {
     http: 1,
+    chrome: {
+      setBreadcrumbs() {
+        return 1;
+      },
+    },
   };
   const config = {
     multitenancy: {
@@ -61,6 +80,10 @@ describe('Tenant list', () => {
   });
 
   it('Render empty', () => {
+    (getDashboardsInfo as jest.Mock).mockImplementation(() => {
+      return mockDashboardsInfo;
+    });
+
     const mockTenantListingData = [
       {
         tenant: 'tenant_1',
@@ -73,7 +96,7 @@ describe('Tenant list', () => {
     mockTenantUtils.transformTenantData = jest.fn().mockReturnValue(mockTenantListingData);
 
     const component = shallow(
-      <TenantList
+      <ManageTab
         coreStart={mockCoreStart as any}
         navigation={{} as any}
         params={{} as any}
@@ -85,6 +108,13 @@ describe('Tenant list', () => {
   });
 
   it('renders when multitenancy is disabled in the opensearch_dashboards.yml', () => {
+    (getDashboardsInfo as jest.Mock).mockImplementation(() => {
+      return {
+        multitenancy_enabled: false,
+        private_tenant_enabled: true,
+        default_tenant: '',
+      };
+    });
     const config1 = {
       multitenancy: {
         enabled: false,
@@ -94,7 +124,7 @@ describe('Tenant list', () => {
       },
     };
     const component = shallow(
-      <TenantList
+      <ManageTab
         coreStart={mockCoreStart as any}
         navigation={{} as any}
         params={{} as any}
@@ -113,8 +143,8 @@ describe('Tenant list', () => {
     });
 
     shallow(
-      <TenantList
-        coreStart={{} as any}
+      <ManageTab
+        coreStart={mockCoreStart as any}
         navigation={{} as any}
         params={{} as any}
         config={config as any}
@@ -143,7 +173,7 @@ describe('Tenant list', () => {
     mockTenantUtils.transformTenantData = jest.fn().mockReturnValue(mockTenantListingData);
 
     shallow(
-      <TenantList
+      <ManageTab
         coreStart={mockCoreStart as any}
         navigation={{} as any}
         params={{} as any}
@@ -163,7 +193,7 @@ describe('Tenant list', () => {
 
   it('delete tenant', (done) => {
     shallow(
-      <TenantList
+      <ManageTab
         coreStart={mockCoreStart as any}
         navigation={{} as any}
         params={{} as any}
@@ -188,7 +218,7 @@ describe('Tenant list', () => {
     const loggingFunc = jest.fn();
     jest.spyOn(console, 'log').mockImplementationOnce(loggingFunc);
     shallow(
-      <TenantList
+      <ManageTab
         coreStart={mockCoreStart as any}
         navigation={{} as any}
         params={{} as any}
@@ -207,7 +237,7 @@ describe('Tenant list', () => {
 
   it('submit tenant', () => {
     const component = shallow(
-      <TenantList
+      <ManageTab
         coreStart={mockCoreStart as any}
         navigation={{} as any}
         params={{} as any}
@@ -229,7 +259,7 @@ describe('Tenant list', () => {
       throw error;
     });
     const component = shallow(
-      <TenantList
+      <ManageTab
         coreStart={mockCoreStart as any}
         navigation={{} as any}
         params={{} as any}
@@ -267,7 +297,7 @@ describe('Tenant list', () => {
     it('edit and delete should be disabled when selected tenant is reserved', () => {
       jest.spyOn(React, 'useState').mockImplementation(() => [[sampleReservedTenant], jest.fn()]);
       const component = shallow(
-        <TenantList
+        <ManageTab
           coreStart={mockCoreStart as any}
           navigation={{} as any}
           params={{} as any}
@@ -283,7 +313,7 @@ describe('Tenant list', () => {
         .spyOn(React, 'useState')
         .mockImplementation(() => [[sampleReservedTenant, sampleCustomTenant1], jest.fn()]);
       const component = shallow(
-        <TenantList
+        <ManageTab
           coreStart={mockCoreStart as any}
           navigation={{} as any}
           params={{} as any}
@@ -303,7 +333,7 @@ describe('Tenant list', () => {
         .spyOn(React, 'useState')
         .mockImplementation(() => [[sampleCustomTenant1, sampleCustomTenant2], jest.fn()]);
       const component = shallow(
-        <TenantList
+        <ManageTab
           coreStart={mockCoreStart as any}
           navigation={{} as any}
           params={{} as any}
@@ -332,7 +362,7 @@ describe('Tenant list', () => {
     beforeEach(() => {
       jest.spyOn(React, 'useState').mockImplementation(() => [[sampleCustomTenant1], jest.fn()]);
       component = shallow(
-        <TenantList
+        <ManageTab
           coreStart={mockCoreStart as any}
           navigation={{} as any}
           params={{} as any}
