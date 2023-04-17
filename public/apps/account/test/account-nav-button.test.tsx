@@ -17,11 +17,24 @@ import { shallow } from 'enzyme';
 import React from 'react';
 import { AccountNavButton } from '../account-nav-button';
 import { getShouldShowTenantPopup, setShouldShowTenantPopup } from '../../../utils/storage-utils';
+import { getDashboardsInfo } from '../../../utils/dashboards-info-utils';
 
 jest.mock('../../../utils/storage-utils', () => ({
   getShouldShowTenantPopup: jest.fn(),
   setShouldShowTenantPopup: jest.fn(),
 }));
+
+jest.mock('../../../utils/dashboards-info-utils', () => ({
+  getDashboardsInfo: jest.fn().mockImplementation(() => {
+    return mockDashboardsInfo;
+  }),
+}));
+
+const mockDashboardsInfo = {
+  multitenancy_enabled: true,
+  private_tenant_enabled: true,
+  default_tenant: '',
+};
 
 describe('Account navigation button', () => {
   const mockCoreStart = {
@@ -49,6 +62,9 @@ describe('Account navigation button', () => {
 
   beforeEach(() => {
     useStateSpy.mockImplementation((init) => [init, setState]);
+    (getDashboardsInfo as jest.Mock).mockImplementation(() => {
+      return mockDashboardsInfo;
+    });
     component = shallow(
       <AccountNavButton
         coreStart={mockCoreStart}
@@ -66,10 +82,16 @@ describe('Account navigation button', () => {
   });
 
   it('renders', () => {
+    (getDashboardsInfo as jest.Mock).mockImplementationOnce(() => {
+      return mockDashboardsInfo;
+    });
     expect(component).toMatchSnapshot();
   });
 
   it('should set modal when show popup is true', () => {
+    (getDashboardsInfo as jest.Mock).mockImplementation(() => {
+      return mockDashboardsInfo;
+    });
     (getShouldShowTenantPopup as jest.Mock).mockReturnValueOnce(true);
     shallow(
       <AccountNavButton
@@ -132,6 +154,13 @@ describe('Account navigation button, multitenancy disabled', () => {
   });
 
   it('should not set modal when show popup is true', () => {
+    (getDashboardsInfo as jest.Mock).mockImplementation(() => {
+      return {
+        multitenancy_enabled: false,
+        private_tenant_enabled: false,
+        default_tenant: '',
+      };
+    });
     (getShouldShowTenantPopup as jest.Mock).mockReturnValueOnce(true);
     shallow(
       <AccountNavButton
@@ -142,6 +171,6 @@ describe('Account navigation button, multitenancy disabled', () => {
         currAuthType={'dummy'}
       />
     );
-    expect(setState).toBeCalledTimes(0);
+    expect(setState).toBeCalledTimes(1);
   });
 });

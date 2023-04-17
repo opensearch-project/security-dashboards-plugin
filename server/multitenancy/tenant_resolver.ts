@@ -14,7 +14,6 @@
  */
 
 import { isEmpty, findKey, cloneDeep } from 'lodash';
-import { OpenSearchDashboardsRequest } from '../../../../src/core/server';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { SecurityPluginConfigType } from '..';
 import { GLOBAL_TENANT_SYMBOL, PRIVATE_TENANT_SYMBOL, globalTenantName } from '../../common';
@@ -25,21 +24,39 @@ export const GLOBAL_TENANTS: string[] = ['global', GLOBAL_TENANT_SYMBOL];
  * Resovles the tenant the user is using.
  *
  * @param request OpenSearchDashboards request.
+ * @param username
+ * @param roles
+ * @param availabeTenants
  * @param config security plugin config.
  * @param cookie cookie extracted from the request. The cookie should have been parsed by AuthenticationHandler.
  * pass it as parameter instead of extracting again.
- * @param authInfo authentication info, the Elasticsearch authinfo API response.
+ * @param multitenancyEnabled
+ * @param privateTenantEnabled
+ * @param defaultTenant
  *
  * @returns user preferred tenant of the request.
  */
-export function resolveTenant(
-  request: OpenSearchDashboardsRequest,
-  username: string,
-  roles: string[] | undefined,
-  availabeTenants: any,
-  config: SecurityPluginConfigType,
-  cookie: SecuritySessionCookie
-): string | undefined {
+export function resolveTenant({
+  request,
+  username,
+  roles,
+  availabeTenants,
+  config,
+  cookie,
+  multitenancyEnabled,
+  privateTenantEnabled,
+  defaultTenant,
+}: {
+  request: any;
+  username: string;
+  roles: string[] | undefined;
+  availabeTenants: any;
+  config: SecurityPluginConfigType;
+  cookie: SecuritySessionCookie;
+  multitenancyEnabled: boolean;
+  privateTenantEnabled: boolean | undefined;
+  defaultTenant: string | undefined;
+}): string | undefined {
   const DEFAULT_READONLY_ROLES = ['kibana_read_only'];
   let selectedTenant: string | undefined;
   const securityTenant_ = request?.url?.searchParams?.get('securityTenant_');
@@ -58,6 +75,8 @@ export function resolveTenant(
       : (request.headers.securityTenant_ as string);
   } else if (isValidTenant(cookie.tenant)) {
     selectedTenant = cookie.tenant;
+  } else if (defaultTenant && multitenancyEnabled) {
+    selectedTenant = defaultTenant;
   } else {
     selectedTenant = undefined;
   }
@@ -67,7 +86,6 @@ export function resolveTenant(
 
   const preferredTenants = config.multitenancy?.tenants.preferred;
   const globalTenantEnabled = config.multitenancy?.tenants.enable_global;
-  const privateTenantEnabled = config.multitenancy?.tenants.enable_private && !isReadonly;
 
   return resolve(
     username,
@@ -75,6 +93,7 @@ export function resolveTenant(
     preferredTenants,
     availabeTenants,
     globalTenantEnabled,
+    multitenancyEnabled,
     privateTenantEnabled
   );
 }
@@ -85,13 +104,21 @@ export function resolve(
   preferredTenants: string[] | undefined,
   availableTenants: any, // is an object like { tenant_name_1: true, tenant_name_2: false, ... }
   globalTenantEnabled: boolean,
-  privateTenantEnabled: boolean
+  multitenancyEnabled: boolean | undefined,
+  privateTenantEnabled: boolean | undefined
 ): string | undefined {
   const availableTenantsClone = cloneDeep(availableTenants);
   delete availableTenantsClone[username];
 
   if (!globalTenantEnabled && !privateTenantEnabled && isEmpty(availableTenantsClone)) {
     return undefined;
+  }
+
+  if (!multitenancyEnabled) {
+    if (!globalTenantEnabled) {
+      return undefined;
+    }
+    return GLOBAL_TENANT_SYMBOL;
   }
 
   if (isValidTenant(requestedTenant)) {
