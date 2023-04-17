@@ -23,6 +23,7 @@ describe("Resolve tenants when multitenancy is enabled and both 'Global' and 'Pr
       config.preferredTenants,
       config.availableTenants,
       config.globalTenantEnabled,
+      config.multitenancy_enabled,
       config.privateTenantEnabled
     );
   }
@@ -34,6 +35,7 @@ describe("Resolve tenants when multitenancy is enabled and both 'Global' and 'Pr
       preferredTenants: undefined,
       availableTenants: { global_tenant: true, admin_tenant: true, test_tenant: true, admin: true },
       globalTenantEnabled: false,
+      multitenancy_enabled: true,
       privateTenantEnabled: false,
     };
 
@@ -48,10 +50,26 @@ describe("Resolve tenants when multitenancy is enabled and both 'Global' and 'Pr
       preferredTenants: undefined,
       availableTenants: { global_tenant: true, testuser: true },
       globalTenantEnabled: false,
+      multitenancy_enabled: true,
       privateTenantEnabled: false,
     };
 
     const nonadminResult = resolveWithConfig(nonadminConfig);
     expect(nonadminResult).toEqual('global_tenant');
+  });
+
+  it('Resolve tenant with multitenancy disabled and global tenant enabled', () => {
+    const adminConfig = {
+      username: 'admin',
+      requestedTenant: undefined,
+      preferredTenants: undefined,
+      availableTenants: { global_tenant: true, testuser: true },
+      globalTenantEnabled: true,
+      multitenancy_enabled: false,
+      privateTenantEnabled: false,
+    };
+
+    const adminResult = resolveWithConfig(adminConfig);
+    expect(adminResult).toEqual('');
   });
 });

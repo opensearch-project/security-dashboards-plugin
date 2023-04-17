@@ -23,6 +23,7 @@ export const OPENDISTRO_SECURITY_ANONYMOUS = 'opendistro_security_anonymous';
 export const API_PREFIX = '/api/v1';
 export const CONFIGURATION_API_PREFIX = 'configuration';
 export const API_ENDPOINT_AUTHINFO = API_PREFIX + '/auth/authinfo';
+export const API_ENDPOINT_DASHBOARDSINFO = API_PREFIX + '/auth/dashboardsinfo';
 export const API_ENDPOINT_AUTHTYPE = API_PREFIX + '/auth/type';
 export const LOGIN_PAGE_URI = '/app/' + APP_ID_LOGIN;
 export const CUSTOM_ERROR_PAGE_URI = '/app/' + APP_ID_CUSTOMERROR;

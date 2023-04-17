@@ -543,6 +543,30 @@ export function defineRoutes(router: IRouter) {
     }
   );
 
+  router.get(
+    {
+      path: `${API_PREFIX}/auth/dashboardsinfo`,
+      validate: false,
+    },
+    async (
+      context,
+      request,
+      response
+    ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
+      const client = context.security_plugin.esClient.asScoped(request);
+      let esResp;
+      try {
+        esResp = await client.callAsCurrentUser('opensearch_security.dashboardsinfo');
+
+        return response.ok({
+          body: esResp,
+        });
+      } catch (error) {
+        return errorResponse(response, error);
+      }
+    }
+  );
+
   /**
    * Gets audit log configuration。
    *

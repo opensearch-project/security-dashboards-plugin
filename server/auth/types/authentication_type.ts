@@ -246,15 +246,19 @@ export abstract class AuthenticationType implements IAuthenticationType {
       }
     }
 
-    const selectedTenant = resolveTenant(
+    const dashboardsInfo = await this.securityClient.dashboardsinfo(request, authHeader);
+
+    return resolveTenant({
       request,
-      authInfo.user_name,
-      authInfo.roles,
-      authInfo.tenants,
-      this.config,
-      cookie
-    );
-    return selectedTenant;
+      username: authInfo.user_name,
+      roles: authInfo.roles,
+      availabeTenants: authInfo.tenants,
+      config: this.config,
+      cookie,
+      multitenancyEnabled: dashboardsInfo.multitenancy_enabled,
+      privateTenantEnabled: dashboardsInfo.private_tenant_enabled,
+      defaultTenant: dashboardsInfo.default_tenant,
+    });
   }
 
   isPageRequest(request: OpenSearchDashboardsRequest) {
