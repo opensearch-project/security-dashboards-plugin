@@ -20,6 +20,17 @@ export function createErrorToast(id: string, title: string, text: string): Toast
   return {
     id,
     color: 'danger',
+    iconType: 'alert',
+    title,
+    text,
+  };
+}
+
+export function createSuccessToast(id: string, title: string, text: string): Toast {
+  return {
+    id,
+    color: 'success',
+    iconType: 'check',
     title,
     text,
   };
@@ -31,6 +42,14 @@ export function createUnknownErrorToast(id: string, failedAction: string): Toast
     `Failed to ${failedAction}`,
     `Failed to ${failedAction}. You may refresh the page to retry or see browser console for more information.`
   );
+}
+
+export function createTenancyErrorToast(id: string, title: string, Message: string): Toast {
+  return createErrorToast(id, title, Message);
+}
+
+export function createTenancySuccessToast(id: string, Title: string, Message: string): Toast {
+  return createSuccessToast(id, Title, Message);
 }
 
 export function useToastState(): [Toast[], (toAdd: Toast) => void, (toDelete: Toast) => void] {

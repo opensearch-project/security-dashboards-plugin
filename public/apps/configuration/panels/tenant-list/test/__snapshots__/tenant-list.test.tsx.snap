@@ -2,15 +2,7 @@
 
 exports[`Tenant list Action menu click Duplicate click 1`] = `
 <Fragment>
-  <EuiPageHeader>
-    <EuiTitle
-      size="l"
-    >
-      <h1>
-        Tenants
-      </h1>
-    </EuiTitle>
-  </EuiPageHeader>
+  <EuiPageHeader />
   <EuiPageContent>
     <EuiPageContentHeader>
       <EuiPageContentHeaderSection>
@@ -31,12 +23,9 @@ exports[`Tenant list Action menu click Duplicate click 1`] = `
         </EuiTitle>
         <EuiText
           color="subdued"
-          size="xs"
+          size="s"
         >
-          Tenants in OpenSearch Dashboards are spaces for saving index patterns, visualizations, dashboards, and other OpenSearch Dashboards objects. Use tenants to safely share your work with other OpenSearch Dashboards users. You can control which roles have access to a tenant and whether those roles have read or write access. The “Current” label indicates which tenant you are using now. Switch to another tenant anytime from your user profile, which is located on the top right of the screen. 
-          <ExternalLink
-            href="https://opensearch.org/docs/latest/security-plugin/multi-tenancy/multi-tenancy-config"
-          />
+          Manage tenants that already have been created. Global tenant is the default when tenancy is turned off.
         </EuiText>
       </EuiPageContentHeaderSection>
       <EuiPageContentHeaderSection>
@@ -83,6 +72,14 @@ exports[`Tenant list Action menu click Duplicate click 1`] = `
               Create visualizations
             </EuiButtonEmpty>
             <EuiButtonEmpty
+              disabled={true}
+              id="set as Global Default"
+              key="Set as Global Default key"
+              onClick={[Function]}
+            >
+              Set as Default Tenant
+            </EuiButtonEmpty>
+            <EuiButtonEmpty
               color="danger"
               disabled={false}
               id="delete"
@@ -113,6 +110,11 @@ exports[`Tenant list Action menu click Duplicate click 1`] = `
               "name": "Name",
               "render": [Function],
               "sortable": true,
+            },
+            Object {
+              "field": "tenant",
+              "name": "Status",
+              "render": [Function],
             },
             Object {
               "field": "description",
@@ -188,15 +190,7 @@ exports[`Tenant list Action menu click Duplicate click 1`] = `
 
 exports[`Tenant list Action menu click Edit click 1`] = `
 <Fragment>
-  <EuiPageHeader>
-    <EuiTitle
-      size="l"
-    >
-      <h1>
-        Tenants
-      </h1>
-    </EuiTitle>
-  </EuiPageHeader>
+  <EuiPageHeader />
   <EuiPageContent>
     <EuiPageContentHeader>
       <EuiPageContentHeaderSection>
@@ -217,12 +211,9 @@ exports[`Tenant list Action menu click Edit click 1`] = `
         </EuiTitle>
         <EuiText
           color="subdued"
-          size="xs"
+          size="s"
         >
-          Tenants in OpenSearch Dashboards are spaces for saving index patterns, visualizations, dashboards, and other OpenSearch Dashboards objects. Use tenants to safely share your work with other OpenSearch Dashboards users. You can control which roles have access to a tenant and whether those roles have read or write access. The “Current” label indicates which tenant you are using now. Switch to another tenant anytime from your user profile, which is located on the top right of the screen. 
-          <ExternalLink
-            href="https://opensearch.org/docs/latest/security-plugin/multi-tenancy/multi-tenancy-config"
-          />
+          Manage tenants that already have been created. Global tenant is the default when tenancy is turned off.
         </EuiText>
       </EuiPageContentHeaderSection>
       <EuiPageContentHeaderSection>
@@ -269,6 +260,14 @@ exports[`Tenant list Action menu click Edit click 1`] = `
               Create visualizations
             </EuiButtonEmpty>
             <EuiButtonEmpty
+              disabled={true}
+              id="set as Global Default"
+              key="Set as Global Default key"
+              onClick={[Function]}
+            >
+              Set as Default Tenant
+            </EuiButtonEmpty>
+            <EuiButtonEmpty
               color="danger"
               disabled={false}
               id="delete"
@@ -299,6 +298,11 @@ exports[`Tenant list Action menu click Edit click 1`] = `
               "name": "Name",
               "render": [Function],
               "sortable": true,
+            },
+            Object {
+              "field": "tenant",
+              "name": "Status",
+              "render": [Function],
             },
             Object {
               "field": "description",

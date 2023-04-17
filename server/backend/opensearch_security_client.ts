@@ -15,6 +15,8 @@
 
 import { ILegacyClusterClient, OpenSearchDashboardsRequest } from '../../../../src/core/server';
 import { User } from '../auth/user';
+import { getAuthInfo } from '../../public/utils/auth-info-utils';
+import { TenancyConfigSettings } from '../../public/apps/configuration/panels/tenancy-config/types';
 
 export class SecurityClient {
   constructor(private readonly esClient: ILegacyClusterClient) {}
@@ -39,6 +41,7 @@ export class SecurityClient {
         selectedTenant: esResponse.user_requested_tenant,
         credentials,
         proxyCredentials: credentials,
+        tenancy_configs: esResponse.tenancy_configs,
       };
     } catch (error: any) {
       throw new Error(error.message);
@@ -116,12 +119,44 @@ export class SecurityClient {
     }
   }
 
+  public async dashboardsinfo(request: OpenSearchDashboardsRequest, headers: any = {}) {
+    try {
+      return await this.esClient
+        .asScoped(request)
+        .callAsCurrentUser('opensearch_security.dashboardsinfo', {
+          headers,
+        });
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
+
   // Multi-tenancy APIs
   public async getMultitenancyInfo(request: OpenSearchDashboardsRequest) {
     try {
       return await this.esClient
         .asScoped(request)
         .callAsCurrentUser('opensearch_security.multitenancyinfo');
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
+
+  public async putMultitenancyConfigurations(
+    request: OpenSearchDashboardsRequest,
+    tenancyConfigSettings: TenancyConfigSettings
+  ) {
+    const body = {
+      multitenancy_enabled: tenancyConfigSettings.multitenancy_enabled,
+      private_tenant_enabled: tenancyConfigSettings.private_tenant_enabled,
+      default_tenant: tenancyConfigSettings.default_tenant,
+    };
+    try {
+      return await this.esClient
+        .asScoped(request)
+        .callAsCurrentUser('opensearch_security.tenancy_configs', {
+          body,
+        });
     } catch (error: any) {
       throw new Error(error.message);
     }

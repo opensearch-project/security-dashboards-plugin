@@ -197,6 +197,51 @@ exports[`Get started (landing page) renders when backend configuration is disabl
         </EuiButton>
       </EuiText>
     </EuiPanel>
+    <EuiSpacer
+      size="l"
+    />
+    <EuiPanel
+      paddingSize="l"
+    >
+      <EuiTitle
+        size="s"
+      >
+        <h3>
+          Optional: Multi-tenancy
+        </h3>
+      </EuiTitle>
+      <EuiText
+        color="subdued"
+        size="s"
+      >
+        <p>
+          By default tenancy is activated in Dashboards. Tenants in OpenSearch Dashboards are spaces for saving index patterns, visualizations, dashboards, and other OpenSearch Dashboards objects.
+        </p>
+        <EuiFlexGroup
+          gutterSize="s"
+        >
+          <EuiFlexItem
+            grow={false}
+          >
+            <EuiButton
+              fill={true}
+              onClick={[Function]}
+            >
+              Manage Multi-tenancy
+            </EuiButton>
+          </EuiFlexItem>
+          <EuiFlexItem
+            grow={false}
+          >
+            <EuiButton
+              onClick={[Function]}
+            >
+              Configure Multi-tenancy
+            </EuiButton>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      </EuiText>
+    </EuiPanel>
   </div>
 </Fragment>
 `;
@@ -476,6 +521,51 @@ exports[`Get started (landing page) renders when backend configuration is enable
         >
           Purge cache
         </EuiButton>
+      </EuiText>
+    </EuiPanel>
+    <EuiSpacer
+      size="l"
+    />
+    <EuiPanel
+      paddingSize="l"
+    >
+      <EuiTitle
+        size="s"
+      >
+        <h3>
+          Optional: Multi-tenancy
+        </h3>
+      </EuiTitle>
+      <EuiText
+        color="subdued"
+        size="s"
+      >
+        <p>
+          By default tenancy is activated in Dashboards. Tenants in OpenSearch Dashboards are spaces for saving index patterns, visualizations, dashboards, and other OpenSearch Dashboards objects.
+        </p>
+        <EuiFlexGroup
+          gutterSize="s"
+        >
+          <EuiFlexItem
+            grow={false}
+          >
+            <EuiButton
+              fill={true}
+              onClick={[Function]}
+            >
+              Manage Multi-tenancy
+            </EuiButton>
+          </EuiFlexItem>
+          <EuiFlexItem
+            grow={false}
+          >
+            <EuiButton
+              onClick={[Function]}
+            >
+              Configure Multi-tenancy
+            </EuiButton>
+          </EuiFlexItem>
+        </EuiFlexGroup>
       </EuiText>
     </EuiPanel>
   </div>
