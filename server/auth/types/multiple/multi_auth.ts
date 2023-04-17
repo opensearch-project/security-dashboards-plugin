@@ -130,10 +130,13 @@ export class MultipleAuthentication extends AuthenticationType {
     return {};
   }
 
-  async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean> {
+  async isValidCookie(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): Promise<boolean> {
     const reqAuthType = cookie?.authType?.toLowerCase();
     if (reqAuthType && this.authHandlers.has(reqAuthType)) {
-      return this.authHandlers.get(reqAuthType)!.isValidCookie(cookie);
+      return this.authHandlers.get(reqAuthType)!.isValidCookie(cookie, request);
     } else {
       return false;
     }
@@ -168,11 +171,14 @@ export class MultipleAuthentication extends AuthenticationType {
     }
   }
 
-  buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any {
+  buildAuthHeaderFromCookie(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): any {
     const reqAuthType = cookie?.authType?.toLowerCase();
 
     if (reqAuthType && this.authHandlers.has(reqAuthType)) {
-      return this.authHandlers.get(reqAuthType)!.buildAuthHeaderFromCookie(cookie);
+      return this.authHandlers.get(reqAuthType)!.buildAuthHeaderFromCookie(cookie, request);
     } else {
       return {};
     }
