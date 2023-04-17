@@ -40,6 +40,12 @@ export interface AuthInfo {
   };
 }
 
+export interface DashboardsInfo {
+  multitenancy_enabled?: boolean;
+  private_tenant_enabled?: boolean;
+  default_tenant: string;
+}
+
 export interface ClientConfigType {
   readonly_mode: {
     roles: string[];

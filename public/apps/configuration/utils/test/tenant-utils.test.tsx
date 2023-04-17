@@ -82,25 +82,23 @@ describe('Tenant list utils', () => {
     };
 
     it('transform global tenant', () => {
-      const result = transformTenantData({ global_tenant: globalTenant }, false);
-      expect(result.length).toBe(1);
+      const result = transformTenantData({ global_tenant: globalTenant });
+      expect(result.length).toBe(2);
       expect(result[0]).toEqual(expectedGlobalTenantListing);
     });
 
     it('transform private tenant', () => {
-      const result = transformTenantData({}, true);
+      const result = transformTenantData({});
       expect(result.length).toBe(1);
       expect(result[0]).toEqual(expectedPrivateTenantListing);
     });
 
     it('transform global and custom tenant', () => {
-      const result = transformTenantData(
-        { global_tenant: globalTenant, dummy: sampleTenant1 },
-        false
-      );
-      expect(result.length).toBe(2);
+      const result = transformTenantData({ global_tenant: globalTenant, dummy: sampleTenant1 });
+      expect(result.length).toBe(3);
       expect(result[0]).toEqual(expectedGlobalTenantListing);
-      expect(result[1]).toMatchObject(expectedTenantListing);
+      expect(result[1]).toMatchObject(expectedPrivateTenantListing);
+      expect(result[2]).toMatchObject(expectedTenantListing);
     });
 
     it('transform global, private and custom tenant', () => {
