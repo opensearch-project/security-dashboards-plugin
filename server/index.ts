@@ -180,8 +180,22 @@ export const configSchema = schema.object({
       verify_hostnames: schema.boolean({ defaultValue: true }),
       refresh_tokens: schema.boolean({ defaultValue: true }),
       trust_dynamic_headers: schema.boolean({ defaultValue: false }),
+      extra_storage: schema.object({
+        cookie_prefix: schema.string({
+          defaultValue: 'security_authentication_oidc',
+          minLength: 2,
+        }),
+        additional_cookies: schema.number({ min: 1, defaultValue: 5 }),
+      }),
     })
   ),
+  saml: schema.object({
+    extra_storage: schema.object({
+      cookie_prefix: schema.string({ defaultValue: 'security_authentication_saml', minLength: 2 }),
+      additional_cookies: schema.number({ min: 0, defaultValue: 3 }),
+    }),
+  }),
+
   proxycache: schema.maybe(
     schema.object({
       // when auth.type is proxycache, user_header, roles_header and proxy_header_ip are required
