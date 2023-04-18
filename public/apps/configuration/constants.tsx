@@ -22,6 +22,7 @@ export const API_ENDPOINT_ROLESMAPPING = API_ENDPOINT + '/rolesmapping';
 export const API_ENDPOINT_ACTIONGROUPS = API_ENDPOINT + '/actiongroups';
 export const API_ENDPOINT_TENANTS = API_ENDPOINT + '/tenants';
 export const API_ENDPOINT_MULTITENANCY = API_PREFIX + '/multitenancy/tenant';
+export const API_ENDPOINT_TENANCY_CONFIGS = API_ENDPOINT + '/tenancy/config';
 export const API_ENDPOINT_SECURITYCONFIG = API_ENDPOINT + '/securityconfig';
 export const API_ENDPOINT_INTERNALUSERS = API_ENDPOINT + '/internalusers';
 export const API_ENDPOINT_AUDITLOGGING = API_ENDPOINT + '/audit';
@@ -345,6 +346,7 @@ export const DocLinks = {
     'https://opensearch.org/docs/latest/security-plugin/access-control/document-level-security/',
   TenantPermissionsDoc:
     'https://opensearch.org/docs/latest/security-plugin/multi-tenancy/multi-tenancy-config',
+  MultiTenancyDoc: 'https://opensearch.org/docs/latest/security/multi-tenancy/tenant-index/',
   AttributeBasedSecurityDoc:
     'https://opensearch.org/docs/latest/security-plugin/access-control/document-level-security/#attribute-based-security',
   BackendRoleDoc:

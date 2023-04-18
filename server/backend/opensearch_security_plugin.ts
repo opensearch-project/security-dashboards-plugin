@@ -30,6 +30,12 @@ export default function (Client: any, config: any, components: any) {
     },
   });
 
+  Client.prototype.opensearch_security.prototype.dashboardsinfo = ca({
+    url: {
+      fmt: '/_plugins/_security/dashboardsinfo',
+    },
+  });
+
   /**
    * Gets tenant info and opensearch-dashboards server info.
    *
@@ -68,6 +74,14 @@ export default function (Client: any, config: any, components: any) {
     needBody: true,
     url: {
       fmt: '/_plugins/_security/api/authtoken',
+    },
+  });
+
+  Client.prototype.opensearch_security.prototype.tenancy_configs = ca({
+    method: 'PUT',
+    needBody: true,
+    url: {
+      fmt: '/_plugins/_security/api/tenancy/config',
     },
   });
 }

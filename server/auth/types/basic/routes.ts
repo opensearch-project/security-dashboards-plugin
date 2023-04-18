@@ -117,15 +117,19 @@ export class BasicAuthRoutes {
           expiryTime: Date.now() + this.config.session.ttl,
         };
 
-        if (this.config.multitenancy?.enabled) {
-          const selectTenant = resolveTenant(
+        if (user.multitenancy_enabled) {
+          const selectTenant = resolveTenant({
             request,
-            user.username,
-            user.roles,
-            user.tenants,
-            this.config,
-            sessionStorage
-          );
+            username: user.username,
+            roles: user.roles,
+            availabeTenants: user.tenants,
+            config: this.config,
+            cookie: sessionStorage,
+            multitenancyEnabled: user.multitenancy_enabled,
+            privateTenantEnabled: user.private_tenant_enabled,
+            defaultTenant: user.default_tenant,
+          });
+          // const selectTenant = user.default_tenant;
           sessionStorage.tenant = selectTenant;
         }
         this.sessionStorageFactory.asScoped(request).set(sessionStorage);
@@ -203,15 +207,18 @@ export class BasicAuthRoutes {
             expiryTime: Date.now() + this.config.session.ttl,
           };
 
-          if (this.config.multitenancy?.enabled) {
-            const selectTenant = resolveTenant(
+          if (user.multitenancy_enabled) {
+            const selectTenant = resolveTenant({
               request,
-              user.username,
-              user.roles,
-              user.tenants,
-              this.config,
-              sessionStorage
-            );
+              username: user.username,
+              roles: user.roles,
+              availabeTenants: user.tenants,
+              config: this.config,
+              cookie: sessionStorage,
+              multitenancyEnabled: user.multitenancy_enabled,
+              privateTenantEnabled: user.private_tenant_enabled,
+              defaultTenant: user.default_tenant,
+            });
             sessionStorage.tenant = selectTenant;
           }
           this.sessionStorageFactory.asScoped(request).set(sessionStorage);
