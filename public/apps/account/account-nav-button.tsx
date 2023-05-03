@@ -49,7 +49,11 @@ export function AccountNavButton(props: {
   const [modal, setModal] = React.useState<React.ReactNode>(null);
   const horizontalRule = <EuiHorizontalRule margin="xs" />;
   const username = props.username;
-  const [isMultiTenancyEnabled, setIsMultiTenancyEnabled] = React.useState<boolean>(true);
+  const propsMultiTenancyToggle = props.config.multitenancy.enabled;
+  const [isMultiTenancyEnabled, setIsMultiTenancyEnabled] = React.useState<boolean>(
+    propsMultiTenancyToggle || false
+  );
+  const shouldDisplaySwitchTenantsPanel = isMultiTenancyEnabled && propsMultiTenancyToggle;
 
   const showTenantSwitchPanel = useCallback(
     () =>
@@ -72,9 +76,11 @@ export function AccountNavButton(props: {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        setIsMultiTenancyEnabled(
-          (await getDashboardsInfo(props.coreStart.http)).multitenancy_enabled
+        // defaults to true if for some reason the multitenancy_enabled flag is undefined. This should ideally never happen.
+        const { multitenancy_enabled: isEnabled = true } = await getDashboardsInfo(
+          props.coreStart.http
         );
+        setIsMultiTenancyEnabled(isEnabled);
       } catch (e) {
         // TODO: switch to better error display.
         console.error(e);
@@ -128,7 +134,7 @@ export function AccountNavButton(props: {
       >
         View roles and identities
       </EuiButtonEmpty>
-      {isMultiTenancyEnabled && (
+      {shouldDisplaySwitchTenantsPanel && (
         <>
           {horizontalRule}
           <EuiButtonEmpty data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
