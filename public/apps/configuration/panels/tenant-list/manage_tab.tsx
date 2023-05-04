@@ -67,7 +67,6 @@ import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { useContextMenuState } from '../../utils/context-menu';
 import { generateResourceName } from '../../utils/resource-utils';
 import { DocLinks } from '../../constants';
-import { TenantInstructionView } from './tenant-instruction-view';
 import { TenantList } from './tenant-list';
 import { getBreadcrumbs, Route_MAP } from '../../app-router';
 import { buildUrl } from '../../utils/url-builder';
@@ -479,9 +478,6 @@ export function ManageTab(props: AppDependencies) {
     );
   };
 
-  if (!props.config.multitenancy.enabled) {
-    return <TenantInstructionView />;
-  }
   /* eslint-disable */
   return (
     <>

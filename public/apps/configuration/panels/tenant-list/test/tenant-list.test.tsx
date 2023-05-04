@@ -131,7 +131,7 @@ describe('Tenant list', () => {
         config={config1 as any}
       />
     );
-    expect(component.find(TenantInstructionView).length).toBe(1);
+    expect(component.find(TenantInstructionView).length).toBe(0);
   });
 
   it('fetch data error', (done) => {
