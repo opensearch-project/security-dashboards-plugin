@@ -88,7 +88,6 @@ export async function migrateTenantIndices(
   }
 
   // follows the same approach in opensearch_dashboards_migrator.ts to initiate DocumentMigrator here
-  // see: https://tiny.amazon.com/foi0x1wt/githelaskibablobe4c1srccore
   const documentMigrator = new DocumentMigrator({
     opensearchDashboardsVersion,
     typeRegistry,
@@ -103,7 +102,6 @@ export async function migrateTenantIndices(
     });
 
     // follows the same aporach in opensearch_dashboards_mirator.ts to construct IndexMigrator
-    // see: https://tiny.amazon.com/9cdcchz5/githelaskibablobe4c1srccore
     //
     // FIXME: hard code batchSize, pollInterval, and scrollDuration for now
     //        they are used to fetched from `migration.xxx` config, which is not accessible from new playform
