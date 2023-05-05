@@ -91,30 +91,29 @@ export function ManageTab(props: AppDependencies) {
   const [isPrivateTenantEnabled, setIsPrivateTenantEnabled] = useState(false);
   const [dashboardsDefaultTenant, setDashboardsDefaultTenant] = useState('');
 
+  const { http } = props.coreStart;
+
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const rawTenantData = await fetchTenants(props.coreStart.http);
+      const rawTenantData = await fetchTenants(http);
       const processedTenantData = transformTenantData(rawTenantData);
-      const activeTenant = await fetchCurrentTenant(props.coreStart.http);
-      const currentUser = await getCurrentUser(props.coreStart.http);
+      const activeTenant = await fetchCurrentTenant(http);
+      const currentUser = await getCurrentUser(http);
       setCurrentUsername(currentUser);
       setCurrentTenant(resolveTenantName(activeTenant, currentUser));
       setTenantData(processedTenantData);
-      setIsMultiTenancyEnabled(
-        (await getDashboardsInfo(props.coreStart.http)).multitenancy_enabled
-      );
-      setIsPrivateTenantEnabled(
-        (await getDashboardsInfo(props.coreStart.http)).private_tenant_enabled
-      );
-      setDashboardsDefaultTenant((await getDashboardsInfo(props.coreStart.http)).default_tenant);
+      const tenancyConfig = await getDashboardsInfo(http);
+      setIsMultiTenancyEnabled(tenancyConfig.multitenancy_enabled);
+      setIsPrivateTenantEnabled(tenancyConfig.private_tenant_enabled);
+      setDashboardsDefaultTenant(tenancyConfig.default_tenant);
     } catch (e) {
       console.log(e);
       setErrorFlag(true);
     } finally {
       setLoading(false);
     }
-  }, [props.coreStart.http]);
+  }, [http]);
 
   React.useEffect(() => {
     fetchData();
