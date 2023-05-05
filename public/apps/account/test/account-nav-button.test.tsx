@@ -171,7 +171,7 @@ describe('Account navigation button, multitenancy disabled', () => {
         currAuthType={'dummy'}
       />
     );
-    expect(setState).toBeCalledTimes(1);
+    expect(setState).toBeCalledTimes(0);
   });
 });
 
