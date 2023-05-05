@@ -60,10 +60,8 @@ jobs:
           echo 'opensearch.password: "kibanaserver"' >> ./config/opensearch_dashboards.yml
           echo 'opensearch.requestHeadersWhitelist: [ authorization,securitytenant ]' >> ./config/opensearch_dashboards.yml
           echo 'opensearch_security.multitenancy.enabled: false' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch_security.multitenancy.tenants.preferred: ["Private", "Global"]' >> ./config/opensearch_dashboards.yml
           echo 'opensearch_security.readonly_mode.roles: ["kibana_read_only"]' >> ./config/opensearch_dashboards.yml
           echo 'opensearch_security.cookie.secure: false' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch_security.multitenancy.enable_aggregation_view: true' >> ./config/opensearch_dashboards.yml
           nohup yarn start --no-base-path --no-watch &
           sleep 500
           git clone https://github.com/opensearch-project/opensearch-dashboards-functional-test.git
