@@ -1,7 +1,7 @@
 {
   "id": "securityDashboards",
   "version": "2.7.0.0",
-  "opensearchDashboardsVersion": "2.7.0",
+  "opensearchDashboardsVersion": "2.7.1",
   "configPath": ["opensearch_security"],
   "requiredPlugins": ["navigation", "savedObjectsManagement"],
   "server": true,
