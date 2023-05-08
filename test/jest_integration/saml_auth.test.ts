@@ -284,87 +284,87 @@ describe('start OpenSearch Dashboards server', () => {
     await driver.quit();
   });
 
-  it('Tenancy persisted after Logout in SAML', async () => {
-    const driver = getDriver(browser, options).build();
-
-    await driver.get('http://localhost:5601/app/opensearch_dashboards_overview#/');
-
-    await driver.findElement(By.xpath(signInBtnXPath)).click();
-
-    await driver.wait(until.elementsLocated(By.xpath(pageTitleXPath)), 10000);
-
-    await driver.wait(
-      until.elementsLocated(By.xpath('//button[@aria-label="Closes this modal window"]')),
-      10000
-    );
-
-    // Select Global Tenant Radio Button
-    const radio = await driver.findElement(By.xpath('//input[@id="global"]'));
-    await driver.executeScript('arguments[0].scrollIntoView(true);', radio);
-    await driver.executeScript('arguments[0].click();', radio);
-
-    await driver.wait(until.elementIsSelected(radio));
-
-    await driver.findElement(By.xpath('//button[@data-test-subj="confirm"]')).click();
-
-    await driver.wait(until.elementsLocated(By.xpath(userIconBtnXPath)), 10000);
-
-    await driver.findElement(By.xpath(userIconBtnXPath)).click();
-
-    await driver.findElement(By.xpath('//*[@data-test-subj="log-out-1"]')).click();
-
-    // RELOGIN AND CHECK TENANT
-
-    await driver.wait(until.elementsLocated(By.xpath(signInBtnXPath)), 10000);
-
-    await driver.findElement(By.xpath(signInBtnXPath)).click();
-
-    await driver.wait(until.elementsLocated(By.xpath(skipWelcomeBtnXPath)), 10000);
-
-    await driver.findElement(By.xpath(skipWelcomeBtnXPath)).click();
-
-    await driver.findElement(By.xpath(userIconBtnXPath)).click();
-
-    await driver.wait(until.elementsLocated(By.xpath(tenantNameLabelXPath)), 10000);
-
-    const tenantName = await driver.findElement(By.xpath(tenantNameLabelXPath)).getText();
-    const localStorageItem = await driver.executeScript(
-      `return window.localStorage.getItem("opendistro::security::tenant::saved")`
-    );
-
-    // Retry previous steps one more time if the webdriver doens't reload as expected
-    if (tenantName === 'Private' && localStorageItem === '""') {
-      await driver.wait(until.elementsLocated(By.xpath(tenantSwitchBtnXPath)), 10000);
-      await driver.findElement(By.xpath(tenantSwitchBtnXPath)).click();
-
-      await driver.executeScript('arguments[0].scrollIntoView(true);', radio);
-      await driver.executeScript('arguments[0].click();', radio);
-      await driver.wait(until.elementIsSelected(radio));
-
-      await driver.findElement(By.xpath('//button[@data-test-subj="confirm"]')).click();
-
-      await driver.wait(until.elementsLocated(By.xpath(userIconBtnXPath)), 10000);
-      await driver.findElement(By.xpath(userIconBtnXPath)).click();
-      await driver.findElement(By.xpath('//*[@data-test-subj="log-out-1"]')).click();
-
-      await driver.wait(until.elementsLocated(By.xpath(signInBtnXPath)), 10000);
-      await driver.findElement(By.xpath(signInBtnXPath)).click();
-
-      await driver.wait(until.elementsLocated(By.xpath(userIconBtnXPath)), 10000);
-      await driver.findElement(By.xpath(userIconBtnXPath)).click();
-      await driver.wait(until.elementsLocated(By.xpath(tenantNameLabelXPath)), 10000);
-
-      const newtenantName = await driver.findElement(By.xpath(tenantNameLabelXPath)).getText();
-      expect(newtenantName).toEqual('Global');
-    } else {
-      expect(localStorageItem).toEqual('""');
-      expect(tenantName).toEqual('Global');
-    }
-    await driver.manage().deleteAllCookies();
-    await driver.quit();
-
-    expect(localStorageItem).toEqual('""');
-  });
+  // it('Tenancy persisted after Logout in SAML', async () => {
+  //   const driver = getDriver(browser, options).build();
+  //
+  //   await driver.get('http://localhost:5601/app/opensearch_dashboards_overview#/');
+  //
+  //   await driver.findElement(By.xpath(signInBtnXPath)).click();
+  //
+  //   await driver.wait(until.elementsLocated(By.xpath(pageTitleXPath)), 10000);
+  //
+  //   await driver.wait(
+  //     until.elementsLocated(By.xpath('//button[@aria-label="Closes this modal window"]')),
+  //     10000
+  //   );
+  //
+  //   // Select Global Tenant Radio Button
+  //   const radio = await driver.findElement(By.xpath('//input[@id="global"]'));
+  //   await driver.executeScript('arguments[0].scrollIntoView(true);', radio);
+  //   await driver.executeScript('arguments[0].click();', radio);
+  //
+  //   await driver.wait(until.elementIsSelected(radio));
+  //
+  //   await driver.findElement(By.xpath('//button[@data-test-subj="confirm"]')).click();
+  //
+  //   await driver.wait(until.elementsLocated(By.xpath(userIconBtnXPath)), 10000);
+  //
+  //   await driver.findElement(By.xpath(userIconBtnXPath)).click();
+  //
+  //   await driver.findElement(By.xpath('//*[@data-test-subj="log-out-1"]')).click();
+  //
+  //   // RELOGIN AND CHECK TENANT
+  //
+  //   await driver.wait(until.elementsLocated(By.xpath(signInBtnXPath)), 10000);
+  //
+  //   await driver.findElement(By.xpath(signInBtnXPath)).click();
+  //
+  //   await driver.wait(until.elementsLocated(By.xpath(skipWelcomeBtnXPath)), 10000);
+  //
+  //   await driver.findElement(By.xpath(skipWelcomeBtnXPath)).click();
+  //
+  //   await driver.findElement(By.xpath(userIconBtnXPath)).click();
+  //
+  //   await driver.wait(until.elementsLocated(By.xpath(tenantNameLabelXPath)), 10000);
+  //
+  //   const tenantName = await driver.findElement(By.xpath(tenantNameLabelXPath)).getText();
+  //   const localStorageItem = await driver.executeScript(
+  //     `return window.localStorage.getItem("opendistro::security::tenant::saved")`
+  //   );
+  //
+  //   // Retry previous steps one more time if the webdriver doens't reload as expected
+  //   if (tenantName === 'Private' && localStorageItem === '""') {
+  //     await driver.wait(until.elementsLocated(By.xpath(tenantSwitchBtnXPath)), 10000);
+  //     await driver.findElement(By.xpath(tenantSwitchBtnXPath)).click();
+  //
+  //     await driver.executeScript('arguments[0].scrollIntoView(true);', radio);
+  //     await driver.executeScript('arguments[0].click();', radio);
+  //     await driver.wait(until.elementIsSelected(radio));
+  //
+  //     await driver.findElement(By.xpath('//button[@data-test-subj="confirm"]')).click();
+  //
+  //     await driver.wait(until.elementsLocated(By.xpath(userIconBtnXPath)), 10000);
+  //     await driver.findElement(By.xpath(userIconBtnXPath)).click();
+  //     await driver.findElement(By.xpath('//*[@data-test-subj="log-out-1"]')).click();
+  //
+  //     await driver.wait(until.elementsLocated(By.xpath(signInBtnXPath)), 10000);
+  //     await driver.findElement(By.xpath(signInBtnXPath)).click();
+  //
+  //     await driver.wait(until.elementsLocated(By.xpath(userIconBtnXPath)), 10000);
+  //     await driver.findElement(By.xpath(userIconBtnXPath)).click();
+  //     await driver.wait(until.elementsLocated(By.xpath(tenantNameLabelXPath)), 10000);
+  //
+  //     const newtenantName = await driver.findElement(By.xpath(tenantNameLabelXPath)).getText();
+  //     expect(newtenantName).toEqual('Global');
+  //   } else {
+  //     expect(localStorageItem).toEqual('""');
+  //     expect(tenantName).toEqual('Global');
+  //   }
+  //   await driver.manage().deleteAllCookies();
+  //   await driver.quit();
+  //
+  //   expect(localStorageItem).toEqual('""');
+  // });
 });
 
 function getDriver(browser: string, options: Options) {

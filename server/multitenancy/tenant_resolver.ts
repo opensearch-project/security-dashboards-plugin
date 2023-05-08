@@ -19,7 +19,7 @@ import { SecurityPluginConfigType } from '..';
 import { GLOBAL_TENANT_SYMBOL, PRIVATE_TENANT_SYMBOL, globalTenantName } from '../../common';
 
 export const PRIVATE_TENANTS: string[] = [PRIVATE_TENANT_SYMBOL, 'private'];
-export const GLOBAL_TENANTS: string[] = ['global', GLOBAL_TENANT_SYMBOL];
+export const GLOBAL_TENANTS: string[] = ['global', GLOBAL_TENANT_SYMBOL, 'Global'];
 /**
  * Resovles the tenant the user is using.
  *
