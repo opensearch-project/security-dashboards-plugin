@@ -67,7 +67,7 @@ describe('start OpenSearch Dashboards server', () => {
 
   async function createTestUser(username: string = undefined, password: string = undefined) {
     const testUserName = username || `test_user_${Date.now()}`;
-    const testUserPassword = password || 'Test_123';
+    const testUserPassword = password || 'testUserPassword123';
 
     await createOrUpdateEntityAsAdmin(root, 'internalusers', testUserName, {
       password: testUserPassword,
