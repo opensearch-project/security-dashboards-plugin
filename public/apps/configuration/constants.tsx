@@ -209,7 +209,7 @@ export const CLUSTER_PERMISSIONS: string[] = [
   'restapi:admin/rolesmapping',
   'restapi:admin/ssl/certs/info',
   'restapi:admin/ssl/certs/reload',
-  'restapi:admin/tenants'
+  'restapi:admin/tenants',
 ];
 
 export function includeClusterPermissions(clusterPermissionsToInclude: string[]) {
