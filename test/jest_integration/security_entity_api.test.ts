@@ -68,7 +68,7 @@ describe('start OpenSearch Dashboards server', () => {
 
   it('create/get/update/list/delete internal user', async () => {
     const testUsername = `test_user_${Date.now()}`;
-    const testUserPassword = 'Test_123';
+    const testUserPassword = 'testUserPassword123';
 
     const createUserResponse = await createOrUpdateEntityAsAdmin(
       root,
@@ -270,7 +270,7 @@ describe('start OpenSearch Dashboards server', () => {
 
   it('get account info', async () => {
     const testUsername = `test_user_${Date.now()}`;
-    const testUserPassword = 'Test_123';
+    const testUserPassword = 'testUserPassword123';
 
     await createOrUpdateEntityAsAdmin(root, 'internalusers', testUsername, {
       description: 'test user description',
@@ -297,7 +297,7 @@ describe('start OpenSearch Dashboards server', () => {
 
   it('self reset password as non-admin', async () => {
     const testUsername = `test_user_${Date.now()}`;
-    const testUserPassword = 'Test_123';
+    const testUserPassword = 'testUserPassword123';
     const readAllRole = 'read_all'; // use predefined "read_all" role
 
     await createOrUpdateEntityAsAdmin(root, 'internalusers', testUsername, {
