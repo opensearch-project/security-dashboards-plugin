@@ -9,9 +9,9 @@ env:
   START_CMD: 'node ../scripts/opensearch_dashboards --dev --no-base-path --no-watch --opensearch_security.multitenancy.enable_aggregation_view=true'
   OPENSEARCH_SNAPSHOT_CMD: 'node ../scripts/opensearch snapshot'
   SPEC: 'cypress/integration/plugins/security-dashboards-plugin/aggregation_view.js,'
-  OPENSEARCH_VERSION: 2.7.0
+  OPENSEARCH_VERSION: 2.8.0
   PLUGIN_NAME: opensearch-security
-  PLUGIN_VERSION: 2.7.0.0
+  PLUGIN_VERSION: 2.8.0.0
 
 jobs:
   tests:
