@@ -35,6 +35,7 @@ import { ClientConfigType } from '../../types';
 import { LogoutButton } from './log-out-button';
 import { resolveTenantName } from '../configuration/utils/tenant-utils';
 import { getShouldShowTenantPopup, setShouldShowTenantPopup } from '../../utils/storage-utils';
+import { getDashboardsInfo } from '../../utils/dashboards-info-utils';
 
 export function AccountNavButton(props: {
   coreStart: CoreStart;
@@ -48,6 +49,7 @@ export function AccountNavButton(props: {
   const [modal, setModal] = React.useState<React.ReactNode>(null);
   const horizontalRule = <EuiHorizontalRule margin="xs" />;
   const username = props.username;
+  const [isMultiTenancyEnabled, setIsMultiTenancyEnabled] = React.useState<boolean>(true);
 
   const showTenantSwitchPanel = useCallback(
     () =>
@@ -67,9 +69,23 @@ export function AccountNavButton(props: {
       ),
     [props.config, props.coreStart, props.tenant]
   );
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsMultiTenancyEnabled(
+          (await getDashboardsInfo(props.coreStart.http)).multitenancy_enabled
+        );
+      } catch (e) {
+        // TODO: switch to better error display.
+        console.error(e);
+      }
+    };
+
+    fetchData();
+  }, [props.coreStart.http]);
 
   // Check if the tenant modal should be shown on load
-  if (props.config.multitenancy.enabled && getShouldShowTenantPopup()) {
+  if (isMultiTenancyEnabled && getShouldShowTenantPopup()) {
     setShouldShowTenantPopup(false);
     showTenantSwitchPanel();
   }
@@ -112,10 +128,14 @@ export function AccountNavButton(props: {
       >
         View roles and identities
       </EuiButtonEmpty>
-      {horizontalRule}
-      <EuiButtonEmpty data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
-        Switch tenants
-      </EuiButtonEmpty>
+      {isMultiTenancyEnabled && (
+        <>
+          {horizontalRule}
+          <EuiButtonEmpty data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
+            Switch tenants
+          </EuiButtonEmpty>
+        </>
+      )}
       {props.isInternalUser && (
         <>
           {horizontalRule}

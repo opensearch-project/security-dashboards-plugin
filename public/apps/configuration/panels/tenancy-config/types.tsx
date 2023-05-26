@@ -13,17 +13,8 @@
  *   permissions and limitations under the License.
  */
 
-import { AppMountParameters, CoreStart } from '../../../../src/core/public';
-import { SecurityPluginStartDependencies, ClientConfigType, DashboardsInfo } from '../types';
-
-export interface AppDependencies {
-  coreStart: CoreStart;
-  navigation: SecurityPluginStartDependencies;
-  params: AppMountParameters;
-  config: ClientConfigType;
-  dashboardsInfo: DashboardsInfo;
-}
-
-export interface BreadcrumbsPageDependencies extends AppDependencies {
-  buildBreadcrumbs: (pageTitle: string, subAction?: string) => void;
+export interface TenancyConfigSettings {
+  multitenancy_enabled?: boolean;
+  private_tenant_enabled?: boolean;
+  default_tenant: string;
 }
