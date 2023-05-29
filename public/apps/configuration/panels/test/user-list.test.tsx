@@ -20,6 +20,8 @@ import { EMPTY_FIELD_VALUE } from '../../ui-constants';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 import {
   getUserList,
+  getServiceAccountUserList,
+  getInternalAccountUserList,
   InternalUsersListing,
   requestDeleteUsers,
 } from '../../utils/internal-user-list-utils';
@@ -120,6 +122,46 @@ describe('User list', () => {
     it('fetch data error', () => {
       jest.spyOn(React, 'useEffect').mockImplementationOnce((f) => f());
       getUserList.mockImplementationOnce(() => {
+        throw new Error();
+      });
+      // Hide the error message
+      jest.spyOn(console, 'log').mockImplementationOnce(() => {});
+      shallow(
+        <UserList
+          coreStart={mockCoreStart as any}
+          navigation={{} as any}
+          params={{} as any}
+          config={{} as any}
+        />
+      );
+
+      // Expect error flag set to true
+      expect(setState).toBeCalledWith(true);
+    });
+
+    it('fetch filtered service accounts data error', () => {
+      jest.spyOn(React, 'useEffect').mockImplementationOnce((f) => f());
+      getServiceAccountUserList.mockImplementationOnce(() => {
+        throw new Error();
+      });
+      // Hide the error message
+      jest.spyOn(console, 'log').mockImplementationOnce(() => {});
+      shallow(
+        <UserList
+          coreStart={mockCoreStart as any}
+          navigation={{} as any}
+          params={{} as any}
+          config={{} as any}
+        />
+      );
+
+      // Expect error flag set to true
+      expect(setState).toBeCalledWith(true);
+    });
+
+    it('fetch filtered internal accounts  data error', () => {
+      jest.spyOn(React, 'useEffect').mockImplementationOnce((f) => f());
+      getInternalAccountUserList.mockImplementationOnce(() => {
         throw new Error();
       });
       // Hide the error message
