@@ -47,6 +47,10 @@ import { setupMultitenantRoutes } from './multitenancy/routes';
 import { defineAuthTypeRoutes } from './routes/auth_type_routes';
 import { createMigrationOpenSearchClient } from '../../../src/core/server/saved_objects/migrations/core';
 import { SecuritySavedObjectsClientWrapper } from './saved_objects/saved_objects_wrapper';
+import { ensureRawRequest } from '../../../src/core/server/http/router';
+import { ResponseObject } from '@hapi/hapi';
+import { modifyUrl } from '../../../packages/osd-std/target';
+import { GOTO_PREFIX } from '../../../src/plugins/share/common/short_url_routes';
 
 export interface SecurityPluginRequestContext {
   logger: Logger;
@@ -124,6 +128,22 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
       this.logger
     );
     core.http.registerAuth(auth.authHandler);
+
+    if (config.multitenancy?.enabled) {
+      core.http.registerOnPreResponse((request, preResponse, toolkit) => {
+        if (request.url.pathname.startsWith(`${GOTO_PREFIX}/`)) {
+          const rawRequest = ensureRawRequest(request);
+          const rawResponse = rawRequest.response as ResponseObject;
+          const modifiedUrl = modifyUrl(rawResponse.headers.location as string, (parts) => {
+            if (typeof parts.query.security_tenant === 'undefined') {
+              parts.query.security_tenant = request.headers.securitytenant as string;
+            }          });
+          rawResponse.headers.location = modifiedUrl;
+        }
+
+        return toolkit.next();
+      });
+    }
 
     // Register server side APIs
     defineRoutes(router);
