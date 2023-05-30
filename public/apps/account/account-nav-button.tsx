@@ -44,7 +44,6 @@ export function AccountNavButton(props: {
   config: ClientConfigType;
   currAuthType: string;
 }) {
-  console.log('helllo')
   const [isPopoverOpen, setPopoverOpen] = React.useState<boolean>(false);
   const [modal, setModal] = React.useState<React.ReactNode>(null);
   const horizontalRule = <EuiHorizontalRule margin="xs" />;
@@ -57,12 +56,11 @@ export function AccountNavButton(props: {
           coreStart={props.coreStart}
           config={props.config}
           handleClose={() => {
-            {{console.log('props')}}
             setModal(null);
           }}
           handleSwitchAndClose={() => {
             setModal(null);
-            window.location.href = window.location.pathname;      
+            window.location.reload();
           }}
           tenant={props.tenant!}
         />
