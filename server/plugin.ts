@@ -129,6 +129,11 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     );
     core.http.registerAuth(auth.authHandler);
 
+  /**
+   * If multitenancy is enabled & the URL entered starts with /goto, 
+   * We will modify the rawResponse to add a new parameter to the URL, the security_tenant
+   * With the security_tenant added, the resolved short URL now contains the security_tenant information. 
+   */
     if (config.multitenancy?.enabled) {
       core.http.registerOnPreResponse((request, preResponse, toolkit) => {
         if (request.url.pathname.startsWith(`${GOTO_PREFIX}/`)) {
