@@ -135,14 +135,14 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
    * With the security_tenant added, the resolved short URL now contains the security_tenant information. 
    * 
    ************* The goal of the piece of code ***********
-   * [Solve issue 1203](https://github.com/opensearch-project/security-dashboards-plugin/issues/1203) which led to the user being directed to the incorrect tenant. This was happening in the case the short URL was copied, then the tenant was changed & the URL was loaded in a new tab. 
+   * [Solve issue 1203](https://github.com/opensearch-project/security-dashboards-plugin/issues/1203) which led to the user being directed to the incorrect tenant. This was happening in the case the short URL was copied, then the tenant was changed & the URL was loaded in a new tab. See issue 1203 for more information. The outcome was the tenant specified in the short URL was not maintained on page load, if after copying the URL, the tenant was switched.
    *
    ************** How it is done **************************
    * The short URL when copied and pasted has the security_tenant, however, when the URL is being rendered and parsed, this information is not does not retained in the resolved URL.
    * Upon page reload, the security tenant was fetched again from the localstorage, which was the switched tenant (not the tenant originally specified in the short URL.)
    *
    * ************** Why it is done this way *****************
-  * Therefore in the case of multitenancy, when parsing the short URL, we inject the security tenant into the short URL, adding it as a parameter and retaining this information then in the resolved URL. Allowing the page to correctly load the page, with the correct tenant that was specified & copied in the short URL.
+   * Therefore in the case of multitenancy, when parsing the short URL, we inject the security tenant into the short URL, adding it as a parameter and retaining this information then in the resolved URL. Allowing the page to correctly load the page, with the correct tenant that was specified & copied in the short URL.
    */
     if (config.multitenancy?.enabled) {
       core.http.registerOnPreResponse((request, preResponse, toolkit) => {
