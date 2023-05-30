@@ -62,7 +62,18 @@ export function AccountNavButton(props: {
           }}
           handleSwitchAndClose={() => {
             setModal(null);
-            window.location.reload();
+          const lastUrls = [];
+          for (let i = 0; i < sessionStorage.length; i++) {
+            const key = sessionStorage.key(i);
+            if (key?.startsWith('lastUrl')) {
+              lastUrls.push(key);
+            }
+          }
+          for (let i = 0; i < lastUrls.length; i++) {
+            sessionStorage.removeItem(lastUrls[i]);
+          }
+          
+          window.location.href = window.location.pathname;  
           }}
           tenant={props.tenant!}
         />
