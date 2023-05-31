@@ -5,8 +5,9 @@ on: [push, pull_request]
 env:
   TEST_BROWSER_HEADLESS: 1
   CI: 1
-  OPENSEARCH_VERSION: $(node -p "require('./package.json').version")
+  OPENSEARCH_VERSION: $(node -p "require('./package.json').opensearchDashboards.version")
   PLUGIN_NAME: opensearch-security
+  PLUGIN_VERSION: $(node -p "require('./package.json').version")
 
 jobs:
   tests:
@@ -18,9 +19,6 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Set env
-        run: echo "PLUGIN_VERSION=${OPENSEARCH_VERSION}" >> $GITHUB_ENV
-
       - name: Checkout Branch
         uses: actions/checkout@v3
 
