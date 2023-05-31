@@ -74,11 +74,11 @@ export function AccountNavButton(props: {
             for (let i = 0; i < lastUrls.length; i++) {
               sessionStorage.removeItem(lastUrls[i]);
             }
-          
-          // rather than just reload when we switch tenants, we set the URL to the pathname. i.e. the portion like: '/app/dashboards'
-          // removing the security tenant info and the specifics of the URL from the long copied URL
-          // therefore, the copied URL will now allow tenancy changes.
-          window.location.href = window.location.pathname;  
+
+            // rather than just reload when we switch tenants, we set the URL to the pathname. i.e. the portion like: '/app/dashboards'
+            // removing the security tenant info and the specifics of the URL from the long copied URL
+            // therefore, the copied URL will now allow tenancy changes.
+            window.location.href = window.location.pathname;
           }}
           tenant={props.tenant!}
         />
