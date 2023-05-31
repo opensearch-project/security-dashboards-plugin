@@ -9,9 +9,7 @@ env:
   START_CMD: 'node ../scripts/opensearch_dashboards --dev --no-base-path --no-watch --opensearch_security.multitenancy.enable_aggregation_view=true'
   OPENSEARCH_SNAPSHOT_CMD: 'node ../scripts/opensearch snapshot'
   SPEC: 'cypress/integration/plugins/security-dashboards-plugin/aggregation_view.js,'
-  OPENSEARCH_VERSION: 3.0.0
   PLUGIN_NAME: opensearch-security
-  PLUGIN_VERSION: 3.0.0.0
 
 jobs:
   tests:
@@ -23,6 +21,11 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+      - name: Set env
+        run: |
+          echo "OPENSEARCH_VERSION=$(node -p "require('./package.json').opensearchDashboards.version")" >> $GITHUB_ENV
+          echo "PLUGIN_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
+
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
