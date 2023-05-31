@@ -31,6 +31,7 @@ import { ExternalLink } from '../../utils/display-utils';
 import { displayBoolean } from '../../utils/display-utils';
 import { DocLinks } from '../../constants';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
+import { TenantInstructionView } from './tenant-instruction-view';
 
 interface TenantListProps extends AppDependencies {
   tabID: string;
@@ -126,6 +127,10 @@ export function TenantList(props: TenantListProps) {
       </EuiTab>
     ));
   };
+
+  if (!props.config.multitenancy.enabled) {
+    return <TenantInstructionView />;
+  }
 
   return (
     <>
