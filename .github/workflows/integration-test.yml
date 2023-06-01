@@ -31,6 +31,7 @@ jobs:
           plugin_version=$(node -p "require('./package.json').version")
           echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
           echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
+        shell: bash
 
       - uses: browser-actions/setup-geckodriver@v0.0.0
       - run: geckodriver --version
