@@ -20,12 +20,12 @@ import {
   AppStatus,
   AppUpdater,
   CoreSetup,
-  CoreStart,
+  CoreStart, DEFAULT_APP_CATEGORIES,
   Plugin,
   PluginInitializerContext,
 } from '../../../src/core/public';
 import { APP_ID_LOGIN, CUSTOM_ERROR_PAGE_URI, LOGIN_PAGE_URI, PLUGIN_NAME } from '../common';
-import { APP_ID_CUSTOMERROR } from '../common/index';
+import { APP_ID_CUSTOMERROR } from '../common';
 import { setupTopNavButton } from './apps/account/account-app';
 import { fetchAccountInfoSafe } from './apps/account/utils';
 import {
@@ -48,6 +48,8 @@ import { addTenantToShareURL } from './services/shared-link';
 import { interceptError } from './utils/logout-utils';
 import { tenantColumn, getNamespacesToRegister } from './apps/configuration/utils/tenant-utils';
 import { getDashboardsInfoSafe } from './utils/dashboards-info-utils';
+import {ROUTE_MAP} from "./apps/configuration/app-router";
+import {ResourceType} from "./apps/configuration/types";
 
 async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
   try {
@@ -98,7 +100,7 @@ export class SecurityPlugin
       core.application.register({
         id: PLUGIN_NAME,
         title: 'Security',
-        order: 8000,
+        order: 9050,
         mount: async (params: AppMountParameters) => {
           const { renderApp } = await import('./apps/configuration/configuration-app');
           const [coreStart, depsStart] = await core.getStartServices();
@@ -112,12 +114,43 @@ export class SecurityPlugin
 
           return renderApp(coreStart, depsStart as SecurityPluginStartDependencies, params, config);
         },
-        category: {
-          id: 'opensearch',
-          label: 'OpenSearch Plugins',
-          order: 2000,
-        },
+        category: DEFAULT_APP_CATEGORIES.management,
       });
+
+      if (deps.managementOverview) {
+        deps.managementOverview.register({
+          id: PLUGIN_NAME,
+          title: 'Security',
+          order: 9050,
+          pages: [
+            {
+              title: ROUTE_MAP[ResourceType.roles].name,
+              url: `#${ROUTE_MAP[ResourceType.roles].href}`,
+              order: 100
+            },
+            {
+              title: ROUTE_MAP[ResourceType.permissions].name,
+              url: `#${ROUTE_MAP[ResourceType.permissions].href}`,
+              order: 200
+            },
+            {
+              title: ROUTE_MAP[ResourceType.tenants].name,
+              url: `#${ROUTE_MAP[ResourceType.tenants].href}`,
+              order: 300
+            },
+            {
+              title: ROUTE_MAP[ResourceType.auditLogging].name,
+              url: `#${ROUTE_MAP[ResourceType.auditLogging].href}`,
+              order: 400
+            },
+            {
+              title: ROUTE_MAP[ResourceType.users].name,
+              url: `#${ROUTE_MAP[ResourceType.users].href}`,
+              order: 500
+            },
+          ]
+        });
+      }
     }
 
     core.application.register({
