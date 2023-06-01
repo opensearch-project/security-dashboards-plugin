@@ -5,9 +5,7 @@ on: [push, pull_request]
 env:
   TEST_BROWSER_HEADLESS: 1
   CI: 1
-  OPENSEARCH_VERSION: 3.0.0
   PLUGIN_NAME: opensearch-security
-  PLUGIN_VERSION: 3.0.0.0
 
 jobs:
   tests:
@@ -26,6 +24,14 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+
+      - name: Set env
+        run: |
+          opensearch_version=$(node -p "require('./package.json').opensearchDashboards.version")
+          plugin_version=$(node -p "require('./package.json').version")
+          echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
+          echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
+        shell: bash
 
       - uses: browser-actions/setup-geckodriver@v0.0.0
       - run: geckodriver --version
