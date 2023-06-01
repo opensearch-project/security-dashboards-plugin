@@ -9,9 +9,7 @@ env:
   START_CMD: 'node ../scripts/opensearch_dashboards --dev --no-base-path --no-watch --opensearch_security.multitenancy.enable_aggregation_view=true'
   OPENSEARCH_SNAPSHOT_CMD: 'node ../scripts/opensearch snapshot'
   SPEC: 'cypress/integration/plugins/security-dashboards-plugin/aggregation_view.js,'
-  OPENSEARCH_VERSION: 3.0.0
   PLUGIN_NAME: opensearch-security
-  PLUGIN_VERSION: 3.0.0.0
 
 jobs:
   tests:
@@ -30,6 +28,14 @@ jobs:
 
       - name: Checkout Branch
         uses: actions/checkout@v3
+
+      - name: Set env
+        run: |
+          opensearch_version=$(node -p "require('./package.json').opensearchDashboards.version")
+          plugin_version=$(node -p "require('./package.json').version")
+          echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
+          echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
+        shell: bash
 
       - name: Download security plugin and create setup scripts
         uses: ./.github/actions/download-plugin
