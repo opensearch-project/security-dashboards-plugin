@@ -17,13 +17,6 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Set env
-        run: |
-          opensearch_version = $(node -p "require('../../package.json').opensearchDashboards.version")
-          plugin_version = $(node -p "require('../../package.json').version")
-          echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
-          echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
-
       - name: Checkout Branch
         uses: actions/checkout@v3
 
@@ -31,6 +24,13 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+
+      - name: Set env
+        run: |
+          opensearch_version = $(node -p "require('./package.json').opensearchDashboards.version")
+          plugin_version = $(node -p "require('./package.json').version")
+          echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
+          echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
 
       - uses: browser-actions/setup-geckodriver@v0.0.0
       - run: geckodriver --version

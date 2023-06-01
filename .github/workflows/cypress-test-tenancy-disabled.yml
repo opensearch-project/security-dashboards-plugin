@@ -21,13 +21,6 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Set env
-        run: |
-          opensearch_version = $(node -p "require('../../package.json').opensearchDashboards.version")
-          plugin_version = $(node -p "require('../../package.json').version")
-          echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
-          echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
-
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
@@ -35,6 +28,13 @@ jobs:
 
       - name: Checkout Branch
         uses: actions/checkout@v3
+
+      - name: Set env
+        run: |
+          opensearch_version = $(node -p "require('./package.json').opensearchDashboards.version")
+          plugin_version = $(node -p "require('./package.json').version")
+          echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
+          echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
 
       - name: Download security plugin and create setup scripts
         uses: ./.github/actions/download-plugin
