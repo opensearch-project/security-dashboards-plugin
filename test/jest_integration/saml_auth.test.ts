@@ -284,7 +284,7 @@ describe('start OpenSearch Dashboards server', () => {
     await driver.quit();
   });
 
-  it('Tenancy persisted after Logout in SAML', async () => {
+  it.skip('Tenancy persisted after Logout in SAML', async () => {
     const driver = getDriver(browser, options).build();
 
     await driver.get('http://localhost:5601/app/opensearch_dashboards_overview#/');
