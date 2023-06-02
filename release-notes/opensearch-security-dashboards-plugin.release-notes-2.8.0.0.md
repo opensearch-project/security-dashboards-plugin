@@ -5,6 +5,7 @@ Compatible with Opensearch-Dashboards 2.8.0
 ### Bug Fixes
 
 * Fix the test cases to adapt the security password validation feature ([#1437](https://github.com/opensearch-project/security-dashboards-plugin/pull/1437))
+* Fix dynamic tenancy changes for issues 1412 (#1419) ([#1459](https://github.com/opensearch-project/security-dashboards-plugin/pull/1459))
 
 ### Enhancements
 
