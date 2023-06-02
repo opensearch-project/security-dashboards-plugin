@@ -40,7 +40,7 @@ import {
 } from '../../../src/core/server/saved_objects';
 import { setupIndexTemplate, migrateTenantIndices } from './multitenancy/tenant_index';
 import {
-  IAuthenticationType,
+  IAuthenticationType,   
   OpenSearchDashboardsAuthState,
 } from './auth/types/authentication_type';
 import { getAuthenticationHandler } from './auth/auth_handler_factory';
@@ -48,9 +48,7 @@ import { setupMultitenantRoutes } from './multitenancy/routes';
 import { defineAuthTypeRoutes } from './routes/auth_type_routes';
 import { createMigrationOpenSearchClient } from '../../../src/core/server/saved_objects/migrations/core';
 import { SecuritySavedObjectsClientWrapper } from './saved_objects/saved_objects_wrapper';
-import { ensureRawRequest } from '../../../src/core/server/http/router';
-import { modifyUrl } from '../../../packages/osd-std/target';
-import { GOTO_PREFIX } from '../../../src/plugins/share/common/short_url_routes';
+import { addTenantParameterToResolvedShortLink } from './multitenancy/tenant_resolver';
 
 export interface SecurityPluginRequestContext {
   logger: Logger;
@@ -129,35 +127,13 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     );
     core.http.registerAuth(auth.authHandler);
 
-    /**
-     * If multitenancy is enabled & the URL entered starts with /goto,
-     * We will modify the rawResponse to add a new parameter to the URL, the security_tenant
-     * With the security_tenant added, the resolved short URL now contains the security_tenant information.
-     *
-     ************* The goal of the piece of code ***********
-     * [Solve issue 1203](https://github.com/opensearch-project/security-dashboards-plugin/issues/1203) which led to the user being directed to the incorrect tenant. This was happening in the case the short URL was copied, then the tenant was changed & the URL was loaded in a new tab. See issue 1203 for more information. The outcome was the tenant specified in the short URL was not maintained on page load, if after copying the URL, the tenant was switched.
-     *
-     ************** How it is done **************************
-     * The short URL when copied and pasted has the security_tenant, however, when the URL is being rendered and parsed, this information is not does not retained in the resolved URL.
-     * Upon page reload, the security tenant was fetched again from the localstorage, which was the switched tenant (not the tenant originally specified in the short URL.)
-     *
-     * ************** Why it is done this way *****************
-     * Therefore in the case of multitenancy, when parsing the short URL, we inject the security tenant into the short URL, adding it as a parameter and retaining this information then in the resolved URL. Allowing the page to correctly load the page, with the correct tenant that was specified & copied in the short URL.
+  
+     /************** Fix implemented **************************
+     * Here we check if multitenancy is enabled to ensure if it is, we insert the tenant info (security_tenant) into the resolved, short URL so the page can correctly load with the right tenant information [Fix for issue 1203](https://github.com/opensearch-project/security-dashboards-plugin/issues/1203)
      */
-
     if (config.multitenancy?.enabled) {
       core.http.registerOnPreResponse((request, preResponse, toolkit) => {
-        if (request.url.pathname.startsWith(`${GOTO_PREFIX}/`)) {
-          const rawRequest = ensureRawRequest(request);
-          const rawResponse = rawRequest.response as ResponseObject;
-          const modifiedUrl = modifyUrl(rawResponse.headers.location as string, (parts) => {
-            if (typeof parts.query.security_tenant === 'undefined') {
-              parts.query.security_tenant = request.headers.securitytenant as string;
-            }
-          });
-          rawResponse.headers.location = modifiedUrl;
-        }
-
+        addTenantParameterToResolvedShortLink(request)
         return toolkit.next();
       });
     }
