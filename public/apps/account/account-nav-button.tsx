@@ -62,23 +62,7 @@ export function AccountNavButton(props: {
           }}
           handleSwitchAndClose={() => {
             setModal(null);
-            // the below portion is to clear URLs starting with 'lastUrl'
-            // when switching tenants, the last URLs will be from the old tenancy therefore we need to remove these from localstorage.
-            const lastUrls = [];
-            for (let i = 0; i < sessionStorage.length; i++) {
-              const key = sessionStorage.key(i);
-              if (key?.startsWith('lastUrl')) {
-                lastUrls.push(key);
-              }
-            }
-            for (let i = 0; i < lastUrls.length; i++) {
-              sessionStorage.removeItem(lastUrls[i]);
-            }
-
-            // rather than just reload when we switch tenants, we set the URL to the pathname. i.e. the portion like: '/app/dashboards'
-            // removing the security tenant info and the specifics of the URL from the long copied URL
-            // therefore, the copied URL will now allow tenancy changes.
-            window.location.href = window.location.pathname;
+            reloadWithoutTenantInfo();
           }}
           tenant={props.tenant!}
         />
@@ -88,9 +72,9 @@ export function AccountNavButton(props: {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        setIsMultiTenancyEnabled(
-          (await getDashboardsInfo(props.coreStart.http)).multitenancy_enabled
-        );
+        // setIsMultiTenancyEnabled(
+        //   (await getDashboardsInfo(props.coreStart.http)).multitenancy_enabled
+        // );
       } catch (e) {
         // TODO: switch to better error display.
         console.error(e);
