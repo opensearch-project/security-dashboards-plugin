@@ -188,7 +188,7 @@ export function AccountNavButton(props: {
   );
 }
 
-export function reloadWithoutTenantInfo(): void {
+export function reloadAfterTenantSwitch(): void {
     // the below portion is to clear URLs starting with 'lastUrl'
     // when switching tenants, the last URLs will be from the old tenancy therefore we need to remove these from sessionStorage.
     const lastUrls = [];
