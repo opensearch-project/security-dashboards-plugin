@@ -36,6 +36,7 @@ import { LogoutButton } from './log-out-button';
 import { resolveTenantName } from '../configuration/utils/tenant-utils';
 import { getShouldShowTenantPopup, setShouldShowTenantPopup } from '../../utils/storage-utils';
 import { getDashboardsInfo } from '../../utils/dashboards-info-utils';
+// import { SessionStorage } from 'opensearch-dashboards/server';
 
 export function AccountNavButton(props: {
   coreStart: CoreStart;
