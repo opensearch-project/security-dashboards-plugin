@@ -15,7 +15,7 @@
 
 import { shallow } from 'enzyme';
 import React from 'react';
-import { AccountNavButton } from '../account-nav-button';
+import { AccountNavButton, reloadAfterTenantSwitch } from '../account-nav-button';
 import { getShouldShowTenantPopup, setShouldShowTenantPopup } from '../../../utils/storage-utils';
 import { getDashboardsInfo } from '../../../utils/dashboards-info-utils';
 
@@ -172,5 +172,62 @@ describe('Account navigation button, multitenancy disabled', () => {
       />
     );
     expect(setState).toBeCalledTimes(0);
+  });
+});
+
+describe('Reload window after tenant switch', () => {
+  const originalLocation = window.location;
+  const mockSetWindowHref = jest.fn();
+  let pathname: string = '';
+  beforeAll(() => {
+    pathname = '/app/myapp';
+    Object.defineProperty(window, 'location', {
+      value: {
+        get pathname() {
+          return pathname;
+        },
+        get href() {
+          return '/app/dashboards?security_tenant=admin_tenant';
+        },
+        set href(value: string) {
+          mockSetWindowHref(value);
+        },
+      },
+    });
+  });
+
+  afterAll(() => {
+    window.location = originalLocation;
+  });
+
+  it('should remove the tenant query parameter before reloading', () => {
+    pathname = '/app/pathname-only';
+    reloadAfterTenantSwitch();
+    expect(mockSetWindowHref).toHaveBeenCalledWith(pathname);
+  });
+});
+
+describe('Clear lastUrls after tenant switch', () => {
+  afterAll(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should clear out keys with a lastUrl prefix', () => {
+    window.sessionStorage.setItem('lastUrl:dashboard', '/dashboard1');
+    window.sessionStorage.setItem('lastUrl:otherApp', '/otherApp');
+    window.sessionStorage.setItem('somethingElse:here', '/random');
+    const mockRemoveItem = jest.spyOn(Object.getPrototypeOf(window.sessionStorage), 'removeItem');
+    reloadAfterTenantSwitch();
+    expect(mockRemoveItem).toHaveBeenCalledWith('lastUrl:dashboard');
+    expect(mockRemoveItem).toHaveBeenCalledWith('lastUrl:otherApp');
+    expect(mockRemoveItem).toHaveBeenCalledTimes(2);
+  });
+
+  it('should not clear out keys without a lastUrl prefix', () => {
+    window.sessionStorage.setItem('somethingElse:here', '/random');
+    const mockRemoveItem = jest.spyOn(Object.getPrototypeOf(window.sessionStorage), 'removeItem');
+
+    reloadAfterTenantSwitch();
+    expect(mockRemoveItem).toHaveBeenCalledTimes(0);
   });
 });

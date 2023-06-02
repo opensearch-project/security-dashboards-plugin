@@ -36,7 +36,6 @@ import { LogoutButton } from './log-out-button';
 import { resolveTenantName } from '../configuration/utils/tenant-utils';
 import { getShouldShowTenantPopup, setShouldShowTenantPopup } from '../../utils/storage-utils';
 import { getDashboardsInfo } from '../../utils/dashboards-info-utils';
-// import { SessionStorage } from 'opensearch-dashboards/server';
 
 export function AccountNavButton(props: {
   coreStart: CoreStart;
@@ -189,21 +188,21 @@ export function AccountNavButton(props: {
 }
 
 export function reloadAfterTenantSwitch(): void {
-    // the below portion is to clear URLs starting with 'lastUrl'
-    // when switching tenants, the last URLs will be from the old tenancy therefore we need to remove these from sessionStorage.
-    const lastUrls = [];
-    
-      for (let i = 0; i < window.sessionStorage.length; i++) {
-        const key = sessionStorage.key(i);
-        if (key?.startsWith('lastUrl')) {
-          lastUrls.push(key);
-        }
-      }
-      for (let i = 0; i < lastUrls.length; i++) {
-        sessionStorage.removeItem(lastUrls[i]);
-      }
+  // the below portion is to clear URLs starting with 'lastUrl'
+  // when switching tenants, the last URLs will be from the old tenancy therefore we need to remove these from sessionStorage.
+  const lastUrls = [];
 
-    // rather than just reload when we switch tenants, we set the URL to the pathname. i.e. the portion like: '/app/dashboards'
-    // therefore, the copied URL will now allow tenancy changes.
-    window.location.href = window.location.pathname;
+  for (let i = 0; i < window.sessionStorage.length; i++) {
+    const key = sessionStorage.key(i);
+    if (key?.startsWith('lastUrl')) {
+      lastUrls.push(key);
+    }
+  }
+  for (let i = 0; i < lastUrls.length; i++) {
+    sessionStorage.removeItem(lastUrls[i]);
+  }
+
+  // rather than just reload when we switch tenants, we set the URL to the pathname. i.e. the portion like: '/app/dashboards'
+  // therefore, the copied URL will now allow tenancy changes.
+  window.location.href = window.location.pathname;
 }
