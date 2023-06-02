@@ -73,9 +73,9 @@ export function AccountNavButton(props: {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        // setIsMultiTenancyEnabled(
-        //   (await getDashboardsInfo(props.coreStart.http)).multitenancy_enabled
-        // );
+        setIsMultiTenancyEnabled(
+          (await getDashboardsInfo(props.coreStart.http)).multitenancy_enabled
+        );
       } catch (e) {
         // TODO: switch to better error display.
         console.error(e);
