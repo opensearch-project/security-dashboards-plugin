@@ -19,7 +19,6 @@ import { addTenantParameterToResolvedShortLink } from './tenant_resolver';
 import { Request, ResponseObject } from '@hapi/hapi';
 
 describe('Preserve the tenant parameter in short urls', () => {
-
   it(`adds the tenant as a query parameter for goto short links`, async () => {
     const resolvedUrl = '/url/resolved';
     const rawRequest = httpServerMock.createRawRequest({
@@ -83,7 +82,7 @@ describe('Preserve the tenant parameter in short urls', () => {
 
     const osRequest = OpenSearchDashboardsRequest.from(rawRequest);
     addTenantParameterToResolvedShortLink(osRequest);
-    
+
     expect((rawRequest.response as ResponseObject).headers.location).toBeFalsy();
   });
 });
