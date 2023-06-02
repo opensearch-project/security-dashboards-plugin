@@ -63,7 +63,7 @@ export function AccountNavButton(props: {
           }}
           handleSwitchAndClose={() => {
             setModal(null);
-            reloadWithoutTenantInfo();
+            reloadAfterTenantSwitch();
           }}
           tenant={props.tenant!}
         />
