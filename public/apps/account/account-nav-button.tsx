@@ -36,6 +36,7 @@ import { LogoutButton } from './log-out-button';
 import { resolveTenantName } from '../configuration/utils/tenant-utils';
 import { getShouldShowTenantPopup, setShouldShowTenantPopup } from '../../utils/storage-utils';
 import { getDashboardsInfo } from '../../utils/dashboards-info-utils';
+// import { SessionStorage } from 'opensearch-dashboards/server';
 
 export function AccountNavButton(props: {
   coreStart: CoreStart;
@@ -83,9 +84,9 @@ export function AccountNavButton(props: {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        setIsMultiTenancyEnabled(
-          (await getDashboardsInfo(props.coreStart.http)).multitenancy_enabled
-        );
+        // setIsMultiTenancyEnabled(
+        //   (await getDashboardsInfo(props.coreStart.http)).multitenancy_enabled
+        // );
       } catch (e) {
         // TODO: switch to better error display.
         console.error(e);
