@@ -19,14 +19,6 @@ import { addTenantParameterToResolvedShortLink } from './tenant_resolver';
 import { Request, ResponseObject } from '@hapi/hapi';
 
 describe('Preserve the tenant parameter in short urls', () => {
-  /**
-   *
-   * - Don't bother about testing the lifecycle itself?
-   * - Just test the function
-   * - Or should the function just return the url, and that is all that we test?
-   *
-   *
-   */
 
   it(`adds the tenant as a query parameter for goto short links`, async () => {
     const resolvedUrl = '/url/resolved';
@@ -47,9 +39,6 @@ describe('Preserve the tenant parameter in short urls', () => {
     const osRequest = OpenSearchDashboardsRequest.from(rawRequest);
     addTenantParameterToResolvedShortLink(osRequest);
 
-    // @todo Should we only manipulate if the header.location is really set - yes!
-    // @todo You had this problem for the cookie compression, did you not? Check.
-    // https://github.com/opensearch-project/security-dashboards-plugin/pull/1352/files#diff-529ac6c069521f7a7fef1dfad41e4ebe40eaf114caec7fbf9c064b5c4e09aafbR44
     expect((rawRequest.response as ResponseObject).headers.location).toEqual(
       resolvedUrl + '?security_tenant=dummy_tenant'
     );
@@ -74,9 +63,6 @@ describe('Preserve the tenant parameter in short urls', () => {
     const osRequest = OpenSearchDashboardsRequest.from(rawRequest);
     addTenantParameterToResolvedShortLink(osRequest);
 
-    // @todo Should we only manipulate if the header.location is really set - yes!
-    // @todo You had this problem for the cookie compression, did you not? Check.
-    // https://github.com/opensearch-project/security-dashboards-plugin/pull/1352/files#diff-529ac6c069521f7a7fef1dfad41e4ebe40eaf114caec7fbf9c064b5c4e09aafbR44
     expect((rawRequest.response as ResponseObject).headers.location).toEqual(resolvedUrl);
   });
 
@@ -97,12 +83,7 @@ describe('Preserve the tenant parameter in short urls', () => {
 
     const osRequest = OpenSearchDashboardsRequest.from(rawRequest);
     addTenantParameterToResolvedShortLink(osRequest);
-
-    // console.log('>>>>> So what is the request.response', rawRequest.response.headers);
-
-    // @todo Should we only manipulate if the header.location is really set - yes!
-    // @todo You had this problem for the cookie compression, did you not? Check.
-    // https://github.com/opensearch-project/security-dashboards-plugin/pull/1352/files#diff-529ac6c069521f7a7fef1dfad41e4ebe40eaf114caec7fbf9c064b5c4e09aafbR44
+    
     expect((rawRequest.response as ResponseObject).headers.location).toBeFalsy();
   });
 });
