@@ -40,7 +40,7 @@ import {
 } from '../../../src/core/server/saved_objects';
 import { setupIndexTemplate, migrateTenantIndices } from './multitenancy/tenant_index';
 import {
-  IAuthenticationType,   
+  IAuthenticationType,
   OpenSearchDashboardsAuthState,
 } from './auth/types/authentication_type';
 import { getAuthenticationHandler } from './auth/auth_handler_factory';
@@ -127,13 +127,12 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     );
     core.http.registerAuth(auth.authHandler);
 
-  
-     /************** Fix implemented **************************
+    /** ************ Fix implemented **************************
      * Here we check if multitenancy is enabled to ensure if it is, we insert the tenant info (security_tenant) into the resolved, short URL so the page can correctly load with the right tenant information [Fix for issue 1203](https://github.com/opensearch-project/security-dashboards-plugin/issues/1203)
      */
     if (config.multitenancy?.enabled) {
       core.http.registerOnPreResponse((request, preResponse, toolkit) => {
-        addTenantParameterToResolvedShortLink(request)
+        addTenantParameterToResolvedShortLink(request);
         return toolkit.next();
       });
     }

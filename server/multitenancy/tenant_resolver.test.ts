@@ -83,7 +83,7 @@ describe('Preserve the tenant parameter in short urls', () => {
   it(`checks that a redirect location is present before applying the query parameter`, async () => {
     const rawRequest = httpServerMock.createRawRequest({
       url: {
-        pathname: "/goto/123",
+        pathname: '/goto/123',
       },
       headers: {
         securitytenant: 'dummy_tenant',
@@ -98,7 +98,7 @@ describe('Preserve the tenant parameter in short urls', () => {
     const osRequest = OpenSearchDashboardsRequest.from(rawRequest);
     addTenantParameterToResolvedShortLink(osRequest);
 
-    //console.log('>>>>> So what is the request.response', rawRequest.response.headers);
+    // console.log('>>>>> So what is the request.response', rawRequest.response.headers);
 
     // @todo Should we only manipulate if the header.location is really set - yes!
     // @todo You had this problem for the cookie compression, did you not? Check.
@@ -106,4 +106,3 @@ describe('Preserve the tenant parameter in short urls', () => {
     expect((rawRequest.response as ResponseObject).headers.location).toBeFalsy();
   });
 });
-
