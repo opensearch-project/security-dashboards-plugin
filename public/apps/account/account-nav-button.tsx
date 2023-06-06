@@ -199,21 +199,20 @@ export function AccountNavButton(props: {
 }
 
 export function reloadAfterTenantSwitch(): void {
-    // the below portion is to clear URLs starting with 'lastUrl'
-    // when switching tenants, the last URLs will be from the old tenancy therefore we need to remove these from sessionStorage.
-    const lastUrls = [];
-    
-    if(sessionStorage){
-      for (let i = 0; i < sessionStorage.length; i++) {
-        const key = sessionStorage.key(i);
-        if (key?.startsWith('lastUrl')) {
-          lastUrls.push(key);
-        }
-      }
-      for (let i = 0; i < lastUrls.length; i++) {
-        sessionStorage.removeItem(lastUrls[i]);
-      }
+  // the below portion is to clear URLs starting with 'lastUrl'
+  // when switching tenants, the last URLs will be from the old tenancy therefore we need to remove these from sessionStorage.
+  const lastUrls = [];
+  const { sessionStorage } = window;
+
+  for (let i = 0; i < sessionStorage.length; i++) {
+    const key = sessionStorage.key(i);
+    if (key?.startsWith('lastUrl')) {
+      lastUrls.push(key);
     }
+  }
+  for (let i = 0; i < lastUrls.length; i++) {
+    sessionStorage.removeItem(lastUrls[i]);
+  }
 
   // rather than just reload when we switch tenants, we set the URL to the pathname. i.e. the portion like: '/app/dashboards'
   // therefore, the copied URL will now allow tenancy changes.
