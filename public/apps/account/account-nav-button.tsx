@@ -191,8 +191,9 @@ export function reloadAfterTenantSwitch(): void {
   // the below portion is to clear URLs starting with 'lastUrl'
   // when switching tenants, the last URLs will be from the old tenancy therefore we need to remove these from sessionStorage.
   const lastUrls = [];
+  const { sessionStorage } = window;
 
-  for (let i = 0; i < window.sessionStorage.length; i++) {
+  for (let i = 0; i < sessionStorage.length; i++) {
     const key = sessionStorage.key(i);
     if (key?.startsWith('lastUrl')) {
       lastUrls.push(key);
