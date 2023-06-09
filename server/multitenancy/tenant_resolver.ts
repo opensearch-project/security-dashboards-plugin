@@ -214,15 +214,12 @@ export function addTenantParameterToResolvedShortLink(request: OpenSearchDashboa
     // Make sure the request really should redirect
     if (rawResponse.headers.location) {
       const modifiedUrl = modifyUrl(rawResponse.headers.location as string, (parts) => {
-if (parts.query.security_tenant === undefined)
+        if (parts.query.security_tenant === undefined) {
           parts.query.security_tenant = request.headers.securitytenant as string;
         }
-      });
-
-      // Mutating the headers toolkit.next({headers: ...}) logs a warning about headers being overwritten
-      if (rawResponse.headers.location) {
+        // Mutating the headers toolkit.next({headers: ...}) logs a warning about headers being overwritten
         rawResponse.headers.location = modifiedUrl;
-      }
+      });
     }
   }
 
