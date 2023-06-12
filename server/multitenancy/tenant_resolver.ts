@@ -218,8 +218,8 @@ export function addTenantParameterToResolvedShortLink(request: OpenSearchDashboa
           parts.query.security_tenant = request.headers.securitytenant as string;
         }
         // Mutating the headers toolkit.next({headers: ...}) logs a warning about headers being overwritten
-        rawResponse.headers.location = modifiedUrl;
       });
+      rawResponse.headers.location = modifiedUrl;
     }
   }
 
