@@ -20,7 +20,8 @@ import {
   AppStatus,
   AppUpdater,
   CoreSetup,
-  CoreStart, DEFAULT_APP_CATEGORIES,
+  CoreStart,
+  DEFAULT_APP_CATEGORIES,
   Plugin,
   PluginInitializerContext,
 } from '../../../src/core/public';
@@ -48,8 +49,8 @@ import { addTenantToShareURL } from './services/shared-link';
 import { interceptError } from './utils/logout-utils';
 import { tenantColumn, getNamespacesToRegister } from './apps/configuration/utils/tenant-utils';
 import { getDashboardsInfoSafe } from './utils/dashboards-info-utils';
-import {ROUTE_MAP} from "./apps/configuration/app-router";
-import {ResourceType} from "./apps/configuration/types";
+import { ROUTE_MAP } from './apps/configuration/app-router';
+import { ResourceType } from './apps/configuration/types';
 
 async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
   try {
@@ -126,29 +127,29 @@ export class SecurityPlugin
             {
               title: ROUTE_MAP[ResourceType.roles].name,
               url: `#${ROUTE_MAP[ResourceType.roles].href}`,
-              order: 100
+              order: 100,
             },
             {
               title: ROUTE_MAP[ResourceType.permissions].name,
               url: `#${ROUTE_MAP[ResourceType.permissions].href}`,
-              order: 200
+              order: 200,
             },
             {
               title: ROUTE_MAP[ResourceType.tenants].name,
               url: `#${ROUTE_MAP[ResourceType.tenants].href}`,
-              order: 300
+              order: 300,
             },
             {
               title: ROUTE_MAP[ResourceType.auditLogging].name,
               url: `#${ROUTE_MAP[ResourceType.auditLogging].href}`,
-              order: 400
+              order: 400,
             },
             {
               title: ROUTE_MAP[ResourceType.users].name,
               url: `#${ROUTE_MAP[ResourceType.users].href}`,
-              order: 500
+              order: 500,
             },
-          ]
+          ],
         });
       }
     }

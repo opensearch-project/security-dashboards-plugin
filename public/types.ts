@@ -18,7 +18,7 @@ import {
   SavedObjectsManagementPluginSetup,
   SavedObjectsManagementPluginStart,
 } from '../../../src/plugins/saved_objects_management/public';
-import {ManagementOverViewPluginSetup} from "../../../src/plugins/management_overview/public";
+import { ManagementOverViewPluginSetup } from '../../../src/plugins/management_overview/public';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SecurityPluginSetup {}
