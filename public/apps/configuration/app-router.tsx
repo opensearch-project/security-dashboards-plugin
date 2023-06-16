@@ -41,7 +41,7 @@ import { CrossPageToast } from './cross-page-toast';
 
 const LANDING_PAGE_URL = '/getstarted';
 
-export const ROUTE_MAP: { [key: string]: RouteItem } = {
+const ROUTE_MAP: { [key: string]: RouteItem } = {
   getStarted: {
     name: 'Get Started',
     href: LANDING_PAGE_URL,
