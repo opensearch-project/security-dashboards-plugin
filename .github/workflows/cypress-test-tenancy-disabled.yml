@@ -25,7 +25,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-          
+
+      - name: Checkout Branch
+        uses: actions/checkout@v3
+
       - name: Set env
         run: |
           opensearch_version=$(node -p "require('./package.json').opensearchDashboards.version")
@@ -33,9 +36,6 @@ jobs:
           echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
           echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
         shell: bash
-
-      - name: Checkout Branch
-        uses: actions/checkout@v3
 
       - name: Download security plugin and create setup scripts
         uses: ./.github/actions/download-plugin
