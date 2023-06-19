@@ -1,0 +1,76 @@
+name: Cypress Tests Multitenancy Disabled
+
+on: [ push, pull_request ]
+
+env:
+  TEST_BROWSER_HEADLESS: 1
+  CI: 1
+  FTR_PATH: 'ftr'
+  START_CMD: 'node ../scripts/opensearch_dashboards --dev --no-base-path --no-watch --opensearch_security.multitenancy.enable_aggregation_view=true'
+  OPENSEARCH_SNAPSHOT_CMD: 'node ../scripts/opensearch snapshot'
+  SPEC: 'cypress/integration/plugins/security-dashboards-plugin/aggregation_view.js,'
+  PLUGIN_NAME: opensearch-security
+
+jobs:
+  tests:
+    name: Run Cypress Tests Multitenancy Disabled
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest , windows-latest ]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Checkout Branch
+        uses: actions/checkout@v3
+
+      - name: Set env
+        run: |
+          opensearch_version=$(node -p "require('./package.json').opensearchDashboards.version")
+          plugin_version=$(node -p "require('./package.json').version")
+          echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
+          echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Download security plugin and create setup scripts
+        uses: ./.github/actions/download-plugin
+        with:
+          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
+          plugin-name: ${{ env.PLUGIN_NAME }}
+          plugin-version: ${{ env.PLUGIN_VERSION }}
+
+      - name: Run Opensearch with A Single Plugin
+        uses: opensearch-project/security/.github/actions/start-opensearch-with-one-plugin@main
+        with:
+          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
+          plugin-name: ${{ env.PLUGIN_NAME }}
+          setup-script-name: setup
+
+      - name: Run Dashboard with Security Dashboards Plugin
+        uses: ./.github/actions/install-dashboards
+        with:
+          plugin_name: security-dashboards-plugin
+
+      - name: Configure and Run OpenSearch Dashboards with Cypress Test Cases
+        run: |
+          cd ./OpenSearch-Dashboards
+          echo 'server.host: "0.0.0.0"' >> ./config/opensearch_dashboards.yml
+          echo 'opensearch.hosts: ["https://localhost:9200"]' >> ./config/opensearch_dashboards.yml
+          echo 'opensearch.ssl.verificationMode: none' >> ./config/opensearch_dashboards.yml
+          echo 'opensearch.username: "kibanaserver"' >> ./config/opensearch_dashboards.yml
+          echo 'opensearch.password: "kibanaserver"' >> ./config/opensearch_dashboards.yml
+          echo 'opensearch.requestHeadersWhitelist: [ authorization,securitytenant ]' >> ./config/opensearch_dashboards.yml
+          echo 'opensearch_security.multitenancy.enabled: false' >> ./config/opensearch_dashboards.yml
+          echo 'opensearch_security.readonly_mode.roles: ["kibana_read_only"]' >> ./config/opensearch_dashboards.yml
+          echo 'opensearch_security.cookie.secure: false' >> ./config/opensearch_dashboards.yml
+          nohup yarn start --no-base-path --no-watch &
+          sleep 500
+          git clone https://github.com/opensearch-project/opensearch-dashboards-functional-test.git
+          cd opensearch-dashboards-functional-test
+          npm install cypress --save-dev
+          yarn cypress:run-with-security --browser chrome --spec "cypress/integration/plugins/security-dashboards-plugin/inaccessible_tenancy_features.js"

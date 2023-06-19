@@ -85,7 +85,7 @@ export function AccountNavButton(props: {
   }, [props.coreStart.http]);
 
   // Check if the tenant modal should be shown on load
-  if (isMultiTenancyEnabled && getShouldShowTenantPopup()) {
+  if (isMultiTenancyEnabled && getShouldShowTenantPopup() && props.config.multitenancy.enabled) {
     setShouldShowTenantPopup(false);
     showTenantSwitchPanel();
   }
@@ -128,7 +128,7 @@ export function AccountNavButton(props: {
       >
         View roles and identities
       </EuiButtonEmpty>
-      {isMultiTenancyEnabled && (
+      {isMultiTenancyEnabled && props.config.multitenancy.enabled && (
         <>
           {horizontalRule}
           <EuiButtonEmpty data-test-subj="switch-tenants" size="xs" onClick={showTenantSwitchPanel}>
