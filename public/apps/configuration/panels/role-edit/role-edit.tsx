@@ -46,7 +46,7 @@ import {
 } from './tenant-panel';
 import { RoleIndexPermissionStateClass, RoleTenantPermissionStateClass } from './types';
 import { buildHashUrl, buildUrl } from '../../utils/url-builder';
-import { ComboBoxOptions, ResourceType, Action } from '../../types';
+import { ComboBoxOptions, ResourceType, Action, ActionGroupItem } from '../../types';
 import {
   useToastState,
   createUnknownErrorToast,
@@ -106,12 +106,12 @@ export function RoleEdit(props: RoleEditDeps) {
     }
   }, [addToast, props.action, props.coreStart.http, props.sourceRoleName]);
 
-  const [actionGroups, setActionGroups] = useState<string[]>([]);
+  const [actionGroups, setActionGroups] = useState<[string, ActionGroupItem][]>([]);
   React.useEffect(() => {
     const fetchActionGroupNames = async () => {
       try {
         const actionGroupsObject = await fetchActionGroups(props.coreStart.http);
-        setActionGroups(Object.keys(actionGroupsObject));
+        setActionGroups(Object.entries(actionGroupsObject));
       } catch (e) {
         addToast(createUnknownErrorToast('actionGroup', 'load data'));
         console.error(e);
@@ -164,20 +164,29 @@ export function RoleEdit(props: RoleEditDeps) {
     }
   };
 
+  console.log(actionGroups)
+
   const clusterWisePermissionOptions = [
     {
       label: 'Permission groups',
-      options: actionGroups.map(stringToComboBoxOption),
+      options: actionGroups.filter((actionGroup) => actionGroup[1].type === 'cluster').flatMap((actionGroup) => actionGroup[0]).map(stringToComboBoxOption),
     },
     {
       label: 'Cluster permissions',
       options: CLUSTER_PERMISSIONS.map(stringToComboBoxOption),
     },
+  ];
+
+  const indexWisePermissionOptions = [
+    {
+      label: 'Permission groups',
+      options: actionGroups.filter((actionGroup) => actionGroup[1].type === 'index').flatMap((actionGroup) => actionGroup[0]).map(stringToComboBoxOption),
+    },
     {
       label: 'Index permissions',
       options: INDEX_PERMISSIONS.map(stringToComboBoxOption),
     },
-  ];
+  ]
 
   const tenantOptions = tenantNames.map(stringToComboBoxOption);
 
@@ -219,7 +228,7 @@ export function RoleEdit(props: RoleEditDeps) {
       <IndexPermissionPanel
         state={roleIndexPermission}
         setState={setRoleIndexPermission}
-        optionUniverse={clusterWisePermissionOptions}
+        optionUniverse={indexWisePermissionOptions}
       />
       <EuiSpacer size="m" />
       <TenantPanel
