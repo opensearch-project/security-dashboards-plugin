@@ -106,7 +106,7 @@ export function RoleEdit(props: RoleEditDeps) {
     }
   }, [addToast, props.action, props.coreStart.http, props.sourceRoleName]);
 
-  const [actionGroups, setActionGroups] = useState<[string, ActionGroupItem][]>([]);
+  const [actionGroups, setActionGroups] = useState<Array<[string, ActionGroupItem]>>([]);
   React.useEffect(() => {
     const fetchActionGroupNames = async () => {
       try {
@@ -167,7 +167,10 @@ export function RoleEdit(props: RoleEditDeps) {
   const clusterWisePermissionOptions = [
     {
       label: 'Permission groups',
-      options: actionGroups.filter((actionGroup) => actionGroup[1].type === 'cluster').map((actionGroup) => actionGroup[0]).map(stringToComboBoxOption),
+      options: actionGroups
+        .filter((actionGroup) => actionGroup[1].type === 'cluster')
+        .map((actionGroup) => actionGroup[0])
+        .map(stringToComboBoxOption),
     },
     {
       label: 'Cluster permissions',
@@ -178,7 +181,10 @@ export function RoleEdit(props: RoleEditDeps) {
   const indexWisePermissionOptions = [
     {
       label: 'Permission groups',
-      options: actionGroups.filter((actionGroup) => actionGroup[1].type === 'index').map((actionGroup) => actionGroup[0]).map(stringToComboBoxOption),
+      options: actionGroups
+        .filter((actionGroup) => actionGroup[1].type === 'index')
+        .map((actionGroup) => actionGroup[0])
+        .map(stringToComboBoxOption),
     },
     {
       label: 'Index permissions',
