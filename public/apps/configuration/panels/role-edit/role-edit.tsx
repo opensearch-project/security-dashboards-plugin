@@ -184,7 +184,7 @@ export function RoleEdit(props: RoleEditDeps) {
       label: 'Index permissions',
       options: INDEX_PERMISSIONS.map(stringToComboBoxOption),
     },
-  ]
+  ];
 
   const tenantOptions = tenantNames.map(stringToComboBoxOption);
 
