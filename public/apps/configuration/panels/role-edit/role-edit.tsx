@@ -164,8 +164,6 @@ export function RoleEdit(props: RoleEditDeps) {
     }
   };
 
-  console.log(actionGroups)
-
   const clusterWisePermissionOptions = [
     {
       label: 'Permission groups',
