@@ -31,6 +31,13 @@ export const ERROR_MISSING_ROLE_PATH = '/missing-role';
 
 export const MAX_INTEGER = 2147483647;
 
+export const GLOBAL_TENANT_SYMBOL = '';
+export const PRIVATE_TENANT_SYMBOL = '__user__';
+export const DEFAULT_TENANT = 'default';
+export const GLOBAL_TENANT_RENDERING_TEXT = 'Global';
+export const PRIVATE_TENANT_RENDERING_TEXT = 'Private';
+export const globalTenantName = 'global_tenant';
+
 export enum AuthType {
   BASIC = 'basicauth',
   OPEN_ID = 'openid',
@@ -47,4 +54,8 @@ export enum AuthType {
 export function isValidResourceName(resourceName: string): boolean {
   // see: https://javascript.info/regexp-unicode
   return !/[\p{C}%]/u.test(resourceName) && resourceName.length > 0;
+}
+
+export function isGlobalTenant(selectedTenant: string | null) {
+  return selectedTenant !== null && selectedTenant === GLOBAL_TENANT_SYMBOL;
 }
