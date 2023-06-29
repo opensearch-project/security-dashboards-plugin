@@ -9,6 +9,9 @@
     "navigation",
     "savedObjectsManagement"
   ],
+  "optionalPlugins": [
+    "managementOverview"
+  ],
   "server": true,
   "ui": true
 }
