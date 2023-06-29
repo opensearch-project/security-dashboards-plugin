@@ -15,17 +15,19 @@
 
 import { BehaviorSubject } from 'rxjs';
 import { SavedObjectsManagementColumn } from 'src/plugins/saved_objects_management/public';
+import { i18n } from '@osd/i18n';
 import {
   AppMountParameters,
   AppStatus,
   AppUpdater,
   CoreSetup,
   CoreStart,
+  DEFAULT_APP_CATEGORIES,
   Plugin,
   PluginInitializerContext,
 } from '../../../src/core/public';
 import { APP_ID_LOGIN, CUSTOM_ERROR_PAGE_URI, LOGIN_PAGE_URI, PLUGIN_NAME } from '../common';
-import { APP_ID_CUSTOMERROR } from '../common/index';
+import { APP_ID_CUSTOMERROR } from '../common';
 import { setupTopNavButton } from './apps/account/account-app';
 import { fetchAccountInfoSafe } from './apps/account/utils';
 import {
@@ -98,7 +100,7 @@ export class SecurityPlugin
       core.application.register({
         id: PLUGIN_NAME,
         title: 'Security',
-        order: 8000,
+        order: 9050,
         mount: async (params: AppMountParameters) => {
           const { renderApp } = await import('./apps/configuration/configuration-app');
           const [coreStart, depsStart] = await core.getStartServices();
@@ -112,12 +114,20 @@ export class SecurityPlugin
 
           return renderApp(coreStart, depsStart as SecurityPluginStartDependencies, params, config);
         },
-        category: {
-          id: 'opensearch',
-          label: 'OpenSearch Plugins',
-          order: 2000,
-        },
+        category: DEFAULT_APP_CATEGORIES.management,
       });
+
+      if (deps.managementOverview) {
+        deps.managementOverview.register({
+          id: PLUGIN_NAME,
+          title: 'Security',
+          order: 9050,
+          description: i18n.translate('security.securityDescription', {
+            defaultMessage:
+              'Configure how users access data in OpenSearch with authentication, access control and audit logging.',
+          }),
+        });
+      }
     }
 
     core.application.register({
