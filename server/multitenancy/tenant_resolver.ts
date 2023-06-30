@@ -19,7 +19,7 @@ import { ResponseObject } from '@hapi/hapi';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { SecurityPluginConfigType } from '..';
 import { GLOBAL_TENANT_SYMBOL, PRIVATE_TENANT_SYMBOL, globalTenantName } from '../../common';
-import { modifyUrl } from '../../../../packages/osd-std';
+import { modifyUrl } from '@osd/std';
 import { ensureRawRequest } from '../../../../src/core/server/http/router';
 import { GOTO_PREFIX } from '../../../../src/plugins/share/common/short_url_routes';
 
