@@ -16,9 +16,9 @@
 import { isEmpty, findKey, cloneDeep } from 'lodash';
 import { OpenSearchDashboardsRequest } from 'opensearch-dashboards/server';
 import { ResponseObject } from '@hapi/hapi';
+import { modifyUrl } from '@osd/std';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { GLOBAL_TENANT_SYMBOL, PRIVATE_TENANT_SYMBOL, globalTenantName } from '../../common';
-import { modifyUrl } from '../../../../packages/osd-std';
 import { ensureRawRequest } from '../../../../src/core/server/http/router';
 import { GOTO_PREFIX } from '../../../../src/plugins/share/common/short_url_routes';
 import { SecurityPluginConfigType } from '..';
