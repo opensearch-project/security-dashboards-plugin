@@ -1,6 +1,8 @@
 files:
   include:
     - 'public/**/*.s+(a|c)ss'
+plugins:
+  - eslint-plugin-import
 rules:
   quotes:
     - 2
@@ -68,3 +70,8 @@ rules:
   no-warn: 0
   # Transition all is useful in certain situations and there's no recent info to suggest slowdown
   no-transition-all: 0
+  import/no-restricted-paths:
+    - error
+    - target: '/packages/'
+      message: 'Imports with "packages" in the path are forbidden.'
+
