@@ -59,6 +59,18 @@ export default function (Client: any, config: any, components: any) {
     },
   });
 
+  Client.prototype.opensearch_security.prototype.listUserResource = ca({
+    url: {
+      fmt: '/_plugins/_security/api/internalusers/<%=resourceName%>',
+      req: {
+        resourceName: {
+          type: 'string',
+          required: true,
+        },
+      },
+    },
+  });
+
   /**
    * Creates a Security resource instance.
    *
