@@ -62,7 +62,7 @@ export function PasswordEditPanel(props: {
 
   return (
     <>
-      <FormRow data-test-subj="password-form-row" headerText="Password" helpText={passwordHelpText}>
+      <FormRow headerText="Password" helpText={passwordHelpText}>
         <EuiFieldText
           data-test-subj="password"
           prepend={<EuiIcon type="lock" />}
