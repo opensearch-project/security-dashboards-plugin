@@ -13,9 +13,23 @@
  *   permissions and limitations under the License.
  */
 
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import React from 'react';
 import { PasswordEditPanel } from '../password-edit-panel';
+import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
+
+const mockDashboardsInfo = {
+  multitenancy_enabled: true,
+  private_tenant_enabled: true,
+  default_tenant: '',
+  password_validation_error_message: 'Password must be minimum 5 characters long and must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.'
+};
+
+jest.mock('../../../../utils/dashboards-info-utils', () => ({
+  getDashboardsInfo: jest.fn().mockImplementation(() => {
+    return mockDashboardsInfo;
+  }),
+}));
 
 describe('Password edit panel', () => {
   let component;
@@ -24,18 +38,39 @@ describe('Password edit panel', () => {
   const updateIsInvalid = jest.fn();
   const useState = jest.spyOn(React, 'useState');
   const useEffect = jest.spyOn(React, 'useEffect');
+  const mockCoreStart = {
+    http: 1,
+  };
 
   beforeEach(() => {
     useEffect.mockImplementationOnce((f) => f());
     useState.mockImplementation((initialValue) => [initialValue, setState]);
+    (getDashboardsInfo as jest.Mock).mockImplementation(() => {
+      return mockDashboardsInfo;
+    });
     component = shallow(
-      <PasswordEditPanel updatePassword={updatePassword} updateIsInvalid={updateIsInvalid} />
+      <PasswordEditPanel coreStart={mockCoreStart as any} updatePassword={updatePassword} updateIsInvalid={updateIsInvalid} />
     );
   });
 
-  it('renders', () => {
-    expect(updatePassword).toHaveBeenCalledTimes(1);
-    expect(updateIsInvalid).toHaveBeenCalledTimes(1);
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('renders', (done) => {
+    (getDashboardsInfo as jest.Mock).mockImplementation(() => {
+      return mockDashboardsInfo;
+    });
+    const wrapper = mount(
+      <PasswordEditPanel coreStart={mockCoreStart as any} updatePassword={updatePassword} updateIsInvalid={updateIsInvalid} />
+    );
+    process.nextTick(() => {
+      wrapper.update();
+      expect(updatePassword).toHaveBeenCalledTimes(1);
+      expect(updateIsInvalid).toHaveBeenCalledTimes(1);
+      expect(setState).toBeCalledWith(mockDashboardsInfo.password_validation_error_message);
+      done();
+    });
   });
 
   it('password field update', () => {
