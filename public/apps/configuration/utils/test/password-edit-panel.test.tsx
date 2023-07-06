@@ -22,7 +22,8 @@ const mockDashboardsInfo = {
   multitenancy_enabled: true,
   private_tenant_enabled: true,
   default_tenant: '',
-  password_validation_error_message: 'Password must be minimum 5 characters long and must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.'
+  password_validation_error_message:
+    'Password must be minimum 5 characters long and must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.',
 };
 
 jest.mock('../../../../utils/dashboards-info-utils', () => ({
@@ -49,7 +50,11 @@ describe('Password edit panel', () => {
       return mockDashboardsInfo;
     });
     component = shallow(
-      <PasswordEditPanel coreStart={mockCoreStart as any} updatePassword={updatePassword} updateIsInvalid={updateIsInvalid} />
+      <PasswordEditPanel
+        coreStart={mockCoreStart as any}
+        updatePassword={updatePassword}
+        updateIsInvalid={updateIsInvalid}
+      />
     );
   });
 
@@ -62,7 +67,11 @@ describe('Password edit panel', () => {
       return mockDashboardsInfo;
     });
     const wrapper = mount(
-      <PasswordEditPanel coreStart={mockCoreStart as any} updatePassword={updatePassword} updateIsInvalid={updateIsInvalid} />
+      <PasswordEditPanel
+        coreStart={mockCoreStart as any}
+        updatePassword={updatePassword}
+        updateIsInvalid={updateIsInvalid}
+      />
     );
     process.nextTick(() => {
       wrapper.update();

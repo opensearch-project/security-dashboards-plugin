@@ -36,7 +36,6 @@ export function PasswordEditPanel(props: {
         setPasswordHelpText(
           (await getDashboardsInfo(props.coreStart.http)).password_validation_error_message
         );
-        console.log(passwordHelpText);
       } catch (e) {
         // TODO: switch to better error display.
         console.error(e);
