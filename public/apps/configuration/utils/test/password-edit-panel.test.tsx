@@ -53,9 +53,6 @@ describe('Password edit panel', () => {
   });
 
   it('renders', (done) => {
-    (getDashboardsInfo as jest.Mock).mockImplementation(() => {
-      return mockDashboardsInfo;
-    });
     mount(
       <PasswordEditPanel
         coreStart={mockCoreStart as any}
