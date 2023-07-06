@@ -46,16 +46,6 @@ describe('Password edit panel', () => {
   beforeEach(() => {
     useEffect.mockImplementationOnce((f) => f());
     useState.mockImplementation((initialValue) => [initialValue, setState]);
-    (getDashboardsInfo as jest.Mock).mockImplementation(() => {
-      return mockDashboardsInfo;
-    });
-    component = shallow(
-      <PasswordEditPanel
-        coreStart={mockCoreStart as any}
-        updatePassword={updatePassword}
-        updateIsInvalid={updateIsInvalid}
-      />
-    );
   });
 
   afterEach(() => {
@@ -66,7 +56,7 @@ describe('Password edit panel', () => {
     (getDashboardsInfo as jest.Mock).mockImplementation(() => {
       return mockDashboardsInfo;
     });
-    const wrapper = mount(
+    mount(
       <PasswordEditPanel
         coreStart={mockCoreStart as any}
         updatePassword={updatePassword}
@@ -74,7 +64,6 @@ describe('Password edit panel', () => {
       />
     );
     process.nextTick(() => {
-      wrapper.update();
       expect(updatePassword).toHaveBeenCalledTimes(1);
       expect(updateIsInvalid).toHaveBeenCalledTimes(1);
       expect(setState).toBeCalledWith(mockDashboardsInfo.password_validation_error_message);
@@ -83,6 +72,13 @@ describe('Password edit panel', () => {
   });
 
   it('password field update', () => {
+    component = shallow(
+      <PasswordEditPanel
+        coreStart={mockCoreStart as any}
+        updatePassword={updatePassword}
+        updateIsInvalid={updateIsInvalid}
+      />
+    );
     const event = {
       target: { value: 'dummy' },
     } as React.ChangeEvent<HTMLInputElement>;
@@ -91,6 +87,13 @@ describe('Password edit panel', () => {
   });
 
   it('repeat password field update', () => {
+    component = shallow(
+      <PasswordEditPanel
+        coreStart={mockCoreStart as any}
+        updatePassword={updatePassword}
+        updateIsInvalid={updateIsInvalid}
+      />
+    );
     const event = {
       target: { value: 'dummy' },
     } as React.ChangeEvent<HTMLInputElement>;
