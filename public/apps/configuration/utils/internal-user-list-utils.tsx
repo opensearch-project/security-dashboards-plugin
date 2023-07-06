@@ -15,7 +15,7 @@
 
 import { map } from 'lodash';
 import { HttpStart } from '../../../../../../src/core/public';
-import {API_ENDPOINT_INTERNALUSERS, API_ENDPOINT_SERVICEACCOUNTS} from '../constants';
+import { API_ENDPOINT_INTERNALACCOUNTS, API_ENDPOINT_INTERNALUSERS, API_ENDPOINT_SERVICEACCOUNTS } from '../constants';
 import {DataObject, InternalUser, ObjectsMessage, ResourceType} from '../types';
 import { httpDelete, httpGet } from './request-utils';
 import { getResourceUrl } from './resource-utils';
@@ -34,12 +34,12 @@ export function transformUserData(rawData: DataObject<InternalUser>): InternalUs
 
 export async function requestDeleteUsers(http: HttpStart, users: string[]) {
   for (const user of users) {
-    await httpDelete(http, getResourceUrl(API_ENDPOINT_INTERNALUSERS, user));
+    await httpDelete(http, getResourceUrl( API_ENDPOINT_INTERNALUSERS, user));
   }
 }
 
 async function getUserListRaw(http: HttpStart, userType: string ): Promise<ObjectsMessage<InternalUser>> {
-  let ENDPOINT = API_ENDPOINT_INTERNALUSERS;
+  let ENDPOINT = API_ENDPOINT_INTERNALACCOUNTS;
   if (userType === ResourceType.serviceAccounts) {
     ENDPOINT = API_ENDPOINT_SERVICEACCOUNTS;
   }

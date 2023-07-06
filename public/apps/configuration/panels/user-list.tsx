@@ -195,7 +195,7 @@ export function UserList(props: AppDependencies) {
     <>
       <EuiPageHeader>
         <EuiTitle size="l">
-          <h1>Internal users</h1>
+          <h1>Internal accounts</h1>
         </EuiTitle>
       </EuiPageHeader>
       <EuiPageContent>
@@ -203,7 +203,7 @@ export function UserList(props: AppDependencies) {
           <EuiPageContentHeaderSection>
             <EuiTitle size="s">
               <h3>
-                Internal users
+                Internal accounts
                 <span className="panel-header-count">
                   {' '}
                   ({Query.execute(query || '', userData).length})
@@ -211,9 +211,9 @@ export function UserList(props: AppDependencies) {
               </h3>
             </EuiTitle>
             <EuiText size="xs" color="subdued">
-              The Security plugin includes an internal user database. Use this database in place of,
+              The Security plugin includes an internal account database. Use this database in place of,
               or in addition to, an external authentication system such as LDAP server or Active
-              Directory. You can map an internal user to a role from{' '}
+              Directory. You can map an internal account to a role from{' '}
               <EuiLink href={buildHashUrl(ResourceType.roles)}>Roles</EuiLink>
               . First, click into the detail page of the role. Then, under “Mapped users”, click
               “Manage mapping” <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
@@ -224,7 +224,7 @@ export function UserList(props: AppDependencies) {
               <EuiFlexItem>{actionsMenu}</EuiFlexItem>
               <EuiFlexItem>
                 <EuiButton fill href={buildHashUrl(ResourceType.users, Action.create)}>
-                  Create internal user
+                  Create internal account
                 </EuiButton>
               </EuiFlexItem>
             </EuiFlexGroup>

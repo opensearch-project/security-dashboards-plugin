@@ -59,16 +59,15 @@ export default function (Client: any, config: any, components: any) {
     },
   });
 
-  Client.prototype.opensearch_security.prototype.listUserResource = ca({
+  Client.prototype.opensearch_security.prototype.listInternalAccounts = ca({
     url: {
-      fmt: '/_plugins/_security/api/internalusers/<%=resourceName%>',
-      req: {
-        resourceName: {
-          type: 'string',
-          required: true,
-        },
-      },
-    },
+      fmt: '/_plugins/_security/api/internalusers/internalaccounts'
+    }
+  });
+  Client.prototype.opensearch_security.prototype.listServiceAccounts = ca({
+    url: {
+      fmt: '/_plugins/_security/api/internalusers/serviceaccounts'
+    }
   });
 
   /**
