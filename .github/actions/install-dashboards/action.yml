@@ -31,7 +31,7 @@ runs:
       with:
         path: OpenSearch-Dashboards
         repository: opensearch-project/OpenSearch-Dashboards
-        ref: 'main'
+        ref: 'feature/deangular-dashboards'
         fetch-depth: 0
 
     - uses: actions/checkout@v2
