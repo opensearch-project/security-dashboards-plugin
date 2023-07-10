@@ -107,7 +107,9 @@ describe('Role edit filtering', () => {
       },
       {
         label: 'Cluster permissions',
-        options: CLUSTER_PERMISSIONS.map((x) => {return {label: x}}),
+        options: CLUSTER_PERMISSIONS.map((x) => {
+          return { label: x };
+        }),
       },
     ]);
   });
@@ -115,7 +117,6 @@ describe('Role edit filtering', () => {
   it('basic index permission panel rendering', async () => {
     const action = 'create';
     const buildBreadcrumbs = jest.fn();
-
 
     render(
       <RoleEdit
@@ -151,7 +152,9 @@ describe('Role edit filtering', () => {
       },
       {
         label: 'Index permissions',
-        options: INDEX_PERMISSIONS.map((x) => { return {label: x}}),
+        options: INDEX_PERMISSIONS.map((x) => {
+          return { label: x };
+        }),
       },
     ]);
   });
