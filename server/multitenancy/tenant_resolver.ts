@@ -14,9 +14,14 @@
  */
 
 import { isEmpty, findKey, cloneDeep } from 'lodash';
+import { OpenSearchDashboardsRequest } from 'opensearch-dashboards/server';
+import { ResponseObject } from '@hapi/hapi';
+import { modifyUrl } from '@osd/std';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { SecurityPluginConfigType } from '..';
 import { GLOBAL_TENANT_SYMBOL, PRIVATE_TENANT_SYMBOL, globalTenantName } from '../../common';
+import { ensureRawRequest } from '../../../../src/core/server/http/router';
+import { GOTO_PREFIX } from '../../../../src/plugins/share/common/short_url_routes';
 
 export const PRIVATE_TENANTS: string[] = [PRIVATE_TENANT_SYMBOL, 'private'];
 export const GLOBAL_TENANTS: string[] = ['global', GLOBAL_TENANT_SYMBOL, 'Global'];
@@ -193,4 +198,30 @@ export function resolve(
  */
 export function isValidTenant(tenant: string | undefined | null): boolean {
   return tenant !== undefined && tenant !== null;
+}
+
+/**
+ * If multitenancy is enabled & the URL entered starts with /goto,
+ * We will modify the rawResponse to add a new parameter to the URL, the security_tenant (or value for tenant when in multitenancy)
+ * With the security_tenant added, the resolved short URL now contains the security_tenant information (so the short URL retains the tenant information).
+ **/
+
+export function addTenantParameterToResolvedShortLink(request: OpenSearchDashboardsRequest) {
+  if (request.url.pathname.startsWith(`${GOTO_PREFIX}/`)) {
+    const rawRequest = ensureRawRequest(request);
+    const rawResponse = rawRequest.response as ResponseObject;
+
+    // Make sure the request really should redirect
+    if (rawResponse.headers.location) {
+      const modifiedUrl = modifyUrl(rawResponse.headers.location as string, (parts) => {
+        if (parts.query.security_tenant === undefined) {
+          parts.query.security_tenant = request.headers.securitytenant as string;
+        }
+        // Mutating the headers toolkit.next({headers: ...}) logs a warning about headers being overwritten
+      });
+      rawResponse.headers.location = modifiedUrl;
+    }
+  }
+
+  return request;
 }
