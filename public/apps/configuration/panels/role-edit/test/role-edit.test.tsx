@@ -33,9 +33,6 @@ jest.mock('../../../utils/role-detail-utils', () => ({
   }),
   updateRole: jest.fn(),
 }));
-jest.mock('../../../utils/action-groups-utils', () => ({
-  fetchActionGroups: jest.fn().mockReturnValue({}),
-}));
 jest.mock('../../../utils/tenant-utils');
 jest.mock('../../../utils/storage-utils');
 
