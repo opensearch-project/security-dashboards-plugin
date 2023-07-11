@@ -163,7 +163,11 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
             setNameState={setUserName}
             setIsFormValid={setIsFormValid}
           />
-          <PasswordEditPanel updatePassword={setPassword} updateIsInvalid={setIsPasswordInvalid} />
+          <PasswordEditPanel
+            coreStart={props.coreStart}
+            updatePassword={setPassword}
+            updateIsInvalid={setIsPasswordInvalid}
+          />
         </EuiForm>
       </PanelWithHeader>
       <EuiSpacer size="m" />
