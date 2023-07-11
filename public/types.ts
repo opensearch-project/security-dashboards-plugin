@@ -46,6 +46,7 @@ export interface DashboardsInfo {
   multitenancy_enabled?: boolean;
   private_tenant_enabled?: boolean;
   default_tenant: string;
+  password_validation_error_message: string;
 }
 
 export interface ClientConfigType {
