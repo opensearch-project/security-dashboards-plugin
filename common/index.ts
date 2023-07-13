@@ -61,6 +61,7 @@ export enum AuthType {
   SAML = 'saml',
   PROXY = 'proxy',
   ANONYMOUS = 'anonymous',
+  KERBEROS = 'kerberos'
 }
 
 /**
