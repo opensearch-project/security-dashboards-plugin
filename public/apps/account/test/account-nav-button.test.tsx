@@ -103,7 +103,6 @@ describe('Account navigation button', () => {
   });
 });
 
-
 describe('Reload window after tenant switch', () => {
   const originalLocation = window.location;
   const mockSetWindowHref = jest.fn();
