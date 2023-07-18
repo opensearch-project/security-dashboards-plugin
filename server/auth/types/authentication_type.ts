@@ -37,6 +37,11 @@ export interface IAuthenticationType {
   type: string;
   authHandler: AuthenticationHandler;
   init: () => Promise<void>;
+  requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean;
+  buildAuthHeaderFromCookie(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): any;
 }
 
 export type IAuthHandlerConstructor = new (
