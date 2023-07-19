@@ -14,17 +14,35 @@
  */
 
 import React from 'react';
+import { CoreStart } from 'opensearch-dashboards/public';
 import { EuiFieldText, EuiIcon } from '@elastic/eui';
 import { FormRow } from './form-row';
 import { PASSWORD_INSTRUCTION } from '../../apps-constants';
+import { getDashboardsInfo } from '../../../utils/dashboards-info-utils';
 
 export function PasswordEditPanel(props: {
+  coreStart: CoreStart;
   updatePassword: (p: string) => void;
   updateIsInvalid: (v: boolean) => void;
 }) {
   const [password, setPassword] = React.useState<string>('');
   const [repeatPassword, setRepeatPassword] = React.useState<string>('');
   const [isRepeatPasswordInvalid, setIsRepeatPasswordInvalid] = React.useState<boolean>(false);
+  const [passwordHelpText, setPasswordHelpText] = React.useState<string>(PASSWORD_INSTRUCTION);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setPasswordHelpText(
+          (await getDashboardsInfo(props.coreStart.http)).password_validation_error_message
+        );
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    fetchData();
+  }, [props.coreStart.http]);
 
   React.useEffect(() => {
     props.updatePassword(password);
@@ -43,7 +61,7 @@ export function PasswordEditPanel(props: {
 
   return (
     <>
-      <FormRow headerText="Password" helpText={PASSWORD_INSTRUCTION}>
+      <FormRow headerText="Password" helpText={passwordHelpText}>
         <EuiFieldText
           data-test-subj="password"
           prepend={<EuiIcon type="lock" />}
