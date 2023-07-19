@@ -1,0 +1,53 @@
+name: 'Download Security Plugin'
+description: 'Installs OpenSearch Dashboard with a Plugin from github, then checkouts the correct dashboards version for the plugin, configures npm/yarn, and bootstraps Dashboards'
+
+inputs:
+  opensearch-version:
+    description: 'The version of OpenSearch that should be used, e.g "1.3.0"'
+    required: true
+
+  plugin-name:
+    description: 'The the name of the plugin to use, such as opensearch-security'
+    required: true
+
+  plugin-version:
+    description: 'The version of security plugin that should be used, e.g "1.3.0"'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Download OpenSearch for Linux
+      uses: peternied/download-file@v2
+      if: ${{ runner.os == 'Linux' }}
+      with:
+        url: https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ inputs.opensearch-version }}/latest/linux/x64/tar/builds/opensearch/plugins/${{ inputs.plugin-name }}-${{ inputs.plugin-version }}.zip
+
+    - name: Download OpenSearch for Windows
+      uses: peternied/download-file@v2
+      if: ${{ runner.os == 'Windows' }}
+      with:
+        url: https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ inputs.opensearch-version }}/latest/windows/x64/zip/builds/opensearch/plugins/${{ inputs.plugin-name }}-${{ inputs.plugin-version }}.zip
+
+    - name: Rename the Plugin Files
+      run: mv opensearch-security-${{ inputs.plugin-version }}.zip opensearch-security.zip
+      shell: bash
+
+    - name: Create Setup Script for Linux
+      if: ${{ runner.os == 'Linux' }}
+      run: |
+        cat > setup.sh <<'EOF'
+        chmod +x  ./opensearch-${{ inputs.opensearch-version}}-SNAPSHOT/plugins/${{ inputs.plugin-name }}/tools/install_demo_configuration.sh 
+        /bin/bash -c "yes | ./opensearch-${{ inputs.opensearch-version}}-SNAPSHOT/plugins/${{ inputs.plugin-name }}/tools/install_demo_configuration.sh"
+        echo "plugins.security.unsupported.restapi.allow_securityconfig_modification: true" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT/config/opensearch.yml
+        EOF
+      shell: bash
+
+    - name: Create Setup Script for Windows
+      if: ${{ runner.os == 'Windows' }}
+      run: |
+        New-Item .\setup.bat -type file
+        Set-Content .\setup.bat -Value "powershell.exe -noexit -command `".\opensearch-${{ inputs.opensearch-version}}-SNAPSHOT\plugins\${{ inputs.plugin-name }}\tools\install_demo_configuration.bat -y -i -c`""
+        Add-Content -Path .\setup.bat -Value "echo plugins.security.unsupported.restapi.allow_securityconfig_modification: true >> .\opensearch-${{ inputs.opensearch-version}}-SNAPSHOT\config\opensearch.yml"
+        Get-Content .\setup.bat
+      shell: pwsh

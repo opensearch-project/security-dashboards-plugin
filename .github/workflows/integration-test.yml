@@ -1,113 +1,91 @@
 name: Integration Tests
 
-on:
-  pull_request:
-    branches:
-      - main
-  push:
-    branches:
-      - main
+on: [push, pull_request]
+
+env:
+  TEST_BROWSER_HEADLESS: 1
+  CI: 1
+  PLUGIN_NAME: opensearch-security
 
 jobs:
   tests:
     name: Run integration tests
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest , windows-latest ]
+    runs-on: ${{ matrix.os }}
+
     steps:
-      - name: Download OpenSearch Core
-        run: |
-          wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/1.3.0/488/linux/x64/builds/opensearch/dist/opensearch-min-1.3.0-linux-x64.tar.gz
-          tar -xzf opensearch-*.tar.gz
-          rm -f opensearch-*.tar.gz
+      - name: Checkout Branch
+        uses: actions/checkout@v3
 
-      - name: Download OpenSearch Security Plugin
-        run: wget -O opensearch-security.zip https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/1.3.0/488/linux/x64/builds/opensearch/plugins/opensearch-security-1.3.0.0.zip
-
-      - name: Run OpenSearch with plugin
-        run: |
-          cat > os-ep.sh <<EOF
-          yes | opensearch-plugin install file:///docker-host/security-plugin.zip
-          chmod +x plugins/opensearch-security/tools/install_demo_configuration.sh
-          yes | plugins/opensearch-security/tools/install_demo_configuration.sh
-          echo "plugins.security.unsupported.restapi.allow_securityconfig_modification: true" >> /opensearch/config/opensearch.yml
-          chown 1001:1001 -R /opensearch
-          su -c "/opensearch/bin/opensearch" -s /bin/bash opensearch
-          EOF
-          docker build -t opensearch-test:latest -f- . <<EOF
-          FROM ubuntu:latest
-          COPY --chown=1001:1001 os-ep.sh /docker-host/
-          COPY --chown=1001:1001 opensearch-security.zip /docker-host/security-plugin.zip
-          COPY --chown=1001:1001 opensearch* /opensearch/
-          RUN chmod +x /docker-host/os-ep.sh
-          RUN useradd -u 1001 -s /sbin/nologin opensearch
-          ENV PATH="/opensearch/bin:${PATH}"
-          WORKDIR /opensearch/
-          ENTRYPOINT /docker-host/os-ep.sh
-          EOF
-          docker run -d -p 9200:9200 -p 9600:9600 -i opensearch-test:latest
-
-      - name: Checkout OpenSearch Dashboard
-        uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v1
         with:
-          path: OpenSearch-Dashboards
-          repository: opensearch-project/OpenSearch-Dashboards
-          ref: '1.x'
-          fetch-depth: 0
-      
-      - name: Create plugins dir
+          java-version: 11
+
+      - name: Set env
         run: |
-          cd ./OpenSearch-Dashboards
-          mkdir -p plugins
-      
-      - name: Checkout OpenSearch Dashboard Security plugin
-        uses: actions/checkout@v2
+          opensearch_version=$(node -p "require('./package.json').opensearchDashboards.version")
+          plugin_version=$(node -p "require('./package.json').version")
+          echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
+          echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
+        shell: bash
+
+      - uses: browser-actions/setup-geckodriver@v0.0.0
+      - run: geckodriver --version
+
+      - name: Set up Firefox browser
+        if: ${{ runner.os == 'Linux' }}
+        uses: browser-actions/setup-firefox@v1
+
+      - run: firefox --version
+        if: ${{ runner.os == 'Linux' }}
+
+      # Browser-action version does not work on Windows
+      - name: Set up Firefox browser for Windows
+        if: ${{ runner.os == 'Windows' }}
+        uses: RyanL1997/setup-browser@main
         with:
-          path: OpenSearch-Dashboards/plugins/security-dashboards-plugin
-          ref: ${{ github.ref }}
+          browser: firefox
+          version: latest
 
-      - name: Check OpenSearch Running
-        continue-on-error: true
-        run: curl -XGET https://localhost:9200 -u 'admin:admin' -k
-
-      # - name: Get OpenSearch Dashboards version
-      #   id: osd_version
-      #   run: |
-      #     echo "::set-output name=osd_version::$(jq -r '.opensearchDashboards.version' ./OpenSearch-Dashboards/plugins/security-dashboards-plugin/package.json)"
-      
-      # - name: Check OpenSearch Dashboards release tag
-      #   run: |
-      #     cd ./OpenSearch-Dashboards
-      #     git checkout tags/${{ steps.osd_version.outputs.osd_version }} -b v${{ steps.osd_version.outputs.osd_version }}
-      
-      - name: Get node and yarn versions
-        id: versions
-        run: |
-          echo "::set-output name=node_version::$(cat ./OpenSearch-Dashboards/.node-version)"
-          echo "::set-output name=yarn_version::$(jq -r '.engines.yarn' ./OpenSearch-Dashboards/package.json)"
-      
-      - name: Setup node
-        uses: actions/setup-node@v1
+      - name: Download security plugin and create setup scripts
+        uses: ./.github/actions/download-plugin
         with:
-          node-version: ${{ steps.versions.outputs.node_version }}
-          registry-url: 'https://registry.npmjs.org'
-      
-      - name: Install correct yarn version for OpenSearch Dashboards
-        run: |
-          npm uninstall -g yarn
-          echo "Installing yarn ${{ steps.versions_step.outputs.yarn_version }}"
-          npm i -g yarn@${{ steps.versions.outputs.yarn_version }}
-      
-      - name: Check OpenSearch Running
-        continue-on-error: true
-        run: curl -XGET https://localhost:9200 -u 'admin:admin' -k
+          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
+          plugin-name: ${{ env.PLUGIN_NAME }}
+          plugin-version: ${{ env.PLUGIN_VERSION }}
 
-      - name: Bootstrap OpenSearch Dashboards
-        run: |
-          cd ./OpenSearch-Dashboards
-          yarn osd bootstrap
-      
-      - name: Run integration tests
+      - name: Run Opensearch with A Single Plugin
+        uses: opensearch-project/security/.github/actions/start-opensearch-with-one-plugin@main
+        with:
+          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
+          plugin-name: ${{ env.PLUGIN_NAME }}
+          setup-script-name: setup
+
+      - id: install-dashboards
+        uses: ./.github/actions/install-dashboards
+        with:
+          plugin_name: security-dashboards-plugin
+
+      - name: Start Dashboards in background
+        run: node scripts/build_opensearch_dashboards_platform_plugins.js
+        working-directory: ${{ steps.install-dashboards.outputs.dashboards-directory }}
+
+      - name: Run integration tests on Linux
+        if: ${{ runner.os == 'Linux' }}
         run: |
           echo "check if opensearch is ready"
           curl -XGET https://localhost:9200 -u 'admin:admin' -k
-          cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
           yarn test:jest_server --coverage
+        working-directory: ${{ steps.install-dashboards.outputs.plugin-directory }}
+
+      - name: Run integration tests on Windows
+        if: ${{ runner.os == 'Windows' }}
+        run: |
+          echo "check if opensearch is ready"
+          curl -XGET https://localhost:9200 -u 'admin:admin' -k
+          node .\test\run_jest_tests.js --config .\test\jest.config.server.js --testPathIgnorePatterns saml_auth.test.ts
+        working-directory: ${{ steps.install-dashboards.outputs.plugin-directory }}

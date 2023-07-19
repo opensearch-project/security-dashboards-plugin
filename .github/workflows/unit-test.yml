@@ -1,87 +1,38 @@
 name: Unit Tests
 
-on:
-  pull_request:
-    branches:
-      - main
-      - 1.*
-  push:
-    branches:
-      - main
+on: [ push, pull_request ]
 
 jobs:
-  tests:
+  unit-tests:
     name: Run unit tests
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest , windows-latest ]
+    runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Checkout OpenSearch Dashboard
+      - name: Enable longer filenames
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: git config --system core.longpaths true
+
+      - name: Checkout Branch
         uses: actions/checkout@v2
+
+      - id: install-dashboards
+        uses: ./.github/actions/install-dashboards
         with:
-          path: OpenSearch-Dashboards
-          repository: opensearch-project/OpenSearch-Dashboards
-          ref: '1.x'
-          fetch-depth: 0
-      - name: Create plugins dir
-        run: |
-          cd ./OpenSearch-Dashboards
-          mkdir -p plugins
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          path: OpenSearch-Dashboards/plugins/security-dashboards-plugin
-          ref: ${{ github.ref }}
-      - name: Get OpenSearch Dashboards version
-        id: osd_version
-        run: |
-          echo "::set-output name=osd_version::$(jq -r '.opensearchDashboards.version' ./OpenSearch-Dashboards/plugins/security-dashboards-plugin/package.json)"
-      - name: Use OpenSearch release commit
-        run: |
-          cd ./OpenSearch-Dashboards
-          # git checkout tags/v${{ steps.osd_version.outputs.osd_version }} -b v${{ steps.osd_version.outputs.osd_version }}
-      - name: Get node and yarn versions
-        id: versions
-        run: |
-          echo "::set-output name=node_version::$(cat ./OpenSearch-Dashboards/.node-version)"
-          echo "::set-output name=yarn_version::$(jq -r '.engines.yarn' ./OpenSearch-Dashboards/package.json)"
-      - name: Setup node
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ steps.versions.outputs.node_version }}
-          registry-url: 'https://registry.npmjs.org'
-      - name: Install correct yarn version for OpenSearch Dashboards
-        run: |
-          npm uninstall -g yarn
-          echo "Installing yarn ${{ steps.versions_step.outputs.yarn_version }}"
-          npm i -g yarn@${{ steps.versions.outputs.yarn_version }}
-      - name: Bootstrap OpenSearch Dashboards
-        run: |
-          cd ./OpenSearch-Dashboards
-          yarn osd bootstrap --oss
+           plugin_name: security-dashboards-plugin
+
       - name: Run lint
-        run: |
-          cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
-          yarn lint
+        run: yarn lint
+        working-directory: ${{ steps.install-dashboards.outputs.plugin-directory }}
+
       - name: Run unit test
-        run: |
-          cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
-          yarn test:jest_ui --coverage
+        run: yarn test:jest_ui --coverage
+        working-directory: ${{ steps.install-dashboards.outputs.plugin-directory }}
+
       - name: Uploads coverage
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-      - name: build security plugin
-        id: build_zip
-        run: |
-          cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
-          yarn build --opensearch-dashboards-version ${{ steps.osd_version.outputs.osd_version }}
-
-          artifact_path=`ls $(pwd)/build/security*.zip`
-          artifact_name=`basename $artifact_path`
-          echo "::set-output name=ARTIFACT_PATH::$artifact_path"
-          echo "::set-output name=ARTIFACT_NAME::$artifact_name"
-      - name: Upload Workflow Artifacts
-        uses: actions/upload-artifact@v1
-        with:
-          name: ${{ steps.build_zip.outputs.ARTIFACT_NAME }}
-          path: ${{ steps.build_zip.outputs.ARTIFACT_PATH }}
