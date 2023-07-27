@@ -20,6 +20,18 @@ module.exports = {
   extends: ['@elastic/eslint-config-kibana', 'plugin:@elastic/eui/recommended'],
   rules: {
     // "@osd/eslint/require-license-header": "off"
+    '@osd/eslint/no-restricted-paths': [
+      'error',
+      {
+        basePath: __dirname,
+        zones: [
+          {
+            target: ['(public|server)/**/*'],
+            from: ['../../packages/**/*','packages/**/*']
+          },
+        ]
+      }
+    ]
   },
   overrides: [
     {
