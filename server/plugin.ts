@@ -97,7 +97,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
       const pathsToIgnore = ['login', 'logout', 'customerror'];
       return pathsToIgnore.includes(url.pathname?.split('/').pop() || '');
     } catch (error: any) {
-      this.logger.error(`Could not parse the referer for the 1: ${error.stack}`);
+      this.logger.error(`Could not parse the referer for the capabilites: ${error.stack}`);
     }
   }
 
