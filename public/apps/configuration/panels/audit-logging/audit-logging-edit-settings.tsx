@@ -23,11 +23,14 @@ import {
   EuiPanel,
   EuiSpacer,
   EuiTitle,
+  EuiDescriptionList,
+  EuiDescriptionListDescription,
+  EuiDescriptionListTitle
 } from '@elastic/eui';
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 import { cloneDeep, set, without } from 'lodash';
 import { AppDependencies } from '../../../types';
-import { SETTING_GROUPS, SettingMapItem } from './constants';
+import { SETTING_GROUPS, SettingGroup, SettingMapItem } from './constants';
 import { EditSettingGroup } from './edit-setting-group';
 import { AuditLoggingSettings } from './types';
 import { buildHashUrl, buildUrl } from '../../utils/url-builder';
@@ -226,6 +229,24 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
 
         <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={10000} dismissToast={removeToast} />
       </>
+    );
+  };
+
+  const renderSettingGroup = (settingGroup: SettingGroup) => {
+    return (
+      <EuiPanel>
+        <EuiTitle size="s">
+          <h3>{settingGroup.title}</h3>
+        </EuiTitle>
+        <EuiDescriptionList textStyle="reverse">
+          {settingGroup.settings.map((setting) => (
+            <React.Fragment key={setting.title}>
+              <EuiDescriptionListTitle>{setting.title}</EuiDescriptionListTitle>
+              <EuiDescriptionListDescription>{setting.description}</EuiDescriptionListDescription>
+            </React.Fragment>
+          ))}
+        </EuiDescriptionList>
+      </EuiPanel>
     );
   };
 
