@@ -25,7 +25,7 @@ import {
   EuiTitle,
   EuiDescriptionList,
   EuiDescriptionListDescription,
-  EuiDescriptionListTitle
+  EuiDescriptionListTitle,
 } from '@elastic/eui';
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 import { cloneDeep, set, without } from 'lodash';
