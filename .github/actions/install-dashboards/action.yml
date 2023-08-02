@@ -40,15 +40,15 @@ runs:
 
     - id: osd-version
       run: |
-        echo "::set-output name=osd-version::$(cat package.json | jq '.opensearchDashboards.version' | cut -c 2-4)"
-        echo "::set-output name=osd-x-version::$(cat package.json | jq '.opensearchDashboards.version' | cut -c 2-3)"
+        echo "::set-output name=osd-version::$(jq -r '.opensearchDashboards.version | split(".") | .[:2] | join(".")' package.json)"
+        echo "::set-output name=osd-x-version::$(jq -r '.opensearchDashboards.version | split(".") | .[0]' package.json).x"
       working-directory: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
       shell: bash
 
     - id: branch-switch-if-possible
       continue-on-error: true # Defaults onto main if the branch switch doesn't work
       if: ${{ steps.osd-version.outputs.osd-version }}
-      run: git checkout ${{ steps.osd-version.outputs.osd-version }} || git checkout ${{ steps.osd-version.outputs.osd-x-version }}x
+      run: git checkout ${{ steps.osd-version.outputs.osd-version }} || git checkout ${{ steps.osd-version.outputs.osd-x-version }}
       working-directory: ./OpenSearch-Dashboards
       shell: bash
 
