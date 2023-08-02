@@ -279,21 +279,8 @@ exports[`Get started (landing page) renders when backend configuration is enable
         size="l"
       />
       <div
-        className="text-center"
-      >
-        <EuiImage
-          alt="Three steps to set up your security"
-          size="xl"
-          style={
-            Object {
-              "height": "auto",
-              "maxWidth": "100%",
-              "width": "auto",
-            }
-          }
-          url="test-file-stub"
-        />
-      </div>
+        className="security-steps-diagram"
+      />
       <EuiSpacer
         size="l"
       />
