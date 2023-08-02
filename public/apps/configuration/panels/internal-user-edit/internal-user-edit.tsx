@@ -64,13 +64,13 @@ const TITLE_TEXT_DICT = {
 export function InternalUserEdit(props: InternalUserEditDeps) {
   const [userName, setUserName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [isPasswordInvalid, setIsPasswordInvalid] = React.useState<boolean>(false);
+  const [isPasswordInvalid, setIsPasswordInvalid] = React.useState<boolean>(true);
   const [attributes, setAttributes] = useState<UserAttributeStateClass[]>([]);
   const [backendRoles, setBackendRoles] = useState<string[]>([]);
 
   const [toasts, addToast, removeToast] = useToastState();
 
-  const [isFormValid, setIsFormValid] = useState<boolean>(true);
+  const [isUsernameValid, setIsUsernameValid] = useState<boolean>(false);
 
   React.useEffect(() => {
     const action = props.action;
@@ -131,6 +131,9 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
       );
     }
   };
+  console.log("usename invalid" + !isUsernameValid)
+  console.log("password invalid" + isPasswordInvalid)
+  console.log("usename or password invalid" + (!isUsernameValid || isPasswordInvalid))
 
   return (
     <>
@@ -161,7 +164,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
             resourceType="user"
             action={props.action}
             setNameState={setUserName}
-            setIsFormValid={setIsFormValid}
+            setIsFormValid={setIsUsernameValid}
           />
           <PasswordEditPanel
             coreStart={props.coreStart}
@@ -186,7 +189,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
           </EuiButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton id="submit" fill onClick={updateUserHandler} disabled={!isFormValid}>
+          <EuiButton id="submit" fill onClick={updateUserHandler} disabled={(!isUsernameValid || isPasswordInvalid)}>
             {props.action === 'edit' ? 'Save changes' : 'Create'}
           </EuiButton>
         </EuiFlexItem>

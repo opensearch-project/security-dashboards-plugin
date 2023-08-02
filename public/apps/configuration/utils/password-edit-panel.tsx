@@ -17,7 +17,7 @@ import React from 'react';
 import { CoreStart } from 'opensearch-dashboards/public';
 import { EuiFieldText, EuiIcon } from '@elastic/eui';
 import { FormRow } from './form-row';
-import { PASSWORD_INSTRUCTION } from '../../apps-constants';
+import { PASSWORD_INSTRUCTION, PASSWORD_VALIDATION_REGEX } from '../../apps-constants';
 import { getDashboardsInfo } from '../../../utils/dashboards-info-utils';
 
 export function PasswordEditPanel(props: {
@@ -29,13 +29,18 @@ export function PasswordEditPanel(props: {
   const [repeatPassword, setRepeatPassword] = React.useState<string>('');
   const [isRepeatPasswordInvalid, setIsRepeatPasswordInvalid] = React.useState<boolean>(false);
   const [passwordHelpText, setPasswordHelpText] = React.useState<string>(PASSWORD_INSTRUCTION);
+  const [passwordValidationRegex, setPasswordValidationRegex] = React.useState<string>(PASSWORD_VALIDATION_REGEX);
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
+        const dashboardsInfo = await getDashboardsInfo(props.coreStart.http)
         setPasswordHelpText(
-          (await getDashboardsInfo(props.coreStart.http)).password_validation_error_message
+          dashboardsInfo.password_validation_error_message
         );
+        setPasswordValidationRegex(
+          dashboardsInfo.password_validation_regex
+        )
       } catch (e) {
         console.error(e);
       }
@@ -46,8 +51,8 @@ export function PasswordEditPanel(props: {
 
   React.useEffect(() => {
     props.updatePassword(password);
-    const isInvalid = repeatPassword !== password;
-    setIsRepeatPasswordInvalid(isInvalid);
+    const isInvalid = (repeatPassword !== password) || !password.match(passwordValidationRegex);
+    setIsRepeatPasswordInvalid(repeatPassword !== password);
     props.updateIsInvalid(isInvalid);
   }, [password, props, repeatPassword]);
 

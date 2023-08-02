@@ -20,3 +20,5 @@ export const GENERIC_ERROR_INSTRUCTION =
 export const PASSWORD_INSTRUCTION =
   'Password should be at least 8 characters long and contain at least one uppercase ' +
   'letter, one lowercase letter, one digit, and one special character.';
+
+export const PASSWORD_VALIDATION_REGEX = "(?=.*[A-Z])(?=.*[^a-zA-Z\\d])(?=.*[0-9])(?=.*[a-z]).{8,}";
