@@ -18,7 +18,6 @@ import {
   EuiCode,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiImage,
   EuiPageHeader,
   EuiPanel,
   EuiSpacer,
@@ -31,7 +30,6 @@ import { FormattedMessage } from '@osd/i18n/react';
 import { flow } from 'lodash';
 import { HashRouter as Router, Route } from 'react-router-dom';
 import { AppDependencies } from '../../types';
-import securityStepsDiagram from '../../../assets/get_started.svg';
 import { buildHashUrl, buildUrl } from '../utils/url-builder';
 import { Action, ResourceType, RouteItem } from '../types';
 import { API_ENDPOINT_CACHE, DocLinks } from '../constants';
@@ -189,16 +187,7 @@ export function GetStarted(props: AppDependencies) {
           </EuiText>
 
           <EuiSpacer size="l" />
-          {props.config.ui.backend_configurable && (
-            <div className="text-center">
-              <EuiImage
-                size="xl"
-                alt="Three steps to set up your security"
-                url={securityStepsDiagram}
-                style={{ maxWidth: '100%', height: 'auto', width: 'auto' }}
-              />
-            </div>
-          )}
+          {props.config.ui.backend_configurable && <div className={'security-steps-diagram'} />}
 
           <EuiSpacer size="l" />
 
