@@ -249,14 +249,11 @@ export function defineRoutes(router: IRouter) {
       const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
-        console.log(request.params.resourceName)
-        if(request.params.resourceName ==  ResourceType.serviceAccounts.toLowerCase()){
+        if (request.params.resourceName === ResourceType.serviceAccounts.toLowerCase()) {
           esResp = await client.callAsCurrentUser('opensearch_security.listServiceAccounts');
-        }
-        else if(request.params.resourceName == 'internalaccounts'){
+        } else if (request.params.resourceName === 'internalaccounts') {
           esResp = await client.callAsCurrentUser('opensearch_security.listInternalAccounts');
-        }
-        else{
+        } else {
           esResp = await client.callAsCurrentUser('opensearch_security.listResource', {
             resourceName: request.params.resourceName,
           });

@@ -38,10 +38,7 @@ import { Action, ResourceType } from '../types';
 import { EMPTY_FIELD_VALUE } from '../ui-constants';
 import { useContextMenuState } from '../utils/context-menu';
 import { ExternalLink, tableItemsUIProps, truncatedListView } from '../utils/display-utils';
-import {
-  getUserList,
-  InternalUsersListing,
-} from '../utils/internal-user-list-utils';
+import { getUserList, InternalUsersListing } from '../utils/internal-user-list-utils';
 import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { buildHashUrl } from '../utils/url-builder';
 
@@ -178,11 +175,12 @@ export function ServiceAccountList(props: AppDependencies) {
                 </span>
               </h3>
             </EuiTitle>
-            <EuiText size="xs" color="subdued">
-              Here you list the users authenticated via an external authentication system such as LDAP server or Active
-              Directory. You can map an user to a role from{' '}
+            <EuiText size="s" color="subdued">
+              Here you list the users authenticated via an external authentication system such as
+              LDAP server or Active Directory. You can map an user to a role from{' '}
               <EuiLink href={buildHashUrl(ResourceType.roles)}>Roles</EuiLink>
-                 “Manage mapping” <ExternalLink href={DocLinks.BackendConfigurationAuthenticationDoc} />
+              “Manage mapping”
+              <ExternalLink href={DocLinks.BackendConfigurationAuthenticationDoc} />
             </EuiText>
           </EuiPageContentHeaderSection>
           <EuiPageContentHeaderSection>
