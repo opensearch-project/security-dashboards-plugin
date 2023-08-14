@@ -280,7 +280,8 @@ exports[`Get started (landing page) renders when backend configuration is enable
       />
       <div
         className="security-steps-diagram"
-      />
+        />
+      </div>
       <EuiSpacer
         size="l"
       />
@@ -558,4 +559,3 @@ exports[`Get started (landing page) renders when backend configuration is enable
   </div>
 </Fragment>
 `;
-

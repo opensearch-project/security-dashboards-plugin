@@ -13,33 +13,15 @@
  *   permissions and limitations under the License.
  */
 
-.panel-header-count {
-  color: #687078;
-  font-weight: normal;
+.login-wrapper {
+  margin: 10% auto;
+  width: 350px;
+  padding: 1rem;
+  position: relative;
 }
 
-.panel-header-subtext {
-  width: 75%;
-}
-
-.text-center {
-  text-align: "center";
-}
-
-.panel-restrict-width {
-  max-width: 75%;
-}
-
-.external-link-inline-block {
-  display: inline-block;
-}
-
-.table-items {
-  font-size: inherit;
-}
-
-.limit-width-input {
-  max-width: 400px;
+.btn-login {
+  width: 100%;
 }
 
 .security-steps-diagram {
