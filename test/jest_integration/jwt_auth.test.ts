@@ -119,7 +119,6 @@ describe('start OpenSearch Dashboards server', () => {
       }
     );
     const responseBody = (getConfigResponse.payload as Buffer).toString();
-    console.log("responseBody: " + responseBody);
     config = JSON.parse(responseBody).config;
     const jwtConfig = {
       http_enabled: true,
@@ -145,19 +144,16 @@ describe('start OpenSearch Dashboards server', () => {
       config.dynamic!.authc!.jwt_auth_domain = jwtConfig;
       config.dynamic!.authc!.basic_internal_auth_domain.http_authenticator.challenge = false;
       config.dynamic!.http!.anonymous_auth_enabled = false;
-      console.log("config: " + JSON.stringify(config, null, 2));
       await wreck.put('https://localhost:9200/_plugins/_security/api/securityconfig/config', {
         payload: config,
         rejectUnauthorized: false,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': ADMIN_CREDENTIALS,
+          authorization: ADMIN_CREDENTIALS,
         },
       });
     } catch (error) {
       console.log('Got an error while updating security config!!', error.stack);
-      console.log(error);
-      console.log(error.message)
       fail(error);
     }
   });
