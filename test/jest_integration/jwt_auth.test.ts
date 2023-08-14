@@ -35,7 +35,7 @@ describe('start OpenSearch Dashboards server', () => {
   const pageTitleXPath = '//*[@id="osdOverviewPageHeader__title"]';
   // Browser Settings
   const browser = 'firefox';
-  const options = new Options().headless();
+  const options = new Options();
   const rawKey = 'This is a very secure secret. No one will ever be able to guess it!';
   const b = Buffer.from(rawKey);
   const signingKey = b.toString('base64');
@@ -76,6 +76,7 @@ describe('start OpenSearch Dashboards server', () => {
         // to make ignoreVersionMismatch setting work
         // can be removed when we have corresponding ES version
         dev: true,
+        basePath: false
       }
     );
 
@@ -118,6 +119,7 @@ describe('start OpenSearch Dashboards server', () => {
       }
     );
     const responseBody = (getConfigResponse.payload as Buffer).toString();
+    console.log("responseBody: " + responseBody);
     config = JSON.parse(responseBody).config;
     const jwtConfig = {
       http_enabled: true,
@@ -143,16 +145,19 @@ describe('start OpenSearch Dashboards server', () => {
       config.dynamic!.authc!.jwt_auth_domain = jwtConfig;
       config.dynamic!.authc!.basic_internal_auth_domain.http_authenticator.challenge = false;
       config.dynamic!.http!.anonymous_auth_enabled = false;
+      console.log("config: " + JSON.stringify(config, null, 2));
       await wreck.put('https://localhost:9200/_plugins/_security/api/securityconfig/config', {
         payload: config,
         rejectUnauthorized: false,
         headers: {
           'Content-Type': 'application/json',
-          authorization: ADMIN_CREDENTIALS,
+          'Authorization': ADMIN_CREDENTIALS,
         },
       });
     } catch (error) {
       console.log('Got an error while updating security config!!', error.stack);
+      console.log(error);
+      console.log(error.message)
       fail(error);
     }
   });
