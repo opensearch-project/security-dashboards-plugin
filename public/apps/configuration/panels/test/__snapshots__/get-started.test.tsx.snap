@@ -45,7 +45,7 @@ exports[`Get started (landing page) renders when backend configuration is disabl
                   size="s"
                 >
                   Roles are reusable collections of permissions. The default roles are a great starting point, but you might need to create custom roles that meet your exact needs.
-                   
+
                   <ExternalLink
                     href="https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/#create-roles"
                   />
@@ -91,7 +91,7 @@ exports[`Get started (landing page) renders when backend configuration is disabl
                   size="s"
                 >
                   After a user successfully authenticates, the security plugin retrieves that user’s roles. You can map roles directly to users, but you can also map them to backend roles.
-                   
+
                   <ExternalLink
                     href="https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/#map-users-to-roles"
                   />
@@ -154,7 +154,7 @@ exports[`Get started (landing page) renders when backend configuration is disabl
             id="audit.logs.introduction"
             values={Object {}}
           />
-           
+
           <ExternalLink
             href="https://opensearch.org/docs/latest/security-plugin/audit-logs/"
           />
@@ -279,21 +279,8 @@ exports[`Get started (landing page) renders when backend configuration is enable
         size="l"
       />
       <div
-        className="text-center"
-      >
-        <EuiImage
-          alt="Three steps to set up your security"
-          size="xl"
-          style={
-            Object {
-              "height": "auto",
-              "maxWidth": "100%",
-              "width": "auto",
-            }
-          }
-          url="test-file-stub"
-        />
-      </div>
+        className="security-steps-diagram"
+      />
       <EuiSpacer
         size="l"
       />
@@ -322,11 +309,11 @@ exports[`Get started (landing page) renders when backend configuration is enable
                   <EuiCode>
                     authc
                   </EuiCode>
-                   section contains the backends to check user credentials against. The 
+                   section contains the backends to check user credentials against. The
                   <EuiCode>
                     authz
                   </EuiCode>
-                  section contains any backends to fetch backend roles from. The most common example of a backend role is an LDAP group. 
+                  section contains any backends to fetch backend roles from. The most common example of a backend role is an LDAP group.
                   <ExternalLink
                     href="https://opensearch.org/docs/latest/security-plugin/configuration/concepts/"
                   />
@@ -371,7 +358,7 @@ exports[`Get started (landing page) renders when backend configuration is enable
                   size="s"
                 >
                   Roles are reusable collections of permissions. The default roles are a great starting point, but you might need to create custom roles that meet your exact needs.
-                   
+
                   <ExternalLink
                     href="https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/#create-roles"
                   />
@@ -417,7 +404,7 @@ exports[`Get started (landing page) renders when backend configuration is enable
                   size="s"
                 >
                   After a user successfully authenticates, the security plugin retrieves that user’s roles. You can map roles directly to users, but you can also map them to backend roles.
-                   
+
                   <ExternalLink
                     href="https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/#map-users-to-roles"
                   />
@@ -480,7 +467,7 @@ exports[`Get started (landing page) renders when backend configuration is enable
             id="audit.logs.introduction"
             values={Object {}}
           />
-           
+
           <ExternalLink
             href="https://opensearch.org/docs/latest/security-plugin/audit-logs/"
           />
@@ -571,3 +558,4 @@ exports[`Get started (landing page) renders when backend configuration is enable
   </div>
 </Fragment>
 `;
+
