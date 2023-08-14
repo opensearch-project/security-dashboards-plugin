@@ -35,7 +35,7 @@ describe('start OpenSearch Dashboards server', () => {
   const pageTitleXPath = '//*[@id="osdOverviewPageHeader__title"]';
   // Browser Settings
   const browser = 'firefox';
-  const options = new Options();
+  const options = new Options().headless();
   const rawKey = 'This is a very secure secret. No one will ever be able to guess it!';
   const b = Buffer.from(rawKey);
   const signingKey = b.toString('base64');
