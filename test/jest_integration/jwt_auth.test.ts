@@ -76,6 +76,7 @@ describe('start OpenSearch Dashboards server', () => {
         // to make ignoreVersionMismatch setting work
         // can be removed when we have corresponding ES version
         dev: true,
+        basePath: false
       }
     );
 
