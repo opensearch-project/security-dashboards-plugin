@@ -35,7 +35,7 @@ describe('start OpenSearch Dashboards server', () => {
   const samlLogInButton = '//a[@aria-label="saml_login_button"]';
   // Browser Settings
   const browser = 'firefox';
-  const options = new Options();
+  const options = new Options().headless();
 
   beforeAll(async () => {
     root = osdTestServer.createRootWithSettings(
