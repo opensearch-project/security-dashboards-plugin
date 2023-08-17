@@ -220,9 +220,19 @@ export function LoginPage(props: LoginPageDeps) {
         }
         case AuthType.SAML: {
           const samlConfig = props.config.ui[AuthType.SAML].login;
-          formBodyOp.push(
-            renderLoginButton(AuthType.SAML, SAML_AUTH_LOGIN_WITH_FRAGMENT, samlConfig)
-          );
+          const urlParams = new URLSearchParams(window.location.search);
+          let nextUrl = urlParams.get('nextUrl');
+          if (!nextUrl || nextUrl.toLowerCase().includes('//')) {
+            nextUrl = '?nextUrl=%2F';
+          } else {
+            nextUrl = `?nextUrl=${encodeURIComponent(nextUrl)}`;
+            const hash = window.location.hash || '';
+            if (!!hash) {
+              nextUrl += hash;
+            }
+          }
+          const samlAuthLoginUrl = SAML_AUTH_LOGIN_WITH_FRAGMENT + nextUrl;
+          formBodyOp.push(renderLoginButton(AuthType.SAML, samlAuthLoginUrl, samlConfig));
           break;
         }
         default: {
