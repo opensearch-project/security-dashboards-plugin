@@ -210,26 +210,26 @@ describe('start OpenSearch Dashboards server', () => {
         Promise.resolve(value);
       });
     console.log('Remove the Security Config');
-    // await wreck
-    //   .patch('https://localhost:9200/_plugins/_security/api/securityconfig', {
-    //     payload: [
-    //       {
-    //         op: 'remove',
-    //         path: '/config/dynamic/authc/saml_auth_domain',
-    //       },
-    //     ],
-    //     rejectUnauthorized: false,
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       authorization: ADMIN_CREDENTIALS,
-    //     },
-    //   })
-    //   .then((value) => {
-    //     Promise.resolve(value);
-    //   })
-    //   .catch((value) => {
-    //     Promise.resolve(value);
-    //   });
+    await wreck
+      .patch('https://localhost:9200/_plugins/_security/api/securityconfig', {
+        payload: [
+          {
+            op: 'remove',
+            path: '/config/dynamic/authc/saml_auth_domain',
+          },
+        ],
+        rejectUnauthorized: false,
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: ADMIN_CREDENTIALS,
+        },
+      })
+      .then((value) => {
+        Promise.resolve(value);
+      })
+      .catch((value) => {
+        Promise.resolve(value);
+      });
     // shutdown OpenSearchDashboards server
     await root.shutdown();
   });
