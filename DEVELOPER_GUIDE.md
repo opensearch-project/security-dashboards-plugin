@@ -92,7 +92,15 @@ Next, go to the base directory (`cd ../..`) and run `yarn osd bootstrap` to inst
 
 From the base directory, run `yarn start`. This should start dashboard UI successfully. `Cmd+click` the url in the console output (It should look something like `http://0:5601/omf`). Once the page loads, you should be able to log in with user `admin` and password `admin`.
 
-## Integration Tests
+## Testing
+
+The security-dashboards-plugin project uses Jest, Cypress and Selenium and makes use of the [OpenSearch Dashboards Functional Test]( https://github.com/opensearch-project/opensearch-dashboards-functional-test) project.
+
+Make sure you have the OpenSearch and OpenSearch Dashboards running with the Security Plugin and that you can log in to it using a web browser.
+
+Clone [OpenSearch Dashboards Functional Test]( https://github.com/opensearch-project/opensearch-dashboards-functional-test)  in your local machine and follow the instructions in its DEVELOPER_GUIDE.md
+
+### Integration Tests
 
 To run selenium based integration tests, download and export the firefox web-driver to your PATH. Also, run `node scripts/build_opensearch_dashboards_platform_plugins.js` or `yarn start` before running the tests. This is essential to generate the bundles.  
 
