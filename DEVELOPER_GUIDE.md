@@ -96,6 +96,8 @@ From the base directory, run `yarn start`. This should start dashboard UI succes
 
 To run selenium based integration tests, download and export the firefox web-driver to your PATH. Also, run `node scripts/build_opensearch_dashboards_platform_plugins.js` or `yarn start` before running the tests. This is essential to generate the bundles.  
 
+The integration tests take advantage of [npm "pre" scripts](https://docs.npmjs.com/cli/v9/using-npm/scripts) to run a node based SAML IdP for integration tests related to SAML authentication. This will run a background process that listens on port 7000. 
+
 ## Submitting Changes
 
 See [CONTRIBUTING](CONTRIBUTING.md).
