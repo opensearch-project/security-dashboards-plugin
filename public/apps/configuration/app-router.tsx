@@ -52,7 +52,7 @@ const ROUTE_MAP: { [key: string]: RouteItem } = {
     href: buildUrl(ResourceType.roles),
   },
   [ResourceType.users]: {
-    name: 'Internal Accounts',
+    name: 'Internal users',
     href: buildUrl(ResourceType.users),
   },
   [ResourceType.serviceAccounts]: {
