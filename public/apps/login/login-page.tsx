@@ -29,7 +29,7 @@ import {
 import { CoreStart } from '../../../../../src/core/public';
 import { ClientConfigType } from '../../types';
 import defaultBrandImage from '../../assets/opensearch_logo_h.svg';
-import { validateCurrentPassword } from '../../utils/login-utils';
+import { validateCurrentPassword, extractNextUrlFromWindowLocation } from '../../utils/login-utils';
 import {
   ANONYMOUS_AUTH_LOGIN,
   AuthType,
@@ -221,16 +221,7 @@ export function LoginPage(props: LoginPageDeps) {
         case AuthType.SAML: {
           const samlConfig = props.config.ui[AuthType.SAML].login;
           const urlParams = new URLSearchParams(window.location.search);
-          let nextUrl = urlParams.get('nextUrl');
-          if (!nextUrl || nextUrl.toLowerCase().includes('//')) {
-            nextUrl = '?nextUrl=%2F';
-          } else {
-            nextUrl = `?nextUrl=${encodeURIComponent(nextUrl)}`;
-            const hash = window.location.hash || '';
-            if (!!hash) {
-              nextUrl += hash;
-            }
-          }
+          const nextUrl = extractNextUrlFromWindowLocation();
           const samlAuthLoginUrl = SAML_AUTH_LOGIN_WITH_FRAGMENT + nextUrl;
           formBodyOp.push(renderLoginButton(AuthType.SAML, samlAuthLoginUrl, samlConfig));
           break;

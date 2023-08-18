@@ -14,6 +14,7 @@
  */
 
 import { HttpStart } from 'opensearch-dashboards/public';
+import { String } from 'lodash';
 import { httpPost } from '../apps/configuration/utils/request-utils';
 
 export async function validateCurrentPassword(
@@ -25,4 +26,17 @@ export async function validateCurrentPassword(
     username: userName,
     password: currentPassword,
   });
+}
+
+export function extractNextUrlFromWindowLocation(): string {
+  const urlParams = new URLSearchParams(window.location.search);
+  let nextUrl = urlParams.get('nextUrl');
+  if (!nextUrl || nextUrl.toLowerCase().includes('//')) {
+    nextUrl = encodeURIComponent('/');
+  } else {
+    nextUrl = encodeURIComponent(nextUrl);
+    const hash = window.location.hash || '';
+    nextUrl += hash;
+  }
+  return `?nextUrl=${nextUrl}`;
 }
