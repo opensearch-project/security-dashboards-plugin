@@ -15,6 +15,7 @@
 
 import { first } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { ResponseObject } from '@hapi/hapi';
 import {
   PluginInitializerContext,
   CoreSetup,
@@ -47,6 +48,7 @@ import { setupMultitenantRoutes } from './multitenancy/routes';
 import { defineAuthTypeRoutes } from './routes/auth_type_routes';
 import { createMigrationOpenSearchClient } from '../../../src/core/server/saved_objects/migrations/core';
 import { SecuritySavedObjectsClientWrapper } from './saved_objects/saved_objects_wrapper';
+import { addTenantParameterToResolvedShortLink } from './multitenancy/tenant_resolver';
 
 export interface SecurityPluginRequestContext {
   logger: Logger;
@@ -124,6 +126,14 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
       this.logger
     );
     core.http.registerAuth(auth.authHandler);
+
+    /* Here we check if multitenancy is enabled to ensure if it is, we insert the tenant info (security_tenant) into the resolved, short URL so the page can correctly load with the right tenant information [Fix for issue 1203](https://github.com/opensearch-project/security-dashboards-plugin/issues/1203 */
+    if (config.multitenancy?.enabled) {
+      core.http.registerOnPreResponse((request, preResponse, toolkit) => {
+        addTenantParameterToResolvedShortLink(request);
+        return toolkit.next();
+      });
+    }
 
     // Register server side APIs
     defineRoutes(router);

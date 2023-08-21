@@ -32,6 +32,7 @@ import { logout, updateNewPassword } from './utils';
 import { PASSWORD_INSTRUCTION } from '../apps-constants';
 import { constructErrorMessageAndLog } from '../error-utils';
 import { validateCurrentPassword } from '../../utils/login-utils';
+import { getDashboardsInfo } from '../../utils/dashboards-info-utils';
 
 interface PasswordResetPanelProps {
   coreStart: CoreStart;
@@ -56,6 +57,22 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
   );
 
   const [errorCallOut, setErrorCallOut] = React.useState<string>('');
+
+  const [passwordHelpText, setPasswordHelpText] = React.useState<string>(PASSWORD_INSTRUCTION);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setPasswordHelpText(
+          (await getDashboardsInfo(props.coreStart.http)).password_validation_error_message
+        );
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    fetchData();
+  }, [props.coreStart.http]);
 
   const handleReset = async () => {
     const http = props.coreStart.http;
@@ -107,7 +124,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
 
           <FormRow
             headerText="New password"
-            helpText={PASSWORD_INSTRUCTION}
+            helpText={passwordHelpText}
             isInvalid={isNewPasswordInvalid}
           >
             <EuiFieldPassword

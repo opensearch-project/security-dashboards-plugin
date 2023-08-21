@@ -34,7 +34,6 @@ import {
   SavedObjectsUpdateOptions,
   SavedObjectsUpdateResponse,
 } from 'opensearch-dashboards/server';
-import { Config } from 'packages/osd-config/target';
 import { SecurityPluginConfigType } from '..';
 import { OpenSearchDashboardsAuthState } from '../auth/types/authentication_type';
 import {

@@ -18,6 +18,7 @@ import {
   SavedObjectsManagementPluginSetup,
   SavedObjectsManagementPluginStart,
 } from '../../../src/plugins/saved_objects_management/public';
+import { ManagementOverViewPluginSetup } from '../../../src/plugins/management_overview/public';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SecurityPluginSetup {}
@@ -26,6 +27,7 @@ export interface SecurityPluginStart {}
 
 export interface SecurityPluginSetupDependencies {
   savedObjectsManagement: SavedObjectsManagementPluginSetup;
+  managementOverview?: ManagementOverViewPluginSetup;
 }
 
 export interface SecurityPluginStartDependencies {
@@ -44,6 +46,7 @@ export interface DashboardsInfo {
   multitenancy_enabled?: boolean;
   private_tenant_enabled?: boolean;
   default_tenant: string;
+  password_validation_error_message: string;
 }
 
 export interface ClientConfigType {
