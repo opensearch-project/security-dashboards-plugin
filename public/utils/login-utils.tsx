@@ -14,7 +14,6 @@
  */
 
 import { HttpStart } from 'opensearch-dashboards/public';
-import { String } from 'lodash';
 import { httpPost } from '../apps/configuration/utils/request-utils';
 
 export async function validateCurrentPassword(
