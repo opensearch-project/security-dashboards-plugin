@@ -29,7 +29,7 @@ import {
 import { CoreStart } from '../../../../../src/core/public';
 import { ClientConfigType } from '../../types';
 import defaultBrandImage from '../../assets/opensearch_logo_h.svg';
-import { validateCurrentPassword, extractNextUrlFromWindowLocation } from '../../utils/login-utils';
+import { validateCurrentPassword } from '../../utils/login-utils';
 import {
   ANONYMOUS_AUTH_LOGIN,
   AuthType,
@@ -59,6 +59,19 @@ function redirect(serverBasePath: string) {
     nextUrl = serverBasePath + '/';
   }
   window.location.href = nextUrl + window.location.hash;
+}
+
+function extractNextUrlFromWindowLocation(): string {
+  const urlParams = new URLSearchParams(window.location.search);
+  let nextUrl = urlParams.get('nextUrl');
+  if (!nextUrl || nextUrl.toLowerCase().includes('//')) {
+    nextUrl = encodeURIComponent('/');
+  } else {
+    nextUrl = encodeURIComponent(nextUrl);
+    const hash = window.location.hash || '';
+    nextUrl += hash;
+  }
+  return `?nextUrl=${nextUrl}`;
 }
 
 export function LoginPage(props: LoginPageDeps) {
