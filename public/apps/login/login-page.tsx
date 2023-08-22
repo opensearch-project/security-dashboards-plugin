@@ -220,7 +220,6 @@ export function LoginPage(props: LoginPageDeps) {
         }
         case AuthType.SAML: {
           const samlConfig = props.config.ui[AuthType.SAML].login;
-          const urlParams = new URLSearchParams(window.location.search);
           const nextUrl = extractNextUrlFromWindowLocation();
           const samlAuthLoginUrl = SAML_AUTH_LOGIN_WITH_FRAGMENT + nextUrl;
           formBodyOp.push(renderLoginButton(AuthType.SAML, samlAuthLoginUrl, samlConfig));
