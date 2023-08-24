@@ -61,7 +61,7 @@ function redirect(serverBasePath: string) {
   window.location.href = nextUrl + window.location.hash;
 }
 
-function extractNextUrlFromWindowLocation(): string {
+export function extractNextUrlFromWindowLocation(): string {
   const urlParams = new URLSearchParams(window.location.search);
   let nextUrl = urlParams.get('nextUrl');
   if (!nextUrl || nextUrl.toLowerCase().includes('//')) {
