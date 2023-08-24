@@ -32,7 +32,7 @@ export const API_AUTH_LOGOUT = '/auth/logout';
 export const OPENID_AUTH_LOGIN = '/auth/openid/login';
 export const SAML_AUTH_LOGIN = '/auth/saml/login';
 export const ANONYMOUS_AUTH_LOGIN = '/auth/anonymous';
-export const SAML_AUTH_LOGIN_WITH_FRAGMENT = '/auth/saml/captureUrlFragment?nextUrl=%2F';
+export const SAML_AUTH_LOGIN_WITH_FRAGMENT = '/auth/saml/captureUrlFragment';
 
 export const OPENID_AUTH_LOGOUT = '/auth/openid/logout';
 export const SAML_AUTH_LOGOUT = '/auth/saml/logout';
