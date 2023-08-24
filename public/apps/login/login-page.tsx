@@ -61,6 +61,19 @@ function redirect(serverBasePath: string) {
   window.location.href = nextUrl + window.location.hash;
 }
 
+export function extractNextUrlFromWindowLocation(): string {
+  const urlParams = new URLSearchParams(window.location.search);
+  let nextUrl = urlParams.get('nextUrl');
+  if (!nextUrl || nextUrl.toLowerCase().includes('//')) {
+    nextUrl = encodeURIComponent('/');
+  } else {
+    nextUrl = encodeURIComponent(nextUrl);
+    const hash = window.location.hash || '';
+    nextUrl += hash;
+  }
+  return `?nextUrl=${nextUrl}`;
+}
+
 export function LoginPage(props: LoginPageDeps) {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -220,9 +233,9 @@ export function LoginPage(props: LoginPageDeps) {
         }
         case AuthType.SAML: {
           const samlConfig = props.config.ui[AuthType.SAML].login;
-          formBodyOp.push(
-            renderLoginButton(AuthType.SAML, SAML_AUTH_LOGIN_WITH_FRAGMENT, samlConfig)
-          );
+          const nextUrl = extractNextUrlFromWindowLocation();
+          const samlAuthLoginUrl = SAML_AUTH_LOGIN_WITH_FRAGMENT + nextUrl;
+          formBodyOp.push(renderLoginButton(AuthType.SAML, samlAuthLoginUrl, samlConfig));
           break;
         }
         default: {
