@@ -25,13 +25,17 @@ import {
   LifecycleResponseFactory,
   AuthToolkit,
   IOpenSearchDashboardsResponse,
+  AuthResult,
 } from 'opensearch-dashboards/server';
 import HTTP from 'http';
 import HTTPS from 'https';
 import { PeerCertificate } from 'tls';
 import { Server, ServerStateCookieOptions } from '@hapi/hapi';
 import { SecurityPluginConfigType } from '../../..';
-import { SecuritySessionCookie } from '../../../session/security_cookie';
+import {
+  SecuritySessionCookie,
+  clearOldVersionCookieValue,
+} from '../../../session/security_cookie';
 import { OpenIdAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
 import { callTokenEndpoint } from './helper';
@@ -117,6 +121,22 @@ export class OpenIdAuthentication extends AuthenticationType {
       throw new Error('Failed when trying to obtain the endpoints from your IdP');
     }
   }
+
+  private generateNextUrl(request: OpenSearchDashboardsRequest): string {
+    const path =
+      this.coreSetup.http.basePath.serverBasePath +
+      (request.url.pathname || '/app/opensearch-dashboards');
+    return escape(path);
+  }
+
+  private redirectOIDCCapture = (request: OpenSearchDashboardsRequest, toolkit: AuthToolkit) => {
+    const nextUrl = this.generateNextUrl(request);
+    const clearOldVersionCookie = clearOldVersionCookieValue(this.config);
+    return toolkit.redirected({
+      location: `${this.coreSetup.http.basePath.serverBasePath}/auth/openid/captureUrlFragment?nextUrl=${nextUrl}`,
+      'set-cookie': clearOldVersionCookie,
+    });
+  };
 
   private createWreckClient(): typeof wreck {
     const wreckHttpsOption: WreckHttpsOptions = {};
@@ -266,18 +286,9 @@ export class OpenIdAuthentication extends AuthenticationType {
     request: OpenSearchDashboardsRequest,
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
-  ): IOpenSearchDashboardsResponse {
+  ): IOpenSearchDashboardsResponse | AuthResult {
     if (this.isPageRequest(request)) {
-      // nextUrl is a key value pair
-      const nextUrl = composeNextUrlQueryParam(
-        request,
-        this.coreSetup.http.basePath.serverBasePath
-      );
-      return response.redirected({
-        headers: {
-          location: `${this.coreSetup.http.basePath.serverBasePath}${OPENID_AUTH_LOGIN}?${nextUrl}`,
-        },
-      });
+      return this.redirectOIDCCapture(request, toolkit);
     } else {
       return response.unauthorized();
     }
