@@ -24,9 +24,7 @@ import {
   OpenSearchDashboardsRequest,
   Logger,
 } from '../../../../../../src/core/server';
-import {
-  SecuritySessionCookie,
-} from '../../../session/security_cookie';
+import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
 import { OpenIdAuthConfig } from './openid_auth';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
