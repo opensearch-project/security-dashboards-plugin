@@ -47,6 +47,145 @@ export class SamlAuthRoutes {
     };
   }
 
+  private async handleSamlAcs(context: any, request: any, response: any) {
+    let requestId: string = '';
+    let nextUrl: string = '/';
+    let redirectHash: boolean = false;
+    
+    try {
+      const cookie = await this.sessionStorageFactory.asScoped(request).get();
+      if (cookie) {
+        requestId = cookie.saml?.requestId || '';
+        nextUrl = cookie.saml?.nextUrl || '/';
+        redirectHash = cookie.saml?.redirectHash || false;
+      }
+  
+      if (!requestId) {
+        return response.badRequest({
+          body: 'Invalid requestId',
+        });
+      }
+    } catch (error) {
+      context.security_plugin.logger.error(`Failed to parse cookie: ${error}`);
+      return response.badRequest();
+    }
+  
+    try {
+      const credentials = await this.securityClient.authToken(
+        requestId,
+        request.body.SAMLResponse,
+        undefined
+      );
+  
+      const user = await this.securityClient.authenticateWithHeader(
+        request,
+        'authorization',
+        credentials.authorization
+      );
+  
+      let expiryTime = Date.now() + this.config.session.ttl;
+      const [headerEncoded, payloadEncoded] = credentials.authorization.split('.');
+      
+      if (!payloadEncoded) {
+        context.security_plugin.logger.error('JWT token payload not found');
+      }
+  
+      const tokenPayload = JSON.parse(Buffer.from(payloadEncoded, 'base64').toString());
+      
+      if (tokenPayload.exp) {
+        expiryTime = parseInt(tokenPayload.exp, 10) * 1000;
+      }
+  
+      const cookie: SecuritySessionCookie = {
+        username: user.username,
+        credentials: {
+          authHeaderValueExtra: true,
+        },
+        authType: AuthType.SAML,
+        expiryTime,
+      };
+  
+      setExtraAuthStorage(
+        request,
+        credentials.authorization,
+        this.getExtraAuthStorageOptions(context.security_plugin.logger)
+      );
+  
+      this.sessionStorageFactory.asScoped(request).set(cookie);
+      
+      if (redirectHash) {
+        return response.redirected({
+          headers: {
+            location: `${this.coreSetup.http.basePath.serverBasePath}/auth/saml/redirectUrlFragment?nextUrl=${escape(nextUrl)}`,
+          },
+        });
+      } else {
+        return response.redirected({
+          headers: {
+            location: nextUrl,
+          },
+        });
+      }
+    } catch (error) {
+      context.security_plugin.logger.error(`SAML SP initiated authentication workflow failed: ${error}`);
+      return response.internalError();
+    }
+  }
+
+  private async handleIdpInitiatedAcs(context: any, request: any, response: any, acsEndpoint: string) {
+    try {
+      const credentials = await this.securityClient.authToken(
+        undefined,
+        request.body.SAMLResponse,
+        acsEndpoint
+      );
+      const user = await this.securityClient.authenticateWithHeader(
+        request,
+        'authorization',
+        credentials.authorization
+      );
+  
+      let expiryTime = Date.now() + this.config.session.ttl;
+      const [headerEncoded, payloadEncoded, signature] = credentials.authorization.split('.');
+      if (!payloadEncoded) {
+        context.security_plugin.logger.error('JWT token payload not found');
+      }
+      const tokenPayload = JSON.parse(Buffer.from(payloadEncoded, 'base64').toString());
+      if (tokenPayload.exp) {
+        expiryTime = parseInt(tokenPayload.exp, 10) * 1000;
+      }
+  
+      const cookie: SecuritySessionCookie = {
+        username: user.username,
+        credentials: {
+          authHeaderValueExtra: true,
+        },
+        authType: AuthType.SAML,
+        expiryTime,
+      };
+  
+      setExtraAuthStorage(
+        request,
+        credentials.authorization,
+        this.getExtraAuthStorageOptions(context.security_plugin.logger)
+      );
+  
+      this.sessionStorageFactory.asScoped(request).set(cookie);
+  
+      return response.redirected({
+        headers: {
+          location: `${this.coreSetup.http.basePath.serverBasePath}/app/opensearch-dashboards`,
+        },
+      });
+    } catch (error) {
+      context.security_plugin.logger.error(
+        `SAML IDP initiated authentication workflow failed: ${error}`
+      );
+    }
+  
+    return response.internalError();
+  }
+  
   public setupRoutes() {
     this.router.get(
       {
@@ -108,90 +247,22 @@ export class SamlAuthRoutes {
         },
       },
       async (context, request, response) => {
-        let requestId: string = '';
-        let nextUrl: string = '/';
-        let redirectHash: boolean = false;
-        try {
-          const cookie = await this.sessionStorageFactory.asScoped(request).get();
-          if (cookie) {
-            requestId = cookie.saml?.requestId || '';
-            nextUrl =
-              cookie.saml?.nextUrl ||
-              `${this.coreSetup.http.basePath.serverBasePath}/app/opensearch-dashboards`;
-            redirectHash = cookie.saml?.redirectHash || false;
-          }
-          if (!requestId) {
-            return response.badRequest({
-              body: 'Invalid requestId',
-            });
-          }
-        } catch (error) {
-          context.security_plugin.logger.error(`Failed to parse cookie: ${error}`);
-          return response.badRequest();
-        }
+        return this.handleSamlAcs(context, request, response)
+      }
+    );
 
-        try {
-          const credentials = await this.securityClient.authToken(
-            requestId,
-            request.body.SAMLResponse,
-            undefined
-          );
-          const user = await this.securityClient.authenticateWithHeader(
-            request,
-            'authorization',
-            credentials.authorization
-          );
-
-          let expiryTime = Date.now() + this.config.session.ttl;
-          const [headerEncoded, payloadEncoded, signature] = credentials.authorization.split('.');
-          if (!payloadEncoded) {
-            context.security_plugin.logger.error('JWT token payload not found');
-          }
-          const tokenPayload = JSON.parse(Buffer.from(payloadEncoded, 'base64').toString());
-
-          if (tokenPayload.exp) {
-            expiryTime = parseInt(tokenPayload.exp, 10) * 1000;
-          }
-
-          const cookie: SecuritySessionCookie = {
-            username: user.username,
-            credentials: {
-              authHeaderValueExtra: true,
-            },
-            authType: AuthType.SAML, // TODO: create constant
-            expiryTime,
-          };
-
-          setExtraAuthStorage(
-            request,
-            credentials.authorization,
-            this.getExtraAuthStorageOptions(context.security_plugin.logger)
-          );
-
-          this.sessionStorageFactory.asScoped(request).set(cookie);
-
-          if (redirectHash) {
-            return response.redirected({
-              headers: {
-                location: `${
-                  this.coreSetup.http.basePath.serverBasePath
-                }/auth/saml/redirectUrlFragment?nextUrl=${escape(nextUrl)}`,
-              },
-            });
-          } else {
-            return response.redirected({
-              headers: {
-                location: nextUrl,
-              },
-            });
-          }
-        } catch (error) {
-          context.security_plugin.logger.error(
-            `SAML SP initiated authentication workflow failed: ${error}`
-          );
-        }
-
-        return response.internalError();
+    this.router.post(
+      {
+        path: `/_plugin/_security/saml/acs`,
+        validate: {
+          body: schema.any(),
+        },
+        options: {
+          authRequired: false,
+        },
+      },
+      async (context, request, response) => {
+        return this.handleSamlAcs(context, request, response)
       }
     );
 
@@ -207,55 +278,23 @@ export class SamlAuthRoutes {
       },
       async (context, request, response) => {
         const acsEndpoint = `${this.coreSetup.http.basePath.serverBasePath}/_opendistro/_security/saml/acs/idpinitiated`;
-        try {
-          const credentials = await this.securityClient.authToken(
-            undefined,
-            request.body.SAMLResponse,
-            acsEndpoint
-          );
-          const user = await this.securityClient.authenticateWithHeader(
-            request,
-            'authorization',
-            credentials.authorization
-          );
+        return await this.handleIdpInitiatedAcs(context, request, response, acsEndpoint)
+      }
+    );
 
-          let expiryTime = Date.now() + this.config.session.ttl;
-          const [headerEncoded, payloadEncoded, signature] = credentials.authorization.split('.');
-          if (!payloadEncoded) {
-            context.security_plugin.logger.error('JWT token payload not found');
-          }
-          const tokenPayload = JSON.parse(Buffer.from(payloadEncoded, 'base64').toString());
-          if (tokenPayload.exp) {
-            expiryTime = parseInt(tokenPayload.exp, 10) * 1000;
-          }
-
-          const cookie: SecuritySessionCookie = {
-            username: user.username,
-            credentials: {
-              authHeaderValueExtra: true,
-            },
-            authType: AuthType.SAML, // TODO: create constant
-            expiryTime,
-          };
-
-          setExtraAuthStorage(
-            request,
-            credentials.authorization,
-            this.getExtraAuthStorageOptions(context.security_plugin.logger)
-          );
-
-          this.sessionStorageFactory.asScoped(request).set(cookie);
-          return response.redirected({
-            headers: {
-              location: `${this.coreSetup.http.basePath.serverBasePath}/app/opensearch-dashboards`,
-            },
-          });
-        } catch (error) {
-          context.security_plugin.logger.error(
-            `SAML IDP initiated authentication workflow failed: ${error}`
-          );
-        }
-        return response.internalError();
+    this.router.post(
+      {
+        path: `/_plugin/_security/saml/acs/idpinitiated`,
+        validate: {
+          body: schema.any(),
+        },
+        options: {
+          authRequired: false,
+        },
+      },
+      async (context, request, response) => {
+        const acsEndpoint = `${this.coreSetup.http.basePath.serverBasePath}/_opendistro/_security/saml/acs/idpinitiated`;
+        return await this.handleIdpInitiatedAcs(context, request, response, acsEndpoint)
       }
     );
 
