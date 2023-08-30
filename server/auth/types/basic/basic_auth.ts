@@ -101,7 +101,10 @@ export class BasicAuthentication extends AuthenticationType {
     );
   }
 
-  async refreshAccessToken(cookie: SecuritySessionCookie): Promise<string> {
+  async refreshAccessToken(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): Promise<string> {
     return '';
   }
 

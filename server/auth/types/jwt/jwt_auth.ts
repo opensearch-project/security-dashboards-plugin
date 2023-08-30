@@ -119,7 +119,10 @@ export class JwtAuthentication extends AuthenticationType {
     );
   }
 
-  async refreshAccessToken(cookie: SecuritySessionCookie): Promise<string> {
+  async refreshAccessToken(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): Promise<string> {
     return '';
   }
 
