@@ -219,6 +219,27 @@ export class OpenIdAuthentication extends AuthenticationType {
       return true;
     }
 
+    return false;
+  }
+
+  async refreshAccessToken(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): Promise<string> {
+    if (
+      cookie.authType !== this.type ||
+      !cookie.username ||
+      !cookie.expiryTime ||
+      (!cookie.credentials?.authHeaderValue && !this.getExtraAuthStorageValue(request, cookie)) ||
+      !cookie.credentials?.expires_at
+    ) {
+      return '';
+    }
+
+    if (cookie.credentials?.expires_at > Date.now()) {
+      return '';
+    }
+
     // need to renew id token
     if (cookie.credentials.refresh_token) {
       try {
@@ -248,17 +269,17 @@ export class OpenIdAuthentication extends AuthenticationType {
             this.getExtraAuthStorageOptions()
           );
 
-          return true;
+          return `Bearer ${refreshTokenResponse.idToken}`;
         } else {
-          return false;
+          return '';
         }
       } catch (error: any) {
         this.logger.error(error);
-        return false;
+        return '';
       }
     } else {
       // no refresh token, and current token is expired
-      return false;
+      return '';
     }
   }
 

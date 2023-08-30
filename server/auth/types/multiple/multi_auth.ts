@@ -142,6 +142,18 @@ export class MultipleAuthentication extends AuthenticationType {
     }
   }
 
+  async refreshAccessToken(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): Promise<string> {
+    const reqAuthType = cookie?.authType?.toLowerCase();
+    if (reqAuthType && this.authHandlers.has(reqAuthType)) {
+      return this.authHandlers.get(reqAuthType)!.refreshAccessToken(cookie, request);
+    } else {
+      return '';
+    }
+  }
+
   handleUnauthedRequest(
     request: OpenSearchDashboardsRequest,
     response: LifecycleResponseFactory,

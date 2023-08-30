@@ -119,6 +119,10 @@ export class JwtAuthentication extends AuthenticationType {
     );
   }
 
+  async refreshAccessToken(cookie: SecuritySessionCookie): Promise<string> {
+    return '';
+  }
+
   handleUnauthedRequest(
     request: OpenSearchDashboardsRequest,
     response: LifecycleResponseFactory,

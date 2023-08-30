@@ -138,6 +138,11 @@ export abstract class AuthenticationType implements IAuthenticationType {
         cookie = undefined;
       }
 
+      let newAuthHeaderValue = '';
+      if (cookie) {
+        newAuthHeaderValue = await this.refreshAccessToken(cookie, request);
+      }
+
       if (!cookie || !(await this.isValidCookie(cookie, request))) {
         // clear cookie
         this.sessionStorageFactory.asScoped(request).clear();
@@ -160,10 +165,14 @@ export abstract class AuthenticationType implements IAuthenticationType {
       }
       // cookie is valid
       // build auth header
-      const authHeadersFromCookie = this.buildAuthHeaderFromCookie(cookie!, request);
-      Object.assign(authHeaders, authHeadersFromCookie);
-      const additonalAuthHeader = await this.getAdditionalAuthHeader(request);
-      Object.assign(authHeaders, additonalAuthHeader);
+      if (!!newAuthHeaderValue) {
+        Object.assign(authHeaders, { authorization: newAuthHeaderValue });
+      } else {
+        const authHeadersFromCookie = this.buildAuthHeaderFromCookie(cookie!, request);
+        Object.assign(authHeaders, authHeadersFromCookie);
+        const additonalAuthHeader = await this.getAdditionalAuthHeader(request);
+        Object.assign(authHeaders, additonalAuthHeader);
+      }
     }
 
     // resolve tenant if necessary
@@ -277,6 +286,10 @@ export abstract class AuthenticationType implements IAuthenticationType {
     cookie: SecuritySessionCookie,
     request: OpenSearchDashboardsRequest
   ): Promise<boolean>;
+  public abstract refreshAccessToken(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): Promise<string>;
   protected abstract handleUnauthedRequest(
     request: OpenSearchDashboardsRequest,
     response: LifecycleResponseFactory,
