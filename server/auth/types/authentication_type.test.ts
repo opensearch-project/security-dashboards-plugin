@@ -27,6 +27,9 @@ class DummyAuthType extends AuthenticationType {
   isValidCookie() {
     return Promise.resolve(true);
   }
+  refreshAccessToken() {
+    return Promise.resolve('');
+  }
   requestIncludesAuthInfo() {
     return false;
   }
