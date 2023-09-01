@@ -28,7 +28,6 @@ import {
 } from '@elastic/eui';
 import { CoreStart } from '../../../../../src/core/public';
 import { ClientConfigType } from '../../types';
-import defaultBrandImage from '../../assets/opensearch_logo_h.svg';
 import { validateCurrentPassword } from '../../utils/login-utils';
 import {
   ANONYMOUS_AUTH_LOGIN,
@@ -39,6 +38,7 @@ import {
 
 interface LoginPageDeps {
   http: CoreStart['http'];
+  chrome: CoreStart['chrome'];
   config: ClientConfigType;
 }
 
@@ -259,7 +259,7 @@ export function LoginPage(props: LoginPageDeps) {
         <EuiImage
           size="fullWidth"
           alt=""
-          url={props.config.ui.basicauth.login.brandimage || defaultBrandImage}
+          url={props.config.ui.basicauth.login.brandimage || props.chrome.logos.OpenSearch.url}
         />
       )}
       <EuiSpacer size="s" />

@@ -19,6 +19,7 @@ import { ClientConfigType } from '../../../types';
 import { LoginPage, extractNextUrlFromWindowLocation } from '../login-page';
 import { validateCurrentPassword } from '../../../utils/login-utils';
 import { API_AUTH_LOGOUT } from '../../../../common';
+import { chromeServiceMock } from '../../../../../../src/core/public/mocks';
 
 jest.mock('../../../utils/login-utils', () => ({
   validateCurrentPassword: jest.fn(),
@@ -84,11 +85,16 @@ describe('test extractNextUrlFromWindowLocation', () => {
 });
 
 describe('Login page', () => {
+  let chrome: ReturnType<typeof chromeServiceMock.createStartContract>;
   const mockHttpStart = {
     basePath: {
       serverBasePath: '/app/opensearch-dashboards',
     },
   };
+
+  beforeEach(() => {
+    chrome = chromeServiceMock.createStartContract();
+  });
 
   describe('renders', () => {
     it('renders with config value: string array', () => {
@@ -99,7 +105,9 @@ describe('Login page', () => {
           logout_url: API_AUTH_LOGOUT,
         },
       };
-      const component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
+      const component = shallow(
+        <LoginPage http={mockHttpStart as any} chrome={chrome} config={config as any} />
+      );
       expect(component).toMatchSnapshot();
     });
 
@@ -111,7 +119,9 @@ describe('Login page', () => {
           logout_url: API_AUTH_LOGOUT,
         },
       };
-      const component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
+      const component = shallow(
+        <LoginPage http={mockHttpStart as any} chrome={chrome} config={config as any} />
+      );
       expect(component).toMatchSnapshot();
     });
 
@@ -123,7 +133,9 @@ describe('Login page', () => {
           logout_url: API_AUTH_LOGOUT,
         },
       };
-      const component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
+      const component = shallow(
+        <LoginPage http={mockHttpStart as any} chrome={chrome} config={config as any} />
+      );
       expect(component).toMatchSnapshot();
     });
 
@@ -134,7 +146,9 @@ describe('Login page', () => {
           type: [''],
         },
       };
-      const component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
+      const component = shallow(
+        <LoginPage http={mockHttpStart as any} chrome={chrome} config={config as any} />
+      );
       expect(component).toMatchSnapshot();
     });
 
@@ -145,7 +159,9 @@ describe('Login page', () => {
           type: '',
         },
       };
-      const component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
+      const component = shallow(
+        <LoginPage http={mockHttpStart as any} chrome={chrome} config={config as any} />
+      );
       expect(component).toMatchSnapshot();
     });
   });
@@ -162,7 +178,9 @@ describe('Login page', () => {
     };
     beforeEach(() => {
       useState.mockImplementation((initialValue) => [initialValue, setState]);
-      component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
+      component = shallow(
+        <LoginPage http={mockHttpStart as any} chrome={chrome} config={config as any} />
+      );
     });
 
     it('should update user name field on change event', () => {
@@ -195,7 +213,9 @@ describe('Login page', () => {
     beforeEach(() => {
       useState.mockImplementation(() => ['user1', setState]);
       useState.mockImplementation(() => ['password1', setState]);
-      component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
+      component = shallow(
+        <LoginPage http={mockHttpStart as any} chrome={chrome} config={config as any} />
+      );
     });
 
     it('submit click event', () => {
