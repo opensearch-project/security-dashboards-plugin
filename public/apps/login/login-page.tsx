@@ -28,7 +28,6 @@ import {
 } from '@elastic/eui';
 import { CoreStart } from '../../../../../src/core/public';
 import { ClientConfigType } from '../../types';
-import defaultBrandImage from '../../assets/opensearch_logo_h.svg';
 import { validateCurrentPassword } from '../../utils/login-utils';
 import {
   ANONYMOUS_AUTH_LOGIN,
@@ -39,6 +38,7 @@ import {
 
 interface LoginPageDeps {
   http: CoreStart['http'];
+  chrome: CoreStart['chrome'];
   config: ClientConfigType;
 }
 
@@ -59,6 +59,19 @@ function redirect(serverBasePath: string) {
     nextUrl = serverBasePath + '/';
   }
   window.location.href = nextUrl + window.location.hash;
+}
+
+export function extractNextUrlFromWindowLocation(): string {
+  const urlParams = new URLSearchParams(window.location.search);
+  let nextUrl = urlParams.get('nextUrl');
+  if (!nextUrl || nextUrl.toLowerCase().includes('//')) {
+    nextUrl = encodeURIComponent('/');
+  } else {
+    nextUrl = encodeURIComponent(nextUrl);
+    const hash = window.location.hash || '';
+    nextUrl += hash;
+  }
+  return `?nextUrl=${nextUrl}`;
 }
 
 export function LoginPage(props: LoginPageDeps) {
@@ -220,9 +233,9 @@ export function LoginPage(props: LoginPageDeps) {
         }
         case AuthType.SAML: {
           const samlConfig = props.config.ui[AuthType.SAML].login;
-          formBodyOp.push(
-            renderLoginButton(AuthType.SAML, SAML_AUTH_LOGIN_WITH_FRAGMENT, samlConfig)
-          );
+          const nextUrl = extractNextUrlFromWindowLocation();
+          const samlAuthLoginUrl = SAML_AUTH_LOGIN_WITH_FRAGMENT + nextUrl;
+          formBodyOp.push(renderLoginButton(AuthType.SAML, samlAuthLoginUrl, samlConfig));
           break;
         }
         default: {
@@ -246,7 +259,7 @@ export function LoginPage(props: LoginPageDeps) {
         <EuiImage
           size="fullWidth"
           alt=""
-          url={props.config.ui.basicauth.login.brandimage || defaultBrandImage}
+          url={props.config.ui.basicauth.login.brandimage || props.chrome.logos.OpenSearch.url}
         />
       )}
       <EuiSpacer size="s" />

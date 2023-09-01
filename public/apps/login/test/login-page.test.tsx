@@ -16,9 +16,10 @@
 import { shallow } from 'enzyme';
 import React from 'react';
 import { ClientConfigType } from '../../../types';
-import { LoginPage } from '../login-page';
+import { LoginPage, extractNextUrlFromWindowLocation } from '../login-page';
 import { validateCurrentPassword } from '../../../utils/login-utils';
 import { API_AUTH_LOGOUT } from '../../../../common';
+import { chromeServiceMock } from '../../../../../../src/core/public/mocks';
 
 jest.mock('../../../utils/login-utils', () => ({
   validateCurrentPassword: jest.fn(),
@@ -62,12 +63,38 @@ const configUiDefault = {
   },
 };
 
+describe('test extractNextUrlFromWindowLocation', () => {
+  test('extract next url from window with nextUrl', () => {
+    // Trick to mock window.location
+    const originalLocation = window.location;
+    delete window.location;
+    window.location = new URL(
+      "http://localhost:5601/app/login?nextUrl=%2Fapp%2Fdashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(filters:!(),refreshInterval:(pause:!f,value:900000),time:(from:now-24h,to:now))&_a=(description:'Analyze%20mock%20flight%20data%20for%20OpenSearch-Air,%20Logstash%20Airways,%20OpenSearch%20Dashboards%20Airlines%20and%20BeatsWest',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'%5BFlights%5D%20Global%20Flight%20Dashboard',viewMode:view)"
+    ) as any;
+    expect(extractNextUrlFromWindowLocation()).toEqual(
+      "?nextUrl=%2Fapp%2Fdashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(filters:!(),refreshInterval:(pause:!f,value:900000),time:(from:now-24h,to:now))&_a=(description:'Analyze%20mock%20flight%20data%20for%20OpenSearch-Air,%20Logstash%20Airways,%20OpenSearch%20Dashboards%20Airlines%20and%20BeatsWest',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'%5BFlights%5D%20Global%20Flight%20Dashboard',viewMode:view)"
+    );
+  });
+
+  test('extract next url from window without nextUrl', () => {
+    const originalLocation = window.location;
+    delete window.location;
+    window.location = new URL('http://localhost:5601/app/home');
+    expect(extractNextUrlFromWindowLocation()).toEqual('?nextUrl=%2F');
+  });
+});
+
 describe('Login page', () => {
+  let chrome: ReturnType<typeof chromeServiceMock.createStartContract>;
   const mockHttpStart = {
     basePath: {
       serverBasePath: '/app/opensearch-dashboards',
     },
   };
+
+  beforeEach(() => {
+    chrome = chromeServiceMock.createStartContract();
+  });
 
   describe('renders', () => {
     it('renders with config value: string array', () => {
@@ -78,7 +105,9 @@ describe('Login page', () => {
           logout_url: API_AUTH_LOGOUT,
         },
       };
-      const component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
+      const component = shallow(
+        <LoginPage http={mockHttpStart as any} chrome={chrome} config={config as any} />
+      );
       expect(component).toMatchSnapshot();
     });
 
@@ -90,7 +119,9 @@ describe('Login page', () => {
           logout_url: API_AUTH_LOGOUT,
         },
       };
-      const component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
+      const component = shallow(
+        <LoginPage http={mockHttpStart as any} chrome={chrome} config={config as any} />
+      );
       expect(component).toMatchSnapshot();
     });
 
@@ -102,7 +133,9 @@ describe('Login page', () => {
           logout_url: API_AUTH_LOGOUT,
         },
       };
-      const component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
+      const component = shallow(
+        <LoginPage http={mockHttpStart as any} chrome={chrome} config={config as any} />
+      );
       expect(component).toMatchSnapshot();
     });
 
@@ -113,7 +146,9 @@ describe('Login page', () => {
           type: [''],
         },
       };
-      const component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
+      const component = shallow(
+        <LoginPage http={mockHttpStart as any} chrome={chrome} config={config as any} />
+      );
       expect(component).toMatchSnapshot();
     });
 
@@ -124,7 +159,9 @@ describe('Login page', () => {
           type: '',
         },
       };
-      const component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
+      const component = shallow(
+        <LoginPage http={mockHttpStart as any} chrome={chrome} config={config as any} />
+      );
       expect(component).toMatchSnapshot();
     });
   });
@@ -141,7 +178,9 @@ describe('Login page', () => {
     };
     beforeEach(() => {
       useState.mockImplementation((initialValue) => [initialValue, setState]);
-      component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
+      component = shallow(
+        <LoginPage http={mockHttpStart as any} chrome={chrome} config={config as any} />
+      );
     });
 
     it('should update user name field on change event', () => {
@@ -174,7 +213,9 @@ describe('Login page', () => {
     beforeEach(() => {
       useState.mockImplementation(() => ['user1', setState]);
       useState.mockImplementation(() => ['password1', setState]);
-      component = shallow(<LoginPage http={mockHttpStart as any} config={config as any} />);
+      component = shallow(
+        <LoginPage http={mockHttpStart as any} chrome={chrome} config={config as any} />
+      );
     });
 
     it('submit click event', () => {
