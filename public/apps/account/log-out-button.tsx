@@ -17,7 +17,7 @@ import React from 'react';
 import { EuiButtonEmpty } from '@elastic/eui';
 import { HttpStart } from 'opensearch-dashboards/public';
 import { externalLogout, logout } from './utils';
-import { AuthType, OPENID_AUTH_LOGOUT, SAML_AUTH_LOGOUT } from '../../../common';
+import { AuthType, KERBEROS_AUTH_LOGOUT, OPENID_AUTH_LOGOUT, SAML_AUTH_LOGOUT } from '../../../common';
 import { setShouldShowTenantPopup } from '../../utils/storage-utils';
 
 export function LogoutButton(props: {
@@ -54,7 +54,21 @@ export function LogoutButton(props: {
         </EuiButtonEmpty>
       </div>
     );
-  } else if (props.authType === AuthType.PROXY) {
+  } else if (props.authType === AuthType.KERBEROS) {
+    return (
+      <div>
+        {props.divider}
+        <EuiButtonEmpty
+          data-test-subj="log-out-1"
+          color="danger"
+          size="xs"
+          onClick={() => externalLogout(props.http, KERBEROS_AUTH_LOGOUT)}
+        >
+          Log out
+        </EuiButtonEmpty>
+      </div>
+    );
+  }  else if (props.authType === AuthType.PROXY) {
     setShouldShowTenantPopup(null);
     return <div />;
   } else {

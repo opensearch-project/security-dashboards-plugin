@@ -28,7 +28,7 @@ import {
   ProxyAuthentication,
   SamlAuthentication,
   MultipleAuthentication,
-  Kerberos
+  KerberosAuthentication
 } from './types';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { IAuthenticationType, IAuthHandlerConstructor } from './types/authentication_type';
@@ -78,7 +78,7 @@ export async function getAuthenticationHandler(
         authHandlerType = ProxyAuthentication;
         break;
       case AuthType.KERBEROS:
-        authHandlerType = Kerberos;
+        authHandlerType = KerberosAuthentication;
         break;
       default:
         throw new Error(`Unsupported authentication type: ${currType}`);

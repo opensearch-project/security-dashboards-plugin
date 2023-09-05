@@ -35,6 +35,7 @@ import {
   AuthType,
   OPENID_AUTH_LOGIN,
   SAML_AUTH_LOGIN_WITH_FRAGMENT,
+  KERBEROS_AUTH_LOGIN,
 } from '../../../common';
 
 interface LoginPageDeps {
@@ -222,6 +223,13 @@ export function LoginPage(props: LoginPageDeps) {
           const samlConfig = props.config.ui[AuthType.SAML].login;
           formBodyOp.push(
             renderLoginButton(AuthType.SAML, SAML_AUTH_LOGIN_WITH_FRAGMENT, samlConfig)
+          );
+          break;
+        }
+        case AuthType.KERBEROS: {
+          const kerberosConfig = props.config.ui[AuthType.KERBEROS].login;
+          formBodyOp.push(
+            renderLoginButton(AuthType.KERBEROS, KERBEROS_AUTH_LOGIN, kerberosConfig)
           );
           break;
         }

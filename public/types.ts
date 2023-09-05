@@ -87,6 +87,14 @@ export interface ClientConfigType {
         buttonstyle: string;
       };
     };
+    kerberos: {
+      login: {
+        buttonname: string;
+        showbrandimage: boolean;
+        brandimage: string;
+        buttonstyle: string;
+      };
+    };
     autologout: boolean;
     backend_configurable: boolean;
   };

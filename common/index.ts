@@ -34,6 +34,10 @@ export const SAML_AUTH_LOGIN = '/auth/saml/login';
 export const ANONYMOUS_AUTH_LOGIN = '/auth/anonymous';
 export const SAML_AUTH_LOGIN_WITH_FRAGMENT = '/auth/saml/captureUrlFragment?nextUrl=%2F';
 
+export const KERBEROS_AUTH_LOGIN = '/auth/kerberos/login';
+export const KERBEROS_AUTH_LOGOUT = '/auth/kerberos/logout';
+
+
 export const OPENID_AUTH_LOGOUT = '/auth/openid/logout';
 export const SAML_AUTH_LOGOUT = '/auth/saml/logout';
 export const ANONYMOUS_AUTH_LOGOUT = '/auth/anonymous/logout';
@@ -61,7 +65,7 @@ export enum AuthType {
   SAML = 'saml',
   PROXY = 'proxy',
   ANONYMOUS = 'anonymous',
-  KERBEROS = 'kerberos'
+  KERBEROS = 'kerberos',
 }
 
 /**

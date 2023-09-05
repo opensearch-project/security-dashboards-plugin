@@ -142,6 +142,31 @@ export const configSchema = schema.object({
       buttonstyle: schema.string({ defaultValue: '' }),
     }),
   }),
+  kerberos: schema.object({
+    enabled: schema.boolean({ defaultValue: true }),
+    unauthenticated_routes: schema.arrayOf(schema.string(), { defaultValue: [] }),
+    forbidden_usernames: schema.arrayOf(schema.string(), { defaultValue: [] }),
+    header_trumps_session: schema.boolean({ defaultValue: false }),
+    alternative_login: schema.object({
+      headers: schema.arrayOf(schema.string(), { defaultValue: [] }),
+      show_for_parameter: schema.string({ defaultValue: '' }),
+      valid_redirects: schema.arrayOf(schema.string(), { defaultValue: [] }),
+      button_text: schema.string({ defaultValue: 'SAMLog in with provider' }),
+      buttonstyle: schema.string({ defaultValue: '' }),
+    }),
+    login_endpoint: schema.string({ defaultValue: '/auth/login' }),
+    loadbalancer_url: schema.maybe(schema.string()),
+    login: schema.object({
+      title: schema.string({ defaultValue: 'SAMLog in to OpenSearch Dashboards' }),
+      subtitle: schema.string({
+        defaultValue:
+          'SAMIf you have forgotten your username or password, contact your system administrator.',
+      }),
+      showbrandimage: schema.boolean({ defaultValue: true }),
+      brandimage: schema.string({ defaultValue: '' }), // TODO: update brand image
+      buttonstyle: schema.string({ defaultValue: '' }),
+    }),
+  }),
   multitenancy: schema.object({
     enabled: schema.boolean({ defaultValue: false }),
     show_roles: schema.boolean({ defaultValue: false }),
@@ -266,6 +291,14 @@ export const configSchema = schema.object({
         showbrandimage: schema.boolean({ defaultValue: false }),
         brandimage: schema.string({ defaultValue: '' }),
         buttonstyle: schema.string({ defaultValue: '' }),
+      }),
+    }),
+    kerberos: schema.object({
+      login: schema.object({
+        buttonname: schema.string({ defaultValue: 'Log in with single sign-on' }),
+        showbrandimage: schema.boolean({ defaultValue: false }),
+        brandimage: schema.string({ defaultValue: '1' }),
+        buttonstyle: schema.string({ defaultValue: '1' }),
       }),
     }),
     autologout: schema.boolean({ defaultValue: true }),

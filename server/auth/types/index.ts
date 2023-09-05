@@ -19,5 +19,5 @@ export { OpenIdAuthentication } from './openid/openid_auth';
 export { ProxyAuthentication } from './proxy/proxy_auth';
 export { SamlAuthentication } from './saml/saml_auth';
 export { MultipleAuthentication } from './multiple/multi_auth';
-export { Kerberos } from './kerberos/Kerberos';
+export { KerberosAuthentication } from './kerberos/kerberos_authentication';
 

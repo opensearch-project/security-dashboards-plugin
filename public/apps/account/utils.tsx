@@ -19,6 +19,7 @@ import {
   LOGIN_PAGE_URI,
   OPENID_AUTH_LOGOUT,
   SAML_AUTH_LOGOUT,
+  KERBEROS_AUTH_LOGOUT
 } from '../../../common';
 import { API_ENDPOINT_ACCOUNT_INFO } from './constants';
 import { AccountInfo } from './types';
@@ -49,6 +50,12 @@ export async function samlLogout(http: HttpStart): Promise<void> {
   // This will ensure tenancy is picked up from local storage in the next login.
   setShouldShowTenantPopup(null);
   window.location.href = `${http.basePath.serverBasePath}${SAML_AUTH_LOGOUT}`;
+}
+
+export async function kerberosLogout(http: HttpStart): Promise<void> {
+  // This will ensure tenancy is picked up from local storage in the next login.
+  setShouldShowTenantPopup(null);
+  window.location.href = `${http.basePath.serverBasePath}${KERBEROS_AUTH_LOGOUT}`;
 }
 
 export async function openidLogout(http: HttpStart): Promise<void> {
