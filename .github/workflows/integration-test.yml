@@ -87,5 +87,5 @@ jobs:
         run: |
           echo "check if opensearch is ready"
           curl -XGET https://localhost:9200 -u 'admin:admin' -k
-          node .\test\run_jest_tests.js --config .\test\jest.config.server.js --testPathIgnorePatterns saml_auth.test.ts
+          node .\test\run_jest_tests.js --config .\test\jest.config.server.js --testPathIgnorePatterns saml_auth.test.ts --testPathIgnorePatterns saml_multiauth.test.ts
         working-directory: ${{ steps.install-dashboards.outputs.plugin-directory }}

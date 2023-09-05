@@ -26,6 +26,9 @@ export function renderApp(
   params: AppMountParameters,
   config: ClientConfigType
 ) {
-  ReactDOM.render(<LoginPage http={coreStart.http} config={config} />, params.element);
+  ReactDOM.render(
+    <LoginPage http={coreStart.http} chrome={coreStart.chrome} config={config} />,
+    params.element
+  );
   return () => ReactDOM.unmountComponentAtNode(params.element);
 }
