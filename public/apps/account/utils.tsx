@@ -19,7 +19,7 @@ import {
   LOGIN_PAGE_URI,
   OPENID_AUTH_LOGOUT,
   SAML_AUTH_LOGOUT,
-  KERBEROS_AUTH_LOGOUT
+  KERBEROS_AUTH_LOGOUT,
 } from '../../../common';
 import { API_ENDPOINT_ACCOUNT_INFO } from './constants';
 import { AccountInfo } from './types';

@@ -17,17 +17,10 @@ import { schema } from '@osd/config-schema';
 import { SecurityPluginConfigType } from '../../../index';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
-import {
-  SessionStorageFactory,
-  IRouter,
-} from '../../../../../../src/core/server';
+import { SessionStorageFactory, IRouter } from '../../../../../../src/core/server';
 import { CoreSetup } from '../../../../../../src/core/server';
-import {
-  KERBEROS_AUTH_LOGIN,
-  KERBEROS_AUTH_LOGOUT,
-} from '../../../../common';
+import { KERBEROS_AUTH_LOGIN, KERBEROS_AUTH_LOGOUT } from '../../../../common';
 import { validateNextUrl } from '../../../utils/next_url';
-
 
 export class KerberosAuthRoutes {
   constructor(
@@ -37,7 +30,7 @@ export class KerberosAuthRoutes {
     private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
     private readonly securityClient: SecurityClient,
     private readonly coreSetup: CoreSetup
-  ) { }
+  ) {}
 
   public setupRoutes() {
     this.router.get(
@@ -93,6 +86,4 @@ export class KerberosAuthRoutes {
       }
     );
   }
-
-
 }

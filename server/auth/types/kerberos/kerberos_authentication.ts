@@ -31,13 +31,11 @@ import {
 import { KerberosAuthRoutes } from './routes';
 import { AuthType } from '../../../../common';
 
-
 export class KerberosAuthentication extends AuthenticationType {
   private authHeaderName: string;
 
   requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean {
-
-    return request.headers["Authorization"] ? true : false;
+    return request.headers.Authorization ? true : false;
   }
   public isValidCookie(
     cookie: SecuritySessionCookie,
@@ -66,8 +64,7 @@ export class KerberosAuthentication extends AuthenticationType {
   ) {
     super(config, sessionStorageFactory, router, esClient, coreSetup, logger);
 
-    this.authHeaderName = "authorization"
-
+    this.authHeaderName = 'authorization';
   }
   buildAuthHeaderFromCookie(
     cookie: SecuritySessionCookie,
@@ -81,10 +78,7 @@ export class KerberosAuthentication extends AuthenticationType {
   }
 
   getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
-    const authorizationHeaderValue: string = request.headers[
-      this.authHeaderName
-      ] as string;
-
+    const authorizationHeaderValue: string = request.headers[this.authHeaderName] as string;
 
     return {
       username: authInfo.user_name,
@@ -103,7 +97,6 @@ export class KerberosAuthentication extends AuthenticationType {
   ): IOpenSearchDashboardsResponse | AuthResult {
     const serverBasePath = this.coreSetup.http.basePath.serverBasePath;
 
-
     const loginEndpoint = this.config.kerberos.login_endpoint;
     if (loginEndpoint) {
       return toolkit.redirected({
@@ -114,4 +107,3 @@ export class KerberosAuthentication extends AuthenticationType {
     }
   }
 }
-
