@@ -208,7 +208,7 @@ export function ServiceAccountList(props: AppDependencies) {
             // @ts-ignore
             selection={{ onSelectionChange: setSelection }}
             sorting
-            error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
+            error={errorFlag ? 'Load data failed, please check the console log for more details.' : ''}
             message={showTableStatusMessage(loading, userData)}
           />
         </EuiPageBody>
