@@ -176,8 +176,8 @@ export function ServiceAccountList(props: AppDependencies) {
               </h3>
             </EuiTitle>
             <EuiText size="s" color="subdued">
-              Here you list the users authenticated via an external authentication system such as
-              LDAP server or Active Directory. You can map an user to a role from{' '}
+              Here you have a list of special accounts that represent services like extensions,
+              plugins or other third party applications. You can map an account to a role from{' '}
               <EuiLink href={buildHashUrl(ResourceType.roles)}>Roles</EuiLink>
               “Manage mapping”
               <ExternalLink href={DocLinks.BackendConfigurationAuthenticationDoc} />
@@ -208,7 +208,9 @@ export function ServiceAccountList(props: AppDependencies) {
             // @ts-ignore
             selection={{ onSelectionChange: setSelection }}
             sorting
-            error={errorFlag ? 'Load data failed, please check the console log for more details.' : ''}
+            error={
+              errorFlag ? 'Load data failed, please check the console log for more details.' : ''
+            }
             message={showTableStatusMessage(loading, userData)}
           />
         </EuiPageBody>
