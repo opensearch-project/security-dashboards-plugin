@@ -14,7 +14,7 @@
  */
 
 .panel-header-count {
-  color: #687078;
+  color: $euiTextSubduedColor;
   font-weight: normal;
 }
 
@@ -40,4 +40,46 @@
 
 .limit-width-input {
   max-width: 400px;
+}
+
+.security-steps-diagram {
+  height: 114px;
+  position: relative;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  &::before {
+    mask: url("../../assets/get_started_layer_1.svg") center / contain no-repeat;
+    background: $euiColorDarkestShade;
+  }
+
+  &::after {
+    mask: url("../../assets/get_started_layer_2.svg") center / contain no-repeat;
+    background: $euiColorPrimary;
+  }
+
+  @supports not (mask: center / contain no-repeat) {
+    /* stylelint-disable property-no-vendor-prefix */
+    &::before,
+    &::after {
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-size: contain;
+      -webkit-mask-position: center;
+    }
+
+    &::before {
+      -webkit-mask-image: url("../../assets/get_started_layer_1.svg");
+    }
+
+    &::after {
+      -webkit-mask-image: url("../../assets/get_started_layer_2.svg");
+    }
+    /* stylelint-enable property-no-vendor-prefix */
+  }
 }
