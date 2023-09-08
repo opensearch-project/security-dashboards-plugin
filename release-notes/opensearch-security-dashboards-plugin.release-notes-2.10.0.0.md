@@ -13,4 +13,4 @@ Compatible with OpenSearch-Dashboards 2.10.0
 
 ### Maintenance
 * Force resolution of selenium-webdriver to 4.10.0 ([#1541](https://github.com/opensearch-project/security-dashboards-plugin/pull/1541))
-* Change the regex command in install dashboard GHA ([#1533](https://github.com/opensearch-project/security-dashboards-plugin/pull/1533)
+* Change the regex command in install dashboard GHA ([#1533](https://github.com/opensearch-project/security-dashboards-plugin/pull/1533))
