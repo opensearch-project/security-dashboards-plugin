@@ -70,7 +70,10 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
 
   const [toasts, addToast, removeToast] = useToastState();
 
-  const [isUsernameValid, setIsUsernameValid] = useState<boolean>(false);
+  // Assuming in the edit user scenario the username is valid
+  const [isUsernameValid, setIsUsernameValid] = useState<boolean>(
+    props.sourceUserName ? true : false
+  );
 
   React.useEffect(() => {
     const action = props.action;
@@ -131,9 +134,6 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
       );
     }
   };
-  console.log("usename invalid" + !isUsernameValid)
-  console.log("password invalid" + isPasswordInvalid)
-  console.log("usename or password invalid" + (!isUsernameValid || isPasswordInvalid))
 
   return (
     <>
@@ -189,7 +189,12 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
           </EuiButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton id="submit" fill onClick={updateUserHandler} disabled={(!isUsernameValid || isPasswordInvalid)}>
+          <EuiButton
+            id="submit"
+            fill
+            onClick={updateUserHandler}
+            disabled={!isUsernameValid || isPasswordInvalid}
+          >
             {props.action === 'edit' ? 'Save changes' : 'Create'}
           </EuiButton>
         </EuiFlexItem>

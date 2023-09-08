@@ -29,12 +29,14 @@ export function PasswordEditPanel(props: {
   const [repeatPassword, setRepeatPassword] = React.useState<string>('');
   const [isRepeatPasswordInvalid, setIsRepeatPasswordInvalid] = React.useState<boolean>(false);
   const [passwordHelpText, setPasswordHelpText] = React.useState<string>(PASSWORD_INSTRUCTION);
-  const [passwordValidationRegex, setPasswordValidationRegex] = React.useState<string>(PASSWORD_VALIDATION_REGEX);
+  const [passwordValidationRegex, setPasswordValidationRegex] = React.useState<string>(
+    PASSWORD_VALIDATION_REGEX
+  );
   const [passwordErrors, setPasswordErrors] = React.useState<string[]>([]);
 
   const validatePassword = () => {
     if (!password.match(passwordValidationRegex)) {
-      const errorMessages = ['Password does not match minimum criteria']
+      const errorMessages = ['Password does not match minimum criteria'];
       setPasswordErrors(errorMessages);
     } else {
       setPasswordErrors([]);
@@ -44,13 +46,9 @@ export function PasswordEditPanel(props: {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const dashboardsInfo = await getDashboardsInfo(props.coreStart.http)
-        setPasswordHelpText(
-          dashboardsInfo.password_validation_error_message
-        );
-        setPasswordValidationRegex(
-          dashboardsInfo.password_validation_regex
-        )
+        const dashboardsInfo = await getDashboardsInfo(props.coreStart.http);
+        setPasswordHelpText(dashboardsInfo.password_validation_error_message);
+        setPasswordValidationRegex(dashboardsInfo.password_validation_regex);
       } catch (e) {
         console.error(e);
       }
@@ -61,10 +59,10 @@ export function PasswordEditPanel(props: {
 
   React.useEffect(() => {
     props.updatePassword(password);
-    const isInvalid = (repeatPassword !== password) || !password.match(passwordValidationRegex);
+    const isInvalid = repeatPassword !== password || !password.match(passwordValidationRegex);
     setIsRepeatPasswordInvalid(repeatPassword !== password);
     props.updateIsInvalid(isInvalid);
-  }, [password, props, repeatPassword]);
+  }, [password, props, repeatPassword, passwordValidationRegex]);
 
   const passwordChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
@@ -76,7 +74,12 @@ export function PasswordEditPanel(props: {
 
   return (
     <>
-      <FormRow headerText="Password" helpText={passwordHelpText} isInvalid={passwordErrors.length > 0} error={passwordErrors}>
+      <FormRow
+        headerText="Password"
+        helpText={passwordHelpText}
+        isInvalid={passwordErrors.length > 0}
+        error={passwordErrors}
+      >
         <EuiFieldText
           data-test-subj="password"
           prepend={<EuiIcon type="lock" />}
@@ -91,7 +94,9 @@ export function PasswordEditPanel(props: {
         headerText="Re-enter password"
         helpText="The password must be identical to what you entered above."
         isInvalid={isRepeatPasswordInvalid}
-        error={isRepeatPasswordInvalid ? ["The password is not identical to the one entered above."] : []}
+        error={
+          isRepeatPasswordInvalid ? ['The password is not identical to the one entered above.'] : []
+        }
       >
         <EuiFieldText
           data-test-subj="re-enter-password"
