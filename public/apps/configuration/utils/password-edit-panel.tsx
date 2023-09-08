@@ -30,6 +30,16 @@ export function PasswordEditPanel(props: {
   const [isRepeatPasswordInvalid, setIsRepeatPasswordInvalid] = React.useState<boolean>(false);
   const [passwordHelpText, setPasswordHelpText] = React.useState<string>(PASSWORD_INSTRUCTION);
   const [passwordValidationRegex, setPasswordValidationRegex] = React.useState<string>(PASSWORD_VALIDATION_REGEX);
+  const [passwordErrors, setPasswordErrors] = React.useState<string[]>([]);
+
+  const validatePassword = () => {
+    if (!password.match(passwordValidationRegex)) {
+      const errorMessages = ['Password does not match minimum criteria']
+      setPasswordErrors(errorMessages);
+    } else {
+      setPasswordErrors([]);
+    }
+  };
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -66,18 +76,22 @@ export function PasswordEditPanel(props: {
 
   return (
     <>
-      <FormRow headerText="Password" helpText={passwordHelpText}>
+      <FormRow headerText="Password" helpText={passwordHelpText} isInvalid={passwordErrors.length > 0} error={passwordErrors}>
         <EuiFieldText
           data-test-subj="password"
           prepend={<EuiIcon type="lock" />}
           type="password"
           onChange={passwordChangeHandler}
+          isInvalid={passwordErrors.length > 0}
+          onBlur={() => validatePassword()}
         />
       </FormRow>
 
       <FormRow
         headerText="Re-enter password"
         helpText="The password must be identical to what you entered above."
+        isInvalid={isRepeatPasswordInvalid}
+        error={isRepeatPasswordInvalid ? ["The password is not identical to the one entered above."] : []}
       >
         <EuiFieldText
           data-test-subj="re-enter-password"
