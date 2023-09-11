@@ -60,7 +60,6 @@ export function PasswordEditPanel(props: {
   React.useEffect(() => {
     props.updatePassword(password);
     const isInvalid = repeatPassword !== password || !password.match(passwordValidationRegex);
-    console.log(password, passwordValidationRegex);
     setIsRepeatPasswordInvalid(repeatPassword !== password);
     props.updateIsInvalid(isInvalid);
   }, [password, props, repeatPassword, passwordValidationRegex]);

@@ -25,6 +25,7 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 import React, { useState } from 'react';
+import { isEmpty } from 'lodash';
 import { BreadcrumbsPageDependencies } from '../../../types';
 import { InternalUserUpdate, ResourceType } from '../../types';
 import { getUserDetail, updateUser } from '../../utils/internal-user-detail-utils';
@@ -65,7 +66,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
   const [userName, setUserName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isPasswordInvalid, setIsPasswordInvalid] = React.useState<boolean>(
-    props.sourceUserName && props.action === 'edit' ? false : true
+    props.action === 'edit' ? false : true
   );
   const [attributes, setAttributes] = useState<UserAttributeStateClass[]>([]);
   const [backendRoles, setBackendRoles] = useState<string[]>([]);
@@ -73,7 +74,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
   const [toasts, addToast, removeToast] = useToastState();
 
   const [isUsernameValid, setIsUsernameValid] = useState<boolean>(
-    props.sourceUserName ? true : false
+    props.action === 'create' ? true : false
   );
 
   React.useEffect(() => {
@@ -136,6 +137,16 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
     }
   };
 
+  console.log('source name' + props.sourceUserName);
+  console.log('username' + userName);
+  console.log('passowrd' + password);
+  console.log('isusernamevalid' + isUsernameValid);
+  console.log('ispasswordinvalid' + isPasswordInvalid);
+  console.log('isempty' + isEmpty(props.sourceUserName));
+  console.log(
+    'condition' + (isEmpty(props.sourceUserName) && (!isUsernameValid || isPasswordInvalid))
+  );
+
   return (
     <>
       {props.buildBreadcrumbs(TITLE_TEXT_DICT[props.action])}
@@ -195,12 +206,9 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
             fill
             onClick={updateUserHandler}
             disabled={
-              (!props.sourceUserName && (!isUsernameValid || isPasswordInvalid)) ||
-              (props.sourceUserName &&
-                props.action === 'edit' &&
-                password !== '' &&
-                isPasswordInvalid) ||
-              (props.sourceUserName && props.action === 'duplicate' && isPasswordInvalid)
+              (props.action === 'create' && (!isUsernameValid || isPasswordInvalid)) ||
+              (props.action === 'edit' && password !== '' && isPasswordInvalid) ||
+              (props.action === 'duplicate' && isPasswordInvalid)
             }
           >
             {props.action === 'edit' ? 'Save changes' : 'Create'}
