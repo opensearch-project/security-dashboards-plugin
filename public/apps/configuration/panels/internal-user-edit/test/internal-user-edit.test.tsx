@@ -14,6 +14,9 @@
  */
 
 import { shallow } from 'enzyme';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
 import { InternalUserUpdate } from '../../../types';
 import { getUserDetail, updateUser } from '../../../utils/internal-user-detail-utils';
@@ -143,5 +146,61 @@ describe('Internal user edit', () => {
 
     expect(createErrorToast).toBeCalled();
     expect(updateUser).toBeCalledTimes(0);
+  });
+
+  it('Create button should be disabled if no password or username on create', async () => {
+    const action = 'create';
+    useState.mockImplementation((initialValue) => ['', setState]);
+
+    render(
+      <InternalUserEdit
+        action={action}
+        buildBreadcrumbs={buildBreadcrumbs}
+        coreStart={mockCoreStart as any}
+        navigation={{} as any}
+        params={{} as any}
+        config={{} as any}
+      />
+    );
+    // Button is disabled since there is no username and password on create
+    expect(screen.getByText('Create').closest('button')).toBeDisabled();
+  });
+
+  it('Save changes button should be enabled if no password on edit', async () => {
+    const action = 'edit';
+    useState.mockImplementation((initialValue) => [initialValue, setState]);
+
+    render(
+      <InternalUserEdit
+        action={action}
+        sourceUserName={sampleUsername}
+        buildBreadcrumbs={buildBreadcrumbs}
+        coreStart={mockCoreStart as any}
+        navigation={{} as any}
+        params={{} as any}
+        config={{} as any}
+      />
+    );
+    // Button is enabled since the page is on edit
+    expect(screen.getByText('Save changes').closest('button')).not.toBeDisabled();
+  });
+
+  it('Create button should be disabled if no password on duplicate', async () => {
+    const action = 'duplicate';
+    useState.mockImplementation((initialValue) => [initialValue, setState]);
+
+    render(
+      <InternalUserEdit
+        action={action}
+        sourceUserName={sampleUsername}
+        buildBreadcrumbs={buildBreadcrumbs}
+        coreStart={mockCoreStart as any}
+        navigation={{} as any}
+        params={{} as any}
+        config={{} as any}
+      />
+    );
+    // Button is enabled since the page is on edit
+    expect(screen.getByText('Create').closest('button')).toBeDisabled();
   });
 });

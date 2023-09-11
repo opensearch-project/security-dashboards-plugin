@@ -57,6 +57,7 @@ export function NameRow(props: NameRowDeps) {
         }}
         disabled={props.action === 'edit'}
         isInvalid={errors.length > 0}
+        aria-label="name-text"
       />
     </FormRow>
   );

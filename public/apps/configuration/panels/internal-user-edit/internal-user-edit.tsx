@@ -64,13 +64,14 @@ const TITLE_TEXT_DICT = {
 export function InternalUserEdit(props: InternalUserEditDeps) {
   const [userName, setUserName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [isPasswordInvalid, setIsPasswordInvalid] = React.useState<boolean>(true);
+  const [isPasswordInvalid, setIsPasswordInvalid] = React.useState<boolean>(
+    props.sourceUserName && props.action === 'edit' ? false : true
+  );
   const [attributes, setAttributes] = useState<UserAttributeStateClass[]>([]);
   const [backendRoles, setBackendRoles] = useState<string[]>([]);
 
   const [toasts, addToast, removeToast] = useToastState();
 
-  // Assuming in the edit user scenario the username is valid
   const [isUsernameValid, setIsUsernameValid] = useState<boolean>(
     props.sourceUserName ? true : false
   );
@@ -193,7 +194,14 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
             id="submit"
             fill
             onClick={updateUserHandler}
-            disabled={!isUsernameValid || isPasswordInvalid}
+            disabled={
+              (!props.sourceUserName && (!isUsernameValid || isPasswordInvalid)) ||
+              (props.sourceUserName &&
+                props.action === 'edit' &&
+                password !== '' &&
+                isPasswordInvalid) ||
+              (props.sourceUserName && props.action === 'duplicate' && isPasswordInvalid)
+            }
           >
             {props.action === 'edit' ? 'Save changes' : 'Create'}
           </EuiButton>

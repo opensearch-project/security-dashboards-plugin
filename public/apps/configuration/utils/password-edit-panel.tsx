@@ -60,6 +60,7 @@ export function PasswordEditPanel(props: {
   React.useEffect(() => {
     props.updatePassword(password);
     const isInvalid = repeatPassword !== password || !password.match(passwordValidationRegex);
+    console.log(password, passwordValidationRegex);
     setIsRepeatPasswordInvalid(repeatPassword !== password);
     props.updateIsInvalid(isInvalid);
   }, [password, props, repeatPassword, passwordValidationRegex]);
@@ -87,6 +88,7 @@ export function PasswordEditPanel(props: {
           onChange={passwordChangeHandler}
           isInvalid={passwordErrors.length > 0}
           onBlur={() => validatePassword()}
+          aria-label="password"
         />
       </FormRow>
 
@@ -104,6 +106,7 @@ export function PasswordEditPanel(props: {
           type="password"
           isInvalid={isRepeatPasswordInvalid}
           onChange={repeatPasswordChangeHandler}
+          aria-label="re-enter-password"
         />
       </FormRow>
     </>
