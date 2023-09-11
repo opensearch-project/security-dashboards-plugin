@@ -150,7 +150,7 @@ describe('Internal user edit', () => {
 
   it('Create button should be disabled if no password or username on create', async () => {
     const action = 'create';
-    useState.mockImplementation((initialValue) => ['', setState]);
+    useState.mockImplementation((initialValue) => [initialValue, setState]);
 
     render(
       <InternalUserEdit
@@ -185,7 +185,7 @@ describe('Internal user edit', () => {
     expect(screen.getByText('Save changes').closest('button')).not.toBeDisabled();
   });
 
-  it('Create button should be disabled if no password on duplicate', async () => {
+  it('Duplicate button should be disabled if no password on duplicate', async () => {
     const action = 'duplicate';
     useState.mockImplementation((initialValue) => [initialValue, setState]);
 

@@ -137,16 +137,6 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
     }
   };
 
-  console.log('source name' + props.sourceUserName);
-  console.log('username' + userName);
-  console.log('passowrd' + password);
-  console.log('isusernamevalid' + isUsernameValid);
-  console.log('ispasswordinvalid' + isPasswordInvalid);
-  console.log('isempty' + isEmpty(props.sourceUserName));
-  console.log(
-    'condition' + (isEmpty(props.sourceUserName) && (!isUsernameValid || isPasswordInvalid))
-  );
-
   return (
     <>
       {props.buildBreadcrumbs(TITLE_TEXT_DICT[props.action])}
