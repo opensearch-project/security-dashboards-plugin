@@ -72,16 +72,6 @@ jobs:
         if: ${{ runner.os == 'Linux' }}
         with:
           url: https://artifacts.opensearch.org/snapshots/core/opensearch/${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/opensearch-min-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64-latest.tar.gz
-      
-      # Install the security plugin
-      - name: Install Plugin into OpenSearch for Linux
-        if: ${{ runner.os == 'Linux'}}
-        run: |
-          pwd
-          ls
-          chmod +x ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/bin/opensearch-plugin
-          /bin/bash -c "yes | ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/bin/opensearch-plugin install file:$(pwd)/opensearch-security.zip"
-        shell: bash
 
       # Extract downloaded zip
       - name: Extract downloaded tar
@@ -89,6 +79,14 @@ jobs:
         run: |
           tar -xzf opensearch-*.tar.gz
           rm -f opensearch-*.tar.gz
+        shell: bash
+
+      # Install the security plugin
+      - name: Install Plugin into OpenSearch for Linux
+        if: ${{ runner.os == 'Linux'}}
+        run: |
+          chmod +x ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/bin/opensearch-plugin
+          /bin/bash -c "yes | ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/bin/opensearch-plugin install file:$(pwd)/opensearch-security.zip"
         shell: bash
       
       # Add OIDC Configuration
