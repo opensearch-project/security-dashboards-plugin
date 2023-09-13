@@ -15,7 +15,7 @@
 
 import { defineConfig } from 'cypress';
 
-export default defineConfig({
+const CYPRESS_CONFIG = defineConfig({
   defaultCommandTimeout: 60000,
   requestTimeout: 60000,
   responseTimeout: 60000,
