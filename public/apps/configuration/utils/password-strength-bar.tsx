@@ -38,7 +38,7 @@ export const PasswordStrengthBar = (props: PasswordStrengthBarProps) => {
         </EuiText>
       </EuiFlexItem>
       <EuiFlexItem>
-        <EuiProgress value={strength} max={4} size="s" />
+        <EuiProgress value={strength} max={4} size="m" />
       </EuiFlexItem>
     </EuiFlexGroup>
     )
