@@ -19,6 +19,7 @@ import { EuiFieldText, EuiIcon } from '@elastic/eui';
 import { FormRow } from './form-row';
 import { PASSWORD_INSTRUCTION } from '../../apps-constants';
 import { getDashboardsInfo } from '../../../utils/dashboards-info-utils';
+import { PasswordStrengthBar } from './password-strength-bar';
 
 export function PasswordEditPanel(props: {
   coreStart: CoreStart;
@@ -59,6 +60,7 @@ export function PasswordEditPanel(props: {
     setRepeatPassword(e.target.value);
   };
 
+
   return (
     <>
       <FormRow headerText="Password" helpText={passwordHelpText}>
@@ -69,6 +71,8 @@ export function PasswordEditPanel(props: {
           onChange={passwordChangeHandler}
         />
       </FormRow>
+
+      {password && <PasswordStrengthBar password={password}/>}
 
       <FormRow
         headerText="Re-enter password"
