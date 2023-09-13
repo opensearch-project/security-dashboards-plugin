@@ -13,21 +13,19 @@
  *   permissions and limitations under the License.
  */
 
-import { merge } from 'lodash';
 import {
   Logger,
   OpenSearchDashboardsRequest,
-  Capabilities,
   SessionStorageFactory,
 } from '../../../../src/core/server';
-import { IReadOnlyService } from '../../../../src/core/server/security/types';
 import { globalTenantName, isPrivateTenant } from '../../common';
 import { SecurityClient } from '../backend/opensearch_security_client';
 import { IAuthenticationType } from '../auth/types/authentication_type';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { SecurityPluginConfigType } from '../index';
+import { ReadonlyService as BaseReadonlyService } from '../../../../src/core/server/security/readonly_service';
 
-export class ReadonlyService implements IReadOnlyService {
+export class ReadonlyService extends BaseReadonlyService {
   private readonly logger: Logger;
   private readonly securityClient: SecurityClient;
   private readonly auth: IAuthenticationType;
@@ -41,6 +39,7 @@ export class ReadonlyService implements IReadOnlyService {
     securitySessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
     config: SecurityPluginConfigType
   ) {
+    super();
     this.logger = logger;
     this.securityClient = securityClient;
     this.auth = auth;
@@ -101,13 +100,5 @@ export class ReadonlyService implements IReadOnlyService {
     } catch (error: any) {
       return false;
     }
-  }
-
-  async hideForReadonly(
-    request: OpenSearchDashboardsRequest,
-    capabilites: Capabilities,
-    hideCapabilities: Partial<Capabilities>
-  ): Promise<Partial<Capabilities>> {
-    return (await this.isReadonly(request)) ? merge(capabilites, hideCapabilities) : capabilites;
   }
 }
