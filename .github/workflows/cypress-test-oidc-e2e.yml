@@ -3,22 +3,35 @@ on:
   pull_request:
     branches: [ '**' ]
 env:
-  OPENSEARCJ_VERSION: '3.0.0'
+  OPENSEARCH_VERSION: '3.0.0'
   KEYCLOAK_VERSION: '21.0.1'
+  CI: 1
+  # avoid warnings like "tput: No value for $TERM and no -T specified"
+  TERM: xterm
+  PLUGIN_NAME: opensearch-security
+  
 jobs:
   tests:
     name: Run Cypress E2E tests
-    runs-on: ubuntu-latest
-    env:
-      # prevents extra Cypress installation progress messages
-      CI: 1
-      # avoid warnings like "tput: No value for $TERM and no -T specified"
-      TERM: xterm
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest ] #linux only
+    runs-on: ${{ matrix.os }}
+
     steps:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
           java-version: 17
+
+      - name: Set env
+        run: |
+          opensearch_version=$(node -p "require('./package.json').opensearchDashboards.version")
+          plugin_version=$(node -p "require('./package.json').version")
+          echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
+          echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
+        shell: bash
 
       - name: Get and run Keycloak
         run: |
@@ -43,16 +56,42 @@ jobs:
           echo "Creating client mapper"
           ./kcadm.sh create clients/$CID/protocol-mappers/models  -r master -s 'config."id.token.claim"=true' -s 'config."multivalued"=true' -s 'config."claim.name"="roles"' -s 'config."userinfo.token.claim"=true' -s 'config."access.token.claim"=true' -s 'name=rolemapper' -s 'protocolMapper=oidc-usermodel-realm-role-mapper' -s "protocol=openid-connect"
 
-      - name: Get and run OpenSearch
+      - name: Download security plugin and create setup scripts
+        uses: ./.github/actions/download-plugin
+        with:
+          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
+          plugin-name: ${{ env.PLUGIN_NAME }}
+          plugin-version: ${{ env.PLUGIN_VERSION }}
+
+      # Download OpenSearch
+      - name: Download OpenSearch for Linux
+        uses: peternied/download-file@v2
+        if: ${{ runner.os == 'Linux' }}
+        with:
+          url: https://artifacts.opensearch.org/snapshots/core/opensearch/${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/opensearch-min-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64-latest.tar.gz
+      
+      # Install the security plugin
+      - name: Install Plugin into OpenSearch for Linux
+        if: ${{ runner.os == 'Linux'}}
         run: |
-          echo "Downloading OpenSearch ${{ env.OPENSEARCH_VERSION }}"
-          wget https://artifacts.opensearch.org/releases/bundle/opensearch/${{ env.OPENSEARCH_VERSION }}/opensearch-${{ env.OPENSEARCH_VERSION }}-linux-x64.tar.gz
-          echo "Unpacking OpenSearch"
-          tar -xzf opensearch-${{ env.OPENSEARCH_VERSION }}-linux-x64.tar.gz
-          cd opensearch-${{ env.OPENSEARCH_VERSION }}
-          
+          chmod +x ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/bin/opensearch-plugin
+          /bin/bash -c "yes | ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/bin/opensearch-plugin install file:$(pwd)/opensearch-security.zip"
+        shell: bash
+
+      # Extract downloaded zip
+      - name: Extract downloaded tar
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          tar -xzf opensearch-*.tar.gz
+          rm -f opensearch-*.tar.gz
+        shell: bash
+      
+      # Add OIDC Configuration
+      - name: Injecting OIDC Configuration
+        if: ${{ runner.os == 'Linux' }}
+        run: |
           echo "Injecting OIDC configuration"
-          cd config/opensearch-security/
+          cd ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/config/opensearch-security/
           wget -O yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
           chmod +x yq
           yq -i ".config.dynamic.authc.openid_auth_domain.http_enabled = true" config.yml
@@ -64,23 +103,36 @@ jobs:
           yq -i ".config.dynamic.authc.openid_auth_domain.http_authenticator.config.roles_key = \"roles\"" config.yml
           yq -i ".config.dynamic.authc.openid_auth_domain.http_authenticator.config.openid_connect_url = \"http://localhost:8080/auth/realms/master/.well-known/openid-configuration\"" config.yml
           yq -i ".config.dynamic.authc.openid_auth_domain.authentication_backend.type = \"noop\"" config.yml
-          echo "Installing demo configuration"
-          cd ../../plugins/opensearch-security/tools
-          chmod +x install_demo_configuration.sh
-          ./install_demo_configuration.sh -y
+          cd ../../..
 
-          echo "Starting OpenSearch"
-          ../../../bin/opensearch &
-          timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' https://localhost:9200 -ku admin:admin)" != "503" ]]; do sleep 5; done'
-          echo "Setting up certificates"
-          chmod +x securityadmin.sh
-          ./securityadmin.sh -cd ../../../config/opensearch-security/ -icl -nhnv \
-          -cacert ../../../config/root-ca.pem \
-          -cert ../../../config/kirk.pem \
-          -key ../../../config/kirk-key.pem
-          timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' https://localhost:9200 -ku admin:admin)" != "200" ]]; do sleep 5; done'
+      # Run any configuration scripts
+      - name: Run Setup Script for Linux
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          echo "running linux setup"
+          chmod +x ./setup.sh
+          ./setup.sh
+        shell: bash
 
-      # Use existing action for osd bootstrap
+      # Run OpenSearch
+      - name: Run OpenSearch with plugin on Linux
+        if: ${{ runner.os == 'Linux'}}
+        run: /bin/bash -c "./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT/bin/opensearch &"
+        shell: bash
+
+      # Give the OpenSearch process some time to boot up before sending any requires, might need to increase the default time!
+      - name: Sleep while OpenSearch starts
+        uses: peternied/action-sleep@v1
+        with:
+          seconds: 30
+
+      # Verify that the server is operational
+      - name: Check OpenSearch Running on Linux
+        if: ${{ runner.os != 'Windows'}}
+        run: curl https://localhost:9200/_cat/plugins -u 'admin:admin' -k -v
+        shell: bash
+
+      # OSD bootstrap
       - name: Run Dashboard with Security Dashboards Plugin
         uses: ./.github/actions/install-dashboards
         with:
