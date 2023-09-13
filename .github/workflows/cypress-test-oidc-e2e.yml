@@ -77,6 +77,8 @@ jobs:
       - name: Install Plugin into OpenSearch for Linux
         if: ${{ runner.os == 'Linux'}}
         run: |
+          pwd
+          ls
           chmod +x ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/bin/opensearch-plugin
           /bin/bash -c "yes | ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/bin/opensearch-plugin install file:$(pwd)/opensearch-security.zip"
         shell: bash
