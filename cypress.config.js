@@ -13,9 +13,9 @@
  *   permissions and limitations under the License.
  */
 
-import { defineConfig } from 'cypress';
+const { defineConfig } = require('cypress');
 
-const CYPRESS_CONFIG = defineConfig({
+module.exports = defineConfig({
   defaultCommandTimeout: 60000,
   requestTimeout: 60000,
   responseTimeout: 60000,
@@ -25,5 +25,3 @@ const CYPRESS_CONFIG = defineConfig({
     specPattern: 'cypress/e2e/**/*.spec.js',
   },
 });
-
-export default CYPRESS_CONFIG;
