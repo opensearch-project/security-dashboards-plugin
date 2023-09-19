@@ -25,3 +25,5 @@ const CYPRESS_CONFIG = defineConfig({
     specPattern: 'cypress/e2e/**/*.spec.js',
   },
 });
+
+export default CYPRESS_CONFIG;
