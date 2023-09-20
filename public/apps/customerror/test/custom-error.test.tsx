@@ -16,7 +16,6 @@
 import { shallow } from 'enzyme';
 import React from 'react';
 import { CustomErrorPage } from '../custom-error';
-import { logout } from '../utils';
 
 jest.mock('../utils', () => ({
   logout: jest.fn(),
@@ -24,21 +23,17 @@ jest.mock('../utils', () => ({
 
 describe('Custom error test', () => {
     it('renders', () => {
-        const component = shallow(
-            <CustomErrorPage
-            title="Title"
-            subtitle="Sub Title" http={undefined} chrome={undefined} config={{
-              title: '',
-              subtitle: '',
-              showbrandimage: false,
-              brandimage: '',
-              buttonstyle: ''
-            }}/>
-          );
-        expect(component).toMatchSnapshot();
-
-        // component.find('[data-test-subj="log-out-3"]').simulate('click');
-
-        // expect(logout).toBeCalled();
-    });
+      const component = shallow(
+          <CustomErrorPage
+          title="Title"
+          subtitle="Sub Title" http={undefined} chrome={undefined} config={{
+            title: '',
+            subtitle: '',
+            showbrandimage: false,
+            brandimage: '',
+            buttonstyle: ''
+          }}/>
+        );
+      expect(component).toMatchSnapshot();
+  });
 })
