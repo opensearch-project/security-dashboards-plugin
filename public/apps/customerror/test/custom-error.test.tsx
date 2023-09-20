@@ -25,14 +25,14 @@ describe('Custom error test', () => {
     const component = shallow(
         <CustomErrorPage
         title="Title" subtitle="Sub Title" http={undefined} chrome={undefined} config={{
-        title: '',
-        subtitle: '',
-        showbrandimage: false,
-        brandimage: '',
-        buttonstyle: '',
+          title: '',
+          subtitle: '',
+          showbrandimage: false,
+          brandimage: '',
+          buttonstyle: '',
         }}
-        />
-      );
+      />
+    );
     expect(component).toMatchSnapshot();
   });
 })
