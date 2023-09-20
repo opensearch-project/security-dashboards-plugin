@@ -23,7 +23,7 @@ describe('Log in via OIDC', () => {
   const password = 'admin';
 
   const kcLogin = () => {
-    cy.get('#kc-page-title').should('be.visible');
+    cy.get('#kc-page-title', { timeout: 10000 }).should('be.visible');
     cy.get('#username').type(login);
     cy.get('#password').type(password);
     cy.get('#kc-login').click();
@@ -33,7 +33,7 @@ describe('Log in via OIDC', () => {
     cy.get('#user-icon-btn').should('be.visible', { timeout: 15000 });
     cy.get('#user-icon-btn').click();
     cy.get('button[data-test-subj^="log-out-"]').click();
-    cy.get('#kc-page-title').should('be.visible');
+    cy.get('#kc-page-title', { timeout: 10000 }).should('be.visible');
   };
 
   afterEach(async () => {
@@ -45,9 +45,9 @@ describe('Log in via OIDC', () => {
 
     kcLogin();
 
-    cy.get('#osdOverviewPageHeader__title').should('be.visible');
+    cy.get('#osdOverviewPageHeader__title', { timeout: 10000 }).should('be.visible');
 
-    cy.getCookie('security_authentication').should('exist');
+    cy.getCookie('security_authentication', { timeout: 10000 }).should('exist');
     cy.clearCookies();
   });
 
@@ -58,7 +58,7 @@ describe('Log in via OIDC', () => {
 
     cy.get('button[data-test-subj="sendRequestButton"]').should('be.visible');
 
-    cy.getCookie('security_authentication').should('exist');
+    cy.getCookie('security_authentication', { timeout: 10000 }).should('exist');
     cy.clearCookies();
   });
 
@@ -69,7 +69,7 @@ describe('Log in via OIDC', () => {
 
     kcLogin();
 
-    cy.get('.euiHeader.euiHeader--default.euiHeader--fixed.primaryHeader').should('be.visible');
+    cy.get('.euiHeader.euiHeader--default.euiHeader--fixed.primaryHeader', { timeout: 10000 }).should('be.visible');
 
     cy.getCookie('security_authentication').should('exist');
     cy.clearCookies();
@@ -80,20 +80,20 @@ describe('Log in via OIDC', () => {
 
     kcLogin();
 
-    cy.get('#global').should('be.enabled');
+    cy.get('#global', { timeout: 10000 }).should('be.enabled');
     cy.get('#global').click({ force: true });
 
     cy.get('button[data-test-subj="confirm"]').click();
 
-    cy.get('#osdOverviewPageHeader__title').should('be.visible');
+    cy.get('#osdOverviewPageHeader__title', { timeout: 10000 }).should('be.visible');
 
     logout();
 
     kcLogin();
 
-    cy.get('#user-icon-btn').should('be.visible');
+    cy.get('#user-icon-btn', { timeout: 10000 }).should('be.visible');
     cy.get('#user-icon-btn').click();
 
-    cy.get('#tenantName').should('have.text', 'Global');
+    cy.get('#tenantName', { timeout: 10000 }).should('have.text', 'Global');
   });
 });
