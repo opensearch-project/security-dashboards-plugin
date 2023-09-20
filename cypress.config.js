@@ -23,7 +23,7 @@ module.exports = defineConfig({
   responseTimeout: 60000,
   e2e: {
     setupNodeEvents(on, config) {},
-    supportFile: ".cypress/support/e2e.js",
+    supportFile: '.cypress/support/e2e.js',
     baseUrl: 'http://localhost:5601',
     specPattern: '.cypress/e2e/**/*.spec.js',
   },
