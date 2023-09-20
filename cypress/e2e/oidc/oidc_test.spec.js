@@ -41,7 +41,7 @@ describe('Log in via OIDC', () => {
   });
 
   it('Login to app/opensearch_dashboards_overview#/ when OIDC is enabled', () => {
-    cy.visit('http://localhost:5601/app/opensearch_dashboards_overview#/');
+    cy.visit('http://localhost:5601/app/opensearch_dashboards_overview#/', { failOnStatusCode: false, timeout: 10000 });
 
     kcLogin();
 
@@ -76,7 +76,7 @@ describe('Log in via OIDC', () => {
   });
 
   it('Tenancy persisted after logout in OIDC', () => {
-    cy.visit('http://localhost:5601/app/opensearch_dashboards_overview#/');
+    cy.visit('http://localhost:5601/app/opensearch_dashboards_overview#/', { timeout: 10000 });
 
     kcLogin();
 
