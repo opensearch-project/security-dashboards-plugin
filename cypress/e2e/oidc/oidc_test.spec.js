@@ -48,7 +48,6 @@ describe('Log in via OIDC', () => {
     cy.origin('http://localhost:5601', () => {
       cy.get('button[data-test-subj="confirm"]').click();
   
-  
       cy.get('#osdOverviewPageHeader__title', { timeout: 10000 }).should('be.visible');
   
       cy.getCookie('security_authentication', { timeout: 10000 }).should('exist');
