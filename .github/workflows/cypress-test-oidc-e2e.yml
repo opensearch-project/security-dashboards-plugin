@@ -164,7 +164,7 @@ jobs:
           echo 'opensearch_security.ui.openid.login.buttonname: "OIDC"' >> ./config/opensearch_dashboards.yml
           echo 'home.disableWelcomeScreen: true' >> ./config/opensearch_dashboards.yml
           nohup yarn start --no-base-path --no-watch &
-          sleep 500
+          sleep 700
           cd ./plugins/security-dashboards-plugin
           pwd
           ls
