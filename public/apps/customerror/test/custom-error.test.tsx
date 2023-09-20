@@ -12,7 +12,6 @@
  *   express or implied. See the License for the specific language governing
  *   permissions and limitations under the License.
  */
-
 import { shallow } from 'enzyme';
 import React from 'react';
 import { CustomErrorPage } from '../custom-error';
@@ -22,18 +21,18 @@ jest.mock('../utils', () => ({
 }));
 
 describe('Custom error test', () => {
-    it('renders', () => {
-      const component = shallow(
-          <CustomErrorPage
-          title="Title"
-          subtitle="Sub Title" http={undefined} chrome={undefined} config={{
-            title: '',
-            subtitle: '',
-            showbrandimage: false,
-            brandimage: '',
-            buttonstyle: ''
-          }}/>
-        );
-      expect(component).toMatchSnapshot();
+  it('renders', () => {
+    const component = shallow(
+        <CustomErrorPage
+        title="Title" subtitle="Sub Title" http={undefined} chrome={undefined} config={{
+        title: '',
+        subtitle: '',
+        showbrandimage: false,
+        brandimage: '',
+        buttonstyle: '',
+        }}
+        />
+      );
+    expect(component).toMatchSnapshot();
   });
 })
