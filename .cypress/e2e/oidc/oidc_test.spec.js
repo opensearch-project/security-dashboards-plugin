@@ -43,6 +43,8 @@ describe('Log in via OIDC', () => {
   it('Login to app/opensearch_dashboards_overview#/ when OIDC is enabled', () => {
     cy.visit('http://localhost:5601/app/opensearch_dashboards_overview#/', { failOnStatusCode: false, timeout: 10000 });
 
+    cy.wait(10000);
+
     kcLogin();
 
     cy.origin('http://localhost:5601', () => {
@@ -56,14 +58,18 @@ describe('Log in via OIDC', () => {
   });
 
   it('Login to app/dev_tools#/console when OIDC is enabled', () => {
-    cy.visit('http://localhost:5601/app/dev_tools#/console');
+    cy.visit('http://localhost:5601/app/dev_tools#/console', { failOnStatusCode: false, timeout: 10000 });
+
+    cy.wait(10000);
 
     kcLogin();
 
-    cy.get('button[data-test-subj="sendRequestButton"]').should('be.visible');
-
-    cy.getCookie('security_authentication', { timeout: 10000 }).should('exist');
-    cy.clearCookies();
+    cy.origin('http://localhost:5601/app/dev_tools#/console', () => {
+      cy.get('button[data-test-subj="sendRequestButton"]').should('be.visible');
+  
+      cy.getCookie('security_authentication', { timeout: 10000 }).should('exist');
+      cy.clearCookies();
+    });
   });
 
   it('Login to Dashboard with Hash', () => {
@@ -71,16 +77,22 @@ describe('Log in via OIDC', () => {
       `http://localhost:5601/app/dashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(filters:!(),refreshInterval:(pause:!f,value:900000),time:(from:now-24h,to:now))&_a=(description:'Analyze%20mock%20flight%20data%20for%20OpenSearch-Air,%20Logstash%20Airways,%20OpenSearch%20Dashboards%20Airlines%20and%20BeatsWest',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'%5BFlights%5D%20Global%20Flight%20Dashboard',viewMode:view)`
     );
 
+    cy.wait(10000);
+
     kcLogin();
 
-    cy.get('.euiHeader.euiHeader--default.euiHeader--fixed.primaryHeader', { timeout: 10000 }).should('be.visible');
+    cy.origin('http://localhost:5601', () => {
+      cy.get('.euiHeader.euiHeader--default.euiHeader--fixed.primaryHeader', { timeout: 10000 }).should('be.visible');
 
-    cy.getCookie('security_authentication').should('exist');
-    cy.clearCookies();
+      cy.getCookie('security_authentication').should('exist');
+      cy.clearCookies();
+    });
   });
 
   it('Tenancy persisted after logout in OIDC', () => {
     cy.visit('http://localhost:5601/app/opensearch_dashboards_overview#/', { timeout: 10000 });
+
+    cy.wait(10000);
 
     kcLogin();
 
