@@ -114,11 +114,30 @@ jobs:
           $CID = ./kcadm.bat create clients -r master -f .\client-config.json -i
 
           ./kcadm.bat get clients/$CID/installation/providers/keycloak-oidc-keycloak-json > tmp
+
           Write-Host "Getting client secret for dashboards configuration purpose"
           $secret = (Get-Content tmp | Select-String -Pattern '"secret" : "([^"]+)"' | ForEach-Object { $_.Matches.Groups[1].Value })
           Add-Content -Value "KEYCLOAK_CLIENT_SECRET=$secret" -Path $env:GITHUB_ENV
+
+          Write-Host "Generating client mapper configuration"
+          $mapperConfigContent = @"
+          {
+            "config": {
+              "id.token.claim": "true",
+              "multivalued": "true",
+              "claim.name": "roles",
+              "userinfo.token.claim": "true",
+              "access.token.claim": "true"
+            },
+            "name": "rolemapper",
+            "protocolMapper": "oidc-usermodel-realm-role-mapper",
+            "protocol": "openid-connect"
+          }
+          "@
+          Set-Content -Value $mapperConfigContent -Path ./mapper-config.json
+          
           Write-Host "Creating client mapper"
-          ./kcadm.bat create clients/$CID/protocol-mappers/models  -r master -s 'config."id.token.claim"=true' -s 'config."multivalued"=true' -s 'config."claim.name"="roles"' -s 'config."userinfo.token.claim"=true' -s 'config."access.token.claim"=true' -s 'name=rolemapper' -s 'protocolMapper=oidc-usermodel-realm-role-mapper' -s "protocol=openid-connect"
+          ./kcadm.bat create clients/$CID/protocol-mappers/models -r master -f ./mapper-config.json
         shell: pwsh
       
       - name: Download security plugin and create setup scripts
