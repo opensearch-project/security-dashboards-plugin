@@ -36,7 +36,9 @@ jobs:
           echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
         shell: bash
 
-      - name: Get and run Keycloak
+      # Setup and Run Keycloak
+      - name: Get and run Keycloak on Linux
+        if: ${{ runner.os == 'Linux' }}
         run: |
           echo "Downloading Keycloak ${{ env.KEYCLOAK_VERSION }}"
           wget https://github.com/keycloak/keycloak/releases/download/${{ env.KEYCLOAK_VERSION }}/keycloak-${{ env.KEYCLOAK_VERSION }}.tar.gz
@@ -59,6 +61,30 @@ jobs:
           echo "Creating client mapper"
           ./kcadm.sh create clients/$CID/protocol-mappers/models  -r master -s 'config."id.token.claim"=true' -s 'config."multivalued"=true' -s 'config."claim.name"="roles"' -s 'config."userinfo.token.claim"=true' -s 'config."access.token.claim"=true' -s 'name=rolemapper' -s 'protocolMapper=oidc-usermodel-realm-role-mapper' -s "protocol=openid-connect"
 
+      - name: Get and run Keycloak on Windows
+        if: ${{ runner.os == 'Windows' }}
+        run: |
+          Write-Host "Downloading Keycloak ${{ env.KEYCLOAK_VERSION }}"
+          Invoke-WebRequest -Uri "https://github.com/keycloak/keycloak/releases/download/${{ env.KEYCLOAK_VERSION }}/keycloak-${{ env.KEYCLOAK_VERSION }}.zip" -OutFile keycloak.zip
+          Write-Host "Unpacking Keycloak"
+          Expand-Archive -Path keycloak.zip -DestinationPath ./
+          $Env:KEYCLOAK_ADMIN="admin"
+          $Env:KEYCLOAK_ADMIN_PASSWORD="admin"
+          Set-Location "keycloak-${{ env.KEYCLOAK_VERSION }}/bin"
+          Write-Host "Starting keycloak"
+          Start-Process -NoNewWindow ./kc.bat -ArgumentList 'start-dev', '--http-enabled=true', '--hostname-strict-https=false', '--http-host=localhost', '--http-relative-path=/auth', '--health-enabled=true'
+          while ((Invoke-WebRequest -Uri 'http://localhost:8080/auth/health' -Method Get -UseBasicParsing).StatusCode -ne 200) { Start-Sleep -Seconds 5 }
+          Write-Host "Creating client"
+          ./kcadm.bat config credentials --server http://localhost:8080/auth --realm master --user $Env:KEYCLOAK_ADMIN --password $Env:KEYCLOAK_ADMIN_PASSWORD
+          $CID = ./kcadm.bat create clients -r master -s clientId=opensearch -s 'redirectUris=["http://localhost:5603/auth/openid/login", "http://localhost:5601", "http://localhost:5601/auth/openid/login"]' -i
+          ./kcadm.bat get clients/$CID/installation/providers/keycloak-oidc-keycloak-json > tmp
+          Write-Host "Getting client secret for dashboards configuration purpose"
+          $secret = (Get-Content tmp | Select-String -Pattern '"secret" : "([^"]+)"' | ForEach-Object { $_.Matches.Groups[1].Value })
+          Add-Content -Value "KEYCLOAK_CLIENT_SECRET=$secret" -Path $env:GITHUB_ENV
+          Write-Host "Creating client mapper"
+          ./kcadm.bat create clients/$CID/protocol-mappers/models  -r master -s 'config."id.token.claim"=true' -s 'config."multivalued"=true' -s 'config."claim.name"="roles"' -s 'config."userinfo.token.claim"=true' -s 'config."access.token.claim"=true' -s 'name=rolemapper' -s 'protocolMapper=oidc-usermodel-realm-role-mapper' -s "protocol=openid-connect"
+        shell: pwsh
+      
       - name: Download security plugin and create setup scripts
         uses: ./.github/actions/download-plugin
         with:
