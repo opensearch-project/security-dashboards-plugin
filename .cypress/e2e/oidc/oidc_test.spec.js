@@ -44,6 +44,12 @@ describe('Log in via OIDC', () => {
     kcLogin();
 
     cy.origin('http://localhost:5601', () => {
+      cy.wait(5000);
+      cy.get('button[data-test-subj="confirm"]').click();
+      
+      cy.wait(5000)
+      cy.get('button[aria-label="Closes this modal window"]').click();
+
       cy.get('#osdOverviewPageHeader__title', { timeout: 10000 }).should('be.visible');
   
       cy.getCookie('security_authentication', { timeout: 10000 }).should('exist');
