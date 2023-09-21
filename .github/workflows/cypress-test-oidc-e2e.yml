@@ -164,12 +164,9 @@ jobs:
           echo 'opensearch_security.ui.openid.login.buttonname: "OIDC"' >> ./config/opensearch_dashboards.yml
           echo 'home.disableWelcomeScreen: true' >> ./config/opensearch_dashboards.yml
           nohup yarn start --no-base-path --no-watch &
-          sleep 700
+          sleep 600
       
       - name: Run Cypress
         run : |
-          pwd
-          ls
-          cd ./plugins/security-dashboards-plugin
           yarn add cypress --save-dev
           yarn cypress:run --browser chrome --headless --spec '.cypress/e2e/oidc/*.js'
