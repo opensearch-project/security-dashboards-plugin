@@ -19,8 +19,12 @@ import { CustomErrorPage } from '../custom-error';
 describe('Custom error test', () => {
   it('renders', () => {
     const component = shallow(
-        <CustomErrorPage
-        title="Title" subtitle="Sub Title" http={undefined} chrome={undefined} config={{
+      <CustomErrorPage
+        title="Title"
+        subtitle="Sub Title"
+        http={undefined}
+        chrome={undefined}
+        config={{
           title: '',
           subtitle: '',
           showbrandimage: false,
@@ -31,4 +35,4 @@ describe('Custom error test', () => {
     );
     expect(component).toMatchSnapshot();
   });
-})
+});
