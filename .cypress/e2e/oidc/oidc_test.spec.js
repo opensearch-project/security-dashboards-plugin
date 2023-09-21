@@ -36,11 +36,6 @@ describe('Log in via OIDC', () => {
     cy.get('#kc-page-title', { timeout: 10000 }).should('be.visible');
   };
 
-  // beforeEach(async () => {
-  //   //logout();
-  //   cy.clearCookies();
-  // });
-
   it('Login to app/opensearch_dashboards_overview#/ when OIDC is enabled', () => {
     cy.visit('http://localhost:5601/app/opensearch_dashboards_overview#/', { failOnStatusCode: false, timeout: 10000 });
 
@@ -49,9 +44,6 @@ describe('Log in via OIDC', () => {
     kcLogin();
 
     cy.origin('http://localhost:5601', () => {
-      //cy.wait(5000);
-      //cy.get('button[data-test-subj="confirm"]').click();
-  
       cy.get('#osdOverviewPageHeader__title', { timeout: 10000 }).should('be.visible');
   
       cy.getCookie('security_authentication', { timeout: 10000 }).should('exist');
@@ -66,16 +58,12 @@ describe('Log in via OIDC', () => {
     kcLogin();
 
     cy.origin('http://localhost:5601', () => {
-      //cy.get('button[data-test-subj="confirm"]').click();
       cy.visit('http://localhost:5601/app/dev_tools#/console');
 
       cy.wait(5000);
       cy.get('button[data-test-subj="confirm"]').click();
       cy.wait(5000);
       cy.get('a').contains('Dev Tools').should('be.visible');
-      //cy.get('button[data-test-subj="help-close-button"]').click();
-      //cy.wait(5000);
-      //cy.get('button[data-test-subj="sendRequestButton"]').should('be.visible');
   
       cy.getCookie('security_authentication', { timeout: 10000 }).should('exist');
     });
@@ -114,7 +102,6 @@ describe('Log in via OIDC', () => {
   
       cy.get('#osdOverviewPageHeader__title', { timeout: 10000 }).should('be.visible');
   
-      //logout();
       cy.get('button[id="user-icon-btn"]').click();
       cy.wait(1500);
       cy.get('button[data-test-subj^="log-out-"]').click();
