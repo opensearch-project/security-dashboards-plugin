@@ -29,13 +29,6 @@ describe('Log in via OIDC', () => {
     cy.get('#kc-login').click();
   };
 
-  const logout = () => {
-    cy.get('#user-icon-btn').should('be.visible', { timeout: 15000 });
-    cy.get('#user-icon-btn').click();
-    cy.get('button[data-test-subj^="log-out-"]').click();
-    cy.get('#kc-page-title', { timeout: 10000 }).should('be.visible');
-  };
-
   it('Login to app/opensearch_dashboards_overview#/ when OIDC is enabled', () => {
     cy.visit('http://localhost:5601/app/opensearch_dashboards_overview#/', { failOnStatusCode: false, timeout: 10000 });
 
@@ -46,7 +39,7 @@ describe('Log in via OIDC', () => {
     cy.origin('http://localhost:5601', () => {
       cy.wait(5000);
       cy.get('button[data-test-subj="confirm"]').click();
-      
+
       cy.wait(5000)
       cy.get('button[aria-label="Closes this modal window"]').click();
 
