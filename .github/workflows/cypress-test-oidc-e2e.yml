@@ -100,8 +100,8 @@ jobs:
 
           Write-Host "Creating client"
           ./kcadm.bat config credentials --server http://localhost:8080/auth --realm master --user $Env:KEYCLOAK_ADMIN --password $Env:KEYCLOAK_ADMIN_PASSWORD
-          $command = "./kcadm.bat create clients -r master -s clientId=opensearch -s redirectUris=`"[`"http://localhost:5603/auth/openid/login`",`"http://localhost:5601`",`"http://localhost:5601/auth/openid/login`"]`" -i"
-          $CID = Invoke-Expression $command
+          $command = "./kcadm.bat create clients -r master -s clientId=opensearch -s redirectUris=`"['http://localhost:5603/auth/openid/login','http://localhost:5601','http://localhost:5601/auth/openid/login']`" -i"
+          $CID = Invoke-Expression $command          
           ./kcadm.bat get clients/$CID/installation/providers/keycloak-oidc-keycloak-json > tmp
           Write-Host "Getting client secret for dashboards configuration purpose"
           $secret = (Get-Content tmp | Select-String -Pattern '"secret" : "([^"]+)"' | ForEach-Object { $_.Matches.Groups[1].Value })
