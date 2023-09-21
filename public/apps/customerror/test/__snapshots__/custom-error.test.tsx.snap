@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Custom error test renders 1`] = `
+<EuiListGroup
+  className="custom-error-wrapper"
+>
+  <EuiSpacer
+    size="s"
+  />
+  <EuiText
+    size="m"
+    textAlign="center"
+  >
+    <h3>
+      Title
+    </h3>
+  </EuiText>
+  <EuiSpacer
+    size="s"
+  />
+  <EuiText
+    size="s"
+    textAlign="center"
+  >
+    Sub Title
+  </EuiText>
+  <EuiSpacer
+    size="s"
+  />
+  <EuiButton
+    fill={true}
+    fullWidth={true}
+    onClick={[Function]}
+  >
+    Logout
+  </EuiButton>
+</EuiListGroup>
+`;

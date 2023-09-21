@@ -16,10 +16,6 @@ import { shallow } from 'enzyme';
 import React from 'react';
 import { CustomErrorPage } from '../custom-error';
 
-jest.mock('../utils', () => ({
-  logout: jest.fn(),
-}));
-
 describe('Custom error test', () => {
   it('renders', () => {
     const component = shallow(
