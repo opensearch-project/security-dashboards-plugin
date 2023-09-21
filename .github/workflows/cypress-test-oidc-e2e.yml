@@ -146,7 +146,7 @@ jobs:
       - name: Configure and Run OpenSearch Dashboards with Cypress Test Cases
         run: |
           cd ./OpenSearch-Dashboards
-          echo 'server.host: "0.0.0.0"' >> ./config/opensearch_dashboards.yml
+          echo 'server.host: "localhost"' >> ./config/opensearch_dashboards.yml
           echo 'opensearch.hosts: ["https://localhost:9200"]' >> ./config/opensearch_dashboards.yml
           echo 'opensearch.ssl.verificationMode: none' >> ./config/opensearch_dashboards.yml
           echo 'opensearch.username: "kibanaserver"' >> ./config/opensearch_dashboards.yml
