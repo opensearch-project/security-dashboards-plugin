@@ -165,8 +165,9 @@ jobs:
           echo 'home.disableWelcomeScreen: true' >> ./config/opensearch_dashboards.yml
           nohup yarn start --no-base-path --no-watch &
           sleep 700
+      
+      - name: Run Cypress
+        run : |
           cd ./plugins/security-dashboards-plugin
-          pwd
-          ls
           yarn add cypress --save-dev
           yarn cypress:run --browser chrome --headless --spec '.cypress/e2e/oidc/*.js'
