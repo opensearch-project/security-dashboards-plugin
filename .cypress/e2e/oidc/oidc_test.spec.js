@@ -61,6 +61,10 @@ describe('Log in via OIDC', () => {
 
       cy.wait(5000);
       cy.get('button[data-test-subj="confirm"]').click();
+
+      cy.wait(5000);
+      cy.get('button[aria-label="Close this dialog"]');
+      
       cy.wait(5000);
       cy.get('a').contains('Dev Tools').should('be.visible');
   

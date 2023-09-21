@@ -192,7 +192,7 @@ jobs:
       - name: Install Plugin into OpenSearch for Windows
         if: ${{ runner.os == 'Windows'}}
         run: |
-          'y' | .\opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT\bin\opensearch-plugin.bat install file:$(pwd)\${{ env.OPENSEARCH_VERSION }}.zip
+          'y' | .\opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT\bin\opensearch-plugin.bat install file:$(pwd)\opensearch-security.zip
         shell: pwsh
       
       # Add OIDC Configuration
