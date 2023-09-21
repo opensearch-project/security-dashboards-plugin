@@ -71,9 +71,33 @@ jobs:
           $Env:KEYCLOAK_ADMIN="admin"
           $Env:KEYCLOAK_ADMIN_PASSWORD="admin"
           Set-Location "keycloak-${{ env.KEYCLOAK_VERSION }}/bin"
+          
           Write-Host "Starting keycloak"
           Start-Process -NoNewWindow ./kc.bat -ArgumentList 'start-dev', '--http-enabled=true', '--hostname-strict-https=false', '--http-host=localhost', '--http-relative-path=/auth', '--health-enabled=true'
-          while ((Invoke-WebRequest -Uri 'http://localhost:8080/auth/health' -Method Get -UseBasicParsing).StatusCode -ne 200) { Start-Sleep -Seconds 5 }
+          Start-Sleep -Seconds 30
+          $retryCount = 0
+          $maximumRetries = 20
+          $delayBetweenRetries = 15  # in seconds
+          while ($retryCount -lt $maximumRetries) {
+            try {
+                $response = Invoke-WebRequest -Uri 'http://localhost:8080/auth/health' -Method Get -UseBasicParsing -ErrorAction Stop
+                if ($response.StatusCode -eq 200) {
+                    break
+                } else {
+                    Write-Host "Unexpected status code $($response.StatusCode). Retrying in $delayBetweenRetries seconds..."
+                    Start-Sleep -Seconds $delayBetweenRetries
+                    $retryCount++
+                }
+            } catch {
+                Write-Host "Error encountered: $_. Retrying in $delayBetweenRetries seconds..."
+                Start-Sleep -Seconds $delayBetweenRetries
+                $retryCount++
+            }
+          }
+          if ($retryCount -eq $maximumRetries) {
+              throw "Maximum retry attempts reached. Keycloak might not be running correctly."
+          }
+
           Write-Host "Creating client"
           ./kcadm.bat config credentials --server http://localhost:8080/auth --realm master --user $Env:KEYCLOAK_ADMIN --password $Env:KEYCLOAK_ADMIN_PASSWORD
           $CID = ./kcadm.bat create clients -r master -s clientId=opensearch -s 'redirectUris=["http://localhost:5603/auth/openid/login", "http://localhost:5601", "http://localhost:5601/auth/openid/login"]' -i
