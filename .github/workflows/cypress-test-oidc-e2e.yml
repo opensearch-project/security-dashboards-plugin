@@ -368,7 +368,7 @@ jobs:
           echo 'opensearch_security.auth.multiple_auth_enabled: true' >> ./config/opensearch_dashboards.yml
           echo 'opensearch_security.ui.openid.login.buttonname: "OIDC"' >> ./config/opensearch_dashboards.yml
           echo 'home.disableWelcomeScreen: true' >> ./config/opensearch_dashboards.yml
-          nohup yarn start --no-base-path --no-watch &
+          nohup yarn start --no-base-path
           sleep 600
       
       - name: Run Cypress
