@@ -223,12 +223,21 @@ jobs:
           cat config.yml
           .\yq.exe --version
           
-          # Add openid_auth_domain structure to the config.yml
-          .\yq.exe eval '.config.dynamic.authc.openid_auth_domain = {"http_enabled": true, "transport_enabled": true, "order": 1, "http_authenticator": {"type": "openid", "challenge": false, "config": {"subject_key": "preferred_username", "roles_key": "roles", "openid_connect_url": "http://localhost:8080/auth/realms/master/.well-known/openid-configuration"}}, "authentication_backend": {"type": "noop"}}' config.yml -i
+          .\yq.exe eval '.config.dynamic.authc.openid_auth_domain = {}' config.yml -i
+          
+          .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.http_enabled = true' config.yml -i
+          .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.transport_enabled = true' config.yml -i
+          .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.order = 1' config.yml -i
+          .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.http_authenticator.type = "openid"' config.yml -i
+          .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.http_authenticator.challenge = false' config.yml -i
+          .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.http_authenticator.config.subject_key = "preferred_username"' config.yml -i
+          .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.http_authenticator.config.roles_key = "roles"' config.yml -i
+          .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.http_authenticator.config.openid_connect_url = "http://localhost:8080/auth/realms/master/.well-known/openid-configuration"' config.yml -i
+          .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.authentication_backend.type = "noop"' config.yml -i
           
           Set-Location -Path "..\..\.."
         shell: pwsh
-
+      
       # Run any configuration scripts
       - name: Run Setup Script for Linux
         if: ${{ runner.os == 'Linux' }}
