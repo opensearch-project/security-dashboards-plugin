@@ -338,6 +338,10 @@ jobs:
           Invoke-WebRequest -SkipCertificateCheck -Uri 'https://localhost:9200/_cat/plugins' -Headers $Headers;
         shell: pwsh
 
+      - if: always()
+        run: cat ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/logs/opensearch.log
+        shell: bash
+
       # OSD bootstrap
       - name: Run Dashboard with Security Dashboards Plugin
         uses: ./.github/actions/install-dashboards
