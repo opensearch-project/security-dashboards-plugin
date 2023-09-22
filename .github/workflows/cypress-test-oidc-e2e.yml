@@ -214,27 +214,79 @@ jobs:
           yq -i ".config.dynamic.authc.openid_auth_domain.authentication_backend.type = \"noop\"" config.yml
           cd ../../..
       
-      - name: Injecting OIDC Configuration for Windows
+      #- name: Injecting OIDC Configuration for Windows
+      #  if: ${{ runner.os == 'Windows' }}
+      #  run: |
+      #    echo "Injecting OIDC configuration"
+      #    Set-Location -Path ".\opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT\config\opensearch-security\"
+      #    Invoke-WebRequest -Uri "https://github.com/mikefarah/yq/releases/latest/download/yq_windows_amd64.exe" -OutFile yq.exe
+      #    cat config.yml
+      #    .\yq.exe --version
+      #    
+      #    .\yq.exe eval '.config.dynamic.authc.openid_auth_domain = {}' config.yml -i
+      #    
+      #    .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.http_enabled = true' config.yml -i
+      #    .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.transport_enabled = true' config.yml -i
+      #    .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.order = 1' config.yml -i
+      #    .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.http_authenticator.type = "openid"' config.yml -i
+      #    .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.http_authenticator.challenge = false' config.yml -i
+      #    .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.http_authenticator.config.subject_key = "preferred_username"' config.yml -i
+      #    .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.http_authenticator.config.roles_key = "roles"' config.yml -i
+      #    .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.http_authenticator.config.openid_connect_url = "http://localhost:8080/auth/realms/master/.well-known/openid-configuration"' config.yml -i
+      #    .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.authentication_backend.type = "noop"' config.yml -i
+      #    
+      #    Set-Location -Path "..\..\.."
+      #  shell: pwsh
+
+      - name: Overwriting Configuration for Windows with OIDC
         if: ${{ runner.os == 'Windows' }}
         run: |
-          echo "Injecting OIDC configuration"
-          Set-Location -Path ".\opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT\config\opensearch-security\"
-          Invoke-WebRequest -Uri "https://github.com/mikefarah/yq/releases/latest/download/yq_windows_amd64.exe" -OutFile yq.exe
-          cat config.yml
-          .\yq.exe --version
-          
-          .\yq.exe eval '.config.dynamic.authc.openid_auth_domain = {}' config.yml -i
-          
-          .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.http_enabled = true' config.yml -i
-          .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.transport_enabled = true' config.yml -i
-          .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.order = 1' config.yml -i
-          .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.http_authenticator.type = "openid"' config.yml -i
-          .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.http_authenticator.challenge = false' config.yml -i
-          .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.http_authenticator.config.subject_key = "preferred_username"' config.yml -i
-          .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.http_authenticator.config.roles_key = "roles"' config.yml -i
-          .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.http_authenticator.config.openid_connect_url = "http://localhost:8080/auth/realms/master/.well-known/openid-configuration"' config.yml -i
-          .\yq.exe eval '.config.dynamic.authc.openid_auth_domain.authentication_backend.type = "noop"' config.yml -i
-          
+          echo "Overwriting the configuration with OIDC settings"
+      
+          # Set the directory path for clarity
+          $configDir = ".\opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT\config\opensearch-security\"
+          Set-Location -Path $configDir
+      
+          # Overwrite the existing config.yml
+          @"
+            ---
+            _meta:
+              type: "config"
+              config_version: 2
+            
+            config:
+              dynamic:
+                http:
+                  anonymous_auth_enabled: false
+                authc:
+                  basic_internal_auth_domain:
+                    description: "Authenticate via HTTP Basic against internal users database"
+                    http_enabled: true
+                    transport_enabled: true
+                    order: 0
+                    http_authenticator:
+                      type: basic
+                      challenge: false
+                    authentication_backend:
+                      type: intern
+            
+                  openid_auth_domain:
+                    http_enabled: true
+                    transport_enabled: true
+                    order: 1
+                    http_authenticator:
+                      type: openid
+                      challenge: false
+                      config:
+                        subject_key: "preferred_username"
+                        roles_key: "roles"
+                        openid_connect_url: "http://localhost:8080/auth/realms/master/.well-known/openid-configuration"
+                    authentication_backend:
+                      type: noop
+          "@ | Set-Content -Path .\config.yml
+      
+          cat .\config.yml
+      
           Set-Location -Path "..\..\.."
         shell: pwsh
       
