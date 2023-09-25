@@ -349,6 +349,7 @@ jobs:
 
       # Configure the Dashboard for OIDC setup
       - name: Configure and Run OpenSearch Dashboards with Cypress Test Cases
+        if: ${{ runner.os == 'Linux' }}
         run: |
           cd ./OpenSearch-Dashboards
           echo 'server.host: "localhost"' >> ./config/opensearch_dashboards.yml
@@ -368,8 +369,32 @@ jobs:
           echo 'opensearch_security.auth.multiple_auth_enabled: true' >> ./config/opensearch_dashboards.yml
           echo 'opensearch_security.ui.openid.login.buttonname: "OIDC"' >> ./config/opensearch_dashboards.yml
           echo 'home.disableWelcomeScreen: true' >> ./config/opensearch_dashboards.yml
-          nohup yarn start --no-base-path
+          nohup yarn start --no-base-path &
           sleep 600
+
+          - name: Configure and Run OpenSearch Dashboards with Cypress Test Cases
+          if: ${{ runner.os == 'Windows' }}
+          run: |
+            cd ./OpenSearch-Dashboards
+            echo 'server.host: "localhost"' >> ./config/opensearch_dashboards.yml
+            echo 'opensearch.hosts: ["https://localhost:9200"]' >> ./config/opensearch_dashboards.yml
+            echo 'opensearch.ssl.verificationMode: none' >> ./config/opensearch_dashboards.yml
+            echo 'opensearch.username: "kibanaserver"' >> ./config/opensearch_dashboards.yml
+            echo 'opensearch.password: "kibanaserver"' >> ./config/opensearch_dashboards.yml
+            echo 'opensearch.requestHeadersWhitelist: [ authorization,securitytenant ]' >> ./config/opensearch_dashboards.yml
+            echo 'opensearch_security.multitenancy.enabled: true' >> ./config/opensearch_dashboards.yml
+            echo 'opensearch_security.multitenancy.tenants.preferred: ["Private", "Global"]' >> ./config/opensearch_dashboards.yml
+            echo 'opensearch_security.readonly_mode.roles: ["kibana_read_only"]' >> ./config/opensearch_dashboards.yml
+            echo 'opensearch_security.cookie.secure: false' >> ./config/opensearch_dashboards.yml
+            echo 'opensearch_security.openid.connect_url: "http://localhost:8080/auth/realms/master/.well-known/openid-configuration"' >> ./config/opensearch_dashboards.yml
+            echo 'opensearch_security.openid.client_id: "opensearch"' >> ./config/opensearch_dashboards.yml
+            echo 'opensearch_security.openid.client_secret: "${{ env.KEYCLOAK_CLIENT_SECRET }}"'>> ./config/opensearch_dashboards.yml
+            echo 'opensearch_security.auth.type: ["openid"]' >> ./config/opensearch_dashboards.yml
+            echo 'opensearch_security.auth.multiple_auth_enabled: true' >> ./config/opensearch_dashboards.yml
+            echo 'opensearch_security.ui.openid.login.buttonname: "OIDC"' >> ./config/opensearch_dashboards.yml
+            echo 'home.disableWelcomeScreen: true' >> ./config/opensearch_dashboards.yml
+            nohup yarn start --no-base-path &
+            sleep 600
       
       - name: Run Cypress
         run : |
