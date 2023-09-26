@@ -24,15 +24,7 @@ afterEach(() => {
   cleanup();
 });
 
-const configUiDefault = {
-  basicauth: {
-    login: {
-      showbrandimage: true,
-    },
-  },
-};
-
-describe('Custom error test', () => {
+describe('Custom error page test', () => {
   let component;
 
   beforeEach(() => {

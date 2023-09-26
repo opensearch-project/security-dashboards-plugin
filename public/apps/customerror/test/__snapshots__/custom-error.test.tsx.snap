@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Custom error test renders and clicks the button on the error page 1`] = `
+exports[`Custom error page test renders and clicks the button on the error page 1`] = `
 <EuiListGroup
   className="custom-error-wrapper"
 >
