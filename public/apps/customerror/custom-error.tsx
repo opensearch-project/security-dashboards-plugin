@@ -46,7 +46,12 @@ export function CustomErrorPage(props: CustomErrorDeps) {
         {props.subtitle}
       </EuiText>
       <EuiSpacer size="s" />
-      <EuiButton fill onClick={() => logout(props.http, '')} fullWidth>
+      <EuiButton
+        fill
+        onClick={() => logout(props.http, '')}
+        data-test-subj="error-logout-button"
+        fullWidth
+      >
         Logout
       </EuiButton>
     </EuiListGroup>
@@ -75,3 +80,4 @@ export async function renderPage(
   );
   return () => ReactDOM.unmountComponentAtNode(params.element);
 }
+export { EuiButton };

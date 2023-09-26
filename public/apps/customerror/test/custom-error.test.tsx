@@ -17,6 +17,8 @@ import React from 'react';
 import { CustomErrorPage } from '../custom-error';
 import { cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { EuiButton } from '../custom-error';
+import { logout } from '../../account/utils';
 
 afterEach(() => {
   cleanup();
@@ -30,12 +32,18 @@ const configUiDefault = {
   },
 };
 
-const mockLogout = jest.fn();
-
-
-
 describe('Custom error test', () => {
-  it('renders and clicks the button on the error page', () => {    
+  let component;
+
+  beforeEach(() => {
+    component = shallow(
+      <EuiButton fill onClick={logout} data-test-subj="error-logout-button" fullWidth>
+        Logout
+      </EuiButton>
+    );
+  });
+
+  it('renders and clicks the button on the error page', () => {
     const wrapper = shallow(
       <CustomErrorPage
         title="Title"
@@ -52,41 +60,10 @@ describe('Custom error test', () => {
       />
     );
 
-    // jest.mock('../custom-error.tsx', () => {
-    //   logout: mockLogout 
-    // });
-
-    // const logoutButton = wrapper.find(`[data-testid="error-logout-button"]`).hostNodes();
-    // logoutButton.simulate("onClick")
-    // expect(mockLogout).toHaveBeenCalled();   
-    
     expect(wrapper).toMatchSnapshot();
 
-    // describe('event trigger testing', () => {
-    //   const setState = jest.fn();
-    //   const useState = jest.spyOn(React, 'useState');
-    //   const config: ClientConfigType = {
-    //     ui: configUiDefault,
-    //     auth: {
-    //       type: 'basicauth',
-    //     },
-    //   };
-    //   beforeEach(() => {
-    //     useState.mockImplementation((initialValue) => [initialValue, setState]);
-    //     // add addtional funtionality to test the logout button click and its reroute
-    //   });
-    // });
-
-    // describe("should call logout function", () => {
-    //   const logOutUser = jest.fn();
-    
-    //   const { getByTestId } = render(
-    //     <CustomErrorPage logout={logout} />
-    //   );
-    
-    //   fireEvent.click(getByTestId('error-logout-button'));
-    
-    //   expect(logOutUser).toHaveBeenCalled();
-    // });
+    component.find('[data-test-subj="error-logout-button"]').simulate('onClick', {
+      preventDefault: () => {},
+    });
   });
 });
