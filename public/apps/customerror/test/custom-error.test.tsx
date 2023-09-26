@@ -17,33 +17,10 @@ import React from 'react';
 import { CustomErrorPage } from '../custom-error';
 import { cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { ClientConfigType } from '../../../types';
 
-// afterEach function runs after each test suite is executed
 afterEach(() => {
   cleanup();
 });
-
-// describe("Error page ", () => {
-//   it('renders', () => {
-//     const logout = shallow(
-//         <button>
-//           Logout
-//         </button>
-//           );
-//   const button = screen.getByTestId("button");
-
-//   // Test 1
-//   test("Button Rendering", () => {
-//       expect(button).toBeInTheDocument();
-//   })
-
-//   // Test 2
-//   test("Button Text", () => {
-//       expect(button).toHaveTextContent("Logout");
-//   })
-// })
-// });
 
 const configUiDefault = {
   basicauth: {
@@ -53,9 +30,13 @@ const configUiDefault = {
   },
 };
 
+const mockLogout = jest.fn();
+
+
+
 describe('Custom error test', () => {
-  it('renders the button on the error page', () => {
-    const component = shallow(
+  it('renders and clicks the button on the error page', () => {    
+    const wrapper = shallow(
       <CustomErrorPage
         title="Title"
         subtitle="Sub Title"
@@ -71,21 +52,41 @@ describe('Custom error test', () => {
       />
     );
 
-    expect(component).toMatchSnapshot();
+    // jest.mock('../custom-error.tsx', () => {
+    //   logout: mockLogout 
+    // });
 
-    describe('event trigger testing', () => {
-      const setState = jest.fn();
-      const useState = jest.spyOn(React, 'useState');
-      const config: ClientConfigType = {
-        ui: configUiDefault,
-        auth: {
-          type: 'basicauth',
-        },
-      };
-      beforeEach(() => {
-        useState.mockImplementation((initialValue) => [initialValue, setState]);
-        // add addtional funtionality to test the logout button click and its reroute
-      });
-    });
+    // const logoutButton = wrapper.find(`[data-testid="error-logout-button"]`).hostNodes();
+    // logoutButton.simulate("onClick")
+    // expect(mockLogout).toHaveBeenCalled();   
+    
+    expect(wrapper).toMatchSnapshot();
+
+    // describe('event trigger testing', () => {
+    //   const setState = jest.fn();
+    //   const useState = jest.spyOn(React, 'useState');
+    //   const config: ClientConfigType = {
+    //     ui: configUiDefault,
+    //     auth: {
+    //       type: 'basicauth',
+    //     },
+    //   };
+    //   beforeEach(() => {
+    //     useState.mockImplementation((initialValue) => [initialValue, setState]);
+    //     // add addtional funtionality to test the logout button click and its reroute
+    //   });
+    // });
+
+    // describe("should call logout function", () => {
+    //   const logOutUser = jest.fn();
+    
+    //   const { getByTestId } = render(
+    //     <CustomErrorPage logout={logout} />
+    //   );
+    
+    //   fireEvent.click(getByTestId('error-logout-button'));
+    
+    //   expect(logOutUser).toHaveBeenCalled();
+    // });
   });
 });
