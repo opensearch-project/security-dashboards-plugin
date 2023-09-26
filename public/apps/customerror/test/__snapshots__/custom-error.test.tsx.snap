@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Custom error test renders the button on the error page 1`] = `
+exports[`Custom error test renders and clicks the button on the error page 1`] = `
 <EuiListGroup
   className="custom-error-wrapper"
 >
@@ -28,6 +28,7 @@ exports[`Custom error test renders the button on the error page 1`] = `
     size="s"
   />
   <EuiButton
+    data-test-subj="error-logout-button"
     fill={true}
     fullWidth={true}
     onClick={[Function]}
