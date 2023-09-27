@@ -103,7 +103,8 @@ export class SecurityClient {
         selectedTenant: esResponse.user_requested_tenant,
       };
     } catch (error: any) {
-      throw new Error(error.message);
+      console.log(error);
+      throw error;
     }
   }
 

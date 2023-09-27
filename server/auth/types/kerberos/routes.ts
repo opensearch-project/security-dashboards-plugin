@@ -14,6 +14,7 @@
  */
 import { schema } from '@osd/config-schema';
 
+import { get } from 'lodash';
 import { SecurityPluginConfigType } from '../../../index';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
@@ -21,6 +22,7 @@ import { SessionStorageFactory, IRouter } from '../../../../../../src/core/serve
 import { CoreSetup } from '../../../../../../src/core/server';
 import { KERBEROS_AUTH_LOGIN, KERBEROS_AUTH_LOGOUT } from '../../../../common';
 import { validateNextUrl } from '../../../utils/next_url';
+export const WWW_AUTHENTICATE_HEADER_NAME = 'WWW-Authenticate';
 
 export class KerberosAuthRoutes {
   constructor(
@@ -51,7 +53,9 @@ export class KerberosAuthRoutes {
         },
       },
       async (context, request, response) => {
+        console.log('ASYNC HAHAHAH %J ', request.headers);
         if (request.auth.isAuthenticated) {
+          console.log('IS AUTHEITCATEDDDDDD');
           const nextUrl =
             request.query.nextUrl ||
             `${this.coreSetup.http.basePath.serverBasePath}/app/opensearch-dashboards`;
@@ -62,16 +66,22 @@ export class KerberosAuthRoutes {
           });
         }
 
-        const loginEndpoint = this.config.kerberos.login_endpoint;
-        if (loginEndpoint) {
-          return response.redirected({
-            headers: {
-              location: loginEndpoint,
-            },
-          });
-        } else {
-          return response.badRequest();
-        }
+        return await this.authenticateWithSPNEGO(request, response, this.securityClient);
+
+        //  const loginEndpoint = this.config.kerberos.login_endpoint;
+        //  const serverBasePath = this.coreSetup.http.basePath.serverBasePath;
+        //
+        // if (loginEndpoint) {
+        //    console.log("redirecting to loginendpoint")
+        //    return response.redirected({
+        //      headers: {
+        //        location: `${serverBasePath}` + KERBEROS_AUTH_LOGIN,
+        //      },
+        //    });
+        //  } else {
+        //    console.log("bad Request")
+        //    return response.badRequest();
+        //  }
       }
     );
 
@@ -85,5 +95,62 @@ export class KerberosAuthRoutes {
         return response.ok();
       }
     );
+  }
+  async authenticateWithSPNEGO(request, response, securityClient) {
+    let backendError;
+    console.log('SP NEGO START');
+    try {
+      // const whitelistRoutes = this.config.get('searchguard.auth.unauthenticated_routes');
+      // if (whitelistRoutes.includes(request.route.path)) {
+      //   return this.securityClient.authenticated();
+      // }
+
+      const headers = {};
+      if (request.headers.authorization) {
+        headers.authorization = request.headers.authorization;
+      }
+
+      console.log(
+        'handle Unahuthed Request, this is the request: headers  INSIDE',
+        '%j',
+        request.headers
+      );
+
+      const authInfo = await this.securityClient.authenticateWithHeaders(headers);
+
+      console.log(`Authenticated: ${JSON.stringify(authInfo, null, 2)}.`);
+
+      return securityClient.authenticated();
+    } catch (error: Error) {
+      console.log('CATCH Error TYPE', typeof error);
+      console.log('CATCH Error NAME', error.name);
+      console.log('CATCH Error INNER', error.inner);
+
+      console.log('CATCH Error', error.toString());
+      console.log('CATCH Error HEADER', error.inner);
+
+      backendError = error.inner || error;
+    }
+    console.log('Backedn Error: ', backendError);
+
+    const negotiationProposal =
+      get(backendError, `body.error.header[${WWW_AUTHENTICATE_HEADER_NAME}]`, '') ||
+      get(backendError, `meta.headers[${WWW_AUTHENTICATE_HEADER_NAME.toLowerCase()}]`, '');
+    console.log(`Negotiating: ${negotiationProposal}`);
+
+    const isNegotiating =
+      negotiationProposal.startsWith('Negotiate') || // Kerberos negotiation
+      negotiationProposal === 'Basic realm="Authorization Required"'; // Basic auth negotiation
+
+    // Forward the SG backend negotiation proposal to a client.
+    if (isNegotiating) {
+      return response.unauthorized({
+        headers: {
+          [WWW_AUTHENTICATE_HEADER_NAME]: negotiationProposal,
+        },
+      });
+    }
+
+    return response.unauthorized({ body: backendError });
   }
 }

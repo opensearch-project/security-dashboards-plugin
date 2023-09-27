@@ -29,7 +29,7 @@ import {
   AuthToolkit,
 } from '../../../../../../src/core/server';
 import { KerberosAuthRoutes } from './routes';
-import { AuthType } from '../../../../common';
+import { AuthType, KERBEROS_AUTH_LOGIN } from '../../../../common';
 
 export class KerberosAuthentication extends AuthenticationType {
   private authHeaderName: string;
@@ -99,10 +99,12 @@ export class KerberosAuthentication extends AuthenticationType {
 
     const loginEndpoint = this.config.kerberos.login_endpoint;
     if (loginEndpoint) {
+      console.log('redriecting to login endpoint in unauthedrequest');
       return toolkit.redirected({
-        location: `${serverBasePath}/app/login?`,
+        location: `${serverBasePath}` + KERBEROS_AUTH_LOGIN,
       });
     } else {
+      console.log('ERROROR');
       return toolkit.notHandled(); // TODO: redirect to error page?
     }
   }
