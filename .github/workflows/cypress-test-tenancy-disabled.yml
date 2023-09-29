@@ -21,6 +21,9 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+      - id: random-password
+        uses: peternied/random-name@v1
+        
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
@@ -50,6 +53,7 @@ jobs:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugin-name: ${{ env.PLUGIN_NAME }}
           setup-script-name: setup
+          admin-password: ${{ steps.random-password.outputs.generated_name }}
 
       - name: Run Dashboard with Security Dashboards Plugin
         uses: ./.github/actions/install-dashboards
