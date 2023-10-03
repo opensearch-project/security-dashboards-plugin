@@ -50,6 +50,7 @@ jobs:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugin-name: ${{ env.PLUGIN_NAME }}
           setup-script-name: setup
+          admin-password: admin
 
       - name: Run Dashboard with Security Dashboards Plugin
         uses: ./.github/actions/install-dashboards
@@ -73,4 +74,4 @@ jobs:
           git clone https://github.com/opensearch-project/opensearch-dashboards-functional-test.git
           cd opensearch-dashboards-functional-test
           npm install cypress --save-dev
-          yarn cypress:run-with-security --browser chrome --spec "cypress/integration/plugins/security-dashboards-plugin/inaccessible_tenancy_features.js"
+          yarn cypress:run-with-security --browser firefox --spec "cypress/integration/plugins/security-dashboards-plugin/inaccessible_tenancy_features.js"
