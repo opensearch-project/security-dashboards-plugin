@@ -105,9 +105,10 @@ export class KerberosAuthRoutes {
       //   return this.securityClient.authenticated();
       // }
 
-      const headers = {};
+      let headers;
       if (request.headers.authorization) {
-        headers.authorization = request.headers.authorization;
+        console.log('HHHHHHHHH');
+        headers = request.headers;
       }
 
       console.log(
@@ -116,37 +117,34 @@ export class KerberosAuthRoutes {
         request.headers
       );
 
-      const authInfo = await this.securityClient.authenticateWithHeaders(headers);
+      const authInfo = await this.securityClient.authenticateWithHeaders(request, headers);
 
       console.log(`Authenticated: ${JSON.stringify(authInfo, null, 2)}.`);
 
       return securityClient.authenticated();
-    } catch (error: Error) {
-      console.log('CATCH Error TYPE', typeof error);
-      console.log('CATCH Error NAME', error.name);
-      console.log('CATCH Error INNER', error.inner);
-
-      console.log('CATCH Error', error.toString());
-      console.log('CATCH Error HEADER', error.inner);
-
+    } catch (error) {
+      console.log(
+        'CATCH Error wwwAuthenticateDirective2',
+        get(error, `output.headers.${WWW_AUTHENTICATE_HEADER_NAME}`)
+      );
       backendError = error.inner || error;
     }
-    console.log('Backedn Error: ', backendError);
+    console.log('Backedn Error: ', backendError.toString());
 
     const negotiationProposal =
-      get(backendError, `body.error.header[${WWW_AUTHENTICATE_HEADER_NAME}]`, '') ||
+      get(backendError, `output.headers[${WWW_AUTHENTICATE_HEADER_NAME}]`, '') ||
       get(backendError, `meta.headers[${WWW_AUTHENTICATE_HEADER_NAME.toLowerCase()}]`, '');
     console.log(`Negotiating: ${negotiationProposal}`);
 
-    const isNegotiating =
-      negotiationProposal.startsWith('Negotiate') || // Kerberos negotiation
+    const isNegotiating: boolean =
+      negotiationProposal.startsWith('Negotiate') || // Kerberos negotiation  //TODO
       negotiationProposal === 'Basic realm="Authorization Required"'; // Basic auth negotiation
 
-    // Forward the SG backend negotiation proposal to a client.
+    // Browser should populate the header and repeat the request after the header is added...
     if (isNegotiating) {
       return response.unauthorized({
         headers: {
-          [WWW_AUTHENTICATE_HEADER_NAME]: negotiationProposal,
+          [WWW_AUTHENTICATE_HEADER_NAME]: 'Negotiate', // TODO
         },
       });
     }

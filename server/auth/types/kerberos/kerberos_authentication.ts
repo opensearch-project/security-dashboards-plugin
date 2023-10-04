@@ -13,6 +13,7 @@
  *   permissions and limitations under the License.
  */
 
+import { get } from 'lodash';
 import { CoreSetup } from 'opensearch-dashboards/server';
 import { AuthenticationType } from '../authentication_type';
 import { SecurityPluginConfigType } from '../../../index';
@@ -35,7 +36,7 @@ export class KerberosAuthentication extends AuthenticationType {
   private authHeaderName: string;
 
   requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean {
-    return request.headers.Authorization ? true : false;
+    return get(request.headers, 'authorization') ? true : false;
   }
   public isValidCookie(
     cookie: SecuritySessionCookie,
@@ -73,8 +74,15 @@ export class KerberosAuthentication extends AuthenticationType {
     throw new Error('buildAuthHeaderFromCookie method not implemented.');
   }
 
-  getAdditionalAuthHeader(request: OpenSearchDashboardsRequest): Promise<any> {
-    throw new Error('getAdditionalAuthHeader method not implemented.');
+  async getAdditionalAuthHeader(
+    request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
+  ): Promise<any> {
+    const header: any = {};
+    const token = get(request.headers, this.authHeaderName);
+    if (token) {
+      header[this.authHeaderName] = `${token}`;
+    }
+    return header;
   }
 
   getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
@@ -108,4 +116,9 @@ export class KerberosAuthentication extends AuthenticationType {
       return toolkit.notHandled(); // TODO: redirect to error page?
     }
   }
+
+  // public authHandler: AuthenticationHandler = async (request, response, toolkit) => {
+  //          return toolkit.notHandled();
+  //
+  //   }
 }
