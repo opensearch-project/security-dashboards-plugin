@@ -63,6 +63,8 @@ export async function renderPage(
   params: AppMountParameters,
   config: ClientConfigType
 ) {
+
+  
   ReactDOM.render(
     <Router history={params.history}>
       <Route path={ERROR_MISSING_ROLE_PATH}>
