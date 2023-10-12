@@ -53,15 +53,14 @@ export class KerberosAuthRoutes {
         },
       },
       async (context, request, response) => {
-        console.log('ASYNC HAHAHAH %J ', request.headers);
         if (request.auth.isAuthenticated) {
-          console.log('IS AUTHEITCATEDDDDDD');
           const nextUrl =
             request.query.nextUrl ||
             `${this.coreSetup.http.basePath.serverBasePath}/app/opensearch-dashboards`;
           response.redirected({
             headers: {
               location: nextUrl,
+              authorization: request.headers.authorization,
             },
           });
         }
@@ -137,14 +136,14 @@ export class KerberosAuthRoutes {
     console.log(`Negotiating: ${negotiationProposal}`);
 
     const isNegotiating: boolean =
-      negotiationProposal.startsWith('Negotiate') || // Kerberos negotiation  //TODO
+      negotiationProposal.startsWith('Negotiate') || // Kerberos negotiation
       negotiationProposal === 'Basic realm="Authorization Required"'; // Basic auth negotiation
 
     // Browser should populate the header and repeat the request after the header is added...
     if (isNegotiating) {
       return response.unauthorized({
         headers: {
-          [WWW_AUTHENTICATE_HEADER_NAME]: 'Negotiate', // TODO
+          [WWW_AUTHENTICATE_HEADER_NAME]: negotiationProposal,
         },
       });
     }

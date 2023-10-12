@@ -29,21 +29,26 @@ import {
   LifecycleResponseFactory,
   AuthToolkit,
 } from '../../../../../../src/core/server';
-import { KerberosAuthRoutes } from './routes';
-import { AuthType, KERBEROS_AUTH_LOGIN } from '../../../../common';
+import { KerberosAuthRoutes, WWW_AUTHENTICATE_HEADER_NAME } from './routes';
+import { KERBEROS_AUTH_LOGIN } from '../../../../common';
 
 export class KerberosAuthentication extends AuthenticationType {
   private authHeaderName: string;
 
   requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean {
-    return get(request.headers, 'authorization') ? true : false;
+    console.debug(
+      get(request.headers, 'authorization') &&
+        get(request.headers, 'authorization').toString().startsWith('Negotiate')
+    );
+    if (
+      get(request.headers, 'authorization') &&
+      get(request.headers, 'authorization').toString().startsWith('Negotiate')
+    ) {
+      return true;
+    }
+    return false;
   }
-  public isValidCookie(
-    cookie: SecuritySessionCookie,
-    request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
-  ): Promise<boolean> {
-    throw new Error('isValidCookie method not implemented');
-  }
+
   public async init() {
     const kerberosAuthRoutes = new KerberosAuthRoutes(
       this.router,
@@ -67,35 +72,16 @@ export class KerberosAuthentication extends AuthenticationType {
 
     this.authHeaderName = 'authorization';
   }
-  buildAuthHeaderFromCookie(
-    cookie: SecuritySessionCookie,
-    request: OpenSearchDashboardsRequest
-  ): any {
-    throw new Error('buildAuthHeaderFromCookie method not implemented.');
-  }
 
   async getAdditionalAuthHeader(
     request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
   ): Promise<any> {
     const header: any = {};
-    const token = get(request.headers, this.authHeaderName);
-    if (token) {
-      header[this.authHeaderName] = `${token}`;
-    }
     return header;
   }
 
   getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
-    const authorizationHeaderValue: string = request.headers[this.authHeaderName] as string;
-
-    return {
-      username: authInfo.user_name,
-      credentials: {
-        authHeaderValueExtra: true,
-      },
-      authType: AuthType.KERBEROS,
-      expiryTime: Date.now() + this.config.session.ttl,
-    };
+    return {};
   }
 
   handleUnauthedRequest(
@@ -103,22 +89,12 @@ export class KerberosAuthentication extends AuthenticationType {
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
   ): IOpenSearchDashboardsResponse | AuthResult {
-    const serverBasePath = this.coreSetup.http.basePath.serverBasePath;
+    console.debug('Handling Unauthed Request');
 
-    const loginEndpoint = this.config.kerberos.login_endpoint;
-    if (loginEndpoint) {
-      console.log('redriecting to login endpoint in unauthedrequest');
-      return toolkit.redirected({
-        location: `${serverBasePath}` + KERBEROS_AUTH_LOGIN,
-      });
-    } else {
-      console.log('ERROROR');
-      return toolkit.notHandled(); // TODO: redirect to error page?
-    }
+    return response.unauthorized({
+      headers: {
+        [WWW_AUTHENTICATE_HEADER_NAME]: 'Negotiate',
+      },
+    });
   }
-
-  // public authHandler: AuthenticationHandler = async (request, response, toolkit) => {
-  //          return toolkit.notHandled();
-  //
-  //   }
 }
