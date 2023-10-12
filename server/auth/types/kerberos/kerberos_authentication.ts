@@ -30,12 +30,12 @@ import {
   AuthToolkit,
 } from '../../../../../../src/core/server';
 import { KerberosAuthRoutes, WWW_AUTHENTICATE_HEADER_NAME } from './routes';
-import { KERBEROS_AUTH_LOGIN } from '../../../../common';
 
 export class KerberosAuthentication extends AuthenticationType {
   private authHeaderName: string;
 
   requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean {
+    console.log('HHHHHHH');
     console.debug(
       get(request.headers, 'authorization') &&
         get(request.headers, 'authorization').toString().startsWith('Negotiate')
@@ -82,6 +82,9 @@ export class KerberosAuthentication extends AuthenticationType {
 
   getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
     return {};
+  }
+  isValidCookie() {
+    return Promise.resolve(false);
   }
 
   handleUnauthedRequest(

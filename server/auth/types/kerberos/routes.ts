@@ -95,59 +95,69 @@ export class KerberosAuthRoutes {
       }
     );
   }
-  async authenticateWithSPNEGO(request, response, securityClient) {
-    let backendError;
-    console.log('SP NEGO START');
-    try {
-      // const whitelistRoutes = this.config.get('searchguard.auth.unauthenticated_routes');
-      // if (whitelistRoutes.includes(request.route.path)) {
-      //   return this.securityClient.authenticated();
-      // }
 
-      let headers;
-      if (request.headers.authorization) {
-        console.log('HHHHHHHHH');
-        headers = request.headers;
-      }
-
-      console.log(
-        'handle Unahuthed Request, this is the request: headers  INSIDE',
-        '%j',
-        request.headers
-      );
-
-      const authInfo = await this.securityClient.authenticateWithHeaders(request, headers);
-
-      console.log(`Authenticated: ${JSON.stringify(authInfo, null, 2)}.`);
-
-      return securityClient.authenticated();
-    } catch (error) {
-      console.log(
-        'CATCH Error wwwAuthenticateDirective2',
-        get(error, `output.headers.${WWW_AUTHENTICATE_HEADER_NAME}`)
-      );
-      backendError = error.inner || error;
-    }
-    console.log('Backedn Error: ', backendError.toString());
-
-    const negotiationProposal =
-      get(backendError, `output.headers[${WWW_AUTHENTICATE_HEADER_NAME}]`, '') ||
-      get(backendError, `meta.headers[${WWW_AUTHENTICATE_HEADER_NAME.toLowerCase()}]`, '');
-    console.log(`Negotiating: ${negotiationProposal}`);
-
-    const isNegotiating: boolean =
-      negotiationProposal.startsWith('Negotiate') || // Kerberos negotiation
-      negotiationProposal === 'Basic realm="Authorization Required"'; // Basic auth negotiation
-
-    // Browser should populate the header and repeat the request after the header is added...
-    if (isNegotiating) {
-      return response.unauthorized({
-        headers: {
-          [WWW_AUTHENTICATE_HEADER_NAME]: negotiationProposal,
-        },
-      });
-    }
-
-    return response.unauthorized({ body: backendError });
-  }
+  // async authenticateWithSPNEGO(request, response, securityClient) {
+  //   let backendError;
+  //   console.log('SP NEGO START' + request.headers.authorization);
+  //   try {
+  //     // const whitelistRoutes = this.config.get('searchguard.auth.unauthenticated_routes');
+  //     // if (whitelistRoutes.includes(request.route.path)) {
+  //     //   return this.securityClient.authenticated();
+  //     // }
+  //
+  //     let headers;
+  //     if (request.headers.authorization) {
+  //       console.log('HHHHHHHHH');
+  //       headers = request.headers;
+  //     }
+  //
+  //     console.log(
+  //       'handle Unahuthed Request, this is the request: headers  INSIDE',
+  //       '%j',
+  //       request.headers
+  //     );
+  //     console.log('plain hearder %j', headers);
+  //     const authInfo = await securityClient.authenticateWithHeaders(request, headers);
+  //
+  //     console.log(`Authenticated!: ${JSON.stringify(authInfo, null, 2)}.`);
+  //
+  //     console.log('GOnna Return The above inside spnego');
+  //     const nextUrl = request.query.nextUrl || `${this.coreSetup.http.basePath.serverBasePath}`;
+  //     console.log('Redirecting TO:::: ' + nextUrl);
+  //     console.log(request.headers.authorization);
+  //     return response.redirected({
+  //       headers: {
+  //         location: nextUrl,
+  //         authorization: request.headers.authorization,
+  //       },
+  //     });
+  //   } catch (error) {
+  //     console.log(
+  //       'CATCH Error wwwAuthenticateDirective2',
+  //       get(error, `output.headers.${WWW_AUTHENTICATE_HEADER_NAME}`)
+  //     );
+  //     backendError = error.inner || error;
+  //   }
+  //   console.log('Backedn Error: ', backendError.toString());
+  //
+  //   const negotiationProposal =
+  //     get(backendError, `output.headers[${WWW_AUTHENTICATE_HEADER_NAME}]`, '') ||
+  //     get(backendError, `meta.headers[${WWW_AUTHENTICATE_HEADER_NAME.toLowerCase()}]`, '');
+  //   console.log(`Negotiating: ${negotiationProposal}`);
+  //
+  //   const isNegotiating: boolean =
+  //     negotiationProposal.startsWith('Negotiate') || // Kerberos negotiation
+  //     negotiationProposal === 'Basic realm="Authorization Required"'; // Basic auth negotiation
+  //
+  //   // Browser should populate the header and repeat the request after the header is added...
+  //   if (isNegotiating) {
+  //     return response.unauthorized({
+  //       headers: {
+  //         [WWW_AUTHENTICATE_HEADER_NAME]: negotiationProposal,
+  //       },
+  //     });
+  //   }
+  //
+  //   return response.unauthorized({ body: backendError });
+  // }
 }

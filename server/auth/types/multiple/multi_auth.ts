@@ -122,11 +122,15 @@ export class MultipleAuthentication extends AuthenticationType {
   requestIncludesAuthInfo(
     request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
   ): boolean {
+    console.log('multh auth keys ' + this.authHandlers.keys());
     for (const key of this.authHandlers.keys()) {
+      console.log(key);
       if (this.authHandlers.get(key)!.requestIncludesAuthInfo(request)) {
+        console.log('returning Has AuthHeader');
         return true;
       }
     }
+    console.log('returning NO AuthHeader');
     return false;
   }
 
@@ -165,13 +169,17 @@ export class MultipleAuthentication extends AuthenticationType {
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
   ): OpenSearchDashboardsResponse {
+    console.log('MULTIAHTH UNAHTED HANDLE');
     if (this.isPageRequest(request)) {
+      console.log('1');
       const nextUrlParam = composeNextUrlQueryParam(
         request,
         this.coreSetup.http.basePath.serverBasePath
       );
 
       if (this.config.auth.anonymous_auth_enabled) {
+        console.log('1.5');
+
         const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${ANONYMOUS_AUTH_LOGIN}?${nextUrlParam}`;
         return response.redirected({
           headers: {
@@ -179,13 +187,27 @@ export class MultipleAuthentication extends AuthenticationType {
           },
         });
       }
+      console.log('2');
+      console.log('3');
+
+      return response.unauthorized({
+        headers: {
+          'WWW-Authenticate': 'Negotiate',
+        },
+      });
+
       return response.redirected({
         headers: {
           location: `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`,
         },
       });
     } else {
-      return response.unauthorized();
+      console.log('4');
+      return response.unauthorized({
+        headers: {
+          'WWW-Authenticate': 'Negotiate',
+        },
+      });
     }
   }
 
