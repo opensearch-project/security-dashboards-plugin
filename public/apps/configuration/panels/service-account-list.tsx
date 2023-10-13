@@ -177,7 +177,7 @@ export function ServiceAccountList(props: AppDependencies) {
             </EuiTitle>
             <EuiText size="s" color="subdued">
               Here you have a list of special accounts that represent services like extensions,
-              plugins or other third party applications. You can map an account to a role from{' '}
+              plugins or other third party applications. You can map an account to a role from
               <EuiLink href={buildHashUrl(ResourceType.roles)}>Roles</EuiLink>
               “Manage mapping”
               <ExternalLink href={DocLinks.BackendConfigurationAuthenticationDoc} />
