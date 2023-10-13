@@ -121,6 +121,21 @@ describe('start OpenSearch Dashboards server', () => {
       },
     });
     console.log('Downloaded Sample Data');
+    await wreck.post('http://localhost:5601/api/saved_objects/index-pattern/saml-auth-test', {
+      payload: {
+        attributes: {
+          title: 'opensearch_dashboards_sample_data_flights*',
+          timeFieldName: 'timestamp',
+        },
+      },
+      rejectUnauthorized: false,
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: ADMIN_CREDENTIALS,
+        security_tenant: 'global',
+      },
+    });
+    console.log('Created Index Pattern opensearch_dashboards_sample_data_flights*');
     const getConfigResponse = await wreck.get(
       'https://localhost:9200/_plugins/_security/api/securityconfig',
       {
