@@ -75,6 +75,15 @@ jobs:
         run: node scripts/build_opensearch_dashboards_platform_plugins.js
         working-directory: ${{ steps.install-dashboards.outputs.dashboards-directory }}
 
+      - name: Yarn cache clean
+        run: yarn cache clean
+
+      - name: Get more space
+        run: |
+          df . -h
+          sudo rm -rf ${GITHUB_WORKSPACE}/.git
+          df . -h
+
       - name: Run integration tests on Linux
         if: ${{ runner.os == 'Linux' }}
         run: |
