@@ -190,6 +190,15 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   afterAll(async () => {
+    console.log('Delete Index Pattern opensearch_dashboards_sample_data_flights*');
+    await wreck.delete('http://localhost:5601/api/saved_objects/index-pattern/saml-auth-test', {
+      payload: {},
+      rejectUnauthorized: false,
+      headers: {
+        authorization: ADMIN_CREDENTIALS,
+        security_tenant: 'global',
+      },
+    });
     console.log('Remove the Sample Data');
     await wreck
       .delete('http://localhost:5601/api/sample_data/flights', {
