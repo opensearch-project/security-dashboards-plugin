@@ -29,6 +29,15 @@ export interface ExtraAuthStorageOptions {
 
 type CookieAuthWithResponseObject = HapiRequest['cookieAuth'] & { h: HapiResponseObject };
 
+interface HapiStates {
+  [cookieName: string]: {
+    name: string;
+    value: string;
+  };
+}
+
+export type HapiRequestWithStates = HapiRequest & { _states: HapiStates };
+
 export function getExtraAuthStorageValue(
   request: OpenSearchDashboardsRequest,
   options: ExtraAuthStorageOptions
@@ -134,12 +143,23 @@ export function unsplitCookiesIntoValue(
   cookiePrefix: string,
   additionalCookies: number
 ): string {
-  const rawRequest: HapiRequest = ensureRawRequest(request);
+  const rawRequest: HapiRequestWithStates = ensureRawRequest(request) as HapiRequestWithStates;
   let fullCookieValue = '';
+
+  // We don't want to mix and match between _states and .state.
+  // If we find the first additional cookie in _states, we
+  // use _states for all subsequent additional cookies
+  const requestHasNewerCookieState = rawRequest._states && rawRequest._states[cookiePrefix + 1];
 
   for (let i = 1; i <= additionalCookies; i++) {
     const cookieName = cookiePrefix + i;
-    if (rawRequest.state[cookieName]) {
+    if (
+      requestHasNewerCookieState &&
+      rawRequest._states[cookieName] &&
+      rawRequest._states[cookieName].value
+    ) {
+      fullCookieValue = fullCookieValue + rawRequest._states[cookieName].value;
+    } else if (!requestHasNewerCookieState && rawRequest.state[cookieName]) {
       fullCookieValue = fullCookieValue + rawRequest.state[cookieName];
     }
   }
