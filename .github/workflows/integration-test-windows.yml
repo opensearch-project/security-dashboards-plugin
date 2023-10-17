@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 defaults:
   run:
-    working-directory: C:\
+    working-directory: &workdir 'C:\github\security-dashboards-plugin' ## Use disk C: because D: is out of space
 
 env:
   TEST_BROWSER_HEADLESS: 1
@@ -21,8 +21,16 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Checkout Branch
+    
+      - name: create working-directory
+        run: set -x; mkdir -p "$workdir"; echo $PWD
+        working-directory: 'C:\'
+        env: { workdir: *workdir }
+
+      - name: Checkout
         uses: actions/checkout@v3
+        with: 
+          path: *workdir
         
       - name: Set up JDK
         uses: actions/setup-java@v1
