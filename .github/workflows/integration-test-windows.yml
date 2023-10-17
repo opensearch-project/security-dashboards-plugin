@@ -21,7 +21,6 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    
       - name: create working-directory
         run: set -x; mkdir -p "$workdir"; echo $PWD
         working-directory: 'C:\'
