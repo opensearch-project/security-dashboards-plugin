@@ -2,11 +2,6 @@ name: Integration Tests Windows
 
 on: [push, pull_request]
 
-defaults:
-  run:
-    shell: bash
-    working-directory: 'C:\github\security-dashboards-plugin' ## Use disk C: because D: is out of space
-
 env:
   TEST_BROWSER_HEADLESS: 1
   CI: 1
@@ -20,6 +15,10 @@ jobs:
       matrix:
         os: [ windows-latest ]
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: 'C:\github\security-dashboards-plugin' ## Use disk C: because D: is out of space
 
     steps:
       - name: create working-directory
