@@ -73,6 +73,13 @@ jobs:
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"
 
+      - name: Remove unnecessary files Windows
+        if: ${{ runner.os == 'Windows' }}
+        run: |
+          choco uninstall julia
+          choco uninstall imagemagick.app
+          choco uninstall r.project
+
       - id: install-dashboards
         uses: ./.github/actions/install-dashboards
         with:
