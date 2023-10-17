@@ -68,10 +68,10 @@ jobs:
 
       # https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
       - name: Remove unnecessary files
-        if: ${{ runner.os == 'Linux' }}
         run: |
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+        shell: bash
 
       - id: install-dashboards
         uses: ./.github/actions/install-dashboards
@@ -85,12 +85,10 @@ jobs:
       - name: Yarn cache clean
         run: yarn cache clean
 
-      - name: Get more space
-        if: ${{ runner.os == 'Linux' }}
+      - name: Print disk free space
         run: |
           df . -h
-          sudo rm -rf ${GITHUB_WORKSPACE}/.git
-          df . -h
+        shell: bash
 
       - name: Run integration tests on Linux
         if: ${{ runner.os == 'Linux' }}
