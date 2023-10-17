@@ -51,6 +51,7 @@ jobs:
           echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
           echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
         shell: bash
+        working-directory: 'C:\github\security-dashboards-plugin'
 
       - uses: browser-actions/setup-geckodriver@v0.0.0
       - run: geckodriver --version
