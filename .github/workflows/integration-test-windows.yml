@@ -34,7 +34,9 @@ jobs:
         run: echo $GITHUB_WORKSPACE
 
       - name: Move folder
-        run: mv $GITHUB_WORKSPACE C:\github\security-dashboards-plugin
+        run: |
+          mv $GITHUB_WORKSPACE C:\github\security-dashboards-plugin
+          mkdir -p $GITHUB_WORKSPACE
         
       - name: Set up JDK
         uses: actions/setup-java@v1
