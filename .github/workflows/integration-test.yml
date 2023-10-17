@@ -33,13 +33,6 @@ jobs:
           echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
         shell: bash
 
-      # https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
-      - name: Remove unnecessary files
-        if: ${{ runner.os == 'Linux' }}
-        run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-
       - uses: browser-actions/setup-geckodriver@v0.0.0
       - run: geckodriver --version
 
@@ -72,6 +65,13 @@ jobs:
           plugin-name: ${{ env.PLUGIN_NAME }}
           setup-script-name: setup
           admin-password: admin
+
+      # https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
+      - name: Remove unnecessary files
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
 
       - id: install-dashboards
         uses: ./.github/actions/install-dashboards
