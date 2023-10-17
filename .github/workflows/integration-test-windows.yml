@@ -30,8 +30,6 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v3
-        with: 
-          path: 'C:\github\security-dashboards-plugin'
 
       - name: Move folder
         run: D:\a\security-dashboards-plugin\security-dashboards-plugin C:\github\security-dashboards-plugin
