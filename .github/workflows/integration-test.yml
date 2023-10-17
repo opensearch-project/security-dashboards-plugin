@@ -33,6 +33,13 @@ jobs:
           echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
         shell: bash
 
+      # https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
+      - name: Remove unnecessary files
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+
       - uses: browser-actions/setup-geckodriver@v0.0.0
       - run: geckodriver --version
 
@@ -79,6 +86,7 @@ jobs:
         run: yarn cache clean
 
       - name: Get more space
+        if: ${{ runner.os == 'Linux' }}
         run: |
           df . -h
           sudo rm -rf ${GITHUB_WORKSPACE}/.git
