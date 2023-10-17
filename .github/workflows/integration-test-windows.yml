@@ -32,7 +32,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Move folder
-        run: D:\a\security-dashboards-plugin\security-dashboards-plugin C:\github\security-dashboards-plugin
+        run: mv D:\a\security-dashboards-plugin\security-dashboards-plugin C:\github\security-dashboards-plugin
         
       - name: Set up JDK
         uses: actions/setup-java@v1
