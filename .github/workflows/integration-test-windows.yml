@@ -5,7 +5,7 @@ on: [push, pull_request]
 defaults:
   run:
     shell: bash
-    working-directory: &workdir 'C:\github\security-dashboards-plugin' ## Use disk C: because D: is out of space
+    working-directory: 'C:\github\security-dashboards-plugin' ## Use disk C: because D: is out of space
 
 env:
   TEST_BROWSER_HEADLESS: 1
@@ -26,12 +26,12 @@ jobs:
         run: set -x; mkdir -p "$workdir"; echo $PWD
         working-directory: 'C:\'
         env:
-          workdir: *workdir
+          workdir: 'C:\github\security-dashboards-plugin'
 
       - name: Checkout
         uses: actions/checkout@v3
         with: 
-          path: *workdir
+          path: 'C:\github\security-dashboards-plugin'
         
       - name: Set up JDK
         uses: actions/setup-java@v1
