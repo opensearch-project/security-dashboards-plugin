@@ -70,8 +70,19 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
   );
   const [isMultiTenancyEnabled, setIsMultiTenancyEnabled] = useState(true);
 
-  const setCurrentTenant = (currentRawTenantName: string, currentUserName: string) => {
-    const resolvedTenantName = resolveTenantName(currentRawTenantName, currentUserName);
+  const setCurrentTenant = (
+    currentRawTenantName: string,
+    currentUserName: string,
+    tempTenantsList: string[]
+  ) => {
+    const isGlobalEnabled = props.config.multitenancy.tenants.enable_global;
+    const shouldDisableGlobal =
+      !isGlobalEnabled || !tempTenantsList.includes(GLOBAL_TENANT_KEY_NAME);
+    const resolvedTenantName = resolveTenantName(
+      currentRawTenantName,
+      currentUserName,
+      shouldDisableGlobal
+    );
 
     if (resolvedTenantName === RESOLVED_GLOBAL_TENANT) {
       setTenantSwitchRadioIdSelected(GLOBAL_TENANT_RADIO_ID);
@@ -91,8 +102,9 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
         const dashboardsInfo = await getDashboardsInfo(props.coreStart.http);
         setIsMultiTenancyEnabled(dashboardsInfo.multitenancy_enabled);
         setIsPrivateEnabled(dashboardsInfo.private_tenant_enabled);
-        const tenantsInfo = accountInfo.data.tenants || {};
-        setTenants(keys(tenantsInfo));
+        const tenantsInfo = accountInfo.data.tenants || {}; // temp variable to pass current tenants list state to setCurrentTenant
+        const tempTenantsList = keys(tenantsInfo);
+        setTenants(tempTenantsList);
 
         const currentUserName = accountInfo.data.user_name;
         setUsername(currentUserName);
@@ -103,7 +115,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
         } else {
           currentRawTenantName = accountInfo.data.user_requested_tenant;
         }
-        setCurrentTenant(currentRawTenantName || '', currentUserName);
+        setCurrentTenant(currentRawTenantName || '', currentUserName, tempTenantsList);
       } catch (e) {
         // TODO: switch to better error display.
         console.error(e);

@@ -102,10 +102,7 @@ describe('Tenant list utils', () => {
     });
 
     it('transform global, private and custom tenant', () => {
-      const result = transformTenantData(
-        { global_tenant: globalTenant, dummy: sampleTenant1 },
-        true
-      );
+      const result = transformTenantData({ global_tenant: globalTenant, dummy: sampleTenant1 });
       expect(result.length).toBe(3);
       expect(result[0]).toEqual(expectedGlobalTenantListing);
       expect(result[1]).toEqual(expectedPrivateTenantListing);
@@ -114,32 +111,43 @@ describe('Tenant list utils', () => {
   });
 
   describe('Resolve tenant name', () => {
-    const tenantNames = ['', 'undefined', 'user1', '__user__', ' dummy'];
+    const tenantNames = ['', 'undefined', 'user1', '__user__', ' dummy', '', 'undefined'];
+    const isGlobalDisabled = [false, false, false, false, false, true, true];
     const userName = 'user1';
 
     it('resolve to global tenant when tenant name is empty', () => {
-      const result = resolveTenantName(tenantNames[0], userName);
+      const result = resolveTenantName(tenantNames[0], userName, isGlobalDisabled[0]);
       expect(result).toBe(RESOLVED_GLOBAL_TENANT);
     });
 
     it('resolve to global tenant when tenant name is undefined', () => {
-      const result = resolveTenantName(tenantNames[1], userName);
+      const result = resolveTenantName(tenantNames[1], userName, isGlobalDisabled[1]);
       expect(result).toBe(RESOLVED_GLOBAL_TENANT);
     });
 
     it('resolve to private tenant when tenant name is user name', () => {
-      const result = resolveTenantName(tenantNames[2], userName);
+      const result = resolveTenantName(tenantNames[2], userName, isGlobalDisabled[2]);
       expect(result).toBe(RESOLVED_PRIVATE_TENANT);
     });
 
     it('resolve to private tenant when tenant name is __user__', () => {
-      const result = resolveTenantName(tenantNames[3], userName);
+      const result = resolveTenantName(tenantNames[3], userName, isGlobalDisabled[3]);
       expect(result).toBe(RESOLVED_PRIVATE_TENANT);
     });
 
     it('resolve to actual tenant name when tenant name is custom', () => {
-      const result = resolveTenantName(tenantNames[4], userName);
+      const result = resolveTenantName(tenantNames[4], userName, isGlobalDisabled[4]);
       expect(result).toBe(tenantNames[4]);
+    });
+
+    it('resolve to private tenant when tenant name is empty and global is disabled', () => {
+      const result = resolveTenantName(tenantNames[5], userName, isGlobalDisabled[5]);
+      expect(result).toBe(RESOLVED_PRIVATE_TENANT);
+    });
+
+    it('resolve to private tenant when tenant name is undefined and global is disabled', () => {
+      const result = resolveTenantName(tenantNames[6], userName, isGlobalDisabled[6]);
+      expect(result).toBe(RESOLVED_PRIVATE_TENANT);
     });
   });
 

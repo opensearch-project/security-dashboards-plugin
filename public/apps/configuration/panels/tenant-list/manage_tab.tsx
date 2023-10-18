@@ -36,7 +36,7 @@ import {
   EuiCallOut,
 } from '@elastic/eui';
 import React, { ReactNode, useState, useCallback } from 'react';
-import { difference } from 'lodash';
+import { difference, keys } from 'lodash';
 import { HashRouter as Router, Route } from 'react-router-dom';
 import { flow } from 'lodash';
 import { TenancyConfigSettings } from '../tenancy-config/types';
@@ -72,6 +72,7 @@ import { getBreadcrumbs, Route_MAP } from '../../app-router';
 import { buildUrl } from '../../utils/url-builder';
 import { CrossPageToast } from '../../cross-page-toast';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
+import { fetchAccountInfo } from '../../../account/utils';
 
 export function ManageTab(props: AppDependencies) {
   const setGlobalBreadcrumbs = flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs);
@@ -92,16 +93,23 @@ export function ManageTab(props: AppDependencies) {
   const [dashboardsDefaultTenant, setDashboardsDefaultTenant] = useState('');
 
   const { http } = props.coreStart;
+  const GLOBAL_TENANT_KEY_NAME = 'global_tenant';
 
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
+      const accountInfo = await fetchAccountInfo(http);
+      const tenantsInfo = accountInfo.data.tenants || {};
+      const tempTenantList = keys(tenantsInfo);
+      const isGlobalEnabled = props.config.multitenancy.tenants.enable_global;
+      const shouldDisableGlobal =
+        !isGlobalEnabled || !tempTenantList.includes(GLOBAL_TENANT_KEY_NAME);
       const rawTenantData = await fetchTenants(http);
       const processedTenantData = transformTenantData(rawTenantData);
       const activeTenant = await fetchCurrentTenant(http);
       const currentUser = await getCurrentUser(http);
       setCurrentUsername(currentUser);
-      setCurrentTenant(resolveTenantName(activeTenant, currentUser));
+      setCurrentTenant(resolveTenantName(activeTenant, currentUser, shouldDisableGlobal));
       setTenantData(processedTenantData);
       const tenancyConfig = await getDashboardsInfo(http);
       setIsMultiTenancyEnabled(tenancyConfig.multitenancy_enabled);
@@ -113,7 +121,7 @@ export function ManageTab(props: AppDependencies) {
     } finally {
       setLoading(false);
     }
-  }, [http]);
+  }, [http, props.config.multitenancy.tenants.enable_global]);
 
   React.useEffect(() => {
     fetchData();

@@ -122,11 +122,12 @@ export async function selectTenant(http: HttpStart, selectObject: TenantSelect):
 export const RESOLVED_GLOBAL_TENANT = 'Global';
 export const RESOLVED_PRIVATE_TENANT = 'Private';
 
-export function resolveTenantName(tenant: string, userName: string) {
-  if (!tenant || tenant === 'undefined') {
+export function resolveTenantName(tenant: string, userName: string, isGlobalDisabled: boolean) {
+  const probablyGlobal = !tenant || tenant === 'undefined';
+  if (probablyGlobal && !isGlobalDisabled) {
     return RESOLVED_GLOBAL_TENANT;
   }
-  if (tenant === userName || tenant === '__user__') {
+  if (probablyGlobal || tenant === userName || tenant === '__user__') {
     return RESOLVED_PRIVATE_TENANT;
   } else {
     return tenant;

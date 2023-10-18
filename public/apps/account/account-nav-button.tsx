@@ -28,6 +28,7 @@ import {
 } from '@elastic/eui';
 import { CoreStart } from 'opensearch-dashboards/public';
 import React, { useCallback } from 'react';
+import { keys } from 'lodash';
 import { RoleInfoPanel } from './role-info-panel';
 import { PasswordResetPanel } from './password-reset-panel';
 import { TenantSwitchPanel } from './tenant-switch-panel';
@@ -36,6 +37,7 @@ import { LogoutButton } from './log-out-button';
 import { resolveTenantName } from '../configuration/utils/tenant-utils';
 import { getShouldShowTenantPopup, setShouldShowTenantPopup } from '../../utils/storage-utils';
 import { getDashboardsInfo } from '../../utils/dashboards-info-utils';
+import { fetchAccountInfo } from './utils';
 
 export function AccountNavButton(props: {
   coreStart: CoreStart;
@@ -46,10 +48,12 @@ export function AccountNavButton(props: {
   currAuthType: string;
 }) {
   const [isPopoverOpen, setPopoverOpen] = React.useState<boolean>(false);
+  const [tenants, setTenants] = React.useState<string[]>([]);
   const [modal, setModal] = React.useState<React.ReactNode>(null);
   const horizontalRule = <EuiHorizontalRule margin="xs" />;
   const username = props.username;
   const [isMultiTenancyEnabled, setIsMultiTenancyEnabled] = React.useState<boolean>(true);
+  const GLOBAL_TENANT_KEY_NAME = 'global_tenant';
 
   const showTenantSwitchPanel = useCallback(
     () =>
@@ -72,6 +76,9 @@ export function AccountNavButton(props: {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
+        const accountInfo = await fetchAccountInfo(props.coreStart.http);
+        const tenantsInfo = accountInfo.data.tenants || {};
+        setTenants(keys(tenantsInfo));
         setIsMultiTenancyEnabled(
           (await getDashboardsInfo(props.coreStart.http)).multitenancy_enabled
         );
@@ -83,6 +90,9 @@ export function AccountNavButton(props: {
 
     fetchData();
   }, [props.coreStart.http]);
+
+  const isGlobalEnabled = props.config.multitenancy.tenants.enable_global;
+  const shouldDisableGlobal = !isGlobalEnabled || !tenants.includes(GLOBAL_TENANT_KEY_NAME);
 
   // Check if the tenant modal should be shown on load
   if (isMultiTenancyEnabled && getShouldShowTenantPopup() && props.config.multitenancy.enabled) {
@@ -113,7 +123,7 @@ export function AccountNavButton(props: {
             key="tenant"
             label={
               <EuiText size="xs" id="tenantName">
-                {resolveTenantName(props.tenant || '', username)}
+                {resolveTenantName(props.tenant || '', username, shouldDisableGlobal)}
               </EuiText>
             }
           />
