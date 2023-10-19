@@ -108,32 +108,6 @@ describe('test authentication factory', () => {
     expect(auth.type).toEqual(AuthType.BASIC);
   });
 
-  test('get basic auth with empty auth type: string array', async () => {
-    const auth = await getAuthenticationHandler(
-      [AuthType.BASIC],
-      router,
-      config,
-      core,
-      esClient,
-      sessionStorageFactory,
-      logger
-    );
-    expect(auth.type).toEqual(AuthType.BASIC);
-  });
-
-  test('get basic auth with empty auth type: string', async () => {
-    const auth = await getAuthenticationHandler(
-      AuthType.BASIC,
-      router,
-      config,
-      core,
-      esClient,
-      sessionStorageFactory,
-      logger
-    );
-    expect(auth.type).toEqual(AuthType.BASIC);
-  });
-
   test('get jwt auth: string array', async () => {
     const auth = await getAuthenticationHandler(
       ['jwt'],
@@ -264,7 +238,7 @@ describe('test authentication factory', () => {
     };
     try {
       await getAuthenticationHandler(
-        ['openid', 'saml', 'basiauth'],
+        ['openid', 'saml', AuthType.BASIC],
         router,
         config,
         core,

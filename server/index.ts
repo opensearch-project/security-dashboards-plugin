@@ -20,7 +20,6 @@ import { AuthType } from '../common';
 
 const validateAuthType = (value: string[]) => {
   const supportedAuthTypes = [
-    '',
     AuthType.BASIC,
     'jwt',
     'openid',
@@ -81,7 +80,7 @@ export const configSchema = schema.object({
     type: schema.oneOf(
       [
         schema.arrayOf(schema.string(), {
-          defaultValue: [''],
+          defaultValue: [AuthType.BASIC],
           validate(value: string[]) {
             if (!value || value.length === 0) {
               return `Authentication type is not configured properly. At least one authentication type must be selected.`;
@@ -101,7 +100,7 @@ export const configSchema = schema.object({
           },
         }),
         schema.string({
-          defaultValue: '',
+          defaultValue: AuthType.BASIC,
           validate(value) {
             const valArray: string[] = [];
             valArray.push(value);
@@ -109,7 +108,7 @@ export const configSchema = schema.object({
           },
         }),
       ],
-      { defaultValue: '' }
+      { defaultValue: AuthType.BASIC }
     ),
     anonymous_auth_enabled: schema.boolean({ defaultValue: false }),
     unauthenticated_routes: schema.arrayOf(schema.string(), {
