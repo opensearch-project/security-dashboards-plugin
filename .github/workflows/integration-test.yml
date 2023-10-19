@@ -73,15 +73,6 @@ jobs:
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"
 
-      - name: Remove unnecessary files Windows
-        if: ${{ runner.os == 'Windows' }}
-        run: |
-          choco uninstall julia -n --force
-          choco uninstall imagemagick -n --force
-          choco uninstall imagemagick.app -n --force
-          choco uninstall r.project -n --force
-          choco uninstall rtools -n --force
-
       - id: install-dashboards
         uses: ./.github/actions/install-dashboards
         with:
@@ -93,11 +84,6 @@ jobs:
 
       - name: Yarn cache clean
         run: yarn cache clean
-
-      - name: Print disk free space
-        if: ${{ runner.os == 'Linux' }}
-        run: |
-          df . -h
 
       - name: Run integration tests on Linux
         if: ${{ runner.os == 'Linux' }}
