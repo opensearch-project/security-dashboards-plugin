@@ -31,7 +31,7 @@ import { SecuritySessionCookie } from '../../session/security_cookie';
 import { SecurityClient } from '../../backend/opensearch_security_client';
 import { resolveTenant, isValidTenant } from '../../multitenancy/tenant_resolver';
 import { UnauthenticatedError } from '../../errors';
-import { GLOBAL_TENANT_SYMBOL } from '../../../common';
+import { AuthType, GLOBAL_TENANT_SYMBOL } from '../../../common';
 
 export interface IAuthenticationType {
   type: string;
@@ -88,7 +88,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
     protected readonly logger: Logger
   ) {
     this.securityClient = new SecurityClient(esClient);
-    this.type = '';
+    this.type = AuthType.BASIC;
     this.config = config;
   }
 

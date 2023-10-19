@@ -20,6 +20,7 @@ import { LoginPage, extractNextUrlFromWindowLocation } from '../login-page';
 import { validateCurrentPassword } from '../../../utils/login-utils';
 import { API_AUTH_LOGOUT } from '../../../../common';
 import { chromeServiceMock } from '../../../../../../src/core/public/mocks';
+import { AuthType } from '../../../../common';
 
 jest.mock('../../../utils/login-utils', () => ({
   validateCurrentPassword: jest.fn(),
@@ -101,7 +102,7 @@ describe('Login page', () => {
       const config: ClientConfigType = {
         ui: configUI,
         auth: {
-          type: ['basicauth'],
+          type: [AuthType.BASIC],
           logout_url: API_AUTH_LOGOUT,
         },
       };
@@ -115,7 +116,7 @@ describe('Login page', () => {
       const config: ClientConfigType = {
         ui: configUI,
         auth: {
-          type: 'basicauth',
+          type: AuthType.BASIC,
           logout_url: API_AUTH_LOGOUT,
         },
       };
@@ -129,7 +130,7 @@ describe('Login page', () => {
       const config: ClientConfigType = {
         ui: configUI,
         auth: {
-          type: ['basicauth', 'openid', 'saml'],
+          type: [AuthType.BASIC, 'openid', 'saml'],
           logout_url: API_AUTH_LOGOUT,
         },
       };
@@ -143,7 +144,7 @@ describe('Login page', () => {
       const config: ClientConfigType = {
         ui: configUiDefault,
         auth: {
-          type: [''],
+          type: [AuthType.BASIC],
         },
       };
       const component = shallow(
@@ -156,7 +157,7 @@ describe('Login page', () => {
       const config: ClientConfigType = {
         ui: configUiDefault,
         auth: {
-          type: '',
+          type: AuthType.BASIC,
         },
       };
       const component = shallow(
@@ -173,7 +174,7 @@ describe('Login page', () => {
     const config: ClientConfigType = {
       ui: configUiDefault,
       auth: {
-        type: 'basicauth',
+        type: AuthType.BASIC,
       },
     };
     beforeEach(() => {
@@ -207,7 +208,7 @@ describe('Login page', () => {
     const config: ClientConfigType = {
       ui: configUiDefault,
       auth: {
-        type: 'basicauth',
+        type: AuthType.BASIC,
       },
     };
     beforeEach(() => {

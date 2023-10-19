@@ -23,13 +23,14 @@ import {
 import { SecurityPluginConfigType } from '..';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { getAuthenticationHandler } from './auth_handler_factory';
+import { AuthType } from '../../common';
 
 jest.mock('./types', () => {
   return {
     BasicAuthentication: jest.fn().mockImplementation(() => {
       return {
         authHandler: () => {},
-        type: 'basicauth',
+        type: AuthType.BASIC,
         init: () => {},
       };
     }),
@@ -83,7 +84,7 @@ describe('test authentication factory', () => {
 
   test('get basic auth: string array', async () => {
     const auth = await getAuthenticationHandler(
-      ['basicauth'],
+      [AuthType.BASIC],
       router,
       config,
       core,
@@ -91,12 +92,12 @@ describe('test authentication factory', () => {
       sessionStorageFactory,
       logger
     );
-    expect(auth.type).toEqual('basicauth');
+    expect(auth.type).toEqual(AuthType.BASIC);
   });
 
   test('get basic auth: string', async () => {
     const auth = await getAuthenticationHandler(
-      'basicauth',
+      AuthType.BASIC,
       router,
       config,
       core,
@@ -104,12 +105,12 @@ describe('test authentication factory', () => {
       sessionStorageFactory,
       logger
     );
-    expect(auth.type).toEqual('basicauth');
+    expect(auth.type).toEqual(AuthType.BASIC);
   });
 
   test('get basic auth with empty auth type: string array', async () => {
     const auth = await getAuthenticationHandler(
-      [''],
+      [AuthType.BASIC],
       router,
       config,
       core,
@@ -117,12 +118,12 @@ describe('test authentication factory', () => {
       sessionStorageFactory,
       logger
     );
-    expect(auth.type).toEqual('basicauth');
+    expect(auth.type).toEqual(AuthType.BASIC);
   });
 
   test('get basic auth with empty auth type: string', async () => {
     const auth = await getAuthenticationHandler(
-      '',
+      AuthType.BASIC,
       router,
       config,
       core,
@@ -130,7 +131,7 @@ describe('test authentication factory', () => {
       sessionStorageFactory,
       logger
     );
-    expect(auth.type).toEqual('basicauth');
+    expect(auth.type).toEqual(AuthType.BASIC);
   });
 
   test('get jwt auth: string array', async () => {

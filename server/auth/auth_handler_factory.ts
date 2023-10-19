@@ -60,7 +60,6 @@ export async function getAuthenticationHandler(
   if (typeof authType === 'string' || authType.length === 1) {
     const currType = typeof authType === 'string' ? authType : authType[0];
     switch (currType.toLowerCase()) {
-      case '':
       case AuthType.BASIC:
         authHandlerType = BasicAuthentication;
         break;

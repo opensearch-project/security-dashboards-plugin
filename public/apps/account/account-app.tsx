@@ -38,7 +38,7 @@ function tenantSpecifiedInUrl() {
 
 export async function setupTopNavButton(coreStart: CoreStart, config: ClientConfigType) {
   const authType = config.auth?.type;
-  let currAuthType = '';
+  let currAuthType = AuthType.BASIC;
   if (typeof authType === 'string') {
     currAuthType = authType;
   } else if (Array.isArray(authType) && authType.length === 1) {
