@@ -25,12 +25,14 @@ import { SecuritySessionCookie } from '../session/security_cookie';
 import { getAuthenticationHandler } from './auth_handler_factory';
 import { AuthType } from '../../common';
 
+const mockBasicAuthType = AuthType.BASIC;
+
 jest.mock('./types', () => {
   return {
     BasicAuthentication: jest.fn().mockImplementation(() => {
       return {
         authHandler: () => {},
-        type: AuthType.BASIC,
+        type: mockBasicAuthType,
         init: () => {},
       };
     }),
@@ -65,7 +67,7 @@ jest.mock('./types', () => {
     MultipleAuthentication: jest.fn().mockImplementation(() => {
       return {
         authHandler: () => {},
-        type: ['openid', 'saml', 'basiauth'],
+        type: ['openid', 'saml', mockBasicAuthType],
         init: () => {},
       };
     }),
@@ -219,7 +221,7 @@ describe('test authentication factory', () => {
       },
     };
     const auth = await getAuthenticationHandler(
-      ['openid', 'saml', 'basiauth'],
+      ['openid', 'saml', AuthType.BASIC],
       router,
       config,
       core,
@@ -227,7 +229,7 @@ describe('test authentication factory', () => {
       sessionStorageFactory,
       logger
     );
-    expect(auth.type).toEqual(['openid', 'saml', 'basiauth']);
+    expect(auth.type).toEqual(['openid', 'saml', AuthType.BASIC]);
   });
 
   test('multiple_auth_enabled is off, get multi auth', async () => {
