@@ -32,6 +32,7 @@ runs:
         chmod +x  ./opensearch-${{ inputs.opensearch-version}}-SNAPSHOT/plugins/${{ inputs.plugin-name }}/tools/install_demo_configuration.sh 
         /bin/bash -c "yes | ./opensearch-${{ inputs.opensearch-version}}-SNAPSHOT/plugins/${{ inputs.plugin-name }}/tools/install_demo_configuration.sh"
         echo "plugins.security.unsupported.restapi.allow_securityconfig_modification: true" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT/config/opensearch.yml
+        echo "cluster.routing.allocation.disk.threshold_enabled: false" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT/config/opensearch.yml
         EOF
       shell: bash
 
@@ -41,5 +42,6 @@ runs:
         New-Item .\setup.bat -type file
         Set-Content .\setup.bat -Value "powershell.exe -noexit -command `".\opensearch-${{ inputs.opensearch-version}}-SNAPSHOT\plugins\${{ inputs.plugin-name }}\tools\install_demo_configuration.bat -y -i -c`""
         Add-Content -Path .\setup.bat -Value "echo plugins.security.unsupported.restapi.allow_securityconfig_modification: true >> .\opensearch-${{ inputs.opensearch-version}}-SNAPSHOT\config\opensearch.yml"
+        Add-Content -Path .\setup.bat -Value "echo cluster.routing.allocation.disk.threshold_enabled: false >> .\opensearch-${{ inputs.opensearch-version}}-SNAPSHOT\config\opensearch.yml"
         Get-Content .\setup.bat
       shell: pwsh
