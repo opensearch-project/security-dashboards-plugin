@@ -32,6 +32,9 @@ runs:
         repository: opensearch-project/OpenSearch-Dashboards
         ref: 'main'
         fetch-depth: 0
+        filter: |
+          cypress
+          test
 
     - uses: actions/checkout@v2
       with:
