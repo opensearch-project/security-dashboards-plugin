@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Custom error page test renders and clicks the button on the error page 1`] = `
+<EuiListGroup
+  className="custom-error-wrapper"
+>
+  <EuiSpacer
+    size="s"
+  />
+  <EuiText
+    size="m"
+    textAlign="center"
+  >
+    <h3>
+      Title
+    </h3>
+  </EuiText>
+  <EuiSpacer
+    size="s"
+  />
+  <EuiText
+    size="s"
+    textAlign="center"
+  >
+    Sub Title
+  </EuiText>
+  <EuiSpacer
+    size="s"
+  />
+  <EuiButton
+    data-test-subj="error-logout-button"
+    fill={true}
+    fullWidth={true}
+    onClick={[Function]}
+  >
+    Logout
+  </EuiButton>
+</EuiListGroup>
+`;
