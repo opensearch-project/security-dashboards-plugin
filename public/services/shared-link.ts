@@ -31,40 +31,11 @@ export async function addTenantToShareURL(core: CoreStart) {
     console.log(`failed to get user tenant: ${error}`);
     return;
   }
-
-  // navigator.clipboard
-
-  // .readText()
-  // .then(
-  //   (clipText) => (document.querySelector('[data-share-url]').innerText += clipText),
-  // );
-
-  // NotAllowedError: The request is not allowed by the user agent or the platform in the current context, possibly because the user denied permission.
-  // const readTextFromShareButton = () => {
-  //   navigator.clipboard.readText()
-  //     .then(clipText => {
-  //       console.log('Clipboard content: ', clipText);
-  //       let myshareButton = document.querySelector('[data-share-url]');
-  //       let mytarget = document.querySelector('body > span');
-  //       console.log('myshareButton: ', myshareButton);
-  //       console.log('mytarget: ', mytarget);
-  //     })
-  //     .catch(err => {
-  //       console.error('Failed to read clipboard contents: ', err);
-  //     });
-  // };
-
-  // readTextFromShareButton();
-
-//   Before the manipulation happens, we get the parentNode and
-//   using Selection.removeAllRanges()[ref] we deselect it.
-//   Then the content is allowed to change and
-//   we select it back by creating a range, doing selectNode[ref], and then using addRange[ref] to select it.
   
   // Add the tenant to URLs copied from the share panel
   document.addEventListener('copy', (event) => {
     let shareButton = document.querySelector('[data-share-url]') as any;
-    const target = document.querySelector('body > span') as any;
+    const target = document.querySelector('body > span');
     shareButton.removeAllRanges();
 
     // The copy event listens to Cmd + C too, so we need to make sure
