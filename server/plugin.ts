@@ -137,7 +137,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     defineAuthTypeRoutes(router, config);
 
     // set up multi-tenent routes
-    if (config.multitenancy.enabled) {
+    if (config.multitenancy?.enabled) {
       setupMultitenantRoutes(router, securitySessionStorageFactory, this.securityClient);
     }
 

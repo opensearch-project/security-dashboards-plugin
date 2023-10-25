@@ -13,6 +13,7 @@
  *   permissions and limitations under the License.
  */
 
+import { URL } from 'url';
 import {
   Logger,
   OpenSearchDashboardsRequest,
@@ -20,7 +21,7 @@ import {
 } from '../../../../src/core/server';
 import { globalTenantName, isPrivateTenant } from '../../common';
 import { SecurityClient } from '../backend/opensearch_security_client';
-import { IAuthenticationType } from '../auth/types/authentication_type';
+import { IAuthenticationType, OpenSearchAuthInfo } from '../auth/types/authentication_type';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { SecurityPluginConfigType } from '../index';
 import { ReadonlyService as BaseReadonlyService } from '../../../../src/core/server/security/readonly_service';
@@ -61,7 +62,7 @@ export class ReadonlyService extends BaseReadonlyService {
     }
   }
 
-  isReadOnlyTenant(authInfo: any): boolean {
+  isReadOnlyTenant(authInfo: OpenSearchAuthInfo): boolean {
     const currentTenant = authInfo.user_requested_tenant || globalTenantName;
 
     // private tenant is not affected
@@ -78,7 +79,7 @@ export class ReadonlyService extends BaseReadonlyService {
       return false;
     }
 
-    if (!this.config.multitenancy.enabled) {
+    if (!this.config?.multitenancy.enabled) {
       return false;
     }
 
