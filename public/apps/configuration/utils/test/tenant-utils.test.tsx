@@ -125,8 +125,8 @@ describe('Tenant list utils', () => {
         backend_roles: [],
         roles: [],
         tenants: {
-          global_tenant: true,
-          user1: true,
+          ['global_tenant']: true,
+          ['user1']: true,
         },
       },
     };
@@ -269,7 +269,7 @@ describe('Tenant list utils', () => {
         backend_roles: [],
         roles: [],
         tenants: {
-          user1: true,
+          ['user1']: true,
         },
       },
     };
@@ -379,7 +379,7 @@ describe('Tenant list utils', () => {
         backend_roles: [],
         roles: [],
         tenants: {
-          global_tenant: true,
+          ['global_tenant']: true,
         },
       },
     };
@@ -489,7 +489,7 @@ describe('Tenant list utils', () => {
         backend_roles: [],
         roles: [],
         tenants: {
-          ' dummy': true,
+          [' dummy']: true,
         },
       },
     };
