@@ -22,6 +22,7 @@ import {
   CoreSetup,
   OpenSearchDashboardsResponseFactory,
   OpenSearchDashboardsRequest,
+  Logger,
 } from '../../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
@@ -29,6 +30,13 @@ import { OpenIdAuthConfig } from './openid_auth';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
 import { getBaseRedirectUrl, callTokenEndpoint, composeLogoutUrl } from './helper';
 import { validateNextUrl } from '../../../utils/next_url';
+
+import {
+  clearSplitCookies,
+  ExtraAuthStorageOptions,
+  getExtraAuthStorageValue,
+  setExtraAuthStorage,
+} from '../../../session/cookie_splitter';
 
 export class OpenIdAuthRoutes {
   private static readonly NONCE_LENGTH: number = 22;
@@ -53,6 +61,15 @@ export class OpenIdAuthRoutes {
         location: `${this.core.http.basePath.serverBasePath}/auth/openid/login`,
       },
     });
+  }
+
+  private getExtraAuthStorageOptions(logger?: Logger): ExtraAuthStorageOptions {
+    // If we're here, we will always have the openid configuration
+    return {
+      cookiePrefix: this.config.openid!.extra_storage.cookie_prefix,
+      additionalCookies: this.config.openid!.extra_storage.additional_cookies,
+      logger,
+    };
   }
 
   public setupRoutes() {
@@ -155,7 +172,7 @@ export class OpenIdAuthRoutes {
           const sessionStorage: SecuritySessionCookie = {
             username: user.username,
             credentials: {
-              authHeaderValue: `Bearer ${tokenResponse.idToken}`,
+              authHeaderValueExtra: true,
               expires_at: Date.now() + tokenResponse.expiresIn! * 1000, // expiresIn is in second
             },
             authType: 'openid',
@@ -166,6 +183,13 @@ export class OpenIdAuthRoutes {
               refresh_token: tokenResponse.refreshToken,
             });
           }
+
+          setExtraAuthStorage(
+            request,
+            `Bearer ${tokenResponse.idToken}`,
+            this.getExtraAuthStorageOptions(context.security_plugin.logger)
+          );
+
           this.sessionStorageFactory.asScoped(request).set(sessionStorage);
           return response.redirected({
             headers: {
@@ -187,10 +211,24 @@ export class OpenIdAuthRoutes {
       },
       async (context, request, response) => {
         const cookie = await this.sessionStorageFactory.asScoped(request).get();
+        let tokenFromExtraStorage = '';
+
+        const extraAuthStorageOptions: ExtraAuthStorageOptions = this.getExtraAuthStorageOptions(
+          context.security_plugin.logger
+        );
+
+        if (cookie?.credentials?.authHeaderValueExtra) {
+          tokenFromExtraStorage = getExtraAuthStorageValue(request, extraAuthStorageOptions);
+        }
+
+        clearSplitCookies(request, extraAuthStorageOptions);
         this.sessionStorageFactory.asScoped(request).clear();
 
-        // authHeaderValue is the bearer header, e.g. "Bearer <auth_token>"
-        const token = cookie?.credentials.authHeaderValue.split(' ')[1]; // get auth token
+        // tokenFromExtraStorage is the bearer header, e.g. "Bearer <auth_token>"
+        const token = tokenFromExtraStorage.length
+          ? tokenFromExtraStorage.split(' ')[1]
+          : cookie?.credentials.authHeaderValue.split(' ')[1]; // get auth token
+
         const logoutQueryParams = {
           post_logout_redirect_uri: getBaseRedirectUrl(this.config, this.core),
           id_token_hint: token,

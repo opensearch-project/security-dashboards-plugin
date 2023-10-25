@@ -243,7 +243,7 @@ describe('start OpenSearch Dashboards server', () => {
     await driver.wait(until.elementsLocated(By.xpath(pageTitleXPath)), 10000);
 
     const cookie = await driver.manage().getCookies();
-    expect(cookie.length).toEqual(2);
+    expect(cookie.length).toEqual(3);
     await driver.manage().deleteAllCookies();
     await driver.quit();
   });
@@ -259,7 +259,7 @@ describe('start OpenSearch Dashboards server', () => {
     );
 
     const cookie = await driver.manage().getCookies();
-    expect(cookie.length).toEqual(2);
+    expect(cookie.length).toEqual(3);
     await driver.manage().deleteAllCookies();
     await driver.quit();
   });
@@ -278,7 +278,7 @@ describe('start OpenSearch Dashboards server', () => {
     const windowHash = await driver.getCurrentUrl();
     expect(windowHash).toEqual(urlWithHash);
     const cookie = await driver.manage().getCookies();
-    expect(cookie.length).toEqual(2);
+    expect(cookie.length).toEqual(3);
     await driver.manage().deleteAllCookies();
     await driver.quit();
   });
