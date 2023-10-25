@@ -36,6 +36,7 @@ import { LogoutButton } from './log-out-button';
 import { resolveTenantName } from '../configuration/utils/tenant-utils';
 import { getShouldShowTenantPopup, setShouldShowTenantPopup } from '../../utils/storage-utils';
 import { getDashboardsInfo } from '../../utils/dashboards-info-utils';
+import { fetchAccountInfo } from './utils';
 
 export function AccountNavButton(props: {
   coreStart: CoreStart;
@@ -47,6 +48,7 @@ export function AccountNavButton(props: {
 }) {
   const [isPopoverOpen, setPopoverOpen] = React.useState<boolean>(false);
   const [modal, setModal] = React.useState<React.ReactNode>(null);
+  const [resolvedTenantName, setResolvedTenantName] = React.useState<string>('');
   const horizontalRule = <EuiHorizontalRule margin="xs" />;
   const username = props.username;
   const [isMultiTenancyEnabled, setIsMultiTenancyEnabled] = React.useState<boolean>(true);
@@ -74,6 +76,17 @@ export function AccountNavButton(props: {
       try {
         setIsMultiTenancyEnabled(
           (await getDashboardsInfo(props.coreStart.http)).multitenancy_enabled
+        );
+        const rawAccountInfo = await fetchAccountInfo(props.coreStart.http);
+        const rawDashboardsInfo = await getDashboardsInfo(props.coreStart.http);
+        setResolvedTenantName(
+          resolveTenantName(
+            props.tenant || '',
+            username,
+            rawAccountInfo,
+            rawDashboardsInfo,
+            props.config
+          )
         );
       } catch (e) {
         // TODO: switch to better error display.
@@ -113,7 +126,7 @@ export function AccountNavButton(props: {
             key="tenant"
             label={
               <EuiText size="xs" id="tenantName">
-                {resolveTenantName(props.tenant || '', username)}
+                {resolvedTenantName}
               </EuiText>
             }
           />

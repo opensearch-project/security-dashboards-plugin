@@ -33,6 +33,8 @@ import {
 } from '../../constants';
 import { TenantPermissionType } from '../../types';
 import { globalTenantName } from '../../../../../common';
+import { AccountInfo } from '../../../account/types';
+import { ClientConfigType, DashboardsInfo } from '../../../../types';
 
 describe('Tenant list utils', () => {
   const expectedGlobalTenantListing = {
@@ -113,45 +115,510 @@ describe('Tenant list utils', () => {
     });
   });
 
-  describe('Resolve tenant name', () => {
+  describe('Resolve tenant name with no blocking', () => {
     const tenantNames = ['', 'undefined', 'user1', '__user__', ' dummy'];
     const userName = 'user1';
+    const mockAccountInfo: AccountInfo = {
+      data: {
+        user_name: '',
+        is_internal_user: false,
+        backend_roles: [],
+        roles: [],
+        tenants: {
+          global_tenant: true,
+          user1: true,
+        },
+      },
+    };
+    const mockDashboardsInfo: DashboardsInfo = {
+      default_tenant: '',
+      password_validation_error_message: '',
+      private_tenant_enabled: true,
+    };
+    const mockConfig: ClientConfigType = {
+      readonly_mode: {
+        roles: [],
+      },
+      ui: {
+        basicauth: {
+          login: {
+            title: '',
+            subtitle: '',
+            showbrandimage: false,
+            brandimage: '',
+            buttonstyle: '',
+          },
+        },
+        anonymous: {
+          login: {
+            buttonname: '',
+            showbrandimage: false,
+            brandimage: '',
+            buttonstyle: '',
+          },
+        },
+        openid: {
+          login: {
+            buttonname: '',
+            showbrandimage: false,
+            brandimage: '',
+            buttonstyle: '',
+          },
+        },
+        saml: {
+          login: {
+            buttonname: '',
+            showbrandimage: false,
+            brandimage: '',
+            buttonstyle: '',
+          },
+        },
+        autologout: false,
+        backend_configurable: false,
+      },
+      multitenancy: {
+        enable_aggregation_view: false,
+        enabled: false,
+        tenants: {
+          enable_private: true,
+          enable_global: true,
+        },
+      },
+      auth: {
+        type: '',
+        anonymous_auth_enabled: false,
+        logout_url: '',
+      },
+      clusterPermissions: {
+        include: [],
+      },
+      indexPermissions: {
+        include: [],
+      },
+      disabledTransportCategories: {
+        exclude: [],
+      },
+      disabledRestCategories: {
+        exclude: [],
+      },
+    };
 
     it('resolve to global tenant when tenant name is empty', () => {
-      const result = resolveTenantName(tenantNames[0], userName);
+      const result = resolveTenantName(
+        tenantNames[0],
+        userName,
+        mockAccountInfo,
+        mockDashboardsInfo,
+        mockConfig
+      );
       expect(result).toBe(RESOLVED_GLOBAL_TENANT);
     });
 
     it('resolve to global tenant when tenant name is undefined', () => {
-      const result = resolveTenantName(tenantNames[1], userName);
+      const result = resolveTenantName(
+        tenantNames[1],
+        userName,
+        mockAccountInfo,
+        mockDashboardsInfo,
+        mockConfig
+      );
       expect(result).toBe(RESOLVED_GLOBAL_TENANT);
     });
 
     it('resolve to private tenant when tenant name is user name', () => {
-      const result = resolveTenantName(tenantNames[2], userName);
+      const result = resolveTenantName(
+        tenantNames[2],
+        userName,
+        mockAccountInfo,
+        mockDashboardsInfo,
+        mockConfig
+      );
       expect(result).toBe(RESOLVED_PRIVATE_TENANT);
     });
 
     it('resolve to private tenant when tenant name is __user__', () => {
-      const result = resolveTenantName(tenantNames[3], userName);
+      const result = resolveTenantName(
+        tenantNames[3],
+        userName,
+        mockAccountInfo,
+        mockDashboardsInfo,
+        mockConfig
+      );
       expect(result).toBe(RESOLVED_PRIVATE_TENANT);
     });
 
     it('resolve to actual tenant name when tenant name is custom', () => {
-      const result = resolveTenantName(tenantNames[4], userName);
+      const result = resolveTenantName(
+        tenantNames[4],
+        userName,
+        mockAccountInfo,
+        mockDashboardsInfo,
+        mockConfig
+      );
       expect(result).toBe(tenantNames[4]);
     });
   });
 
-  describe('Format tenant name', () => {
-    it('format global tenant', () => {
-      const result = formatTenantName(globalTenantName);
-      expect(result).toBe(GLOBAL_USER_DICT.Label);
+  describe('Resolve global tenant name with global blocked', () => {
+    const tenantNames = ['', 'undefined'];
+    const userName = 'user1';
+    const mockAccountInfo: AccountInfo = {
+      data: {
+        user_name: '',
+        is_internal_user: false,
+        backend_roles: [],
+        roles: [],
+        tenants: {
+          user1: true,
+        },
+      },
+    };
+    const mockDashboardsInfo: DashboardsInfo = {
+      default_tenant: '',
+      password_validation_error_message: '',
+      private_tenant_enabled: true,
+    };
+    const mockConfig: ClientConfigType = {
+      readonly_mode: {
+        roles: [],
+      },
+      ui: {
+        basicauth: {
+          login: {
+            title: '',
+            subtitle: '',
+            showbrandimage: false,
+            brandimage: '',
+            buttonstyle: '',
+          },
+        },
+        anonymous: {
+          login: {
+            buttonname: '',
+            showbrandimage: false,
+            brandimage: '',
+            buttonstyle: '',
+          },
+        },
+        openid: {
+          login: {
+            buttonname: '',
+            showbrandimage: false,
+            brandimage: '',
+            buttonstyle: '',
+          },
+        },
+        saml: {
+          login: {
+            buttonname: '',
+            showbrandimage: false,
+            brandimage: '',
+            buttonstyle: '',
+          },
+        },
+        autologout: false,
+        backend_configurable: false,
+      },
+      multitenancy: {
+        enable_aggregation_view: false,
+        enabled: false,
+        tenants: {
+          enable_private: true,
+          enable_global: false,
+        },
+      },
+      auth: {
+        type: '',
+        anonymous_auth_enabled: false,
+        logout_url: '',
+      },
+      clusterPermissions: {
+        include: [],
+      },
+      indexPermissions: {
+        include: [],
+      },
+      disabledTransportCategories: {
+        exclude: [],
+      },
+      disabledRestCategories: {
+        exclude: [],
+      },
+    };
+
+    it('resolve to private tenant when tenant name is empty and global is blocked', () => {
+      const result = resolveTenantName(
+        tenantNames[0],
+        userName,
+        mockAccountInfo,
+        mockDashboardsInfo,
+        mockConfig
+      );
+      expect(result).toBe(RESOLVED_PRIVATE_TENANT);
     });
 
-    it('format non-global tenant', () => {
-      const result = formatTenantName('dummy');
-      expect(result).toBe('dummy');
+    it('resolve to private tenant when tenant name is undefined and global is blocked', () => {
+      const result = resolveTenantName(
+        tenantNames[1],
+        userName,
+        mockAccountInfo,
+        mockDashboardsInfo,
+        mockConfig
+      );
+      expect(result).toBe(RESOLVED_PRIVATE_TENANT);
+    });
+  });
+
+  describe('Resolve private tenant name with private blocked', () => {
+    const tenantNames = ['user1', '__user__'];
+    const userName = 'user1';
+    const mockAccountInfo: AccountInfo = {
+      data: {
+        user_name: '',
+        is_internal_user: false,
+        backend_roles: [],
+        roles: [],
+        tenants: {
+          global_tenant: true,
+        },
+      },
+    };
+    const mockDashboardsInfo: DashboardsInfo = {
+      default_tenant: '',
+      password_validation_error_message: '',
+      private_tenant_enabled: false,
+    };
+    const mockConfig: ClientConfigType = {
+      readonly_mode: {
+        roles: [],
+      },
+      ui: {
+        basicauth: {
+          login: {
+            title: '',
+            subtitle: '',
+            showbrandimage: false,
+            brandimage: '',
+            buttonstyle: '',
+          },
+        },
+        anonymous: {
+          login: {
+            buttonname: '',
+            showbrandimage: false,
+            brandimage: '',
+            buttonstyle: '',
+          },
+        },
+        openid: {
+          login: {
+            buttonname: '',
+            showbrandimage: false,
+            brandimage: '',
+            buttonstyle: '',
+          },
+        },
+        saml: {
+          login: {
+            buttonname: '',
+            showbrandimage: false,
+            brandimage: '',
+            buttonstyle: '',
+          },
+        },
+        autologout: false,
+        backend_configurable: false,
+      },
+      multitenancy: {
+        enable_aggregation_view: false,
+        enabled: false,
+        tenants: {
+          enable_private: true,
+          enable_global: true,
+        },
+      },
+      auth: {
+        type: '',
+        anonymous_auth_enabled: false,
+        logout_url: '',
+      },
+      clusterPermissions: {
+        include: [],
+      },
+      indexPermissions: {
+        include: [],
+      },
+      disabledTransportCategories: {
+        exclude: [],
+      },
+      disabledRestCategories: {
+        exclude: [],
+      },
+    };
+
+    it('resolve to global tenant when tenant name is user1 and private is blocked', () => {
+      const result = resolveTenantName(
+        tenantNames[0],
+        userName,
+        mockAccountInfo,
+        mockDashboardsInfo,
+        mockConfig
+      );
+      expect(result).toBe(RESOLVED_GLOBAL_TENANT);
+    });
+
+    it('resolve to global tenant when tenant name is __user__ and private is blocked', () => {
+      const result = resolveTenantName(
+        tenantNames[1],
+        userName,
+        mockAccountInfo,
+        mockDashboardsInfo,
+        mockConfig
+      );
+      expect(result).toBe(RESOLVED_GLOBAL_TENANT);
+    });
+  });
+
+  describe('Resolve tenant name with global and private blocked', () => {
+    const tenantNames = ['', 'undefined', 'user1', '__user__', ' dummy'];
+    const userName = 'user1';
+    const mockAccountInfo: AccountInfo = {
+      data: {
+        user_name: '',
+        is_internal_user: false,
+        backend_roles: [],
+        roles: [],
+        tenants: {
+          ' dummy': true,
+        },
+      },
+    };
+    const mockDashboardsInfo: DashboardsInfo = {
+      default_tenant: '',
+      password_validation_error_message: '',
+      private_tenant_enabled: false,
+    };
+    const mockConfig: ClientConfigType = {
+      readonly_mode: {
+        roles: [],
+      },
+      ui: {
+        basicauth: {
+          login: {
+            title: '',
+            subtitle: '',
+            showbrandimage: false,
+            brandimage: '',
+            buttonstyle: '',
+          },
+        },
+        anonymous: {
+          login: {
+            buttonname: '',
+            showbrandimage: false,
+            brandimage: '',
+            buttonstyle: '',
+          },
+        },
+        openid: {
+          login: {
+            buttonname: '',
+            showbrandimage: false,
+            brandimage: '',
+            buttonstyle: '',
+          },
+        },
+        saml: {
+          login: {
+            buttonname: '',
+            showbrandimage: false,
+            brandimage: '',
+            buttonstyle: '',
+          },
+        },
+        autologout: false,
+        backend_configurable: false,
+      },
+      multitenancy: {
+        enable_aggregation_view: false,
+        enabled: false,
+        tenants: {
+          enable_private: false,
+          enable_global: false,
+        },
+      },
+      auth: {
+        type: '',
+        anonymous_auth_enabled: false,
+        logout_url: '',
+      },
+      clusterPermissions: {
+        include: [],
+      },
+      indexPermissions: {
+        include: [],
+      },
+      disabledTransportCategories: {
+        exclude: [],
+      },
+      disabledRestCategories: {
+        exclude: [],
+      },
+    };
+    const CUSTOM_TENANT = ' dummy';
+    it('resolve to custom tenant when tenant name is empty and global and private blocked', () => {
+      const result = resolveTenantName(
+        tenantNames[0],
+        userName,
+        mockAccountInfo,
+        mockDashboardsInfo,
+        mockConfig
+      );
+      expect(result).toBe(CUSTOM_TENANT);
+    });
+
+    it('resolve to custom tenant when tenant name is undefined and global and private blocked', () => {
+      const result = resolveTenantName(
+        tenantNames[1],
+        userName,
+        mockAccountInfo,
+        mockDashboardsInfo,
+        mockConfig
+      );
+      expect(result).toBe(CUSTOM_TENANT);
+    });
+
+    it('resolve to custom tenant when tenant name is user name and global and private blocked', () => {
+      const result = resolveTenantName(
+        tenantNames[2],
+        userName,
+        mockAccountInfo,
+        mockDashboardsInfo,
+        mockConfig
+      );
+      expect(result).toBe(CUSTOM_TENANT);
+    });
+
+    it('resolve to custom tenant when tenant name is __user__ and global and private blocked', () => {
+      const result = resolveTenantName(
+        tenantNames[3],
+        userName,
+        mockAccountInfo,
+        mockDashboardsInfo,
+        mockConfig
+      );
+      expect(result).toBe(CUSTOM_TENANT);
+    });
+
+    it('check that custom tenant resolving is working', () => {
+      const result = resolveTenantName(
+        tenantNames[4],
+        userName,
+        mockAccountInfo,
+        mockDashboardsInfo,
+        mockConfig
+      );
+      expect(result).toBe(CUSTOM_TENANT);
     });
   });
 

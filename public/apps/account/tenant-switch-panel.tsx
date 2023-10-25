@@ -31,7 +31,7 @@ import {
 import { CoreStart } from 'opensearch-dashboards/public';
 import { keys } from 'lodash';
 import React, { useState } from 'react';
-import { ClientConfigType } from '../../types';
+import { ClientConfigType, DashboardsInfo } from '../../types';
 import {
   RESOLVED_GLOBAL_TENANT,
   RESOLVED_PRIVATE_TENANT,
@@ -42,6 +42,7 @@ import { fetchAccountInfo } from './utils';
 import { constructErrorMessageAndLog } from '../error-utils';
 import { getSavedTenant, setSavedTenant } from '../../utils/storage-utils';
 import { getDashboardsInfo } from '../../utils/dashboards-info-utils';
+import { AccountInfo } from './types';
 
 interface TenantSwitchPanelProps {
   coreStart: CoreStart;
@@ -70,8 +71,19 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
   );
   const [isMultiTenancyEnabled, setIsMultiTenancyEnabled] = useState(true);
 
-  const setCurrentTenant = (currentRawTenantName: string, currentUserName: string) => {
-    const resolvedTenantName = resolveTenantName(currentRawTenantName, currentUserName);
+  const setCurrentTenant = async (
+    currentRawTenantName: string,
+    currentUserName: string,
+    accountInfo: AccountInfo,
+    dashboardsInfo: DashboardsInfo
+  ) => {
+    const resolvedTenantName = resolveTenantName(
+      currentRawTenantName,
+      currentUserName,
+      accountInfo,
+      dashboardsInfo,
+      props.config
+    );
 
     if (resolvedTenantName === RESOLVED_GLOBAL_TENANT) {
       setTenantSwitchRadioIdSelected(GLOBAL_TENANT_RADIO_ID);
@@ -103,7 +115,12 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
         } else {
           currentRawTenantName = accountInfo.data.user_requested_tenant;
         }
-        setCurrentTenant(currentRawTenantName || '', currentUserName);
+        await setCurrentTenant(
+          currentRawTenantName || '',
+          currentUserName,
+          accountInfo,
+          dashboardsInfo
+        );
       } catch (e) {
         // TODO: switch to better error display.
         console.error(e);

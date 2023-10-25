@@ -72,12 +72,21 @@ import { getBreadcrumbs, Route_MAP } from '../../app-router';
 import { buildUrl } from '../../utils/url-builder';
 import { CrossPageToast } from '../../cross-page-toast';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
+import { fetchAccountInfo } from '../../../account/utils';
+import { AccountInfo } from '../../../account/types';
+import { DashboardsInfo } from '../../../../types';
 
 export function ManageTab(props: AppDependencies) {
   const setGlobalBreadcrumbs = flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs);
   const [tenantData, setTenantData] = React.useState<Tenant[]>([]);
   const [errorFlag, setErrorFlag] = React.useState(false);
   const [selection, setSelection] = React.useState<Tenant[]>([]);
+  const [accountInfo, setAccountInfo] = React.useState<AccountInfo>(
+    (null as unknown) as AccountInfo
+  );
+  const [dashboardsInfo, setDashboardsInfo] = React.useState<DashboardsInfo>(
+    (null as unknown) as DashboardsInfo
+  );
   const [currentTenant, setCurrentTenant] = useState('');
   const [currentUsername, setCurrentUsername] = useState('');
   // Modal state
@@ -100,8 +109,20 @@ export function ManageTab(props: AppDependencies) {
       const processedTenantData = transformTenantData(rawTenantData);
       const activeTenant = await fetchCurrentTenant(http);
       const currentUser = await getCurrentUser(http);
+      const rawAccountInfo = await fetchAccountInfo(http);
+      const rawDashboardsInfo = await getDashboardsInfo(http);
+      setAccountInfo(rawAccountInfo);
+      setDashboardsInfo(rawDashboardsInfo);
       setCurrentUsername(currentUser);
-      setCurrentTenant(resolveTenantName(activeTenant, currentUser));
+      setCurrentTenant(
+        resolveTenantName(
+          activeTenant,
+          currentUser,
+          rawAccountInfo,
+          rawDashboardsInfo,
+          props.config
+        )
+      );
       setTenantData(processedTenantData);
       const tenancyConfig = await getDashboardsInfo(http);
       setIsMultiTenancyEnabled(tenancyConfig.multitenancy_enabled);
@@ -141,7 +162,9 @@ export function ManageTab(props: AppDependencies) {
       tenant: tenantValue,
       username: currentUsername,
     });
-    setCurrentTenant(resolveTenantName(selectedTenant, currentUsername));
+    setCurrentTenant(
+      resolveTenantName(selectedTenant, currentUsername, accountInfo, dashboardsInfo, props.config)
+    );
   };
 
   const getTenantName = (tenantValue: string) => {

@@ -14,7 +14,7 @@
  */
 
 import { HttpStart } from 'opensearch-dashboards/public';
-import { map } from 'lodash';
+import { keys, map } from 'lodash';
 import React from 'react';
 import { i18n } from '@osd/i18n';
 import {
@@ -50,6 +50,10 @@ import {
   SAML_AUTH_LOGIN,
 } from '../../../../common';
 import { TenancyConfigSettings } from '../panels/tenancy-config/types';
+import { fetchAccountInfo } from '../../account/utils';
+import { getDashboardsInfo } from '../../../utils/dashboards-info-utils';
+import { ClientConfigType, DashboardsInfo } from '../../../types';
+import { AccountInfo } from '../../account/types';
 
 export const GLOBAL_USER_DICT: { [key: string]: string } = {
   Label: 'Global',
@@ -122,15 +126,57 @@ export async function selectTenant(http: HttpStart, selectObject: TenantSelect):
 export const RESOLVED_GLOBAL_TENANT = 'Global';
 export const RESOLVED_PRIVATE_TENANT = 'Private';
 
-export function resolveTenantName(tenant: string, userName: string) {
+export function resolveTenantName(
+  tenant: string,
+  userName: string,
+  accountInfo: AccountInfo,
+  dashboardsInfo: DashboardsInfo,
+  config: ClientConfigType
+) {
+  const tenants = keys(accountInfo.data.tenants || {});
+  const roles = accountInfo.data.roles;
+
+  const isGlobalEnabled = config.multitenancy.tenants.enable_global;
+  const shouldDisableGlobal = !isGlobalEnabled || !tenants.includes('global_tenant');
+
+  const DEFAULT_READONLY_ROLES = ['kibana_read_only'];
+  const readonly = roles.some(
+    (role) => config.readonly_mode?.roles.includes(role) || DEFAULT_READONLY_ROLES.includes(role)
+  );
+  const isPrivateEnabled = dashboardsInfo.private_tenant_enabled;
+  const shouldDisablePrivate = !isPrivateEnabled || !tenants.includes(userName) || readonly;
+
+  let resolvedTenant = '';
   if (!tenant || tenant === 'undefined') {
-    return RESOLVED_GLOBAL_TENANT;
-  }
-  if (tenant === userName || tenant === '__user__') {
-    return RESOLVED_PRIVATE_TENANT;
+    resolvedTenant = RESOLVED_GLOBAL_TENANT;
+  } else if (tenant === userName || tenant === '__user__') {
+    resolvedTenant = RESOLVED_PRIVATE_TENANT;
   } else {
-    return tenant;
+    resolvedTenant = tenant;
+  } // at this point we have what the tenant SHOULD be if no tenant is blocked
+
+  // start flow of choosing next 'best' tenant if curr tenant is blocked
+  if (
+    (resolvedTenant === RESOLVED_GLOBAL_TENANT && shouldDisableGlobal) ||
+    (resolvedTenant === RESOLVED_PRIVATE_TENANT && shouldDisablePrivate)
+  ) {
+    if (!shouldDisableGlobal) resolvedTenant = RESOLVED_GLOBAL_TENANT;
+    else if (!shouldDisablePrivate) resolvedTenant = RESOLVED_PRIVATE_TENANT;
+    else {
+      for (const ten of tenants) {
+        if (ten === userName || ten === '__user__' || !ten || ten === 'undefined') continue;
+        resolvedTenant = ten;
+        break;
+      }
+    }
   }
+  // if after that flow our current resolvedTenant is still blocked, we return nothing?
+  if (
+    (resolvedTenant === RESOLVED_GLOBAL_TENANT && shouldDisableGlobal) ||
+    (resolvedTenant === RESOLVED_PRIVATE_TENANT && shouldDisablePrivate)
+  )
+    return '';
+  else return resolvedTenant;
 }
 
 export function formatTenantName(tenantName: string): string {
