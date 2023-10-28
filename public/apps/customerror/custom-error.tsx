@@ -22,6 +22,7 @@ import { ERROR_MISSING_ROLE_PATH } from '../../../common';
 import { ClientConfigType } from '../../types';
 import { AuthType } from '../../../common';
 import './_index.scss';
+import { logout } from '../account/utils';
 
 interface CustomErrorDeps {
   title: string;
@@ -46,8 +47,13 @@ export function CustomErrorPage(props: CustomErrorDeps) {
         {props.subtitle}
       </EuiText>
       <EuiSpacer size="s" />
-      <EuiButton fill href={props.http.basePath.serverBasePath} fullWidth>
-        Back to OpenSearch Dashboards Home
+      <EuiButton
+        fill
+        onClick={() => logout(props.http, '')}
+        data-test-subj="error-logout-button"
+        fullWidth
+      >
+        Logout
       </EuiButton>
     </EuiListGroup>
   );
@@ -75,3 +81,4 @@ export async function renderPage(
   );
   return () => ReactDOM.unmountComponentAtNode(params.element);
 }
+export { EuiButton };
