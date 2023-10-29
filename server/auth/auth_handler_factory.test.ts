@@ -110,6 +110,19 @@ describe('test authentication factory', () => {
     expect(auth.type).toEqual(AuthType.BASIC);
   });
 
+  test('get basic auth with empty auth type: string array', async () => {
+    const auth = await getAuthenticationHandler(
+      [''],
+      router,
+      config,
+      core,
+      esClient,
+      sessionStorageFactory,
+      logger
+    );
+    expect(auth.type).toEqual('basicauth');
+  });
+
   test('get jwt auth: string array', async () => {
     const auth = await getAuthenticationHandler(
       ['jwt'],

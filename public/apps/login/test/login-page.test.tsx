@@ -144,7 +144,7 @@ describe('Login page', () => {
       const config: ClientConfigType = {
         ui: configUiDefault,
         auth: {
-          type: [AuthType.BASIC],
+          type: [''],
         },
       };
       const component = shallow(
@@ -157,7 +157,7 @@ describe('Login page', () => {
       const config: ClientConfigType = {
         ui: configUiDefault,
         auth: {
-          type: AuthType.BASIC,
+          type: '',
         },
       };
       const component = shallow(
