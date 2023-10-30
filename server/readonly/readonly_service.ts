@@ -65,12 +65,13 @@ export class ReadonlyService extends BaseReadonlyService {
   isReadOnlyTenant(authInfo: OpenSearchAuthInfo): boolean {
     const currentTenant = authInfo.user_requested_tenant || globalTenantName;
 
-    // private tenant is not affected
+    // private tenants are isolated to individual users that always have read/write permissions
     if (isPrivateTenant(currentTenant)) {
       return false;
     }
 
-    return authInfo.tenants[currentTenant] !== true;
+    let readWriteAccess = authInfo.tenants[currentTenant];
+    return !readWriteAccess;
   }
 
   async isReadonly(request: OpenSearchDashboardsRequest): Promise<boolean> {
