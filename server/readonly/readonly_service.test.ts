@@ -114,7 +114,7 @@ describe('checks isAnonymousPage', () => {
     [
       {
         headers: {
-          referer: 'https://localhost/login',
+          referer: 'https://localhost/app/login',
         },
       },
       true,

@@ -19,7 +19,7 @@ import {
   OpenSearchDashboardsRequest,
   SessionStorageFactory,
 } from '../../../../src/core/server';
-import { globalTenantName, isPrivateTenant } from '../../common';
+import { globalTenantName, isPrivateTenant, ANONYMOUS_ROUTES } from '../../common';
 import { SecurityClient } from '../backend/opensearch_security_client';
 import { IAuthenticationType, OpenSearchAuthInfo } from '../auth/types/authentication_type';
 import { SecuritySessionCookie } from '../session/security_cookie';
@@ -53,13 +53,8 @@ export class ReadonlyService extends BaseReadonlyService {
       return false;
     }
 
-    try {
-      const url = new URL(request.headers.referer as string);
-      const pathsToIgnore = ['login', 'logout', 'customerror'];
-      return pathsToIgnore.includes(url.pathname?.split('/').pop() || '');
-    } catch (error: any) {
-      this.logger.error(`Could not parse the referer for the capabilites: ${error.stack}`);
-    }
+    const url = new URL(request.headers.referer as string);
+    return ANONYMOUS_ROUTES.some((path) => url.pathname?.includes(path));
   }
 
   isReadOnlyTenant(authInfo: OpenSearchAuthInfo): boolean {
@@ -70,7 +65,7 @@ export class ReadonlyService extends BaseReadonlyService {
       return false;
     }
 
-    let readWriteAccess = authInfo.tenants[currentTenant];
+    const readWriteAccess = authInfo.tenants[currentTenant];
     return !readWriteAccess;
   }
 
@@ -100,6 +95,7 @@ export class ReadonlyService extends BaseReadonlyService {
 
       return authInfo && this.isReadOnlyTenant(authInfo);
     } catch (error: any) {
+      this.logger.error(`Failed to resolve if it's a readonly tenant: ${error.stack}`);
       return false;
     }
   }
