@@ -16,7 +16,6 @@
 import { parse } from 'url';
 import { CoreStart } from 'opensearch-dashboards/public';
 import { API_ENDPOINT_MULTITENANCY } from '../apps/configuration/constants';
-import { share } from 'rxjs/operators';
 
 export async function addTenantToShareURL(core: CoreStart) {
   let tenant = '';
@@ -31,10 +30,9 @@ export async function addTenantToShareURL(core: CoreStart) {
     console.log(`failed to get user tenant: ${error}`);
     return;
   }
-  
   // Add the tenant to URLs copied from the share panel
   document.addEventListener('copy', (event) => {
-    let shareButton = document.querySelector('[data-share-url]') as any;
+    const shareButton = document.querySelector('[data-share-url]') as any;
     const target = document.querySelector('body > span');
     shareButton.removeAllRanges();
 
@@ -61,8 +59,8 @@ export async function addTenantToShareURL(core: CoreStart) {
           }
         }
 
-        let range = document.createRange() as any;
-        let referenceNode = document.getElementsByTagName("span").item(0);
+        const range = document.createRange() as any;
+        const referenceNode = document.getElementsByTagName('span').item(0);
 
         range.selectNode(referenceNode);
         shareButton.addRange(range);
