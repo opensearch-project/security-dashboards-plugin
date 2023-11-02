@@ -14,6 +14,7 @@
  */
 import { Request as HapiRequest, ResponseObject as HapiResponseObject } from '@hapi/hapi';
 import { httpServerMock } from '../../../../src/core/server/http/http_server.mocks';
+import { merge } from 'lodash';
 import {
   clearSplitCookies,
   getExtraAuthStorageValue,
@@ -170,5 +171,69 @@ describe('Test extra auth storage', () => {
     const unsplitValue = unsplitCookiesIntoValue(osRequest, cookiePrefix, additionalCookies);
 
     expect(unsplitValue).toEqual('abcdefghi');
+  });
+
+  test('should check for cookie values updated in the same request', async () => {
+    const cookiePrefix = 'testcookie';
+    const additionalCookies = 5;
+
+    const mockRequest = httpServerMock.createRawRequest();
+
+    const extendedMockRequest = merge(mockRequest, {
+      _states: {
+        [cookiePrefix + '1']: {
+          name: cookiePrefix + '1',
+          value: 'abc',
+        },
+        [cookiePrefix + '2']: {
+          name: cookiePrefix + '2',
+          value: 'def',
+        },
+        [cookiePrefix + '3']: {
+          name: cookiePrefix + '3',
+          value: 'ghi',
+        },
+      },
+    }) as HapiRequest;
+
+    const osRequest = OpenSearchDashboardsRequest.from(extendedMockRequest);
+    const unsplitValue = unsplitCookiesIntoValue(osRequest, cookiePrefix, additionalCookies);
+
+    expect(unsplitValue).toEqual('abcdefghi');
+  });
+
+  test('should not mix cookie values updated in the same request with previous cookie values', async () => {
+    const cookiePrefix = 'testcookie';
+    const additionalCookies = 5;
+
+    const mockRequest = httpServerMock.createRawRequest({
+      state: {
+        [cookiePrefix + '1']: 'abc',
+        [cookiePrefix + '2']: 'def',
+        [cookiePrefix + '3']: 'ghi',
+      },
+    });
+
+    const extendedMockRequest = merge(mockRequest, {
+      _states: {
+        [cookiePrefix + '1']: {
+          name: cookiePrefix + '1',
+          value: 'jkl',
+        },
+        [cookiePrefix + '2']: {
+          name: cookiePrefix + '2',
+          value: 'mno',
+        },
+        [cookiePrefix + '3']: {
+          name: cookiePrefix + '3',
+          value: 'pqr',
+        },
+      },
+    }) as HapiRequest;
+
+    const osRequest = OpenSearchDashboardsRequest.from(extendedMockRequest);
+    const unsplitValue = unsplitCookiesIntoValue(osRequest, cookiePrefix, additionalCookies);
+
+    expect(unsplitValue).toEqual('jklmnopqr');
   });
 });

@@ -19,14 +19,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route } from 'react-router-dom';
 import { ERROR_MISSING_ROLE_PATH } from '../../../common';
-import defaultBrandImage from '../../assets/opensearch_logo_h.svg';
 import { ClientConfigType } from '../../types';
 import './_index.scss';
+import { logout } from '../account/utils';
 
 interface CustomErrorDeps {
   title: string;
   subtitle: string;
   http: CoreStart['http'];
+  chrome: CoreStart['chrome'];
   config: ClientConfigType['ui']['basicauth']['login'];
 }
 
@@ -34,7 +35,7 @@ export function CustomErrorPage(props: CustomErrorDeps) {
   return (
     <EuiListGroup className="custom-error-wrapper">
       {props.config.showbrandimage && (
-        <EuiImage alt="" url={props.config.brandimage || defaultBrandImage} />
+        <EuiImage alt="" url={props.config.brandimage || props.chrome.logos.OpenSearch.url} />
       )}
       <EuiSpacer size="s" />
       <EuiText size="m" textAlign="center">
@@ -45,8 +46,13 @@ export function CustomErrorPage(props: CustomErrorDeps) {
         {props.subtitle}
       </EuiText>
       <EuiSpacer size="s" />
-      <EuiButton fill href={props.http.basePath.serverBasePath} fullWidth>
-        Back to OpenSearch Dashboards Home
+      <EuiButton
+        fill
+        onClick={() => logout(props.http, '')}
+        data-test-subj="error-logout-button"
+        fullWidth
+      >
+        Logout
       </EuiButton>
     </EuiListGroup>
   );
@@ -62,6 +68,7 @@ export async function renderPage(
       <Route path={ERROR_MISSING_ROLE_PATH}>
         <CustomErrorPage
           http={coreStart.http}
+          chrome={coreStart.chrome}
           config={config.ui.basicauth.login}
           title="Missing Role"
           subtitle="No roles available for this user, please contact your system administrator."
@@ -73,3 +80,4 @@ export async function renderPage(
   );
   return () => ReactDOM.unmountComponentAtNode(params.element);
 }
+export { EuiButton };
