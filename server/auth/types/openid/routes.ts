@@ -127,7 +127,15 @@ export class OpenIdAuthRoutes {
             state: nonce,
             scope: this.openIdAuthConfig.scope,
           };
+          if (this.config.openid?.additional_properties) {
+            for (const [key, value] of Object.entries(this.config.openid?.additional_properties)) {
+              console.log(`${key}: ${value}`);
+              query[key] = value;
+            }
+          }
           const queryString = stringify(query);
+          console.log('query: ' + queryString);
+
           const location = `${this.openIdAuthConfig.authorizationEndpoint}?${queryString}`;
           const cookie: SecuritySessionCookie = {
             oidc: {
@@ -173,6 +181,14 @@ export class OpenIdAuthRoutes {
           client_id: clientId,
           client_secret: clientSecret,
         };
+        if (this.config.openid?.additional_properties) {
+          for (const [key, value] of Object.entries(this.config.openid?.additional_properties)) {
+            console.log(`${key}: ${value}`);
+            query[key] = value;
+          }
+        }
+        const queryString = stringify(query);
+        console.log('query2: ' + queryString);
 
         try {
           const tokenResponse = await callTokenEndpoint(

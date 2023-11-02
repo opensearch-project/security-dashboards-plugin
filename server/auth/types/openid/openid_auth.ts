@@ -92,10 +92,6 @@ export class OpenIdAuthentication extends AuthenticationType {
 
   public async init() {
     try {
-      console.log(Object.keys(this.config.openid.additionalProperties));
-      console.log(this.config.openid?.additionalProperties.potato + "TTTTTT")
-      console.log(this.config.openid?.additionalProperties.test + "TTTTTT")
-
       const response = await this.wreckClient.get(this.openIdConnectUrl);
       const payload = JSON.parse(response.payload as string);
 
@@ -183,9 +179,6 @@ export class OpenIdAuthentication extends AuthenticationType {
   }
 
   async getAdditionalAuthHeader(request: OpenSearchDashboardsRequest): Promise<any> {
-    console.log(this.config.openid?.additionalProperties.potato + "TTTTTT")
-    console.log(this.config.openid?.additionalProperties.test + "TTTTTT")
-    Object.keys(this.config.openid.additionalProperties)
     return {};
   }
 
