@@ -180,7 +180,7 @@ export const configSchema = schema.object({
       verify_hostnames: schema.boolean({ defaultValue: true }),
       refresh_tokens: schema.boolean({ defaultValue: true }),
       trust_dynamic_headers: schema.boolean({ defaultValue: false }),
-      additional_properties: schema.maybe(schema.any({ defaultValue: null })),
+      additional_parameters: schema.maybe(schema.any({ defaultValue: null })),
       extra_storage: schema.object({
         cookie_prefix: schema.string({
           defaultValue: 'security_authentication_oidc',

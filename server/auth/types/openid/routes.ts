@@ -127,8 +127,8 @@ export class OpenIdAuthRoutes {
             state: nonce,
             scope: this.openIdAuthConfig.scope,
           };
-          if (this.config.openid?.additional_properties) {
-            for (const [key, value] of Object.entries(this.config.openid?.additional_properties)) {
+          if (this.config.openid?.additional_parameters) {
+            for (const [key, value] of Object.entries(this.config.openid?.additional_parameters)) {
               console.log(`${key}: ${value}`);
               query[key] = value;
             }
@@ -181,8 +181,8 @@ export class OpenIdAuthRoutes {
           client_id: clientId,
           client_secret: clientSecret,
         };
-        if (this.config.openid?.additional_properties) {
-          for (const [key, value] of Object.entries(this.config.openid?.additional_properties)) {
+        if (this.config.openid?.additional_parameters) {
+          for (const [key, value] of Object.entries(this.config.openid?.additional_parameters)) {
             console.log(`${key}: ${value}`);
             query[key] = value;
           }
