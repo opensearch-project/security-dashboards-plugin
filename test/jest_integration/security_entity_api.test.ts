@@ -13,8 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-jest.useFakeTimers();
-
 import * as osdTestServer from '../../../../src/core/test_helpers/osd_server';
 import { Root } from '../../../../src/core/server/root';
 import { resolve } from 'path';
