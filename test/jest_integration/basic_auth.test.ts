@@ -13,8 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-jest.useFakeTimers();
-
 import * as osdTestServer from '../../../../src/core/test_helpers/osd_server';
 import { Root } from '../../../../src/core/server/root';
 import { resolve } from 'path';
@@ -122,10 +120,11 @@ describe('start OpenSearch Dashboards server', () => {
     }
   });
 
-  afterAll(async () => {
+  afterAll((done) => {
     // shutdown OpenSearchDashboards server
-    await root.shutdown();
-    await anonymousDisabledRoot.shutdown();
+    root.shutdown();
+    anonymousDisabledRoot.shutdown();
+    done();
   });
 
   it('can access login page without credentials', async () => {

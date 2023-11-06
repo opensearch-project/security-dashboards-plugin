@@ -13,8 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-jest.useFakeTimers();
-
 import * as osdTestServer from '../../../../src/core/test_helpers/osd_server';
 import { Root } from '../../../../src/core/server/root';
 import { resolve } from 'path';
@@ -159,9 +157,9 @@ describe('start OpenSearch Dashboards server', () => {
     }
   });
 
-  afterAll(async () => {
+  afterAll((done) => {
     console.log('Remove the Sample Data');
-    await wreck
+    wreck
       .delete('http://localhost:5601/api/sample_data/flights', {
         rejectUnauthorized: false,
         headers: {
@@ -176,7 +174,7 @@ describe('start OpenSearch Dashboards server', () => {
         Promise.resolve(value);
       });
     console.log('Remove the Role Mapping');
-    await wreck
+    wreck
       .patch('https://localhost:9200/_plugins/_security/api/rolesmapping/all_access', {
         payload: [
           {
@@ -198,7 +196,7 @@ describe('start OpenSearch Dashboards server', () => {
         Promise.resolve(value);
       });
     console.log('Remove the Security Config');
-    await wreck
+    wreck
       .patch('https://localhost:9200/_plugins/_security/api/securityconfig', {
         payload: [
           {
@@ -219,7 +217,8 @@ describe('start OpenSearch Dashboards server', () => {
         Promise.resolve(value);
       });
     // shutdown OpenSearchDashboards server
-    await root.shutdown();
+    root.shutdown();
+    done();
   });
 
   it('Login to app/opensearch_dashboards_overview#/ when JWT is enabled', async () => {
