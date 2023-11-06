@@ -22,9 +22,7 @@ export default {
   testPathIgnorePatterns: config.testPathIgnorePatterns.filter(
     (pattern) => !pattern.includes('integration_tests')
   ),
-  setupFilesAfterEnv: [
-    '<rootDir>/plugins/security-dashboards-plugin/test/setup/after_env.js',
-  ],
+  setupFilesAfterEnv: ['<rootDir>/plugins/security-dashboards-plugin/test/setup/after_env.js'],
   collectCoverageFrom: [
     '<rootDir>/plugins/security-dashboards-plugin/server/**/*.{ts,tsx}',
     '!<rootDir>/plugins/security-dashboards-plugin/server/**/*.test.{ts,tsx}',
