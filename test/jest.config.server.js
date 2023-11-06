@@ -23,7 +23,6 @@ export default {
     (pattern) => !pattern.includes('integration_tests')
   ),
   setupFilesAfterEnv: [
-    '<rootDir>/src/dev/jest/setup/after_env.integration.js',
     '<rootDir>/plugins/security-dashboards-plugin/test/setup/after_env.js',
   ],
   collectCoverageFrom: [
