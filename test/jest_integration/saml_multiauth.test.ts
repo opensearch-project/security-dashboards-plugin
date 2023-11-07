@@ -171,9 +171,9 @@ describe('start OpenSearch Dashboards server', () => {
     }
   });
 
-  afterAll((done) => {
+  afterAll(async () => {
     console.log('Remove the Sample Data');
-    wreck
+    await wreck
       .delete('http://localhost:5601/api/sample_data/flights', {
         rejectUnauthorized: false,
         headers: {
@@ -188,7 +188,7 @@ describe('start OpenSearch Dashboards server', () => {
         Promise.resolve(value);
       });
     console.log('Remove the Role Mapping');
-    wreck
+    await wreck
       .patch('https://localhost:9200/_plugins/_security/api/rolesmapping/all_access', {
         payload: [
           {
@@ -210,7 +210,7 @@ describe('start OpenSearch Dashboards server', () => {
         Promise.resolve(value);
       });
     console.log('Remove the Security Config');
-    wreck
+    await wreck
       .patch('https://localhost:9200/_plugins/_security/api/securityconfig', {
         payload: [
           {
@@ -231,8 +231,7 @@ describe('start OpenSearch Dashboards server', () => {
         Promise.resolve(value);
       });
     // shutdown OpenSearchDashboards server
-    root.shutdown();
-    done();
+    await root.shutdown();
   });
 
   it('Login to Dashboards and resume from nextUrl', async () => {

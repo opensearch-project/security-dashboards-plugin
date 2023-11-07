@@ -120,11 +120,10 @@ describe('start OpenSearch Dashboards server', () => {
     }
   });
 
-  afterAll((done) => {
+  afterAll(async () => {
     // shutdown OpenSearchDashboards server
-    root.shutdown();
-    anonymousDisabledRoot.shutdown();
-    done();
+    await root.shutdown();
+    await anonymousDisabledRoot.shutdown();
   });
 
   it('can access login page without credentials', async () => {

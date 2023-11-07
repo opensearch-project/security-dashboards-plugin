@@ -60,10 +60,9 @@ describe('start OpenSearch Dashboards server', () => {
     console.log('Started OpenSearchDashboards server');
   });
 
-  afterAll((done) => {
+  afterAll(async () => {
     // shutdown OpenSearchDashboards server
-    root.shutdown();
-    done();
+    await root.shutdown();
   });
 
   async function createTestUser(username: string = undefined, password: string = undefined) {
