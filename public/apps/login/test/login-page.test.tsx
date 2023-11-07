@@ -130,7 +130,7 @@ describe('Login page', () => {
       const config: ClientConfigType = {
         ui: configUI,
         auth: {
-          type: [AuthType.BASIC, 'openid', 'saml'],
+          type: [AuthType.BASIC, 'openid', AuthType.SAML],
           logout_url: API_AUTH_LOGOUT,
         },
       };

@@ -70,7 +70,7 @@ describe('start OpenSearch Dashboards server', () => {
         opensearch_security: {
           auth: {
             anonymous_auth_enabled: false,
-            type: [AuthType.BASIC, 'saml'],
+            type: [AuthType.BASIC, AuthType.SAML],
             multiple_auth_enabled: true,
           },
           multitenancy: {
@@ -136,7 +136,7 @@ describe('start OpenSearch Dashboards server', () => {
       order: 5,
       http_authenticator: {
         challenge: true,
-        type: 'saml',
+        type: AuthType.SAML,
         config: {
           idp: {
             metadata_url: 'http://localhost:7000/metadata',

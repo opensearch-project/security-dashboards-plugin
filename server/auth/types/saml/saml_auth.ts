@@ -45,7 +45,7 @@ import {
 export class SamlAuthentication extends AuthenticationType {
   public static readonly AUTH_HEADER_NAME = 'authorization';
 
-  public readonly type: string = 'saml';
+  public readonly type: string = AuthType.SAML;
 
   constructor(
     config: SecurityPluginConfigType,

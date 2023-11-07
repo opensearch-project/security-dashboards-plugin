@@ -24,7 +24,7 @@ const validateAuthType = (value: string[]) => {
     AuthType.BASIC,
     'jwt',
     'openid',
-    'saml',
+    AuthType.SAML,
     'proxy',
     'kerberos',
     'proxycache',
