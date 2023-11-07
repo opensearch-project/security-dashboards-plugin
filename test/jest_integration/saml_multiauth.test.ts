@@ -259,7 +259,7 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   it('Login to Dashboards without nextUrl', async () => {
-    const urlWithoutHash = `http://localhost:5601/app/home`;
+    const urlWithoutHash = `http://localhost:5601/app/home#/`;
     const loginUrl = `http://localhost:5601/app/login`;
     const driver = getDriver(browser, options).build();
     await driver.manage().deleteAllCookies();
