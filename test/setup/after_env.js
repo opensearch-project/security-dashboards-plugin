@@ -16,3 +16,8 @@
 import { TextEncoder, TextDecoder } from 'util';
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
+
+/**
+ * Set the timeout for the integration test suite to 15 minutes
+ */
+jest.setTimeout(15 * 60 * 1000);
