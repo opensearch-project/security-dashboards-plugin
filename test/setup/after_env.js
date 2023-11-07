@@ -17,6 +17,8 @@ import { TextEncoder, TextDecoder } from 'util';
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
 
+/* eslint-env jest */
+
 /**
  * Set the timeout for the integration test suite to 15 minutes
  */
