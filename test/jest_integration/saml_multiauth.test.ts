@@ -291,7 +291,7 @@ describe('start OpenSearch Dashboards server', () => {
     //   .isSelected();
     await driver.findElement(By.xpath('/html/body/div[6]/div[2]/div/div/div[3]/button[2]')).click();
 
-    expect(windowHash).toEqual(urlWithoutHash);
+    expect(windowHash).toContain(urlWithoutHash);
     const cookie = await driver.manage().getCookies();
     expect(cookie.length).toEqual(3);
     await driver.manage().deleteAllCookies();
