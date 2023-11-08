@@ -33,6 +33,7 @@ describe('start OpenSearch Dashboards server', () => {
   // XPath Constants
   const signInBtnXPath = '//*[@id="btn-sign-in"]';
   const samlLogInButton = '//a[@aria-label="saml_login_button"]';
+  const tenantConfirmButton = '/html/body/div[5]/div[2]/div/div/div[3]/button[2]';
   const sampleFlightDataTitle =
     '/html/body/div[1]/div/div/div/div[2]/div/div/main/div/div/div[3]/div[3]/div[1]/table/tbody/tr[1]/td[2]/div[2]/a';
   // Browser Settings
@@ -294,9 +295,11 @@ describe('start OpenSearch Dashboards server', () => {
     await driver.findElement(By.xpath(samlLogInButton)).click();
     await driver.wait(until.elementsLocated(By.xpath(signInBtnXPath)), 20000);
     await driver.findElement(By.xpath(signInBtnXPath)).click();
-    const windowHash = await driver.getCurrentUrl();
-    console.log('windowHash: ' + windowHash);
+    await driver.wait(until.elementLocated(By.xpath(tenantConfirmButton)), 2000);
+    await driver.findElement(By.xpath(tenantConfirmButton)).click();
     await driver.wait(until.elementsLocated(By.xpath(sampleFlightDataTitle)), 20000);
+    const windowHash = await driver.getCurrentUrl();
+    console.log('windowHash2: ' + windowHash);
     await driver.manage().deleteAllCookies();
     await driver.quit();
   });
