@@ -237,7 +237,7 @@ describe('start OpenSearch Dashboards server', () => {
     await root.shutdown();
   });
 
-  it.skip('Login to Dashboards and resume from nextUrl', async () => {
+  it('Login to Dashboards and resume from nextUrl', async () => {
     const urlWithHash = `http://localhost:5601/app/management/opensearch-dashboards/indexPatterns?bannerMessage=To%20visualize%20and%20explore%20data%20in%20OpenSearch%20Dashboards,%20you%20must%20create%20an%20index%20pattern%20to%20retrieve%20data%20from%20OpenSearch.`;
     const loginUrlWithNextUrl = `http://localhost:5601/app/login?nextUrl=%2Fapp%2Fmanagement%2Fopensearch-dashboards%2FindexPatterns%3FbannerMessage%3DTo%2520visualize%2520and%2520explore%2520data%2520in%2520OpenSearch%2520Dashboards,%2520you%2520must%2520create%2520an%2520index%2520pattern%2520to%2520retrieve%2520data%2520from%2520OpenSearch.`;
     const driver = getDriver(browser, options).build();
@@ -261,7 +261,7 @@ describe('start OpenSearch Dashboards server', () => {
     await driver.quit();
   });
 
-  it.skip('Login to Dashboards without nextUrl', async () => {
+  it('Login to Dashboards without nextUrl', async () => {
     const urlWithoutHash = `http://localhost:5601/app/home`;
     const loginUrl = `http://localhost:5601/app/login`;
     const driver = getDriver(browser, options).build();
