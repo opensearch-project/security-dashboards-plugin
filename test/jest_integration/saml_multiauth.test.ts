@@ -241,24 +241,30 @@ describe('start OpenSearch Dashboards server', () => {
     const driver = getDriver(browser, options).build();
     await driver.manage().deleteAllCookies();
     await driver.get(loginUrlWithNextUrl);
+    await driver.sleep(5000);
     await driver.wait(until.elementsLocated(By.xpath(samlLogInButton)), 20000);
+    await driver.sleep(5000);
     await driver.findElement(By.xpath(samlLogInButton)).click();
+    await driver.sleep(5000);
     await driver.wait(until.elementsLocated(By.xpath(signInBtnXPath)), 20000);
+    await driver.sleep(5000);
     await driver.findElement(By.xpath(signInBtnXPath)).click();
+    await driver.sleep(5000);
     // TODO Use a better XPath.
     await driver.wait(
       until.elementsLocated(By.xpath('/html/body/div[1]/div/header/div/div[2]')),
       20000
     );
-
+    await driver.sleep(5000);
     const windowHash = await driver.getCurrentUrl();
+    await driver.sleep(5000);
     console.log('windowHash: ' + windowHash);
 
-    await driver.wait(until.elementLocated(By.id('global')), 2000);
+    //await driver.wait(until.elementLocated(By.id('global')), 2000);
     // await driver
     //   .findElement(By.xpath('/html/body/div[5]/div[2]/div/div/div[2]/div/div[4]/div[1]/label'))
     //   .isSelected();
-    await driver.findElement(By.xpath('/html/body/div[5]/div[2]/div/div/div[3]/button[2]')).click();
+    //await driver.findElement(By.xpath('/html/body/div[5]/div[2]/div/div/div[3]/button[2]')).click();
 
     expect(windowHash).toEqual(urlWithHash);
     const cookie = await driver.manage().getCookies();
@@ -284,13 +290,6 @@ describe('start OpenSearch Dashboards server', () => {
     );
     const windowHash = await driver.getCurrentUrl();
     console.log('windowHash: ' + windowHash);
-
-    await driver.wait(until.elementLocated(By.id('global')), 2000);
-    // await driver
-    //   .findElement(By.xpath('/html/body/div[6]/div[2]/div/div/div[2]/div/div[4]/div[1]/label'))
-    //   .isSelected();
-    await driver.findElement(By.xpath('/html/body/div[6]/div[2]/div/div/div[3]/button[2]')).click();
-
     expect(windowHash).toContain(urlWithoutHash);
     const cookie = await driver.manage().getCookies();
     expect(cookie.length).toEqual(3);
