@@ -294,6 +294,8 @@ describe('start OpenSearch Dashboards server', () => {
     await driver.findElement(By.xpath(samlLogInButton)).click();
     await driver.wait(until.elementsLocated(By.xpath(signInBtnXPath)), 20000);
     await driver.findElement(By.xpath(signInBtnXPath)).click();
+    const windowHash = await driver.getCurrentUrl();
+    console.log('windowHash: ' + windowHash);
     await driver.wait(until.elementsLocated(By.xpath(sampleFlightDataTitle)), 20000);
     await driver.manage().deleteAllCookies();
     await driver.quit();
