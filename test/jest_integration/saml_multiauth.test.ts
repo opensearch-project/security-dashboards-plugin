@@ -33,9 +33,6 @@ describe('start OpenSearch Dashboards server', () => {
   // XPath Constants
   const signInBtnXPath = '//*[@id="btn-sign-in"]';
   const samlLogInButton = '//a[@aria-label="saml_login_button"]';
-  const tenantConfirmButton = '/html/body/div[5]/div[2]/div/div/div[3]/button[2]';
-  const sampleFlightDataTitle =
-    '/html/body/div[1]/div/div/div/div[2]/div/div/main/div/div/div[3]/div[3]/div[1]/table/tbody/tr[1]/td[2]/div[2]/a';
   // Browser Settings
   const browser = 'firefox';
   const options = new Options().headless();
@@ -287,20 +284,20 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   it('Login to Dashboards and access to the sample data', async () => {
+    const loginUrl = `http://localhost:5601/`;
     const sampleDataUrl = `http://localhost:5601/app/visualize#/?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-15m,to:now))`;
+    const expectedString = 'Airline Carrier';
     const driver = getDriver(browser, options).build();
     await driver.manage().deleteAllCookies();
-    await driver.get(sampleDataUrl);
+    await driver.get(loginUrl);
     await driver.wait(until.elementsLocated(By.xpath(samlLogInButton)), 20000);
     await driver.findElement(By.xpath(samlLogInButton)).click();
     await driver.wait(until.elementsLocated(By.xpath(signInBtnXPath)), 20000);
     await driver.findElement(By.xpath(signInBtnXPath)).click();
-    await driver.wait(until.elementLocated(By.xpath(tenantConfirmButton)), 20000);
-    await driver.findElement(By.xpath(tenantConfirmButton)).click();
-
+    await driver.wait(until.elementLocated(By.css('button[data-test-subj="confirm"]')), 20000);
+    await driver.get(sampleDataUrl);
     await driver.sleep(20000);
     const pageSource = await driver.getPageSource();
-    const expectedString = 'Airline Carrier';
     console.log('the source is ' + pageSource);
     expect(pageSource.includes(expectedString)).toBe(true);
     const actualTitle = await driver.getTitle();
