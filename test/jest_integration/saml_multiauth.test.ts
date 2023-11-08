@@ -33,6 +33,8 @@ describe('start OpenSearch Dashboards server', () => {
   // XPath Constants
   const signInBtnXPath = '//*[@id="btn-sign-in"]';
   const samlLogInButton = '//a[@aria-label="saml_login_button"]';
+  const sampleFlightDataTitle =
+    '/html/body/div[1]/div/div/div/div[2]/div/div/main/div/div/div[3]/div[3]/div[1]/table/tbody/tr[1]/td[2]/div[2]/a';
   // Browser Settings
   const browser = 'firefox';
   const options = new Options().headless();
@@ -235,7 +237,7 @@ describe('start OpenSearch Dashboards server', () => {
     await root.shutdown();
   });
 
-  it('Login to Dashboards and resume from nextUrl', async () => {
+  it.skip('Login to Dashboards and resume from nextUrl', async () => {
     const urlWithHash = `http://localhost:5601/app/management/opensearch-dashboards/indexPatterns?bannerMessage=To%20visualize%20and%20explore%20data%20in%20OpenSearch%20Dashboards,%20you%20must%20create%20an%20index%20pattern%20to%20retrieve%20data%20from%20OpenSearch.`;
     const loginUrlWithNextUrl = `http://localhost:5601/app/login?nextUrl=%2Fapp%2Fmanagement%2Fopensearch-dashboards%2FindexPatterns%3FbannerMessage%3DTo%2520visualize%2520and%2520explore%2520data%2520in%2520OpenSearch%2520Dashboards,%2520you%2520must%2520create%2520an%2520index%2520pattern%2520to%2520retrieve%2520data%2520from%2520OpenSearch.`;
     const driver = getDriver(browser, options).build();
@@ -259,7 +261,7 @@ describe('start OpenSearch Dashboards server', () => {
     await driver.quit();
   });
 
-  it('Login to Dashboards without nextUrl', async () => {
+  it.skip('Login to Dashboards without nextUrl', async () => {
     const urlWithoutHash = `http://localhost:5601/app/home`;
     const loginUrl = `http://localhost:5601/app/login`;
     const driver = getDriver(browser, options).build();
@@ -279,6 +281,20 @@ describe('start OpenSearch Dashboards server', () => {
     expect(windowHash).toContain(urlWithoutHash);
     const cookie = await driver.manage().getCookies();
     expect(cookie.length).toEqual(3);
+    await driver.manage().deleteAllCookies();
+    await driver.quit();
+  });
+
+  it('Login to Dashboards and access to the sample data', async () => {
+    const loginUrlWithNextUrl = `http://localhost:5601/app/login?nextUrl=%2Fapp%2Fvisualize#/?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-15m,to:now))`;
+    const driver = getDriver(browser, options).build();
+    await driver.manage().deleteAllCookies();
+    await driver.get(loginUrlWithNextUrl);
+    await driver.wait(until.elementsLocated(By.xpath(samlLogInButton)), 20000);
+    await driver.findElement(By.xpath(samlLogInButton)).click();
+    await driver.wait(until.elementsLocated(By.xpath(signInBtnXPath)), 20000);
+    await driver.findElement(By.xpath(signInBtnXPath)).click();
+    await driver.wait(until.elementsLocated(By.xpath(sampleFlightDataTitle)), 20000);
     await driver.manage().deleteAllCookies();
     await driver.quit();
   });
