@@ -43,6 +43,7 @@ describe('start OpenSearch Dashboards server', () => {
         plugins: {
           scanDirs: [resolve(__dirname, '../..')],
         },
+        home: { disableWelcomeScreen: true },
         server: {
           host: 'localhost',
           port: 5601,
@@ -76,8 +77,8 @@ describe('start OpenSearch Dashboards server', () => {
             enabled: true,
             tenants: {
               enable_global: true,
-              enable_private: true,
-              preferred: ['Private', 'Global'],
+              enable_private: false,
+              preferred: ['Global'],
             },
           },
         },
@@ -249,8 +250,16 @@ describe('start OpenSearch Dashboards server', () => {
       until.elementsLocated(By.xpath('/html/body/div[1]/div/header/div/div[2]')),
       20000
     );
+
     const windowHash = await driver.getCurrentUrl();
     console.log('windowHash: ' + windowHash);
+
+    await driver.wait(until.elementLocated(By.id('global')), 2000);
+    await driver
+      .findElement(By.xpath('/html/body/div[5]/div[2]/div/div/div[2]/div/div[4]/div[1]/label'))
+      .isSelected();
+    await driver.findElement(By.xpath('/html/body/div[5]/div[2]/div/div/div[3]/button[2]')).click();
+
     expect(windowHash).toEqual(urlWithHash);
     const cookie = await driver.manage().getCookies();
     expect(cookie.length).toEqual(3);
@@ -259,7 +268,7 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   it('Login to Dashboards without nextUrl', async () => {
-    const urlWithoutHash = `http://localhost:5601/app/home#/`;
+    const urlWithoutHash = `http://localhost:5601/app/home`;
     const loginUrl = `http://localhost:5601/app/login`;
     const driver = getDriver(browser, options).build();
     await driver.manage().deleteAllCookies();
@@ -275,6 +284,13 @@ describe('start OpenSearch Dashboards server', () => {
     );
     const windowHash = await driver.getCurrentUrl();
     console.log('windowHash: ' + windowHash);
+
+    await driver.wait(until.elementLocated(By.id('global')), 2000);
+    await driver
+      .findElement(By.xpath('/html/body/div[6]/div[2]/div/div/div[2]/div/div[4]/div[1]/label'))
+      .isSelected();
+    await driver.findElement(By.xpath('/html/body/div[6]/div[2]/div/div/div[3]/button[2]')).click();
+
     expect(windowHash).toEqual(urlWithoutHash);
     const cookie = await driver.manage().getCookies();
     expect(cookie.length).toEqual(3);
