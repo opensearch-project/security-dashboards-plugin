@@ -236,36 +236,22 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   it('Login to Dashboards and resume from nextUrl', async () => {
-    const urlWithHash = `http://localhost:5601/app/dashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(filters:!(),refreshInterval:(pause:!f,value:900000),time:(from:now-24h,to:now))&_a=(description:'Analyze%20mock%20flight%20data%20for%20OpenSearch-Air,%20Logstash%20Airways,%20OpenSearch%20Dashboards%20Airlines%20and%20BeatsWest',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'%5BFlights%5D%20Global%20Flight%20Dashboard',viewMode:view)`;
-    const loginUrlWithNextUrl = `http://localhost:5601/app/login?nextUrl=%2Fapp%2Fdashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(filters:!(),refreshInterval:(pause:!f,value:900000),time:(from:now-24h,to:now))&_a=(description:'Analyze%20mock%20flight%20data%20for%20OpenSearch-Air,%20Logstash%20Airways,%20OpenSearch%20Dashboards%20Airlines%20and%20BeatsWest',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'%5BFlights%5D%20Global%20Flight%20Dashboard',viewMode:view)`;
+    const urlWithHash = `http://localhost:5601/app/dashboards#/?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-15m,to:now))`;
+    const loginUrlWithNextUrl = `http://localhost:5601/app/login?nextUrl=%2Fapp%2Fdashboards#/?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-15m,to:now))`;
     const driver = getDriver(browser, options).build();
     await driver.manage().deleteAllCookies();
     await driver.get(loginUrlWithNextUrl);
-    await driver.sleep(5000);
     await driver.wait(until.elementsLocated(By.xpath(samlLogInButton)), 20000);
-    await driver.sleep(5000);
     await driver.findElement(By.xpath(samlLogInButton)).click();
-    await driver.sleep(5000);
     await driver.wait(until.elementsLocated(By.xpath(signInBtnXPath)), 20000);
-    await driver.sleep(5000);
     await driver.findElement(By.xpath(signInBtnXPath)).click();
-    await driver.sleep(5000);
     // TODO Use a better XPath.
     await driver.wait(
       until.elementsLocated(By.xpath('/html/body/div[1]/div/header/div/div[2]')),
       20000
     );
-    await driver.sleep(5000);
     const windowHash = await driver.getCurrentUrl();
-    await driver.sleep(5000);
     console.log('windowHash: ' + windowHash);
-
-    //await driver.wait(until.elementLocated(By.id('global')), 2000);
-    // await driver
-    //   .findElement(By.xpath('/html/body/div[5]/div[2]/div/div/div[2]/div/div[4]/div[1]/label'))
-    //   .isSelected();
-    //await driver.findElement(By.xpath('/html/body/div[5]/div[2]/div/div/div[3]/button[2]')).click();
-
     expect(windowHash).toEqual(urlWithHash);
     const cookie = await driver.manage().getCookies();
     expect(cookie.length).toEqual(3);
