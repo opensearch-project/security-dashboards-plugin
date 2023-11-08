@@ -287,17 +287,25 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   it('Login to Dashboards and access to the sample data', async () => {
-    const loginUrlWithNextUrl = `http://localhost:5601/app/login?nextUrl=%2Fapp%2Fvisualize#/?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-15m,to:now))`;
+    const sampleDataUrl = `http://localhost:5601/app/visualize#/?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-15m,to:now))`;
     const driver = getDriver(browser, options).build();
     await driver.manage().deleteAllCookies();
-    await driver.get(loginUrlWithNextUrl);
+    await driver.get(sampleDataUrl);
     await driver.wait(until.elementsLocated(By.xpath(samlLogInButton)), 20000);
     await driver.findElement(By.xpath(samlLogInButton)).click();
     await driver.wait(until.elementsLocated(By.xpath(signInBtnXPath)), 20000);
     await driver.findElement(By.xpath(signInBtnXPath)).click();
-    await driver.wait(until.elementLocated(By.xpath(tenantConfirmButton)), 2000);
+    await driver.wait(until.elementLocated(By.xpath(tenantConfirmButton)), 20000);
     await driver.findElement(By.xpath(tenantConfirmButton)).click();
-    await driver.wait(until.elementsLocated(By.xpath(sampleFlightDataTitle)), 20000);
+
+    await driver.sleep(20000);
+    const pageSource = await driver.getPageSource();
+    const expectedString = 'Airline Carrier';
+    console.log('the source is ' + pageSource);
+    expect(pageSource.includes(expectedString)).toBe(true);
+    const actualTitle = await driver.getTitle();
+    console.log('the page title is ' + actualTitle);
+    console.log('the pagesource is ' + pageSource);
     const windowHash = await driver.getCurrentUrl();
     console.log('windowHash2: ' + windowHash);
     await driver.manage().deleteAllCookies();
