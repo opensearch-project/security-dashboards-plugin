@@ -47,6 +47,7 @@ describe('start OpenSearch Dashboards server', () => {
         plugins: {
           scanDirs: [resolve(__dirname, '../..')],
         },
+        home: { disableWelcomeScreen: true },
         server: {
           host: 'localhost',
           port: 5601,
