@@ -267,7 +267,7 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   it('Login to Dashboard with Hash', async () => {
-    const urlWithHash = `http://localhost:5601/app/management/opensearch-dashboards/indexPatterns`;
+    const urlWithHash = `http://localhost:5601/app/security-dashboards-plugin#/getstarted`;
     const driver = getDriver(browser, options).build();
     await driver.manage().deleteAllCookies();
     await driver.get(urlWithHash);
