@@ -62,7 +62,7 @@ export class OpenIdAuthRoutes {
     private readonly openIdAuthConfig: OpenIdAuthConfig,
     private readonly securityClient: SecurityClient,
     private readonly core: CoreSetup,
-    private readonly wreckClient: typeof wreck
+    private readonly wreckClient: typeof wreck,
   ) {}
 
   private redirectToLogin(
@@ -129,13 +129,15 @@ export class OpenIdAuthRoutes {
           };
           if (this.config.openid?.additional_parameters) {
             for (const [key, value] of Object.entries(this.config.openid?.additional_parameters)) {
-              console.log(`${key}: ${value}`);
+              if (query[key] != null) {
+                context.security_plugin.logger.warn(
+                  `OpenID config '${key}' is being overwritten to '${value}' by additional parameters`
+                );
+              }
               query[key] = value;
             }
           }
           const queryString = stringify(query);
-          console.log('query: ' + queryString);
-
           const location = `${this.openIdAuthConfig.authorizationEndpoint}?${queryString}`;
           const cookie: SecuritySessionCookie = {
             oidc: {
@@ -183,13 +185,14 @@ export class OpenIdAuthRoutes {
         };
         if (this.config.openid?.additional_parameters) {
           for (const [key, value] of Object.entries(this.config.openid?.additional_parameters)) {
-            console.log(`${key}: ${value}`);
+            if (query[key] != null) {
+              context.security_plugin.logger.warn(
+                `OpenID config '${key}' is being overwritten to '${value}' by additional parameters`
+              );
+            }
             query[key] = value;
           }
         }
-        const queryString = stringify(query);
-        console.log('query2: ' + queryString);
-
         try {
           const tokenResponse = await callTokenEndpoint(
             this.openIdAuthConfig.tokenEndpoint!,
