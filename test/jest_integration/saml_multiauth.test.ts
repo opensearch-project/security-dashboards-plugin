@@ -275,8 +275,10 @@ describe('start OpenSearch Dashboards server', () => {
       20000
     );
     const windowHash = await driver.getCurrentUrl();
+    const pageResource = await driver.getPageSource(); // TODO: REMOVE THIS DEBUGGING STATEMENT
+    console.log('Current page resource are: ' + pageResource);
     console.log('windowHash: ' + windowHash);
-    expect(windowHash).toContain(urlWithoutHash);
+    expect(windowHash).toEqual(urlWithoutHash);
     const cookie = await driver.manage().getCookies();
     expect(cookie.length).toEqual(3);
     await driver.manage().deleteAllCookies();
