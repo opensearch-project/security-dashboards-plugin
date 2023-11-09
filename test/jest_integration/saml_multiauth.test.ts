@@ -274,6 +274,7 @@ describe('start OpenSearch Dashboards server', () => {
       until.elementsLocated(By.xpath('/html/body/div[1]/div/header/div/div[2]')),
       20000
     );
+    await driver.sleep(30000); // TODO: REMOVE THIS DEBUGGING STATEMENT
     const windowHash = await driver.getCurrentUrl();
     const pageResource = await driver.getPageSource(); // TODO: REMOVE THIS DEBUGGING STATEMENT
     console.log('Current page resource are: ' + pageResource);
