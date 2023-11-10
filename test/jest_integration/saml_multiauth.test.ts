@@ -260,7 +260,7 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   it('Login to Dashboards without nextUrl', async () => {
-    const urlWithoutHash = `http://localhost:5601/app/home`;
+    const urlWithoutHash = `http://localhost:5601/app/home#/`;
     const loginUrl = `http://localhost:5601/app/login`;
     const driver = getDriver(browser, options).build();
     await driver.manage().deleteAllCookies();
@@ -274,10 +274,19 @@ describe('start OpenSearch Dashboards server', () => {
       until.elementsLocated(By.xpath('/html/body/div[1]/div/header/div/div[2]')),
       20000
     );
-    await driver.sleep(30000); // TODO: REMOVE THIS DEBUGGING STATEMENT
+    await driver.wait(
+      until.elementsLocated(By.css('img[data-test-subj="defaultLogo"]')),
+      20000
+    );
+    await driver.wait(
+      until.elementsLocated(By.css('section[aria-labelledby="homDataAdd__title"]')),
+      20000
+    );
+    await driver.wait(
+      until.elementsLocated(By.css('section[aria-labelledby="homDataManage__title"]')),
+      20000
+    );
     const windowHash = await driver.getCurrentUrl();
-    const pageResource = await driver.getPageSource(); // TODO: REMOVE THIS DEBUGGING STATEMENT
-    console.log('Current page resource are: ' + pageResource);
     console.log('windowHash: ' + windowHash);
     expect(windowHash).toEqual(urlWithoutHash);
     const cookie = await driver.manage().getCookies();
