@@ -274,10 +274,7 @@ describe('start OpenSearch Dashboards server', () => {
       until.elementsLocated(By.xpath('/html/body/div[1]/div/header/div/div[2]')),
       20000
     );
-    await driver.wait(
-      until.elementsLocated(By.css('img[data-test-subj="defaultLogo"]')),
-      20000
-    );
+    await driver.wait(until.elementsLocated(By.css('img[data-test-subj="defaultLogo"]')), 20000);
     await driver.wait(
       until.elementsLocated(By.css('section[aria-labelledby="homDataAdd__title"]')),
       20000
