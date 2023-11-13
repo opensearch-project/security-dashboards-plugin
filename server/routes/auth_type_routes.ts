@@ -15,7 +15,7 @@
 
 import { IRouter } from 'opensearch-dashboards/server';
 import { SecurityPluginConfigType } from '..';
-
+import { AuthType } from '../../common';
 export function defineAuthTypeRoutes(router: IRouter, config: SecurityPluginConfigType) {
   /**
    * Auth type API that returns current auth type configured on OpenSearchDashboards Server.
@@ -30,7 +30,7 @@ export function defineAuthTypeRoutes(router: IRouter, config: SecurityPluginConf
   router.get(
     { path: '/api/authtype', validate: false, options: { authRequired: false } },
     async (context, request, response) => {
-      const authType = config.auth.type || 'basicauth';
+      const authType = config.auth.type || AuthType.BASIC;
       return response.ok({
         body: {
           authtype: authType,
