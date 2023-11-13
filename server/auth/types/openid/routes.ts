@@ -62,7 +62,7 @@ export class OpenIdAuthRoutes {
     private readonly openIdAuthConfig: OpenIdAuthConfig,
     private readonly securityClient: SecurityClient,
     private readonly core: CoreSetup,
-    private readonly wreckClient: typeof wreck,
+    private readonly wreckClient: typeof wreck
   ) {}
 
   private redirectToLogin(
@@ -127,16 +127,7 @@ export class OpenIdAuthRoutes {
             state: nonce,
             scope: this.openIdAuthConfig.scope,
           };
-          if (this.config.openid?.additional_parameters) {
-            for (const [key, value] of Object.entries(this.config.openid?.additional_parameters)) {
-              if (query[key] != null) {
-                context.security_plugin.logger.warn(
-                  `OpenID config '${key}' is being overwritten to '${value}' by additional parameters`
-                );
-              }
-              query[key] = value;
-            }
-          }
+          this.includeAdditionalParameters(query, context);
           const queryString = stringify(query);
           const location = `${this.openIdAuthConfig.authorizationEndpoint}?${queryString}`;
           const cookie: SecuritySessionCookie = {
@@ -183,16 +174,7 @@ export class OpenIdAuthRoutes {
           client_id: clientId,
           client_secret: clientSecret,
         };
-        if (this.config.openid?.additional_parameters) {
-          for (const [key, value] of Object.entries(this.config.openid?.additional_parameters)) {
-            if (query[key] != null) {
-              context.security_plugin.logger.warn(
-                `OpenID config '${key}' is being overwritten to '${value}' by additional parameters`
-              );
-            }
-            query[key] = value;
-          }
-        }
+        this.includeAdditionalParameters(query, context);
         try {
           const tokenResponse = await callTokenEndpoint(
             this.openIdAuthConfig.tokenEndpoint!,
@@ -288,5 +270,19 @@ export class OpenIdAuthRoutes {
         });
       }
     );
+  }
+
+  private includeAdditionalParameters(query: any, context) {
+    if (this.config.openid?.additional_parameters) {
+      for (const [key, value] of Object.entries(this.config.openid?.additional_parameters)) {
+        if (query[key] == null) {
+          query[key] = value;
+        } else {
+          context.security_plugin.logger.warn(
+            `Additional parameter in OpenID config '${key}' was ignored as it would overwrite existing parameters`
+          );
+        }
+      }
+    }
   }
 }
