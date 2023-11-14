@@ -233,6 +233,13 @@ export const configSchema = schema.object({
       login_endpoint: schema.maybe(schema.string()),
       url_param: schema.string({ defaultValue: 'authorization' }),
       header: schema.string({ defaultValue: 'Authorization' }),
+      extra_storage: schema.object({
+        cookie_prefix: schema.string({
+          defaultValue: 'security_authentication_jwt',
+          minLength: 2,
+        }),
+        additional_cookies: schema.number({ min: 1, defaultValue: 5 }),
+      }),
     })
   ),
   ui: schema.object({
