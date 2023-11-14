@@ -44,14 +44,7 @@ module.exports = {
           },
         ],
         "no-console": 0
-      },
-
-    },
-    {
-      files: ['./babel.config.js'],
-      rules: {
-        'import/no-unresolved': 'warn',
-      },
-    },
+      }
+    }
   ],
 };
