@@ -110,6 +110,7 @@ export class OpenIdAuthentication extends AuthenticationType {
         this.coreSetup,
         this.wreckClient
       );
+
       routes.setupRoutes();
     } catch (error: any) {
       this.logger.error(error); // TODO: log more info

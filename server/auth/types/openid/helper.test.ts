@@ -13,7 +13,13 @@
  *   permissions and limitations under the License.
  */
 
-import { composeLogoutUrl, getExpirationDate, getRootUrl, getNextUrl } from './helper';
+import {
+  composeLogoutUrl,
+  getExpirationDate,
+  getRootUrl,
+  getNextUrl,
+  includeAdditionalParameters,
+} from './helper';
 
 describe('test OIDC helper utility', () => {
   test('test compose logout url', () => {
@@ -53,6 +59,30 @@ describe('test OIDC helper utility', () => {
 
     expect('https://idp.com/path?a=b&key=value').toEqual(
       composeLogoutUrl(customLogoutUrl, idpEndSessionUrl, additionalQuery)
+    );
+  });
+
+  test('test include additional parameters in query', () => {
+    const contextMock = { security_plugin: { logger: { warn: jest.fn() } } };
+
+    const query = { existingKey: 'value' };
+    const constQueryModified = { existingKey: 'value', ping: 'pong', acr_values: '1' };
+    const config = {
+      openid: {
+        enabled: false,
+        additional_parameters: {
+          ping: 'pong',
+          acr_values: '1',
+          existingKey: 'foobar',
+        },
+      },
+    };
+
+    includeAdditionalParameters(query, contextMock, config);
+    expect(query).toEqual(constQueryModified);
+    expect(contextMock.security_plugin.logger.warn).toHaveBeenCalledTimes(1);
+    expect(contextMock.security_plugin.logger.warn).toHaveBeenCalledWith(
+      "Additional parameter in OpenID config 'existingKey' was ignored as it would overwrite existing parameters"
     );
   });
 

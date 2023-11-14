@@ -34,6 +34,7 @@ import {
   composeLogoutUrl,
   getNextUrl,
   getExpirationDate,
+  includeAdditionalParameters,
 } from './helper';
 import { validateNextUrl } from '../../../utils/next_url';
 import {
@@ -127,7 +128,7 @@ export class OpenIdAuthRoutes {
             state: nonce,
             scope: this.openIdAuthConfig.scope,
           };
-          this.includeAdditionalParameters(query, context);
+          includeAdditionalParameters(query, context, this.config);
           const queryString = stringify(query);
           const location = `${this.openIdAuthConfig.authorizationEndpoint}?${queryString}`;
           const cookie: SecuritySessionCookie = {
@@ -174,7 +175,7 @@ export class OpenIdAuthRoutes {
           client_id: clientId,
           client_secret: clientSecret,
         };
-        this.includeAdditionalParameters(query, context);
+        includeAdditionalParameters(query, context, this.config);
         try {
           const tokenResponse = await callTokenEndpoint(
             this.openIdAuthConfig.tokenEndpoint!,
@@ -270,19 +271,5 @@ export class OpenIdAuthRoutes {
         });
       }
     );
-  }
-
-  private includeAdditionalParameters(query: any, context) {
-    if (this.config.openid?.additional_parameters) {
-      for (const [key, value] of Object.entries(this.config.openid?.additional_parameters)) {
-        if (query[key] == null) {
-          query[key] = value;
-        } else {
-          context.security_plugin.logger.warn(
-            `Additional parameter in OpenID config '${key}' was ignored as it would overwrite existing parameters`
-          );
-        }
-      }
-    }
   }
 }
