@@ -47,6 +47,7 @@ describe('start OpenSearch Dashboards server', () => {
         plugins: {
           scanDirs: [resolve(__dirname, '../..')],
         },
+        home: { disableWelcomeScreen: true },
         server: {
           host: 'localhost',
           port: 5601,
@@ -266,7 +267,7 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   it('Login to Dashboard with Hash', async () => {
-    const urlWithHash = `http://localhost:5601/app/dashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(filters:!(),refreshInterval:(pause:!f,value:900000),time:(from:now-24h,to:now))&_a=(description:'Analyze%20mock%20flight%20data%20for%20OpenSearch-Air,%20Logstash%20Airways,%20OpenSearch%20Dashboards%20Airlines%20and%20BeatsWest',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'%5BFlights%5D%20Global%20Flight%20Dashboard',viewMode:view)`;
+    const urlWithHash = `http://localhost:5601/app/security-dashboards-plugin#/getstarted`;
     const driver = getDriver(browser, options).build();
     await driver.manage().deleteAllCookies();
     await driver.get(urlWithHash);
