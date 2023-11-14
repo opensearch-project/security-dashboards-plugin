@@ -26,8 +26,8 @@ module.exports = function (api) {
       ],
       plugins: [
         [require('@babel/plugin-transform-runtime'), { regenerator: true }],
-        require('@babel/plugin-proposal-class-properties'),
-        require('@babel/plugin-proposal-object-rest-spread'),
+        require('@babel/plugin-transform-class-properties'),
+        require('@babel/plugin-transform-object-rest-spread'),
       ],
     };
   }
