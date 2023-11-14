@@ -55,6 +55,10 @@ export interface OpenIdAuthConfig {
 
 export interface WreckHttpsOptions {
   ca?: string | Buffer | Array<string | Buffer>;
+  cert?: string | Buffer | Array<string | Buffer>;
+  key?: string | Buffer | Array<string | Buffer | Object>;
+  passphrase?: string;
+  pfx?: string | Buffer | Array<string | Buffer | Object>;
   checkServerIdentity?: (host: string, cert: PeerCertificate) => Error | undefined;
 }
 
@@ -122,6 +126,24 @@ export class OpenIdAuthentication extends AuthenticationType {
     const wreckHttpsOption: WreckHttpsOptions = {};
     if (this.config.openid?.root_ca) {
       wreckHttpsOption.ca = [fs.readFileSync(this.config.openid.root_ca)];
+    }
+    if (this.config.openid?.pfx) {
+      // Use PFX or PKCS12 if provided
+      this.logger.debug(`Using PFX or PKCS12: ${this.config.openid.pfx}`);
+      wreckHttpsOption.pfx = [fs.readFileSync(this.config.openid.pfx)];
+    } else if (this.config.openid?.certificate && this.config.openid?.private_key) {
+      // Use 'certificate' and 'private_key' if provided
+      this.logger.debug(`Using Certificate: ${this.config.openid.certificate}`);
+      this.logger.debug(`Using Private Key: ${this.config.openid.private_key}`);
+      wreckHttpsOption.cert = [fs.readFileSync(this.config.openid.certificate)];
+      wreckHttpsOption.key = [fs.readFileSync(this.config.openid.private_key)];
+    } else {
+      this.logger.debug(`Client certificates not provided. Mutual TLS will not be used to obtain endpoints.`);
+    }
+    // Check if passphrase is provided, use it for 'pfx' and 'key'
+    if (this.config.openid?.passphrase) {
+      this.logger.debug(`Passphrase not provided for private key and/or pfx.`);
+      wreckHttpsOption.passphrase = this.config.openid.passphrase;
     }
     if (this.config.openid?.verify_hostnames === false) {
       this.logger.debug(`openId auth 'verify_hostnames' option is off.`);
