@@ -15,8 +15,8 @@ const LICENSE_HEADER = `
  */
 `
 
-module.exports = {	
-  root: true,	
+module.exports = {
+  root: true,
   extends: ['@elastic/eslint-config-kibana', 'plugin:@elastic/eui/recommended'],
   rules: {
     // "@osd/eslint/require-license-header": "off"
@@ -44,7 +44,14 @@ module.exports = {
           },
         ],
         "no-console": 0
-      }
-    }
+      },
+
+    },
+    {
+      files: ['./babel.config.js'],
+      rules: {
+        'import/no-unresolved': 'warn',
+      },
+    },
   ],
 };
