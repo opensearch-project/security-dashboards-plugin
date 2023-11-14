@@ -23,13 +23,17 @@ import {
 import { SecurityPluginConfigType } from '..';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { getAuthenticationHandler } from './auth_handler_factory';
+import { AuthType } from '../../common';
+
+const mockBasicAuthType = AuthType.BASIC;
+const mockSAMLAuthType = AuthType.SAML;
 
 jest.mock('./types', () => {
   return {
     BasicAuthentication: jest.fn().mockImplementation(() => {
       return {
         authHandler: () => {},
-        type: 'basicauth',
+        type: mockBasicAuthType,
         init: () => {},
       };
     }),
@@ -57,14 +61,14 @@ jest.mock('./types', () => {
     SamlAuthentication: jest.fn().mockImplementation(() => {
       return {
         authHandler: () => {},
-        type: 'saml',
+        type: mockSAMLAuthType,
         init: () => {},
       };
     }),
     MultipleAuthentication: jest.fn().mockImplementation(() => {
       return {
         authHandler: () => {},
-        type: ['openid', 'saml', 'basiauth'],
+        type: ['openid', mockSAMLAuthType, mockBasicAuthType],
         init: () => {},
       };
     }),
@@ -83,7 +87,7 @@ describe('test authentication factory', () => {
 
   test('get basic auth: string array', async () => {
     const auth = await getAuthenticationHandler(
-      ['basicauth'],
+      [AuthType.BASIC],
       router,
       config,
       core,
@@ -91,12 +95,12 @@ describe('test authentication factory', () => {
       sessionStorageFactory,
       logger
     );
-    expect(auth.type).toEqual('basicauth');
+    expect(auth.type).toEqual(AuthType.BASIC);
   });
 
   test('get basic auth: string', async () => {
     const auth = await getAuthenticationHandler(
-      'basicauth',
+      AuthType.BASIC,
       router,
       config,
       core,
@@ -104,20 +108,7 @@ describe('test authentication factory', () => {
       sessionStorageFactory,
       logger
     );
-    expect(auth.type).toEqual('basicauth');
-  });
-
-  test('get basic auth with empty auth type: string array', async () => {
-    const auth = await getAuthenticationHandler(
-      [''],
-      router,
-      config,
-      core,
-      esClient,
-      sessionStorageFactory,
-      logger
-    );
-    expect(auth.type).toEqual('basicauth');
+    expect(auth.type).toEqual(AuthType.BASIC);
   });
 
   test('get basic auth with empty auth type: string', async () => {
@@ -130,7 +121,20 @@ describe('test authentication factory', () => {
       sessionStorageFactory,
       logger
     );
-    expect(auth.type).toEqual('basicauth');
+    expect(auth.type).toEqual(AuthType.BASIC);
+  });
+
+  test('get basic auth with empty auth type: string array', async () => {
+    const auth = await getAuthenticationHandler(
+      [''],
+      router,
+      config,
+      core,
+      esClient,
+      sessionStorageFactory,
+      logger
+    );
+    expect(auth.type).toEqual(AuthType.BASIC);
   });
 
   test('get jwt auth: string array', async () => {
@@ -213,7 +217,7 @@ describe('test authentication factory', () => {
 
   test('get saml auth: string array', async () => {
     const auth = await getAuthenticationHandler(
-      ['saml'],
+      [AuthType.SAML],
       router,
       config,
       core,
@@ -221,12 +225,12 @@ describe('test authentication factory', () => {
       sessionStorageFactory,
       logger
     );
-    expect(auth.type).toEqual('saml');
+    expect(auth.type).toEqual(AuthType.SAML);
   });
 
   test('get saml auth: string', async () => {
     const auth = await getAuthenticationHandler(
-      'saml',
+      AuthType.SAML,
       router,
       config,
       core,
@@ -234,7 +238,7 @@ describe('test authentication factory', () => {
       sessionStorageFactory,
       logger
     );
-    expect(auth.type).toEqual('saml');
+    expect(auth.type).toEqual(AuthType.SAML);
   });
 
   test('multiple_auth_enabled is on, get multi auth', async () => {
@@ -244,7 +248,7 @@ describe('test authentication factory', () => {
       },
     };
     const auth = await getAuthenticationHandler(
-      ['openid', 'saml', 'basiauth'],
+      ['openid', AuthType.SAML, AuthType.BASIC],
       router,
       config,
       core,
@@ -252,7 +256,7 @@ describe('test authentication factory', () => {
       sessionStorageFactory,
       logger
     );
-    expect(auth.type).toEqual(['openid', 'saml', 'basiauth']);
+    expect(auth.type).toEqual(['openid', AuthType.SAML, AuthType.BASIC]);
   });
 
   test('multiple_auth_enabled is off, get multi auth', async () => {
@@ -263,7 +267,7 @@ describe('test authentication factory', () => {
     };
     try {
       await getAuthenticationHandler(
-        ['openid', 'saml', 'basiauth'],
+        ['openid', AuthType.SAML, AuthType.BASIC],
         router,
         config,
         core,
