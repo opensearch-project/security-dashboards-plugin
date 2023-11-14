@@ -30,6 +30,7 @@ import {
 } from '../../../../common';
 import { resolveTenant } from '../../../multitenancy/tenant_resolver';
 import { encodeUriQuery } from '../../../../../../src/plugins/opensearch_dashboards_utils/common/url/encode_uri_query';
+import { AuthType } from '../../../../common';
 
 export class BasicAuthRoutes {
   constructor(
@@ -112,7 +113,7 @@ export class BasicAuthRoutes {
           credentials: {
             authHeaderValue: `Basic ${encodedCredentials}`,
           },
-          authType: 'basicauth',
+          authType: AuthType.BASIC,
           isAnonymousAuth: false,
           expiryTime: Date.now() + this.config.session.ttl,
         };
@@ -202,7 +203,7 @@ export class BasicAuthRoutes {
           this.sessionStorageFactory.asScoped(request).clear();
           const sessionStorage: SecuritySessionCookie = {
             username: user.username,
-            authType: 'basicauth',
+            authType: AuthType.BASIC,
             isAnonymousAuth: true,
             expiryTime: Date.now() + this.config.session.ttl,
           };
