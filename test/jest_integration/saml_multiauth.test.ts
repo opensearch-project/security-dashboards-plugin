@@ -25,6 +25,7 @@ import {
 import wreck from '@hapi/wreck';
 import { Builder, By, until } from 'selenium-webdriver';
 import { Options } from 'selenium-webdriver/firefox';
+import { AuthType } from '../../common';
 
 describe('start OpenSearch Dashboards server', () => {
   let root: Root;
@@ -69,7 +70,7 @@ describe('start OpenSearch Dashboards server', () => {
         opensearch_security: {
           auth: {
             anonymous_auth_enabled: false,
-            type: ['basicauth', 'saml'],
+            type: [AuthType.BASIC, AuthType.SAML],
             multiple_auth_enabled: true,
           },
           multitenancy: {
@@ -135,7 +136,7 @@ describe('start OpenSearch Dashboards server', () => {
       order: 5,
       http_authenticator: {
         challenge: true,
-        type: 'saml',
+        type: AuthType.SAML,
         config: {
           idp: {
             metadata_url: 'http://localhost:7000/metadata',

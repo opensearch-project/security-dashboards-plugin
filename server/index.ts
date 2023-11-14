@@ -16,14 +16,15 @@
 import { schema, TypeOf } from '@osd/config-schema';
 import { PluginInitializerContext, PluginConfigDescriptor } from '../../../src/core/server';
 import { SecurityPlugin } from './plugin';
+import { AuthType } from '../common';
 
 const validateAuthType = (value: string[]) => {
   const supportedAuthTypes = [
     '',
-    'basicauth',
+    AuthType.BASIC,
     'jwt',
     'openid',
-    'saml',
+    AuthType.SAML,
     'proxy',
     'kerberos',
     'proxycache',
@@ -88,7 +89,7 @@ export const configSchema = schema.object({
 
             if (value.length > 1) {
               const includeBasicAuth = value.find((element) => {
-                return element.toLowerCase() === 'basicauth';
+                return element.toLowerCase() === AuthType.BASIC;
               });
 
               if (!includeBasicAuth) {
