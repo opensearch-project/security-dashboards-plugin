@@ -14,15 +14,35 @@
  */
 
 import { getAuthenticationHandler } from '../../auth_handler_factory';
+import {JWT_DEFAULT_EXTRA_STORAGE_OPTIONS} from "./jwt_auth";
 
 describe('test jwt auth library', () => {
   const router: IRouter = { post: (body) => {} };
-  let core: CoreSetup;
+  let core: CoreSetup = {
+    http: {
+      basePath: {
+        serverBasePath: '/'
+      }
+    }
+  };
   let esClient: ILegacyClusterClient;
-  let sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>;
+  let sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie> = {
+    asScoped: jest.fn().mockImplementation(() => {
+      return {
+        server: {
+          states: {
+            add: jest.fn()
+          }
+        }
+      }
+    })
+  };
   let logger: Logger;
 
+
+
   function getTestJWTAuthenticationHandlerWithConfig(config: SecurityPluginConfigType) {
+    console.log('>>>>> Getting auth handler', esClient, sessionStorageFactory, logger)
     return getAuthenticationHandler(
       'jwt',
       router,
@@ -36,9 +56,21 @@ describe('test jwt auth library', () => {
 
   test('test getTokenFromUrlParam', async () => {
     const config = {
+      cookie: {
+        secure: false,
+        name: 'test_cookie_name',
+        password: 'secret',
+        ttl: 60 * 60 * 1000,
+        domain: null,
+        isSameSite: false,
+      },
       jwt: {
         header: 'Authorization',
         url_param: 'authorization',
+        extra_storage: {
+          cookie_prefix: JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.cookiePrefix,
+          additional_cookies: JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.additionalCookies
+        }
       },
     };
     const auth = await getTestJWTAuthenticationHandlerWithConfig(config);
@@ -55,9 +87,21 @@ describe('test jwt auth library', () => {
 
   test('test getTokenFromUrlParam incorrect url_param', async () => {
     const config = {
+      cookie: {
+        secure: false,
+        name: 'test_cookie_name',
+        password: 'secret',
+        ttl: 60 * 60 * 1000,
+        domain: null,
+        isSameSite: false,
+      },
       jwt: {
         header: 'Authorization',
         url_param: 'urlParamName',
+        extra_storage: {
+          cookie_prefix: JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.cookiePrefix,
+          additional_cookies: JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.additionalCookies
+        }
       },
     };
     const auth = await getTestJWTAuthenticationHandlerWithConfig(config);
