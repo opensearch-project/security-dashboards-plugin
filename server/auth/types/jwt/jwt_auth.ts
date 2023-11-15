@@ -36,6 +36,11 @@ import {
   setExtraAuthStorage,
 } from "../../../session/cookie_splitter";
 
+export const JWT_DEFAULT_EXTRA_STORAGE_OPTIONS: ExtraAuthStorageOptions = {
+  cookiePrefix: 'security_authentication_jwt',
+  additionalCookies: 5,
+}
+
 export class JwtAuthentication extends AuthenticationType {
   public readonly type: string = 'jwt';
 
@@ -60,13 +65,10 @@ export class JwtAuthentication extends AuthenticationType {
   }
 
   createExtraStorage() {
-    // TODO: JWT is a schema.maybe, so we may need to wrap everything in if()
-
-
     // @ts-ignore
     const hapiServer: Server = this.sessionStorageFactory.asScoped({}).server;
 
-    const extraCookiePrefix = this.config.jwt?.extra_storage.cookie_prefix;
+    const {cookiePrefix, additionalCookies} = this.getExtraAuthStorageOptions();
     const extraCookieSettings: ServerStateCookieOptions = {
       isSecure: this.config.cookie.secure,
       isSameSite: this.config.cookie.isSameSite,
@@ -79,19 +81,19 @@ export class JwtAuthentication extends AuthenticationType {
       encoding: 'iron', // Same as hapi auth cookie
     };
 
-    for (let i = 1; i <= this.config.jwt!.extra_storage.additional_cookies; i++) {
-      console.log('>>>>> Adding cookie with prefix', extraCookiePrefix)
-      hapiServer.states.add(extraCookiePrefix + i, extraCookieSettings);
+    for (let i = 1; i <= additionalCookies; i++) {
+      hapiServer.states.add(cookiePrefix + i, extraCookieSettings);
     }
   }
 
   private getExtraAuthStorageOptions(): ExtraAuthStorageOptions {
-    // TODO Do we always have the configuration?
-    return {
-      cookiePrefix: this.config.jwt!.extra_storage.cookie_prefix,
-      additionalCookies: this.config.jwt!.extra_storage.additional_cookies,
-      logger: this.logger,
-    };
+    let extraAuthStorageOptions: ExtraAuthStorageOptions = {
+      cookiePrefix: this.config.jwt?.extra_storage.cookie_prefix || JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.cookiePrefix,
+      additionalCookies: this.config.jwt?.extra_storage.additional_cookies || JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.additionalCookies,
+      logger: this.logger
+    }
+
+    return extraAuthStorageOptions;
   }
 
   private getTokenFromUrlParam(request: OpenSearchDashboardsRequest): string | undefined {
