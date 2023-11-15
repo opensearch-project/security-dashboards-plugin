@@ -5,6 +5,7 @@ on:
 env:
   OPENSEARCH_VERSION: '3.0.0'
   KEYCLOAK_VERSION: '21.0.1'
+  TEST_KEYCLOAK_CLIENT_SECRET: 'oacHfNaXyy81r2uHq1A9RY4ASryre4rZ'
   CI: 1
   # avoid warnings like "tput: No value for $TERM and no -T specified"
   TERM: xterm
@@ -54,8 +55,9 @@ jobs:
           chmod +x kcadm.sh
           echo "Creating client"
           ./kcadm.sh config credentials --server http://localhost:8080/auth --realm master --user admin --password admin
-          CID=$(./kcadm.sh create clients -r master -s clientId=opensearch -s 'redirectUris=["http://localhost:5603/auth/openid/login", "http://localhost:5601", "http://localhost:5601/auth/openid/login"]' -i)
+          CID=$(./kcadm.sh create clients -r master -s clientId=opensearch -s secret="oacHfNaXyy81r2uHq1A9RY4ASryre4rZ" -s 'attributes."access.token.lifespan"=60' -s 'redirectUris=["http://localhost:5603/auth/openid/login", "http://localhost:5601", "http://localhost:5601/auth/openid/login"]' -i)
           ./kcadm.sh get clients/$CID/installation/providers/keycloak-oidc-keycloak-json > tmp
+
           echo "Getting client secret for dashboards configuration purpose"
           CLIENT_SECRET=$(grep -o '"secret" : "[^"]*' tmp | grep -o '[^"]*$')
           echo "KEYCLOAK_CLIENT_SECRET=$CLIENT_SECRET" >> $GITHUB_ENV
@@ -342,7 +344,7 @@ jobs:
           echo 'opensearch_security.cookie.secure: false' >> ./config/opensearch_dashboards.yml
           echo 'opensearch_security.openid.connect_url: "http://127.0.0.1:8080/auth/realms/master/.well-known/openid-configuration"' >> ./config/opensearch_dashboards.yml
           echo 'opensearch_security.openid.client_id: "opensearch"' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch_security.openid.client_secret: "${{ env.KEYCLOAK_CLIENT_SECRET }}"'>> ./config/opensearch_dashboards.yml
+          echo 'opensearch_security.openid.client_secret: "${{ env.TEST_KEYCLOAK_CLIENT_SECRET }}"'>> ./config/opensearch_dashboards.yml
           echo 'opensearch_security.auth.type: ["openid"]' >> ./config/opensearch_dashboards.yml
           echo 'opensearch_security.auth.multiple_auth_enabled: true' >> ./config/opensearch_dashboards.yml
           echo 'opensearch_security.ui.openid.login.buttonname: "OIDC"' >> ./config/opensearch_dashboards.yml
