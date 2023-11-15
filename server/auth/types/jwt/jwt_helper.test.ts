@@ -42,7 +42,6 @@ describe('test jwt auth library', () => {
 
 
   function getTestJWTAuthenticationHandlerWithConfig(config: SecurityPluginConfigType) {
-    console.log('>>>>> Getting auth handler', esClient, sessionStorageFactory, logger)
     return getAuthenticationHandler(
       'jwt',
       router,
