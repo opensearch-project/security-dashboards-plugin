@@ -56,9 +56,9 @@ export interface OpenIdAuthConfig {
 export interface WreckHttpsOptions {
   ca?: string | Buffer | Array<string | Buffer>;
   cert?: string | Buffer | Array<string | Buffer>;
-  key?: string | Buffer | Array<string | Buffer | Object>;
+  key?: string | Buffer | Array<string | Buffer | object>;
   passphrase?: string;
-  pfx?: string | Buffer | Array<string | Buffer | Object>;
+  pfx?: string | Buffer | Array<string | Buffer | object>;
   checkServerIdentity?: (host: string, cert: PeerCertificate) => Error | undefined;
 }
 
