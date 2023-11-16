@@ -25,6 +25,7 @@ import {
 import wreck from '@hapi/wreck';
 import { Builder, By, until } from 'selenium-webdriver';
 import { Options } from 'selenium-webdriver/firefox';
+import { AuthType } from '../../common';
 
 describe('start OpenSearch Dashboards server', () => {
   let root: Root;
@@ -43,6 +44,7 @@ describe('start OpenSearch Dashboards server', () => {
         plugins: {
           scanDirs: [resolve(__dirname, '../..')],
         },
+        home: { disableWelcomeScreen: true },
         server: {
           host: 'localhost',
           port: 5601,
@@ -69,7 +71,7 @@ describe('start OpenSearch Dashboards server', () => {
         opensearch_security: {
           auth: {
             anonymous_auth_enabled: false,
-            type: ['basicauth', 'saml'],
+            type: [AuthType.BASIC, AuthType.SAML],
             multiple_auth_enabled: true,
           },
           multitenancy: {
@@ -135,7 +137,7 @@ describe('start OpenSearch Dashboards server', () => {
       order: 5,
       http_authenticator: {
         challenge: true,
-        type: 'saml',
+        type: AuthType.SAML,
         config: {
           idp: {
             metadata_url: 'http://localhost:7000/metadata',
@@ -235,8 +237,8 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   it('Login to Dashboards and resume from nextUrl', async () => {
-    const urlWithHash = `http://localhost:5601/app/dashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(filters:!(),refreshInterval:(pause:!f,value:900000),time:(from:now-24h,to:now))&_a=(description:'Analyze%20mock%20flight%20data%20for%20OpenSearch-Air,%20Logstash%20Airways,%20OpenSearch%20Dashboards%20Airlines%20and%20BeatsWest',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'%5BFlights%5D%20Global%20Flight%20Dashboard',viewMode:view)`;
-    const loginUrlWithNextUrl = `http://localhost:5601/app/login?nextUrl=%2Fapp%2Fdashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(filters:!(),refreshInterval:(pause:!f,value:900000),time:(from:now-24h,to:now))&_a=(description:'Analyze%20mock%20flight%20data%20for%20OpenSearch-Air,%20Logstash%20Airways,%20OpenSearch%20Dashboards%20Airlines%20and%20BeatsWest',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'%5BFlights%5D%20Global%20Flight%20Dashboard',viewMode:view)`;
+    const urlWithHash = `http://localhost:5601/app/security-dashboards-plugin#/getstarted`;
+    const loginUrlWithNextUrl = `http://localhost:5601/app/login?nextUrl=%2Fapp%2Fsecurity-dashboards-plugin#/getstarted`;
     const driver = getDriver(browser, options).build();
     await driver.manage().deleteAllCookies();
     await driver.get(loginUrlWithNextUrl);
@@ -259,7 +261,7 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   it('Login to Dashboards without nextUrl', async () => {
-    const urlWithoutHash = `http://localhost:5601/app/home`;
+    const urlWithoutHash = `http://localhost:5601/app/home#/`;
     const loginUrl = `http://localhost:5601/app/login`;
     const driver = getDriver(browser, options).build();
     await driver.manage().deleteAllCookies();
@@ -271,6 +273,15 @@ describe('start OpenSearch Dashboards server', () => {
     // TODO Use a better XPath.
     await driver.wait(
       until.elementsLocated(By.xpath('/html/body/div[1]/div/header/div/div[2]')),
+      20000
+    );
+    await driver.wait(until.elementsLocated(By.css('img[data-test-subj="defaultLogo"]')), 20000);
+    await driver.wait(
+      until.elementsLocated(By.css('section[aria-labelledby="homDataAdd__title"]')),
+      20000
+    );
+    await driver.wait(
+      until.elementsLocated(By.css('section[aria-labelledby="homDataManage__title"]')),
       20000
     );
     const windowHash = await driver.getCurrentUrl();
