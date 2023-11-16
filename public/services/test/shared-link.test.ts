@@ -110,3 +110,4 @@ describe('setClipboardAndTarget function', () => {
     setClipboardAndTarget(shareButtonMock, targetMock, 'mocked-new-value', 'mocked-original-value');
   });
 });
+

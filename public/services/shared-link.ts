@@ -114,3 +114,4 @@ export function setClipboardAndTarget(
     target.textContent = newValue;
   }
 }
+
