@@ -55,7 +55,7 @@ jobs:
           chmod +x kcadm.sh
           echo "Creating client"
           ./kcadm.sh config credentials --server http://localhost:8080/auth --realm master --user admin --password admin
-          CID=$(./kcadm.sh create clients -r master -s clientId=opensearch -s secret="oacHfNaXyy81r2uHq1A9RY4ASryre4rZ" -s 'attributes."access.token.lifespan"=60' -s 'redirectUris=["http://localhost:5603/auth/openid/login", "http://localhost:5601", "http://localhost:5601/auth/openid/login"]' -i)
+          CID=$(./kcadm.sh create clients -r master -s clientId=opensearch -s secret="${{ env.TEST_KEYCLOAK_CLIENT_SECRET }}" -s 'attributes."access.token.lifespan"=60' -s 'redirectUris=["http://localhost:5603/auth/openid/login", "http://localhost:5601", "http://localhost:5601/auth/openid/login"]' -i)
           ./kcadm.sh get clients/$CID/installation/providers/keycloak-oidc-keycloak-json > tmp
 
           echo "Getting client secret for dashboards configuration purpose"
