@@ -13,78 +13,54 @@
  *   permissions and limitations under the License.
  */
 // Import necessary modules and dependencies
-import { API_ENDPOINT_MULTITENANCY } from '../../apps/configuration/constants.tsx';
-import { addTenantToShareURL, processCopyEvent } from '../shared-link.ts';
-import { updateClipboard } from '../shared-link.ts';
+import { setClipboardAndTarget } from '../shared-link.ts';
 
-describe('addTenantToShareURL function', () => {
-  it('should add a listener for copy events', () => {
-    const coreMock: any = {
-      http: {
-        get: jest.fn().mockResolvedValue('mocked-tenant'),
-      },
-    };
+describe('setClipboardAndTarget function', () => {
+  // Declare variables for the mock elements
+  let shareButtonMock: any;
+  let targetMock: any;
+  let mockSpan: HTMLSpanElement;
 
-    jest.spyOn(document, 'addEventListener').mockImplementation((event, callback) => {
-      if (event === 'copy') {
-        callback(new Event('copy'));
-        expect(coreMock.http.get).toHaveBeenCalledWith(API_ENDPOINT_MULTITENANCY);
-      }
-    });
-
-    addTenantToShareURL(coreMock);
-
-  });
-});
-
-describe('processCopyEvent function', () => {
-  it('should update the clipboard and target text content', () => {
-    const shareButtonMock: any = {
-      getAttribute: jest.fn().mockReturnValue('mocked-share-url'),
-    };
-
-    const targetMock: any = {
-      textContent: 'mocked-text-content',
-    };
-
-    jest.spyOn(document, 'querySelector').mockImplementation((selector) => {
-      if (selector === '[data-share-url]') {
-        return shareButtonMock;
-      } else if (selector === 'body > span') {
-        return targetMock;
-      }
-    });
-
-    processCopyEvent('mocked-tenant');
-
-  });
-});
-
-describe('updateClipboard function', () => {
-  it('should update the clipboard and target text content', () => {
-    const shareButtonMock: any = {
-      getAttribute: jest.fn().mockReturnValue('mocked-share-url'),
+  // Before each test, set up the mock elements
+  beforeEach(() => {
+    shareButtonMock = {
       removeAllRanges: jest.fn(),
       addRange: jest.fn(),
     };
 
-    const targetMock: any = {
-      textContent: 'mocked-text-content',
+    targetMock = {
+      textContent: 'mocked-original-value',
     };
 
-    jest.spyOn(document, 'querySelector').mockImplementation((selector) => {
-      if (selector === '[data-share-url]') {
-        return shareButtonMock;
-      } else if (selector === 'body > span') {
-        return targetMock;
-      }
-    });
+    // Create a mock span element and append it to the document
+    mockSpan = document.createElement('span');
+    document.body.appendChild(mockSpan);
+  });
 
-    jest.spyOn(document, 'createRange').mockReturnValue({
+  // After each test, clean up the appended mock span element
+  afterEach(() => {
+    document.body.removeChild(mockSpan);
+  });
+
+  it('should set clipboard and target correctly', () => {
+    const newValue = 'mocked-new-value';
+
+    // Mock document.createRange to spy on its usage
+    const createRangeMock = jest.spyOn(document, 'createRange').mockReturnValue({
       selectNode: jest.fn(),
     } as any);
 
-    updateClipboard('mocked-url-part', 'mocked-original-value', 'mocked-tenant');
+    // Call the function
+    setClipboardAndTarget(shareButtonMock, targetMock, newValue, 'mocked-original-value');
 
+    // Assertions
+    expect(shareButtonMock.removeAllRanges).toHaveBeenCalled();
+    expect(createRangeMock).toHaveBeenCalled();
+    expect(shareButtonMock.addRange).toHaveBeenCalled();
+    expect(targetMock.textContent).toBe(newValue);
+
+    // Reset the mock to restore the original function
+    createRangeMock.mockRestore();
   });
 });
+
