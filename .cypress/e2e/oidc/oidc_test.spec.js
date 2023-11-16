@@ -26,9 +26,11 @@ const newThemeModalLocalStorageKey = 'home:newThemeModal:show'
 
 describe('Log in via OIDC', () => {
 
-  after(() => {
-    cy.clearCookies();
-    cy.clearLocalStorage();
+  afterEach(() => {
+    cy.origin('http://localhost:5601', () => {
+      cy.clearCookies();
+      cy.clearLocalStorage();
+    });
   });
 
   const kcLogin = () => {
@@ -47,8 +49,14 @@ describe('Log in via OIDC', () => {
     kcLogin();
 
     cy.origin('http://localhost:5601', {
-      args: [tenantLocalStorageKey, globalTenantLocalStorageValue, newThemeModalLocalStorageKey, 'false']
+      args: [
+        tenantLocalStorageKey, 
+        globalTenantLocalStorageValue, 
+        newThemeModalLocalStorageKey, 
+        'false'
+      ]
     }, (tenantKey, tenantValue, themeModalKey, themeModalValue) => {
+      
       localStorage.setItem(tenantKey, tenantValue);
       localStorage.setItem(themeModalKey, themeModalValue);
 
@@ -58,23 +66,28 @@ describe('Log in via OIDC', () => {
     });
   });
 
-  it.skip('Login to app/dev_tools#/console when OIDC is enabled', () => {
-    cy.visit('http://localhost:5601/app/dev_tools#/console', { failOnStatusCode: false, timeout: 10000 });
-
-    cy.wait(15000);
+  it('Login to app/dev_tools#/console when OIDC is enabled', () => {
+    cy.visit('http://localhost:5601/app/opensearch_dashboards_overview', {
+      failOnStatusCode: false,
+      timeout: 10000,
+    });
 
     kcLogin();
 
-    cy.origin('http://localhost:5601', () => {
-      cy.visit('http://localhost:5601/app/dev_tools#/console');
-
-      cy.wait(5000);
-      cy.get('button[data-test-subj="confirm"]').click();
-
-      cy.wait(5000);
-      cy.get('button[aria-label="Close this dialog"]');
+    cy.origin('http://localhost:5601', {
+      args: [
+        tenantLocalStorageKey, 
+        globalTenantLocalStorageValue, 
+        newThemeModalLocalStorageKey, 
+        'false'
+      ]
+    }, (tenantKey, tenantValue, themeModalKey, themeModalValue) => {
       
-      cy.wait(5000);
+      localStorage.setItem(tenantKey, tenantValue);
+      localStorage.setItem(themeModalKey, themeModalValue);
+
+      cy.visit('http://localhost:5601/app/dev_tools#/console');
+      
       cy.get('a').contains('Dev Tools').should('be.visible');
   
       cy.getCookie('security_authentication', { timeout: 10000 }).should('exist');
@@ -122,7 +135,6 @@ describe('Log in via OIDC', () => {
       kcLogin();
   
   cy.origin('http://localhost:5601', () => {
-
       cy.get('#user-icon-btn', { timeout: 10000 }).should('be.visible');
       cy.get('#user-icon-btn').click();
   
