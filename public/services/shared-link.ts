@@ -94,14 +94,21 @@ export function updateClipboard(
   const replaceWith =
     valueToReplace + queryDelimiter + 'security_tenant=' + encodeURIComponent(tenant);
 
+  setClipboardAndTarget(shareButton, target, replaceWith, originalValue);
+}
+
+export function setClipboardAndTarget(
+  shareButton: any,
+  target: any,
+  newValue: string,
+  originalValue: string
+) {
   const range = document.createRange() as any;
   const referenceNode = document.getElementsByTagName('span').item(0);
 
   range.selectNode(referenceNode);
   shareButton.removeAllRanges();
   shareButton.addRange(range);
-
-  const newValue = originalValue.replace(valueToReplace, replaceWith);
 
   if (newValue !== originalValue) {
     target.textContent = newValue;
