@@ -12,7 +12,6 @@
  *   express or implied. See the License for the specific language governing
  *   permissions and limitations under the License.
  */
-// Import necessary modules and dependencies
 import { API_ENDPOINT_MULTITENANCY } from '../../apps/configuration/constants.tsx';
 import {
   addTenantToShareURL,
@@ -46,7 +45,7 @@ describe('processCopyEvent function', () => {
     };
 
     const targetMock: any = {
-      textContent: 'mocked-text-content',
+      textContent: '<iframe src="mocked-src"></iframe>', // Set content with an iframe for testing
     };
 
     jest.spyOn(document, 'querySelector').mockImplementation((selector) => {
@@ -61,7 +60,18 @@ describe('processCopyEvent function', () => {
       selectNode: jest.fn(),
     } as any);
 
+    // Mock the updateClipboard function so that we can assert whether it's called with the correct arguments
+    const updateClipboardMock = jest.spyOn(global, 'updateClipboard').mockImplementation(() => {});
+
+    // Call the function
     processCopyEvent('mocked-tenant');
+
+    // Assert that updateClipboard was called with the expected arguments
+    expect(updateClipboardMock).toHaveBeenCalledWith(
+      'mocked-src',
+      '<iframe src="mocked-src"></iframe>',
+      'mocked-tenant'
+    );
   });
 });
 
