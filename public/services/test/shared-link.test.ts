@@ -34,10 +34,7 @@ describe('addTenantToShareURL function', () => {
 
     addTenantToShareURL(coreMock);
 
-    // Add assertions as needed
   });
-
-  // Add more tests for other scenarios if necessary
 });
 
 describe('processCopyEvent function', () => {
@@ -60,11 +57,7 @@ describe('processCopyEvent function', () => {
 
     processCopyEvent('mocked-tenant');
 
-    // Add assertions based on the behavior of processCopyEvent
-    // Add more assertions as needed
   });
-
-  // Add more tests for other scenarios if necessary
 });
 
 describe('updateClipboard function', () => {
@@ -93,9 +86,5 @@ describe('updateClipboard function', () => {
 
     updateClipboard('mocked-url-part', 'mocked-original-value', 'mocked-tenant');
 
-    // Add assertions based on the behavior of updateClipboard
-    // Add more assertions as needed
   });
-
-  // Add more tests for other scenarios if necessary
 });
