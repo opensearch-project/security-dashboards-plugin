@@ -14,7 +14,22 @@
  */
 
 import { getAuthenticationHandler } from '../../auth_handler_factory';
-import {JWT_DEFAULT_EXTRA_STORAGE_OPTIONS} from "./jwt_auth";
+import {
+  JWT_DEFAULT_EXTRA_STORAGE_OPTIONS,
+  JwtAuthentication
+} from "./jwt_auth";
+import {
+  CoreSetup,
+  ILegacyClusterClient,
+  IRouter,
+  Logger,
+  OpenSearchDashboardsRequest,
+  SessionStorageFactory
+} from "../../../../../../src/core/server";
+import {SecuritySessionCookie} from "../../../session/security_cookie";
+import {SecurityPluginConfigType} from "../../../index";
+import {httpServerMock} from "../../../../../../src/core/server/http/http_server.mocks";
+import {deflateValue} from "../../../utils/compression";
 
 describe('test jwt auth library', () => {
   const router: IRouter = { post: (body) => {} };
@@ -113,5 +128,96 @@ describe('test jwt auth library', () => {
     const expectedToken = undefined;
     const token = auth.getTokenFromUrlParam(request);
     expect(token).toEqual(expectedToken);
+  });
+});
+
+describe('test JWT authHeaderValue', () => {
+  let router: IRouter;
+  let core: CoreSetup;
+  let esClient: ILegacyClusterClient;
+  let sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>;
+  let logger: Logger;
+
+  // Consistent with auth_handler_factory.test.ts
+  beforeEach(() => {});
+
+  const config = ({
+    jwt: {
+      header: 'Authorization',
+      url_param: 'authorization',
+      extra_storage: {
+        cookie_prefix: "testcookie",
+        additional_cookies: 2
+      }
+    },
+  } as unknown) as SecurityPluginConfigType;
+
+  test('make sure that cookies with authHeaderValue are still valid', async () => {
+    const jwtAuthentication = new JwtAuthentication(
+      config,
+      sessionStorageFactory,
+      router,
+      esClient,
+      core,
+      logger
+    );
+
+    const mockRequest = httpServerMock.createRawRequest();
+    const osRequest = OpenSearchDashboardsRequest.from(mockRequest);
+
+    const cookie: SecuritySessionCookie = {
+      credentials: {
+        authHeaderValue: 'Bearer eyToken',
+      },
+    };
+
+    const expectedHeaders = {
+      authorization: 'Bearer eyToken',
+    };
+
+    const headers = jwtAuthentication.buildAuthHeaderFromCookie(cookie, osRequest);
+
+    expect(headers).toEqual(expectedHeaders);
+  });
+
+  test('get authHeaderValue from split cookies', async () => {
+    const jwtAuthentication = new JwtAuthentication(
+      config,
+      sessionStorageFactory,
+      router,
+      esClient,
+      core,
+      logger
+    );
+
+    const testString = 'Bearer eyCombinedToken';
+    const testStringBuffer: Buffer = deflateValue(testString);
+    const cookieValue = testStringBuffer.toString('base64');
+    const cookiePrefix = config.jwt!.extra_storage.cookie_prefix;
+    const splitValueAt = Math.ceil(
+      cookieValue.length / config.jwt!.extra_storage.additional_cookies
+    );
+    const mockRequest = httpServerMock.createRawRequest({
+      state: {
+        [cookiePrefix + '1']: cookieValue.substring(0, splitValueAt),
+        [cookiePrefix + '2']: cookieValue.substring(splitValueAt),
+      },
+    });
+
+    const osRequest = OpenSearchDashboardsRequest.from(mockRequest);
+
+    const cookie: SecuritySessionCookie = {
+      credentials: {
+        authHeaderValueExtra: true,
+      },
+    };
+
+    const expectedHeaders = {
+      authorization: testString,
+    };
+
+    const headers = jwtAuthentication.buildAuthHeaderFromCookie(cookie, osRequest);
+
+    expect(headers).toEqual(expectedHeaders);
   });
 });
