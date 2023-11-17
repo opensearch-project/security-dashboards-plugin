@@ -20,6 +20,7 @@ import ReactDOM from 'react-dom';
 import { Router, Route } from 'react-router-dom';
 import { ERROR_MISSING_ROLE_PATH } from '../../../common';
 import { ClientConfigType } from '../../types';
+import { AuthType } from '../../../common';
 import './_index.scss';
 import { logout } from '../account/utils';
 
@@ -28,7 +29,7 @@ interface CustomErrorDeps {
   subtitle: string;
   http: CoreStart['http'];
   chrome: CoreStart['chrome'];
-  config: ClientConfigType['ui']['basicauth']['login'];
+  config: ClientConfigType['ui'][AuthType.BASIC]['login'];
 }
 
 export function CustomErrorPage(props: CustomErrorDeps) {
