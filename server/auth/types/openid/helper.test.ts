@@ -69,7 +69,8 @@ describe('test OIDC helper utility', () => {
     const constQueryModified = { existingKey: 'value', ping: 'pong', acr_values: '1' };
     const config = {
       openid: {
-        enabled: false,
+        enabled: true,
+        client_secret: '',
         additional_parameters: {
           ping: 'pong',
           acr_values: '1',
@@ -84,6 +85,23 @@ describe('test OIDC helper utility', () => {
     expect(contextMock.security_plugin.logger.warn).toHaveBeenCalledWith(
       "Additional parameter in OpenID config 'existingKey' was ignored as it would overwrite existing parameters"
     );
+  });
+
+  test('test include additional parameters in query when no additional parameters specified', () => {
+    const contextMock = { security_plugin: { logger: { warn: jest.fn() } } };
+
+    const query = { existingKey: 'value' };
+    const constQueryModified = { existingKey: 'value' };
+    const config = {
+      openid: {
+        enabled: true,
+        client_secret: '',
+      },
+    };
+
+    includeAdditionalParameters(query, contextMock, config);
+    expect(query).toEqual(constQueryModified);
+    expect(contextMock.security_plugin.logger.warn).toHaveBeenCalledTimes(0);
   });
 
   test('test root url when trusted header unset', () => {
