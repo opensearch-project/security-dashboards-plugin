@@ -20,9 +20,6 @@
 
 const login = 'admin';
 const password = 'admin';
-const tenantLocalStorageKey = 'opendistro::security::tenant::saved';
-const globalTenantLocalStorageValue = '\"\"';
-const newThemeModalLocalStorageKey = 'home:newThemeModal:show'
 
 describe('Log in via OIDC', () => {
 
@@ -48,18 +45,10 @@ describe('Log in via OIDC', () => {
     
     kcLogin();
 
-    cy.origin('http://localhost:5601', {
-      args: [
-        tenantLocalStorageKey, 
-        globalTenantLocalStorageValue, 
-        newThemeModalLocalStorageKey, 
-        'false'
-      ]
-    }, (tenantKey, tenantValue, themeModalKey, themeModalValue) => {
+    cy.origin('http://localhost:5601', () => {
+      localStorage.setItem("opendistro::security::tenant::saved", "\"\"");
+      localStorage.setItem("home:newThemeModal:show", "false");
       
-      localStorage.setItem(tenantKey, tenantValue);
-      localStorage.setItem(themeModalKey, themeModalValue);
-
       cy.get('#osdOverviewPageHeader__title', { timeout: 10000 }).should('be.visible');
   
       cy.getCookie('security_authentication', { timeout: 10000 }).should('exist');
@@ -74,17 +63,9 @@ describe('Log in via OIDC', () => {
 
     kcLogin();
 
-    cy.origin('http://localhost:5601', {
-      args: [
-        tenantLocalStorageKey, 
-        globalTenantLocalStorageValue, 
-        newThemeModalLocalStorageKey, 
-        'false'
-      ]
-    }, (tenantKey, tenantValue, themeModalKey, themeModalValue) => {
-      
-      localStorage.setItem(tenantKey, tenantValue);
-      localStorage.setItem(themeModalKey, themeModalValue);
+    cy.origin('http://localhost:5601', () => {
+      localStorage.setItem("opendistro::security::tenant::saved", "\"\"");
+      localStorage.setItem("home:newThemeModal:show", "false");
 
       cy.visit('http://localhost:5601/app/dev_tools#/console');
       
@@ -94,16 +75,17 @@ describe('Log in via OIDC', () => {
     });
   });
 
-  it.skip('Login to Dashboard with Hash', () => {
+  it('Login to Dashboard with Hash', () => {
     cy.visit(
       `http://localhost:5601/app/dashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(filters:!(),refreshInterval:(pause:!f,value:900000),time:(from:now-24h,to:now))&_a=(description:'Analyze%20mock%20flight%20data%20for%20OpenSearch-Air,%20Logstash%20Airways,%20OpenSearch%20Dashboards%20Airlines%20and%20BeatsWest',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'%5BFlights%5D%20Global%20Flight%20Dashboard',viewMode:view)`
     );
 
-    cy.wait(15000);
-
     kcLogin();
 
     cy.origin('http://localhost:5601', () => {
+      localStorage.setItem("opendistro::security::tenant::saved", "\"\"");
+      localStorage.setItem("home:newThemeModal:show", "false");
+
       cy.get('.euiHeader.euiHeader--default.euiHeader--fixed.primaryHeader', { timeout: 10000 }).should('be.visible');
 
       cy.getCookie('security_authentication').should('exist');
