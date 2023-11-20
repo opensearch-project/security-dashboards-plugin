@@ -48,7 +48,7 @@ describe('Log in via OIDC', () => {
     cy.origin('http://localhost:5601', () => {
       localStorage.setItem("opendistro::security::tenant::saved", "\"\"");
       localStorage.setItem("home:newThemeModal:show", "false");
-      
+
       cy.get('#osdOverviewPageHeader__title', { timeout: 10000 }).should('be.visible');
   
       cy.getCookie('security_authentication', { timeout: 10000 }).should('exist');
@@ -92,26 +92,24 @@ describe('Log in via OIDC', () => {
     });
   });
 
-  it.skip('Tenancy persisted after logout in OIDC', () => {
+  it('Tenancy persisted after logout in OIDC', () => {
     cy.visit('http://localhost:5601/app/opensearch_dashboards_overview#/', { failOnStatusCode: false, timeout: 10000 });
-
-    cy.wait(15000);
 
     kcLogin();
 
     cy.origin('http://localhost:5601', () => {
+      localStorage.setItem("home:newThemeModal:show", "false");
+
       cy.get('#private', { timeout: 10000 }).should('be.enabled');
       cy.get('#private').click({ force: true });
-      cy.wait(5000);
+
       cy.get('button[data-test-subj="confirm"]').click();
-      cy.wait(5000);
-      cy.get('button[aria-label="Closes this modal window"]').click();
   
       cy.get('#osdOverviewPageHeader__title', { timeout: 10000 }).should('be.visible');
   
-      cy.get('button[id="user-icon-btn"]').click();
-      cy.wait(1500);
-      cy.get('button[data-test-subj^="log-out-"]').click();
+      cy.get('button[id="user-icon-btn"]', { timeout: 10000 }).click();
+
+      cy.get('button[data-test-subj^="log-out-"]', { timeout: 10000 }).click();
   });  
 
       kcLogin();
@@ -120,6 +118,8 @@ describe('Log in via OIDC', () => {
       cy.get('#user-icon-btn', { timeout: 10000 }).should('be.visible');
       cy.get('#user-icon-btn').click();
   
+      cy.get('#osdOverviewPageHeader__title', { timeout: 10000 }).should('be.visible');
+
       cy.get('#tenantName', { timeout: 10000 }).should('have.text', 'Private');
     });
   });
