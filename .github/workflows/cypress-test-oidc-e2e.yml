@@ -64,85 +64,6 @@ jobs:
           echo "The client secret is: $CLIENT_SECRET"
           echo "Creating client mapper"
           ./kcadm.sh create clients/$CID/protocol-mappers/models  -r master -s 'config."id.token.claim"=true' -s 'config."multivalued"=true' -s 'config."claim.name"="roles"' -s 'config."userinfo.token.claim"=true' -s 'config."access.token.claim"=true' -s 'name=rolemapper' -s 'protocolMapper=oidc-usermodel-realm-role-mapper' -s "protocol=openid-connect"
-
-      - name: Get and run Keycloak on Windows
-        if: ${{ runner.os == 'Windows' }}
-        run: |
-          Write-Host "Downloading Keycloak ${{ env.KEYCLOAK_VERSION }}"
-          Invoke-WebRequest -Uri "https://github.com/keycloak/keycloak/releases/download/${{ env.KEYCLOAK_VERSION }}/keycloak-${{ env.KEYCLOAK_VERSION }}.zip" -OutFile keycloak.zip
-          Write-Host "Unpacking Keycloak"
-          Expand-Archive -Path keycloak.zip -DestinationPath ./
-          $Env:KEYCLOAK_ADMIN="admin"
-          $Env:KEYCLOAK_ADMIN_PASSWORD="admin"
-          Set-Location "keycloak-${{ env.KEYCLOAK_VERSION }}/bin"
-          
-          Write-Host "Starting keycloak"
-          Start-Process -NoNewWindow ./kc.bat -ArgumentList 'start-dev', '--http-enabled=true', '--hostname-strict-https=false', '--http-host=localhost', '--http-relative-path=/auth', '--health-enabled=true'
-          Start-Sleep -Seconds 30
-          $retryCount = 0
-          $maximumRetries = 20
-          $delayBetweenRetries = 15  # in seconds
-          while ($retryCount -lt $maximumRetries) {
-            try {
-                $response = Invoke-WebRequest -Uri 'http://localhost:8080/auth/health' -Method Get -UseBasicParsing -ErrorAction Stop
-                if ($response.StatusCode -eq 200) {
-                    break
-                } else {
-                    Write-Host "Unexpected status code $($response.StatusCode). Retrying in $delayBetweenRetries seconds..."
-                    Start-Sleep -Seconds $delayBetweenRetries
-                    $retryCount++
-                }
-            } catch {
-                Write-Host "Error encountered: $_. Retrying in $delayBetweenRetries seconds..."
-                Start-Sleep -Seconds $delayBetweenRetries
-                $retryCount++
-            }
-          }
-          if ($retryCount -eq $maximumRetries) {
-              throw "Maximum retry attempts reached. Keycloak might not be running correctly."
-          }
-
-          Write-Host "Creating client"
-          ./kcadm.bat config credentials --server http://localhost:8080/auth --realm master --user $Env:KEYCLOAK_ADMIN --password $Env:KEYCLOAK_ADMIN_PASSWORD
-          $jsonContent = @{
-              clientId = "opensearch"
-              redirectUris = @(
-                  "http://localhost:5603/auth/openid/login",
-                  "http://localhost:5601",
-                  "http://localhost:5601/auth/openid/login"
-              )
-          } | ConvertTo-Json
-
-          $jsonContent | Out-File -Path .\client-config.json
-
-          $CID = ./kcadm.bat create clients -r master -f .\client-config.json -i
-
-          ./kcadm.bat get clients/$CID/installation/providers/keycloak-oidc-keycloak-json > tmp
-
-          Write-Host "Getting client secret for dashboards configuration purpose"
-          $secret = (Get-Content tmp | Select-String -Pattern '"secret" : "([^"]+)"' | ForEach-Object { $_.Matches.Groups[1].Value })
-          Add-Content -Value "KEYCLOAK_CLIENT_SECRET=$secret" -Path $env:GITHUB_ENV
-
-          Write-Host "Generating client mapper configuration"
-          $mapperConfigContent = @"
-          {
-            "config": {
-              "id.token.claim": "true",
-              "multivalued": "true",
-              "claim.name": "roles",
-              "userinfo.token.claim": "true",
-              "access.token.claim": "true"
-            },
-            "name": "rolemapper",
-            "protocolMapper": "oidc-usermodel-realm-role-mapper",
-            "protocol": "openid-connect"
-          }
-          "@
-          Set-Content -Value $mapperConfigContent -Path ./mapper-config.json
-          
-          Write-Host "Creating client mapper"
-          ./kcadm.bat create clients/$CID/protocol-mappers/models -r master -f ./mapper-config.json
-        shell: pwsh
       
       - name: Download security plugin and create setup scripts
         uses: ./.github/actions/download-plugin
@@ -151,24 +72,12 @@ jobs:
           plugin-name: ${{ env.PLUGIN_NAME }}
           plugin-version: ${{ env.PLUGIN_VERSION }}
 
-      # Configure longpath names if on Windows
-      - name: Enable Longpaths if on Windows
-        if: ${{ runner.os == 'Windows' }}
-        run: git config --system core.longpaths true
-        shell: pwsh
-
       # Download OpenSearch
       - name: Download OpenSearch for Linux
         uses: peternied/download-file@v2
         if: ${{ runner.os == 'Linux' }}
         with:
           url: https://artifacts.opensearch.org/snapshots/core/opensearch/${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/opensearch-min-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64-latest.tar.gz
-
-      - name: Download OpenSearch for Windows
-        uses: peternied/download-file@v2
-        if: ${{ runner.os == 'Windows' }}
-        with:
-          url: https://artifacts.opensearch.org/snapshots/core/opensearch/${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/opensearch-min-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-windows-x64-latest.zip
 
       # Extract downloaded tar/zip
       - name: Extract downloaded tar
@@ -178,13 +87,6 @@ jobs:
           rm -f opensearch-*.tar.gz
         shell: bash
 
-      - name: Extract downloaded zip
-        if: ${{ runner.os == 'Windows' }}
-        run: |
-          tar -xzf opensearch-min-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-windows-x64-latest.zip
-          del opensearch-min-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-windows-x64-latest.zip
-        shell: pwsh
-
       # Install the security plugin
       - name: Install Plugin into OpenSearch for Linux
         if: ${{ runner.os == 'Linux'}}
@@ -192,12 +94,6 @@ jobs:
           chmod +x ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/bin/opensearch-plugin
           /bin/bash -c "yes | ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/bin/opensearch-plugin install file:$(pwd)/opensearch-security.zip"
         shell: bash
-
-      - name: Install Plugin into OpenSearch for Windows
-        if: ${{ runner.os == 'Windows'}}
-        run: |
-          'y' | .\opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT\bin\opensearch-plugin.bat install file:$(pwd)\opensearch-security.zip
-        shell: pwsh
       
       # Add OIDC Configuration
       - name: Injecting OIDC Configuration for Linux
@@ -217,57 +113,6 @@ jobs:
           yq -i ".config.dynamic.authc.openid_auth_domain.http_authenticator.config.openid_connect_url = \"http://localhost:8080/auth/realms/master/.well-known/openid-configuration\"" config.yml
           yq -i ".config.dynamic.authc.openid_auth_domain.authentication_backend.type = \"noop\"" config.yml
           cd ../../..
-
-      - name: Overwriting Configuration for Windows with OIDC
-        if: ${{ runner.os == 'Windows' }}
-        run: |
-          echo "Overwriting the configuration with OIDC settings"
-      
-          # Set the directory path for clarity
-          $configDir = ".\opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT\config\opensearch-security\"
-          Set-Location -Path $configDir
-      
-          # Overwrite the existing config.yml
-          @"
-            _meta:
-              type: "config"
-              config_version: 2
-            
-            config:
-              dynamic:
-                http:
-                  anonymous_auth_enabled: false
-                authc:
-                  basic_internal_auth_domain:
-                    description: "Authenticate via HTTP Basic against internal users database"
-                    http_enabled: true
-                    transport_enabled: true
-                    order: 0
-                    http_authenticator:
-                      type: basic
-                      challenge: false
-                    authentication_backend:
-                      type: intern
-            
-                  openid_auth_domain:
-                    http_enabled: true
-                    transport_enabled: true
-                    order: 1
-                    http_authenticator:
-                      type: openid
-                      challenge: false
-                      config:
-                        subject_key: "preferred_username"
-                        roles_key: "roles"
-                        openid_connect_url: "http://localhost:8080/auth/realms/master/.well-known/openid-configuration"
-                    authentication_backend:
-                      type: noop
-          "@ | Set-Content -Path .\config.yml
-      
-          cat .\config.yml
-      
-          Set-Location -Path "..\..\.."
-        shell: pwsh
       
       # Run any configuration scripts
       - name: Run Setup Script for Linux
@@ -278,22 +123,12 @@ jobs:
           ./setup.sh
         shell: bash
 
-      - name: Run Setup Script for Windows
-        if: ${{ runner.os == 'Windows' }}
-        run: .\setup.bat
-        shell: pwsh
-
       # Run OpenSearch
       - name: Run OpenSearch with plugin on Linux
         if: ${{ runner.os == 'Linux'}}
         run: |
           /bin/bash -c "./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/bin/opensearch &"
         shell: bash
-
-      - name: Run OpenSearch with plugin on Windows
-        if: ${{ runner.os == 'Windows'}}
-        run: start .\opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT\bin\opensearch.bat
-        shell: pwsh
 
       # Give the OpenSearch process some time to boot up before sending any requires, might need to increase the default time!
       - name: Sleep while OpenSearch starts
@@ -306,16 +141,6 @@ jobs:
         if: ${{ runner.os != 'Windows'}}
         run: curl https://localhost:9200/_cat/plugins -u 'admin:admin' -k -v
         shell: bash
-
-      - name: Check OpenSearch Running on Windows
-        if: ${{ runner.os == 'Windows'}}
-        run: |
-          $credentialBytes = [Text.Encoding]::ASCII.GetBytes("admin:admin")
-          $encodedCredentials = [Convert]::ToBase64String($credentialBytes)
-          $baseCredentials = "Basic $encodedCredentials"
-          $Headers = @{ Authorization = $baseCredentials }
-          Invoke-WebRequest -SkipCertificateCheck -Uri 'https://localhost:9200/_cat/plugins' -Headers $Headers;
-        shell: pwsh
 
       - if: always()
         run: cat ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/logs/opensearch.log
@@ -354,30 +179,6 @@ jobs:
           nohup yarn start --no-base-path --no-watch &
           sleep 600
 
-      - name: Configure and Run OpenSearch Dashboards with Cypress Test Cases
-        if: ${{ runner.os == 'Windows' }}
-        run: |
-          cd ./OpenSearch-Dashboards
-          echo 'server.host: "localhost"' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch.hosts: ["https://localhost:9200"]' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch.ssl.verificationMode: none' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch.username: "kibanaserver"' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch.password: "kibanaserver"' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch.requestHeadersWhitelist: [ authorization,securitytenant ]' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch_security.multitenancy.enabled: true' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch_security.multitenancy.tenants.preferred: ["Private", "Global"]' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch_security.readonly_mode.roles: ["kibana_read_only"]' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch_security.cookie.secure: false' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch_security.openid.connect_url: "http://localhost:8080/auth/realms/master/.well-known/openid-configuration"' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch_security.openid.client_id: "opensearch"' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch_security.openid.client_secret: "${{ env.KEYCLOAK_CLIENT_SECRET }}"'>> ./config/opensearch_dashboards.yml
-          echo 'opensearch_security.auth.type: ["openid"]' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch_security.auth.multiple_auth_enabled: true' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch_security.ui.openid.login.buttonname: "OIDC"' >> ./config/opensearch_dashboards.yml
-          echo 'home.disableWelcomeScreen: true' >> ./config/opensearch_dashboards.yml
-          nohup yarn start --no-base-path --no-watch &
-          sleep 600
-      
       - name: Run Cypress
         run : |
           yarn add cypress --save-dev
