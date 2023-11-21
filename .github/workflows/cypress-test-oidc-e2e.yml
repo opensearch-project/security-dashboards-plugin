@@ -13,7 +13,7 @@ env:
   
 jobs:
   tests:
-    name: Run Cypress E2E tests
+    name: Run Cypress E2E OIDC tests
     strategy:
       fail-fast: false
       matrix:
