@@ -17,3 +17,30 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
+
+afterEach(() => {
+    cy.clearCookies();
+    cy.clearLocalStorage();
+  });
+
+describe('Log in via SAML', () => {
+  const samlLogin = () => {
+    cy.get('input[id=userName]', { timeout: 15000}).should('be.visible');
+    cy.get('button[id=btn-sign-in]', { timeout: 15000 }).should('be.visible').click();
+  };
+
+  it('Login to app/opensearch_dashboards_overview#/ when SAML is enabled', () => {
+    localStorage.setItem("opendistro::security::tenant::saved", "\"__user__\"");
+    localStorage.setItem("home:newThemeModal:show", "false");
+
+    cy.visit('http://localhost:5601/app/opensearch_dashboards_overview', {
+      failOnStatusCode: false,
+      timeout: 10000,
+    });
+    
+    samlLogin();
+
+    cy.get('#osdOverviewPageHeader__title', { timeout: 10000 }).should('be.visible');
+    cy.getCookie('security_authentication', { timeout: 10000 }).should('exist');
+  });
+});
