@@ -13,21 +13,18 @@
  *   permissions and limitations under the License.
  */
 
-const { defineConfig } = require('cypress');
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
-module.exports = defineConfig({
-  screenshotsFolder: '.cypress/screenshots',
-  downloadsFolder: '.cypress/downloads',
-  defaultCommandTimeout: 60000,
-  requestTimeout: 60000,
-  responseTimeout: 60000,
-  e2e: {
-    setupNodeEvents(on, config) {},
-    supportFile: '.cypress/support/e2e.js',
-    baseUrl: 'http://localhost:5601',
-    specPattern: '.cypress/e2e/**/*.spec.js',
-  },
-  env: {
-    openSearchUrl: 'https://localhost:9200',
-  },
+import { SEC_API } from "./constants";
+
+Cypress.Commands.add('createRoleMapping', (roleID, rolemappingJson) => {
+  cy.request(
+    'PUT',
+    `${Cypress.env('openSearchUrl')}${SEC_API.ROLE_MAPPING_BASE}/${roleID}`,
+    rolemappingJson
+  );
+  cy.wait(10000);
 });
