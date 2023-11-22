@@ -76,7 +76,7 @@ jobs:
           chmod +x yq
           yq -i ".config.dynamic.authc.saml_auth_domain.http_enabled = true" config.yml
           yq -i ".config.dynamic.authc.saml_auth_domain.transport_enabled = false" config.yml
-          yq -i ".config.dynamic.authc.saml_auth_domain.order = 5" config.yml
+          yq -i ".config.dynamic.authc.saml_auth_domain.order = 1" config.yml
           yq -i ".config.dynamic.authc.saml_auth_domain.http_authenticator.type = \"saml\"" config.yml
           yq -i ".config.dynamic.authc.saml_auth_domain.http_authenticator.challenge = true" config.yml
           yq -i ".config.dynamic.authc.saml_auth_domain.http_authenticator.config.idp.entity_id = \"urn:example:idp\"" config.yml
@@ -131,8 +131,6 @@ jobs:
         if: ${{ runner.os == 'Linux' }}
         run: |
           cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
-          ls
-          pwd
           yarn pretest:jest_server
 
       # Configure the Dashboard for SAML setup
