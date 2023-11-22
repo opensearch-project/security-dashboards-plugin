@@ -151,7 +151,6 @@ jobs:
           echo 'server.xsrf.allowlist: ["/_plugins/_security/api/authtoken", "/_opendistro/_security/api/authtoken", "/_opendistro/_security/saml/acs", "/_opendistro/_security/saml/acs/idpinitiated", "/_opendistro/_security/saml/logout"]' >> ./config/opensearch_dashboards.yml
           echo 'opensearch_security.auth.type: ["saml"]' >> ./config/opensearch_dashboards.yml
           echo 'opensearch_security.auth.multiple_auth_enabled: true' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch_security.ui.openid.login.buttonname: "SAML"' >> ./config/opensearch_dashboards.yml
           echo 'opensearch_security.auth.anonymous_auth_enabled: false' >> ./config/opensearch_dashboards.yml
           echo 'home.disableWelcomeScreen: true' >> ./config/opensearch_dashboards.yml
           echo 'HERE IS THE DASHBOARD CONFIG'
