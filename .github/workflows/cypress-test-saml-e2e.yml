@@ -67,12 +67,13 @@ jobs:
       
       # Add SAML Configuration
       - name: Injecting SAML Configuration for Linux
-        if: ${{ runner.os == 'Linux' }}
+        if: ${{ runner.os == 'Linux'}}
         run: |
-          set -e # Exit immediately if a command exits with a non-zero status.
           echo "Creating new SAML configuration"
-          cd ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/config/opensearch-security/    
-          rm -f config.yml
+          pwd
+          cd ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/config/opensearch-security/
+          ls
+          rm -rf config.yml
           cat << 'EOT' > config.yml
             ---
             _meta:
