@@ -8,9 +8,9 @@ declare namespace Cypress {
      * @example
      * cy.createRoleMapping('role_name', rolemappingJsonFixture )
      */
-     createRoleMapping<S = any>(
-        roleID: string,
-        rolemappingJson: string
-      ): Chainable<S>;
+    createRoleMapping<S = any>(
+       roleID: string,
+       rolemappingJson: string
+     ): Chainable<S>;
   }
 }

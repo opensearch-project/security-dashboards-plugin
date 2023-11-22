@@ -18,13 +18,25 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { SEC_API } from "./constants";
+/**
+ *****************************
+ SECURITY DASHBOARDS PLUGIN CONSTANTS
+ *****************************
+ */
 
-Cypress.Commands.add('createRoleMapping', (roleID, rolemappingJson) => {
-  cy.request(
-    'PUT',
-    `${Cypress.env('openSearchUrl')}${SEC_API.ROLE_MAPPING_BASE}/${roleID}`,
-    rolemappingJson
-  );
-  cy.wait(10000);
-});
+export const ALL_ACCESS_ROLE = 'all_access';
+
+//Admin Credential
+export const ADMIN_AUTH = {
+  username: Cypress.env('adminUserName'),
+  password: Cypress.env('adminPassword'),
+};
+
+//Security API Constants
+export const SEC_API_PREFIX = '/_plugins/_security/api';
+export const SEC_API = {
+  TENANTS_BASE: `${SEC_API_PREFIX}/tenants`,
+  INTERNALUSERS_BASE: `${SEC_API_PREFIX}/internalusers`,
+  ROLE_BASE: `${SEC_API_PREFIX}/roles`,
+  ROLE_MAPPING_BASE: `${SEC_API_PREFIX}/rolesmapping`,
+};

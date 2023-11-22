@@ -18,10 +18,21 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ALL_ACCESS_ROLE } from '../../support/constants';
+
+import samlUserRoleMapping from '../../fixtures/saml/samlUserRoleMappiing.json'
+
+before(() => {
+  cy.intercept('https://localhost:9200');
+  cy.createRoleMapping(ALL_ACCESS_ROLE, samlUserRoleMapping);
+  cy.clearCookies();
+  cy.clearLocalStorage();
+});
+
 afterEach(() => {
-    cy.clearCookies();
-    cy.clearLocalStorage();
-  });
+  cy.clearCookies();
+  cy.clearLocalStorage();
+});
 
 describe('Log in via SAML', () => {
   const samlLogin = () => {
