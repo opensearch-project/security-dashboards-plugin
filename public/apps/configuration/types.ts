@@ -22,6 +22,7 @@ export type FieldLevelSecurityMethod = 'exclude' | 'include';
 export enum ResourceType {
   roles = 'roles',
   users = 'users',
+  serviceAccounts = 'serviceAccounts',
   permissions = 'permissions',
   tenants = 'tenants',
   tenantsManageTab = 'tenantsManageTab',

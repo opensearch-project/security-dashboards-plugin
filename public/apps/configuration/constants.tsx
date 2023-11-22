@@ -25,6 +25,8 @@ export const API_ENDPOINT_MULTITENANCY = API_PREFIX + '/multitenancy/tenant';
 export const API_ENDPOINT_TENANCY_CONFIGS = API_ENDPOINT + '/tenancy/config';
 export const API_ENDPOINT_SECURITYCONFIG = API_ENDPOINT + '/securityconfig';
 export const API_ENDPOINT_INTERNALUSERS = API_ENDPOINT + '/internalusers';
+export const API_ENDPOINT_INTERNALACCOUNTS = API_ENDPOINT + '/internalaccounts';
+export const API_ENDPOINT_SERVICEACCOUNTS = API_ENDPOINT + '/serviceaccounts';
 export const API_ENDPOINT_AUDITLOGGING = API_ENDPOINT + '/audit';
 export const API_ENDPOINT_AUDITLOGGING_UPDATE = API_ENDPOINT_AUDITLOGGING + '/config';
 export const API_ENDPOINT_PERMISSIONS_INFO = API_PREFIX + '/restapiinfo';
@@ -180,6 +182,9 @@ export const CLUSTER_PERMISSIONS: string[] = [
   'cluster:admin/script/put',
   'cluster:admin/script_context/get',
   'cluster:admin/script_language/get',
+  'cluster:admin/search/pipeline/delete',
+  'cluster:admin/search/pipeline/get',
+  'cluster:admin/search/pipeline/put',
   'cluster:admin/settings/update',
   'cluster:admin/snapshot/create',
   'cluster:admin/snapshot/clone',
