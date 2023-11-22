@@ -155,7 +155,10 @@ jobs:
       # Setup and Run SAML Idp
       - name: Get and run SAML Idp on Linux
         if: ${{ runner.os == 'Linux' }}
-        run: yarn pretest:jest_server
+        run: |
+          ls
+          pwd
+          yarn pretest:jest_server
 
       - name: Run Cypress
         run : |
