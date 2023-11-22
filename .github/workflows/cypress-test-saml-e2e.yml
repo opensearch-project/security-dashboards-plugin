@@ -72,8 +72,8 @@ jobs:
           echo "Creating new SAML configuration"
           pwd
           cd ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/config/opensearch-security/
-          ls
           rm -rf config.yml
+          ls
           cat << 'EOT' > config.yml
             ---
             _meta:
