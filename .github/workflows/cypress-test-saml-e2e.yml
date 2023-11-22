@@ -126,6 +126,15 @@ jobs:
         with:
           plugin_name: security-dashboards-plugin
 
+      # Setup and Run SAML Idp
+      - name: Get and run SAML Idp on Linux
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
+          ls
+          pwd
+          yarn pretest:jest_server
+
       # Configure the Dashboard for SAML setup
       - name: Configure and Run OpenSearch Dashboards with SAML Configuration
         if: ${{ runner.os == 'Linux' }}
@@ -151,14 +160,6 @@ jobs:
           cat ./config/opensearch_dashboards.yml
           nohup yarn start --no-base-path --no-watch &
           sleep 600
-
-      # Setup and Run SAML Idp
-      - name: Get and run SAML Idp on Linux
-        run: |
-          cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
-          ls
-          pwd
-          yarn pretest:jest_server
 
       - name: Run Cypress
         run : |
