@@ -113,7 +113,6 @@ jobs:
                       type: noop
             EOT
           cat config.yml
-        working-directory: ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/config/opensearch-security/
     
       # Run any configuration scripts
       - name: Run Setup Script for Linux
