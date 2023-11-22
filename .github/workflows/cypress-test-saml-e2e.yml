@@ -155,9 +155,9 @@ jobs:
       # Setup and Run SAML Idp
       - name: Get and run SAML Idp on Linux
         run: |
+          cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
           ls
           pwd
-          cd ..
           yarn pretest:jest_server
 
       - name: Run Cypress
