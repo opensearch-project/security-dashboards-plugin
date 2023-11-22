@@ -121,6 +121,8 @@ jobs:
         run: |
           echo "running linux setup"
           chmod +x ./setup.sh
+          echo "THIS IS THE SETUP SCRIPT !!!"
+          cat ./setup.sh
           ./setup.sh
         shell: bash
 
