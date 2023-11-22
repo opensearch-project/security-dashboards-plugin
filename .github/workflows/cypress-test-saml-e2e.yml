@@ -4,7 +4,6 @@ on:
     branches: [ '**' ]
 env:
   OPENSEARCH_VERSION: '3.0.0'
-  KEYCLOAK_VERSION: '21.0.1'
   CI: 1
   # avoid warnings like "tput: No value for $TERM and no -T specified"
   TERM: xterm
@@ -68,26 +67,53 @@ jobs:
       
       # Add SAML Configuration
       - name: Injecting SAML Configuration for Linux
-        if: ${{ runner.os == 'Linux'}}
+        if: ${{ runner.os == 'Linux' }}
         run: |
-          echo "Injecting SAML configuration"
-          cd ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/config/opensearch-security/
-          wget -O yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-          chmod +x yq
-          yq -i ".config.dynamic.authc.saml_auth_domain.http_enabled = true" config.yml
-          yq -i ".config.dynamic.authc.saml_auth_domain.transport_enabled = false" config.yml
-          yq -i ".config.dynamic.authc.saml_auth_domain.order = 7" config.yml
-          yq -i ".config.dynamic.authc.saml_auth_domain.http_authenticator.type = \"saml\"" config.yml
-          yq -i ".config.dynamic.authc.saml_auth_domain.http_authenticator.challenge = true" config.yml
-          yq -i ".config.dynamic.authc.saml_auth_domain.http_authenticator.config.idp.entity_id = \"urn:example:idp\"" config.yml
-          yq -i ".config.dynamic.authc.saml_auth_domain.http_authenticator.config.idp.metadata_url = \"http://localhost:7000/metadata\"" config.yml
-          yq -i ".config.dynamic.authc.saml_auth_domain.http_authenticator.config.sp.entity_id = \"https://localhost:9200\"" config.yml
-          yq -i ".config.dynamic.authc.saml_auth_domain.http_authenticator.config.kibana_url = \"http://localhost:5601\"" config.yml
-          yq -i ".config.dynamic.authc.saml_auth_domain.http_authenticator.config.exchange_key = \"6aff3042-1327-4f3d-82f0-40a157ac4464\"" config.yml
-          yq -i ".config.dynamic.authc.saml_auth_domain.authentication_backend.type = \"noop\"" config.yml
-          cat ./config.yml
-          cd ../../..    
-      
+          set -e # Exit immediately if a command exits with a non-zero status.
+          echo "Creating new SAML configuration"
+          cd ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/config/opensearch-security/    
+          rm -f config.yml
+          cat << 'EOT' > config.yml
+            ---
+            _meta:
+              type: "config"
+              config_version: 2
+            config:
+              dynamic:
+                http:
+                  anonymous_auth_enabled: false
+                authc:
+                  basic_internal_auth_domain:
+                    description: "Authenticate via HTTP Basic against internal users database"
+                    http_enabled: true
+                    transport_enabled: true
+                    order: 0
+                    http_authenticator:
+                      type: basic
+                      challenge: false
+                    authentication_backend:
+                      type: intern
+                  saml_auth_domain:
+                    http_enabled: true
+                    transport_enabled: false
+                    order: 1
+                    http_authenticator:
+                      type: saml
+                      challenge: true
+                      config:
+                        idp:
+                          entity_id: urn:example:idp
+                          metadata_url: http://localhost:7000/metadata
+                        sp:
+                          entity_id: https://localhost:9200
+                        kibana_url: http://localhost:5601
+                        exchange_key: 6aff3042-1327-4f3d-82f0-40a157ac4464
+                    authentication_backend:
+                      type: noop
+            EOT
+          cat config.yml
+        working-directory: ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/config/opensearch-security/
+    
       # Run any configuration scripts
       - name: Run Setup Script for Linux
         if: ${{ runner.os == 'Linux' }}
