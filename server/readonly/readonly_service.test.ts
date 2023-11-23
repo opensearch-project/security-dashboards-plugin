@@ -68,14 +68,25 @@ const mockAuthInfo = (data: Partial<OpenSearchAuthInfo> = {}): OpenSearchAuthInf
     data
   );
 
+const mockDashboardsInfo = (data = {}) =>
+  Object.assign(
+    {
+      user_name: 'admin',
+      multitenancy_enabled: true,
+    },
+    data
+  );
+
 const getService = (
   cookie: SecuritySessionCookie = mockCookie(),
-  authInfo: OpenSearchAuthInfo = mockAuthInfo()
+  authInfo: OpenSearchAuthInfo = mockAuthInfo(),
+  dashboardsInfo = mockDashboardsInfo()
 ) => {
   const logger = loggerMock.create();
 
   const securityClient = new SecurityClient(mockEsClient());
   securityClient.authinfo = jest.fn().mockReturnValue(authInfo);
+  securityClient.dashboardsinfo = jest.fn().mockReturnValue(dashboardsInfo);
 
   // @ts-ignore mock auth
   const auth = new BasicAuthentication();
@@ -189,5 +200,13 @@ describe('checks isReadonly', () => {
 
     const result = await service.isReadonly(httpServerMock.createOpenSearchDashboardsRequest());
     expect(result).toBeTruthy();
+  });
+  it('calls dashboardInfo and checks if multitenancy is enabled', async () => {
+    const dashboardsInfo = mockDashboardsInfo({ multitenancy_enabled: false });
+    const service = getService(mockCookie(), mockAuthInfo(), dashboardsInfo);
+    service.isAnonymousPage = jest.fn(() => false);
+
+    const result = await service.isReadonly(httpServerMock.createOpenSearchDashboardsRequest());
+    expect(result).toBeFalsy();
   });
 });
