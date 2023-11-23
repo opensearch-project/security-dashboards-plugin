@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-export function printObjectProperties(obj: Record<string, any>, objName: string): string {
+export function getObjectProperties(obj: Record<string, any>, objName: string): string {
   const objSummary: string[] = [];
 
   for (const [key, value] of Object.entries(obj)) {

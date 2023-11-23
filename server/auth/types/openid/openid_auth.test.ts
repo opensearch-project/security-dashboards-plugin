@@ -21,7 +21,7 @@ import { OpenIdAuthentication } from './openid_auth';
 import { SecurityPluginConfigType } from '../../../index';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { deflateValue } from '../../../utils/compression';
-import { printObjectProperties } from '../../../utils/print_object_properties';
+import { getObjectProperties } from '../../../utils/object_properties_defined';
 import {
   IRouter,
   CoreSetup,
@@ -159,9 +159,9 @@ describe('test OpenId authHeaderValue', () => {
     console.log(
       '============= PEM =============',
       '\n\n',
-      printObjectProperties(customConfig.openid, 'OpenID'),
+      getObjectProperties(customConfig.openid, 'OpenID'),
       '\n\n',
-      printObjectProperties(wreckHttpsOptions, 'wreckHttpsOptions')
+      getObjectProperties(wreckHttpsOptions, 'wreckHttpsOptions')
     );
 
     expect(wreckHttpsOptions.key).toBeDefined();
@@ -197,9 +197,9 @@ describe('test OpenId authHeaderValue', () => {
     console.log(
       '============= PFX =============',
       '\n\n',
-      printObjectProperties(customConfig.openid, 'OpenID'),
+      getObjectProperties(customConfig.openid, 'OpenID'),
       '\n\n',
-      printObjectProperties(wreckHttpsOptions, 'wreckHttpsOptions')
+      getObjectProperties(wreckHttpsOptions, 'wreckHttpsOptions')
     );
 
     expect(wreckHttpsOptions.pfx).toBeDefined();
