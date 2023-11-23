@@ -113,7 +113,14 @@ jobs:
           yq -i ".config.dynamic.authc.openid_auth_domain.http_authenticator.config.openid_connect_url = \"http://localhost:8080/auth/realms/master/.well-known/openid-configuration\"" config.yml
           yq -i ".config.dynamic.authc.openid_auth_domain.authentication_backend.type = \"noop\"" config.yml
           cd ../../..
-      
+
+      # TODO: REMOVE THIS ONCE ADMIN JAVA TOOL SUPPORT IT
+      - name: Write password to initialAdminPassword location
+        if: ${{ runner.os == 'Linux'}}
+        run:
+          echo admin >> ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/config/initialAdminPassword.txt
+        shell: bash
+
       # Run any configuration scripts
       - name: Run Setup Script for Linux
         if: ${{ runner.os == 'Linux' }}

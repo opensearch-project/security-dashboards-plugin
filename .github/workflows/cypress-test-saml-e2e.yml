@@ -57,6 +57,13 @@ jobs:
           rm -f opensearch-*.tar.gz
         shell: bash
 
+      # TODO: REMOVE THIS ONCE ADMIN JAVA TOOL SUPPORT IT
+      - name: Write password to initialAdminPassword location
+        if: ${{ runner.os == 'Linux'}}
+        run:
+          echo admin >> ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/config/initialAdminPassword.txt
+        shell: bash
+
       # Install the security plugin
       - name: Install Plugin into OpenSearch for Linux
         if: ${{ runner.os == 'Linux'}}
