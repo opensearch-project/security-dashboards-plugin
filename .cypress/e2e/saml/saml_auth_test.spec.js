@@ -24,6 +24,10 @@ import samlUserRoleMapping from '../../fixtures/saml/samlUserRoleMappiing.json'
 
 before(() => {
   cy.intercept('https://localhost:9200');
+
+  //Fake visit() before request: https://github.com/cypress-io/cypress/issues/25397#issuecomment-1402556488
+  cy.visit('http://localhost:5601');
+
   cy.createRoleMapping(ALL_ACCESS_ROLE, samlUserRoleMapping);
   cy.clearCookies();
   cy.clearLocalStorage();
