@@ -100,7 +100,17 @@ describe('checks isAnonymousPage', () => {
 
   it.each([
     // Missing referer header
-    [{ headers: {} }, false],
+    [
+      {
+        path: '/api/core/capabilities',
+        headers: {},
+        auth: {
+          isAuthenticated: false,
+          mode: 'optional',
+        },
+      },
+      false,
+    ],
     // Referer with not anynoumous page
     [
       {
@@ -113,9 +123,11 @@ describe('checks isAnonymousPage', () => {
     // Referer with anynoumous page
     [
       {
+        path: '/app/login',
         headers: {
           referer: 'https://localhost/app/login',
         },
+        routeAuthRequired: false,
       },
       true,
     ],

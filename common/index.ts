@@ -38,19 +38,6 @@ export const OPENID_AUTH_LOGOUT = '/auth/openid/logout';
 export const SAML_AUTH_LOGOUT = '/auth/saml/logout';
 export const ANONYMOUS_AUTH_LOGOUT = '/auth/anonymous/logout';
 
-export const ANONYMOUS_ROUTES = [
-  LOGIN_PAGE_URI,
-  CUSTOM_ERROR_PAGE_URI,
-  API_AUTH_LOGIN,
-  API_AUTH_LOGOUT,
-  OPENID_AUTH_LOGIN,
-  ANONYMOUS_AUTH_LOGIN,
-  OPENID_AUTH_LOGOUT,
-  SAML_AUTH_LOGOUT,
-  ANONYMOUS_AUTH_LOGOUT,
-  SAML_AUTH_LOGIN,
-];
-
 export const ERROR_MISSING_ROLE_PATH = '/missing-role';
 export const AUTH_HEADER_NAME = 'authorization';
 export const AUTH_GRANT_TYPE = 'authorization_code';

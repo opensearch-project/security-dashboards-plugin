@@ -19,7 +19,12 @@ import {
   OpenSearchDashboardsRequest,
   SessionStorageFactory,
 } from '../../../../src/core/server';
-import { globalTenantName, isPrivateTenant, ANONYMOUS_ROUTES } from '../../common';
+import {
+  globalTenantName,
+  isPrivateTenant,
+  LOGIN_PAGE_URI,
+  CUSTOM_ERROR_PAGE_URI,
+} from '../../common';
 import { SecurityClient } from '../backend/opensearch_security_client';
 import { IAuthenticationType, OpenSearchAuthInfo } from '../auth/types/authentication_type';
 import { SecuritySessionCookie } from '../session/security_cookie';
@@ -27,6 +32,8 @@ import { SecurityPluginConfigType } from '../index';
 import { ReadonlyService as BaseReadonlyService } from '../../../../src/core/server/security/readonly_service';
 
 export class ReadonlyService extends BaseReadonlyService {
+  protected static readonly ROUTES_TO_IGNORE: string[] = [LOGIN_PAGE_URI, CUSTOM_ERROR_PAGE_URI];
+
   private readonly logger: Logger;
   private readonly securityClient: SecurityClient;
   private readonly auth: IAuthenticationType;
@@ -49,12 +56,16 @@ export class ReadonlyService extends BaseReadonlyService {
   }
 
   isAnonymousPage(request: OpenSearchDashboardsRequest) {
+    if (typeof request.route.options.authRequired === 'boolean') {
+      return !request.route.options.authRequired;
+    }
+
     if (!request.headers || !request.headers.referer) {
       return false;
     }
 
     const url = new URL(request.headers.referer as string);
-    return ANONYMOUS_ROUTES.some((path) => url.pathname?.includes(path));
+    return ReadonlyService.ROUTES_TO_IGNORE.some((path) => url.pathname?.includes(path));
   }
 
   isReadOnlyTenant(authInfo: OpenSearchAuthInfo): boolean {
@@ -70,12 +81,12 @@ export class ReadonlyService extends BaseReadonlyService {
   }
 
   async isReadonly(request: OpenSearchDashboardsRequest): Promise<boolean> {
-    // omit for anonymous pages to avoid authentication errors
-    if (this.isAnonymousPage(request)) {
+    if (!this.config?.multitenancy.enabled) {
       return false;
     }
 
-    if (!this.config?.multitenancy.enabled) {
+    // omit for anonymous pages to avoid authentication errors
+    if (this.isAnonymousPage(request)) {
       return false;
     }
 
