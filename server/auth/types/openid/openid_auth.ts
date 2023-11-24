@@ -36,6 +36,7 @@ import { OpenIdAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
 import { callTokenEndpoint } from './helper';
 import { composeNextUrlQueryParam } from '../../../utils/next_url';
+import { getObjectProperties } from '../../../utils/object_properties_defined';
 import { getExpirationDate } from './helper';
 import { AuthType, OPENID_AUTH_LOGIN } from '../../../../common';
 import {
@@ -126,6 +127,7 @@ export class OpenIdAuthentication extends AuthenticationType {
   private createWreckClient(): typeof wreck {
     if (this.config.openid?.root_ca) {
       this.wreckHttpsOption.ca = [fs.readFileSync(this.config.openid.root_ca)];
+      this.logger.debug(`Using CA Cert: ${this.config.openid.pfx}`);
     }
     if (this.config.openid?.pfx) {
       // Use PFX or PKCS12 if provided
@@ -153,6 +155,7 @@ export class OpenIdAuthentication extends AuthenticationType {
         return undefined;
       };
     }
+    this.logger.info(getObjectProperties(this.wreckHttpsOption, 'WreckHttpsOptions'));
     if (Object.keys(this.wreckHttpsOption).length > 0) {
       return wreck.defaults({
         agents: {
