@@ -59,4 +59,68 @@ describe('Log in via SAML', () => {
     cy.get('#osdOverviewPageHeader__title', { timeout: 10000 }).should('be.visible');
     cy.getCookie('security_authentication', { timeout: 10000 }).should('exist');
   });
+
+  it('Login to app/dev_tools#/console when SAML is enabled', () => {
+    localStorage.setItem("opendistro::security::tenant::saved", "\"__user__\"");
+    localStorage.setItem("home:newThemeModal:show", "false");
+
+    cy.visit('http://localhost:5601/app/dev_tools#/console', {
+      failOnStatusCode: false,
+      timeout: 10000,
+    });
+    
+    samlLogin();
+
+    cy.get('a.euiBreadcrumb--last', { timeout: 10000 }).contains('Dev Tools');
+    cy.getCookie('security_authentication', { timeout: 10000 }).should('exist');
+  });
+
+  it('Login to Dashboard with Hash', () => {
+    localStorage.setItem("opendistro::security::tenant::saved", "\"__user__\"");
+    localStorage.setItem("home:newThemeModal:show", "false");
+
+    const urlWithHash = `http://localhost:5601/app/security-dashboards-plugin#/getstarted`;
+
+    cy.visit(urlWithHash, {
+      failOnStatusCode: false,
+      timeout: 10000,
+    });
+    
+    samlLogin();
+
+    cy.get('h1.euiTitle--large', { timeout: 10000 }).contains('Get started');
+    cy.getCookie('security_authentication', { timeout: 10000 }).should('exist');
+
+  });
+
+  it('Tenancy persisted after logout in SAML', () => {
+    localStorage.setItem("home:newThemeModal:show", "false");
+
+    cy.visit('http://localhost:5601/app/opensearch_dashboards_overview', {
+      failOnStatusCode: false,
+      timeout: 10000,
+    });
+
+    samlLogin();
+
+    cy.get('#private', { timeout: 10000 }).should('be.enabled');
+    cy.get('#private').click({ force: true });
+
+    cy.get('button[data-test-subj="confirm"]', { timeout: 10000 }).click();
+  
+    cy.get('#osdOverviewPageHeader__title', { timeout: 10000 }).should('be.visible');
+
+    cy.get('button[id="user-icon-btn"]', { timeout: 10000 }).click();
+
+    cy.get('button[data-test-subj^="log-out-"]', { timeout: 10000 }).click();
+
+    samlLogin();
+
+    cy.get('#user-icon-btn', { timeout: 10000 }).should('be.visible');
+    cy.get('#user-icon-btn').click();
+
+    cy.get('#osdOverviewPageHeader__title', { timeout: 10000 }).should('be.visible');
+
+    cy.get('#tenantName', { timeout: 10000 }).should('have.text', 'Private');
+  });
 });
