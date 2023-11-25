@@ -127,7 +127,7 @@ export class OpenIdAuthentication extends AuthenticationType {
   private createWreckClient(): typeof wreck {
     if (this.config.openid?.root_ca) {
       this.wreckHttpsOption.ca = [fs.readFileSync(this.config.openid.root_ca)];
-      this.logger.debug(`Using CA Cert: ${this.config.openid.pfx}`);
+      this.logger.debug(`Using CA Cert: ${this.config.openid.root_ca}`);
     }
     if (this.config.openid?.pfx) {
       // Use PFX or PKCS12 if provided
