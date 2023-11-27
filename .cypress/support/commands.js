@@ -46,8 +46,9 @@ Cypress.Commands.add('createTenant', (tenantID, tenantJson) => {
     'PUT',
     `${Cypress.env('openSearchUrl')}${SEC_API.TENANTS_BASE}/${tenantID}`,
     tenantJson
-  );
-  cy.wait(10000);
+  ).then((response) => {
+    expect(response.status).to.eq(200);
+  });
 });
 
 Cypress.Commands.add('createInternalUser', (userID, userJson) => {
@@ -55,8 +56,9 @@ Cypress.Commands.add('createInternalUser', (userID, userJson) => {
     'PUT',
     `${Cypress.env('openSearchUrl')}${SEC_API.INTERNALUSERS_BASE}/${userID}`,
     userJson
-  );
-  cy.wait(10000);
+  ).then((response) => {
+    expect(response.status).to.eq(200);
+  });
 });
 
 Cypress.Commands.add('createRole', (roleID, roleJson) => {
@@ -64,8 +66,9 @@ Cypress.Commands.add('createRole', (roleID, roleJson) => {
     'PUT',
     `${Cypress.env('openSearchUrl')}${SEC_API.ROLE_BASE}/${roleID}`,
     roleJson
-  );
-  cy.wait(10000);
+  ).then((response) => {
+    expect(response.status).to.eq(200);
+  });
 });
 
 Cypress.Commands.add('createRoleMapping', (roleID, rolemappingJson) => {
@@ -73,6 +76,7 @@ Cypress.Commands.add('createRoleMapping', (roleID, rolemappingJson) => {
     'PUT',
     `${Cypress.env('openSearchUrl')}${SEC_API.ROLE_MAPPING_BASE}/${roleID}`,
     rolemappingJson
-  );
-  cy.wait(10000);
+  ).then((response) => {
+    expect(response.status).to.eq(200);
+  });
 });
