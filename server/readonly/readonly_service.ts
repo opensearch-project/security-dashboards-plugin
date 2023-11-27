@@ -30,8 +30,6 @@ import { IAuthenticationType, OpenSearchAuthInfo } from '../auth/types/authentic
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { SecurityPluginConfigType } from '../index';
 import { ReadonlyService as BaseReadonlyService } from '../../../../src/core/server/security/readonly_service';
-import { getDashboardsInfoSafe } from '../../public/utils/dashboards-info-utils';
-import { mult } from '../../../../src/plugins/expressions/common/test_helpers/expression_functions/mult';
 
 export class ReadonlyService extends BaseReadonlyService {
   protected static readonly ROUTES_TO_IGNORE: string[] = [LOGIN_PAGE_URI, CUSTOM_ERROR_PAGE_URI];
