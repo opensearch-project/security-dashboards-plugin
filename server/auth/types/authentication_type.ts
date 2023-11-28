@@ -37,6 +37,11 @@ export interface IAuthenticationType {
   type: string;
   authHandler: AuthenticationHandler;
   init: () => Promise<void>;
+  requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean;
+  buildAuthHeaderFromCookie(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): any;
 }
 
 export type IAuthHandlerConstructor = new (
@@ -267,7 +272,6 @@ export abstract class AuthenticationType implements IAuthenticationType {
   }
 
   // abstract functions for concrete auth types to implement
-  public abstract requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean;
   public abstract getAdditionalAuthHeader(request: OpenSearchDashboardsRequest): Promise<any>;
   public abstract getCookie(
     request: OpenSearchDashboardsRequest,
@@ -282,9 +286,5 @@ export abstract class AuthenticationType implements IAuthenticationType {
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
   ): IOpenSearchDashboardsResponse | AuthResult;
-  public abstract buildAuthHeaderFromCookie(
-    cookie: SecuritySessionCookie,
-    request: OpenSearchDashboardsRequest
-  ): any;
   public abstract init(): Promise<void>;
 }
