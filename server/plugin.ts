@@ -15,7 +15,6 @@
 
 import { first } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { ResponseObject } from '@hapi/hapi';
 import {
   PluginInitializerContext,
   CoreSetup,
@@ -39,16 +38,14 @@ import {
   ISavedObjectTypeRegistry,
 } from '../../../src/core/server/saved_objects';
 import { setupIndexTemplate, migrateTenantIndices } from './multitenancy/tenant_index';
-import {
-  IAuthenticationType,
-  OpenSearchDashboardsAuthState,
-} from './auth/types/authentication_type';
+import { IAuthenticationType } from './auth/types/authentication_type';
 import { getAuthenticationHandler } from './auth/auth_handler_factory';
 import { setupMultitenantRoutes } from './multitenancy/routes';
 import { defineAuthTypeRoutes } from './routes/auth_type_routes';
 import { createMigrationOpenSearchClient } from '../../../src/core/server/saved_objects/migrations/core';
 import { SecuritySavedObjectsClientWrapper } from './saved_objects/saved_objects_wrapper';
 import { addTenantParameterToResolvedShortLink } from './multitenancy/tenant_resolver';
+import { ReadonlyService } from './readonly/readonly_service';
 
 export interface SecurityPluginRequestContext {
   logger: Logger;
@@ -138,6 +135,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     // Register server side APIs
     defineRoutes(router);
     defineAuthTypeRoutes(router, config);
+
     // set up multi-tenent routes
     if (config.multitenancy?.enabled) {
       setupMultitenantRoutes(router, securitySessionStorageFactory, this.securityClient);
@@ -150,6 +148,16 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
         this.savedObjectClientWrapper.wrapperFactory
       );
     }
+
+    const service = new ReadonlyService(
+      this.logger,
+      this.securityClient,
+      auth,
+      securitySessionStorageFactory,
+      config
+    );
+
+    core.security.registerReadonlyService(service);
 
     return {
       config$,
