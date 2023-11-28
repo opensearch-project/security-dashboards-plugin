@@ -18,18 +18,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { SEC_API, ADMIN_AUTH } from "./constants";
+import { SEC_API, ADMIN_AUTH } from './constants';
 
 /**
  * Overwrite request command to support authentication similar to visit.
  * The request function parameters can be url, or (method, url), or (method, url, body).
  */
 Cypress.Commands.overwrite('request', (originalFn, ...args) => {
-  let defaults = {};
-    defaults.auth = ADMIN_AUTH;
+  const defaults = {};
+  defaults.auth = ADMIN_AUTH;
   let options = {};
   if (typeof args[0] === 'object' && args[0] !== null) {
-    options = Object.assign({}, args[0]);
+    options = { ...args[0] };
   } else if (args.length === 1) {
     [options.url] = args;
   } else if (args.length === 2) {
@@ -38,7 +38,7 @@ Cypress.Commands.overwrite('request', (originalFn, ...args) => {
     [options.method, options.url, options.body] = args;
   }
 
-  return originalFn(Object.assign({}, defaults, options));
+  return originalFn({ ...defaults, ...options });
 });
 
 Cypress.Commands.add('createTenant', (tenantID, tenantJson) => {
@@ -62,13 +62,11 @@ Cypress.Commands.add('createInternalUser', (userID, userJson) => {
 });
 
 Cypress.Commands.add('createRole', (roleID, roleJson) => {
-  cy.request(
-    'PUT',
-    `${Cypress.env('openSearchUrl')}${SEC_API.ROLE_BASE}/${roleID}`,
-    roleJson
-  ).then((response) => {
-    expect(response.status).to.eq(200);
-  });
+  cy.request('PUT', `${Cypress.env('openSearchUrl')}${SEC_API.ROLE_BASE}/${roleID}`, roleJson).then(
+    (response) => {
+      expect(response.status).to.eq(200);
+    }
+  );
 });
 
 Cypress.Commands.add('createRoleMapping', (roleID, rolemappingJson) => {

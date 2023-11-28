@@ -16,16 +16,16 @@
 const { defineConfig } = require('cypress');
 
 module.exports = defineConfig({
-  screenshotsFolder: '.cypress/screenshots',
-  downloadsFolder: '.cypress/downloads',
+  screenshotsFolder: 'cypress/screenshots',
+  downloadsFolder: 'cypress/downloads',
   defaultCommandTimeout: 60000,
   requestTimeout: 60000,
   responseTimeout: 60000,
   e2e: {
     setupNodeEvents(on, config) {},
-    supportFile: '.cypress/support/e2e.js',
+    supportFile: 'cypress/support/e2e.js',
     baseUrl: 'http://localhost:5601',
-    specPattern: '.cypress/e2e/**/*.spec.js',
+    specPattern: 'cypress/e2e/**/*.spec.js',
   },
   env: {
     openSearchUrl: 'https://localhost:9200',

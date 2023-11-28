@@ -22,7 +22,6 @@ const login = 'admin';
 const password = 'admin';
 
 describe('Log in via OIDC', () => {
-
   afterEach(() => {
     cy.origin('http://localhost:5601', () => {
       cy.clearCookies();
@@ -41,15 +40,15 @@ describe('Log in via OIDC', () => {
     cy.visit('http://localhost:5601/app/opensearch_dashboards_overview', {
       failOnStatusCode: false,
     });
-    
+
     kcLogin();
 
     cy.origin('http://localhost:5601', () => {
-      localStorage.setItem("opendistro::security::tenant::saved", "\"\"");
-      localStorage.setItem("home:newThemeModal:show", "false");
+      localStorage.setItem('opendistro::security::tenant::saved', '""');
+      localStorage.setItem('home:newThemeModal:show', 'false');
 
       cy.get('#osdOverviewPageHeader__title').should('be.visible');
-  
+
       cy.getCookie('security_authentication').should('exist');
     });
   });
@@ -62,13 +61,13 @@ describe('Log in via OIDC', () => {
     kcLogin();
 
     cy.origin('http://localhost:5601', () => {
-      localStorage.setItem("opendistro::security::tenant::saved", "\"\"");
-      localStorage.setItem("home:newThemeModal:show", "false");
+      localStorage.setItem('opendistro::security::tenant::saved', '""');
+      localStorage.setItem('home:newThemeModal:show', 'false');
 
       cy.visit('http://localhost:5601/app/dev_tools#/console');
-      
+
       cy.get('a').contains('Dev Tools').should('be.visible');
-  
+
       cy.getCookie('security_authentication').should('exist');
     });
   });
@@ -81,8 +80,8 @@ describe('Log in via OIDC', () => {
     kcLogin();
 
     cy.origin('http://localhost:5601', () => {
-      localStorage.setItem("opendistro::security::tenant::saved", "\"\"");
-      localStorage.setItem("home:newThemeModal:show", "false");
+      localStorage.setItem('opendistro::security::tenant::saved', '""');
+      localStorage.setItem('home:newThemeModal:show', 'false');
 
       cy.get('.euiHeader.euiHeader--default.euiHeader--fixed.primaryHeader').should('be.visible');
 
@@ -91,33 +90,33 @@ describe('Log in via OIDC', () => {
   });
 
   it('Tenancy persisted after logout in OIDC', () => {
-    cy.visit('http://localhost:5601/app/opensearch_dashboards_overview#/', { 
+    cy.visit('http://localhost:5601/app/opensearch_dashboards_overview#/', {
       failOnStatusCode: false,
     });
 
     kcLogin();
 
     cy.origin('http://localhost:5601', () => {
-      localStorage.setItem("home:newThemeModal:show", "false");
+      localStorage.setItem('home:newThemeModal:show', 'false');
 
       cy.get('#private').should('be.enabled');
       cy.get('#private').click({ force: true });
 
       cy.get('button[data-test-subj="confirm"]').click();
-  
+
       cy.get('#osdOverviewPageHeader__title').should('be.visible');
-  
+
       cy.get('button[id="user-icon-btn"]').click();
 
       cy.get('button[data-test-subj^="log-out-"]').click();
-  });  
+    });
 
-      kcLogin();
-  
-  cy.origin('http://localhost:5601', () => {
+    kcLogin();
+
+    cy.origin('http://localhost:5601', () => {
       cy.get('#user-icon-btn').should('be.visible');
       cy.get('#user-icon-btn').click();
-  
+
       cy.get('#osdOverviewPageHeader__title').should('be.visible');
 
       cy.get('#tenantName').should('have.text', 'Private');

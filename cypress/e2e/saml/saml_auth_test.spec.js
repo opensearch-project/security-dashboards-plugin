@@ -20,7 +20,7 @@
 
 import { ALL_ACCESS_ROLE } from '../../support/constants';
 
-import samlUserRoleMapping from '../../fixtures/saml/samlUserRoleMappiing.json'
+import samlUserRoleMapping from '../../fixtures/saml/samlUserRoleMappiing.json';
 
 before(() => {
   cy.intercept('https://localhost:9200');
@@ -46,13 +46,13 @@ describe('Log in via SAML', () => {
   };
 
   it('Login to app/opensearch_dashboards_overview#/ when SAML is enabled', () => {
-    localStorage.setItem("opendistro::security::tenant::saved", "\"__user__\"");
-    localStorage.setItem("home:newThemeModal:show", "false");
+    localStorage.setItem('opendistro::security::tenant::saved', '"__user__"');
+    localStorage.setItem('home:newThemeModal:show', 'false');
 
     cy.visit('http://localhost:5601/app/opensearch_dashboards_overview', {
       failOnStatusCode: false,
     });
-    
+
     samlLogin();
 
     cy.get('#osdOverviewPageHeader__title').should('be.visible');
@@ -60,13 +60,13 @@ describe('Log in via SAML', () => {
   });
 
   it('Login to app/dev_tools#/console when SAML is enabled', () => {
-    localStorage.setItem("opendistro::security::tenant::saved", "\"__user__\"");
-    localStorage.setItem("home:newThemeModal:show", "false");
+    localStorage.setItem('opendistro::security::tenant::saved', '"__user__"');
+    localStorage.setItem('home:newThemeModal:show', 'false');
 
     cy.visit('http://localhost:5601/app/dev_tools#/console', {
       failOnStatusCode: false,
     });
-    
+
     samlLogin();
 
     cy.get('a.euiBreadcrumb--last').contains('Dev Tools');
@@ -74,24 +74,23 @@ describe('Log in via SAML', () => {
   });
 
   it('Login to Dashboard with Hash', () => {
-    localStorage.setItem("opendistro::security::tenant::saved", "\"__user__\"");
-    localStorage.setItem("home:newThemeModal:show", "false");
+    localStorage.setItem('opendistro::security::tenant::saved', '"__user__"');
+    localStorage.setItem('home:newThemeModal:show', 'false');
 
     const urlWithHash = `http://localhost:5601/app/security-dashboards-plugin#/getstarted`;
 
     cy.visit(urlWithHash, {
       failOnStatusCode: false,
     });
-    
+
     samlLogin();
 
     cy.get('h1.euiTitle--large').contains('Get started');
     cy.getCookie('security_authentication').should('exist');
-
   });
 
   it('Tenancy persisted after logout in SAML', () => {
-    localStorage.setItem("home:newThemeModal:show", "false");
+    localStorage.setItem('home:newThemeModal:show', 'false');
 
     cy.visit('http://localhost:5601/app/opensearch_dashboards_overview', {
       failOnStatusCode: false,
@@ -103,7 +102,7 @@ describe('Log in via SAML', () => {
     cy.get('#private').click({ force: true });
 
     cy.get('button[data-test-subj="confirm"]').click();
-  
+
     cy.get('#osdOverviewPageHeader__title').should('be.visible');
 
     cy.get('button[id="user-icon-btn"]').click();
