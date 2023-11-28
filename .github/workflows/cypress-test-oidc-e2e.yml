@@ -99,20 +99,47 @@ jobs:
       - name: Injecting OIDC Configuration for Linux
         if: ${{ runner.os == 'Linux'}}
         run: |
-          echo "Injecting OIDC configuration"
+          echo "Creating new SAML configuration"
+          pwd
           cd ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/config/opensearch-security/
-          wget -O yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-          chmod +x yq
-          yq -i ".config.dynamic.authc.openid_auth_domain.http_enabled = true" config.yml
-          yq -i ".config.dynamic.authc.openid_auth_domain.transport_enabled = true" config.yml
-          yq -i ".config.dynamic.authc.openid_auth_domain.order = 1" config.yml
-          yq -i ".config.dynamic.authc.openid_auth_domain.http_authenticator.type = \"openid\"" config.yml
-          yq -i ".config.dynamic.authc.openid_auth_domain.http_authenticator.challenge = false" config.yml
-          yq -i ".config.dynamic.authc.openid_auth_domain.http_authenticator.config.subject_key = \"preferred_username\"" config.yml
-          yq -i ".config.dynamic.authc.openid_auth_domain.http_authenticator.config.roles_key = \"roles\"" config.yml
-          yq -i ".config.dynamic.authc.openid_auth_domain.http_authenticator.config.openid_connect_url = \"http://localhost:8080/auth/realms/master/.well-known/openid-configuration\"" config.yml
-          yq -i ".config.dynamic.authc.openid_auth_domain.authentication_backend.type = \"noop\"" config.yml
-          cd ../../..
+          rm -rf config.yml
+          ls
+          cat << 'EOT' > config.yml
+          ---
+          _meta:
+            type: "config"
+            config_version: 2
+          config:
+            dynamic:
+              http:
+                anonymous_auth_enabled: false
+              authc:
+                basic_internal_auth_domain:
+                  description: "Authenticate via HTTP Basic against internal users database"
+                  http_enabled: true
+                  transport_enabled: true
+                  order: 0
+                  http_authenticator:
+                    type: basic
+                    challenge: false
+                  authentication_backend:
+                    type: intern
+                openid_auth_domain:
+                  http_enabled: true
+                  transport_enabled: true
+                  order: 1
+                  http_authenticator:
+                    type: openid
+                    challenge: false
+                    config:
+                      subject_key: preferred_username
+                      roles_key: roles
+                      openid_connect_url: http://localhost:8080/auth/realms/master/.well-known/openid-configuration
+                  authentication_backend:
+                    type: noop
+          EOT
+          echo "THIS IS THE SECURITY CONFIG FILE: "
+          cat config.yml
 
       # TODO: REMOVE THIS ONCE ADMIN JAVA TOOL SUPPORT IT
       - name: Write password to initialAdminPassword location
