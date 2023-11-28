@@ -64,6 +64,7 @@ jobs:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugin-name: ${{ env.PLUGIN_NAME }}
           setup-script-name: setup
+          admin-password: admin
 
       - id: install-dashboards
         uses: ./.github/actions/install-dashboards
