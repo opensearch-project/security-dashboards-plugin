@@ -31,16 +31,15 @@ describe('Log in via OIDC', () => {
   });
 
   const kcLogin = () => {
-    cy.get('#kc-page-title', { timeout: 15000 }).should('be.visible');
-    cy.get('input[id=username]', { timeout: 15000}).should('be.visible').type(login);
-    cy.get('input[id=password]', { timeout: 15000}).should('be.visible').type(password);
+    cy.get('#kc-page-title').should('be.visible');
+    cy.get('input[id=username]').should('be.visible').type(login);
+    cy.get('input[id=password]').should('be.visible').type(password);
     cy.get('#kc-login').click();
   };
 
   it('Login to app/opensearch_dashboards_overview#/ when OIDC is enabled', () => {
     cy.visit('http://localhost:5601/app/opensearch_dashboards_overview', {
       failOnStatusCode: false,
-      timeout: 10000,
     });
     
     kcLogin();
@@ -49,16 +48,15 @@ describe('Log in via OIDC', () => {
       localStorage.setItem("opendistro::security::tenant::saved", "\"\"");
       localStorage.setItem("home:newThemeModal:show", "false");
 
-      cy.get('#osdOverviewPageHeader__title', { timeout: 10000 }).should('be.visible');
+      cy.get('#osdOverviewPageHeader__title').should('be.visible');
   
-      cy.getCookie('security_authentication', { timeout: 10000 }).should('exist');
+      cy.getCookie('security_authentication').should('exist');
     });
   });
 
   it('Login to app/dev_tools#/console when OIDC is enabled', () => {
     cy.visit('http://localhost:5601/app/opensearch_dashboards_overview', {
       failOnStatusCode: false,
-      timeout: 10000,
     });
 
     kcLogin();
@@ -71,7 +69,7 @@ describe('Log in via OIDC', () => {
       
       cy.get('a').contains('Dev Tools').should('be.visible');
   
-      cy.getCookie('security_authentication', { timeout: 10000 }).should('exist');
+      cy.getCookie('security_authentication').should('exist');
     });
   });
 
@@ -86,41 +84,43 @@ describe('Log in via OIDC', () => {
       localStorage.setItem("opendistro::security::tenant::saved", "\"\"");
       localStorage.setItem("home:newThemeModal:show", "false");
 
-      cy.get('.euiHeader.euiHeader--default.euiHeader--fixed.primaryHeader', { timeout: 10000 }).should('be.visible');
+      cy.get('.euiHeader.euiHeader--default.euiHeader--fixed.primaryHeader').should('be.visible');
 
       cy.getCookie('security_authentication').should('exist');
     });
   });
 
   it('Tenancy persisted after logout in OIDC', () => {
-    cy.visit('http://localhost:5601/app/opensearch_dashboards_overview#/', { failOnStatusCode: false, timeout: 10000 });
+    cy.visit('http://localhost:5601/app/opensearch_dashboards_overview#/', { 
+      failOnStatusCode: false,
+    });
 
     kcLogin();
 
     cy.origin('http://localhost:5601', () => {
       localStorage.setItem("home:newThemeModal:show", "false");
 
-      cy.get('#private', { timeout: 10000 }).should('be.enabled');
+      cy.get('#private').should('be.enabled');
       cy.get('#private').click({ force: true });
 
       cy.get('button[data-test-subj="confirm"]').click();
   
-      cy.get('#osdOverviewPageHeader__title', { timeout: 10000 }).should('be.visible');
+      cy.get('#osdOverviewPageHeader__title').should('be.visible');
   
-      cy.get('button[id="user-icon-btn"]', { timeout: 10000 }).click();
+      cy.get('button[id="user-icon-btn"]').click();
 
-      cy.get('button[data-test-subj^="log-out-"]', { timeout: 10000 }).click();
+      cy.get('button[data-test-subj^="log-out-"]').click();
   });  
 
       kcLogin();
   
   cy.origin('http://localhost:5601', () => {
-      cy.get('#user-icon-btn', { timeout: 10000 }).should('be.visible');
+      cy.get('#user-icon-btn').should('be.visible');
       cy.get('#user-icon-btn').click();
   
-      cy.get('#osdOverviewPageHeader__title', { timeout: 10000 }).should('be.visible');
+      cy.get('#osdOverviewPageHeader__title').should('be.visible');
 
-      cy.get('#tenantName', { timeout: 10000 }).should('have.text', 'Private');
+      cy.get('#tenantName').should('have.text', 'Private');
     });
   });
 });
