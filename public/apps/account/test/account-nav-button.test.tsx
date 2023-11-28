@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import React from 'react';
 import { AccountNavButton, reloadAfterTenantSwitch } from '../account-nav-button';
 import { getShouldShowTenantPopup, setShouldShowTenantPopup } from '../../../utils/storage-utils';
@@ -172,6 +172,28 @@ describe('Account navigation button, multitenancy disabled', () => {
       />
     );
     expect(setState).toBeCalledTimes(0);
+  });
+
+  it('should not show multitenancy items in the dropdown when it is disabled', () => {
+    (getDashboardsInfo as jest.Mock).mockImplementation(() => {
+      return {
+        multitenancy_enabled: false,
+        private_tenant_enabled: false,
+        default_tenant: '',
+      };
+    });
+    (getShouldShowTenantPopup as jest.Mock).mockReturnValueOnce(true);
+    let component = mount(
+      <AccountNavButton
+        coreStart={mockCoreStart}
+        isInternalUser={true}
+        username={userName}
+        config={config as any}
+        currAuthType={'dummy'}
+      />
+    );
+    expect(component.find('[data-test-subj="switch-tenants"]').exists()).toEqual(false);
+    expect(component.find('[data-test-subj="tenantName"]').exists()).toEqual(false);
   });
 });
 

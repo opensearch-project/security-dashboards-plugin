@@ -65,7 +65,7 @@ exports[`Account navigation button renders 1`] = `
               key="tenant"
               label={
                 <EuiText
-                  id="tenantName"
+                  data-test-subj="tenantName"
                   size="xs"
                 >
                   tenant1

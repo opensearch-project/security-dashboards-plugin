@@ -108,15 +108,16 @@ export function AccountNavButton(props: {
               }
             />
           </EuiListGroup>
+          {isMultiTenancyEnabled && props.config.multitenancy.enabled && (
           <EuiListGroupItem
             color="subdued"
             key="tenant"
             label={
-              <EuiText size="xs" id="tenantName">
+              <EuiText size="xs" data-test-subj="tenantName">
                 {resolveTenantName(props.tenant || '', username)}
               </EuiText>
             }
-          />
+          />)}
         </EuiFlexItem>
       </EuiFlexGroup>
 
