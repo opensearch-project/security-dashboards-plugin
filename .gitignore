@@ -10,5 +10,5 @@ yarn-error.log
 kibana-coverage/
 .DS_Store
 .idea/
-.cypress/screenshots
-.cypress/downloads
+test/cypress/screenshots
+test/cypress/downloads
