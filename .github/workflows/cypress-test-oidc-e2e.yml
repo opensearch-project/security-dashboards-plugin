@@ -37,18 +37,32 @@ jobs:
           echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
         shell: bash
 
-      # Setup and Run Keycloak
-      - name: Get and run Keycloak on Linux
+      # Download and Check Keycloak Version
+      - name: Download and Check Keyloak Version on Linux
         if: ${{ runner.os == 'Linux' }}
         run: |
           echo "Downloading Keycloak ${{ env.KEYCLOAK_VERSION }}"
           wget https://github.com/keycloak/keycloak/releases/download/${{ env.KEYCLOAK_VERSION }}/keycloak-${{ env.KEYCLOAK_VERSION }}.tar.gz
           echo "Unpacking Keycloak"
           tar -xzf keycloak-${{ env.KEYCLOAK_VERSION }}.tar.gz
+          cd keycloak-${{ env.KEYCLOAK_VERSION }}/bin
+          chmod +x ./kc.sh
+          KC_ACTUAL_VERSION=$(./kc.sh --version | grep -oP 'Keycloak \K[^ ]+')
+          echo "Keycloak version: $KC_ACTUAL_VERSION"
+          if [ "$KC_ACTUAL_VERSION" != "${{ env.KEYCLOAK_VERSION }}" ]; then
+            echo "Version mismatch. Expected: ${{ env.KEYCLOAK_VERSION }}, Got: $KC_ACTUAL_VERSION"
+            exit 1
+          fi
+
+      # Setup and Run Keycloak
+      - name: Get and run Keycloak on Linux
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          pwd
+          ls
           export KEYCLOAK_ADMIN=admin
           export KEYCLOAK_ADMIN_PASSWORD=admin
           cd keycloak-${{ env.KEYCLOAK_VERSION }}/bin
-          chmod +x kc.sh
           echo "Starting keycloak"
           ./kc.sh start-dev --http-enabled=true --hostname-strict-https=false --http-host=localhost --http-relative-path /auth --health-enabled=true &
           timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/auth/health)" != "200" ]]; do sleep 5; done'
