@@ -77,10 +77,8 @@ jobs:
         if: ${{ runner.os == 'Linux'}}
         run: |
           echo "Creating new SAML configuration"
-          pwd
           cd ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/config/opensearch-security/
           rm -rf config.yml
-          ls
           cat << 'EOT' > config.yml
           ---
           _meta:
@@ -128,9 +126,6 @@ jobs:
         run: |
           echo "running linux setup"
           chmod +x ./setup.sh
-          ls
-          echo "THIS IS THE SETUP SCRIPT !!!"
-          cat ./setup.sh
           ./setup.sh
         shell: bash
 
@@ -193,10 +188,11 @@ jobs:
           opensearch_security.auth.anonymous_auth_enabled: false
           home.disableWelcomeScreen: true
           EOT
-          echo 'HERE IS THE DASHBOARD CONFIG'
+          echo 'HERE IS THE DASHBOARD CONFIG FILE: '
           cat ./config/opensearch_dashboards.yml
           nohup yarn start --no-base-path --no-watch | tee dashboard.log &
 
+      # Check if OSD is ready with a max timeout of 600 seconds
       - name : Check If OpenSearch Dashboards Is Ready
         if: ${{ runner.os == 'Linux' }}
         run: |

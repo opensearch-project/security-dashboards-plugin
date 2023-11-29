@@ -66,8 +66,6 @@ jobs:
       - name: Get and run Keycloak on Linux
         if: ${{ runner.os == 'Linux' }}
         run: |
-          pwd
-          ls
           export KEYCLOAK_ADMIN=admin
           export KEYCLOAK_ADMIN_PASSWORD=admin
           cd keycloak-${{ env.KEYCLOAK_VERSION }}/bin
@@ -79,7 +77,6 @@ jobs:
           ./kcadm.sh config credentials --server http://localhost:8080/auth --realm master --user admin --password admin
           CID=$(./kcadm.sh create clients -r master -s clientId=opensearch -s secret="${{ env.TEST_KEYCLOAK_CLIENT_SECRET }}" -s 'attributes."access.token.lifespan"=60' -s 'redirectUris=["http://localhost:5603/auth/openid/login", "http://localhost:5601", "http://localhost:5601/auth/openid/login"]' -i)
           ./kcadm.sh get clients/$CID/installation/providers/keycloak-oidc-keycloak-json > tmp
-
           echo "Getting client secret for dashboards configuration purpose"
           CLIENT_SECRET=$(grep -o '"secret" : "[^"]*' tmp | grep -o '[^"]*$')
           echo "KEYCLOAK_CLIENT_SECRET=$CLIENT_SECRET" >> $GITHUB_ENV
@@ -122,10 +119,8 @@ jobs:
         if: ${{ runner.os == 'Linux'}}
         run: |
           echo "Creating new SAML configuration"
-          pwd
           cd ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/config/opensearch-security/
           rm -rf config.yml
-          ls
           cat << 'EOT' > config.yml
           ---
           _meta:
@@ -233,10 +228,11 @@ jobs:
           opensearch_security.ui.openid.login.buttonname: "OIDC"
           home.disableWelcomeScreen: true
           EOT
-          echo 'HERE IS THE DASHBOARD CONFIG'
+          echo 'HERE IS THE DASHBOARD CONFIG FILE: '
           cat ./config/opensearch_dashboards.yml
           nohup yarn start --no-base-path --no-watch | tee dashboard.log &
 
+      # Check if OSD is ready with a max timeout of 600 seconds
       - name : Check If OpenSearch Dashboards Is Ready
         if: ${{ runner.os == 'Linux' }}
         run: |
