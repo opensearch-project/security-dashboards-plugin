@@ -47,11 +47,15 @@ jobs:
           tar -xzf keycloak-${{ env.KEYCLOAK_VERSION }}.tar.gz
           cd keycloak-${{ env.KEYCLOAK_VERSION }}/bin
           chmod +x ./kc.sh
-          KC_ACTUAL_VERSION=$(./kc.sh --version | grep -oP 'Keycloak \K[^ ]+')
-          echo "Keycloak version: $KC_ACTUAL_VERSION"
-          if [ "$KC_ACTUAL_VERSION" != "${{ env.KEYCLOAK_VERSION }}" ]; then
-            echo "Version mismatch. Expected: ${{ env.KEYCLOAK_VERSION }}, Got: $KC_ACTUAL_VERSION"
+          KC_ACTUAL_VERSION=$(./kc.sh --version | grep -oP 'Keycloak \K[^ ]+' | tr -d '\r\n')
+          echo "Extracted version: '$KC_ACTUAL_VERSION'"
+          EXPECTED_VERSION=$(echo "${{ env.KEYCLOAK_VERSION }}" | tr -d '\r\n')
+          echo "Expected version: '$EXPECTED_VERSION'"
+          if [ "$KC_ACTUAL_VERSION" != "$EXPECTED_VERSION" ]; then
+            echo "Version mismatch. Expected: '$EXPECTED_VERSION', Got: '$KC_ACTUAL_VERSION'"
             exit 1
+          else
+            echo "Version match confirmed."
           fi
 
       # Setup and Run Keycloak
