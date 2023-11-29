@@ -231,10 +231,9 @@ jobs:
           EOT
           echo 'HERE IS THE DASHBOARD CONFIG'
           cat ./config/opensearch_dashboards.yml
-          nohup yarn start --no-base-path --no-watch &
-          echo "Waiting for OpenSearch Dashboards to compile..."
+          nohup yarn start --no-base-path --no-watch | tee dashboard.log &
           for i in {1..60}; do
-            if grep -q "bundles compiled successfully after" "nohup.out"; then
+            if grep -q "bundles compiled successfully after" "dashboard.log"; then
               echo "OpenSearch Dashboards compiled successfully."
               break
             fi
