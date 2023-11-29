@@ -10,7 +10,8 @@ env:
   # avoid warnings like "tput: No value for $TERM and no -T specified"
   TERM: xterm
   PLUGIN_NAME: opensearch-security
-  KNOWN_CHECKSUM_OF_KEYCLOAK_SCRIPT: xxx
+  # This is the SHA256 checksum of the known good kc.sh script for Keycloak version 21.0.1.
+  KNOWN_CHECKSUM_OF_KEYCLOAK_SCRIPT: 'f825ea1a9ffa5ad91673737c06857ababbb69b6b8f09e0c637b4c998517f9608'
   
 jobs:
   tests:
