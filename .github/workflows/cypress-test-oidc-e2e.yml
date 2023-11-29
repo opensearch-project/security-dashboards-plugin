@@ -10,6 +10,7 @@ env:
   # avoid warnings like "tput: No value for $TERM and no -T specified"
   TERM: xterm
   PLUGIN_NAME: opensearch-security
+  KNOWN_CHECKSUM_OF_KEYCLOAK_SCRIPT: xxx
   
 jobs:
   tests:
@@ -47,16 +48,17 @@ jobs:
           tar -xzf keycloak-${{ env.KEYCLOAK_VERSION }}.tar.gz
           cd keycloak-${{ env.KEYCLOAK_VERSION }}/bin
           chmod +x ./kc.sh
-          KC_ACTUAL_VERSION=$(./kc.sh --version | grep -oP 'Keycloak \K[^ ]+' | head -n 1 | tr -d '\r\n')
-          echo "Extracted version: '$KC_ACTUAL_VERSION'"
-          EXPECTED_VERSION=$(echo "${{ env.KEYCLOAK_VERSION }}" | tr -d '\r\n')
-          echo "Expected version: '$EXPECTED_VERSION'"
-          if [ "$KC_ACTUAL_VERSION" != "$EXPECTED_VERSION" ]; then
-            echo "Version mismatch. Expected: '$EXPECTED_VERSION', Got: '$KC_ACTUAL_VERSION'"
-            exit 1
+          echo "Generating checksum for the downloaded kc.sh script..."
+          DOWNLOADED_CHECKSUM=$(sha256sum kc.sh | awk '{print $1}')
+          echo "Downloaded kc.sh checksum: $DOWNLOADED_CHECKSUM"
+          KNOWN_GOOD_CHECKSUM="${{ env.KNOWN_CHECKSUM_OF_KEYCLOAK_SCRIPT }}" 
+          if [ "$DOWNLOADED_CHECKSUM" != "$KNOWN_GOOD_CHECKSUM" ]; then
+              echo "Checksum mismatch. The kc.sh script does not match the known good version. Please check https://github.com/keycloak/keycloak and verify the updates."
+              exit 1
           else
-            echo "Version match confirmed."
+              echo "Checksum match confirmed. Proceeding with setup."
           fi
+          chmod +x ./kc.sh
 
       # Setup and Run Keycloak
       - name: Get and run Keycloak on Linux
