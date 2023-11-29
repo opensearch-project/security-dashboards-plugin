@@ -52,6 +52,7 @@ jobs:
           echo "Generating checksum for the downloaded kc.sh script..."
           DOWNLOADED_CHECKSUM=$(sha256sum kc.sh | awk '{print $1}')
           echo "Downloaded kc.sh checksum: $DOWNLOADED_CHECKSUM"
+          echo "Known good kc.sh checksum: ${{ env.KNOWN_CHECKSUM_OF_KEYCLOAK_SCRIPT }}"
           KNOWN_GOOD_CHECKSUM="${{ env.KNOWN_CHECKSUM_OF_KEYCLOAK_SCRIPT }}" 
           if [ "$DOWNLOADED_CHECKSUM" != "$KNOWN_GOOD_CHECKSUM" ]; then
               echo "Checksum mismatch. The kc.sh script does not match the known good version. Please check https://github.com/keycloak/keycloak and verify the updates."
