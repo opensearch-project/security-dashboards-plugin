@@ -4,4 +4,4 @@ node_modules
 /build
 /target
 /.eslintrc.js
-cypress.config.js
+/cypress.config.js
