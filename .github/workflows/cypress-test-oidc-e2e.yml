@@ -232,6 +232,11 @@ jobs:
           echo 'HERE IS THE DASHBOARD CONFIG'
           cat ./config/opensearch_dashboards.yml
           nohup yarn start --no-base-path --no-watch | tee dashboard.log &
+
+      - name : Check If OpenSearch Dashboard is ready
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          cd ./OpenSearch-Dashboards
           for i in {1..60}; do
             if grep -q "bundles compiled successfully after" "dashboard.log"; then
               echo "OpenSearch Dashboards compiled successfully."

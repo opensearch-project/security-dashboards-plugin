@@ -195,8 +195,23 @@ jobs:
           EOT
           echo 'HERE IS THE DASHBOARD CONFIG'
           cat ./config/opensearch_dashboards.yml
-          nohup yarn start --no-base-path --no-watch &
-          sleep 600
+          nohup yarn start --no-base-path --no-watch | tee dashboard.log &
+
+      - name : Check If OpenSearch Dashboard is ready
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          cd ./OpenSearch-Dashboards
+          for i in {1..60}; do
+            if grep -q "bundles compiled successfully after" "dashboard.log"; then
+              echo "OpenSearch Dashboards compiled successfully."
+              break
+            fi
+            if [ $i -eq 60 ]; then
+              echo "Timeout for 600 seconds reached. OpenSearch Dashboards did not finish compiling."
+              exit 1
+            fi
+            sleep 10
+          done
 
       - name: Run Cypress
         run : |
