@@ -23,10 +23,12 @@ import { AppDependencies } from '../../../types';
 import { ExternalLinkButton } from '../../utils/display-utils';
 import { getSecurityConfig } from '../../utils/auth-view-utils';
 import { InstructionView } from './instruction-view';
+import { SignInOptionsPanel } from './dashboard-signin-options';
 
 export function AuthView(props: AppDependencies) {
   const [authentication, setAuthentication] = React.useState([]);
   const [authorization, setAuthorization] = React.useState([]);
+  const [dashboardSignInOptions, setDashboardSignInOptions] = React.useState([]);
   const [loading, setLoading] = useState(false);
 
   React.useEffect(() => {
@@ -37,6 +39,7 @@ export function AuthView(props: AppDependencies) {
 
         setAuthentication(config.authc);
         setAuthorization(config.authz);
+        setDashboardSignInOptions(config.kibana.dashboardSignInOptions)
       } catch (e) {
         console.log(e);
       } finally {
@@ -66,6 +69,9 @@ export function AuthView(props: AppDependencies) {
       </EuiPageHeader>
       {/* @ts-ignore */}
       <AuthenticationSequencePanel authc={authentication} loading={loading} />
+      <EuiSpacer size="m" />
+      {/* @ts-ignore */}
+      <SignInOptionsPanel authc={authentication} signInEnabledOptions={dashboardSignInOptions} />
       <EuiSpacer size="m" />
       {/* @ts-ignore */}
       <AuthorizationPanel authz={authorization} loading={loading} config={props.config} />
