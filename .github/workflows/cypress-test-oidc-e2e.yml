@@ -47,7 +47,7 @@ jobs:
           tar -xzf keycloak-${{ env.KEYCLOAK_VERSION }}.tar.gz
           cd keycloak-${{ env.KEYCLOAK_VERSION }}/bin
           chmod +x ./kc.sh
-          KC_ACTUAL_VERSION=$(./kc.sh --version | grep -oP 'Keycloak \K[^ ]+' | tr -d '\r\n')
+          KC_ACTUAL_VERSION=$(./kc.sh --version | grep -oP 'Keycloak \K[^ ]+' | head -n 1 | tr -d '\r\n')
           echo "Extracted version: '$KC_ACTUAL_VERSION'"
           EXPECTED_VERSION=$(echo "${{ env.KEYCLOAK_VERSION }}" | tr -d '\r\n')
           echo "Expected version: '$EXPECTED_VERSION'"
