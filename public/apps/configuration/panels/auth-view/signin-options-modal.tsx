@@ -38,7 +38,7 @@ export function SignInOptionsModal(props: DashboardSignInProps): JSX.Element {
   const closeModal = () => setIsModalVisible(false);
   const showModal = () => setIsModalVisible(true);
 
-  const handleSave = () => {
+  const handleUpdate = () => {
     closeModal();
   }
 
@@ -57,7 +57,7 @@ export function SignInOptionsModal(props: DashboardSignInProps): JSX.Element {
             tableCaption="Dashboard sign in options available"
             items={props.options}
             rowHeader="name"
-            columns={columns.slice(0,2)}
+            columns={columns.slice(0, 1)}
             itemId={'name'}
             selection={{ 
               onSelectionChange: setSignInOptions, 
@@ -67,10 +67,10 @@ export function SignInOptionsModal(props: DashboardSignInProps): JSX.Element {
         </EuiModalBody>
         <EuiModalFooter>
           <EuiButton onClick={closeModal}>
-            Close
+            Cancel
           </EuiButton>
-          <EuiButton onClick={handleSave} fill>
-            Save
+          <EuiButton onClick={handleUpdate} fill disabled={signInOptions.length < 1}>
+            Update
           </EuiButton>
         </EuiModalFooter>
       </EuiModal>

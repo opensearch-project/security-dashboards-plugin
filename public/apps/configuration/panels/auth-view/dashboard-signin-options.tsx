@@ -14,6 +14,7 @@
  */
 
 import {
+  EuiBasicTableColumn,
   EuiFlexGroup,
   EuiHealth,
   EuiHorizontalRule,
@@ -46,7 +47,7 @@ interface SignInOptionsPanelProps {
   signInEnabledOptions: []
 }
 
-export const columns: DashboardOption[] = [
+export const columns: EuiBasicTableColumn<DashboardOption>[] = [
   {
     field: 'name',
     name: 'Name',
@@ -64,7 +65,7 @@ export const columns: DashboardOption[] = [
   },
   {
     field: 'status',
-    name: 'SignIn Option Status',
+    name: 'Status',
     dataType: 'boolean',
     render: (enable: DashboardOption['status']) => {
       const color = enable ? 'success' : 'danger';
