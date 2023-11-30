@@ -21,20 +21,27 @@ import { OpenIdAuthentication } from './openid_auth';
 import { SecurityPluginConfigType } from '../../../index';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { deflateValue } from '../../../utils/compression';
+import { getObjectProperties } from '../../../utils/object_properties_defined';
 import {
   IRouter,
   CoreSetup,
   ILegacyClusterClient,
-  Logger,
   SessionStorageFactory,
 } from '../../../../../../src/core/server';
+
+interface Logger {
+  debug(message: string): void;
+  info(message: string): void;
+  warn(message: string): void;
+  error(message: string): void;
+  fatal(message: string): void;
+}
 
 describe('test OpenId authHeaderValue', () => {
   let router: IRouter;
   let core: CoreSetup;
   let esClient: ILegacyClusterClient;
   let sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>;
-  let logger: Logger;
 
   // Consistent with auth_handler_factory.test.ts
   beforeEach(() => {});
@@ -49,6 +56,14 @@ describe('test OpenId authHeaderValue', () => {
       },
     },
   } as unknown) as SecurityPluginConfigType;
+
+  const logger = {
+    debug: (message: string) => {},
+    info: (message: string) => {},
+    warn: (message: string) => {},
+    error: (message: string) => {},
+    fatal: (message: string) => {},
+  };
 
   test('make sure that cookies with authHeaderValue are still valid', async () => {
     const openIdAuthentication = new OpenIdAuthentication(
@@ -116,5 +131,80 @@ describe('test OpenId authHeaderValue', () => {
     const headers = openIdAuthentication.buildAuthHeaderFromCookie(cookie, osRequest);
 
     expect(headers).toEqual(expectedHeaders);
+  });
+
+  test('Make sure that wreckClient can be configured with mTLS', async () => {
+    const customConfig = {
+      openid: {
+        certificate: 'test/certs/cert.pem',
+        private_key: 'test/certs/private-key.pem',
+        header: 'authorization',
+        scope: [],
+      },
+    };
+
+    const openidConfig = (customConfig as unknown) as SecurityPluginConfigType;
+
+    const openIdAuthentication = new OpenIdAuthentication(
+      openidConfig,
+      sessionStorageFactory,
+      router,
+      esClient,
+      core,
+      logger
+    );
+
+    const wreckHttpsOptions = openIdAuthentication.getWreckHttpsOptions();
+
+    console.log(
+      '============= PEM =============',
+      '\n\n',
+      getObjectProperties(customConfig.openid, 'OpenID'),
+      '\n\n',
+      getObjectProperties(wreckHttpsOptions, 'wreckHttpsOptions')
+    );
+
+    expect(wreckHttpsOptions.key).toBeDefined();
+    expect(wreckHttpsOptions.cert).toBeDefined();
+    expect(wreckHttpsOptions.pfx).toBeUndefined();
+  });
+
+  test('Ensure private key and certificate are not exposed when using PFX certificate', async () => {
+    const customConfig = {
+      openid: {
+        pfx: 'test/certs/keyStore.p12',
+        certificate: 'test/certs/cert.pem',
+        private_key: 'test/certs/private-key.pem',
+        passphrase: '',
+        header: 'authorization',
+        scope: [],
+      },
+    };
+
+    const openidConfig = (customConfig as unknown) as SecurityPluginConfigType;
+
+    const openIdAuthentication = new OpenIdAuthentication(
+      openidConfig,
+      sessionStorageFactory,
+      router,
+      esClient,
+      core,
+      logger
+    );
+
+    const wreckHttpsOptions = openIdAuthentication.getWreckHttpsOptions();
+
+    console.log(
+      '============= PFX =============',
+      '\n\n',
+      getObjectProperties(customConfig.openid, 'OpenID'),
+      '\n\n',
+      getObjectProperties(wreckHttpsOptions, 'wreckHttpsOptions')
+    );
+
+    expect(wreckHttpsOptions.pfx).toBeDefined();
+    expect(wreckHttpsOptions.key).toBeUndefined();
+    expect(wreckHttpsOptions.cert).toBeUndefined();
+    expect(wreckHttpsOptions.passphrase).toBeUndefined();
   });
 });
