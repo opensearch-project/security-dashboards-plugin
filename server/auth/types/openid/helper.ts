@@ -144,3 +144,17 @@ export function getExpirationDate(tokenResponse: TokenResponse | undefined) {
     return Date.now() + tokenResponse.expiresIn! * 1000;
   }
 }
+
+export function includeAdditionalParameters(query: any, context, config) {
+  if (config.openid?.additional_parameters) {
+    for (const [key, value] of Object.entries(config.openid?.additional_parameters)) {
+      if (query[key] == null) {
+        query[key] = value;
+      } else {
+        context.security_plugin.logger.warn(
+          `Additional parameter in OpenID config '${key}' was ignored as it would overwrite existing parameters`
+        );
+      }
+    }
+  }
+}

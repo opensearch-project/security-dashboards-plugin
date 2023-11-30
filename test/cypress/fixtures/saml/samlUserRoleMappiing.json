@@ -1,0 +1,4 @@
+{
+  "backend_roles" : [ "admin" ],
+  "users" : [ "saml.jackson@example.com" ]
+}
