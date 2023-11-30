@@ -380,7 +380,7 @@ export class OpenIdAuthRoutes {
         path: '/auth/openid/redirectUrlFragment.js',
         validate: false,
         options: {
-          authRequired: false,
+          authRequired: true,
         },
       },
       async (context, request, response) => {
