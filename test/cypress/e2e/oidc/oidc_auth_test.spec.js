@@ -69,21 +69,26 @@ describe('Log in via OIDC', () => {
   });
 
   it('Login to Dashboard with Hash', () => {
-    cy.visit(
-      `http://localhost:5601/app/dashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(filters:!(),refreshInterval:(pause:!f,value:900000),time:(from:now-24h,to:now))&_a=(description:'Analyze%20mock%20flight%20data%20for%20OpenSearch-Air,%20Logstash%20Airways,%20OpenSearch%20Dashboards%20Airlines%20and%20BeatsWest',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'%5BFlights%5D%20Global%20Flight%20Dashboard',viewMode:view)`,
-      {
-        failOnStatusCode: false,
-      }
-    );
+    const urlWithHash = `http://localhost:5601/app/security-dashboards-plugin#/getstarted`;
+
+    cy.visit(urlWithHash, {
+      failOnStatusCode: false,
+    });
 
     kcLogin();
+    cy.getCookie('security_authentication').should('exist');
+    cy.getCookie('security_authentication_oidc1').should('exist');
+
+    cy.url().then((url) => {
+      cy.visit(url, {
+        failOnStatusCode: false,
+      });
+    });
 
     localStorage.setItem('opendistro::security::tenant::saved', '""');
     localStorage.setItem('home:newThemeModal:show', 'false');
 
-    cy.get('.euiHeader.euiHeader--default.euiHeader--fixed.primaryHeader').should('be.visible');
-
-    cy.getCookie('security_authentication').should('exist');
+    cy.get('h1.euiTitle--large').contains('Get started');
   });
 
   it('Tenancy persisted after logout in OIDC', () => {
@@ -92,6 +97,12 @@ describe('Log in via OIDC', () => {
     });
 
     kcLogin();
+
+    cy.url().then((url) => {
+      cy.visit(url, {
+        failOnStatusCode: false,
+      });
+    });
 
     localStorage.setItem('home:newThemeModal:show', 'false');
 
