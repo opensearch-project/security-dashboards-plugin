@@ -34,6 +34,7 @@ import {
   composeLogoutUrl,
   getNextUrl,
   getExpirationDate,
+  includeAdditionalParameters,
 } from './helper';
 import { validateNextUrl } from '../../../utils/next_url';
 import {
@@ -128,6 +129,7 @@ export class OpenIdAuthRoutes {
             state: nonce,
             scope: this.openIdAuthConfig.scope,
           };
+          includeAdditionalParameters(query, context, this.config);
           const queryString = stringify(query);
           const location = `${this.openIdAuthConfig.authorizationEndpoint}?${queryString}`;
           const cookie: SecuritySessionCookie = {
@@ -176,7 +178,7 @@ export class OpenIdAuthRoutes {
           client_id: clientId,
           client_secret: clientSecret,
         };
-
+        includeAdditionalParameters(query, context, this.config);
         try {
           const tokenResponse = await callTokenEndpoint(
             this.openIdAuthConfig.tokenEndpoint!,
