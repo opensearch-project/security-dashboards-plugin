@@ -60,7 +60,6 @@ jobs:
           else
               echo "Checksum match confirmed. Proceeding with setup."
           fi
-          chmod +x ./kc.sh
 
       # Setup and Run Keycloak
       - name: Get and run Keycloak on Linux
