@@ -161,3 +161,15 @@ export interface FormRowDeps {
   helpLink?: string;
   helpText?: string;
 }
+
+export enum DashboardSignInOptions {
+  BASIC,
+  SAML,
+  OPENID,
+  ANONYMOUS,
+}
+
+export type DashboardOption = {
+  name: DashboardSignInOptions,
+  status: boolean
+}

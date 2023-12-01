@@ -28,23 +28,13 @@ import {
 import { get, keys, map } from 'lodash';
 import React from 'react';
 import { SignInOptionsModal } from './signin-options-modal';
-
-
-export enum DashboardSignInOptions {
-  BASIC,
-  SAML,
-  OPENID,
-  ANONYMOUS,
-}
-
-export type DashboardOption = {
-  name: DashboardSignInOptions,
-  status: boolean
-}
+import { HttpSetup } from 'opensearch-dashboards/public';
+import { DashboardSignInOptions, DashboardOption } from '../../types';
 
 interface SignInOptionsPanelProps {
   authc: [],
-  signInEnabledOptions: []
+  signInEnabledOptions: DashboardSignInOptions[],
+  http: HttpSetup
 }
 
 export const columns: EuiBasicTableColumn<DashboardOption>[] = [
@@ -75,7 +65,7 @@ export const columns: EuiBasicTableColumn<DashboardOption>[] = [
   }
 ];
 
-function getDashboardOptionInfo(option:DashboardSignInOptions, signInEnabledOptions: []) {
+function getDashboardOptionInfo(option:DashboardSignInOptions, signInEnabledOptions: DashboardSignInOptions[]) {
   if(option in DashboardSignInOptions){
     const dashboardOption: DashboardOption = {
       name: option,
@@ -112,7 +102,7 @@ export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
         </EuiPageContentHeaderSection>
         <EuiPageContentHeaderSection>
           <EuiFlexGroup>
-            <SignInOptionsModal options={options} />
+            <SignInOptionsModal options={options} http={props.http} />
           </EuiFlexGroup>
         </EuiPageContentHeaderSection>
       </EuiPageContentHeader>
