@@ -23,20 +23,42 @@ import {
   EuiModalHeaderTitle,
   EuiSpacer
 } from '@elastic/eui';
-import React, { useState } from 'react';
-import { DashboardOption, columns } from './dashboard-signin-options';
+import React, { useEffect, useState } from 'react';
+import { columns } from './dashboard-signin-options';
+import { updateDashboardSignInOptions } from '../../utils/auth-view-utils';
+import { DashboardSignInOptions, DashboardOption } from '../../types';
+import { HttpSetup } from 'opensearch-dashboards/public';
 
 interface DashboardSignInProps {
-  options: DashboardOption[]
+  options: DashboardOption[],
+  http: HttpSetup
 }
 
 export function SignInOptionsModal(props: DashboardSignInProps): JSX.Element {
 
-  const [signInOptions, setSignInOptions] = React.useState<DashboardOption[]>([]);
+  const [signInOptions, setSignInOptions] = useState<DashboardOption[]>([]);
+  const [disableUpdate, disableUpdateButton] = useState(false);
+  const actualSignInOptions: DashboardOption[] = props.options.filter(opt => opt.status);
   
   const [isModalVisible, setIsModalVisible] = useState(false);
   const closeModal = () => setIsModalVisible(false);
   const showModal = () => setIsModalVisible(true);
+  
+  useEffect(() => {
+    if(actualSignInOptions.length != signInOptions.length && signInOptions.length > 0){
+      disableUpdateButton(false);
+    } else {
+      let sameOptions = true;
+      signInOptions.forEach(option => {
+        if(actualSignInOptions.includes(option) == false){
+          sameOptions = false;
+          return;
+        }
+      });
+      disableUpdateButton(sameOptions);
+    }
+
+  }, [signInOptions])
 
   const handleUpdate = () => {
     closeModal();
@@ -61,7 +83,7 @@ export function SignInOptionsModal(props: DashboardSignInProps): JSX.Element {
             itemId={'name'}
             selection={{ 
               onSelectionChange: setSignInOptions, 
-              initialSelected: props.options.filter(opt => opt.status),
+              initialSelected: actualSignInOptions,
           }}
           />
         </EuiModalBody>
@@ -69,7 +91,7 @@ export function SignInOptionsModal(props: DashboardSignInProps): JSX.Element {
           <EuiButton onClick={closeModal}>
             Cancel
           </EuiButton>
-          <EuiButton onClick={handleUpdate} fill disabled={signInOptions.length < 1}>
+          <EuiButton onClick={handleUpdate} fill disabled={disableUpdate}>
             Update
           </EuiButton>
         </EuiModalFooter>
