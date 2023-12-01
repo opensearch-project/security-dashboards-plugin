@@ -27,7 +27,7 @@
     "@elastic/eslint-import-resolver-kibana": "link:../../packages/osd-eslint-import-resolver-opensearch-dashboards",
     "@testing-library/react-hooks": "^7.0.2",
     "@types/hapi__wreck": "^15.0.1",
-    "cypress": "^13.5.1",
+    "cypress": "^13.6.0",
     "cypress-mochawesome-reporter": "^3.3.0",
     "gulp-rename": "2.0.0",
     "jose": "^4.11.2",
