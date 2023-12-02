@@ -30,10 +30,13 @@ import { HttpSetup } from 'opensearch-dashboards/public';
 import { updateTenancyConfiguration } from '../../utils/tenant-utils';
 import { TenancyConfigSettings } from '../tenancy-config/types';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
+import { createTenancySuccessToast } from '../../utils/toast-utils';
+import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 
 interface DashboardSignInProps {
   options: DashboardOption[],
-  http: HttpSetup
+  http: HttpSetup,
+  addToast: ((toAdd: Toast) => void)
 }
 
 export function SignInOptionsModal(props: DashboardSignInProps): JSX.Element {
@@ -64,6 +67,7 @@ export function SignInOptionsModal(props: DashboardSignInProps): JSX.Element {
 
   useEffect(() => {
     setTenantConfig({...tenantConfig, dashboard_signin_options: signInOptions.map(opt => opt.name)});
+
     if(actualSignInOptions.length != signInOptions.length && signInOptions.length > 0){
       disableUpdateButton(false);
     } else {
@@ -82,6 +86,13 @@ export function SignInOptionsModal(props: DashboardSignInProps): JSX.Element {
   const handleUpdate = async () => {
     await updateTenancyConfiguration(props.http, tenantConfig);
     closeModal();
+    props.addToast(
+      createTenancySuccessToast(
+        'savePassed',
+        'Dashboard SignIn Options',
+        "Changes applied."
+      )
+    );
   }
 
   let modal;

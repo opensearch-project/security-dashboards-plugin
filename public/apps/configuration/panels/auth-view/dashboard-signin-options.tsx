@@ -16,6 +16,7 @@
 import {
   EuiBasicTableColumn,
   EuiFlexGroup,
+  EuiGlobalToastList,
   EuiHealth,
   EuiHorizontalRule,
   EuiInMemoryTable,
@@ -30,6 +31,7 @@ import React from 'react';
 import { SignInOptionsModal } from './signin-options-modal';
 import { HttpSetup } from 'opensearch-dashboards/public';
 import { DashboardSignInOptions, DashboardOption } from '../../types';
+import { useToastState } from '../../utils/toast-utils';
 
 interface SignInOptionsPanelProps {
   authc: [],
@@ -77,6 +79,7 @@ function getDashboardOptionInfo(option:DashboardSignInOptions, signInEnabledOpti
 
 export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
   const domains = keys(props.authc);
+  const [toasts, addToast, removeToast] = useToastState();
   
   const options = map(domains, function (domain: string) {
     const data = get(props.authc, domain);
@@ -102,7 +105,7 @@ export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
         </EuiPageContentHeaderSection>
         <EuiPageContentHeaderSection>
           <EuiFlexGroup>
-            <SignInOptionsModal options={options} http={props.http} />
+            <SignInOptionsModal options={options} http={props.http} addToast={addToast} />
           </EuiFlexGroup>
         </EuiPageContentHeaderSection>
       </EuiPageContentHeader>
@@ -114,6 +117,7 @@ export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
         itemId={'signin_options'}
         sorting={{ sort: { field: 'name', direction: 'asc' } }}
       />
+    <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={3000} dismissToast={removeToast} />
     </EuiPanel>
   );
 }
