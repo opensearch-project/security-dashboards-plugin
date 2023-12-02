@@ -150,6 +150,7 @@ export class SecurityClient {
       multitenancy_enabled: tenancyConfigSettings.multitenancy_enabled,
       private_tenant_enabled: tenancyConfigSettings.private_tenant_enabled,
       default_tenant: tenancyConfigSettings.default_tenant,
+      dashboard_signin_options: tenancyConfigSettings.dashboard_signin_options
     };
     try {
       return await this.esClient

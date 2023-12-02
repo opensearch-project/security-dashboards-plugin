@@ -123,6 +123,7 @@ export function setupMultitenantRoutes(
           multitenancy_enabled: schema.boolean(),
           private_tenant_enabled: schema.boolean(),
           default_tenant: schema.string(),
+          dashboard_signin_options:schema.arrayOf(schema.any(), { defaultValue: [] }),
         }),
       },
     },
