@@ -25,9 +25,11 @@ import {
 } from '@elastic/eui';
 import React, { useEffect, useState } from 'react';
 import { columns } from './dashboard-signin-options';
-import { updateDashboardSignInOptions } from '../../utils/auth-view-utils';
-import { DashboardSignInOptions, DashboardOption } from '../../types';
+import { DashboardOption } from '../../types';
 import { HttpSetup } from 'opensearch-dashboards/public';
+import { updateTenancyConfiguration } from '../../utils/tenant-utils';
+import { TenancyConfigSettings } from '../tenancy-config/types';
+import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
 
 interface DashboardSignInProps {
   options: DashboardOption[],
@@ -39,12 +41,29 @@ export function SignInOptionsModal(props: DashboardSignInProps): JSX.Element {
   const [signInOptions, setSignInOptions] = useState<DashboardOption[]>([]);
   const [disableUpdate, disableUpdateButton] = useState(false);
   const actualSignInOptions: DashboardOption[] = props.options.filter(opt => opt.status);
+  const [tenantConfig, setTenantConfig] = useState<TenancyConfigSettings>({default_tenant: ""});
   
   const [isModalVisible, setIsModalVisible] = useState(false);
   const closeModal = () => setIsModalVisible(false);
   const showModal = () => setIsModalVisible(true);
-  
+
   useEffect(() => {
+    const getTenantConfiguration = async () => {
+      const dashboardsInfo = await getDashboardsInfo(props.http);
+      setTenantConfig( {
+          multitenancy_enabled: dashboardsInfo.multitenancy_enabled,
+          default_tenant: dashboardsInfo.default_tenant,
+          private_tenant_enabled: dashboardsInfo.private_tenant_enabled,
+          dashboard_signin_options: []
+      });
+    }
+
+    getTenantConfiguration();
+  }, [])
+  
+
+  useEffect(() => {
+    setTenantConfig({...tenantConfig, dashboard_signin_options: signInOptions.map(opt => opt.name)});
     if(actualSignInOptions.length != signInOptions.length && signInOptions.length > 0){
       disableUpdateButton(false);
     } else {
@@ -60,7 +79,8 @@ export function SignInOptionsModal(props: DashboardSignInProps): JSX.Element {
 
   }, [signInOptions])
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
+    await updateTenancyConfiguration(props.http, tenantConfig);
     closeModal();
   }
 
