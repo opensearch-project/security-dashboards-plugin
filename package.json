@@ -43,7 +43,7 @@
   },
   "resolutions": {
     "selenium-webdriver": "4.10.0",
-    "glob-parent": "5.1.2",
+    "glob-parent": "^5.1.2",
     "debug": "^4.3.4"
   }
 }
