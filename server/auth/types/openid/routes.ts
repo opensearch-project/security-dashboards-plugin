@@ -100,7 +100,7 @@ export class OpenIdAuthRoutes {
                   validate: validateNextUrl,
                 })
               ),
-              redirectHash: schema.maybe(schema.string()),
+              redirectHash: schema.maybe(schema.boolean()),
               state: schema.maybe(schema.string()),
               refresh: schema.maybe(schema.string()),
             },
