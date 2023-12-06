@@ -14,11 +14,10 @@
  */
 
 import { HttpStart } from 'opensearch-dashboards/public';
-import { API_ENDPOINT_DASHBOARDSINFO } from '../../common';
+import { API_ENDPOINT_DASHBOARDSINFO, API_ENDPOINT_DASHBOARD_SIGNIN_OPTIONS } from '../../common';
 import { httpGet, httpGetWithIgnores } from '../apps/configuration/utils/request-utils';
 import { DashboardsInfo } from '../types';
-import { AccountInfo } from '../apps/account/types';
-import { API_ENDPOINT_ACCOUNT_INFO } from '../apps/account/constants';
+import { DashboardSignInOptions } from '../apps/configuration/types';
 
 export async function getDashboardsInfo(http: HttpStart) {
   return await httpGet<DashboardsInfo>(http, API_ENDPOINT_DASHBOARDSINFO);
@@ -26,4 +25,8 @@ export async function getDashboardsInfo(http: HttpStart) {
 
 export async function getDashboardsInfoSafe(http: HttpStart): Promise<DashboardsInfo | undefined> {
   return httpGetWithIgnores<DashboardsInfo>(http, API_ENDPOINT_DASHBOARDSINFO, [401]);
+}
+
+export async function getDashboardsSignInOptions(http: HttpStart) {
+  return await httpGet<DashboardSignInOptions[]>(http, API_ENDPOINT_DASHBOARD_SIGNIN_OPTIONS);
 }
