@@ -574,6 +574,32 @@ export function defineRoutes(router: IRouter) {
     }
   );
 
+  router.get(
+    {
+      path: `${API_PREFIX}/auth/dashboardsinfo/signinoptions`,
+      validate: false,
+      options: {
+        authRequired: false,
+      },
+    },
+    async (
+      context,
+      request,
+      response
+    ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
+      const client = context.security_plugin.esClient.asScoped(request);
+      let esResp;
+      try {
+          esResp = await client.callAsInternalUser('opensearch_security.dashboardsinfo');
+        return response.ok({
+          body: esResp.dashboard_signin_options,
+        });
+      } catch (error) {
+        return errorResponse(response, error);
+      }
+    }
+  );
+
   /**
    * Gets audit log configuration。
    *
