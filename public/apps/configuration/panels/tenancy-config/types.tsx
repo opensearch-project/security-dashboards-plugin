@@ -13,11 +13,8 @@
  *   permissions and limitations under the License.
  */
 
-import { DashboardOption, DashboardSignInOptions } from "../../types";
-
 export interface TenancyConfigSettings {
   multitenancy_enabled?: boolean;
   private_tenant_enabled?: boolean;
   default_tenant: string;
-  dashboard_signin_options?: DashboardSignInOptions[]
 }

@@ -123,7 +123,6 @@ export function setupMultitenantRoutes(
           multitenancy_enabled: schema.boolean(),
           private_tenant_enabled: schema.boolean(),
           default_tenant: schema.string(),
-          dashboard_signin_options:schema.arrayOf(schema.any(), { defaultValue: [] }),
         }),
       },
     },
@@ -132,6 +131,35 @@ export function setupMultitenantRoutes(
         const esResponse = await securityClient.putMultitenancyConfigurations(
           request,
           request.body
+        );
+        return response.ok({
+          body: esResponse,
+          headers: {
+            'content-type': 'application/json',
+          },
+        });
+      } catch (error) {
+        return response.internalError({
+          body: error.message,
+        });
+      }
+    }
+  );
+
+  router.put(
+    {
+      path: '/api/v1/auth/dashboardsinfo/signinoptions',
+      validate: {
+        body: schema.object({
+          dashboard_signin_options: schema.arrayOf(schema.any(), { defaultValue: [] }),
+        }),
+      },
+    },
+    async (context, request, response) => {
+      try {
+        const esResponse = await securityClient.putDashboardSignInOptions(
+          request,
+          request.body.dashboard_signin_options
         );
         return response.ok({
           body: esResponse,

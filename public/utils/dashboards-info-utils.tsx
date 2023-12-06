@@ -15,7 +15,7 @@
 
 import { HttpStart } from 'opensearch-dashboards/public';
 import { API_ENDPOINT_DASHBOARDSINFO, API_ENDPOINT_DASHBOARD_SIGNIN_OPTIONS } from '../../common';
-import { httpGet, httpGetWithIgnores } from '../apps/configuration/utils/request-utils';
+import { httpGet, httpGetWithIgnores, httpPut } from '../apps/configuration/utils/request-utils';
 import { DashboardsInfo } from '../types';
 import { DashboardSignInOptions } from '../apps/configuration/types';
 
@@ -29,4 +29,13 @@ export async function getDashboardsInfoSafe(http: HttpStart): Promise<Dashboards
 
 export async function getDashboardsSignInOptions(http: HttpStart) {
   return await httpGet<DashboardSignInOptions[]>(http, API_ENDPOINT_DASHBOARD_SIGNIN_OPTIONS);
+}
+
+export async function updateDashboardSignInOptions(
+  http: HttpStart,
+  signInOptions: DashboardSignInOptions[]
+) {
+  await httpPut(http, API_ENDPOINT_DASHBOARD_SIGNIN_OPTIONS, {
+    dashboard_signin_options: signInOptions,
+  });
 }
