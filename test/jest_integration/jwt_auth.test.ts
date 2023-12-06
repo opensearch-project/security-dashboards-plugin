@@ -327,7 +327,7 @@ describe('start OpenSearch Dashboards server', () => {
     // Generate "random" roles to add to the token.
     // Compared to just using one role with a very long name,
     // this should make it a bit harder for the cookie compression.
-    for (let i = 0; i < 250; i++) {
+    for (let i = 0; i < 500; i++) {
       const dummyRole = Math.random().toString(20).substr(2, 10);
       roles.push(dummyRole);
     }
