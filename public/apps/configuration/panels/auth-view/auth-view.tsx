@@ -40,7 +40,7 @@ export function AuthView(props: AppDependencies) {
 
         setAuthentication(config.authc);
         setAuthorization(config.authz);
-        setDashboardSignInOptions(config.kibana.dashboardSignInOptions)
+        setDashboardSignInOptions(config.kibana.dashboardSignInOptions);
       } catch (e) {
         console.log(e);
       } finally {
@@ -72,9 +72,11 @@ export function AuthView(props: AppDependencies) {
       <AuthenticationSequencePanel authc={authentication} loading={loading} />
       <EuiSpacer size="m" />
       {/* @ts-ignore */}
-      <SignInOptionsPanel authc={authentication} 
-        signInEnabledOptions={dashboardSignInOptions} 
-        http={props.coreStart.http}/>
+      <SignInOptionsPanel
+        authc={authentication}
+        signInEnabledOptions={dashboardSignInOptions}
+        http={props.coreStart.http}
+      />
       <EuiSpacer size="m" />
       {/* @ts-ignore */}
       <AuthorizationPanel authz={authorization} loading={loading} config={props.config} />

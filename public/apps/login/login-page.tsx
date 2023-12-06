@@ -89,7 +89,7 @@ export function LoginPage(props: LoginPageDeps) {
   useEffect(() => {
     const getSignInOptions = async () => {
       try {
-        let dashboardSignInOptions = (await getDashboardsSignInOptions(props.http));
+        let dashboardSignInOptions = await getDashboardsSignInOptions(props.http);
         setSignInOptions(dashboardSignInOptions);
       } catch (e) {
         console.error(`Unable to get sign in options ${e}`);
@@ -166,7 +166,7 @@ export function LoginPage(props: LoginPageDeps) {
   const formOptions = () => {
     let formBody = [];
     const formBodyOp = [];
-    
+
     for (let i = 0; i < signInOptions.length; i++) {
       switch (DashboardSignInOptions[signInOptions[i]]) {
         case DashboardSignInOptions.BASIC: {
@@ -229,9 +229,9 @@ export function LoginPage(props: LoginPageDeps) {
         }
         case DashboardSignInOptions.ANONYMOUS: {
           const anonymousConfig = props.config.ui[AuthType.ANONYMOUS].login;
-            formBody.push(
-              renderLoginButton(AuthType.ANONYMOUS, ANONYMOUS_AUTH_LOGIN, anonymousConfig)
-            );
+          formBody.push(
+            renderLoginButton(AuthType.ANONYMOUS, ANONYMOUS_AUTH_LOGIN, anonymousConfig)
+          );
           break;
         }
         default: {

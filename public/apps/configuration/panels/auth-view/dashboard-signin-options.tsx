@@ -34,9 +34,9 @@ import { DashboardSignInOptions, DashboardOption } from '../../types';
 import { useToastState } from '../../utils/toast-utils';
 
 interface SignInOptionsPanelProps {
-  authc: [],
-  signInEnabledOptions: DashboardSignInOptions[],
-  http: HttpSetup
+  authc: [];
+  signInEnabledOptions: DashboardSignInOptions[];
+  http: HttpSetup;
 }
 
 export const columns: EuiBasicTableColumn<DashboardOption>[] = [
@@ -45,9 +45,7 @@ export const columns: EuiBasicTableColumn<DashboardOption>[] = [
     name: 'Name',
     'data-test-subj': 'name',
     mobileOptions: {
-      render: (opt: DashboardOption) => (
-        <span>{opt.name}</span>
-      ),
+      render: (opt: DashboardOption) => <span>{opt.name}</span>,
       header: false,
       truncateText: false,
       enlarge: true,
@@ -63,16 +61,19 @@ export const columns: EuiBasicTableColumn<DashboardOption>[] = [
       const color = enable ? 'success' : 'danger';
       const label = enable ? 'Enable' : 'Disable';
       return <EuiHealth color={color}>{label}</EuiHealth>;
-    }
-  }
+    },
+  },
 ];
 
-function getDashboardOptionInfo(option:DashboardSignInOptions, signInEnabledOptions: DashboardSignInOptions[]) {
-  if(option in DashboardSignInOptions){
+function getDashboardOptionInfo(
+  option: DashboardSignInOptions,
+  signInEnabledOptions: DashboardSignInOptions[]
+) {
+  if (option in DashboardSignInOptions) {
     const dashboardOption: DashboardOption = {
       name: option,
-      status: signInEnabledOptions.indexOf(option) > -1
-    }
+      status: signInEnabledOptions.indexOf(option) > -1,
+    };
     return dashboardOption;
   }
 }
@@ -80,17 +81,22 @@ function getDashboardOptionInfo(option:DashboardSignInOptions, signInEnabledOpti
 export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
   const domains = keys(props.authc);
   const [toasts, addToast, removeToast] = useToastState();
-  
+
   const options = map(domains, function (domain: string) {
     const data = get(props.authc, domain);
-    
-    return getDashboardOptionInfo(data.http_authenticator.type.toUpperCase(), props.signInEnabledOptions);
+
+    return getDashboardOptionInfo(
+      data.http_authenticator.type.toUpperCase(),
+      props.signInEnabledOptions
+    );
   })
     .filter((option) => option != null)
     //Remove duplicates
-    .filter((option, index, arr) => arr.findIndex(opt => opt?.name == option?.name) === index) as DashboardOption[];
-  
-  const headerText = 'Dashboard Sign In Options';  
+    .filter(
+      (option, index, arr) => arr.findIndex((opt) => opt?.name == option?.name) === index
+    ) as DashboardOption[];
+
+  const headerText = 'Dashboard Sign In Options';
 
   return (
     <EuiPanel>
@@ -100,7 +106,10 @@ export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
             <h3>Dashboard Sign In Options</h3>
           </EuiTitle>
           <EuiText size="xs" color="subdued">
-            <p>Configure one or multiple authentication options to appear on the sign-in windows for OpenSearch Dashboard.</p>
+            <p>
+              Configure one or multiple authentication options to appear on the sign-in windows for
+              OpenSearch Dashboard.
+            </p>
           </EuiText>
         </EuiPageContentHeaderSection>
         <EuiPageContentHeaderSection>
@@ -117,7 +126,7 @@ export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
         itemId={'signin_options'}
         sorting={{ sort: { field: 'name', direction: 'asc' } }}
       />
-    <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={3000} dismissToast={removeToast} />
+      <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={3000} dismissToast={removeToast} />
     </EuiPanel>
   );
 }

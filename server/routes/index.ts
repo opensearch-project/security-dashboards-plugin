@@ -590,7 +590,7 @@ export function defineRoutes(router: IRouter) {
       const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
-          esResp = await client.callAsInternalUser('opensearch_security.dashboardsinfo');
+        esResp = await client.callAsInternalUser('opensearch_security.dashboardsinfo');
         return response.ok({
           body: esResp.dashboard_signin_options,
         });
