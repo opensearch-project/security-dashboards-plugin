@@ -1,10 +1,10 @@
 {
   "name": "opensearch-security-dashboards",
-  "version": "1.3.12.0",
+  "version": "1.3.14.0",
   "main": "target/plugins/opensearch_security_dashboards",
   "opensearchDashboards": {
-    "version": "1.3.12",
-    "templateVersion": "1.3.12"
+    "version": "1.3.14",
+    "templateVersion": "1.3.14"
   },
   "license": "Apache-2.0",
   "homepage": "https://github.com/opensearch-project/security-dashboards-plugin",
@@ -25,7 +25,9 @@
     "samlp": "6.0.2",
     "**/glob-parent": "^6.0.0",
     "**/loader-utils": "^2.0.4",
-    "decode-uri-component": "^0.2.1"
+    "decode-uri-component": "^0.2.1",
+    "debug": "^4.3.4",
+    "browserify-sign": "^4.2.2"
   },
   "devDependencies": {
     "@elastic/eslint-import-resolver-kibana": "link:../../packages/osd-eslint-import-resolver-opensearch-dashboards",
