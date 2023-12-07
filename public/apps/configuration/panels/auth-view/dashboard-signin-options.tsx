@@ -26,12 +26,12 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import { get, keys, map } from 'lodash';
-import React from 'react';
-import { SignInOptionsModal } from './signin-options-modal';
+import { get, keys } from 'lodash';
 import { HttpSetup } from 'opensearch-dashboards/public';
-import { DashboardSignInOptions, DashboardOption } from '../../types';
+import React, { useEffect, useState } from 'react';
+import { DashboardOption, DashboardSignInOptions } from '../../types';
 import { useToastState } from '../../utils/toast-utils';
+import { SignInOptionsModal } from './signin-options-modal';
 
 interface SignInOptionsPanelProps {
   authc: [];
@@ -65,38 +65,40 @@ export const columns: EuiBasicTableColumn<DashboardOption>[] = [
   },
 ];
 
-function getDashboardOptionInfo(
-  option: DashboardSignInOptions,
-  signInEnabledOptions: DashboardSignInOptions[]
-) {
-  if (option in DashboardSignInOptions) {
-    const dashboardOption: DashboardOption = {
-      name: option,
-      status: signInEnabledOptions.indexOf(option) > -1,
-    };
-    return dashboardOption;
-  }
-}
-
 export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
   const domains = keys(props.authc);
   const [toasts, addToast, removeToast] = useToastState();
+  const [dashboardOptions, setDashboardOptions] = useState<DashboardOption[]>([]);
 
-  const options = map(domains, function (domain: string) {
-    const data = get(props.authc, domain);
+  useEffect(() => {
+    const getDasboardOptions = () => {
+      const options = domains
+        .map((domain) => {
+          const data = get(props.authc, domain);
 
-    return getDashboardOptionInfo(
-      data.http_authenticator.type.toUpperCase(),
-      props.signInEnabledOptions
-    );
-  })
-    .filter((option) => option != null)
-    //Remove duplicates
-    .filter(
-      (option, index, arr) => arr.findIndex((opt) => opt?.name == option?.name) === index
-    ) as DashboardOption[];
+          let option = data.http_authenticator.type.toUpperCase();
+          if (option in DashboardSignInOptions) {
+            const dashboardOption: DashboardOption = {
+              name: option,
+              status: props.signInEnabledOptions.indexOf(option) > -1,
+            };
 
-  const headerText = 'Dashboard Sign In Options';
+            return dashboardOption;
+          }
+        })
+        .filter((option) => option != null)
+        //Remove duplicates
+        .filter(
+          (option, index, arr) => arr.findIndex((opt) => opt?.name == option?.name) === index
+        ) as DashboardOption[];
+
+      setDashboardOptions(options);
+    };
+
+    if (props.signInEnabledOptions.length > 0 && dashboardOptions.length == 0) {
+      getDasboardOptions();
+    }
+  }, [props.signInEnabledOptions, dashboardOptions]);
 
   return (
     <EuiPanel>
@@ -114,7 +116,12 @@ export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
         </EuiPageContentHeaderSection>
         <EuiPageContentHeaderSection>
           <EuiFlexGroup>
-            <SignInOptionsModal options={options} http={props.http} addToast={addToast} />
+            <SignInOptionsModal
+              dashboardOptions={dashboardOptions}
+              setDashboardOptions={setDashboardOptions}
+              http={props.http}
+              addToast={addToast}
+            />
           </EuiFlexGroup>
         </EuiPageContentHeaderSection>
       </EuiPageContentHeader>
@@ -122,7 +129,7 @@ export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
       <EuiInMemoryTable
         tableLayout={'auto'}
         columns={columns}
-        items={options}
+        items={dashboardOptions}
         itemId={'signin_options'}
         sorting={{ sort: { field: 'name', direction: 'asc' } }}
       />

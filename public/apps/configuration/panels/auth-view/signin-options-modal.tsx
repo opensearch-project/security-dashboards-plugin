@@ -21,81 +21,82 @@ import {
   EuiModalFooter,
   EuiModalHeader,
   EuiModalHeaderTitle,
-  EuiSpacer
+  EuiSpacer,
 } from '@elastic/eui';
-import React, { useEffect, useState } from 'react';
-import { columns } from './dashboard-signin-options';
-import { DashboardOption } from '../../types';
-import { HttpSetup } from 'opensearch-dashboards/public';
-import { updateTenancyConfiguration } from '../../utils/tenant-utils';
-import { TenancyConfigSettings } from '../tenancy-config/types';
-import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
-import { createTenancySuccessToast } from '../../utils/toast-utils';
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
+import { HttpSetup } from 'opensearch-dashboards/public';
+import React, { useEffect, useState } from 'react';
+import { updateDashboardSignInOptions } from '../../../../utils/dashboards-info-utils';
+import { DashboardOption } from '../../types';
+import { createErrorToast, createSuccessToast } from '../../utils/toast-utils';
+import { columns } from './dashboard-signin-options';
+import { Dispatch } from 'react';
+import { SetStateAction } from 'react';
 
 interface DashboardSignInProps {
-  options: DashboardOption[],
-  http: HttpSetup,
-  addToast: ((toAdd: Toast) => void)
+  dashboardOptions: DashboardOption[];
+  setDashboardOptions: Dispatch<SetStateAction<DashboardOption[]>>;
+  http: HttpSetup;
+  addToast: (toAdd: Toast) => void;
 }
 
 export function SignInOptionsModal(props: DashboardSignInProps): JSX.Element {
-
-  const [signInOptions, setSignInOptions] = useState<DashboardOption[]>([]);
+  const [newSignInOptions, setNewSignInOptions] = useState<DashboardOption[]>([]);
   const [disableUpdate, disableUpdateButton] = useState(false);
-  const actualSignInOptions: DashboardOption[] = props.options.filter(opt => opt.status);
-  const [tenantConfig, setTenantConfig] = useState<TenancyConfigSettings>({default_tenant: ""});
-  
+  const actualSignInOptions: DashboardOption[] = props.dashboardOptions.filter((opt) => opt.status);
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const closeModal = () => setIsModalVisible(false);
   const showModal = () => setIsModalVisible(true);
 
   useEffect(() => {
-    const getTenantConfiguration = async () => {
-      const dashboardsInfo = await getDashboardsInfo(props.http);
-      setTenantConfig( {
-          multitenancy_enabled: dashboardsInfo.multitenancy_enabled,
-          default_tenant: dashboardsInfo.default_tenant,
-          private_tenant_enabled: dashboardsInfo.private_tenant_enabled,
-          dashboard_signin_options: []
-      });
-    }
-
-    getTenantConfiguration();
-  }, [])
-  
-
-  useEffect(() => {
-    setTenantConfig({...tenantConfig, dashboard_signin_options: signInOptions.map(opt => opt.name)});
-
-    if(actualSignInOptions.length != signInOptions.length && signInOptions.length > 0){
+    if (actualSignInOptions.length != newSignInOptions.length && newSignInOptions.length > 0) {
       disableUpdateButton(false);
     } else {
       let sameOptions = true;
-      signInOptions.forEach(option => {
-        if(actualSignInOptions.includes(option) == false){
+      newSignInOptions.forEach((option) => {
+        if (actualSignInOptions.includes(option) == false) {
           sameOptions = false;
           return;
         }
       });
       disableUpdateButton(sameOptions);
     }
-
-  }, [signInOptions])
+  }, [newSignInOptions]);
 
   const handleUpdate = async () => {
-    await updateTenancyConfiguration(props.http, tenantConfig);
-    closeModal();
-    props.addToast(
-      createTenancySuccessToast(
-        'savePassed',
-        'Dashboard SignIn Options',
-        "Changes applied."
-      )
-    );
-  }
+    await updateDashboardSignInOptions(
+      props.http,
+      newSignInOptions.map((opt) => opt.name)
+    )
+      .then(() => {
+        changeDashboardSignInOptionsStatus();
+        props.addToast(
+          createSuccessToast('updatePassed', 'Dashboard SignIn Options', 'Changes applied.')
+        );
+      })
+      .catch((e) => {
+        console.log('The sign in options could not be updated');
+        console.log(e);
+        props.addToast(
+          createErrorToast('updatedError', 'Dashboard SignIn Options', 'Error updating values.')
+        );
+      })
+      .finally(() => {
+        closeModal();
+      });
+  };
 
   let modal;
+
+  const changeDashboardSignInOptionsStatus = () => {
+    props.setDashboardOptions((prevOptions) =>
+      prevOptions.map((option) => {
+        option.status = newSignInOptions.includes(option);
+        return option;
+      })
+    );
+  };
 
   if (isModalVisible) {
     modal = (
@@ -108,20 +109,18 @@ export function SignInOptionsModal(props: DashboardSignInProps): JSX.Element {
           <EuiSpacer />
           <EuiBasicTable
             tableCaption="Dashboard sign in options available"
-            items={props.options}
+            items={props.dashboardOptions}
             rowHeader="name"
             columns={columns.slice(0, 1)}
             itemId={'name'}
-            selection={{ 
-              onSelectionChange: setSignInOptions, 
+            selection={{
+              onSelectionChange: setNewSignInOptions,
               initialSelected: actualSignInOptions,
-          }}
+            }}
           />
         </EuiModalBody>
         <EuiModalFooter>
-          <EuiButton onClick={closeModal}>
-            Cancel
-          </EuiButton>
+          <EuiButton onClick={closeModal}>Cancel</EuiButton>
           <EuiButton onClick={handleUpdate} fill disabled={disableUpdate}>
             Update
           </EuiButton>
@@ -135,4 +134,4 @@ export function SignInOptionsModal(props: DashboardSignInProps): JSX.Element {
       {modal}
     </div>
   );
-};
+}

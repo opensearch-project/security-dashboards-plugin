@@ -35,9 +35,8 @@ import {
   OPENID_AUTH_LOGIN,
   SAML_AUTH_LOGIN_WITH_FRAGMENT,
 } from '../../../common';
-import { getDashboardsInfo, getDashboardsSignInOptions } from '../../utils/dashboards-info-utils';
+import { getDashboardsSignInOptions } from '../../utils/dashboards-info-utils';
 import { DashboardSignInOptions } from '../configuration/types';
-import { string } from 'joi';
 
 interface LoginPageDeps {
   http: CoreStart['http'];

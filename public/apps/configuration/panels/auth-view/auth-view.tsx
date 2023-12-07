@@ -29,7 +29,9 @@ import { DashboardSignInOptions } from '../../types';
 export function AuthView(props: AppDependencies) {
   const [authentication, setAuthentication] = React.useState([]);
   const [authorization, setAuthorization] = React.useState([]);
-  const [dashboardSignInOptions, setDashboardSignInOptions] = React.useState<DashboardSignInOptions[]>([]);
+  const [dashboardSignInOptions, setDashboardSignInOptions] = React.useState<
+    DashboardSignInOptions[]
+  >([]);
   const [loading, setLoading] = useState(false);
 
   React.useEffect(() => {

@@ -170,6 +170,6 @@ export enum DashboardSignInOptions {
 }
 
 export type DashboardOption = {
-  name: DashboardSignInOptions,
-  status: boolean
-}
+  name: DashboardSignInOptions;
+  status: boolean;
+};
