@@ -1,6 +1,6 @@
 ## 2023-12-08 Version 1.3.14.0
 
-Compatible with Opensearch-Dashboards 1.3.14
+Compatible with OpenSearch-Dashboards 1.3.14
 
 ### Maintenance
 
