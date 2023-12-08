@@ -30,7 +30,11 @@ export interface SecuritySessionCookie {
   tenant?: any;
 
   // for oidc auth workflow
-  oidc?: any;
+  oidc?: {
+    state?: string;
+    nextUrl?: string;
+    redirectHash?: boolean;
+  };
 
   // for Saml auth workflow
   saml?: {

@@ -48,7 +48,6 @@ jobs:
           echo "Unpacking Keycloak"
           tar -xzf keycloak-${{ env.KEYCLOAK_VERSION }}.tar.gz
           cd keycloak-${{ env.KEYCLOAK_VERSION }}/bin
-          chmod +x ./kc.sh
           echo "Generating checksum for the downloaded kc.sh script..."
           DOWNLOADED_CHECKSUM=$(sha256sum kc.sh | awk '{print $1}')
           echo "Downloaded kc.sh checksum: $DOWNLOADED_CHECKSUM"

@@ -18,22 +18,22 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const login = 'admin';
-const password = 'admin';
-
 describe('Log in via OIDC', () => {
   afterEach(() => {
-    cy.origin('http://localhost:5601', () => {
-      cy.clearCookies();
-      cy.clearLocalStorage();
-    });
+    cy.clearCookies();
+    cy.clearLocalStorage();
   });
 
   const kcLogin = () => {
-    cy.get('#kc-page-title').should('be.visible');
-    cy.get('input[id=username]').should('be.visible').type(login);
-    cy.get('input[id=password]').should('be.visible').type(password);
-    cy.get('#kc-login').click();
+    cy.origin('http://127.0.0.1:8080', () => {
+      const login = 'admin';
+      const password = 'admin';
+
+      cy.get('#kc-page-title').should('be.visible');
+      cy.get('input[id=username]').should('be.visible').type(login);
+      cy.get('input[id=password]').should('be.visible').type(password);
+      cy.get('#kc-login').click();
+    });
   };
 
   it('Login to app/opensearch_dashboards_overview#/ when OIDC is enabled', () => {
@@ -43,14 +43,12 @@ describe('Log in via OIDC', () => {
 
     kcLogin();
 
-    cy.origin('http://localhost:5601', () => {
-      localStorage.setItem('opendistro::security::tenant::saved', '""');
-      localStorage.setItem('home:newThemeModal:show', 'false');
+    localStorage.setItem('opendistro::security::tenant::saved', '""');
+    localStorage.setItem('home:newThemeModal:show', 'false');
 
-      cy.get('#osdOverviewPageHeader__title').should('be.visible');
+    cy.get('#osdOverviewPageHeader__title').should('be.visible');
 
-      cy.getCookie('security_authentication').should('exist');
-    });
+    cy.getCookie('security_authentication').should('exist');
   });
 
   it('Login to app/dev_tools#/console when OIDC is enabled', () => {
@@ -60,33 +58,37 @@ describe('Log in via OIDC', () => {
 
     kcLogin();
 
-    cy.origin('http://localhost:5601', () => {
-      localStorage.setItem('opendistro::security::tenant::saved', '""');
-      localStorage.setItem('home:newThemeModal:show', 'false');
+    localStorage.setItem('opendistro::security::tenant::saved', '""');
+    localStorage.setItem('home:newThemeModal:show', 'false');
 
-      cy.visit('http://localhost:5601/app/dev_tools#/console');
+    cy.visit('http://localhost:5601/app/dev_tools#/console');
 
-      cy.get('a').contains('Dev Tools').should('be.visible');
+    cy.get('a').contains('Dev Tools').should('be.visible');
 
-      cy.getCookie('security_authentication').should('exist');
-    });
+    cy.getCookie('security_authentication').should('exist');
   });
 
   it('Login to Dashboard with Hash', () => {
-    cy.visit(
-      `http://localhost:5601/app/dashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(filters:!(),refreshInterval:(pause:!f,value:900000),time:(from:now-24h,to:now))&_a=(description:'Analyze%20mock%20flight%20data%20for%20OpenSearch-Air,%20Logstash%20Airways,%20OpenSearch%20Dashboards%20Airlines%20and%20BeatsWest',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'%5BFlights%5D%20Global%20Flight%20Dashboard',viewMode:view)`
-    );
+    const urlWithHash = `http://localhost:5601/app/security-dashboards-plugin#/getstarted`;
+
+    cy.visit(urlWithHash, {
+      failOnStatusCode: false,
+    });
 
     kcLogin();
+    cy.getCookie('security_authentication').should('exist');
+    cy.getCookie('security_authentication_oidc1').should('exist');
 
-    cy.origin('http://localhost:5601', () => {
-      localStorage.setItem('opendistro::security::tenant::saved', '""');
-      localStorage.setItem('home:newThemeModal:show', 'false');
-
-      cy.get('.euiHeader.euiHeader--default.euiHeader--fixed.primaryHeader').should('be.visible');
-
-      cy.getCookie('security_authentication').should('exist');
+    cy.url().then((url) => {
+      cy.visit(url, {
+        failOnStatusCode: false,
+      });
     });
+
+    localStorage.setItem('opendistro::security::tenant::saved', '""');
+    localStorage.setItem('home:newThemeModal:show', 'false');
+
+    cy.get('h1.euiTitle--large').contains('Get started');
   });
 
   it('Tenancy persisted after logout in OIDC', () => {
@@ -96,30 +98,32 @@ describe('Log in via OIDC', () => {
 
     kcLogin();
 
-    cy.origin('http://localhost:5601', () => {
-      localStorage.setItem('home:newThemeModal:show', 'false');
-
-      cy.get('#private').should('be.enabled');
-      cy.get('#private').click({ force: true });
-
-      cy.get('button[data-test-subj="confirm"]').click();
-
-      cy.get('#osdOverviewPageHeader__title').should('be.visible');
-
-      cy.get('button[id="user-icon-btn"]').click();
-
-      cy.get('button[data-test-subj^="log-out-"]').click();
+    cy.url().then((url) => {
+      cy.visit(url, {
+        failOnStatusCode: false,
+      });
     });
+
+    localStorage.setItem('home:newThemeModal:show', 'false');
+
+    cy.get('#private').should('be.enabled');
+    cy.get('#private').click({ force: true });
+
+    cy.get('button[data-test-subj="confirm"]').click();
+
+    cy.get('#osdOverviewPageHeader__title').should('be.visible');
+
+    cy.get('button[id="user-icon-btn"]').click();
+
+    cy.get('button[data-test-subj^="log-out-"]').click();
 
     kcLogin();
 
-    cy.origin('http://localhost:5601', () => {
-      cy.get('#user-icon-btn').should('be.visible');
-      cy.get('#user-icon-btn').click();
+    cy.get('#user-icon-btn').should('be.visible');
+    cy.get('#user-icon-btn').click();
 
-      cy.get('#osdOverviewPageHeader__title').should('be.visible');
+    cy.get('#osdOverviewPageHeader__title').should('be.visible');
 
-      cy.get('#tenantName').should('have.text', 'Private');
-    });
+    cy.get('#tenantName').should('have.text', 'Private');
   });
 });

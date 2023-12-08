@@ -121,7 +121,7 @@ exports[`Login page renders renders with config value for multiauth 1`] = `
         aria-label="openid_login_button"
         className="test-btn-style"
         data-test-subj="submit"
-        href="/app/opensearch-dashboards/auth/openid/login"
+        href="/app/opensearch-dashboards/auth/openid/captureUrlFragment?nextUrl=%2F"
         iconType="http://localhost:5601/images/test.png"
         size="s"
         type="prime"
