@@ -88,7 +88,7 @@ export function LoginPage(props: LoginPageDeps) {
   useEffect(() => {
     const getSignInOptions = async () => {
       try {
-        let dashboardSignInOptions = await getDashboardsSignInOptions(props.http);
+        const dashboardSignInOptions = await getDashboardsSignInOptions(props.http);
         setSignInOptions(dashboardSignInOptions);
       } catch (e) {
         console.error(`Unable to get sign in options ${e}`);
@@ -96,7 +96,7 @@ export function LoginPage(props: LoginPageDeps) {
     };
 
     getSignInOptions();
-  }, []);
+  }, [props.http]);
 
   let errorLabel: any = null;
   if (loginFailed) {

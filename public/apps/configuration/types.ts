@@ -169,7 +169,7 @@ export enum DashboardSignInOptions {
   ANONYMOUS,
 }
 
-export type DashboardOption = {
+export interface DashboardOption {
   name: DashboardSignInOptions;
   status: boolean;
-};
+}

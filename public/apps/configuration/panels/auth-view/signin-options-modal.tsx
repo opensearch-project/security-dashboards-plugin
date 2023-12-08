@@ -13,6 +13,7 @@
  *   permissions and limitations under the License.
  */
 
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import {
   EuiBasicTable,
   EuiButton,
@@ -25,13 +26,10 @@ import {
 } from '@elastic/eui';
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 import { HttpSetup } from 'opensearch-dashboards/public';
-import React, { useEffect, useState } from 'react';
-import { updateDashboardSignInOptions } from '../../../../utils/dashboards-info-utils';
 import { DashboardOption } from '../../types';
 import { createErrorToast, createSuccessToast } from '../../utils/toast-utils';
 import { columns } from './dashboard-signin-options';
-import { Dispatch } from 'react';
-import { SetStateAction } from 'react';
+import { updateDashboardSignInOptions } from '../../../../utils/dashboards-info-utils';
 
 interface DashboardSignInProps {
   dashboardOptions: DashboardOption[];
@@ -50,19 +48,19 @@ export function SignInOptionsModal(props: DashboardSignInProps): JSX.Element {
   const showModal = () => setIsModalVisible(true);
 
   useEffect(() => {
-    if (actualSignInOptions.length != newSignInOptions.length && newSignInOptions.length > 0) {
+    if (actualSignInOptions.length !== newSignInOptions.length && newSignInOptions.length > 0) {
       disableUpdateButton(false);
     } else {
       let sameOptions = true;
       newSignInOptions.forEach((option) => {
-        if (actualSignInOptions.includes(option) == false) {
+        if (actualSignInOptions.includes(option) === false) {
           sameOptions = false;
           return;
         }
       });
       disableUpdateButton(sameOptions);
     }
-  }, [newSignInOptions]);
+  }, [newSignInOptions, actualSignInOptions]);
 
   const handleUpdate = async () => {
     await updateDashboardSignInOptions(

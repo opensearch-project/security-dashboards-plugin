@@ -39,7 +39,7 @@ interface SignInOptionsPanelProps {
   http: HttpSetup;
 }
 
-export const columns: EuiBasicTableColumn<DashboardOption>[] = [
+export const columns: Array<EuiBasicTableColumn<DashboardOption>> = [
   {
     field: 'name',
     name: 'Name',
@@ -76,7 +76,7 @@ export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
         .map((domain) => {
           const data = get(props.authc, domain);
 
-          let option = data.http_authenticator.type.toUpperCase();
+          const option = data.http_authenticator.type.toUpperCase();
           if (option in DashboardSignInOptions) {
             const dashboardOption: DashboardOption = {
               name: option,
@@ -87,18 +87,17 @@ export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
           }
         })
         .filter((option) => option != null)
-        //Remove duplicates
         .filter(
-          (option, index, arr) => arr.findIndex((opt) => opt?.name == option?.name) === index
+          (option, index, arr) => arr.findIndex((opt) => opt?.name === option?.name) === index
         ) as DashboardOption[];
 
       setDashboardOptions(options);
     };
 
-    if (props.signInEnabledOptions.length > 0 && dashboardOptions.length == 0) {
+    if (props.signInEnabledOptions.length > 0 && dashboardOptions.length === 0) {
       getDasboardOptions();
     }
-  }, [props.signInEnabledOptions, dashboardOptions]);
+  }, [props.signInEnabledOptions, props.authc, dashboardOptions, domains]);
 
   return (
     <EuiPanel>
