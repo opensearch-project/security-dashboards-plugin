@@ -3,7 +3,7 @@ on:
   pull_request:
     branches: [ '**' ]
 env:
-  OPENSEARCH_VERSION: '3.0.0'
+  OPENSEARCH_VERSION: '2.12.0'
   CI: 1
   # avoid warnings like "tput: No value for $TERM and no -T specified"
   TERM: xterm
