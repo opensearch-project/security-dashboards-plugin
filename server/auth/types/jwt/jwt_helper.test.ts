@@ -54,6 +54,17 @@ describe('test jwt auth library', () => {
   };
   let logger: Logger;
 
+  const cookieConfig: Partial<SecurityPluginConfigType> = {
+    cookie: {
+      secure: false,
+      name: 'test_cookie_name',
+      password: 'secret',
+      ttl: 60 * 60 * 1000,
+      domain: null,
+      isSameSite: false,
+    },
+  };
+
 
 
   function getTestJWTAuthenticationHandlerWithConfig(config: SecurityPluginConfigType) {
@@ -70,14 +81,7 @@ describe('test jwt auth library', () => {
 
   test('test getTokenFromUrlParam', async () => {
     const config = {
-      cookie: {
-        secure: false,
-        name: 'test_cookie_name',
-        password: 'secret',
-        ttl: 60 * 60 * 1000,
-        domain: null,
-        isSameSite: false,
-      },
+      ...cookieConfig,
       jwt: {
         header: 'Authorization',
         url_param: 'authorization',
@@ -101,14 +105,7 @@ describe('test jwt auth library', () => {
 
   test('test getTokenFromUrlParam incorrect url_param', async () => {
     const config = {
-      cookie: {
-        secure: false,
-        name: 'test_cookie_name',
-        password: 'secret',
-        ttl: 60 * 60 * 1000,
-        domain: null,
-        isSameSite: false,
-      },
+      ...cookieConfig,
       jwt: {
         header: 'Authorization',
         url_param: 'urlParamName',
@@ -129,38 +126,23 @@ describe('test jwt auth library', () => {
     const token = auth.getTokenFromUrlParam(request);
     expect(token).toEqual(expectedToken);
   });
-});
 
-describe('test JWT authHeaderValue', () => {
-  let router: IRouter;
-  let core: CoreSetup;
-  let esClient: ILegacyClusterClient;
-  let sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>;
-  let logger: Logger;
+  test('make sure that cookies with authHeaderValue instead of split cookies are still valid', async () => {
+    const config = ({
+      ...cookieConfig,
+      jwt: {
+        header: 'Authorization',
+        url_param: 'authorization',
+        extra_storage: {
+          cookie_prefix: 'testcookie',
+          additional_cookies: 2,
+        }
+      },
+    } as unknown) as SecurityPluginConfigType;
 
-  // Consistent with auth_handler_factory.test.ts
-  beforeEach(() => {});
+    const jwtAuthentication = await getTestJWTAuthenticationHandlerWithConfig(config);
 
-  const config = ({
-    jwt: {
-      header: 'Authorization',
-      url_param: 'authorization',
-      extra_storage: {
-        cookie_prefix: "testcookie",
-        additional_cookies: 2
-      }
-    },
-  } as unknown) as SecurityPluginConfigType;
-
-  test('make sure that cookies with authHeaderValue are still valid', async () => {
-    const jwtAuthentication = new JwtAuthentication(
-      config,
-      sessionStorageFactory,
-      router,
-      esClient,
-      core,
-      logger
-    );
+    console.log('What sessionstorageFactory did I use?', sessionStorageFactory)
 
     const mockRequest = httpServerMock.createRawRequest();
     const osRequest = OpenSearchDashboardsRequest.from(mockRequest);
@@ -175,20 +157,26 @@ describe('test JWT authHeaderValue', () => {
       authorization: 'Bearer eyToken',
     };
 
+
     const headers = jwtAuthentication.buildAuthHeaderFromCookie(cookie, osRequest);
 
     expect(headers).toEqual(expectedHeaders);
   });
 
   test('get authHeaderValue from split cookies', async () => {
-    const jwtAuthentication = new JwtAuthentication(
-      config,
-      sessionStorageFactory,
-      router,
-      esClient,
-      core,
-      logger
-    );
+    const config = ({
+      ...cookieConfig,
+      jwt: {
+        header: 'Authorization',
+        url_param: 'authorization',
+        extra_storage: {
+          cookie_prefix: 'testcookie',
+          additional_cookies: 2,
+        }
+      },
+    } as unknown) as SecurityPluginConfigType;
+
+    const jwtAuthentication = await getTestJWTAuthenticationHandlerWithConfig(config);
 
     const testString = 'Bearer eyCombinedToken';
     const testStringBuffer: Buffer = deflateValue(testString);
