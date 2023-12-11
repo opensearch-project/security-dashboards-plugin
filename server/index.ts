@@ -17,7 +17,7 @@ import { schema, TypeOf } from '@osd/config-schema';
 import { PluginInitializerContext, PluginConfigDescriptor } from '../../../src/core/server';
 import { SecurityPlugin } from './plugin';
 import { AuthType } from '../common';
-import { JWT_DEFAULT_EXTRA_STORAGE_OPTIONS } from "./auth/types/jwt/jwt_auth";
+import { JWT_DEFAULT_EXTRA_STORAGE_OPTIONS } from './auth/types/jwt/jwt_auth';
 
 const validateAuthType = (value: string[]) => {
   const supportedAuthTypes = [
@@ -239,7 +239,10 @@ export const configSchema = schema.object({
           defaultValue: JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.cookiePrefix,
           minLength: 2,
         }),
-        additional_cookies: schema.number({ min: 1, defaultValue: JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.additionalCookies }),
+        additional_cookies: schema.number({
+          min: 1,
+          defaultValue: JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.additionalCookies,
+        }),
       }),
     })
   ),
