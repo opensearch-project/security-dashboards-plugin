@@ -14,43 +14,40 @@
  */
 
 import { getAuthenticationHandler } from '../../auth_handler_factory';
-import {
-  JWT_DEFAULT_EXTRA_STORAGE_OPTIONS,
-  JwtAuthentication
-} from "./jwt_auth";
+import { JWT_DEFAULT_EXTRA_STORAGE_OPTIONS } from './jwt_auth';
 import {
   CoreSetup,
   ILegacyClusterClient,
   IRouter,
   Logger,
   OpenSearchDashboardsRequest,
-  SessionStorageFactory
-} from "../../../../../../src/core/server";
-import {SecuritySessionCookie} from "../../../session/security_cookie";
-import {SecurityPluginConfigType} from "../../../index";
-import {httpServerMock} from "../../../../../../src/core/server/http/http_server.mocks";
-import {deflateValue} from "../../../utils/compression";
+  SessionStorageFactory,
+} from '../../../../../../src/core/server';
+import { SecuritySessionCookie } from '../../../session/security_cookie';
+import { SecurityPluginConfigType } from '../../../index';
+import { httpServerMock } from '../../../../../../src/core/server/http/http_server.mocks';
+import { deflateValue } from '../../../utils/compression';
 
 describe('test jwt auth library', () => {
-  const router: IRouter = { post: (body) => {} };
-  let core: CoreSetup = {
+  const router: Partial<IRouter> = { post: (body) => {} };
+  const core = {
     http: {
       basePath: {
-        serverBasePath: '/'
-      }
-    }
-  };
+        serverBasePath: '/',
+      },
+    },
+  } as CoreSetup;
   let esClient: ILegacyClusterClient;
-  let sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie> = {
+  const sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie> = {
     asScoped: jest.fn().mockImplementation(() => {
       return {
         server: {
           states: {
-            add: jest.fn()
-          }
-        }
-      }
-    })
+            add: jest.fn(),
+          },
+        },
+      };
+    }),
   };
   let logger: Logger;
 
@@ -65,12 +62,10 @@ describe('test jwt auth library', () => {
     },
   };
 
-
-
   function getTestJWTAuthenticationHandlerWithConfig(config: SecurityPluginConfigType) {
     return getAuthenticationHandler(
       'jwt',
-      router,
+      router as IRouter,
       config,
       core,
       esClient,
@@ -87,8 +82,8 @@ describe('test jwt auth library', () => {
         url_param: 'authorization',
         extra_storage: {
           cookie_prefix: JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.cookiePrefix,
-          additional_cookies: JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.additionalCookies
-        }
+          additional_cookies: JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.additionalCookies,
+        },
       },
     };
     const auth = await getTestJWTAuthenticationHandlerWithConfig(config);
@@ -111,8 +106,8 @@ describe('test jwt auth library', () => {
         url_param: 'urlParamName',
         extra_storage: {
           cookie_prefix: JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.cookiePrefix,
-          additional_cookies: JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.additionalCookies
-        }
+          additional_cookies: JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.additionalCookies,
+        },
       },
     };
     const auth = await getTestJWTAuthenticationHandlerWithConfig(config);
@@ -128,21 +123,19 @@ describe('test jwt auth library', () => {
   });
 
   test('make sure that cookies with authHeaderValue instead of split cookies are still valid', async () => {
-    const config = ({
+    const config = {
       ...cookieConfig,
       jwt: {
         header: 'Authorization',
         url_param: 'authorization',
         extra_storage: {
-          cookie_prefix: 'testcookie',
-          additional_cookies: 2,
-        }
+          cookie_prefix: JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.cookiePrefix,
+          additional_cookies: JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.additionalCookies,
+        },
       },
-    } as unknown) as SecurityPluginConfigType;
+    } as SecurityPluginConfigType;
 
     const jwtAuthentication = await getTestJWTAuthenticationHandlerWithConfig(config);
-
-    console.log('What sessionstorageFactory did I use?', sessionStorageFactory)
 
     const mockRequest = httpServerMock.createRawRequest();
     const osRequest = OpenSearchDashboardsRequest.from(mockRequest);
@@ -157,14 +150,13 @@ describe('test jwt auth library', () => {
       authorization: 'Bearer eyToken',
     };
 
-
     const headers = jwtAuthentication.buildAuthHeaderFromCookie(cookie, osRequest);
 
     expect(headers).toEqual(expectedHeaders);
   });
 
   test('get authHeaderValue from split cookies', async () => {
-    const config = ({
+    const config = {
       ...cookieConfig,
       jwt: {
         header: 'Authorization',
@@ -172,9 +164,9 @@ describe('test jwt auth library', () => {
         extra_storage: {
           cookie_prefix: 'testcookie',
           additional_cookies: 2,
-        }
+        },
       },
-    } as unknown) as SecurityPluginConfigType;
+    } as SecurityPluginConfigType;
 
     const jwtAuthentication = await getTestJWTAuthenticationHandlerWithConfig(config);
 

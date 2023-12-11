@@ -25,21 +25,21 @@ import {
   AuthToolkit,
   IOpenSearchDashboardsResponse,
 } from 'opensearch-dashboards/server';
+import { ServerStateCookieOptions } from '@hapi/hapi';
 import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { AuthenticationType } from '../authentication_type';
 import { JwtAuthRoutes } from './routes';
-import {ServerStateCookieOptions} from "@hapi/hapi";
 import {
   ExtraAuthStorageOptions,
   getExtraAuthStorageValue,
   setExtraAuthStorage,
-} from "../../../session/cookie_splitter";
+} from '../../../session/cookie_splitter';
 
 export const JWT_DEFAULT_EXTRA_STORAGE_OPTIONS: ExtraAuthStorageOptions = {
   cookiePrefix: 'security_authentication_jwt',
   additionalCookies: 5,
-}
+};
 
 export class JwtAuthentication extends AuthenticationType {
   public readonly type: string = 'jwt';
@@ -68,7 +68,7 @@ export class JwtAuthentication extends AuthenticationType {
     // @ts-ignore
     const hapiServer: Server = this.sessionStorageFactory.asScoped({}).server;
 
-    const {cookiePrefix, additionalCookies} = this.getExtraAuthStorageOptions();
+    const { cookiePrefix, additionalCookies } = this.getExtraAuthStorageOptions();
     const extraCookieSettings: ServerStateCookieOptions = {
       isSecure: this.config.cookie.secure,
       isSameSite: this.config.cookie.isSameSite,
@@ -87,11 +87,15 @@ export class JwtAuthentication extends AuthenticationType {
   }
 
   private getExtraAuthStorageOptions(): ExtraAuthStorageOptions {
-    let extraAuthStorageOptions: ExtraAuthStorageOptions = {
-      cookiePrefix: this.config.jwt?.extra_storage.cookie_prefix || JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.cookiePrefix,
-      additionalCookies: this.config.jwt?.extra_storage.additional_cookies || JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.additionalCookies,
-      logger: this.logger
-    }
+    const extraAuthStorageOptions: ExtraAuthStorageOptions = {
+      cookiePrefix:
+        this.config.jwt?.extra_storage.cookie_prefix ||
+        JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.cookiePrefix,
+      additionalCookies:
+        this.config.jwt?.extra_storage.additional_cookies ||
+        JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.additionalCookies,
+      logger: this.logger,
+    };
 
     return extraAuthStorageOptions;
   }
@@ -122,8 +126,6 @@ export class JwtAuthentication extends AuthenticationType {
       return true;
     }
 
-
-
     const urlParamName = this.config.jwt?.url_param;
     if (urlParamName && request.url.searchParams.get(urlParamName)) {
       return true;
@@ -149,7 +151,7 @@ export class JwtAuthentication extends AuthenticationType {
   ): SecuritySessionCookie {
     setExtraAuthStorage(
       request,
-      this.getBearerToken(request) || '', // TODO Does an empty string make sense?,
+      this.getBearerToken(request) || '',
       this.getExtraAuthStorageOptions()
     );
     return {
@@ -162,14 +164,14 @@ export class JwtAuthentication extends AuthenticationType {
     };
   }
 
-  async isValidCookie(cookie: SecuritySessionCookie, request: OpenSearchDashboardsRequest): Promise<boolean> {
-    // TODO Double check this, implemented too quickly
-    const hasAuthHeaderValue = (cookie.credentials?.authHeaderValue || this.getExtraAuthStorageValue(request, cookie))
+  async isValidCookie(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): Promise<boolean> {
+    const hasAuthHeaderValue =
+      cookie.credentials?.authHeaderValue || this.getExtraAuthStorageValue(request, cookie);
     return (
-      cookie.authType === this.type &&
-      cookie.username &&
-      cookie.expiryTime &&
-      hasAuthHeaderValue
+      cookie.authType === this.type && cookie.username && cookie.expiryTime && hasAuthHeaderValue
     );
   }
 
@@ -196,7 +198,10 @@ export class JwtAuthentication extends AuthenticationType {
     return extraValue;
   }
 
-  buildAuthHeaderFromCookie(cookie: SecuritySessionCookie, request: OpenSearchDashboardsRequest): any {
+  buildAuthHeaderFromCookie(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): any {
     const header: any = {};
     if (cookie.credentials.authHeaderValueExtra) {
       try {
