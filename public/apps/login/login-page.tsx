@@ -32,7 +32,7 @@ import { validateCurrentPassword } from '../../utils/login-utils';
 import {
   ANONYMOUS_AUTH_LOGIN,
   AuthType,
-  OPENID_AUTH_LOGIN,
+  OPENID_AUTH_LOGIN_WITH_FRAGMENT,
   SAML_AUTH_LOGIN_WITH_FRAGMENT,
 } from '../../../common';
 import { getDashboardsSignInOptions } from '../../utils/dashboards-info-utils';
@@ -216,7 +216,9 @@ export function LoginPage(props: LoginPageDeps) {
         }
         case DashboardSignInOptions.OPENID: {
           const oidcConfig = props.config.ui[AuthType.OPEN_ID].login;
-          formBodyOp.push(renderLoginButton(AuthType.OPEN_ID, OPENID_AUTH_LOGIN, oidcConfig));
+          const nextUrl = extractNextUrlFromWindowLocation();
+          const oidcAuthLoginUrl = OPENID_AUTH_LOGIN_WITH_FRAGMENT + nextUrl;
+          formBodyOp.push(renderLoginButton(AuthType.OPEN_ID, oidcAuthLoginUrl, oidcConfig));
           break;
         }
         case DashboardSignInOptions.SAML: {
