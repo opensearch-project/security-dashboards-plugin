@@ -162,13 +162,42 @@ export function LoginPage(props: LoginPageDeps) {
     );
   };
 
-  const formOptions = () => {
+  const formOptions = (options: string | string[]) => {
     let formBody = [];
     const formBodyOp = [];
+    let authOpts = [];
 
     for (let i = 0; i < signInOptions.length; i++) {
-      switch (DashboardSignInOptions[signInOptions[i]]) {
-        case DashboardSignInOptions.BASIC: {
+      // Dashboard sign-in options are gotten from HTTP type property where the value is 'openid' and it needs to match with AuthType open_id;
+      if (DashboardSignInOptions[signInOptions[i]] === DashboardSignInOptions.OPENID) {
+        authOpts.push(AuthType.OPEN_ID);
+      } else {
+        let authType = AuthType[signInOptions[i]];
+        if (authType) {
+          authOpts.push(authType);
+        }
+      }
+    }
+
+    if (authOpts.length == 0) {
+      if (typeof options === 'string') {
+        if (options === '') {
+          authOpts.push(AuthType.BASIC);
+        } else {
+          authOpts.push(options.toLowerCase());
+        }
+      } else {
+        if (options && options.length === 1 && options[0] === '') {
+          authOpts.push(AuthType.BASIC);
+        } else {
+          authOpts = [...options];
+        }
+      }
+    }
+
+    for (let i = 0; i < authOpts.length; i++) {
+      switch (authOpts[i].toLowerCase()) {
+        case AuthType.BASIC: {
           formBody.push(
             <EuiFormRow>
               <EuiFieldText
@@ -214,21 +243,21 @@ export function LoginPage(props: LoginPageDeps) {
           );
           break;
         }
-        case DashboardSignInOptions.OPENID: {
+        case AuthType.OPEN_ID: {
           const oidcConfig = props.config.ui[AuthType.OPEN_ID].login;
           const nextUrl = extractNextUrlFromWindowLocation();
           const oidcAuthLoginUrl = OPENID_AUTH_LOGIN_WITH_FRAGMENT + nextUrl;
           formBodyOp.push(renderLoginButton(AuthType.OPEN_ID, oidcAuthLoginUrl, oidcConfig));
           break;
         }
-        case DashboardSignInOptions.SAML: {
+        case AuthType.SAML: {
           const samlConfig = props.config.ui[AuthType.SAML].login;
           const nextUrl = extractNextUrlFromWindowLocation();
           const samlAuthLoginUrl = SAML_AUTH_LOGIN_WITH_FRAGMENT + nextUrl;
           formBodyOp.push(renderLoginButton(AuthType.SAML, samlAuthLoginUrl, samlConfig));
           break;
         }
-        case DashboardSignInOptions.ANONYMOUS: {
+        case AuthType.ANONYMOUS: {
           const anonymousConfig = props.config.ui[AuthType.ANONYMOUS].login;
           formBody.push(
             renderLoginButton(AuthType.ANONYMOUS, ANONYMOUS_AUTH_LOGIN, anonymousConfig)
@@ -238,13 +267,14 @@ export function LoginPage(props: LoginPageDeps) {
         default: {
           setloginFailed(true);
           setloginError(
-            `Authentication Type: ${signInOptions[i]} is not supported for multiple authentication.`
+            `Authentication Type: ${authOpts[i]} is not supported for multiple authentication.`
           );
           break;
         }
       }
     }
-    if (signInOptions.length > 1) {
+
+    if (authOpts.length > 1) {
       formBody.push(<EuiSpacer size="xs" />);
       formBody.push(<EuiHorizontalRule size="full" margin="xl" />);
       formBody.push(<EuiSpacer size="xs" />);
@@ -275,7 +305,7 @@ export function LoginPage(props: LoginPageDeps) {
       </EuiText>
       <EuiSpacer size="s" />
       <EuiForm component="form">
-        {formOptions()}
+        {formOptions(props.config.auth.type)}
         {errorLabel}
       </EuiForm>
     </EuiListGroup>
