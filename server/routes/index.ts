@@ -20,8 +20,8 @@ import {
   IOpenSearchDashboardsResponse,
   OpenSearchDashboardsResponseFactory,
 } from 'opensearch-dashboards/server';
-import { API_PREFIX, CONFIGURATION_API_PREFIX, isValidResourceName } from '../../common';
-import { ResourceType } from '../../public/apps/configuration/types';
+import { API_ENDPOINT_DASHBOARD_SIGNIN_OPTIONS, API_PREFIX, CONFIGURATION_API_PREFIX, isValidResourceName } from '../../common';
+import { DashboardSignInOptions, ResourceType } from '../../public/apps/configuration/types';
 
 // TODO: consider to extract entity CRUD operations and put it into a client class
 export function defineRoutes(router: IRouter) {
@@ -576,7 +576,7 @@ export function defineRoutes(router: IRouter) {
 
   router.get(
     {
-      path: `${API_PREFIX}/auth/dashboardsinfo/signinoptions`,
+      path: `${API_ENDPOINT_DASHBOARD_SIGNIN_OPTIONS}`,
       validate: false,
       options: {
         authRequired: false,
@@ -593,6 +593,37 @@ export function defineRoutes(router: IRouter) {
         esResp = await client.callAsInternalUser('opensearch_security.dashboardsinfo');
         return response.ok({
           body: esResp.dashboard_signin_options,
+        });
+      } catch (error) {
+        return errorResponse(response, error);
+      }
+    }
+  );
+
+  router.put(
+    {
+      path: `${API_ENDPOINT_DASHBOARD_SIGNIN_OPTIONS}`,
+      validate: {
+        body: schema.object({
+          dashboard_signin_options: schema.arrayOf(schema.any(), { defaultValue: [DashboardSignInOptions.BASIC] }),
+        }),
+      },
+    },
+    async (
+      context,
+      request,
+      response
+    ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
+      const client = context.security_plugin.esClient.asScoped(request);
+      let esResp;
+      try {
+        esResp = await client.callAsCurrentUser('opensearch_security.tenancy_configs', {
+          body: request.body,
+        });
+        return response.ok({
+          body: {
+            message: esResp.message,
+          },
         });
       } catch (error) {
         return errorResponse(response, error);

@@ -132,24 +132,6 @@ export class SecurityClient {
     }
   }
 
-  public async putDashboardSignInOptions(
-    request: OpenSearchDashboardsRequest,
-    signInOptions: DashboardSignInOptions[]
-  ) {
-    const body = {
-      dashboard_signin_options: signInOptions,
-    };
-    try {
-      return await this.esClient
-        .asScoped(request)
-        .callAsCurrentUser('opensearch_security.tenancy_configs', {
-          body,
-        });
-    } catch (error: any) {
-      throw new Error(error.message);
-    }
-  }
-
   // Multi-tenancy APIs
   public async getMultitenancyInfo(request: OpenSearchDashboardsRequest) {
     try {
