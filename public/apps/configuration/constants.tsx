@@ -315,7 +315,7 @@ export const INDEX_PERMISSIONS: string[] = [
   'indices:monitor/shard_stores',
   'indices:monitor/stats',
   'indices:monitor/upgrade',
-  'system:admin/system_index'
+  'system:admin/system_index',
 ];
 
 export function includeIndexPermissions(indexPermissionsToInclude: string[]) {
