@@ -46,6 +46,8 @@ import { createMigrationOpenSearchClient } from '../../../src/core/server/saved_
 import { SecuritySavedObjectsClientWrapper } from './saved_objects/saved_objects_wrapper';
 import { addTenantParameterToResolvedShortLink } from './multitenancy/tenant_resolver';
 import { ReadonlyService } from './readonly/readonly_service';
+import { DashboardSignInOptions } from '../public/apps/configuration/types';
+import { AuthType } from '../common';
 
 export interface SecurityPluginRequestContext {
   logger: Logger;
@@ -113,8 +115,23 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     });
 
     // setup auth
+    let dashboard_signin_options = await esClient
+      .callAsInternalUser('opensearch_security.dashboardsinfo')
+      .then((data) => data.dashboard_signin_options
+        .map((opt: string) => {
+          if (DashboardSignInOptions[opt] === DashboardSignInOptions.BASIC) {
+            return AuthType.BASIC
+          } else {
+            return opt.toString().toLowerCase()
+          }
+        }
+      ));
+
+    dashboard_signin_options = new Set<String>([...dashboard_signin_options, ...config.auth.type]);
+    dashboard_signin_options = [...dashboard_signin_options];
+
     const auth: IAuthenticationType = await getAuthenticationHandler(
-      config.auth.type,
+      dashboard_signin_options,
       router,
       config,
       core,
