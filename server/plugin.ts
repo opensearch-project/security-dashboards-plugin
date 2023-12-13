@@ -127,6 +127,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
         }
       ));
 
+    // Combine sign in options with auth.type in case there are JWT, PROXY or more auth types.
     dashboard_signin_options = new Set<String>([...dashboard_signin_options, ...config.auth.type]);
     dashboard_signin_options = [...dashboard_signin_options];
 

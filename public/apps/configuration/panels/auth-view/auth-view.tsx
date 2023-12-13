@@ -32,6 +32,7 @@ export function AuthView(props: AppDependencies) {
   const [dashboardSignInOptions, setDashboardSignInOptions] = React.useState<
     DashboardSignInOptions[]
   >([]);
+  const [anonymousOption, setAnonymousOption] = useState(false);
   const [loading, setLoading] = useState(false);
 
   React.useEffect(() => {
@@ -43,6 +44,7 @@ export function AuthView(props: AppDependencies) {
         setAuthentication(config.authc);
         setAuthorization(config.authz);
         setDashboardSignInOptions(config.kibana.dashboardSignInOptions);
+        setAnonymousOption(config.http.anonymous_auth_enabled);
       } catch (e) {
         console.log(e);
       } finally {
@@ -78,6 +80,7 @@ export function AuthView(props: AppDependencies) {
         authc={authentication}
         signInEnabledOptions={dashboardSignInOptions}
         http={props.coreStart.http}
+        anonymousOption={anonymousOption}
       />
       <EuiSpacer size="m" />
       {/* @ts-ignore */}
