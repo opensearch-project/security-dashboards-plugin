@@ -183,7 +183,7 @@ jobs:
       # Verify that the server is operational
       - name: Check OpenSearch Running on Linux
         if: ${{ runner.os != 'Windows'}}
-        run: curl https://localhost:9200/_cat/plugins -u 'admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD}}' -k -v
+        run: curl https://localhost:9200/_cat/plugins -u 'admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}' -k -v
         shell: bash
 
       - if: always()
