@@ -35,7 +35,7 @@ For the sake of this guide, let's assume the latest version on main for OpenSear
 Ensure that an OpenSearch cluster with the security plugin installed is running locally. If you followed the steps from [the developer guide of the Security Plugin](https://github.com/opensearch-project/security/blob/main/DEVELOPER_GUIDE.md), then you can verify this by running:
 
 ```
-curl -XGET https://admin:admin@localhost:9200/ --insecure
+curl -XGET https://admin:<admin password>@localhost:9200/ --insecure
 ```
 
 ## Install OpenSearch-Dashboards with Security Dashboards Plugin
