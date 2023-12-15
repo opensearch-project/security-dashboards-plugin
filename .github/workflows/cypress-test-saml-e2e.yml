@@ -8,7 +8,8 @@ env:
   # avoid warnings like "tput: No value for $TERM and no -T specified"
   TERM: xterm
   PLUGIN_NAME: opensearch-security
-  
+  OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
+
 jobs:
   tests:
     name: Run Cypress E2E SAML tests
@@ -145,7 +146,7 @@ jobs:
       # Verify that the server is operational
       - name: Check OpenSearch Running on Linux
         if: ${{ runner.os != 'Windows'}}
-        run: curl https://localhost:9200/_cat/plugins -u 'admin:admin' -k -v
+        run: curl https://localhost:9200/_cat/plugins -u 'admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD}}' -k -v
         shell: bash
 
       - if: always()
