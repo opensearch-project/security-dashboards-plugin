@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { Root } from "../../../../src/core/server/root";
+import { Root } from '../../../../src/core/server/root';
 import * as osdTestServer from '../../../../src/core/test_helpers/osd_server';
 import { afterAll, beforeAll, describe, expect, it } from '@jest/globals';
 import { resolve } from 'path';
@@ -21,10 +21,10 @@ import { resolve } from 'path';
 import {
   AUTHORIZATION_HEADER_NAME,
   OPENSEARCH_DASHBOARDS_SERVER_PASSWORD,
-  OPENSEARCH_DASHBOARDS_SERVER_USER
+  OPENSEARCH_DASHBOARDS_SERVER_USER,
 } from '../constant';
-import { API_ENDPOINT_DASHBOARD_SIGNIN_OPTIONS } from "../../common";
-import { DashboardSignInOptions } from "../../public/apps/configuration/types";
+import { API_ENDPOINT_DASHBOARD_SIGNIN_OPTIONS } from '../../common';
+import { DashboardSignInOptions } from '../../public/apps/configuration/types';
 
 describe('start OpenSearch Dashboards server', () => {
   let root: Root;
@@ -65,8 +65,7 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   it(`get ${API_ENDPOINT_DASHBOARD_SIGNIN_OPTIONS} should return all dashboard sign-in options from backend.`, async () => {
-    const response = await osdTestServer
-      .request
+    const response = await osdTestServer.request
       .get(root, API_ENDPOINT_DASHBOARD_SIGNIN_OPTIONS)
       .unset(AUTHORIZATION_HEADER_NAME);
 

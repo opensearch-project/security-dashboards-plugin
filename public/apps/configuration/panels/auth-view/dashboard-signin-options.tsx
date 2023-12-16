@@ -37,7 +37,7 @@ interface SignInOptionsPanelProps {
   authc: [];
   signInEnabledOptions: DashboardSignInOptions[];
   http: HttpSetup;
-  anonymousOption: boolean
+  anonymousOption: boolean;
 }
 
 export const columns: Array<EuiBasicTableColumn<DashboardOption>> = [
@@ -101,8 +101,8 @@ export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
   }, [props.signInEnabledOptions, props.authc, dashboardOptions, domains]);
 
   useEffect(() => {
-    if(props.anonymousOption){
-      const option = "ANONYMOUS";
+    if (props.anonymousOption) {
+      const option = 'ANONYMOUS';
       const anonymousOption: DashboardOption = {
         name: option,
         status: props.signInEnabledOptions.indexOf(option) > -1,
@@ -111,7 +111,7 @@ export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
       setDashboardOptions((prevState) => [...prevState, anonymousOption]);
       props.anonymousOption = false;
     }
-  }, [props.anonymousOption])
+  }, [props.anonymousOption]);
 
   return (
     <EuiPanel>

@@ -117,15 +117,15 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     // setup auth
     let dashboard_signin_options = await esClient
       .callAsInternalUser('opensearch_security.dashboardsinfo')
-      .then((data) => data.dashboard_signin_options
-        .map((opt: string) => {
+      .then((data) =>
+        data.dashboard_signin_options.map((opt: string) => {
           if (DashboardSignInOptions[opt] === DashboardSignInOptions.BASIC) {
-            return AuthType.BASIC
+            return AuthType.BASIC;
           } else {
-            return opt.toString().toLowerCase()
+            return opt.toString().toLowerCase();
           }
-        }
-      ));
+        })
+      );
 
     // Combine sign in options with auth.type in case there are JWT, PROXY or more auth types.
     dashboard_signin_options = new Set<String>([...dashboard_signin_options, ...config.auth.type]);

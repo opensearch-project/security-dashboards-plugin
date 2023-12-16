@@ -20,7 +20,12 @@ import {
   IOpenSearchDashboardsResponse,
   OpenSearchDashboardsResponseFactory,
 } from 'opensearch-dashboards/server';
-import { API_ENDPOINT_DASHBOARD_SIGNIN_OPTIONS, API_PREFIX, CONFIGURATION_API_PREFIX, isValidResourceName } from '../../common';
+import {
+  API_ENDPOINT_DASHBOARD_SIGNIN_OPTIONS,
+  API_PREFIX,
+  CONFIGURATION_API_PREFIX,
+  isValidResourceName,
+} from '../../common';
 import { DashboardSignInOptions, ResourceType } from '../../public/apps/configuration/types';
 
 // TODO: consider to extract entity CRUD operations and put it into a client class
@@ -605,7 +610,9 @@ export function defineRoutes(router: IRouter) {
       path: `${API_ENDPOINT_DASHBOARD_SIGNIN_OPTIONS}`,
       validate: {
         body: schema.object({
-          dashboard_signin_options: schema.arrayOf(schema.any(), { defaultValue: [DashboardSignInOptions.BASIC] }),
+          dashboard_signin_options: schema.arrayOf(schema.any(), {
+            defaultValue: [DashboardSignInOptions.BASIC],
+          }),
         }),
       },
     },

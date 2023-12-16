@@ -119,12 +119,7 @@ export function SignInOptionsModal(props: DashboardSignInProps): JSX.Element {
         </EuiModalBody>
         <EuiModalFooter>
           <EuiButton onClick={closeModal}>Cancel</EuiButton>
-          <EuiButton
-            data-testid="update"
-            onClick={handleUpdate} 
-            fill 
-            disabled={disableUpdate}
-          >
+          <EuiButton data-testid="update" onClick={handleUpdate} fill disabled={disableUpdate}>
             Update
           </EuiButton>
         </EuiModalFooter>
@@ -133,11 +128,9 @@ export function SignInOptionsModal(props: DashboardSignInProps): JSX.Element {
   }
   return (
     <div>
-      <EuiButton 
-      data-testid="edit"
-      onClick={showModal}
-      >
-        Edit</EuiButton>
+      <EuiButton data-testid="edit" onClick={showModal}>
+        Edit
+      </EuiButton>
       {modal}
     </div>
   );
