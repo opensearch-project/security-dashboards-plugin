@@ -67,7 +67,7 @@ export const columns: Array<EuiBasicTableColumn<DashboardOption>> = [
 ];
 
 export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
-  const { authc, signInEnabledOptions, http } = props;
+  const { authc, signInEnabledOptions, http, isAnonymousAuthEnable } = props;
 
   const domains = keys(authc);
   const [toasts, addToast, removeToast] = useToastState();
@@ -103,17 +103,16 @@ export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
   }, [signInEnabledOptions, authc, dashboardOptions, domains]);
 
   useEffect(() => {
-    if (props.isAnonymousAuthEnable) {
-      const option = 'ANONYMOUS';
+    if (isAnonymousAuthEnable) {
+      const option = DashboardSignInOptions.ANONYMOUS;
       const anonymousOption: DashboardOption = {
-        name: option,
-        status: signInEnabledOptions.indexOf(option) > -1,
+        name: DashboardSignInOptions[option],
+        status: signInEnabledOptions.indexOf(DashboardSignInOptions[option]) > -1,
       };
 
       setDashboardOptions((prevState) => [...prevState, anonymousOption]);
-      props.isAnonymousAuthEnable = false;
     }
-  }, [props.isAnonymousAuthEnable, signInEnabledOptions, props]);
+  }, [signInEnabledOptions, isAnonymousAuthEnable]);
 
   return (
     <EuiPanel>
