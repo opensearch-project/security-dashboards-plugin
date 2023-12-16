@@ -162,29 +162,28 @@ export function LoginPage(props: LoginPageDeps) {
     );
   };
 
-  const mapSignInOptions = (signInOptions: DashboardSignInOptions[]) => {
+  const mapSignInOptions = (options: DashboardSignInOptions[]) => {
     const authOpts = [];
-    for (let i = 0; i < signInOptions.length; i++) {
+    for (let i = 0; i < options.length; i++) {
       // Dashboard sign-in options are gotten from HTTP type property where the value is 'openid' and it needs to match with AuthType open_id;
-      if (DashboardSignInOptions[signInOptions[i]] === DashboardSignInOptions.OPENID) {
+      if (DashboardSignInOptions[options[i]] === DashboardSignInOptions.OPENID) {
         authOpts.push(AuthType.OPEN_ID);
       } else {
-        let authType = AuthType[signInOptions[i]];
+        const authType = AuthType[options[i]];
         if (authType) {
           authOpts.push(authType);
         }
       }
     }
     return authOpts;
-  }
+  };
 
   const formOptions = (options: string | string[]) => {
     let formBody = [];
     const formBodyOp = [];
-    let authOpts = mapSignInOptions(signInOptions);    
-    
+    let authOpts = mapSignInOptions(signInOptions);
 
-    if (authOpts.length == 0) {
+    if (authOpts.length === 0) {
       if (typeof options === 'string') {
         if (options === '') {
           authOpts.push(AuthType.BASIC);

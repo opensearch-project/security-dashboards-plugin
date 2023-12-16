@@ -37,7 +37,7 @@ interface SignInOptionsPanelProps {
   authc: [];
   signInEnabledOptions: DashboardSignInOptions[];
   http: HttpSetup;
-  anonymousOption: boolean;
+  isAnonymousAuthEnable: boolean;
 }
 
 export const columns: Array<EuiBasicTableColumn<DashboardOption>> = [
@@ -67,7 +67,9 @@ export const columns: Array<EuiBasicTableColumn<DashboardOption>> = [
 ];
 
 export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
-  const domains = keys(props.authc);
+  const { authc, signInEnabledOptions, http } = props;
+
+  const domains = keys(authc);
   const [toasts, addToast, removeToast] = useToastState();
   const [dashboardOptions, setDashboardOptions] = useState<DashboardOption[]>([]);
 
@@ -75,13 +77,13 @@ export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
     const getDasboardOptions = () => {
       const options = domains
         .map((domain) => {
-          const data = get(props.authc, domain);
+          const data = get(authc, domain);
 
           const option = data.http_authenticator.type.toUpperCase();
           if (option in DashboardSignInOptions) {
             const dashboardOption: DashboardOption = {
               name: option,
-              status: props.signInEnabledOptions.indexOf(option) > -1,
+              status: signInEnabledOptions.indexOf(option) > -1,
             };
 
             return dashboardOption;
@@ -95,23 +97,23 @@ export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
       setDashboardOptions(options);
     };
 
-    if (props.signInEnabledOptions.length > 0 && dashboardOptions.length === 0) {
+    if (signInEnabledOptions.length > 0 && dashboardOptions.length === 0) {
       getDasboardOptions();
     }
-  }, [props.signInEnabledOptions, props.authc, dashboardOptions, domains]);
+  }, [signInEnabledOptions, authc, dashboardOptions, domains]);
 
   useEffect(() => {
-    if (props.anonymousOption) {
+    if (props.isAnonymousAuthEnable) {
       const option = 'ANONYMOUS';
       const anonymousOption: DashboardOption = {
         name: option,
-        status: props.signInEnabledOptions.indexOf(option) > -1,
+        status: signInEnabledOptions.indexOf(option) > -1,
       };
 
       setDashboardOptions((prevState) => [...prevState, anonymousOption]);
-      props.anonymousOption = false;
+      props.isAnonymousAuthEnable = false;
     }
-  }, [props.anonymousOption]);
+  }, [props.isAnonymousAuthEnable, signInEnabledOptions, props]);
 
   return (
     <EuiPanel>
@@ -132,7 +134,7 @@ export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
             <SignInOptionsModal
               dashboardOptions={dashboardOptions}
               setDashboardOptions={setDashboardOptions}
-              http={props.http}
+              http={http}
               addToast={addToast}
             />
           </EuiFlexGroup>

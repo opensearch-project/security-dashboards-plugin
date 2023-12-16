@@ -170,6 +170,6 @@ export enum DashboardSignInOptions {
 }
 
 export interface DashboardOption {
-  name: DashboardSignInOptions;
+  name: DashboardSignInOptions | string;
   status: boolean;
 }

@@ -26,7 +26,7 @@ import {
 } from '@elastic/eui';
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 import { HttpSetup } from 'opensearch-dashboards/public';
-import { DashboardOption } from '../../types';
+import { DashboardOption, DashboardSignInOptions } from '../../types';
 import { createErrorToast, createSuccessToast } from '../../utils/toast-utils';
 import { columns } from './dashboard-signin-options';
 import { updateDashboardSignInOptions } from '../../../../utils/dashboards-info-utils';
@@ -65,7 +65,7 @@ export function SignInOptionsModal(props: DashboardSignInProps): JSX.Element {
   const handleUpdate = async () => {
     await updateDashboardSignInOptions(
       props.http,
-      newSignInOptions.map((opt) => opt.name)
+      newSignInOptions.map((opt) => opt.name as DashboardSignInOptions)
     )
       .then(() => {
         changeDashboardSignInOptionsStatus();
