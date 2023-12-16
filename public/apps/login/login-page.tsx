@@ -207,6 +207,7 @@ export function LoginPage(props: LoginPageDeps) {
             <EuiFormRow>
               <EuiFieldText
                 data-test-subj="user-name"
+                data-testid="username"
                 aria-label="username_input"
                 placeholder="Username"
                 prepend={<EuiIcon type="user" />}
@@ -220,6 +221,7 @@ export function LoginPage(props: LoginPageDeps) {
             <EuiFormRow isInvalid={passwordValidationFailed}>
               <EuiFieldText
                 data-test-subj="password"
+                data-testid="password"
                 aria-label="password_input"
                 placeholder="Password"
                 prepend={<EuiIcon type="lock" />}
@@ -234,6 +236,7 @@ export function LoginPage(props: LoginPageDeps) {
           formBody.push(
             <EuiFormRow>
               <EuiButton
+                data-testid="login"
                 data-test-subj="submit"
                 aria-label={buttonId}
                 fill
