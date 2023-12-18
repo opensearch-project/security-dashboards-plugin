@@ -32,7 +32,7 @@ import { SecuritySessionCookie } from '../session/security_cookie';
 import { IAuthenticationType, IAuthHandlerConstructor } from './types/authentication_type';
 import { SecurityPluginConfigType } from '..';
 
-function createAuthentication(
+async function createAuthentication(
   ctor: IAuthHandlerConstructor,
   config: SecurityPluginConfigType,
   sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
@@ -40,11 +40,13 @@ function createAuthentication(
   esClient: ILegacyClusterClient,
   coreSetup: CoreSetup,
   logger: Logger
-): IAuthenticationType {
-  return new ctor(config, sessionStorageFactory, router, esClient, coreSetup, logger);
+): Promise<IAuthenticationType> {
+  const authHandler = new ctor(config, sessionStorageFactory, router, esClient, coreSetup, logger);
+  await authHandler.init();
+  return authHandler;
 }
 
-export function getAuthenticationHandler(
+export async function getAuthenticationHandler(
   authType: string,
   router: IRouter,
   config: SecurityPluginConfigType,
@@ -52,7 +54,7 @@ export function getAuthenticationHandler(
   esClient: ILegacyClusterClient,
   securitySessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
   logger: Logger
-): IAuthenticationType {
+): Promise<IAuthenticationType> {
   let authHandlerType: IAuthHandlerConstructor;
   switch (authType) {
     case '':
@@ -74,7 +76,7 @@ export function getAuthenticationHandler(
     default:
       throw new Error(`Unsupported authentication type: ${authType}`);
   }
-  const auth: IAuthenticationType = createAuthentication(
+  const auth: IAuthenticationType = await createAuthentication(
     authHandlerType,
     config,
     securitySessionStorageFactory,

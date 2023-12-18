@@ -86,11 +86,9 @@ export class OpenIdAuthentication extends AuthenticationType {
       scope = `openid ${scope}`;
     }
     this.openIdAuthConfig.scope = scope;
-
-    this.init();
   }
 
-  private async init() {
+  public async init() {
     try {
       const response = await this.wreckClient.get(this.openIdConnectUrl);
       const payload = JSON.parse(response.payload as string);

@@ -39,6 +39,7 @@ import { UnauthenticatedError } from '../../errors';
 export interface IAuthenticationType {
   type: string;
   authHandler: AuthenticationHandler;
+  init: () => Promise<void>;
 }
 
 export type IAuthHandlerConstructor = new (

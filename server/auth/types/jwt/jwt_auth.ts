@@ -45,11 +45,9 @@ export class JwtAuthentication extends AuthenticationType {
   ) {
     super(config, sessionStorageFactory, router, esClient, coreSetup, logger);
     this.authHeaderName = this.config.jwt?.header.toLowerCase() || 'authorization';
-
-    this.init();
   }
 
-  private async init() {
+  public async init() {
     const routes = new JwtAuthRoutes(this.router, this.sessionStorageFactory);
     routes.setupRoutes();
   }

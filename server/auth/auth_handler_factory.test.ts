@@ -30,30 +30,35 @@ jest.mock('./types', () => {
       return {
         authHandler: () => {},
         type: 'basicauth',
+        init: () => {},
       };
     }),
     JwtAuthentication: jest.fn().mockImplementation(() => {
       return {
         authHandler: () => {},
         type: 'jwt',
+        init: () => {},
       };
     }),
     OpenIdAuthentication: jest.fn().mockImplementation(() => {
       return {
         authHandler: () => {},
         type: 'openid',
+        init: () => {},
       };
     }),
     ProxyAuthentication: jest.fn().mockImplementation(() => {
       return {
         authHandler: () => {},
         type: 'proxy',
+        init: () => {},
       };
     }),
     SamlAuthentication: jest.fn().mockImplementation(() => {
       return {
         authHandler: () => {},
         type: 'saml',
+        init: () => {},
       };
     }),
   };
