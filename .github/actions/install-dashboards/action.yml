@@ -48,7 +48,7 @@ runs:
     - id: branch-switch-if-possible
       continue-on-error: true # Defaults onto main if the branch switch doesn't work
       if: ${{ steps.osd-version.outputs.osd-version }}
-      run: git checkout ${{ steps.osd-version.outputs.osd-version }} || git checkout ${{ steps.osd-version.outputs.osd-x-version }}x
+      run: git checkout 1.3.14 || git checkout ${{ steps.osd-version.outputs.osd-version }} || git checkout ${{ steps.osd-version.outputs.osd-x-version }}x
       working-directory: ./OpenSearch-Dashboards
       shell: bash
 
