@@ -9,3 +9,5 @@ yarn-error.log
 kibana-coverage/
 .DS_Store
 .idea/
+test/cypress/screenshots
+test/cypress/downloads
