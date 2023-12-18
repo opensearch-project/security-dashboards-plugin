@@ -29,8 +29,9 @@ import {
 import { get, keys } from 'lodash';
 import { HttpSetup } from 'opensearch-dashboards/public';
 import React, { useEffect, useState } from 'react';
+import { updateDashboardSignInOptions } from '../../../../utils/dashboards-info-utils';
 import { DashboardOption, DashboardSignInOptions } from '../../types';
-import { useToastState } from '../../utils/toast-utils';
+import { createErrorToast, createSuccessToast, useToastState } from '../../utils/toast-utils';
 import { SignInOptionsModal } from './signin-options-modal';
 
 interface SignInOptionsPanelProps {
@@ -114,6 +115,32 @@ export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
     }
   }, [signInEnabledOptions, isAnonymousAuthEnable]);
 
+  const handleUpdate = async (newSignInOptions: DashboardOption[]) => {
+    await updateDashboardSignInOptions(
+      props.http,
+      newSignInOptions.map((opt) => opt.name as DashboardSignInOptions)
+    )
+      .then(() => {
+        setDashboardOptions((prevOptions) =>
+          prevOptions.map((option) => {
+            option.status = newSignInOptions.includes(option);
+            return option;
+          })
+        );
+
+        addToast(
+          createSuccessToast('updatePassed', 'Dashboard SignIn Options', 'Changes applied.')
+        );
+      })
+      .catch((e) => {
+        console.log('The sign in options could not be updated');
+        console.log(e);
+        addToast(
+          createErrorToast('updatedError', 'Dashboard SignIn Options', 'Error updating values.')
+        );
+      });
+  };
+
   return (
     <EuiPanel>
       <EuiPageContentHeader>
@@ -133,8 +160,7 @@ export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
             <SignInOptionsModal
               dashboardOptions={dashboardOptions}
               setDashboardOptions={setDashboardOptions}
-              http={http}
-              addToast={addToast}
+              handleUpdate={handleUpdate}
             />
           </EuiFlexGroup>
         </EuiPageContentHeaderSection>
