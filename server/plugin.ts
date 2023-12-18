@@ -108,7 +108,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
       };
     });
 
-    console.log("getAuthenticationHandler");
+    console.log('getAuthenticationHandler');
     // setup auth
     const auth: IAuthenticationType = await getAuthenticationHandler(
       config.auth.type,

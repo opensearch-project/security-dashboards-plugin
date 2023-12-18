@@ -74,7 +74,7 @@ export class SamlAuthentication extends AuthenticationType {
   };
 
   public async init() {
-    console.log("SAML Auth init");
+    console.log('SAML Auth init');
     this.createExtraStorage();
 
     const samlAuthRoutes = new SamlAuthRoutes(
