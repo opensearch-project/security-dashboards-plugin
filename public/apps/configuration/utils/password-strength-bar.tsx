@@ -9,7 +9,9 @@ type PasswordStrengthBarProps = {
 
 export const PasswordStrengthBar = (props: PasswordStrengthBarProps) => {
     const {password} = props;
-    const strength = zxcvbn(password).score
+    const passwordStrength = zxcvbn(password)
+    console.log(passwordStrength)
+    const strength = passwordStrength.score;
     let message;
     switch (strength) {
       case 0:
@@ -31,15 +33,23 @@ export const PasswordStrengthBar = (props: PasswordStrengthBarProps) => {
 
  
     return (
-    <EuiFlexGroup alignItems="center">
-      <EuiFlexItem grow={false}>
-        <EuiText>
-          <p>{message}</p>
-        </EuiText>
-      </EuiFlexItem>
+      password && 
+      <EuiFlexGroup direction="column">
       <EuiFlexItem>
-        <EuiProgress value={strength} max={4} size="m" />
-      </EuiFlexItem>
-    </EuiFlexGroup>
+        <EuiProgress value={strength} max={4} size="m"  valueText={message} label={"Password strength"}/>
+        </EuiFlexItem>
+        <EuiFlexItem>
+          <EuiText size="xs">
+          {passwordStrength.feedback.warning}
+          </EuiText>
+          </EuiFlexItem>
+          <EuiFlexItem>
+          <EuiText size="xs">
+            {passwordStrength.feedback.suggestions}
+           </EuiText>
+          </EuiFlexItem>
+        
+        </EuiFlexGroup>
+      
     )
   }
