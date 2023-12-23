@@ -26,12 +26,8 @@ import {
 import { CoreStart } from 'opensearch-dashboards/public';
 import { getCurrentUser } from '../../../../utils/auth-info-utils';
 import { PanelWithHeader } from '../../utils/panel-with-header';
-import {
-  RoleTenantPermissionView,
-  RoleTenantPermissionDetail,
-  ResourceType,
-  Action,
-} from '../../types';
+import { RoleTenantPermissionView, RoleTenantPermissionDetail, Action } from '../../types';
+import { ResourceType } from '../../../../../common';
 import { truncatedListView, tableItemsUIProps } from '../../utils/display-utils';
 import {
   fetchTenants,
