@@ -158,10 +158,10 @@ jobs:
           cat config.yml
 
       # TODO: REMOVE THIS ONCE ADMIN JAVA TOOL SUPPORT IT
-      - name: Write password to opensearch_initial_admin_password.txt
+      - name: SET OPENSEARCH_INITIAL_ADMIN_PASSWORD env variable
         if: ${{ runner.os == 'Linux'}}
         run:
-          echo admin >> ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/config/opensearch_initial_admin_password.txt
+          export OPENSEARCH_INITIAL_ADMIN_PASSWORD=admin
         shell: bash
 
       # Run any configuration scripts
