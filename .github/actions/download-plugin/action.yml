@@ -30,7 +30,7 @@ runs:
       run: |
         cat > setup.sh <<'EOF'
         chmod +x  ./opensearch-${{ inputs.opensearch-version}}-SNAPSHOT/plugins/${{ inputs.plugin-name }}/tools/install_demo_configuration.sh 
-        /bin/bash -c "yes | ./opensearch-${{ inputs.opensearch-version}}-SNAPSHOT/plugins/${{ inputs.plugin-name }}/tools/install_demo_configuration.sh"
+        /bin/bash -c "yes | ./opensearch-${{ inputs.opensearch-version}}-SNAPSHOT/plugins/${{ inputs.plugin-name }}/tools/install_demo_configuration.sh -t"
         echo "plugins.security.unsupported.restapi.allow_securityconfig_modification: true" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT/config/opensearch.yml
         echo "cluster.routing.allocation.disk.threshold_enabled: false" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT/config/opensearch.yml
         EOF
