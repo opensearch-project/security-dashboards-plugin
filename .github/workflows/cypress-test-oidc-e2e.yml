@@ -21,6 +21,8 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
     runs-on: ${{ matrix.os }}
+    env:
+      OPENSEARCH_INITIAL_ADMIN_PASSWORD: admin
 
     steps:
       - name: Set up JDK
@@ -156,13 +158,6 @@ jobs:
           EOT
           echo "THIS IS THE SECURITY CONFIG FILE: "
           cat config.yml
-
-      # TODO: REMOVE THIS ONCE ADMIN JAVA TOOL SUPPORT IT
-      - name: SET OPENSEARCH_INITIAL_ADMIN_PASSWORD env variable
-        if: ${{ runner.os == 'Linux'}}
-        run:
-          export OPENSEARCH_INITIAL_ADMIN_PASSWORD=admin
-        shell: bash
 
       # Run any configuration scripts
       - name: Run Setup Script for Linux
