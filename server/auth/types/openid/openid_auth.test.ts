@@ -30,16 +30,46 @@ import {
 } from '../../../../../../src/core/server';
 
 describe('test OpenId authHeaderValue', () => {
-  let router: IRouter;
-  let core: CoreSetup;
   let esClient: ILegacyClusterClient;
-  let sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>;
   let logger: Logger;
 
+  let router: Partial<IRouter> = {
+    get: jest.fn(),
+    post: jest.fn(),
+  };
+  let core = ({
+    http: {
+      basePath: {
+        serverBasePath: '/',
+      },
+      resources: {
+        register: jest.fn(),
+      }
+    },
+  } as unknown) as CoreSetup;
+
+  const sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie> = {
+    asScoped: jest.fn().mockImplementation(() => {
+      return {
+        server: {
+          states: {
+            add: jest.fn(),
+          },
+        },
+      };
+    }),
+  };
+
   // Consistent with auth_handler_factory.test.ts
-  beforeEach(() => {});
+  beforeEach(() => {
+    // @ts-ignore
+    jest.spyOn(OpenIdAuthentication.prototype, 'init').mockImplementation(async () => {});
+  });
 
   const config = ({
+    cookie: {
+      secure: false,
+    },
     openid: {
       header: 'authorization',
       scope: [],
@@ -54,11 +84,15 @@ describe('test OpenId authHeaderValue', () => {
     const openIdAuthentication = new OpenIdAuthentication(
       config,
       sessionStorageFactory,
-      router,
+      router as IRouter,
       esClient,
       core,
       logger
     );
+
+    // The init method has a spyOn and is not executed, so we call createExtraStorage separately.
+    // This is not really needed for the test, but may help in spotting errors.
+    openIdAuthentication.createExtraStorage();
 
     const mockRequest = httpServerMock.createRawRequest();
     const osRequest = OpenSearchDashboardsRequest.from(mockRequest);
@@ -82,11 +116,15 @@ describe('test OpenId authHeaderValue', () => {
     const openIdAuthentication = new OpenIdAuthentication(
       config,
       sessionStorageFactory,
-      router,
+      router as IRouter,
       esClient,
       core,
       logger
     );
+
+    // The init method has a spyOn and is not executed, so we call createExtraStorage separately.
+    // This is not really needed for the test, but may help in spotting errors.
+    openIdAuthentication.createExtraStorage();
 
     const testString = 'Bearer eyCombinedToken';
     const testStringBuffer: Buffer = deflateValue(testString);

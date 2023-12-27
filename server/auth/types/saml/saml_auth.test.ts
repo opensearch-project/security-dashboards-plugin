@@ -30,16 +30,43 @@ import {
 import { SamlAuthentication } from './saml_auth';
 
 describe('test SAML authHeaderValue', () => {
-  let router: IRouter;
-  let core: CoreSetup;
+  const router: Partial<IRouter> = {
+    get: jest.fn(),
+    post: jest.fn(),
+  };
+  const core = ({
+    http: {
+      basePath: {
+        serverBasePath: '/',
+      },
+      resources: {
+        register: jest.fn(),
+      },
+    },
+  } as unknown) as CoreSetup;
+
   let esClient: ILegacyClusterClient;
-  let sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>;
   let logger: Logger;
+
+  const sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie> = {
+    asScoped: jest.fn().mockImplementation(() => {
+      return {
+        server: {
+          states: {
+            add: jest.fn(),
+          },
+        },
+      };
+    }),
+  };
 
   // Consistent with auth_handler_factory.test.ts
   beforeEach(() => {});
 
   const config = ({
+    cookie: {
+      secure: false,
+    },
     saml: {
       extra_storage: {
         cookie_prefix: 'testcookie',
@@ -52,7 +79,7 @@ describe('test SAML authHeaderValue', () => {
     const samlAuthentication = new SamlAuthentication(
       config,
       sessionStorageFactory,
-      router,
+      router as IRouter,
       esClient,
       core,
       logger
@@ -80,7 +107,7 @@ describe('test SAML authHeaderValue', () => {
     const samlAuthentication = new SamlAuthentication(
       config,
       sessionStorageFactory,
-      router,
+      router as IRouter,
       esClient,
       core,
       logger
