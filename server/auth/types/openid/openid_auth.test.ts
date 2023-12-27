@@ -33,18 +33,18 @@ describe('test OpenId authHeaderValue', () => {
   let esClient: ILegacyClusterClient;
   let logger: Logger;
 
-  let router: Partial<IRouter> = {
+  const router: Partial<IRouter> = {
     get: jest.fn(),
     post: jest.fn(),
   };
-  let core = ({
+  const core = ({
     http: {
       basePath: {
         serverBasePath: '/',
       },
       resources: {
         register: jest.fn(),
-      }
+      },
     },
   } as unknown) as CoreSetup;
 
