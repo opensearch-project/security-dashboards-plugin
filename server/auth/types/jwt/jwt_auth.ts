@@ -60,7 +60,7 @@ export class JwtAuthentication extends AuthenticationType {
 
   public async init() {
     this.createExtraStorage();
-    const routes = new JwtAuthRoutes(this.router, this.sessionStorageFactory);
+    const routes = new JwtAuthRoutes(this.router, this.sessionStorageFactory, this.config);
     routes.setupRoutes();
   }
 
