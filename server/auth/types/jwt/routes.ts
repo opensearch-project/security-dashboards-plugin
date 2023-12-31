@@ -13,25 +13,18 @@
  *   permissions and limitations under the License.
  */
 
-import {
-  IRouter,
-  Logger,
-  SessionStorageFactory
-} from 'opensearch-dashboards/server';
+import { IRouter, Logger, SessionStorageFactory } from 'opensearch-dashboards/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { API_AUTH_LOGOUT, API_PREFIX } from '../../../../common';
-import {
-  clearSplitCookies,
-  ExtraAuthStorageOptions
-} from "../../../session/cookie_splitter";
-import {JWT_DEFAULT_EXTRA_STORAGE_OPTIONS} from "./jwt_auth";
-import {SecurityPluginConfigType} from "../../../index";
+import { clearSplitCookies, ExtraAuthStorageOptions } from '../../../session/cookie_splitter';
+import { JWT_DEFAULT_EXTRA_STORAGE_OPTIONS } from './jwt_auth';
+import { SecurityPluginConfigType } from '../../../index';
 
 export class JwtAuthRoutes {
   constructor(
     private readonly router: IRouter,
     private readonly sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
-    private readonly config: SecurityPluginConfigType,
+    private readonly config: SecurityPluginConfigType
   ) {}
 
   private getExtraAuthStorageOptions(logger?: Logger): ExtraAuthStorageOptions {
@@ -42,7 +35,7 @@ export class JwtAuthRoutes {
       additionalCookies:
         this.config.jwt?.extra_storage.additional_cookies ||
         JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.additionalCookies,
-      logger: logger,
+      logger,
     };
 
     return extraAuthStorageOptions;
@@ -58,10 +51,7 @@ export class JwtAuthRoutes {
         },
       },
       async (context, request, response) => {
-        await clearSplitCookies(
-          request,
-          this.getExtraAuthStorageOptions()
-        );
+        await clearSplitCookies(request, this.getExtraAuthStorageOptions());
         this.sessionStorageFactory.asScoped(request).clear();
         return response.ok();
       }
