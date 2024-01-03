@@ -16,7 +16,8 @@
 import { shallow } from 'enzyme';
 import React from 'react';
 import { EuiSteps } from '@elastic/eui';
-import { Action, ResourceType } from '../../types';
+import { Action } from '../../types';
+import { ResourceType } from '../../../../../common';
 import { buildHashUrl } from '../../utils/url-builder';
 import { GetStarted } from '../get-started';
 
