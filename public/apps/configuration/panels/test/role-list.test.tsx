@@ -18,7 +18,8 @@ import { mount, shallow } from 'enzyme';
 import React from 'react';
 import { EuiInMemoryTable, EuiTableFieldDataColumnType } from '@elastic/eui';
 import { buildHashUrl } from '../../utils/url-builder';
-import { Action, ResourceType } from '../../types';
+import { Action } from '../../types';
+import { ResourceType } from '../../../../../common';
 import { RoleListing } from '../../utils/role-list-utils';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 

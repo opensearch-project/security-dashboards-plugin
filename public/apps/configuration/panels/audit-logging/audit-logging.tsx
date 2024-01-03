@@ -31,7 +31,7 @@ import {
 import React from 'react';
 import { FormattedMessage } from '@osd/i18n/react';
 import { AppDependencies } from '../../../types';
-import { ResourceType } from '../../types';
+import { ResourceType } from '../../../../../common';
 import { getAuditLogging, updateAuditLogging } from '../../utils/audit-logging-utils';
 import { displayBoolean, ExternalLink } from '../../utils/display-utils';
 import { buildHashUrl } from '../../utils/url-builder';

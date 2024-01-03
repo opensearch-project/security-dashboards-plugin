@@ -18,7 +18,8 @@ import { shallow } from 'enzyme';
 import { ClusterPermissionPanel } from '../cluster-permission-panel';
 import { EuiButton, EuiEmptyPrompt, EuiLoadingSpinner } from '@elastic/eui';
 import { PermissionTree } from '../../permission-tree';
-import { Action, ResourceType } from '../../../types';
+import { Action } from '../../../types';
+import { ResourceType } from '../../../../../../common';
 import { buildHashUrl } from '../../../utils/url-builder';
 
 describe('Role view - cluster permission panel', () => {
