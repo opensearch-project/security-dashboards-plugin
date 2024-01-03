@@ -26,7 +26,8 @@ import {
   CONFIGURATION_API_PREFIX,
   isValidResourceName,
 } from '../../common';
-import { DashboardSignInOptions, ResourceType } from '../../public/apps/configuration/types';
+import { DashboardSignInOptions } from '../../public/apps/configuration/types';
+import { ResourceType } from '../../common';
 
 // TODO: consider to extract entity CRUD operations and put it into a client class
 export function defineRoutes(router: IRouter) {

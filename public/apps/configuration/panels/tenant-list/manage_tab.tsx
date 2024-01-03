@@ -39,10 +39,10 @@ import React, { ReactNode, useState, useCallback } from 'react';
 import { difference } from 'lodash';
 import { HashRouter as Router, Route } from 'react-router-dom';
 import { flow } from 'lodash';
-import { TenancyConfigSettings } from '../tenancy-config/types';
 import { getCurrentUser } from '../../../../utils/auth-info-utils';
 import { AppDependencies } from '../../../types';
-import { Action, ResourceType, Tenant } from '../../types';
+import { Action, Tenant } from '../../types';
+import { ResourceType } from '../../../../../common';
 import { ExternalLink, renderCustomization, tableItemsUIProps } from '../../utils/display-utils';
 import {
   fetchTenants,
@@ -481,8 +481,7 @@ export function ManageTab(props: AppDependencies) {
   return (
     <>
       {/*{tenancyDisabledWarning}*/}
-      <EuiPageHeader>
-      </EuiPageHeader>
+      <EuiPageHeader></EuiPageHeader>
       <EuiPageContent>
         <EuiPageContentHeader>
           <EuiPageContentHeaderSection>

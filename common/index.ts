@@ -65,6 +65,18 @@ export enum AuthType {
   ANONYMOUS = 'anonymous',
 }
 
+export enum ResourceType {
+  roles = 'roles',
+  users = 'users',
+  serviceAccounts = 'serviceAccounts',
+  permissions = 'permissions',
+  tenants = 'tenants',
+  tenantsManageTab = 'tenantsManageTab',
+  tenantsConfigureTab = 'tenantsConfigureTab',
+  auth = 'auth',
+  auditLogging = 'auditLogging',
+}
+
 /**
  * A valid resource name should not containing percent sign (%) as they raise url injection issue.
  * And also should not be empty.
