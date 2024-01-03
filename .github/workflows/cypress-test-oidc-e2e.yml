@@ -22,6 +22,8 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
     runs-on: ${{ matrix.os }}
+    env:
+      OPENSEARCH_INITIAL_ADMIN_PASSWORD: admin
 
     steps:
       - name: Set up JDK

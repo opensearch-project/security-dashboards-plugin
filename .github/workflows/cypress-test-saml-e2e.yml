@@ -18,6 +18,8 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
     runs-on: ${{ matrix.os }}
+    env:
+      OPENSEARCH_INITIAL_ADMIN_PASSWORD: admin
 
     steps:
       - name: Set up JDK
@@ -56,13 +58,6 @@ jobs:
         run: |
           tar -xzf opensearch-*.tar.gz
           rm -f opensearch-*.tar.gz
-        shell: bash
-
-      # TODO: REMOVE THIS ONCE ADMIN JAVA TOOL SUPPORT IT
-      - name: Write password to opensearch_initial_admin_password.txt
-        if: ${{ runner.os == 'Linux'}}
-        run:
-          echo admin >> ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/config/opensearch_initial_admin_password.txt
         shell: bash
 
       # Install the security plugin
