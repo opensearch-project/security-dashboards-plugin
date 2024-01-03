@@ -35,7 +35,8 @@ import { RoleEditMappedUser } from './panels/role-mapping/role-edit-mapped-user'
 import { RoleView } from './panels/role-view/role-view';
 import { TenantList } from './panels/tenant-list/tenant-list';
 import { UserList } from './panels/user-list';
-import { Action, ResourceType, RouteItem, SubAction } from './types';
+import { Action, RouteItem, SubAction } from './types';
+import { ResourceType } from '../../../common';
 import { buildHashUrl, buildUrl } from './utils/url-builder';
 import { CrossPageToast } from './cross-page-toast';
 
