@@ -175,7 +175,9 @@ export function RoleEdit(props: RoleEditDeps) {
     {
       label: 'Other permission groups',
       options: actionGroups
-        .filter((actionGroup) => actionGroup[1].type === undefined)
+        .filter(
+          (actionGroup) => !['cluster', 'index', 'kibana'].includes(actionGroup[1].type || '')
+        )
         .map((actionGroup) => actionGroup[0])
         .map(stringToComboBoxOption),
     },
@@ -196,7 +198,9 @@ export function RoleEdit(props: RoleEditDeps) {
     {
       label: 'Other permission groups',
       options: actionGroups
-        .filter((actionGroup) => actionGroup[1].type === undefined)
+        .filter(
+          (actionGroup) => !['cluster', 'index', 'kibana'].includes(actionGroup[1].type || '')
+        )
         .map((actionGroup) => actionGroup[0])
         .map(stringToComboBoxOption),
     },
