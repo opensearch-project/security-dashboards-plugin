@@ -30,6 +30,6 @@ module.exports = defineConfig({
   env: {
     openSearchUrl: 'https://localhost:9200',
     adminUserName: 'admin',
-    adminPassword: 'admin',
+    adminPassword: 'myStrongPassword123!',
   },
 });
