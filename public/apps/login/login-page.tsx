@@ -83,9 +83,19 @@ export function LoginPage(props: LoginPageDeps) {
   const [loginError, setloginError] = useState('');
   const [usernameValidationFailed, setUsernameValidationFailed] = useState(false);
   const [passwordValidationFailed, setPasswordValidationFailed] = useState(false);
-  const [signInOptions, setSignInOptions] = useState<DashboardSignInOptions[]>([]);
+  const [signInOptions, setSignInOptions] = React.useState<DashboardSignInOptions[]>([]);
 
-  useEffect(() => {
+  // It will confirm that the sign-in option is still available. If not, it will reload the login page with the available options.
+  const reValidateSignInOption = async (option: DashboardSignInOptions) => {
+    const dashboardSignInOptions = await getDashboardsSignInOptions(props.http);
+    const isValidOption = dashboardSignInOptions.includes(DashboardSignInOptions[option]);
+    if (isValidOption === false) {
+      window.location.reload();
+    }
+    return;
+  };
+
+  React.useEffect(() => {
     const getSignInOptions = async () => {
       try {
         const dashboardSignInOptions = await getDashboardsSignInOptions(props.http);
@@ -126,6 +136,8 @@ export function LoginPage(props: LoginPageDeps) {
       setPasswordValidationFailed(true);
       return;
     }
+    
+    await reValidateSignInOption(DashboardSignInOptions.BASIC);
 
     try {
       await validateCurrentPassword(props.http, username, password);
@@ -153,6 +165,9 @@ export function LoginPage(props: LoginPageDeps) {
           size="s"
           type="prime"
           className={buttonConfig.buttonstyle || 'btn-login'}
+          onClick={async () =>
+            await reValidateSignInOption(DashboardSignInOptions[authType.toUpperCase()])
+          }
           href={loginEndPointWithPath}
           iconType={buttonConfig.showbrandimage ? buttonConfig.brandimage : ''}
         >
@@ -165,7 +180,7 @@ export function LoginPage(props: LoginPageDeps) {
   const mapSignInOptions = (options: DashboardSignInOptions[]) => {
     const authOpts = [];
     for (let i = 0; i < options.length; i++) {
-      // Dashboard sign-in options are gotten from HTTP type property where the value is 'openid' and it needs to match with AuthType open_id;
+      // Dashboard sign-in options are taken from HTTP type property where the value is 'openid' and it needs to match with AuthType open_id;
       if (DashboardSignInOptions[options[i]] === DashboardSignInOptions.OPENID) {
         authOpts.push(AuthType.OPEN_ID);
       } else {
