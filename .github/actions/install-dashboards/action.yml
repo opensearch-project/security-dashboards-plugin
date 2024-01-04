@@ -78,9 +78,9 @@ runs:
       working-directory: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
       shell: bash
 
-    - name: Setup upterm session
-      uses: lhotari/action-upterm@v1
-      
+    - name: Install plugin to OSD
+      run: | 
+        build/opensearch-dashboards/bin/opensearch-dashboards-plugin install file:$(pwd)/plugins/${{ inputs.plugin_name }}/build/*.zip
 
     - id: osd-version
       run: |
