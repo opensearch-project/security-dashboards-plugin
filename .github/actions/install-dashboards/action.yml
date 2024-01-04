@@ -37,17 +37,6 @@ runs:
           cypress
           test
 
-    - uses: actions/checkout@v2
-      with:
-        path: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
-
-    - id: osd-version
-      run: |
-        echo "::set-output name=osd-version::$(jq -r '.opensearchDashboards.version | split(".") | .[:2] | join(".")' package.json)"
-        echo "::set-output name=osd-x-version::$(jq -r '.opensearchDashboards.version | split(".") | .[0]' package.json).x"
-      working-directory: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
-      shell: bash
-
     - id: branch-switch-if-possible
       continue-on-error: true # Defaults onto main if the branch switch doesn't work
       if: ${{ steps.osd-version.outputs.osd-version }}
@@ -75,6 +64,29 @@ runs:
         yarn cache clean
         yarn add sha.js
       working-directory: OpenSearch-Dashboards
+      shell: bash
+    
+    - id: build-osd
+      run: |
+        scripts/use_node scripts/build
+      working-directory: OpenSearch-Dashboards
+      shell: bash
+
+    - id: echo
+      run: |
+        echo "ls build/"
+      working-directory: OpenSearch-Dashboards
+      shell: bash
+    
+    - uses: actions/checkout@v2
+      with:
+        path: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
+
+    - id: osd-version
+      run: |
+        echo "::set-output name=osd-version::$(jq -r '.opensearchDashboards.version | split(".") | .[:2] | join(".")' package.json)"
+        echo "::set-output name=osd-x-version::$(jq -r '.opensearchDashboards.version | split(".") | .[0]' package.json).x"
+      working-directory: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
       shell: bash
 
     - name: Bootstrap the OpenSearch Dashboard
