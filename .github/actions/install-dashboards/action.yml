@@ -76,6 +76,7 @@ runs:
       run: |
         yarn build
       working-directory: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
+      shell: bash
 
     - name: Setup upterm session
       uses: lhotari/action-upterm@v1
