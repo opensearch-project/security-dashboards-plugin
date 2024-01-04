@@ -25,10 +25,21 @@ import {
   AuthToolkit,
   IOpenSearchDashboardsResponse,
 } from 'opensearch-dashboards/server';
+import { ServerStateCookieOptions } from '@hapi/hapi';
 import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { AuthenticationType } from '../authentication_type';
 import { JwtAuthRoutes } from './routes';
+import {
+  ExtraAuthStorageOptions,
+  getExtraAuthStorageValue,
+  setExtraAuthStorage,
+} from '../../../session/cookie_splitter';
+
+export const JWT_DEFAULT_EXTRA_STORAGE_OPTIONS: ExtraAuthStorageOptions = {
+  cookiePrefix: 'security_authentication_jwt',
+  additionalCookies: 5,
+};
 
 export class JwtAuthentication extends AuthenticationType {
   public readonly type: string = 'jwt';
@@ -48,8 +59,45 @@ export class JwtAuthentication extends AuthenticationType {
   }
 
   public async init() {
-    const routes = new JwtAuthRoutes(this.router, this.sessionStorageFactory);
+    this.createExtraStorage();
+    const routes = new JwtAuthRoutes(this.router, this.sessionStorageFactory, this.config);
     routes.setupRoutes();
+  }
+
+  createExtraStorage() {
+    // @ts-ignore
+    const hapiServer: Server = this.sessionStorageFactory.asScoped({}).server;
+
+    const { cookiePrefix, additionalCookies } = this.getExtraAuthStorageOptions();
+    const extraCookieSettings: ServerStateCookieOptions = {
+      isSecure: this.config.cookie.secure,
+      isSameSite: this.config.cookie.isSameSite,
+      password: this.config.cookie.password,
+      domain: this.config.cookie.domain,
+      path: this.coreSetup.http.basePath.serverBasePath || '/',
+      clearInvalid: false,
+      isHttpOnly: true,
+      ignoreErrors: true,
+      encoding: 'iron', // Same as hapi auth cookie
+    };
+
+    for (let i = 1; i <= additionalCookies; i++) {
+      hapiServer.states.add(cookiePrefix + i, extraCookieSettings);
+    }
+  }
+
+  private getExtraAuthStorageOptions(): ExtraAuthStorageOptions {
+    const extraAuthStorageOptions: ExtraAuthStorageOptions = {
+      cookiePrefix:
+        this.config.jwt?.extra_storage.cookie_prefix ||
+        JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.cookiePrefix,
+      additionalCookies:
+        this.config.jwt?.extra_storage.additional_cookies ||
+        JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.additionalCookies,
+      logger: this.logger,
+    };
+
+    return extraAuthStorageOptions;
   }
 
   private getTokenFromUrlParam(request: OpenSearchDashboardsRequest): string | undefined {
@@ -77,6 +125,7 @@ export class JwtAuthentication extends AuthenticationType {
     if (request.headers[this.authHeaderName]) {
       return true;
     }
+
     const urlParamName = this.config.jwt?.url_param;
     if (urlParamName && request.url.searchParams.get(urlParamName)) {
       return true;
@@ -100,22 +149,29 @@ export class JwtAuthentication extends AuthenticationType {
     request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>,
     authInfo: any
   ): SecuritySessionCookie {
+    setExtraAuthStorage(
+      request,
+      this.getBearerToken(request) || '',
+      this.getExtraAuthStorageOptions()
+    );
     return {
       username: authInfo.user_name,
       credentials: {
-        authHeaderValue: this.getBearerToken(request),
+        authHeaderValueExtra: true,
       },
       authType: this.type,
       expiryTime: Date.now() + this.config.session.ttl,
     };
   }
 
-  async isValidCookie(cookie: SecuritySessionCookie): Promise<boolean> {
+  async isValidCookie(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): Promise<boolean> {
+    const hasAuthHeaderValue =
+      cookie.credentials?.authHeaderValue || this.getExtraAuthStorageValue(request, cookie);
     return (
-      cookie.authType === this.type &&
-      cookie.username &&
-      cookie.expiryTime &&
-      cookie.credentials?.authHeaderValue
+      cookie.authType === this.type && cookie.username && cookie.expiryTime && hasAuthHeaderValue
     );
   }
 
@@ -127,8 +183,35 @@ export class JwtAuthentication extends AuthenticationType {
     return response.unauthorized();
   }
 
-  buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any {
+  getExtraAuthStorageValue(request: OpenSearchDashboardsRequest, cookie: SecuritySessionCookie) {
+    let extraValue = '';
+    if (!cookie.credentials?.authHeaderValueExtra) {
+      return extraValue;
+    }
+
+    try {
+      extraValue = getExtraAuthStorageValue(request, this.getExtraAuthStorageOptions());
+    } catch (error) {
+      this.logger.info(error);
+    }
+
+    return extraValue;
+  }
+
+  buildAuthHeaderFromCookie(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): any {
     const header: any = {};
+    if (cookie.credentials.authHeaderValueExtra) {
+      try {
+        const extraAuthStorageValue = this.getExtraAuthStorageValue(request, cookie);
+        header.authorization = extraAuthStorageValue;
+        return header;
+      } catch (error) {
+        this.logger.error(error);
+      }
+    }
     const authHeaderValue = cookie.credentials?.authHeaderValue;
     if (authHeaderValue) {
       header[this.authHeaderName] = authHeaderValue;
