@@ -12,6 +12,7 @@ env:
   PLUGIN_NAME: opensearch-security
   # This is the SHA256 checksum of the known good kc.sh script for Keycloak version 21.0.1.
   KNOWN_CHECKSUM_OF_KEYCLOAK_SCRIPT: 'f825ea1a9ffa5ad91673737c06857ababbb69b6b8f09e0c637b4c998517f9608'
+  OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
   
 jobs:
   tests:
@@ -157,13 +158,6 @@ jobs:
           echo "THIS IS THE SECURITY CONFIG FILE: "
           cat config.yml
 
-      # TODO: REMOVE THIS ONCE ADMIN JAVA TOOL SUPPORT IT
-      - name: Write password to initialAdminPassword location
-        if: ${{ runner.os == 'Linux'}}
-        run:
-          echo admin >> ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/config/initialAdminPassword.txt
-        shell: bash
-
       # Run any configuration scripts
       - name: Run Setup Script for Linux
         if: ${{ runner.os == 'Linux' }}
@@ -189,7 +183,7 @@ jobs:
       # Verify that the server is operational
       - name: Check OpenSearch Running on Linux
         if: ${{ runner.os != 'Windows'}}
-        run: curl https://localhost:9200/_cat/plugins -u 'admin:admin' -k -v
+        run: curl https://localhost:9200/_cat/plugins -u 'admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}' -k -v
         shell: bash
 
       - if: always()

@@ -15,7 +15,8 @@
 
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import { Action, ResourceType, RoleIndexPermissionView } from '../../../types';
+import { Action, RoleIndexPermissionView } from '../../../types';
+import { ResourceType } from '../../../../../../common';
 import {
   renderFieldLevelSecurity,
   renderRowExpanstionArrow,

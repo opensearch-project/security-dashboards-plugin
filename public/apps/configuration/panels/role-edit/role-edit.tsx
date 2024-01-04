@@ -46,7 +46,8 @@ import {
 } from './tenant-panel';
 import { RoleIndexPermissionStateClass, RoleTenantPermissionStateClass } from './types';
 import { buildHashUrl, buildUrl } from '../../utils/url-builder';
-import { ComboBoxOptions, ResourceType, Action, ActionGroupItem } from '../../types';
+import { ComboBoxOptions, Action, ActionGroupItem } from '../../types';
+import { ResourceType } from '../../../../../common';
 import {
   useToastState,
   createUnknownErrorToast,
@@ -175,7 +176,9 @@ export function RoleEdit(props: RoleEditDeps) {
     {
       label: 'Other permission groups',
       options: actionGroups
-        .filter((actionGroup) => actionGroup[1].type === undefined)
+        .filter(
+          (actionGroup) => !['cluster', 'index', 'kibana'].includes(actionGroup[1].type || '')
+        )
         .map((actionGroup) => actionGroup[0])
         .map(stringToComboBoxOption),
     },
@@ -196,7 +199,9 @@ export function RoleEdit(props: RoleEditDeps) {
     {
       label: 'Other permission groups',
       options: actionGroups
-        .filter((actionGroup) => actionGroup[1].type === undefined)
+        .filter(
+          (actionGroup) => !['cluster', 'index', 'kibana'].includes(actionGroup[1].type || '')
+        )
         .map((actionGroup) => actionGroup[0])
         .map(stringToComboBoxOption),
     },
