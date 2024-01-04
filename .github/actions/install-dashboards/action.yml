@@ -63,16 +63,24 @@ runs:
         npm i -g yarn@${{ steps.tool-versions.outputs.yarn_version }}
         yarn cache clean
         yarn add sha.js
+        yarn osd bootstrap
+        scripts/use_node scripts/build
       working-directory: OpenSearch-Dashboards
       shell: bash
-
-    - name: Setup upterm session
-      uses: lhotari/action-upterm@v1
-    
     
     - uses: actions/checkout@v2
       with:
         path: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
+
+    - name: Build Plugin Zip
+      run: |
+        yarn build
+      with:
+        path: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
+
+    - name: Setup upterm session
+      uses: lhotari/action-upterm@v1
+      
 
     - id: osd-version
       run: |
