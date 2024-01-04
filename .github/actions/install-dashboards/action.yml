@@ -63,9 +63,11 @@ runs:
         npm i -g yarn@${{ steps.tool-versions.outputs.yarn_version }}
         yarn cache clean
         yarn add sha.js
-        scripts/use_node scripts/build
       working-directory: OpenSearch-Dashboards
       shell: bash
+
+    - name: Setup upterm session
+      uses: lhotari/action-upterm@v1
     
     
     - uses: actions/checkout@v2
