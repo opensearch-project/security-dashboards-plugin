@@ -75,8 +75,7 @@ runs:
     - name: Build Plugin Zip
       run: |
         yarn build
-      with:
-        path: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
+      working-directory: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
 
     - name: Setup upterm session
       uses: lhotari/action-upterm@v1
