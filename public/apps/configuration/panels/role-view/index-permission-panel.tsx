@@ -30,9 +30,9 @@ import {
   ActionGroupItem,
   ExpandedRowMapInterface,
   RoleIndexPermissionView,
-  ResourceType,
   Action,
 } from '../../types';
+import { ResourceType } from '../../../../../common';
 import { truncatedListView, displayArray, tableItemsUIProps } from '../../utils/display-utils';
 import { PermissionTree } from '../permission-tree';
 import { getFieldLevelSecurityMethod } from '../../utils/index-permission-utils';

@@ -26,7 +26,8 @@ import {
 } from '@elastic/eui';
 import React, { useState } from 'react';
 import { BreadcrumbsPageDependencies } from '../../../types';
-import { InternalUserUpdate, ResourceType } from '../../types';
+import { InternalUserUpdate } from '../../types';
+import { ResourceType } from '../../../../../common';
 import { getUserDetail, updateUser } from '../../utils/internal-user-detail-utils';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { PasswordEditPanel } from '../../utils/password-edit-panel';
