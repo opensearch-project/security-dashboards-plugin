@@ -69,13 +69,13 @@ runs:
     - id: build-osd
       run: |
         scripts/use_node scripts/build
-      working-directory: OpenSearch-Dashboards
+      working-directory: ./OpenSearch-Dashboards
       shell: bash
 
     - id: echo
       run: |
         echo "ls build/"
-      working-directory: OpenSearch-Dashboards
+      working-directory: ./OpenSearch-Dashboards
       shell: bash
     
     - uses: actions/checkout@v2
