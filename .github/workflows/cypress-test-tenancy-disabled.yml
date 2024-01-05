@@ -12,12 +12,12 @@ env:
   PLUGIN_NAME: opensearch-security
 
 jobs:
-  tests:
+  cypress-tests-multitenancy-disabled:
     name: Run Cypress Tests Multitenancy Disabled
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest , windows-latest ]
+        os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
