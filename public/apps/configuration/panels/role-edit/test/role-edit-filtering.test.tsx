@@ -74,6 +74,14 @@ describe('Role edit filtering', () => {
       description: 'Custom group',
       static: true,
     },
+    unlimited: {
+      reserved: false,
+      hidden: false,
+      allowed_actions: ['*'],
+      type: 'all',
+      description: 'Unlimited group',
+      static: true,
+    },
   });
 
   it('basic cluster permission panel rendering', async () => {
@@ -117,6 +125,9 @@ describe('Role edit filtering', () => {
         options: [
           {
             label: 'custom',
+          },
+          {
+            label: 'unlimited',
           },
         ],
       },
@@ -170,6 +181,9 @@ describe('Role edit filtering', () => {
         options: [
           {
             label: 'custom',
+          },
+          {
+            label: 'unlimited',
           },
         ],
       },
