@@ -41,8 +41,11 @@ afterEach(() => {
 
 describe('Log in via SAML', () => {
   const samlLogin = () => {
-    cy.get('input[id=userName]').should('be.visible');
-    cy.get('button[id=btn-sign-in]').should('be.visible').click();
+    if (Cypress.env('loginMethod') === 'saml_multiauth') {
+      cy.loginWithSamlMultiauth();
+    } else {
+      cy.loginWithSaml();
+    }
   };
 
   it('Login to app/opensearch_dashboards_overview#/ when SAML is enabled', () => {
