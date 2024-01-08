@@ -179,50 +179,50 @@ export class BasicAuthRoutes {
           let redirectUrl: string = this.coreSetup.http.basePath.serverBasePath
             ? this.coreSetup.http.basePath.serverBasePath
             : '/';
-          const requestQuery = request.url.searchParams;
-          const nextUrl = requestQuery?.get('nextUrl');
-          if (nextUrl) {
-            redirectUrl = nextUrl;
-          }
-          context.security_plugin.logger.info('The Redirect Path is ' + redirectUrl);
-          try {
-            user = await this.securityClient.authenticateWithHeaders(request, {});
-          } catch (error) {
-            context.security_plugin.logger.error(
-              `Failed authentication: ${error}. Redirecting to Login Page`
-            );
-            return response.redirected({
-              headers: {
-                location: `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}${
-                  nextUrl ? '?nextUrl=' + encodeUriQuery(redirectUrl) : ''
-                }`,
-              },
-            });
-          }
+            
+          const isAutoLogin = request.url.href.includes("anonymous?");
 
-          this.sessionStorageFactory.asScoped(request).clear();
-          const sessionStorage: SecuritySessionCookie = {
-            username: user.username,
-            authType: AuthType.BASIC,
-            isAnonymousAuth: true,
-            expiryTime: Date.now() + this.config.session.ttl,
-          };
+          if(isAutoLogin) {
+            redirectUrl = LOGIN_PAGE_URI
+          } else {
+            context.security_plugin.logger.info('The Redirect Path is ' + redirectUrl);
+            try {
+              user = await this.securityClient.authenticateWithHeaders(request, {});
+            } catch (error) {
+              context.security_plugin.logger.error(
+                `Failed authentication: ${error}. Redirecting to Login Page`
+              );
+              return response.redirected({
+                headers: {
+                  location: `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}`,
+                },
+              });
+            }
 
-          if (user.multitenancy_enabled) {
-            const selectTenant = resolveTenant({
-              request,
+            this.sessionStorageFactory.asScoped(request).clear();
+            const sessionStorage: SecuritySessionCookie = {
               username: user.username,
-              roles: user.roles,
-              availabeTenants: user.tenants,
-              config: this.config,
-              cookie: sessionStorage,
-              multitenancyEnabled: user.multitenancy_enabled,
-              privateTenantEnabled: user.private_tenant_enabled,
-              defaultTenant: user.default_tenant,
-            });
-            sessionStorage.tenant = selectTenant;
+              authType: AuthType.BASIC,
+              isAnonymousAuth: true,
+              expiryTime: Date.now() + this.config.session.ttl,
+            };
+
+            if (user.multitenancy_enabled) {
+              const selectTenant = resolveTenant({
+                request,
+                username: user.username,
+                roles: user.roles,
+                availabeTenants: user.tenants,
+                config: this.config,
+                cookie: sessionStorage,
+                multitenancyEnabled: user.multitenancy_enabled,
+                privateTenantEnabled: user.private_tenant_enabled,
+                defaultTenant: user.default_tenant,
+              });
+              sessionStorage.tenant = selectTenant;
+            }
+            this.sessionStorageFactory.asScoped(request).set(sessionStorage);
           }
-          this.sessionStorageFactory.asScoped(request).set(sessionStorage);
 
           return response.redirected({
             headers: {
