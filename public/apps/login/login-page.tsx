@@ -92,7 +92,6 @@ export function LoginPage(props: LoginPageDeps) {
     if (isValidOption === false) {
       window.location.reload();
     }
-    return;
   };
 
   React.useEffect(() => {
@@ -136,7 +135,7 @@ export function LoginPage(props: LoginPageDeps) {
       setPasswordValidationFailed(true);
       return;
     }
-    
+
     await reValidateSignInOption(DashboardSignInOptions.BASIC);
 
     try {
