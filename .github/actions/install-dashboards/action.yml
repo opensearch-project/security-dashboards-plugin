@@ -78,9 +78,10 @@ runs:
       working-directory: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
       shell: bash
 
-    - name: Install plugin to OSD
+    - name: Install plugin to OSD Linux
+      if: ${{ runner.os == 'Linux' }}
       run: | 
-        build/opensearch-dashboards/bin/opensearch-dashboards-plugin install file:$(pwd)/plugins/${{ inputs.plugin_name }}/build/*.zip
+        build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64/bin/opensearch-dashboards-plugin install file:$(pwd)/plugins/${{ inputs.plugin_name }}/build/securityDashboards-${{env.OPENSEARCH_VERSION}}.zip
       working-directory: OpenSearch-Dashboards
       shell: bash
 
