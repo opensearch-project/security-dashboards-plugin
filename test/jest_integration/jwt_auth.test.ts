@@ -237,7 +237,7 @@ describe('start OpenSearch Dashboards server', () => {
     await driver.wait(until.elementsLocated(By.xpath(pageTitleXPath)), 10000);
 
     const cookie = await driver.manage().getCookies();
-    expect(cookie.length).toEqual(1);
+    expect(cookie.length).toEqual(2);
     await driver.manage().deleteAllCookies();
     await driver.quit();
   });
@@ -263,7 +263,7 @@ describe('start OpenSearch Dashboards server', () => {
     );
 
     const cookie = await driver.manage().getCookies();
-    expect(cookie.length).toEqual(1);
+    expect(cookie.length).toEqual(2);
     await driver.manage().deleteAllCookies();
     await driver.quit();
   });
@@ -318,6 +318,41 @@ describe('start OpenSearch Dashboards server', () => {
     const cookie = await driver.manage().getCookies();
     expect(cookie.length).toEqual(0);
 
+    await driver.manage().deleteAllCookies();
+    await driver.quit();
+  });
+
+  it('Login to app/opensearch_dashboards_overview#/ when JWT is enabled and the token contains too many roles for one single cookie', async () => {
+    const roles = ['admin'];
+    // Generate "random" roles to add to the token.
+    // Compared to just using one role with a very long name,
+    // this should make it a bit harder for the cookie compression.
+    for (let i = 0; i < 500; i++) {
+      const dummyRole = Math.random().toString(20).substr(2, 10);
+      roles.push(dummyRole);
+    }
+
+    const payload = {
+      sub: 'jwt_test',
+      roles: roles.join(','),
+    };
+
+    const key = new TextEncoder().encode(rawKey);
+
+    const token = await new SignJWT(payload) // details to  encode in the token
+      .setProtectedHeader({ alg: 'HS256' }) // algorithm
+      .setIssuedAt()
+      .sign(key);
+    const driver = getDriver(browser, options).build();
+    await driver.get(`http://localhost:5601/app/opensearch_dashboards_overview?token=${token}`);
+    await driver.wait(until.elementsLocated(By.xpath(pageTitleXPath)), 10000);
+
+    const cookie = await driver.manage().getCookies();
+    // Testing the amount of cookies may be a bit fragile.
+    // The important thing here is that we know that
+    // we can handle a large payload and still be
+    // able to render the authenticated page
+    expect(cookie.length).toBeGreaterThan(2);
     await driver.manage().deleteAllCookies();
     await driver.quit();
   });
