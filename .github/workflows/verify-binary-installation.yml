@@ -1,4 +1,4 @@
-name: 'Install Dashboards with Plugin'
+name: 'Install Dashboards with Plugin via Binary'
 
 on: [ push, pull_request ]
 
@@ -114,3 +114,10 @@ jobs:
         timeout_minutes: 20
         max_attempts: 2
         command: yarn --cwd OpenSearch-Dashboards osd bootstrap --oss
+    
+    - name: Start OpenSearch Dashboards
+      uses: nick-fields/retry@v2
+      with:
+        timeout_minutes: 20
+        max_attempts: 2
+        command: ./OpenSearch-Dash
