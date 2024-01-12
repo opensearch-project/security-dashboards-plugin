@@ -28,7 +28,7 @@ runs:
       shell: bash
 
     - id: determine-sdashboards-binary-directory
-      run: echo OpenSearch-Dashboards/build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-${{runner.os@L}}-x64"
+      run: echo OpenSearch-Dashboards/build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-${ runner.os@L }-x64"
       shell: bash
 
     - id: determine-dashboards-binary-directory
