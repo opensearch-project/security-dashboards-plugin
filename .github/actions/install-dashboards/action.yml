@@ -14,6 +14,10 @@ outputs:
   plugin-directory:
     description: "The directory where the plugin has been configured"
     value: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
+
+  dashboards-binary-directory:
+    description: "The directory where the dashboards binary has been configured"
+    value: ${{ steps.determine-dashboards-binary-directory.outputs.dashboards-directory }}
   
 
 runs:
@@ -21,6 +25,14 @@ runs:
   steps:
     - id: determine-dashboards-directory
       run: echo "dashboards-directory=OpenSearch-Dashboards"  >> $GITHUB_OUTPUT
+      shell: bash
+
+    - id: determine-sdashboards-binary-directory
+      run: echo OpenSearch-Dashboards/build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-${{os.runner@L}}-x64"
+      shell: bash
+
+    - id: determine-dashboards-binary-directory
+      run: echo "dashboards-directory=OpenSearch-Dashboards/build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-${{os.runner@L}}-x64"  >> $GITHUB_OUTPUT
       shell: bash
 
     - id: determine-plugin-directory
