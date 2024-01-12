@@ -28,7 +28,7 @@ runs:
       shell: bash
 
     - id: determine-dashboards-binary-directory
-      run: echo "dashboards-directory=OpenSearch-Dashboards/build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-${{ runner.os@L }}-x64"  >> $GITHUB_OUTPUT
+      run: echo "dashboards-directory=OpenSearch-Dashboards/build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-${{ runner.os | lower }}-x64"  >> $GITHUB_OUTPUT
       shell: bash
 
     - id: determine-plugin-directory
