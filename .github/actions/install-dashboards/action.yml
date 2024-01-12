@@ -14,10 +14,6 @@ outputs:
   plugin-directory:
     description: "The directory where the plugin has been configured"
     value: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
-
-  dashboards-binary-directory:
-    description: "The directory where the dashboards binary has been configured"
-    value: ${{ steps.determine-dashboards-binary-directory.outputs.dashboards-directory }}
   
 
 runs:
@@ -25,10 +21,6 @@ runs:
   steps:
     - id: determine-dashboards-directory
       run: echo "dashboards-directory=OpenSearch-Dashboards"  >> $GITHUB_OUTPUT
-      shell: bash
-
-    - id: determine-dashboards-binary-directory
-      run: echo "dashboards-directory=OpenSearch-Dashboards/build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64"  >> $GITHUB_OUTPUT
       shell: bash
 
     - id: determine-plugin-directory
@@ -44,6 +36,17 @@ runs:
         filter: |
           cypress
           test
+
+    - uses: actions/checkout@v2
+      with:
+        path: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
+
+    - id: osd-version
+      run: |
+        echo "::set-output name=osd-version::$(jq -r '.opensearchDashboards.version | split(".") | .[:2] | join(".")' package.json)"
+        echo "::set-output name=osd-x-version::$(jq -r '.opensearchDashboards.version | split(".") | .[0]' package.json).x"
+      working-directory: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
+      shell: bash
 
     - id: branch-switch-if-possible
       continue-on-error: true # Defaults onto main if the branch switch doesn't work
@@ -71,33 +74,7 @@ runs:
         npm i -g yarn@${{ steps.tool-versions.outputs.yarn_version }}
         yarn cache clean
         yarn add sha.js
-        yarn osd bootstrap
-        scripts/use_node scripts/build
       working-directory: OpenSearch-Dashboards
-      shell: bash
-    
-    - uses: actions/checkout@v2
-      with:
-        path: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
-
-    - name: Build Plugin Zip
-      run: |
-        yarn build
-      working-directory: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
-      shell: bash
-
-    - name: Install plugin to OSD Linux
-      if: ${{ runner.os == 'Linux' }}
-      run: | 
-        build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64/bin/opensearch-dashboards-plugin install file:$(pwd)/plugins/${{ inputs.plugin_name }}/build/security-dashboards-${{env.PLUGIN_VERSION}}.zip
-      working-directory: OpenSearch-Dashboards
-      shell: bash
-
-    - id: osd-version
-      run: |
-        echo "::set-output name=osd-version::$(jq -r '.opensearchDashboards.version | split(".") | .[:2] | join(".")' package.json)"
-        echo "::set-output name=osd-x-version::$(jq -r '.opensearchDashboards.version | split(".") | .[0]' package.json).x"
-      working-directory: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
       shell: bash
 
     - name: Bootstrap the OpenSearch Dashboard

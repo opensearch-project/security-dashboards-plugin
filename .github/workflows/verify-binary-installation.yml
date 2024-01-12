@@ -1,0 +1,116 @@
+name: 'Install Dashboards with Plugin'
+
+on: [ push, pull_request ]
+
+jobs:
+  verify-binary-installation:
+    name: Run binary installation
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+  
+  steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v3
+        
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Set env
+        run: |
+          opensearch_version=$(node -p "require('./package.json').opensearchDashboards.version")
+          plugin_version=$(node -p "require('./package.json').version")
+          echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
+          echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Download security plugin and create setup scripts
+        uses: ./.github/actions/download-plugin
+        with:
+          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
+          plugin-name: ${{ env.PLUGIN_NAME }}
+          plugin-version: ${{ env.PLUGIN_VERSION }}
+
+      - name: Run Opensearch with A Single Plugin
+        uses: opensearch-project/security/.github/actions/start-opensearch-with-one-plugin@main
+        with:
+          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
+          plugin-name: ${{ env.PLUGIN_NAME }}
+          setup-script-name: setup
+          admin-password: myStrongPassword123!
+
+    - uses: actions/checkout@v2
+      with:
+        path: OpenSearch-Dashboards
+        repository: opensearch-project/OpenSearch-Dashboards
+        ref: 'main'
+        fetch-depth: 0
+        filter: |
+          cypress
+          test
+
+    - id: branch-switch-if-possible
+      continue-on-error: true # Defaults onto main if the branch switch doesn't work
+      if: ${{ steps.osd-version.outputs.osd-version }}
+      run: git checkout ${{ steps.osd-version.outputs.osd-version }} || git checkout ${{ steps.osd-version.outputs.osd-x-version }}
+      working-directory: ./OpenSearch-Dashboards
+      shell: bash
+
+    - id: tool-versions
+      run: |
+        echo "node_version=$(cat .node-version)" >> $GITHUB_OUTPUT
+        echo "yarn_version=$(jq -r '.engines.yarn' package.json)" >> $GITHUB_OUTPUT
+      working-directory: OpenSearch-Dashboards
+      shell: bash
+
+    - uses: actions/setup-node@v1
+      with:
+        node-version: ${{ steps.tool-versions.outputs.node_version }}
+        registry-url: 'https://registry.npmjs.org'
+
+    - name: Setup Opensearch Dashboards
+      run: |
+        npm uninstall -g yarn
+        echo "Installing yarn ${{ steps.tool-versions.outputs.yarn_version }}"
+        npm i -g yarn@${{ steps.tool-versions.outputs.yarn_version }}
+        yarn cache clean
+        yarn add sha.js
+        yarn osd bootstrap
+        scripts/use_node scripts/build
+      working-directory: OpenSearch-Dashboards
+      shell: bash
+    
+    - uses: actions/checkout@v2
+      with:
+        path: OpenSearch-Dashboards/security-dashboards-plugin
+
+    - name: Build Plugin Zip
+      run: |
+        yarn build
+      working-directory: OpenSearch-Dashboards/security-dashboards-plugin
+      shell: bash
+
+    - name: Install plugin to OSD Linux
+      if: ${{ runner.os == 'Linux' }}
+      run: | 
+        build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64/bin/opensearch-dashboards-plugin install file:$(pwd)/OpenSearch-Dashboards/plugins/security-dashboards-plugin/build/security-dashboards-${{env.PLUGIN_VERSION}}.zip
+      working-directory: OpenSearch-Dashboards
+      shell: bash
+
+    - id: osd-version
+      run: |
+        echo "::set-output name=osd-version::$(jq -r '.opensearchDashboards.version | split(".") | .[:2] | join(".")' package.json)"
+        echo "::set-output name=osd-x-version::$(jq -r '.opensearchDashboards.version | split(".") | .[0]' package.json).x"
+      working-directory: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
+      shell: bash
+
+    - name: Bootstrap the OpenSearch Dashboard
+      uses: nick-fields/retry@v2
+      with:
+        timeout_minutes: 20
+        max_attempts: 2
+        command: yarn --cwd OpenSearch-Dashboards osd bootstrap --oss
