@@ -27,12 +27,8 @@ runs:
       run: echo "dashboards-directory=OpenSearch-Dashboards"  >> $GITHUB_OUTPUT
       shell: bash
 
-    - id: determine-sdashboards-binary-directory
-      run: echo OpenSearch-Dashboards/build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-${ runner.os@L }-x64"
-      shell: bash
-
     - id: determine-dashboards-binary-directory
-      run: echo "dashboards-directory=OpenSearch-Dashboards/build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-${{os.runner@L}}-x64"  >> $GITHUB_OUTPUT
+      run: echo "dashboards-directory=OpenSearch-Dashboards/build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-${{ runner.os@L }}-x64"  >> $GITHUB_OUTPUT
       shell: bash
 
     - id: determine-plugin-directory
