@@ -49,14 +49,6 @@ jobs:
           setup-script-name: setup
           admin-password: myStrongPassword123!
 
-      - name: Run Opensearch with A Single Plugin
-        uses: opensearch-project/security/.github/actions/start-opensearch-with-one-plugin@main
-        with:
-          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
-          plugin-name: ${{ env.PLUGIN_NAME }}
-          setup-script-name: setup
-          admin-password: myStrongPassword123!
-
       - uses: actions/checkout@v2
         with:
           path: OpenSearch-Dashboards
