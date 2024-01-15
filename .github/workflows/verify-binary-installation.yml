@@ -103,7 +103,7 @@ jobs:
       - name: Install plugin to OSD Linux
         if: ${{ runner.os == 'Linux' }}
         run: | 
-          build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64/bin/opensearch-dashboards-plugin install file:$(pwd)/OpenSearch-Dashboards/plugins/security-dashboards-plugin/build/security-dashboards-${{env.PLUGIN_VERSION}}.zip
+          build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64/bin/opensearch-dashboards-plugin install file:$(pwd)/plugins/security-dashboards-plugin/build/security-dashboards-${{env.PLUGIN_VERSION}}.zip
         working-directory: OpenSearch-Dashboards
         shell: bash
 
