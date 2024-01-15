@@ -92,12 +92,12 @@ jobs:
       
       - uses: actions/checkout@v2
         with:
-          path: OpenSearch-Dashboards/security-dashboards-plugin
+          path: OpenSearch-Dashboards/plugins/security-dashboards-plugin
 
       - name: Build Plugin Zip
         run: |
           yarn build
-        working-directory: OpenSearch-Dashboards/security-dashboards-plugin
+        working-directory: OpenSearch-Dashboards/plugins/security-dashboards-plugin
         shell: bash
 
       - name: Install plugin to OSD Linux
