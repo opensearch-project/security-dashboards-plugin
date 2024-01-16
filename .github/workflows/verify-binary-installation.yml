@@ -1,0 +1,139 @@
+name: 'Install Dashboards with Plugin via Binary'
+
+on: [push, pull_request]
+env:
+  OPENSEARCH_VERSION: '3.0.0'
+  CI: 1
+  # avoid warnings like "tput: No value for $TERM and no -T specified"
+  TERM: xterm
+  PLUGIN_NAME: opensearch-security
+  OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
+
+jobs:
+  verify-binary-installation:
+    name: Run binary installation
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        # TODO: add windows support when OSD core is stable on windows
+    runs-on: ${{ matrix.os }}
+    steps:  
+      - name: Checkout Branch
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Set env
+        run: |
+          opensearch_version=$(node -p "require('./package.json').opensearchDashboards.version")
+          plugin_version=$(node -p "require('./package.json').version")
+          echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
+          echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Download security plugin and create setup scripts
+        uses: ./.github/actions/download-plugin
+        with:
+          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
+          plugin-name: ${{ env.PLUGIN_NAME }}
+          plugin-version: ${{ env.PLUGIN_VERSION }}
+
+      - name: Run Opensearch with A Single Plugin
+        uses: opensearch-project/security/.github/actions/start-opensearch-with-one-plugin@main
+        with:
+          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
+          plugin-name: ${{ env.PLUGIN_NAME }}
+          setup-script-name: setup
+          admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
+
+      - uses: actions/checkout@v2
+        with:
+          path: OpenSearch-Dashboards
+          repository: opensearch-project/OpenSearch-Dashboards
+          ref: 'main'
+          fetch-depth: 0
+          filter: |
+            cypress
+            test
+
+      - id: branch-switch-if-possible
+        continue-on-error: true # Defaults onto main if the branch switch doesn't work
+        if: ${{ steps.osd-version.outputs.osd-version }}
+        run: git checkout ${{ steps.osd-version.outputs.osd-version }} || git checkout ${{ steps.osd-version.outputs.osd-x-version }}
+        working-directory: ./OpenSearch-Dashboards
+        shell: bash
+
+      - id: tool-versions
+        run: |
+          echo "node_version=$(cat .node-version)" >> $GITHUB_OUTPUT
+          echo "yarn_version=$(jq -r '.engines.yarn' package.json)" >> $GITHUB_OUTPUT
+        working-directory: OpenSearch-Dashboards
+        shell: bash
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ steps.tool-versions.outputs.node_version }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Setup Opensearch Dashboards
+        run: |
+          npm uninstall -g yarn
+          echo "Installing yarn ${{ steps.tool-versions.outputs.yarn_version }}"
+          npm i -g yarn@${{ steps.tool-versions.outputs.yarn_version }}
+          yarn cache clean
+          yarn add sha.js
+          yarn osd bootstrap
+          scripts/use_node scripts/build
+        working-directory: OpenSearch-Dashboards
+        shell: bash
+      
+      - uses: actions/checkout@v2
+        with:
+          path: OpenSearch-Dashboards/plugins/security-dashboards-plugin
+
+      - name: Build Plugin Zip
+        run: |
+          yarn build
+        working-directory: OpenSearch-Dashboards/plugins/security-dashboards-plugin
+        shell: bash
+
+      - name: Install plugin to OSD Linux
+        run: | 
+          build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64/bin/opensearch-dashboards-plugin install file:$(pwd)/plugins/security-dashboards-plugin/build/security-dashboards-${{env.PLUGIN_VERSION}}.zip
+        working-directory: OpenSearch-Dashboards
+        shell: bash
+
+      - name: Write security settings into OSD yml file
+        run: |
+          rm -rf ./config/opensearch_dashboards.yml
+          cat << 'EOT' > ./config/opensearch_dashboards.yml
+          server.host: "0.0.0.0"
+          opensearch.hosts: ["https://localhost:9200"]
+          opensearch.ssl.verificationMode: none
+          opensearch.username: "kibanaserver"
+          opensearch.password: "kibanaserver"
+          opensearch.requestHeadersWhitelist: [ authorization,securitytenant ]
+          opensearch_security.multitenancy.enabled: true
+          opensearch_security.multitenancy.tenants.preferred: ["Private", "Global"]
+          opensearch_security.readonly_mode.roles: ["kibana_read_only"]
+
+          # Use this setting if you are running opensearch-dashboards without https
+          opensearch_security.cookie.secure: false
+        working-directory: OpenSearch-Dashboards/build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64
+          
+
+      - name: Start the binary
+        run: | 
+          nohup ./bin/opensearch-dashboards &
+        working-directory: OpenSearch-Dashboards/build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64
+        shell: bash
+
+      - name: Health check 
+        run: |
+          timeout 300 bash -c 'while [[ "$(curl -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} -k http://localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
+        shell: bash
+
