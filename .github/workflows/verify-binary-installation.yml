@@ -106,6 +106,25 @@ jobs:
         working-directory: OpenSearch-Dashboards
         shell: bash
 
+      - name: Write security settings into OSD yml file
+        run: |
+          rm -rf ./config/opensearch_dashboards.yml
+          cat << 'EOT' > ./config/opensearch_dashboards.yml
+          server.host: "0.0.0.0"
+          opensearch.hosts: ["https://localhost:9200"]
+          opensearch.ssl.verificationMode: none
+          opensearch.username: "kibanaserver"
+          opensearch.password: "kibanaserver"
+          opensearch.requestHeadersWhitelist: [ authorization,securitytenant ]
+          opensearch_security.multitenancy.enabled: true
+          opensearch_security.multitenancy.tenants.preferred: ["Private", "Global"]
+          opensearch_security.readonly_mode.roles: ["kibana_read_only"]
+
+          # Use this setting if you are running opensearch-dashboards without https
+          opensearch_security.cookie.secure: false
+        working-directory: OpenSearch-Dashboards/build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64
+          
+
       - name: Start the binary
         run: | 
           nohup ./bin/opensearch-dashboards &
