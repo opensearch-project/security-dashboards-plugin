@@ -47,7 +47,7 @@ jobs:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugin-name: ${{ env.PLUGIN_NAME }}
           setup-script-name: setup
-          admin-password: myStrongPassword123!
+          admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
 
       - uses: actions/checkout@v2
         with:
