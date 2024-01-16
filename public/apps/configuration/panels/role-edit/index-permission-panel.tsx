@@ -25,8 +25,7 @@ import {
 } from '@elastic/eui';
 import React, { Dispatch, Fragment, SetStateAction } from 'react';
 import { isEmpty } from 'lodash';
-import { RoleIndexPermission } from '../../types';
-import { ResourceType } from '../../../../../common';
+import { RoleIndexPermission, ResourceType } from '../../types';
 import {
   appendElementToArray,
   removeElementFromArray,
@@ -142,9 +141,9 @@ export function IndexPermissionRow(props: {
   return (
     <FormRow
       headerText="Index permissions"
-      headerSubText="You can specify permissions using both action groups or single permissions.
+      headerSubText="You can specify permissions using both action groups or single permissions. 
         A permission group is a list of single permissions.
-        You can often achieve your desired security posture using some combination of the default permission groups.
+        You can often achieve your desired security posture using some combination of the default permission groups. 
         You can also create your own reusable permission groups."
     >
       <EuiFlexGroup>

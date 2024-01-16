@@ -46,8 +46,7 @@ import {
 } from './tenant-panel';
 import { RoleIndexPermissionStateClass, RoleTenantPermissionStateClass } from './types';
 import { buildHashUrl, buildUrl } from '../../utils/url-builder';
-import { ComboBoxOptions, Action, ActionGroupItem } from '../../types';
-import { ResourceType } from '../../../../../common';
+import { ComboBoxOptions, ResourceType, Action, ActionGroupItem } from '../../types';
 import {
   useToastState,
   createUnknownErrorToast,

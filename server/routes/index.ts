@@ -21,7 +21,7 @@ import {
   OpenSearchDashboardsResponseFactory,
 } from 'opensearch-dashboards/server';
 import { API_PREFIX, CONFIGURATION_API_PREFIX, isValidResourceName } from '../../common';
-import { ResourceType } from '../../common';
+import { ResourceType } from '../../public/apps/configuration/types';
 
 // TODO: consider to extract entity CRUD operations and put it into a client class
 export function defineRoutes(router: IRouter) {

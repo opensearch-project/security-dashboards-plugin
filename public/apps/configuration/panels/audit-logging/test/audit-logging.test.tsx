@@ -18,7 +18,7 @@ import { AuditLogging, renderComplianceSettings, renderGeneralSettings } from '.
 import React from 'react';
 import { EuiSwitch } from '@elastic/eui';
 import { buildHashUrl } from '../../../utils/url-builder';
-import { ResourceType } from '../../../../../../common';
+import { ResourceType } from '../../../types';
 import {
   SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT,
   SUB_URL_FOR_GENERAL_SETTINGS_EDIT,

@@ -31,7 +31,7 @@ import { SETTING_GROUPS, SettingMapItem } from './constants';
 import { EditSettingGroup } from './edit-setting-group';
 import { AuditLoggingSettings } from './types';
 import { buildHashUrl, buildUrl } from '../../utils/url-builder';
-import { ResourceType } from '../../../../../common';
+import { ResourceType } from '../../types';
 import { getAuditLogging, updateAuditLogging } from '../../utils/audit-logging-utils';
 import { useToastState } from '../../utils/toast-utils';
 import { setCrossPageToast } from '../../utils/storage-utils';

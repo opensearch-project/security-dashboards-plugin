@@ -39,6 +39,7 @@ import { difference } from 'lodash';
 import { BreadcrumbsPageDependencies } from '../../../types';
 import { buildHashUrl, buildUrl } from '../../utils/url-builder';
 import {
+  ResourceType,
   Action,
   SubAction,
   RoleMappingDetail,
@@ -47,7 +48,6 @@ import {
   RoleIndexPermissionView,
   RoleTenantPermissionView,
 } from '../../types';
-import { ResourceType } from '../../../../../common';
 import {
   getRoleMappingData,
   MappedUsersListing,

@@ -27,12 +27,17 @@ import {
 } from '@elastic/eui';
 import React from 'react';
 import { FormattedMessage } from '@osd/i18n/react';
+import { flow } from 'lodash';
+import { HashRouter as Router, Route } from 'react-router-dom';
 import { AppDependencies } from '../../types';
-import { buildHashUrl } from '../utils/url-builder';
-import { Action } from '../types';
-import { ResourceType } from '../../../../common';
+import { buildHashUrl, buildUrl } from '../utils/url-builder';
+import { Action, ResourceType, RouteItem } from '../types';
 import { API_ENDPOINT_CACHE, DocLinks } from '../constants';
 import { ExternalLink, ExternalLinkButton } from '../utils/display-utils';
+import { TenantList } from './tenant-list/tenant-list';
+import { getBreadcrumbs } from '../app-router';
+
+import { CrossPageToast } from '../cross-page-toast';
 
 const addBackendStep = {
   title: 'Add backends',

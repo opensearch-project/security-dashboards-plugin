@@ -30,8 +30,7 @@ import { getRoleDetail } from '../../../utils/role-detail-utils';
 import { transformRoleIndexPermissions } from '../../../utils/index-permission-utils';
 import { useDeleteConfirmState } from '../../../utils/delete-confirm-modal-utils';
 import { requestDeleteRoles } from '../../../utils/role-list-utils';
-import { Action, SubAction } from '../../../types';
-import { ResourceType } from '../../../../../../common';
+import { Action, ResourceType, SubAction } from '../../../types';
 import { buildHashUrl } from '../../../utils/url-builder';
 import { createUnknownErrorToast } from '../../../utils/toast-utils';
 

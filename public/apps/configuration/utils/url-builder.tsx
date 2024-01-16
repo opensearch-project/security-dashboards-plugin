@@ -13,8 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { Action } from '../types';
-import { ResourceType } from '../../../../common';
+import { ResourceType, Action } from '../types';
 
 /**
  * Build hash based url, encode the resourceId part

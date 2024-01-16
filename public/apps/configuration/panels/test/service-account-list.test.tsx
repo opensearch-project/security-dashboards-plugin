@@ -32,8 +32,7 @@ jest.mock('../../utils/context-menu', () => ({
 
 import { getAuthInfo } from '../../../../utils/auth-info-utils';
 import { buildHashUrl } from '../../utils/url-builder';
-import { Action } from '../../types';
-import { ResourceType } from '../../../../../common';
+import { ResourceType, Action } from '../../types';
 
 describe('User list', () => {
   describe('dictView', () => {

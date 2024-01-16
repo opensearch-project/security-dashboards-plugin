@@ -41,8 +41,7 @@ import {
   fetchRoleMapping,
   buildSearchFilterOptions,
 } from '../utils/role-list-utils';
-import { Action } from '../types';
-import { ResourceType } from '../../../../common';
+import { ResourceType, Action } from '../types';
 import { buildHashUrl } from '../utils/url-builder';
 import {
   ExternalLink,

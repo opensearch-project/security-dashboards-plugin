@@ -18,8 +18,7 @@ import { mount, shallow } from 'enzyme';
 import { TenantsPanel } from '../tenants-panel';
 import { EuiEmptyPrompt, EuiInMemoryTable, EuiTableFieldDataColumnType } from '@elastic/eui';
 import { buildHashUrl } from '../../../utils/url-builder';
-import { Action, RoleTenantPermissionDetail } from '../../../types';
-import { ResourceType } from '../../../../../../common';
+import { Action, ResourceType, RoleTenantPermissionDetail } from '../../../types';
 import { RoleViewTenantInvalidText } from '../../../constants';
 
 jest.mock('../../../utils/tenant-utils');
