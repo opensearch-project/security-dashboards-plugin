@@ -19,18 +19,6 @@ export type ComboBoxOptions = EuiComboBoxOptionOption[];
 
 export type FieldLevelSecurityMethod = 'exclude' | 'include';
 
-export enum ResourceType {
-  roles = 'roles',
-  users = 'users',
-  serviceAccounts = 'serviceAccounts',
-  permissions = 'permissions',
-  tenants = 'tenants',
-  tenantsManageTab = 'tenantsManageTab',
-  tenantsConfigureTab = 'tenantsConfigureTab',
-  auth = 'auth',
-  auditLogging = 'auditLogging',
-}
-
 export enum Action {
   view = 'view',
   create = 'create',
