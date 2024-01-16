@@ -16,6 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
+        # TODO: add windows support when OSD core is stable on windows
     runs-on: ${{ matrix.os }}
     steps:  
       - name: Checkout Branch
