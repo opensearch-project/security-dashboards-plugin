@@ -64,7 +64,6 @@ jobs:
         run: |
           echo "::set-output name=osd-version::$(jq -r '.opensearchDashboards.version | split(".") | .[:2] | join(".")' package.json)"
           echo "::set-output name=osd-x-version::$(jq -r '.opensearchDashboards.version | split(".") | .[0]' package.json).x"
-        working-directory: ${{ steps.determine-plugin-directory.outputs.plugin-directory }}
         shell: bash
 
       - id: branch-switch-if-possible
