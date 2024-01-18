@@ -238,6 +238,7 @@ export const CLUSTER_PERMISSIONS: string[] = [
   'indices:data/read/msearch/template',
   'indices:data/read/mtv',
   'indices:data/read/mtv*',
+  'indices:data/read/search/template/render',
   'indices:data/write/reindex',
 ];
 
