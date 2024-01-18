@@ -21,6 +21,7 @@ import {
   OpenSearchDashboardsResponseFactory,
 } from 'opensearch-dashboards/server';
 import { API_PREFIX, CONFIGURATION_API_PREFIX, isValidResourceName } from '../../common';
+import { ResourceType } from '../../common';
 
 // TODO: consider to extract entity CRUD operations and put it into a client class
 export function defineRoutes(router: IRouter) {
@@ -248,9 +249,15 @@ export function defineRoutes(router: IRouter) {
       const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opensearch_security.listResource', {
-          resourceName: request.params.resourceName,
-        });
+        if (request.params.resourceName === ResourceType.serviceAccounts.toLowerCase()) {
+          esResp = await client.callAsCurrentUser('opensearch_security.listServiceAccounts');
+        } else if (request.params.resourceName === 'internalaccounts') {
+          esResp = await client.callAsCurrentUser('opensearch_security.listInternalAccounts');
+        } else {
+          esResp = await client.callAsCurrentUser('opensearch_security.listResource', {
+            resourceName: request.params.resourceName,
+          });
+        }
         return response.ok({
           body: {
             total: Object.keys(esResp).length,

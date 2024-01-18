@@ -12,15 +12,15 @@ env:
   PLUGIN_NAME: opensearch-security
 
 jobs:
-  tests:
+  cypress-tests:
     name: Run Cypress tests
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest , windows-latest ]
+        os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
 
-    steps:
+    steps:       
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
@@ -50,6 +50,7 @@ jobs:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugin-name: ${{ env.PLUGIN_NAME }}
           setup-script-name: setup
+          admin-password: myStrongPassword123!
 
       - name: Run Dashboard with Security Dashboards Plugin
         uses: ./.github/actions/install-dashboards

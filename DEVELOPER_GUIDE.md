@@ -35,7 +35,7 @@ For the sake of this guide, let's assume the latest version on main for OpenSear
 Ensure that an OpenSearch cluster with the security plugin installed is running locally. If you followed the steps from [the developer guide of the Security Plugin](https://github.com/opensearch-project/security/blob/main/DEVELOPER_GUIDE.md), then you can verify this by running:
 
 ```
-curl -XGET https://admin:admin@localhost:9200/ --insecure
+curl -XGET https://admin:<admin password>@localhost:9200/ --insecure
 ```
 
 ## Install OpenSearch-Dashboards with Security Dashboards Plugin
@@ -92,17 +92,9 @@ Next, go to the base directory (`cd ../..`) and run `yarn osd bootstrap` to inst
 
 From the base directory, run `yarn start`. This should start dashboard UI successfully. `Cmd+click` the url in the console output (It should look something like `http://0:5601/omf`). Once the page loads, you should be able to log in with user `admin` and password `admin`.
 
-## Testing
+## Integration Tests
 
-The security-dashboards-plugin project uses Jest, Cypress and Selenium and makes use of the [OpenSearch Dashboards Functional Test]( https://github.com/opensearch-project/opensearch-dashboards-functional-test) project.
-
-Make sure you have the OpenSearch and OpenSearch Dashboards running with the Security Plugin and that you can log in to it using a web browser.
-
-Clone [OpenSearch Dashboards Functional Test]( https://github.com/opensearch-project/opensearch-dashboards-functional-test)  in your local machine and follow the instructions in its DEVELOPER_GUIDE.md
-
-### Integration Tests
-
-To run selenium based integration tests, download and export the firefox web-driver to your PATH. Also, run `node scripts/build_opensearch_dashboards_platform_plugins.js` or `yarn start` before running the tests. This is essential to generate the bundles.  
+To run selenium based integration tests, download and export the firefox web-driver to your PATH. Also, run `node scripts/build_opensearch_dashboards_platform_plugins.js` or `yarn start` before running the tests. This is essential to generate the bundles.
 
 The integration tests take advantage of [npm "pre" scripts](https://docs.npmjs.com/cli/v9/using-npm/scripts) to run a node based SAML IdP for integration tests related to SAML authentication. This will run a background process that listens on port 7000. 
 

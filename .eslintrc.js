@@ -15,9 +15,15 @@ const LICENSE_HEADER = `
  */
 `
 
-module.exports = {	
-  root: true,	
+module.exports = {
+  root: true,
   extends: ['@elastic/eslint-config-kibana', 'plugin:@elastic/eui/recommended'],
+  env: {
+    'cypress/globals': true,
+  },
+  plugins: [
+    'cypress',
+  ],
   rules: {
     // "@osd/eslint/require-license-header": "off"
     '@osd/eslint/no-restricted-paths': [
@@ -27,11 +33,17 @@ module.exports = {
         zones: [
           {
             target: ['(public|server)/**/*'],
-            from: ['../../packages/**/*','packages/**/*']
+            from: ['../../packages/**/*','packages/**/*'],
           },
-        ]
-      }
-    ]
+        ],
+      },
+    ],
+    // Add cypress specific rules here
+    'cypress/no-assigning-return-values': 'error',
+    'cypress/no-unnecessary-waiting': 'error',
+    'cypress/assertion-before-screenshot': 'warn',
+    'cypress/no-force': 'warn',
+    'cypress/no-async-tests': 'error',
   },
   overrides: [
     {
@@ -43,8 +55,8 @@ module.exports = {
             licenses: [ LICENSE_HEADER ],
           },
         ],
-        "no-console": 0
-      }
-    }
+        'no-console': 0,
+      },
+    },
   ],
 };

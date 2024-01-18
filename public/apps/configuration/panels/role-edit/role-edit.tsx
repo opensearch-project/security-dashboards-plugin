@@ -46,7 +46,8 @@ import {
 } from './tenant-panel';
 import { RoleIndexPermissionStateClass, RoleTenantPermissionStateClass } from './types';
 import { buildHashUrl, buildUrl } from '../../utils/url-builder';
-import { ComboBoxOptions, ResourceType, Action, ActionGroupItem } from '../../types';
+import { ComboBoxOptions, Action, ActionGroupItem } from '../../types';
+import { ResourceType } from '../../../../../common';
 import {
   useToastState,
   createUnknownErrorToast,
@@ -166,9 +167,18 @@ export function RoleEdit(props: RoleEditDeps) {
 
   const clusterWisePermissionOptions = [
     {
-      label: 'Permission groups',
+      label: 'Cluster permission groups',
       options: actionGroups
         .filter((actionGroup) => actionGroup[1].type === 'cluster')
+        .map((actionGroup) => actionGroup[0])
+        .map(stringToComboBoxOption),
+    },
+    {
+      label: 'Other permission groups',
+      options: actionGroups
+        .filter(
+          (actionGroup) => !['cluster', 'index', 'kibana'].includes(actionGroup[1].type || '')
+        )
         .map((actionGroup) => actionGroup[0])
         .map(stringToComboBoxOption),
     },
@@ -180,9 +190,18 @@ export function RoleEdit(props: RoleEditDeps) {
 
   const indexWisePermissionOptions = [
     {
-      label: 'Permission groups',
+      label: 'Index permission groups',
       options: actionGroups
         .filter((actionGroup) => actionGroup[1].type === 'index')
+        .map((actionGroup) => actionGroup[0])
+        .map(stringToComboBoxOption),
+    },
+    {
+      label: 'Other permission groups',
+      options: actionGroups
+        .filter(
+          (actionGroup) => !['cluster', 'index', 'kibana'].includes(actionGroup[1].type || '')
+        )
         .map((actionGroup) => actionGroup[0])
         .map(stringToComboBoxOption),
     },

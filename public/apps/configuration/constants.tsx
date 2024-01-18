@@ -25,6 +25,8 @@ export const API_ENDPOINT_MULTITENANCY = API_PREFIX + '/multitenancy/tenant';
 export const API_ENDPOINT_TENANCY_CONFIGS = API_ENDPOINT + '/tenancy/config';
 export const API_ENDPOINT_SECURITYCONFIG = API_ENDPOINT + '/securityconfig';
 export const API_ENDPOINT_INTERNALUSERS = API_ENDPOINT + '/internalusers';
+export const API_ENDPOINT_INTERNALACCOUNTS = API_ENDPOINT + '/internalaccounts';
+export const API_ENDPOINT_SERVICEACCOUNTS = API_ENDPOINT + '/serviceaccounts';
 export const API_ENDPOINT_AUDITLOGGING = API_ENDPOINT + '/audit';
 export const API_ENDPOINT_AUDITLOGGING_UPDATE = API_ENDPOINT_AUDITLOGGING + '/config';
 export const API_ENDPOINT_PERMISSIONS_INFO = API_PREFIX + '/restapiinfo';
@@ -138,6 +140,10 @@ export const CLUSTER_PERMISSIONS: string[] = [
   'cluster:admin/opensearch/ql/datasources/read',
   'cluster:admin/opensearch/ql/datasources/update',
   'cluster:admin/opensearch/ql/datasources/delete',
+  'cluster:admin/opensearch/ql/datasources/patch',
+  'cluster:admin/opensearch/ql/async_query/create',
+  'cluster:admin/opensearch/ql/async_query/result',
+  'cluster:admin/opensearch/ql/async_query/delete',
   'cluster:admin/opensearch/ppl',
   'cluster:admin/opensearch/ml/create_model_meta',
   'cluster:admin/opensearch/ml/execute',
@@ -176,6 +182,9 @@ export const CLUSTER_PERMISSIONS: string[] = [
   'cluster:admin/script/put',
   'cluster:admin/script_context/get',
   'cluster:admin/script_language/get',
+  'cluster:admin/search/pipeline/delete',
+  'cluster:admin/search/pipeline/get',
+  'cluster:admin/search/pipeline/put',
   'cluster:admin/settings/update',
   'cluster:admin/snapshot/create',
   'cluster:admin/snapshot/clone',
@@ -231,6 +240,7 @@ export const CLUSTER_PERMISSIONS: string[] = [
   'indices:data/read/msearch/template',
   'indices:data/read/mtv',
   'indices:data/read/mtv*',
+  'indices:data/read/search/template/render',
   'indices:data/write/reindex',
 ];
 
@@ -306,6 +316,7 @@ export const INDEX_PERMISSIONS: string[] = [
   'indices:monitor/shard_stores',
   'indices:monitor/stats',
   'indices:monitor/upgrade',
+  'system:admin/system_index',
 ];
 
 export function includeIndexPermissions(indexPermissionsToInclude: string[]) {

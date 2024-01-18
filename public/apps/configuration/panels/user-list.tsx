@@ -35,7 +35,8 @@ import React, { useState } from 'react';
 import { getAuthInfo } from '../../../utils/auth-info-utils';
 import { AppDependencies } from '../../types';
 import { API_ENDPOINT_INTERNALUSERS, DocLinks } from '../constants';
-import { Action, ResourceType } from '../types';
+import { Action } from '../types';
+import { ResourceType } from '../../../../common';
 import { EMPTY_FIELD_VALUE } from '../ui-constants';
 import { useContextMenuState } from '../utils/context-menu';
 import { useDeleteConfirmState } from '../utils/delete-confirm-modal-utils';
@@ -107,7 +108,7 @@ export function UserList(props: AppDependencies) {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const userDataPromise = getUserList(props.coreStart.http);
+        const userDataPromise = getUserList(props.coreStart.http, ResourceType.users);
         setCurrentUsername((await getAuthInfo(props.coreStart.http)).user_name);
         setUserData(await userDataPromise);
       } catch (e) {
@@ -213,7 +214,7 @@ export function UserList(props: AppDependencies) {
             <EuiText size="xs" color="subdued">
               The Security plugin includes an internal user database. Use this database in place of,
               or in addition to, an external authentication system such as LDAP server or Active
-              Directory. You can map an internal user to a role from{' '}
+              Directory. You can map an user account to a role from{' '}
               <EuiLink href={buildHashUrl(ResourceType.roles)}>Roles</EuiLink>
               . First, click into the detail page of the role. Then, under “Mapped users”, click
               “Manage mapping” <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
@@ -224,7 +225,7 @@ export function UserList(props: AppDependencies) {
               <EuiFlexItem>{actionsMenu}</EuiFlexItem>
               <EuiFlexItem>
                 <EuiButton fill href={buildHashUrl(ResourceType.users, Action.create)}>
-                  Create internal user
+                  Create user account
                 </EuiButton>
               </EuiFlexItem>
             </EuiFlexGroup>

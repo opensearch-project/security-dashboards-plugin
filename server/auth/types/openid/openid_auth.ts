@@ -25,17 +25,22 @@ import {
   LifecycleResponseFactory,
   AuthToolkit,
   IOpenSearchDashboardsResponse,
+  AuthResult,
 } from 'opensearch-dashboards/server';
 import HTTP from 'http';
 import HTTPS from 'https';
 import { PeerCertificate } from 'tls';
 import { Server, ServerStateCookieOptions } from '@hapi/hapi';
 import { SecurityPluginConfigType } from '../../..';
-import { SecuritySessionCookie } from '../../../session/security_cookie';
+import {
+  SecuritySessionCookie,
+  clearOldVersionCookieValue,
+} from '../../../session/security_cookie';
 import { OpenIdAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
 import { callTokenEndpoint } from './helper';
 import { composeNextUrlQueryParam } from '../../../utils/next_url';
+import { getObjectProperties } from '../../../utils/object_properties_defined';
 import { getExpirationDate } from './helper';
 import { AuthType, OPENID_AUTH_LOGIN } from '../../../../common';
 import {
@@ -55,6 +60,10 @@ export interface OpenIdAuthConfig {
 
 export interface WreckHttpsOptions {
   ca?: string | Buffer | Array<string | Buffer>;
+  cert?: string | Buffer | Array<string | Buffer>;
+  key?: string | Buffer | Array<string | Buffer>;
+  passphrase?: string;
+  pfx?: string | Buffer | Array<string | Buffer>;
   checkServerIdentity?: (host: string, cert: PeerCertificate) => Error | undefined;
 }
 
@@ -65,6 +74,7 @@ export class OpenIdAuthentication extends AuthenticationType {
   private authHeaderName: string;
   private openIdConnectUrl: string;
   private wreckClient: typeof wreck;
+  private wreckHttpsOption: WreckHttpsOptions = {};
 
   constructor(
     config: SecurityPluginConfigType,
@@ -118,22 +128,59 @@ export class OpenIdAuthentication extends AuthenticationType {
     }
   }
 
+  private generateNextUrl(request: OpenSearchDashboardsRequest): string {
+    const path =
+      this.coreSetup.http.basePath.serverBasePath +
+      (request.url.pathname || '/app/opensearch-dashboards');
+    return escape(path);
+  }
+
+  private redirectOIDCCapture = (request: OpenSearchDashboardsRequest, toolkit: AuthToolkit) => {
+    const nextUrl = this.generateNextUrl(request);
+    const clearOldVersionCookie = clearOldVersionCookieValue(this.config);
+    return toolkit.redirected({
+      location: `${this.coreSetup.http.basePath.serverBasePath}/auth/openid/captureUrlFragment?nextUrl=${nextUrl}`,
+      'set-cookie': clearOldVersionCookie,
+    });
+  };
+
   private createWreckClient(): typeof wreck {
-    const wreckHttpsOption: WreckHttpsOptions = {};
     if (this.config.openid?.root_ca) {
-      wreckHttpsOption.ca = [fs.readFileSync(this.config.openid.root_ca)];
+      this.wreckHttpsOption.ca = [fs.readFileSync(this.config.openid.root_ca)];
+      this.logger.debug(`Using CA Cert: ${this.config.openid.root_ca}`);
+    }
+    if (this.config.openid?.pfx) {
+      // Use PFX or PKCS12 if provided
+      this.logger.debug(`Using PFX or PKCS12: ${this.config.openid.pfx}`);
+      this.wreckHttpsOption.pfx = [fs.readFileSync(this.config.openid.pfx)];
+    } else if (this.config.openid?.certificate && this.config.openid?.private_key) {
+      // Use 'certificate' and 'private_key' if provided
+      this.logger.debug(`Using Certificate: ${this.config.openid.certificate}`);
+      this.logger.debug(`Using Private Key: ${this.config.openid.private_key}`);
+      this.wreckHttpsOption.cert = [fs.readFileSync(this.config.openid.certificate)];
+      this.wreckHttpsOption.key = [fs.readFileSync(this.config.openid.private_key)];
+    } else {
+      this.logger.debug(
+        `Client certificates not provided. Mutual TLS will not be used to obtain endpoints.`
+      );
+    }
+    // Check if passphrase is provided, use it for 'pfx' and 'key'
+    if (this.config.openid?.passphrase !== '') {
+      this.logger.debug(`Passphrase not provided for private key and/or pfx.`);
+      this.wreckHttpsOption.passphrase = this.config.openid?.passphrase;
     }
     if (this.config.openid?.verify_hostnames === false) {
       this.logger.debug(`openId auth 'verify_hostnames' option is off.`);
-      wreckHttpsOption.checkServerIdentity = (host: string, cert: PeerCertificate) => {
+      this.wreckHttpsOption.checkServerIdentity = (host: string, cert: PeerCertificate) => {
         return undefined;
       };
     }
-    if (Object.keys(wreckHttpsOption).length > 0) {
+    this.logger.info(getObjectProperties(this.wreckHttpsOption, 'WreckHttpsOptions'));
+    if (Object.keys(this.wreckHttpsOption).length > 0) {
       return wreck.defaults({
         agents: {
           http: new HTTP.Agent(),
-          https: new HTTPS.Agent(wreckHttpsOption),
+          https: new HTTPS.Agent(this.wreckHttpsOption),
           httpsAllowUnauthorized: new HTTPS.Agent({
             rejectUnauthorized: false,
           }),
@@ -142,6 +189,10 @@ export class OpenIdAuthentication extends AuthenticationType {
     } else {
       return wreck;
     }
+  }
+
+  getWreckHttpsOptions(): WreckHttpsOptions {
+    return this.wreckHttpsOption;
   }
 
   createExtraStorage() {
@@ -266,18 +317,9 @@ export class OpenIdAuthentication extends AuthenticationType {
     request: OpenSearchDashboardsRequest,
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
-  ): IOpenSearchDashboardsResponse {
+  ): IOpenSearchDashboardsResponse | AuthResult {
     if (this.isPageRequest(request)) {
-      // nextUrl is a key value pair
-      const nextUrl = composeNextUrlQueryParam(
-        request,
-        this.coreSetup.http.basePath.serverBasePath
-      );
-      return response.redirected({
-        headers: {
-          location: `${this.coreSetup.http.basePath.serverBasePath}${OPENID_AUTH_LOGIN}?${nextUrl}`,
-        },
-      });
+      return this.redirectOIDCCapture(request, toolkit);
     } else {
       return response.unauthorized();
     }

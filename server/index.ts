@@ -16,14 +16,16 @@
 import { schema, TypeOf } from '@osd/config-schema';
 import { PluginInitializerContext, PluginConfigDescriptor } from '../../../src/core/server';
 import { SecurityPlugin } from './plugin';
+import { AuthType } from '../common';
+import { JWT_DEFAULT_EXTRA_STORAGE_OPTIONS } from './auth/types/jwt/jwt_auth';
 
 const validateAuthType = (value: string[]) => {
   const supportedAuthTypes = [
     '',
-    'basicauth',
+    AuthType.BASIC,
     'jwt',
     'openid',
-    'saml',
+    AuthType.SAML,
     'proxy',
     'kerberos',
     'proxycache',
@@ -88,7 +90,7 @@ export const configSchema = schema.object({
 
             if (value.length > 1) {
               const includeBasicAuth = value.find((element) => {
-                return element.toLowerCase() === 'basicauth';
+                return element.toLowerCase() === AuthType.BASIC;
               });
 
               if (!includeBasicAuth) {
@@ -177,9 +179,14 @@ export const configSchema = schema.object({
       base_redirect_url: schema.string({ defaultValue: '' }),
       logout_url: schema.string({ defaultValue: '' }),
       root_ca: schema.string({ defaultValue: '' }),
+      certificate: schema.string({ defaultValue: '' }),
+      private_key: schema.string({ defaultValue: '' }),
+      passphrase: schema.string({ defaultValue: '' }),
+      pfx: schema.string({ defaultValue: '' }),
       verify_hostnames: schema.boolean({ defaultValue: true }),
       refresh_tokens: schema.boolean({ defaultValue: true }),
       trust_dynamic_headers: schema.boolean({ defaultValue: false }),
+      additional_parameters: schema.maybe(schema.any({ defaultValue: null })),
       extra_storage: schema.object({
         cookie_prefix: schema.string({
           defaultValue: 'security_authentication_oidc',
@@ -227,6 +234,16 @@ export const configSchema = schema.object({
       login_endpoint: schema.maybe(schema.string()),
       url_param: schema.string({ defaultValue: 'authorization' }),
       header: schema.string({ defaultValue: 'Authorization' }),
+      extra_storage: schema.object({
+        cookie_prefix: schema.string({
+          defaultValue: JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.cookiePrefix,
+          minLength: 2,
+        }),
+        additional_cookies: schema.number({
+          min: 1,
+          defaultValue: JWT_DEFAULT_EXTRA_STORAGE_OPTIONS.additionalCookies,
+        }),
+      }),
     })
   ),
   ui: schema.object({

@@ -34,6 +34,7 @@ import {
   composeLogoutUrl,
   getNextUrl,
   getExpirationDate,
+  includeAdditionalParameters,
 } from './helper';
 import { validateNextUrl } from '../../../utils/next_url';
 import {
@@ -99,6 +100,7 @@ export class OpenIdAuthRoutes {
                   validate: validateNextUrl,
                 })
               ),
+              redirectHash: schema.maybe(schema.boolean()),
               state: schema.maybe(schema.string()),
               refresh: schema.maybe(schema.string()),
             },
@@ -127,12 +129,14 @@ export class OpenIdAuthRoutes {
             state: nonce,
             scope: this.openIdAuthConfig.scope,
           };
+          includeAdditionalParameters(query, context, this.config);
           const queryString = stringify(query);
           const location = `${this.openIdAuthConfig.authorizationEndpoint}?${queryString}`;
           const cookie: SecuritySessionCookie = {
             oidc: {
               state: nonce,
               nextUrl: getNextUrl(this.config, this.core, request),
+              redirectHash: request.query.redirectHash === 'true',
             },
             authType: AuthType.OPEN_ID,
           };
@@ -162,6 +166,7 @@ export class OpenIdAuthRoutes {
         const nextUrl: string = cookie.oidc.nextUrl;
         const clientId = this.config.openid?.client_id;
         const clientSecret = this.config.openid?.client_secret;
+        const redirectHash: boolean = cookie.oidc?.redirectHash || false;
         const query: any = {
           grant_type: AUTH_GRANT_TYPE,
           code: request.query.code,
@@ -173,7 +178,7 @@ export class OpenIdAuthRoutes {
           client_id: clientId,
           client_secret: clientSecret,
         };
-
+        includeAdditionalParameters(query, context, this.config);
         try {
           const tokenResponse = await callTokenEndpoint(
             this.openIdAuthConfig.tokenEndpoint!,
@@ -209,11 +214,21 @@ export class OpenIdAuthRoutes {
           );
 
           this.sessionStorageFactory.asScoped(request).set(sessionStorage);
-          return response.redirected({
-            headers: {
-              location: nextUrl,
-            },
-          });
+          if (redirectHash) {
+            return response.redirected({
+              headers: {
+                location: `${
+                  this.core.http.basePath.serverBasePath
+                }/auth/openid/redirectUrlFragment?nextUrl=${escape(nextUrl)}`,
+              },
+            });
+          } else {
+            return response.redirected({
+              headers: {
+                location: nextUrl,
+              },
+            });
+          }
         } catch (error: any) {
           context.security_plugin.logger.error(`OpenId authentication failed: ${error}`);
           if (error.toString().toLowerCase().includes('authentication exception')) {
@@ -266,6 +281,117 @@ export class OpenIdAuthRoutes {
           headers: {
             location: endSessionUrl,
           },
+        });
+      }
+    );
+
+    // captureUrlFragment is the first route that will be invoked in the SP initiated login.
+    // This route will execute the captureUrlFragment.js script.
+    this.core.http.resources.register(
+      {
+        path: '/auth/openid/captureUrlFragment',
+        validate: {
+          query: schema.object({
+            nextUrl: schema.maybe(
+              schema.string({
+                validate: validateNextUrl,
+              })
+            ),
+          }),
+        },
+        options: {
+          authRequired: false,
+        },
+      },
+      async (context, request, response) => {
+        this.sessionStorageFactory.asScoped(request).clear();
+        const serverBasePath = this.core.http.basePath.serverBasePath;
+        return response.renderHtml({
+          body: `
+          <!DOCTYPE html>
+          <title>OSD OIDC Capture</title>
+          <link rel="icon" href="data:,">
+          <script src="${serverBasePath}/auth/openid/captureUrlFragment.js"></script>
+        `,
+        });
+      }
+    );
+
+    // This script will store the URL Hash in browser's local storage.
+    this.core.http.resources.register(
+      {
+        path: '/auth/openid/captureUrlFragment.js',
+        validate: false,
+        options: {
+          authRequired: false,
+        },
+      },
+      async (context, request, response) => {
+        this.sessionStorageFactory.asScoped(request).clear();
+        return response.renderJs({
+          body: `let oidcHash=window.location.hash.toString();
+                let redirectHash = false;
+                if (oidcHash !== "") {
+                  window.localStorage.removeItem('oidcHash');
+                  window.localStorage.setItem('oidcHash', oidcHash);
+                    redirectHash = true;
+                }
+                let params = new URLSearchParams(window.location.search);
+                let nextUrl = params.get("nextUrl");
+                finalUrl = "login?nextUrl=" + encodeURIComponent(nextUrl);
+                finalUrl += "&redirectHash=" + encodeURIComponent(redirectHash);
+                window.location.replace(finalUrl);
+              `,
+        });
+      }
+    );
+
+    //  Once the User is authenticated the browser will be redirected to '/auth/openid/redirectUrlFragment'
+    //  route, which will execute the redirectUrlFragment.js.
+    this.core.http.resources.register(
+      {
+        path: '/auth/openid/redirectUrlFragment',
+        validate: {
+          query: schema.object({
+            nextUrl: schema.any(),
+          }),
+        },
+        options: {
+          authRequired: true,
+        },
+      },
+      async (context, request, response) => {
+        const serverBasePath = this.core.http.basePath.serverBasePath;
+        return response.renderHtml({
+          body: `
+          <!DOCTYPE html>
+          <title>OSD OpenID Success</title>
+          <link rel="icon" href="data:,">
+          <script src="${serverBasePath}/auth/openid/redirectUrlFragment.js"></script>
+        `,
+        });
+      }
+    );
+
+    // This script will pop the Hash from local storage if it exists.
+    // And forward the browser to the next url.
+    this.core.http.resources.register(
+      {
+        path: '/auth/openid/redirectUrlFragment.js',
+        validate: false,
+        options: {
+          authRequired: true,
+        },
+      },
+      async (context, request, response) => {
+        return response.renderJs({
+          body: `let oidcHash=window.localStorage.getItem('oidcHash');
+                window.localStorage.removeItem('oidcHash');
+                let params = new URLSearchParams(window.location.search);
+                let nextUrl = params.get("nextUrl");
+                finalUrl = nextUrl + oidcHash;
+                window.location.replace(finalUrl);
+              `,
         });
       }
     );

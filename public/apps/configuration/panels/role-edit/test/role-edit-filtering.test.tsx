@@ -16,7 +16,6 @@
 import React from 'react';
 import { ClusterPermissionPanel } from '../cluster-permission-panel';
 import { RoleEdit } from '../role-edit';
-import { ActionGroupItem } from '../../../types';
 import { fetchActionGroups } from '../../../utils/action-groups-utils';
 
 import { render, waitFor } from '@testing-library/react';
@@ -67,6 +66,22 @@ describe('Role edit filtering', () => {
       description: 'Manage pipelines',
       static: true,
     },
+    custom: {
+      reserved: false,
+      hidden: false,
+      allowed_actions: ['cluster:admin/ingest/pipeline/*'],
+      type: undefined,
+      description: 'Custom group',
+      static: true,
+    },
+    unlimited: {
+      reserved: false,
+      hidden: false,
+      allowed_actions: ['*'],
+      type: 'all',
+      description: 'Unlimited group',
+      static: true,
+    },
   });
 
   it('basic cluster permission panel rendering', async () => {
@@ -98,10 +113,21 @@ describe('Role edit filtering', () => {
     // Cluster Permission Panel props is filtered to action groups with type cluster, and only the cluster permission constants
     expect(props.optionUniverse).toEqual([
       {
-        label: 'Permission groups',
+        label: 'Cluster permission groups',
         options: [
           {
             label: 'cluster_manage_pipelines',
+          },
+        ],
+      },
+      {
+        label: 'Other permission groups',
+        options: [
+          {
+            label: 'custom',
+          },
+          {
+            label: 'unlimited',
           },
         ],
       },
@@ -143,10 +169,21 @@ describe('Role edit filtering', () => {
     // Index Permission Panel props is filtered to action groups with type index, and only the index permission constants
     expect(props.optionUniverse).toEqual([
       {
-        label: 'Permission groups',
+        label: 'Index permission groups',
         options: [
           {
             label: 'data_access',
+          },
+        ],
+      },
+      {
+        label: 'Other permission groups',
+        options: [
+          {
+            label: 'custom',
+          },
+          {
+            label: 'unlimited',
           },
         ],
       },
