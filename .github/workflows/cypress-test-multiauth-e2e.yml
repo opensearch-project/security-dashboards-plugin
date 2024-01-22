@@ -1,7 +1,7 @@
-name: Snapshot based E2E SAML tests workflow
-on:
-  pull_request:
-    branches: [ '**' ]
+name: Snapshot based E2E SAML multi-auth tests workflow
+
+on: [ push, pull_request ]
+
 env:
   OPENSEARCH_VERSION: '3.0.0'
   CI: 1
@@ -12,7 +12,7 @@ env:
 
 jobs:
   tests:
-    name: Run Cypress E2E SAML tests
+    name: Run Cypress E2E SAML multi-auth tests
     strategy:
       fail-fast: false
       matrix:
@@ -20,60 +20,15 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      
       - name: Checkout Branch
         uses: actions/checkout@v3
-
-      - name: Set env
-        run: |
-          opensearch_version=$(node -p "require('./package.json').opensearchDashboards.version")
-          plugin_version=$(node -p "require('./package.json').version")
-          echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
-          echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
-        shell: bash
-
-      - name: Download security plugin and create setup scripts
-        uses: ./.github/actions/download-plugin
-        with:
-          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
-          plugin-name: ${{ env.PLUGIN_NAME }}
-          plugin-version: ${{ env.PLUGIN_VERSION }}
-
-      # Download OpenSearch
-      - name: Download OpenSearch for Linux
-        uses: peternied/download-file@v2
-        if: ${{ runner.os == 'Linux' }}
-        with:
-          url: https://artifacts.opensearch.org/snapshots/core/opensearch/${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/opensearch-min-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64-latest.tar.gz
-
-      # Extract downloaded tar/zip
-      - name: Extract downloaded tar
-        if: ${{ runner.os == 'Linux' }}
-        run: |
-          tar -xzf opensearch-*.tar.gz
-          rm -f opensearch-*.tar.gz
-        shell: bash
-
-      # Install the security plugin
-      - name: Install Plugin into OpenSearch for Linux
-        if: ${{ runner.os == 'Linux'}}
-        run: |
-          chmod +x ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/bin/opensearch-plugin
-          /bin/bash -c "yes | ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/bin/opensearch-plugin install file:$(pwd)/opensearch-security.zip"
-        shell: bash
       
       # Add SAML Configuration
       - name: Injecting SAML Configuration for Linux
         if: ${{ runner.os == 'Linux'}}
         run: |
           echo "Creating new SAML configuration"
-          cd ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/config/opensearch-security/
-          rm -rf config.yml
-          cat << 'EOT' > config.yml
+          cat << 'EOT' > config_multiauth.yml
           ---
           _meta:
             type: "config"
@@ -112,60 +67,13 @@ jobs:
                     type: noop
           EOT
           echo "THIS IS THE SECURITY CONFIG FILE: "
-          cat config.yml
-    
-      # Run any configuration scripts
-      - name: Run Setup Script for Linux
-        if: ${{ runner.os == 'Linux' }}
-        run: |
-          echo "running linux setup"
-          chmod +x ./setup.sh
-          ./setup.sh
-        shell: bash
-
-      # Run OpenSearch
-      - name: Run OpenSearch with plugin on Linux
-        if: ${{ runner.os == 'Linux'}}
-        run: |
-          /bin/bash -c "./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/bin/opensearch &"
-        shell: bash
-
-      # Give the OpenSearch process some time to boot up before sending any requires, might need to increase the default time!
-      - name: Sleep while OpenSearch starts
-        uses: peternied/action-sleep@v1
-        with:
-          seconds: 30
-
-      # Verify that the server is operational
-      - name: Check OpenSearch Running on Linux
-        if: ${{ runner.os != 'Windows'}}
-        run: curl https://localhost:9200/_cat/plugins -u 'admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}' -k -v
-        shell: bash
-
-      - if: always()
-        run: cat ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/logs/opensearch.log
-        shell: bash
-
-      # OSD bootstrap
-      - name: Run Dashboard with Security Dashboards Plugin
-        uses: ./.github/actions/install-dashboards
-        with:
-          plugin_name: security-dashboards-plugin
-
-      # Setup and Run SAML Idp
-      - name: Get and run SAML Idp on Linux
-        if: ${{ runner.os == 'Linux' }}
-        run: |
-          cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
-          yarn pretest:jest_server
+          cat config_multiauth.yml
 
       # Configure the Dashboard for SAML setup
-      - name: Configure and Run OpenSearch Dashboards with SAML Configuration
+      - name: Configure OpenSearch Dashboards with multi-auth configuration including SAML
         if: ${{ runner.os == 'Linux' }}
         run: |
-          cd ./OpenSearch-Dashboards
-          rm -rf ./config/opensearch_dashboards.yml
-          cat << 'EOT' > ./config/opensearch_dashboards.yml
+          cat << 'EOT' > opensearch_dashboards_multiauth.yml
           server.host: "localhost"
           opensearch.hosts: ["https://localhost:9200"]
           opensearch.ssl.verificationMode: none
@@ -183,28 +91,11 @@ jobs:
           home.disableWelcomeScreen: true
           EOT
           echo 'HERE IS THE DASHBOARD CONFIG FILE: '
-          cat ./config/opensearch_dashboards.yml
-          nohup yarn start --no-base-path --no-watch | tee dashboard.log &
+          cat opensearch_dashboards_multiauth.yml
 
-      # Check if OSD is ready with a max timeout of 600 seconds
-      - name : Check If OpenSearch Dashboards Is Ready
-        if: ${{ runner.os == 'Linux' }}
-        run: |
-          cd ./OpenSearch-Dashboards
-          echo "Start checking OpenSearch Dashboards."
-          for i in {1..60}; do
-            if grep -q "bundles compiled successfully after" "dashboard.log"; then
-              echo "OpenSearch Dashboards compiled successfully."
-              break
-            fi
-            if [ $i -eq 60 ]; then
-              echo "Timeout for 600 seconds reached. OpenSearch Dashboards did not finish compiling."
-              exit 1
-            fi
-            sleep 10
-          done
-
-      - name: Run Cypress
-        run : |
-          yarn add cypress --save-dev
-          yarn cypress:run --browser chrome --headless --env loginMethod=saml_multiauth --spec 'test/cypress/e2e/saml/*.js'
+      - name: Run Cypress Tests
+        uses: ./.github/actions/run-cypress-tests
+        with:
+          security_config_file: config_multiauth.yml
+          dashboards_config_file: opensearch_dashboards_multiauth.yml
+          yarn_command: 'yarn cypress:run --browser chrome --headless --env loginMethod=saml_multiauth --spec "test/cypress/e2e/saml/*.js"'
