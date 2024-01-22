@@ -148,5 +148,5 @@ runs:
     - name: Run Cypress
       run : |
         yarn add cypress --save-dev
-        eval (${{ inputs.yarn_command }})
+        ${{ inputs.yarn_command }}
       shell: bash
