@@ -73,7 +73,7 @@ jobs:
       - name: Configure OpenSearch Dashboards with multi-auth configuration including SAML
         if: ${{ runner.os == 'Linux' }}
         run: |
-          cat << 'EOT' > ./config/opensearch_dashboards_multiauth.yml
+          cat << 'EOT' > opensearch_dashboards_multiauth.yml
           server.host: "localhost"
           opensearch.hosts: ["https://localhost:9200"]
           opensearch.ssl.verificationMode: none
@@ -91,7 +91,7 @@ jobs:
           home.disableWelcomeScreen: true
           EOT
           echo 'HERE IS THE DASHBOARD CONFIG FILE: '
-          cat ./config/opensearch_dashboards_multiauth.yml
+          cat opensearch_dashboards_multiauth.yml
 
       - name: Run Cypress Tests
         uses: ./.github/actions/run-cypress-tests
