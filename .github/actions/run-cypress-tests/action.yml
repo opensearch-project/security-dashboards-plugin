@@ -122,7 +122,7 @@ runs:
     - name: Run OpenSearch Dashboards with provided configuration
       if: ${{ runner.os == 'Linux' }}
       run: |
-        nohup yarn start --no-base-path --no-watch | tee dashboard.log &
+        nohup yarn start --no-base-path --no-watch &
       shell: bash
 
     # Check if OSD is ready with a max timeout of 600 seconds

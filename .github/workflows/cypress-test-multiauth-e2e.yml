@@ -1,4 +1,4 @@
-name: Snapshot based E2E SAML tests workflow
+name: Snapshot based E2E SAML multi-auth tests workflow
 
 on: [ push, pull_request ]
 
@@ -12,7 +12,7 @@ env:
 
 jobs:
   tests:
-    name: Run Cypress E2E SAML tests
+    name: Run Cypress E2E SAML multi-auth tests
     strategy:
       fail-fast: false
       matrix:
