@@ -33,12 +33,12 @@
     "jose": "^4.11.2",
     "saml-idp": "^1.2.1",
     "selfsigned": "^2.0.1",
-    "typescript": "4.0.2"
+    "typescript": "4.0.2",
+    "eslint-plugin-cypress": "^2.8.1"
   },
   "dependencies": {
     "@hapi/cryptiles": "5.0.0",
     "@hapi/wreck": "^17.1.0",
-    "eslint-plugin-cypress": "^2.8.1",
     "html-entities": "1.3.1"
   },
   "resolutions": {
