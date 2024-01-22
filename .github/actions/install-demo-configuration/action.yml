@@ -3,46 +3,46 @@ description: 'Downloads OpenSearch and installs demo security configuration'
 
 runs:
   using: "composite"
-    steps:
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
+  steps:
+    - name: Set up JDK
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
 
-      - name: Set env
-        run: |
-          opensearch_version=$(node -p "require('./package.json').opensearchDashboards.version")
-          plugin_version=$(node -p "require('./package.json').version")
-          echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
-          echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
-        shell: bash
+    - name: Set env
+      run: |
+        opensearch_version=$(node -p "require('./package.json').opensearchDashboards.version")
+        plugin_version=$(node -p "require('./package.json').version")
+        echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
+        echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
+      shell: bash
 
-      - name: Download security plugin and create setup scripts
-        uses: ./.github/actions/download-plugin
-        with:
-          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
-          plugin-name: ${{ env.PLUGIN_NAME }}
-          plugin-version: ${{ env.PLUGIN_VERSION }}
+    - name: Download security plugin and create setup scripts
+      uses: ./.github/actions/download-plugin
+      with:
+        opensearch-version: ${{ env.OPENSEARCH_VERSION }}
+        plugin-name: ${{ env.PLUGIN_NAME }}
+        plugin-version: ${{ env.PLUGIN_VERSION }}
 
-      # Download OpenSearch
-      - name: Download OpenSearch for Linux
-        uses: peternied/download-file@v2
-        if: ${{ runner.os == 'Linux' }}
-        with:
-          url: https://artifacts.opensearch.org/snapshots/core/opensearch/${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/opensearch-min-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64-latest.tar.gz
+    # Download OpenSearch
+    - name: Download OpenSearch for Linux
+      uses: peternied/download-file@v2
+      if: ${{ runner.os == 'Linux' }}
+      with:
+        url: https://artifacts.opensearch.org/snapshots/core/opensearch/${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/opensearch-min-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64-latest.tar.gz
 
-      # Extract downloaded tar/zip
-      - name: Extract downloaded tar
-        if: ${{ runner.os == 'Linux' }}
-        run: |
-          tar -xzf opensearch-*.tar.gz
-          rm -f opensearch-*.tar.gz
-        shell: bash
+    # Extract downloaded tar/zip
+    - name: Extract downloaded tar
+      if: ${{ runner.os == 'Linux' }}
+      run: |
+        tar -xzf opensearch-*.tar.gz
+        rm -f opensearch-*.tar.gz
+      shell: bash
 
-      # Install the security plugin
-      - name: Install Plugin into OpenSearch for Linux
-        if: ${{ runner.os == 'Linux'}}
-        run: |
-          chmod +x ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/bin/opensearch-plugin
-          /bin/bash -c "yes | ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/bin/opensearch-plugin install file:$(pwd)/opensearch-security.zip"
-        shell: bash
+    # Install the security plugin
+    - name: Install Plugin into OpenSearch for Linux
+      if: ${{ runner.os == 'Linux'}}
+      run: |
+        chmod +x ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/bin/opensearch-plugin
+        /bin/bash -c "yes | ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/bin/opensearch-plugin install file:$(pwd)/opensearch-security.zip"
+      shell: bash
