@@ -61,8 +61,8 @@ runs:
     - name: Replace demo configuration
       if: ${{ runner.os == 'Linux' }}
       run: |
-        if [ -f $security_config_file ]; then
-          mv $security_config_file ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/config/opensearch-security/config.yml
+        if [ -f ${{ inputs.security_config_file }} ]; then
+          mv ${{ inputs.security_config_file }} ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/config/opensearch-security/config.yml
         fi
       shell: bash
 
@@ -107,8 +107,8 @@ runs:
     - name: Replace dashboards configuration
       if: ${{ runner.os == 'Linux' }}
       run: |
-        if [ -f $dashboards_config_file ]; then
-          mv $dashboards_config_file ./config/opensearch_dashboards.yml
+        if [ -f ${{ inputs.dashboards_config_file }} ]; then
+          mv ${{ inputs.dashboards_config_file }} ./config/opensearch_dashboards.yml
         fi
       shell: bash
 
@@ -147,5 +147,5 @@ runs:
     - name: Run Cypress
       run : |
         yarn add cypress --save-dev
-        eval ($yarn_command)
+        eval (${{ inputs.yarn_command }})
       shell: bash
