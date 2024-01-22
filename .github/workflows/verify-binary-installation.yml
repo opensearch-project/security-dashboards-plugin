@@ -101,6 +101,12 @@ jobs:
         with:
           path: OpenSearch-Dashboards/plugins/security-dashboards-plugin
 
+      - name: Install dependencies
+        run: |
+          yarn osd bootstrap
+        working-directory: OpenSearch-Dashboards
+        shell: bash
+
       - name: Build Plugin Zip
         run: |
           yarn build
