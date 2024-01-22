@@ -20,6 +20,9 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v3
+
       - name: Download security plugin and install demo configuration
         uses: ./.github/actions/install-demo-configuration
       
