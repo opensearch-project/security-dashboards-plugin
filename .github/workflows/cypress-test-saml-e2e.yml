@@ -91,7 +91,7 @@ jobs:
           home.disableWelcomeScreen: true
           EOT
           echo 'HERE IS THE DASHBOARD CONFIG FILE: '
-          cat ./config/opensearch_dashboards_saml.yml
+          cat opensearch_dashboards_saml.yml
 
       - name: Run Cypress Tests
         uses: ./.github/actions/run-cypress-tests
