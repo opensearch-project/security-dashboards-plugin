@@ -75,6 +75,27 @@ runs:
         ./setup.sh
       shell: bash
 
+    # OSD bootstrap
+    - name: Run Dashboard with Security Dashboards Plugin
+      uses: ./.github/actions/install-dashboards
+      with:
+        plugin_name: security-dashboards-plugin
+
+    - name: Replace dashboards configuration
+      if: ${{ runner.os == 'Linux' }}
+      run: |
+        if [ -f ${{ inputs.dashboards_config_file }} ]; then
+          mv ${{ inputs.dashboards_config_file }} ./OpenSearch-Dashboards/config/opensearch_dashboards.yml
+        fi
+      shell: bash
+
+    - name: Run pretest script
+      if: ${{ runner.os == 'Linux' }}
+      run: |
+        cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
+        yarn pretest:jest_server
+      shell: bash
+
     # Run OpenSearch
     - name: Run OpenSearch with plugin on Linux
       if: ${{ runner.os == 'Linux'}}
@@ -96,27 +117,6 @@ runs:
 
     - if: always()
       run: cat ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/logs/opensearch.log
-      shell: bash
-
-    # OSD bootstrap
-    - name: Run Dashboard with Security Dashboards Plugin
-      uses: ./.github/actions/install-dashboards
-      with:
-        plugin_name: security-dashboards-plugin
-
-    - name: Replace dashboards configuration
-      if: ${{ runner.os == 'Linux' }}
-      run: |
-        if [ -f ${{ inputs.dashboards_config_file }} ]; then
-          mv ${{ inputs.dashboards_config_file }} ./config/opensearch_dashboards.yml
-        fi
-      shell: bash
-
-    - name: Run pretest script
-      if: ${{ runner.os == 'Linux' }}
-      run: |
-        cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
-        yarn pretest:jest_server
       shell: bash
 
     - name: Run OpenSearch Dashboards with provided configuration
