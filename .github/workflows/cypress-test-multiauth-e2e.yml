@@ -1,7 +1,7 @@
 name: Snapshot based E2E SAML tests workflow
-on:
-  pull_request:
-    branches: [ '**' ]
+
+on: [ push, pull_request ]
+
 env:
   OPENSEARCH_VERSION: '3.0.0'
   CI: 1
