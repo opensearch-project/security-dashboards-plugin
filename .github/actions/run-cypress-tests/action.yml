@@ -117,11 +117,13 @@ runs:
       run: |
         cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
         yarn pretest:jest_server
+      shell: bash
 
     - name: Run OpenSearch Dashboards with provided configuration
       if: ${{ runner.os == 'Linux' }}
       run: |
         nohup yarn start --no-base-path --no-watch | tee dashboard.log &
+      shell: bash
 
     # Check if OSD is ready with a max timeout of 600 seconds
     - name : Check If OpenSearch Dashboards Is Ready
@@ -140,8 +142,10 @@ runs:
           fi
           sleep 10
         done
+      shell: bash
 
     - name: Run Cypress
       run : |
         yarn add cypress --save-dev
         eval ($yarn_command)
+      shell: bash
