@@ -74,7 +74,7 @@ export interface OpenSearchDashboardsAuthState {
 
 export abstract class AuthenticationType implements IAuthenticationType {
   protected static readonly ROUTES_TO_IGNORE: string[] = [
-    '/api/core/capabilities', // FIXME: need to figureout how to bypass this API call
+    '/api/core/capabilities', // FIXME: need to figure out how to bypass this API call
     '/app/login',
   ];
 
@@ -106,7 +106,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
     const authState: OpenSearchDashboardsAuthState = {};
 
     // if browser request, auth logic is:
-    //   1. check if request includes auth header or paramter(e.g. jwt in url params) is present, if so, authenticate with auth header.
+    //   1. check if request includes auth header or parameter(e.g. jwt in url params) is present, if so, authenticate with auth header.
     //   2. if auth header not present, check if auth cookie is present, if no cookie, send to authentication workflow
     //   3. verify whether auth cookie is valid, if not valid, send to authentication workflow
     //   4. if cookie is valid, pass to route handlers
@@ -117,9 +117,9 @@ export abstract class AuthenticationType implements IAuthenticationType {
     // see https://www.elastic.co/guide/en/opensearch-dashboards/master/using-api.html
     if (this.requestIncludesAuthInfo(request)) {
       try {
-        const additonalAuthHeader = await this.getAdditionalAuthHeader(request);
-        Object.assign(authHeaders, additonalAuthHeader);
-        authInfo = await this.securityClient.authinfo(request, additonalAuthHeader);
+        const additionalAuthHeader = await this.getAdditionalAuthHeader(request);
+        Object.assign(authHeaders, additionalAuthHeader);
+        authInfo = await this.securityClient.authinfo(request, additionalAuthHeader);
         cookie = this.getCookie(request, authInfo);
 
         // set tenant from cookie if exist
@@ -167,8 +167,8 @@ export abstract class AuthenticationType implements IAuthenticationType {
       // build auth header
       const authHeadersFromCookie = this.buildAuthHeaderFromCookie(cookie!, request);
       Object.assign(authHeaders, authHeadersFromCookie);
-      const additonalAuthHeader = await this.getAdditionalAuthHeader(request);
-      Object.assign(authHeaders, additonalAuthHeader);
+      const additionalAuthHeader = await this.getAdditionalAuthHeader(request);
+      Object.assign(authHeaders, additionalAuthHeader);
     }
 
     // resolve tenant if necessary
@@ -257,7 +257,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
       request,
       username: authInfo.user_name,
       roles: authInfo.roles,
-      availabeTenants: authInfo.tenants,
+      availableTenants: authInfo.tenants,
       config: this.config,
       cookie,
       multitenancyEnabled: dashboardsInfo.multitenancy_enabled,
