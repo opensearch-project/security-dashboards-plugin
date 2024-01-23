@@ -3,7 +3,7 @@ description: 'Installs OpenSearch Dashboard with a Plugin from github, then chec
 
 inputs:
   plugin_name:
-    description: 'The the name of the plugin to use, such as security-dashboards-plugin'
+    description: 'The name of the plugin to use, such as security-dashboards-plugin'
     required: true
 
 outputs:
