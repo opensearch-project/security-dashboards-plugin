@@ -114,8 +114,8 @@ export function composeLogoutUrl(
   idpEndsessionEndpoint: string | undefined,
   additionalQueryParams: any
 ) {
-  const logoutendpoint = customLogoutUrl || idpEndsessionEndpoint;
-  const logoutUrl = new URL(logoutendpoint!);
+  const logoutEndpoint = customLogoutUrl || idpEndsessionEndpoint;
+  const logoutUrl = new URL(logoutEndpoint!);
   Object.keys(additionalQueryParams).forEach((key) => {
     logoutUrl.searchParams.append(key, additionalQueryParams[key] as string);
   });
