@@ -26,6 +26,50 @@ jobs:
     steps:
       - name: Checkout Branch
         uses: actions/checkout@v3
+
+      # Download and Check Keycloak Version
+      - name: Download and Check Keyloak Version on Linux
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          echo "Downloading Keycloak ${{ env.KEYCLOAK_VERSION }}"
+          wget https://github.com/keycloak/keycloak/releases/download/${{ env.KEYCLOAK_VERSION }}/keycloak-${{ env.KEYCLOAK_VERSION }}.tar.gz
+          echo "Unpacking Keycloak"
+          tar -xzf keycloak-${{ env.KEYCLOAK_VERSION }}.tar.gz
+          cd keycloak-${{ env.KEYCLOAK_VERSION }}/bin
+          echo "Generating checksum for the downloaded kc.sh script..."
+          DOWNLOADED_CHECKSUM=$(sha256sum kc.sh | awk '{print $1}')
+          echo "Downloaded kc.sh checksum: $DOWNLOADED_CHECKSUM"
+          echo "Known good kc.sh checksum: ${{ env.KNOWN_CHECKSUM_OF_KEYCLOAK_SCRIPT }}"
+          KNOWN_GOOD_CHECKSUM="${{ env.KNOWN_CHECKSUM_OF_KEYCLOAK_SCRIPT }}" 
+          if [ "$DOWNLOADED_CHECKSUM" != "$KNOWN_GOOD_CHECKSUM" ]; then
+              echo "Checksum mismatch. The kc.sh script does not match the known good version. Please check https://github.com/keycloak/keycloak and verify the updates."
+              exit 1
+          else
+              echo "Checksum match confirmed. Proceeding with setup."
+          fi
+          chmod +x ./kc.sh
+
+      # Setup and Run Keycloak
+      - name: Get and run Keycloak on Linux
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          export KEYCLOAK_ADMIN=admin
+          export KEYCLOAK_ADMIN_PASSWORD=admin
+          cd keycloak-${{ env.KEYCLOAK_VERSION }}/bin
+          echo "Starting keycloak"
+          ./kc.sh start-dev --http-enabled=true --hostname-strict-https=false --http-host=localhost --http-relative-path /auth --health-enabled=true &
+          timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/auth/health)" != "200" ]]; do sleep 5; done'
+          chmod +x kcadm.sh
+          echo "Creating client"
+          ./kcadm.sh config credentials --server http://localhost:8080/auth --realm master --user admin --password admin
+          CID=$(./kcadm.sh create clients -r master -s clientId=opensearch -s secret="${{ env.TEST_KEYCLOAK_CLIENT_SECRET }}" -s 'attributes."access.token.lifespan"=60' -s 'redirectUris=["http://localhost:5603/auth/openid/login", "http://localhost:5601", "http://localhost:5601/auth/openid/login"]' -i)
+          ./kcadm.sh get clients/$CID/installation/providers/keycloak-oidc-keycloak-json > tmp
+          echo "Getting client secret for dashboards configuration purpose"
+          CLIENT_SECRET=$(grep -o '"secret" : "[^"]*' tmp | grep -o '[^"]*$')
+          echo "KEYCLOAK_CLIENT_SECRET=$CLIENT_SECRET" >> $GITHUB_ENV
+          echo "The client secret is: $CLIENT_SECRET"
+          echo "Creating client mapper"
+          ./kcadm.sh create clients/$CID/protocol-mappers/models  -r master -s 'config."id.token.claim"=true' -s 'config."multivalued"=true' -s 'config."claim.name"="roles"' -s 'config."userinfo.token.claim"=true' -s 'config."access.token.claim"=true' -s 'name=rolemapper' -s 'protocolMapper=oidc-usermodel-realm-role-mapper' -s "protocol=openid-connect"
       
       # Add OpenID Configuration
       - name: Creating OpenID Configuration for Linux
