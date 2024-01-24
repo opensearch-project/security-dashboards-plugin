@@ -21,7 +21,7 @@ import { SecurityClient } from '../backend/opensearch_security_client';
 
 export function setupMultitenantRoutes(
   router: IRouter,
-  sessionStroageFactory: SessionStorageFactory<SecuritySessionCookie>,
+  sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
   securityClient: SecurityClient
 ) {
   const PREFIX: string = '/api/v1';
@@ -44,7 +44,7 @@ export function setupMultitenantRoutes(
     async (context, request, response) => {
       const tenant = request.body.tenant;
 
-      const cookie: SecuritySessionCookie | null = await sessionStroageFactory
+      const cookie: SecuritySessionCookie | null = await sessionStorageFactory
         .asScoped(request)
         .get();
       if (!cookie) {
@@ -53,7 +53,7 @@ export function setupMultitenantRoutes(
         });
       }
       cookie.tenant = tenant;
-      sessionStroageFactory.asScoped(request).set(cookie);
+      sessionStorageFactory.asScoped(request).set(cookie);
       return response.ok({
         body: entities.encode(tenant),
       });
@@ -69,7 +69,7 @@ export function setupMultitenantRoutes(
       validate: false,
     },
     async (context, request, response) => {
-      const cookie = await sessionStroageFactory.asScoped(request).get();
+      const cookie = await sessionStorageFactory.asScoped(request).get();
       if (!cookie) {
         return response.badRequest({
           body: 'Invalid cookie.',

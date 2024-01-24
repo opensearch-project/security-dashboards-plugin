@@ -31,7 +31,7 @@ export const GLOBAL_TENANTS: string[] = ['global', GLOBAL_TENANT_SYMBOL, 'Global
  * @param request OpenSearchDashboards request.
  * @param username
  * @param roles
- * @param availabeTenants
+ * @param availableTenants
  * @param config security plugin config.
  * @param cookie cookie extracted from the request. The cookie should have been parsed by AuthenticationHandler.
  * pass it as parameter instead of extracting again.
@@ -45,7 +45,7 @@ export function resolveTenant({
   request,
   username,
   roles,
-  availabeTenants,
+  availableTenants,
   config,
   cookie,
   multitenancyEnabled,
@@ -55,7 +55,7 @@ export function resolveTenant({
   request: any;
   username: string;
   roles: string[] | undefined;
-  availabeTenants: any;
+  availableTenants: any;
   config: SecurityPluginConfigType;
   cookie: SecuritySessionCookie;
   multitenancyEnabled: boolean;
@@ -96,7 +96,7 @@ export function resolveTenant({
     username,
     selectedTenant,
     preferredTenants,
-    availabeTenants,
+    availableTenants,
     globalTenantEnabled,
     multitenancyEnabled,
     privateTenantEnabled
@@ -190,7 +190,7 @@ export function resolve(
 }
 
 /**
- * Return true if tenant parameter is a valid tenent.
+ * Return true if tenant parameter is a valid tenant.
  *
  * Note: empty string '' is valid, which means global tenant.
  *
