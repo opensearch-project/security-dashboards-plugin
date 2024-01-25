@@ -75,9 +75,6 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
     const dashboardsInfo = await getDashboardsInfoSafe(coreStart.http);
     const multitenancyEnabled = dashboardsInfo?.multitenancy_enabled && config.multitenancy.enabled;
     const defaultTenantSet = dashboardsInfo?.default_tenant !== ''
-    console.log(dashboardsInfo)
-    console.log(multitenancyEnabled)
-    console.log(defaultTenantSet)
 ;
     if (tenantSpecifiedInUrl() || getShouldShowTenantPopup() === false || !multitenancyEnabled || defaultTenantSet ) {
       shouldShowTenantPopup = false;
