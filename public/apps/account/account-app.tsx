@@ -74,9 +74,13 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
 
     const dashboardsInfo = await getDashboardsInfoSafe(coreStart.http);
     const multitenancyEnabled = dashboardsInfo?.multitenancy_enabled && config.multitenancy.enabled;
-    const defaultTenantSet = dashboardsInfo?.default_tenant !== ''
-;
-    if (tenantSpecifiedInUrl() || getShouldShowTenantPopup() === false || !multitenancyEnabled || defaultTenantSet ) {
+    const defaultTenantSet = dashboardsInfo?.default_tenant !== '';
+    if (
+      tenantSpecifiedInUrl() ||
+      getShouldShowTenantPopup() === false ||
+      !multitenancyEnabled ||
+      defaultTenantSet
+    ) {
       shouldShowTenantPopup = false;
     } else {
       // Switch to previous tenant based on localStorage, it may fail due to
