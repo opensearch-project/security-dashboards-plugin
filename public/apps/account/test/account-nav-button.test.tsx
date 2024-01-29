@@ -153,7 +153,7 @@ describe('Account navigation button, multitenancy disabled', () => {
     jest.clearAllMocks();
   });
 
-  it('should not set modal when show popup is true', () => {
+  it('should not set modal when show popup is false', () => {
     (getDashboardsInfo as jest.Mock).mockImplementation(() => {
       return {
         multitenancy_enabled: false,
@@ -161,7 +161,7 @@ describe('Account navigation button, multitenancy disabled', () => {
         default_tenant: '',
       };
     });
-    (getShouldShowTenantPopup as jest.Mock).mockReturnValueOnce(true);
+    (getShouldShowTenantPopup as jest.Mock).mockReturnValueOnce(false);
     shallow(
       <AccountNavButton
         coreStart={mockCoreStart}

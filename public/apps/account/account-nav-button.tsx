@@ -85,7 +85,7 @@ export function AccountNavButton(props: {
   }, [props.coreStart.http]);
 
   // Check if the tenant modal should be shown on load
-  if (isMultiTenancyEnabled && getShouldShowTenantPopup() && props.config.multitenancy.enabled) {
+  if (getShouldShowTenantPopup()) {
     setShouldShowTenantPopup(false);
     showTenantSwitchPanel();
   }
