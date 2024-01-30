@@ -1,4 +1,4 @@
-name: Snapshot based E2E SAML tests workflow
+name: Snapshot based E2E SAML multi-auth tests workflow
 
 on: [ push, pull_request ]
 
@@ -12,7 +12,7 @@ env:
 
 jobs:
   tests:
-    name: Run Cypress E2E SAML tests
+    name: Run Cypress E2E SAML multi-auth tests
     strategy:
       fail-fast: false
       matrix:
@@ -24,11 +24,11 @@ jobs:
         uses: actions/checkout@v3
       
       # Add SAML Configuration
-      - name: Create SAML Configuration for Linux
+      - name: Injecting SAML Configuration for Linux
         if: ${{ runner.os == 'Linux'}}
         run: |
           echo "Creating new SAML configuration"
-          cat << 'EOT' > config_saml.yml
+          cat << 'EOT' > config_multiauth.yml
           ---
           _meta:
             type: "config"
@@ -67,13 +67,13 @@ jobs:
                     type: noop
           EOT
           echo "THIS IS THE SECURITY CONFIG FILE: "
-          cat config_saml.yml
+          cat config_multiauth.yml
 
       # Configure the Dashboard for SAML setup
-      - name: Configure and Run OpenSearch Dashboards with SAML Configuration
+      - name: Configure OpenSearch Dashboards with multi-auth configuration including SAML
         if: ${{ runner.os == 'Linux' }}
         run: |
-          cat << 'EOT' > opensearch_dashboards_saml.yml
+          cat << 'EOT' > opensearch_dashboards_multiauth.yml
           server.host: "localhost"
           opensearch.hosts: ["https://localhost:9200"]
           opensearch.ssl.verificationMode: none
@@ -85,17 +85,17 @@ jobs:
           opensearch_security.readonly_mode.roles: ["kibana_read_only"]
           opensearch_security.cookie.secure: false
           server.xsrf.allowlist: ["/_plugins/_security/api/authtoken", "/_opendistro/_security/api/authtoken", "/_opendistro/_security/saml/acs", "/_opendistro/_security/saml/acs/idpinitiated", "/_opendistro/_security/saml/logout"]
-          opensearch_security.auth.type: ["saml"]
+          opensearch_security.auth.type: ["basicauth","saml"]
           opensearch_security.auth.multiple_auth_enabled: true
           opensearch_security.auth.anonymous_auth_enabled: false
           home.disableWelcomeScreen: true
           EOT
           echo 'HERE IS THE DASHBOARD CONFIG FILE: '
-          cat opensearch_dashboards_saml.yml
+          cat opensearch_dashboards_multiauth.yml
 
       - name: Run Cypress Tests
         uses: ./.github/actions/run-cypress-tests
         with:
-          security_config_file: config_saml.yml
-          dashboards_config_file: opensearch_dashboards_saml.yml
-          yarn_command: 'yarn cypress:run --browser chrome --headless --spec "test/cypress/e2e/saml/*.js"'
+          security_config_file: config_multiauth.yml
+          dashboards_config_file: opensearch_dashboards_multiauth.yml
+          yarn_command: 'yarn cypress:run --browser chrome --headless --env loginMethod=saml_multiauth --spec "test/cypress/e2e/saml/*.js"'
