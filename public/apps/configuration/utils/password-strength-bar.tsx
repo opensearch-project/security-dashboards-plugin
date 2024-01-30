@@ -24,7 +24,6 @@ interface PasswordStrengthBarProps {
 export const PasswordStrengthBar = (props: PasswordStrengthBarProps) => {
   const { password } = props;
   const passwordStrength = zxcvbn(password);
-  console.log(passwordStrength);
   const strength = passwordStrength.score;
   let message;
   switch (strength) {
@@ -55,13 +54,18 @@ export const PasswordStrengthBar = (props: PasswordStrengthBarProps) => {
             size="m"
             valueText={message}
             label={'Password strength'}
+            data-test-subj="password-strength-progress"
           />
         </EuiFlexItem>
         <EuiFlexItem>
-          <EuiText size="xs">{passwordStrength.feedback.warning}</EuiText>
+          <EuiText size="xs" data-test-subj="password-strength-feedback-warning">
+            {passwordStrength.feedback.warning}
+          </EuiText>
         </EuiFlexItem>
         <EuiFlexItem>
-          <EuiText size="xs">{passwordStrength.feedback.suggestions}</EuiText>
+          <EuiText size="xs" data-test-subj="password-strength-feedback-suggestions">
+            {passwordStrength.feedback.suggestions}
+          </EuiText>
         </EuiFlexItem>
       </EuiFlexGroup>
     )
