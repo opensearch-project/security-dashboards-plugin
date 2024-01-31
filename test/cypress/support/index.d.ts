@@ -55,9 +55,12 @@ declare namespace Cypress {
 
   interface Chainable<Subject> {
     /**
-     * Download Sample HTTP Logs data into the required tenant
-     * @example
-     * cy.downloadSampleLogs('global')
+     * Generate a UUID for the passed URL and store it in the tenant index.
+     * @example :
+     * cy.shortenUrl({url: "/app/home#/tutorial_directory"}, 'global')
+     *
+     * @param data - The Object which contains the url.
+     * @param tenant - The tenant index which will store the UUID
      */
     shortenUrl<S = any>(data: object, tenant: string): Chainable<S>;
   }
