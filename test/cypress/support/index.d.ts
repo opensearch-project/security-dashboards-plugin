@@ -52,4 +52,13 @@ declare namespace Cypress {
      */
     createRoleMapping<S = any>(roleID: string, rolemappingJson: string): Chainable<S>;
   }
+
+  interface Chainable<Subject> {
+    /**
+     * Download Sample HTTP Logs data into the required tenant
+     * @example
+     * cy.downloadSampleLogs('global')
+     */
+    shortenUrl<S = any>(data: object, tenant: string): Chainable<S>;
+  }
 }

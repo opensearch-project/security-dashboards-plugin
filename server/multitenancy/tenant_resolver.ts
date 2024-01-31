@@ -213,7 +213,11 @@ export function addTenantParameterToResolvedShortLink(request: OpenSearchDashboa
     const responsePath = rawResponse.headers.location as string;
 
     // Make sure the request really should redirect
-    if (rawResponse.headers.location && !responsePath.includes('security_tenant')) {
+    if (
+      rawResponse.headers.location &&
+      !responsePath.includes('security_tenant') &&
+      request.headers.securitytenant
+    ) {
       // Mutating the headers toolkit.next({headers: ...}) logs a warning about headers being overwritten
       rawResponse.headers.location = modifyUrl(responsePath, (parts) => {
         if (parts.query.security_tenant === undefined) {
