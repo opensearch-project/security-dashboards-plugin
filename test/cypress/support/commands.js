@@ -94,7 +94,7 @@ Cypress.Commands.add('loginWithSamlMultiauth', () => {
 Cypress.Commands.add('shortenUrl', (data, tenant) => {
   cy.request(
     {
-      url : `${Cypress.env('dashboardsUrl')}${DASHBOARDS_API.SHORTEN_URL}`,
+      url : `${DASHBOARDS_API.SHORTEN_URL}`,
       method: 'POST',
       body: data,
       headers: { 'securitytenant' : tenant, 'osd-xsrf': 'osd-fetch'}
