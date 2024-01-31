@@ -125,11 +125,11 @@ describe('Log in via SAML', () => {
   it('Login to Dashboard with Goto URL', () => {
     localStorage.setItem('home:newThemeModal:show', 'false');
 
-    cy.shortenUrl(SHORTEN_URL_DATA, 'global').then(response => {
-      const gotoUrl = `http://localhost:5601/goto/${response['urlId']}?security_tenant=global`;
+    cy.shortenUrl(SHORTEN_URL_DATA, 'global').then((response) => {
+      const gotoUrl = `http://localhost:5601/goto/${response.urlId}?security_tenant=global`;
       cy.visit(gotoUrl, {
         failOnStatusCode: false,
-      })
+      });
 
       cy.getCookie('security_authentication').should('exist');
     });
