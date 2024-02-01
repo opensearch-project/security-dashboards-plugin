@@ -129,9 +129,10 @@ describe('Log in via SAML', () => {
       const gotoUrl = `http://localhost:5601/goto/${response.urlId}?security_tenant=global`;
       cy.visit(gotoUrl, {
         failOnStatusCode: false,
+      }).then(() => {
+        samlLogin();
+        cy.getCookie('security_authentication').should('exist');
       });
-
-      cy.getCookie('security_authentication').should('exist');
     });
   });
 });
