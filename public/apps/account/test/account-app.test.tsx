@@ -13,17 +13,12 @@
  *   permissions and limitations under the License.
  */
 
-import { shallow } from 'enzyme';
-import React from 'react';
 import { setupTopNavButton } from '../account-app';
-import {
-  getShouldShowTenantPopup,
-  setShouldShowTenantPopup,
-  getSavedTenant,
-} from '../../../utils/storage-utils';
+import { setShouldShowTenantPopup, getSavedTenant } from '../../../utils/storage-utils';
 import { fetchAccountInfoSafe } from '../utils';
 import { fetchCurrentAuthType } from '../../../utils/logout-utils';
-import { fetchCurrentTenant, selectTenant } from '../../configuration/utils/tenant-utils';
+import { fetchCurrentTenant } from '../../configuration/utils/tenant-utils';
+import { getDashboardsInfoSafe } from '../../../utils/dashboards-info-utils';
 
 jest.mock('../../../utils/storage-utils', () => ({
   getShouldShowTenantPopup: jest.fn(),
@@ -33,6 +28,10 @@ jest.mock('../../../utils/storage-utils', () => ({
 
 jest.mock('../utils', () => ({
   fetchAccountInfoSafe: jest.fn(),
+}));
+
+jest.mock('../../../utils/dashboards-info-utils.tsx', () => ({
+  getDashboardsInfoSafe: jest.fn(),
 }));
 
 jest.mock('../../../utils/logout-utils', () => ({
@@ -56,6 +55,7 @@ describe('Account app', () => {
   const mockConfig = {
     multitenancy: {
       enable_aggregation_view: true,
+      enabled: true,
     },
   };
 
@@ -67,12 +67,18 @@ describe('Account app', () => {
     },
   };
 
+  const mockDashboardsInfo = {
+    default_tenant: '',
+    multitenancy_enabled: true,
+  };
+
   const mockTenant = 'test1';
 
   beforeAll(() => {
     (fetchAccountInfoSafe as jest.Mock).mockResolvedValue(mockAccountInfo);
     (fetchCurrentAuthType as jest.Mock).mockResolvedValue('dummy');
     (fetchCurrentTenant as jest.Mock).mockResolvedValue(mockTenant);
+    (getDashboardsInfoSafe as jest.Mock).mockResolvedValue(mockDashboardsInfo);
   });
 
   it('Should skip if auto swich if securitytenant in url', (done) => {
@@ -113,6 +119,52 @@ describe('Account app', () => {
     process.nextTick(() => {
       expect(getSavedTenant).toBeCalledTimes(1);
       expect(setShouldShowTenantPopup).toBeCalledWith(true);
+      done();
+    });
+  });
+
+  it('Should not show tenant selection popup when multitenancy is disabled from security index', (done) => {
+    (getDashboardsInfoSafe as jest.Mock).mockResolvedValueOnce({
+      default_tenant: '',
+      multitenancy_enabled: false,
+    });
+
+    setupTopNavButton(mockCoreStart, mockConfig as any);
+
+    process.nextTick(() => {
+      expect(getSavedTenant).toBeCalledTimes(0);
+      expect(setShouldShowTenantPopup).toBeCalledWith(false);
+      done();
+    });
+  });
+
+  it('Should not show tenant selection popup when multitenancy is disabled dynamically', (done) => {
+    const multiTenancyDisabledConfig = {
+      multitenancy: {
+        enable_aggregation_view: true,
+        enabled: false,
+      },
+    };
+    setupTopNavButton(mockCoreStart, multiTenancyDisabledConfig as any);
+
+    process.nextTick(() => {
+      expect(getSavedTenant).toBeCalledTimes(0);
+      expect(setShouldShowTenantPopup).toBeCalledWith(false);
+      done();
+    });
+  });
+
+  it('Should not show tenant selection popup when default tenant is set from security index', (done) => {
+    (getDashboardsInfoSafe as jest.Mock).mockResolvedValueOnce({
+      default_tenant: 'Global',
+      multitenancy_enabled: true,
+    });
+
+    setupTopNavButton(mockCoreStart, mockConfig as any);
+
+    process.nextTick(() => {
+      expect(getSavedTenant).toBeCalledTimes(0);
+      expect(setShouldShowTenantPopup).toBeCalledWith(false);
       done();
     });
   });
