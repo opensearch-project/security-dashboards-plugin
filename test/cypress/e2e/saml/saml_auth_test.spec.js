@@ -124,12 +124,12 @@ describe('Log in via SAML', () => {
 
   it('Login to Dashboard with Goto URL', () => {
     localStorage.setItem('home:newThemeModal:show', 'false');
-
     cy.shortenUrl(SHORTEN_URL_DATA, 'global').then((response) => {
-      const gotoUrl = `http://localhost:5601/goto/${response.urlId}?security_tenant=global`;
-      cy.visit(gotoUrl, {
-        failOnStatusCode: false,
-      }).then(() => {
+      // We need to explicitly clear cookies,
+      // since the Shorten URL api is return's set-cookie header for admin user.
+      cy.clearCookies().then(() => {
+        const gotoUrl = `http://localhost:5601/goto/${response.urlId}?security_tenant=global`;
+        cy.visit(gotoUrl);
         samlLogin();
         cy.getCookie('security_authentication').should('exist');
       });
