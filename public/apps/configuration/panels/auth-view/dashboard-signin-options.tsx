@@ -1,16 +1,12 @@
 /*
- *   Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
  *
- *   Licensed under the Apache License, Version 2.0 (the "License").
- *   You may not use this file except in compliance with the License.
- *   A copy of the License is located at
+ * The OpenSearch Contributors require contributions made to
+ * this file be licensed under the Apache-2.0 license or a
+ * compatible open source license.
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *   or in the "license" file accompanying this file. This file is distributed
- *   on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- *   express or implied. See the License for the specific language governing
- *   permissions and limitations under the License.
+ * Modifications Copyright OpenSearch Contributors. See
+ * GitHub history for details.
  */
 
 import {
@@ -43,7 +39,7 @@ interface SignInOptionsPanelProps {
 
 export const columns: Array<EuiBasicTableColumn<DashboardOption>> = [
   {
-    field: 'name',
+    field: 'displayName',
     name: 'Name',
     'data-test-subj': 'name',
     mobileOptions: {
@@ -74,16 +70,14 @@ export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
   const [toasts, addToast, removeToast] = useToastState();
   const [dashboardOptions, setDashboardOptions] = useState<DashboardOption[]>([]);
 
+  enum makeAuthTypeHumanReadable {
+    BASIC = 'Basic Authentication',
+    SAML = 'SAML',
+    OPENID = 'OpenID Connect',
+    ANONYMOUS = 'Anonymous',
+  }
+
   useEffect(() => {
-    const MakeAuthTypeHumanReadable = (authType) =>{
-      const authTypeMap = {
-        BASIC:"Basic Authentication",
-        SAML:"SAML",
-        OPENID:"OpenID Connect",
-        ANONYMOUS:"Anonymous",
-      };
-      return authTypeMap[authType] || authType;
-    }
     const getDasboardOptions = () => {
       const options = domains
         .map((domain) => {
@@ -91,10 +85,10 @@ export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
 
           const option = data.http_authenticator.type.toUpperCase();
           if (option in DashboardSignInOptions) {
-            const displayName = MakeAuthTypeHumanReadable(option);
             const dashboardOption: DashboardOption = {
-              name: displayName,
+              name: option,
               status: signInEnabledOptions.indexOf(option) > -1,
+              displayName: makeAuthTypeHumanReadable[option],
             };
             return dashboardOption;
           }
@@ -117,6 +111,7 @@ export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
       const anonymousOption: DashboardOption = {
         name: DashboardSignInOptions[option],
         status: signInEnabledOptions.indexOf(DashboardSignInOptions[option]) > -1,
+        displayName: makeAuthTypeHumanReadable[option],
       };
 
       setDashboardOptions((prevState) => [...prevState, anonymousOption]);
@@ -158,7 +153,8 @@ export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
           </EuiTitle>
           <EuiText size="xs" color="subdued">
             <p>
-              Configure one or multiple authentication options to appear on the sign-in window for OpenSearch Dashboards.
+              Configure one or multiple authentication options to appear on the sign-in window for
+              OpenSearch Dashboards.
             </p>
           </EuiText>
         </EuiPageContentHeaderSection>
@@ -178,7 +174,7 @@ export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
         columns={columns}
         items={dashboardOptions}
         itemId={'signin_options'}
-        sorting={{ sort: { field: 'name', direction: 'asc' } }}
+        sorting={{ sort: { field: 'displayName', direction: 'asc' } }}
       />
       <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={3000} dismissToast={removeToast} />
     </EuiPanel>
