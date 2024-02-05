@@ -177,7 +177,7 @@ describe('Account navigation button, multitenancy disabled', () => {
   });
 });
 
-describe('AccountNavButton', () => {
+describe('Shows tenant info when multitenancy enabled, and hides it if disabled', () => {
   test('Renders "switch-tenants" and "tenant-name" when multi-tenancy is enabled', () => {
     const props = {
       coreStart: {},
