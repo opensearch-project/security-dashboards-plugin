@@ -30,7 +30,11 @@ export interface SecuritySessionCookie {
   tenant?: any;
 
   // for oidc auth workflow
-  oidc?: any;
+  oidc?: {
+    state?: string;
+    nextUrl?: string;
+    redirectHash?: boolean;
+  };
 
   // for Saml auth workflow
   saml?: {
@@ -53,7 +57,7 @@ export function getSecurityCookieOptions(
       }
 
       // TODO: with setting redirect attributes to support OIDC and SAML,
-      //       we need to do additonal cookie validatin in AuthenticationHandlers.
+      //       we need to do additional cookie validation in AuthenticationHandlers.
       // if SAML fields present
       if (sessionStorage.saml && sessionStorage.saml.requestId && sessionStorage.saml.nextUrl) {
         return { isValid: true, path: '/' };

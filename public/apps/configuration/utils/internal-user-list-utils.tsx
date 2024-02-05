@@ -20,7 +20,8 @@ import {
   API_ENDPOINT_INTERNALUSERS,
   API_ENDPOINT_SERVICEACCOUNTS,
 } from '../constants';
-import { DataObject, InternalUser, ObjectsMessage, ResourceType } from '../types';
+import { DataObject, InternalUser, ObjectsMessage } from '../types';
+import { ResourceType } from '../../../../common';
 import { httpDelete, httpGet } from './request-utils';
 import { getResourceUrl } from './resource-utils';
 

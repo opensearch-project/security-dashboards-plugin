@@ -79,9 +79,9 @@ export async function migrateTenantIndices(
   serializer: SavedObjectsSerializer,
   logger: Logger
 ) {
-  let tenentInfo: any;
+  let tenantInfo: any;
   try {
-    tenentInfo = await securityClient.getTenantInfoWithInternalUser();
+    tenantInfo = await securityClient.getTenantInfoWithInternalUser();
   } catch (error) {
     logger.error(error);
     throw error;
@@ -94,7 +94,7 @@ export async function migrateTenantIndices(
     log: logger,
   });
 
-  for (const indexName of Object.keys(tenentInfo)) {
+  for (const indexName of Object.keys(tenantInfo)) {
     const indexMap = createIndexMap({
       opensearchDashboardsIndexName: indexName,
       indexMap: mergeTypes(typeRegistry.getAllTypes()),

@@ -18,7 +18,7 @@ import { AuditLoggingEditSettings } from '../audit-logging-edit-settings';
 import React from 'react';
 import { ComplianceSettings, GeneralSettings } from '../types';
 import { buildHashUrl } from '../../../utils/url-builder';
-import { ResourceType } from '../../../types';
+import { ResourceType } from '../../../../../../common';
 
 jest.mock('../../../utils/audit-logging-utils');
 
