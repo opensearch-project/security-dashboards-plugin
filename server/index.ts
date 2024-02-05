@@ -271,7 +271,7 @@ export const configSchema = schema.object({
     }),
     openid: schema.object({
       login: schema.object({
-        buttonname: schema.string({ defaultValue: 'Log in with single sign-on' }),
+        buttonname: schema.string({ defaultValue: 'Log in with single sign-on (OpenID)' }),
         showbrandimage: schema.boolean({ defaultValue: false }),
         brandimage: schema.string({ defaultValue: '' }),
         buttonstyle: schema.string({ defaultValue: '' }),
@@ -279,7 +279,7 @@ export const configSchema = schema.object({
     }),
     saml: schema.object({
       login: schema.object({
-        buttonname: schema.string({ defaultValue: 'Log in with single sign-on' }),
+        buttonname: schema.string({ defaultValue: 'Log in with single sign-on (SAML)' }),
         showbrandimage: schema.boolean({ defaultValue: false }),
         brandimage: schema.string({ defaultValue: '' }),
         buttonstyle: schema.string({ defaultValue: '' }),

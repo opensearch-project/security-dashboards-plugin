@@ -111,7 +111,7 @@ export function SignInOptionsPanel(props: SignInOptionsPanelProps) {
       const anonymousOption: DashboardOption = {
         name: DashboardSignInOptions[option],
         status: signInEnabledOptions.indexOf(DashboardSignInOptions[option]) > -1,
-        displayName: makeAuthTypeHumanReadable[option],
+        displayName: makeAuthTypeHumanReadable.ANONYMOUS,
       };
 
       setDashboardOptions((prevState) => [...prevState, anonymousOption]);
