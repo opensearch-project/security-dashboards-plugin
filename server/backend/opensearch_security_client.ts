@@ -75,7 +75,7 @@ export class SecurityClient {
         username: esResponse.user_name,
         roles: esResponse.roles,
         backendRoles: esResponse.backend_roles,
-        tenants: esResponse.teanats,
+        tenants: esResponse.tenants,
         selectedTenant: esResponse.user_requested_tenant,
         credentials,
       };

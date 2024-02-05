@@ -28,6 +28,7 @@ import {
 } from '../../utils/storage-utils';
 import { constructErrorMessageAndLog } from '../error-utils';
 import { fetchCurrentAuthType } from '../../utils/logout-utils';
+import { getDashboardsInfoSafe } from '../../utils/dashboards-info-utils';
 
 function tenantSpecifiedInUrl() {
   return (
@@ -71,7 +72,15 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
 
     let shouldShowTenantPopup = true;
 
-    if (tenantSpecifiedInUrl() || getShouldShowTenantPopup() === false) {
+    const dashboardsInfo = await getDashboardsInfoSafe(coreStart.http);
+    const multitenancyEnabled = dashboardsInfo?.multitenancy_enabled && config.multitenancy.enabled;
+    const defaultTenantSet = dashboardsInfo?.default_tenant !== '';
+    if (
+      tenantSpecifiedInUrl() ||
+      getShouldShowTenantPopup() === false ||
+      !multitenancyEnabled ||
+      defaultTenantSet
+    ) {
       shouldShowTenantPopup = false;
     } else {
       // Switch to previous tenant based on localStorage, it may fail due to

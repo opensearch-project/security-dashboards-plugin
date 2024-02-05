@@ -240,6 +240,7 @@ export const CLUSTER_PERMISSIONS: string[] = [
   'indices:data/read/msearch/template',
   'indices:data/read/mtv',
   'indices:data/read/mtv*',
+  'indices:data/read/search/template/render',
   'indices:data/write/reindex',
 ];
 
@@ -315,6 +316,7 @@ export const INDEX_PERMISSIONS: string[] = [
   'indices:monitor/shard_stores',
   'indices:monitor/stats',
   'indices:monitor/upgrade',
+  'system:admin/system_index',
 ];
 
 export function includeIndexPermissions(indexPermissionsToInclude: string[]) {
