@@ -18,7 +18,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { SEC_API, ADMIN_AUTH } from './constants';
+import { SEC_API, ADMIN_AUTH, DASHBOARDS_API } from './constants';
 
 /**
  * Overwrite request command to support authentication similar to visit.
@@ -89,4 +89,16 @@ Cypress.Commands.add('loginWithSamlMultiauth', () => {
   cy.get('a[aria-label="saml_login_button"]').should('be.visible').click();
   cy.get('input[id=userName]').should('be.visible');
   cy.get('button[id=btn-sign-in]').should('be.visible').click();
+});
+
+Cypress.Commands.add('shortenUrl', (data, tenant) => {
+  cy.request({
+    url: `http://localhost:5601${DASHBOARDS_API.SHORTEN_URL}`,
+    method: 'POST',
+    body: data,
+    headers: { securitytenant: tenant, 'osd-xsrf': 'osd-fetch' },
+  }).then((response) => {
+    expect(response.status).to.eq(200);
+    return response.body;
+  });
 });

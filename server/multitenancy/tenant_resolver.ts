@@ -13,13 +13,13 @@
  *   permissions and limitations under the License.
  */
 
-import { isEmpty, findKey, cloneDeep } from 'lodash';
+import { cloneDeep, findKey, isEmpty } from 'lodash';
 import { OpenSearchDashboardsRequest } from 'opensearch-dashboards/server';
 import { ResponseObject } from '@hapi/hapi';
 import { modifyUrl } from '@osd/std';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { SecurityPluginConfigType } from '..';
-import { GLOBAL_TENANT_SYMBOL, PRIVATE_TENANT_SYMBOL, globalTenantName } from '../../common';
+import { GLOBAL_TENANT_SYMBOL, globalTenantName, PRIVATE_TENANT_SYMBOL } from '../../common';
 import { ensureRawRequest } from '../../../../src/core/server/http/router';
 import { GOTO_PREFIX } from '../../../../src/plugins/share/common/short_url_routes';
 
@@ -210,16 +210,20 @@ export function addTenantParameterToResolvedShortLink(request: OpenSearchDashboa
   if (request.url.pathname.startsWith(`${GOTO_PREFIX}/`)) {
     const rawRequest = ensureRawRequest(request);
     const rawResponse = rawRequest.response as ResponseObject;
+    const responsePath = rawResponse.headers.location as string;
 
     // Make sure the request really should redirect
-    if (rawResponse.headers.location) {
-      const modifiedUrl = modifyUrl(rawResponse.headers.location as string, (parts) => {
+    if (
+      rawResponse.headers.location &&
+      !responsePath.includes('security_tenant') &&
+      request.headers.securitytenant
+    ) {
+      // Mutating the headers toolkit.next({headers: ...}) logs a warning about headers being overwritten
+      rawResponse.headers.location = modifyUrl(responsePath, (parts) => {
         if (parts.query.security_tenant === undefined) {
           parts.query.security_tenant = request.headers.securitytenant as string;
         }
-        // Mutating the headers toolkit.next({headers: ...}) logs a warning about headers being overwritten
       });
-      rawResponse.headers.location = modifiedUrl;
     }
   }
 
