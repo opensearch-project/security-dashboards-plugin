@@ -84,7 +84,7 @@ describe('Account navigation button', () => {
 
   afterAll(() => {
     useStateSpy.mockRestore();
-  })
+  });
 
   it('renders', () => {
     (getDashboardsInfo as jest.Mock).mockImplementationOnce(() => {
@@ -156,7 +156,7 @@ describe('Account navigation button, multitenancy disabled', () => {
 
   afterAll(() => {
     useStateSpy.mockRestore();
-  })
+  });
 
   afterEach(() => {
     jest.clearAllMocks();
