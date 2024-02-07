@@ -118,7 +118,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     let dashboardSignInOptions = await esClient
       .callAsInternalUser('opensearch_security.dashboardsinfo')
       .then((data) =>
-        data.dashboard_signin_options.map((opt: string) => {
+        data.sign_in_options.map((opt: string) => {
           if (DashboardSignInOptions[opt] === DashboardSignInOptions.BASIC) {
             return AuthType.BASIC;
           } else {

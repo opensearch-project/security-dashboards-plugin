@@ -598,7 +598,7 @@ export function defineRoutes(router: IRouter) {
       try {
         esResp = await client.callAsInternalUser('opensearch_security.dashboardsinfo');
         return response.ok({
-          body: esResp.dashboard_signin_options,
+          body: esResp.sign_in_options,
         });
       } catch (error) {
         return errorResponse(response, error);
@@ -611,7 +611,7 @@ export function defineRoutes(router: IRouter) {
       path: `${API_ENDPOINT_DASHBOARD_SIGNIN_OPTIONS}`,
       validate: {
         body: schema.object({
-          dashboard_signin_options: schema.arrayOf(schema.any(), {
+          sign_in_options: schema.arrayOf(schema.any(), {
             defaultValue: [DashboardSignInOptions.BASIC],
           }),
         }),

@@ -47,7 +47,7 @@ export interface DashboardsInfo {
   private_tenant_enabled?: boolean;
   default_tenant: string;
   password_validation_error_message: string;
-  dashboard_signin_options: [];
+  sign_in_options: [];
 }
 
 export interface ClientConfigType {

@@ -36,6 +36,6 @@ export async function updateDashboardSignInOptions(
   signInOptions: DashboardSignInOptions[]
 ) {
   return await httpPut(http, API_ENDPOINT_DASHBOARD_SIGNIN_OPTIONS, {
-    dashboard_signin_options: signInOptions,
+    sign_in_options: signInOptions,
   });
 }

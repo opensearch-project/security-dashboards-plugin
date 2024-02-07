@@ -43,7 +43,7 @@ export function AuthView(props: AppDependencies) {
 
         setAuthentication(config.authc);
         setAuthorization(config.authz);
-        setDashboardSignInOptions(config.kibana.dashboardSignInOptions);
+        setDashboardSignInOptions(config.kibana.sign_in_options);
         setAnonymousAuthEnable(config.http.anonymous_auth_enabled);
       } catch (e) {
         console.log(e);

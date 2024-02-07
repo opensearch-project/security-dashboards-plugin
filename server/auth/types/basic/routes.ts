@@ -249,7 +249,7 @@ async function verifyAnonymousAccess(securityClient: SecurityClient, request: an
   const isAutologin = request.url.href.includes("anonymous?");
 
   const dashboardsInfo = await securityClient.dashboardsinfo(request);
-  const isAnonymousEnabled = dashboardsInfo.dashboard_signin_options.includes(DashboardSignInOptions[DashboardSignInOptions.ANONYMOUS]);
+  const isAnonymousEnabled = dashboardsInfo.sign_in_options.includes(DashboardSignInOptions[DashboardSignInOptions.ANONYMOUS]);
 
-  return (isAnonymousEnabled && !isAutologin) || (isAnonymousEnabled && dashboardsInfo.dashboard_signin_options.length === 1);
+  return (isAnonymousEnabled && !isAutologin) || (isAnonymousEnabled && dashboardsInfo.sign_in_options.length === 1);
 }

@@ -18,12 +18,11 @@ import { shallow } from 'enzyme';
 import React from 'react';
 import { DashboardSignInOptions } from '../../../types';
 import { SignInOptionsModal } from '../signin-options-modal';
-import { OuiGlobalToastListToast } from '@opensearch-project/oui';
 
 describe('Test sign-in options modal', () => {
   const initialValues = [
-    { name: DashboardSignInOptions[DashboardSignInOptions.BASIC], status: true },
-    { name: DashboardSignInOptions[DashboardSignInOptions.SAML], status: false },
+    { name: DashboardSignInOptions[DashboardSignInOptions.BASIC], status: true, displayName: "Basic Authentication" },
+    { name: DashboardSignInOptions[DashboardSignInOptions.SAML], status: false, displayName: "SAML" },
   ];
 
   const useEffectMock = jest.spyOn(React, 'useEffect');
