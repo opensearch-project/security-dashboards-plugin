@@ -143,6 +143,8 @@ export abstract class AuthenticationType implements IAuthenticationType {
         cookie = undefined;
       }
 
+      console.log(cookie)
+
       if (!cookie || !(await this.isValidCookie(cookie, request))) {
         // clear cookie
         this.sessionStorageFactory.asScoped(request).clear();
@@ -160,7 +162,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
 
       // extend session expiration time
       if (this.config.session.keepalive) {
-        cookie!.expiryTime = Date.now() + this.config.session.ttl;
+        cookie!.expiryTime = Math.max(Date.now() + this.config.session.ttl, cookie.expiryTime || 0);
         this.sessionStorageFactory.asScoped(request).set(cookie!);
       }
       // cookie is valid

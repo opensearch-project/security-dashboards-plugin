@@ -84,6 +84,7 @@ export class SamlAuthRoutes {
               redirectHash: request.query.redirectHash === 'true',
             },
           };
+          console.log('saml login cookie' + JSON.stringify(cookie))
           this.sessionStorageFactory.asScoped(request).set(cookie);
           return response.redirected({
             headers: {
@@ -113,6 +114,7 @@ export class SamlAuthRoutes {
         let redirectHash: boolean = false;
         try {
           const cookie = await this.sessionStorageFactory.asScoped(request).get();
+          console.log('acs' + JSON.stringify(cookie))
           if (cookie) {
             requestId = cookie.saml?.requestId || '';
             nextUrl =
@@ -142,16 +144,20 @@ export class SamlAuthRoutes {
             credentials.authorization
           );
 
+          console.log('creds' + JSON.stringify(credentials), 'user' + JSON.stringify(user))
+
           let expiryTime = Date.now() + this.config.session.ttl;
           const [headerEncoded, payloadEncoded, signature] = credentials.authorization.split('.');
           if (!payloadEncoded) {
             context.security_plugin.logger.error('JWT token payload not found');
           }
           const tokenPayload = JSON.parse(Buffer.from(payloadEncoded, 'base64').toString());
+          console.log(tokenPayload)
 
           if (tokenPayload.exp) {
             expiryTime = parseInt(tokenPayload.exp, 10) * 1000;
           }
+          console.log(expiryTime)
 
           const cookie: SecuritySessionCookie = {
             username: user.username,
