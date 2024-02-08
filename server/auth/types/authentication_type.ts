@@ -143,8 +143,6 @@ export abstract class AuthenticationType implements IAuthenticationType {
         cookie = undefined;
       }
 
-      console.log(cookie)
-
       if (!cookie || !(await this.isValidCookie(cookie, request))) {
         // clear cookie
         this.sessionStorageFactory.asScoped(request).clear();
