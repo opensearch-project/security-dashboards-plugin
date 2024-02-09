@@ -152,7 +152,6 @@ export class SamlAuthRoutes {
           if (tokenPayload.exp) {
             expiryTime = parseInt(tokenPayload.exp, 10) * 1000;
           }
-          console.log(expiryTime);
 
           const cookie: SecuritySessionCookie = {
             username: user.username,
