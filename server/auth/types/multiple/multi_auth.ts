@@ -17,15 +17,12 @@ import {
   SessionStorageFactory,
   IRouter,
   ILegacyClusterClient,
-  OpenSearchDashboardsRequest,
   Logger,
   LifecycleResponseFactory,
-  AuthToolkit,
-} from '../../../../opensearch-dashboards/server';
-import {
   OpenSearchDashboardsRequest,
-  OpenSearchDashboardsResponse,
-} from '../../../../../../src/core/server/http/router';
+  AuthToolkit,
+} from 'opensearch-dashboards/server';
+import { OpenSearchDashboardsResponse } from '../../../../../../src/core/server/http/router';
 import { SecurityPluginConfigType } from '../../..';
 import { AuthenticationType, IAuthenticationType } from '../authentication_type';
 import { ANONYMOUS_AUTH_LOGIN, AuthType, LOGIN_PAGE_URI } from '../../../../common';
