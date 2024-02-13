@@ -196,7 +196,7 @@ describe('test tenant header', () => {
     const toolkit = {
       authenticated: jest.fn((value) => value),
     };
-    const _ = await keepAliveDummyAuth.authHandler(request, response, toolkit);
+    await keepAliveDummyAuth.authHandler(request, response, toolkit);
     const cookieAfterRequest = sessionStorage.getItem('security_cookie');
     expect(JSON.parse(cookieAfterRequest!).expiryTime).toBe(2000);
     global.Date.now = realDateNow;
