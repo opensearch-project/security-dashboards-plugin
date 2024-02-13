@@ -73,6 +73,10 @@ export class ProxyAuthentication extends AuthenticationType {
       : false;
   }
 
+  public async supportsKeepAlive(request: OpenSearchDashboardsRequest): Promise<boolean> {
+    return true;
+  }
+
   async getAdditionalAuthHeader(request: OpenSearchDashboardsRequest): Promise<any> {
     const authHeaders: any = {};
     const customProxyHeader = this.config.proxycache?.proxy_header;

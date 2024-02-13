@@ -251,6 +251,11 @@ export class OpenIdAuthentication extends AuthenticationType {
     };
   }
 
+  // JWT auth types should get expiry from the JWT, and not override this value
+  public async supportsKeepAlive(request: OpenSearchDashboardsRequest): Promise<boolean> {
+    return false;
+  }
+
   // TODO: Add token expiration check here
   async isValidCookie(
     cookie: SecuritySessionCookie,

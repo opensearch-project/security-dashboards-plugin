@@ -64,6 +64,10 @@ export class BasicAuthentication extends AuthenticationType {
     return request.headers[AUTH_HEADER_NAME] ? true : false;
   }
 
+  public async supportsKeepAlive(request: OpenSearchDashboardsRequest): Promise<boolean> {
+    return true;
+  }
+
   async getAdditionalAuthHeader(
     request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
   ): Promise<any> {

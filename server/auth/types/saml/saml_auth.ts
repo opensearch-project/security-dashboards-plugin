@@ -130,6 +130,11 @@ export class SamlAuthentication extends AuthenticationType {
     return {};
   }
 
+  // JWT auth types should get expiry from the JWT, and not override this value
+  public async supportsKeepAlive(request: OpenSearchDashboardsRequest): Promise<boolean> {
+    return false;
+  }
+
   getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
     const authorizationHeaderValue: string = request.headers[
       SamlAuthentication.AUTH_HEADER_NAME
