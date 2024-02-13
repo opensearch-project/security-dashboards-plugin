@@ -26,9 +26,6 @@ import {
 } from '../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../session/security_cookie';
 
-const mockedNow = 0;
-Date.now = jest.fn(() => mockedNow);
-
 class DummyAuthType extends AuthenticationType {
   authNotRequired(request: OpenSearchDashboardsRequest): boolean {
     return false;
@@ -160,6 +157,10 @@ describe('test tenant header', () => {
   });
 
   it(`keepalive should not shorten the cookie expiry`, async () => {
+    const realDateNow = Date.now.bind(global.Date);
+    const dateNowStub = jest.fn(() => 0);
+    global.Date.now = dateNowStub;
+
     const keepAliveConfig = {
       multitenancy: {
         enabled: true,
@@ -198,6 +199,7 @@ describe('test tenant header', () => {
     const _ = await keepAliveDummyAuth.authHandler(request, response, toolkit);
     const cookieAfterRequest = sessionStorage.getItem('security_cookie');
     expect(JSON.parse(cookieAfterRequest!).expiryTime).toBe(2000);
+    global.Date.now = realDateNow;
   });
 });
 
