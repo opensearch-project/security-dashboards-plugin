@@ -207,4 +207,43 @@ describe('test OpenId authHeaderValue', () => {
     expect(wreckHttpsOptions.cert).toBeUndefined();
     expect(wreckHttpsOptions.passphrase).toBeUndefined();
   });
+
+  test('Ensure expiryTime is being used to test validity of cookie', async () => {
+    const realDateNow = Date.now.bind(global.Date);
+    const dateNowStub = jest.fn(() => 0);
+    global.Date.now = dateNowStub;
+    const customConfig = {
+      openid: {
+        pfx: 'test/certs/keyStore.p12',
+        certificate: 'test/certs/cert.pem',
+        private_key: 'test/certs/private-key.pem',
+        passphrase: '',
+        header: 'authorization',
+        scope: [],
+      },
+    };
+
+    const openidConfig = (customConfig as unknown) as SecurityPluginConfigType;
+
+    const openIdAuthentication = new OpenIdAuthentication(
+      openidConfig,
+      sessionStorageFactory,
+      router,
+      esClient,
+      core,
+      logger
+    );
+    const testCookie: SecuritySessionCookie = {
+      credentials: {
+        authHeaderValue: 'Bearer eyToken',
+        expiry_time: -1,
+      },
+      expiryTime: 2000,
+      username: 'admin',
+      authType: 'openid',
+    };
+
+    expect(await openIdAuthentication.isValidCookie(testCookie, {})).toBe(true);
+    global.Date.now = realDateNow;
+  });
 });
