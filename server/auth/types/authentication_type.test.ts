@@ -13,6 +13,9 @@
  *   permissions and limitations under the License.
  */
 
+/* eslint-disable max-classes-per-file */
+// This file has extra classes used for testing
+
 import { SecurityPluginConfigType } from '../..';
 import { AuthenticationType } from './authentication_type';
 import { httpServerMock } from '../../../../../src/core/server/mocks';
@@ -197,3 +200,5 @@ describe('test tenant header', () => {
     expect(JSON.parse(cookieAfterRequest!).expiryTime).toBe(2000);
   });
 });
+
+/* eslint-enable max-classes-per-file */
