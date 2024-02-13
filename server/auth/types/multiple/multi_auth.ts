@@ -22,7 +22,10 @@ import {
   LifecycleResponseFactory,
   AuthToolkit,
 } from '../../../../opensearch-dashboards/server';
-import { OpenSearchDashboardsRequest, OpenSearchDashboardsResponse } from '../../../../../../src/core/server/http/router';
+import {
+  OpenSearchDashboardsRequest,
+  OpenSearchDashboardsResponse,
+} from '../../../../../../src/core/server/http/router';
 import { SecurityPluginConfigType } from '../../..';
 import { AuthenticationType, IAuthenticationType } from '../authentication_type';
 import { ANONYMOUS_AUTH_LOGIN, AuthType, LOGIN_PAGE_URI } from '../../../../common';
@@ -135,7 +138,7 @@ export class MultipleAuthentication extends AuthenticationType {
     const reqAuthType = cookie?.authType?.toLowerCase();
 
     if (reqAuthType && this.authHandlers.has(reqAuthType)) {
-      return this.authHandlers.get(reqAuthType)!.supportsKeepAlive(request)
+      return this.authHandlers.get(reqAuthType)!.supportsKeepAlive(request);
     } else {
       // default to true
       return true;
