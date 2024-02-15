@@ -139,7 +139,7 @@ export class ProxyAuthentication extends AuthenticationType {
     }
   }
 
-  buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any {
+  buildAuthHeaderFromCookie(cookie: SecuritySessionCookie, request: OpenSearchDashboardsRequest): any {
     const authHeaders: any = {};
     if (get(cookie.credentials, this.userHeaderName)) {
       authHeaders[this.userHeaderName] = cookie.credentials[this.userHeaderName];

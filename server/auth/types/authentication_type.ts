@@ -159,7 +159,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
       }
 
       // extend session expiration time
-      if (this.supportsKeepAlive(request) && this.config.session.keepalive) {
+      if (await this.supportsKeepAlive(request) && this.config.session.keepalive) {
         cookie!.expiryTime = Math.max(Date.now() + this.config.session.ttl, cookie.expiryTime || 0);
         this.sessionStorageFactory.asScoped(request).set(cookie!);
       }
@@ -287,5 +287,10 @@ export abstract class AuthenticationType implements IAuthenticationType {
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
   ): IOpenSearchDashboardsResponse | AuthResult;
+  public abstract requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean;
+  public abstract buildAuthHeaderFromCookie(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): any
   public abstract init(): Promise<void>;
 }
