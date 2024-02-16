@@ -160,7 +160,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
 
       // extend session expiration time
       if ((await this.supportsKeepAlive(request)) && this.config.session.keepalive) {
-        cookie!.expiryTime = Math.max(Date.now() + this.config.session.ttl, cookie.expiryTime || 0);
+        cookie!.expiryTime = Date.now() + this.config.session.ttl;
         this.sessionStorageFactory.asScoped(request).set(cookie!);
       }
       // cookie is valid
