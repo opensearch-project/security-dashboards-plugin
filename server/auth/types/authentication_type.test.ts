@@ -13,17 +13,10 @@
  *   permissions and limitations under the License.
  */
 
-/* eslint-disable max-classes-per-file */
-// This file has extra classes used for testing
-
 import { SecurityPluginConfigType } from '../..';
 import { AuthenticationType } from './authentication_type';
 import { httpServerMock } from '../../../../../src/core/server/mocks';
-import {
-  SessionStorageFactory,
-  SessionStorage,
-  OpenSearchDashboardsRequest,
-} from '../../../../../src/core/server';
+import { OpenSearchDashboardsRequest } from '../../../../../src/core/server';
 import { SecuritySessionCookie } from '../../session/security_cookie';
 
 class DummyAuthType extends AuthenticationType {
@@ -47,43 +40,6 @@ class DummyAuthType extends AuthenticationType {
   }
   public supportsKeepAlive(request: OpenSearchDashboardsRequest): Promise<boolean> {
     return Promise.resolve(true);
-  }
-}
-
-// Implementation of SessionStorage using browser's sessionStorage
-class BrowserSessionStorage<T> implements SessionStorage<T> {
-  private readonly storageKey: string;
-
-  constructor(storageKey: string) {
-    this.storageKey = storageKey;
-  }
-
-  async get(): Promise<T | null> {
-    const storedValue = sessionStorage.getItem(this.storageKey);
-    return storedValue ? JSON.parse(storedValue) : null;
-  }
-
-  set(sessionValue: T): void {
-    const serializedValue = JSON.stringify(sessionValue);
-    sessionStorage.setItem(this.storageKey, serializedValue);
-  }
-
-  clear(): void {
-    sessionStorage.removeItem(this.storageKey);
-  }
-}
-
-// Implementation of SessionStorageFactory using the browser's sessionStorage
-export class BrowserSessionStorageFactory<T> implements SessionStorageFactory<T> {
-  private readonly storageKey: string;
-
-  constructor(storageKey: string) {
-    this.storageKey = storageKey;
-  }
-
-  // This method returns a new instance of the browser's SessionStorage for each request
-  asScoped(request: OpenSearchDashboardsRequest): SessionStorage<T> {
-    return new BrowserSessionStorage<T>(this.storageKey);
   }
 }
 
@@ -157,5 +113,51 @@ describe('test tenant header', () => {
     };
     const result = await dummyAuthType.authHandler(request, response, toolkit);
     expect(result.requestHeaders.securitytenant).toEqual('dummy_tenant');
+  });
+
+  it(`keepalive should not shorten the cookie expiry`, async () => {
+    const realDateNow = Date.now.bind(global.Date);
+    const dateNowStub = jest.fn(() => 0);
+    global.Date.now = dateNowStub;
+
+    const keepAliveConfig = {
+      multitenancy: {
+        enabled: true,
+      },
+      auth: {
+        unauthenticated_routes: [] as string[],
+      },
+      session: {
+        keepalive: true,
+        ttl: 1000,
+      },
+    } as SecurityPluginConfigType;
+    const keepAliveDummyAuth = new DummyAuthType(
+      keepAliveConfig,
+      new BrowserSessionStorageFactory('security_cookie'),
+      router,
+      esClient,
+      coreSetup,
+      logger
+    );
+    const testCookie: SecuritySessionCookie = {
+      credentials: {
+        authHeaderValueExtra: true,
+      },
+      expiryTime: 2000,
+    };
+    // Set cookie
+    sessionStorage.setItem('security_cookie', JSON.stringify(testCookie));
+    const request = httpServerMock.createOpenSearchDashboardsRequest({
+      path: '/internal/v1',
+    });
+    const response = jest.fn();
+    const toolkit = {
+      authenticated: jest.fn((value) => value),
+    };
+    await keepAliveDummyAuth.authHandler(request, response, toolkit);
+    const cookieAfterRequest = sessionStorage.getItem('security_cookie');
+    expect(JSON.parse(cookieAfterRequest!).expiryTime).toBe(2000);
+    global.Date.now = realDateNow;
   });
 });
