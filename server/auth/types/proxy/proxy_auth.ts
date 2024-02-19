@@ -73,7 +73,10 @@ export class ProxyAuthentication extends AuthenticationType {
       : false;
   }
 
-  public getKeepAliveExpiry(cookie: SecuritySessionCookie, request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>): number {
+  public getKeepAliveExpiry(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
+  ): number {
     return Date.now() + this.config.session.ttl;
   }
 

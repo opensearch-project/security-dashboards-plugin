@@ -279,7 +279,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
   ): SecuritySessionCookie;
   public abstract getKeepAliveExpiry(
     cookie: SecuritySessionCookie,
-    request: OpenSearchDashboardsRequest,
+    request: OpenSearchDashboardsRequest
   ): number;
   public abstract isValidCookie(
     cookie: SecuritySessionCookie,

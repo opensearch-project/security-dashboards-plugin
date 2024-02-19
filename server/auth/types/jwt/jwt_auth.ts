@@ -180,9 +180,11 @@ export class JwtAuthentication extends AuthenticationType {
     );
   }
 
-  getKeepAliveExpiry(cookie: SecuritySessionCookie,
-    request: OpenSearchDashboardsRequest): number {
-    return getExpirationDate(this.buildAuthHeaderFromCookie(cookie,request)[this.authHeaderName], Date.now() + this.config.session.ttl);
+  getKeepAliveExpiry(cookie: SecuritySessionCookie, request: OpenSearchDashboardsRequest): number {
+    return getExpirationDate(
+      this.buildAuthHeaderFromCookie(cookie, request)[this.authHeaderName],
+      Date.now() + this.config.session.ttl
+    );
   }
 
   handleUnauthedRequest(

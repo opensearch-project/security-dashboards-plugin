@@ -130,13 +130,16 @@ export class MultipleAuthentication extends AuthenticationType {
     return {};
   }
 
-  getKeepAliveExpiry(cookie: SecuritySessionCookie, request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>): number {
+  getKeepAliveExpiry(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
+  ): number {
     const reqAuthType = cookie?.authType?.toLowerCase();
     if (reqAuthType && this.authHandlers.has(reqAuthType)) {
       return this.authHandlers.get(reqAuthType)!.getKeepAliveExpiry(cookie, request);
     } else {
       // default to TTL setting
-      return Date.now() + this.config.session.ttl
+      return Date.now() + this.config.session.ttl;
     }
   }
 

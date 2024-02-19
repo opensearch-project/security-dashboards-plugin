@@ -252,8 +252,11 @@ export class OpenIdAuthentication extends AuthenticationType {
   }
 
   // OIDC expiry time is set by the IDP and refreshed via refreshTokens
-  getKeepAliveExpiry(cookie: SecuritySessionCookie, request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>): number {
-    return cookie.expiryTime!
+  getKeepAliveExpiry(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
+  ): number {
+    return cookie.expiryTime!;
   }
 
   // TODO: Add token expiration check here
