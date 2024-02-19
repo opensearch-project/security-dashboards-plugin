@@ -65,7 +65,7 @@ describe('Proxy auth tests', () => {
       credentials: {
         authHeaderValueExtra: true,
       },
-      expiryTime: 1000,
+      expiryTime: 0,
     };
 
     const request = httpServerMock.createOpenSearchDashboardsRequest({
