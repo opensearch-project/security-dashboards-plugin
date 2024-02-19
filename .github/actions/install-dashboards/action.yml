@@ -82,4 +82,4 @@ runs:
       with:
         timeout_minutes: 20
         max_attempts: 2
-        command: yarn --cwd OpenSearch-Dashboards osd bootstrap --oss --single-version=loose
+        command: yarn --cwd OpenSearch-Dashboards osd bootstrap --oss --single-version=loose # loose is passed in to ignore version conflicts on cypress version used in OSD and this repo
