@@ -92,7 +92,7 @@ jobs:
           npm i -g yarn@${{ steps.tool-versions.outputs.yarn_version }}
           yarn cache clean
           yarn add sha.js
-          yarn osd bootstrap
+          yarn osd bootstrap --single-version=loose
           scripts/use_node scripts/build
         working-directory: OpenSearch-Dashboards
         shell: bash
@@ -103,7 +103,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          yarn osd bootstrap
+          yarn osd bootstrap --single-version=loose
         working-directory: OpenSearch-Dashboards
         shell: bash
 
