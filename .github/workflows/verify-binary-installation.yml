@@ -85,6 +85,7 @@ jobs:
           node-version: ${{ steps.tool-versions.outputs.node_version }}
           registry-url: 'https://registry.npmjs.org'
 
+      # loose is passed in to ignore version conflicts on cypress version used in OSD and this repo
       - name: Setup Opensearch Dashboards
         run: |
           npm uninstall -g yarn
@@ -92,7 +93,7 @@ jobs:
           npm i -g yarn@${{ steps.tool-versions.outputs.yarn_version }}
           yarn cache clean
           yarn add sha.js
-          yarn osd bootstrap
+          yarn osd bootstrap --single-version=loose 
           scripts/use_node scripts/build
         working-directory: OpenSearch-Dashboards
         shell: bash
@@ -101,9 +102,10 @@ jobs:
         with:
           path: OpenSearch-Dashboards/plugins/security-dashboards-plugin
 
+      # loose is passed in to ignore version conflicts on cypress version used in OSD and this repo
       - name: Install dependencies
         run: |
-          yarn osd bootstrap
+          yarn osd bootstrap --single-version=loose
         working-directory: OpenSearch-Dashboards
         shell: bash
 
