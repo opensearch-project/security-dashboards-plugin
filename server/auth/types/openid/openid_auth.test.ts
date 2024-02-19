@@ -246,4 +246,36 @@ describe('test OpenId authHeaderValue', () => {
     expect(await openIdAuthentication.isValidCookie(testCookie, {})).toBe(true);
     global.Date.now = realDateNow;
   });
+
+  test('getKeepAliveExpiry', () => {
+    const customConfig = {
+      openid: {
+        pfx: 'test/certs/keyStore.p12',
+        certificate: 'test/certs/cert.pem',
+        private_key: 'test/certs/private-key.pem',
+        passphrase: '',
+        header: 'authorization',
+        scope: [],
+      },
+    };
+
+    const openidConfig = (customConfig as unknown) as SecurityPluginConfigType;
+
+    const openIdAuthentication = new OpenIdAuthentication(
+      openidConfig,
+      sessionStorageFactory,
+      router,
+      esClient,
+      core,
+      logger
+    );
+    const testCookie: SecuritySessionCookie = {
+      credentials: {
+        authHeaderValue: 'Bearer eyToken',
+      },
+      expiryTime: 1000,
+    };
+
+    expect(openIdAuthentication.getKeepAliveExpiry(testCookie, {})).toBe(1000);
+  });
 });

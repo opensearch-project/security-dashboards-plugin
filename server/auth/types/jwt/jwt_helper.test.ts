@@ -37,6 +37,9 @@ const JWT_TEST_NO_EXP =
 const JWT_TEST_FAR_EXP =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJleGFtcGxlLmNvbSIsInN1YiI6ImpvaG4uZG9lQGV4YW1wbGUuY29tIiwiZXhwIjoxMzAwODE5MzgwMCwibmFtZSI6IkpvaG4gRG9lIiwicm9sZXMiOiJhZG1pbiJ9.ciW9WWtIaA-QJqy0flPSfMNQfGs9GEFqcNFY_LqrdII'; // A test JWT with a far off exp claim
 
+const JWT_TEST_NEAR_EXP =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJleGFtcGxlLmNvbSIsInN1YiI6ImpvaG4uZG9lQGV4YW1wbGUuY29tIiwiZXhwIjo1MCwibmFtZSI6IkpvaG4gRG9lIiwicm9sZXMiOiJhZG1pbiJ9.96_h7V_OrO-bHzhh1DUIOJ2_J2sEI8y--cjBOBonk2o'; // A test JWT with exp claim of 50
+
 const router: Partial<IRouter> = { post: (body) => {} };
 const core = {
   http: {
@@ -337,6 +340,69 @@ describe('test jwt auth library', () => {
     });
     const cookieFromURL = jwtAuth.getCookie(requestWithJWTInUrl, {});
     expect(cookieFromURL.expiryTime!).toBe(1000);
+  });
+
+  test('getKeepAliveExpiry', () => {
+    const keepAliveConfig = {
+      multitenancy: {
+        enabled: false,
+      },
+      auth: {
+        unauthenticated_routes: [] as string[],
+      },
+      session: {
+        keepalive: true,
+        ttl: 100000,
+      },
+      jwt: {
+        url_param: 'awesome',
+        header: 'AUTHORIZATION',
+        extra_storage: {
+          cookie_prefix: 'testcookie',
+          additional_cookies: 2,
+        },
+      },
+    } as SecurityPluginConfigType;
+
+    const jwtAuth = new JwtAuthentication(
+      keepAliveConfig,
+      sessionStorageFactory,
+      router,
+      esClient,
+      coreSetup,
+      logger
+    );
+
+    const requestWithHeaders = httpServerMock.createOpenSearchDashboardsRequest({
+      path: '/internal/v1',
+      headers: {
+        authorization: `Bearer ${JWT_TEST}`,
+      },
+    });
+
+    const cookie: SecuritySessionCookie = {
+      credentials: {},
+      expiryTime: 1000,
+    };
+
+    // Mock the method with a JWT with far exp
+    jest.spyOn(jwtAuth, 'buildAuthHeaderFromCookie').mockReturnValue({
+      authorization: `Bearer ${JWT_TEST_FAR_EXP}`,
+    });
+
+    // getKeepAliveExpiry takes on the value of the ttl, since it is less than the exp claim * 1000
+    expect(jwtAuth.getKeepAliveExpiry(cookie, requestWithHeaders)).toBe(100000);
+
+    // Mock the method with a JWT with near exp
+    jest.spyOn(jwtAuth, 'buildAuthHeaderFromCookie').mockReturnValue({
+      authorization: `Bearer ${JWT_TEST_NEAR_EXP}`,
+    });
+
+    // getKeepAliveExpiry takes on the value of the exp claim * 1000, since it is less than the ttl
+    expect(jwtAuth.getKeepAliveExpiry(cookie, requestWithHeaders)).toBe(50000);
+
+    // Restore the original method implementation after the test
+    jwtAuth.buildAuthHeaderFromCookie.mockRestore();
   });
 
   /* eslint-enable no-shadow, @typescript-eslint/no-var-requires */
