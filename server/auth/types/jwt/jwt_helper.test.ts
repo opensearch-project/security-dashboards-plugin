@@ -29,6 +29,14 @@ import { httpServerMock } from '../../../../../../src/core/server/http/http_serv
 import { deflateValue } from '../../../utils/compression';
 import { getExpirationDate } from './jwt_helper';
 
+// TODO: add dependency to a JWT decode/encode library for easier test writing and reading
+const JWT_TEST =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJleGFtcGxlLmNvbSIsInN1YiI6ImpvaG4uZG9lQGV4YW1wbGUuY29tIiwiZXhwIjo5MjA4NjkyMDAsIm5hbWUiOiJKb2huIERvZSIsInJvbGVzIjoiYWRtaW4ifQ.q8CtMfAeWOGDCGZ8UB8IIV-YM9hkDS8-pq0DSXh965I'; // A test JWT used for testing various scenarios
+const JWT_TEST_NO_EXP =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJleGFtcGxlLmNvbSIsInN1YiI6ImpvaG4uZG9lQGV4YW1wbGUuY29tIiwibmFtZSI6IkpvaG4gRG9lIiwicm9sZXMiOiJhZG1pbiJ9.YDDoAKtA6wXd09zZ0aIUEt_IFvOwUd3rk4fW5aNppHM'; // A test JWT with no exp claim
+const JWT_TEST_FAR_EXP =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJleGFtcGxlLmNvbSIsInN1YiI6ImpvaG4uZG9lQGV4YW1wbGUuY29tIiwiZXhwIjoxMzAwODE5MzgwMCwibmFtZSI6IkpvaG4gRG9lIiwicm9sZXMiOiJhZG1pbiJ9.ciW9WWtIaA-QJqy0flPSfMNQfGs9GEFqcNFY_LqrdII'; // A test JWT with a far off exp claim
+
 const router: Partial<IRouter> = { post: (body) => {} };
 const core = {
   http: {
@@ -226,24 +234,9 @@ describe('test jwt auth library', () => {
     expect(getExpirationDate('', 1000)).toBe(1000); // empty string
     expect(getExpirationDate('Bearer ', 1000)).toBe(1000); // empty token
     expect(getExpirationDate('Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9', 1000)).toBe(1000); // malformed token with one part
-    expect(
-      getExpirationDate(
-        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJleGFtcGxlLmNvbSIsInN1YiI6ImpvaG4uZG9lQGV4YW1wbGUuY29tIiwiZXhwIjoxMzAwODE5MzgwMCwibmFtZSI6IkpvaG4gRG9lIiwicm9sZXMiOiJhZG1pbiJ9.ciW9WWtIaA-QJqy0flPSfMNQfGs9GEFqcNFY_LqrdII',
-        1000
-      )
-    ).toBe(1000); // JWT with very far expiry defaults to lower value (ttl)
-    expect(
-      getExpirationDate(
-        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJleGFtcGxlLmNvbSIsInN1YiI6ImpvaG4uZG9lQGV4YW1wbGUuY29tIiwiZXhwIjo5MjA4NjkyMDAsIm5hbWUiOiJKb2huIERvZSIsInJvbGVzIjoiYWRtaW4ifQ.q8CtMfAeWOGDCGZ8UB8IIV-YM9hkDS8-pq0DSXh965I',
-        920869200001
-      )
-    ).toBe(920869200000); // JWT expiry is lower than the default
-    expect(
-      getExpirationDate(
-        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJleGFtcGxlLmNvbSIsInN1YiI6ImpvaG4uZG9lQGV4YW1wbGUuY29tIiwibmFtZSI6IkpvaG4gRG9lIiwicm9sZXMiOiJhZG1pbiJ9.YDDoAKtA6wXd09zZ0aIUEt_IFvOwUd3rk4fW5aNppHM',
-        1000
-      )
-    ).toBe(1000); // JWT doesn't include a exp claim
+    expect(getExpirationDate(`Bearer ${JWT_TEST_FAR_EXP}`, 1000)).toBe(1000); // JWT with very far expiry defaults to lower value (ttl)
+    expect(getExpirationDate(`Bearer ${JWT_TEST}`, 920869200001)).toBe(920869200000); // JWT expiry is lower than the default
+    expect(getExpirationDate(`Bearer ${JWT_TEST_NO_EXP}`, 1000)).toBe(1000); // JWT doesn't include a exp claim
   });
 
   test('JWT auth type sets expiryTime of cookie JWT exp less than ttl', async () => {
@@ -280,8 +273,7 @@ describe('test jwt auth library', () => {
     const requestWithHeaders = httpServerMock.createOpenSearchDashboardsRequest({
       path: '/internal/v1',
       headers: {
-        authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJleGFtcGxlLmNvbSIsInN1YiI6ImpvaG4uZG9lQGV4YW1wbGUuY29tIiwiZXhwIjo5MjA4NjkyMDAsIm5hbWUiOiJKb2huIERvZSIsInJvbGVzIjoiYWRtaW4ifQ.q8CtMfAeWOGDCGZ8UB8IIV-YM9hkDS8-pq0DSXh965I',
+        authorization: `Bearer ${JWT_TEST}`,
       },
     });
     const cookieFromHeaders = jwtAuth.getCookie(requestWithHeaders, {});
@@ -290,8 +282,7 @@ describe('test jwt auth library', () => {
     const requestWithJWTInUrl = httpServerMock.createOpenSearchDashboardsRequest({
       path: '/internal/v1',
       query: {
-        awesome:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJleGFtcGxlLmNvbSIsInN1YiI6ImpvaG4uZG9lQGV4YW1wbGUuY29tIiwiZXhwIjo5MjA4NjkyMDAsIm5hbWUiOiJKb2huIERvZSIsInJvbGVzIjoiYWRtaW4ifQ.q8CtMfAeWOGDCGZ8UB8IIV-YM9hkDS8-pq0DSXh965I',
+        awesome: JWT_TEST,
       },
     });
     const cookieFromURL = jwtAuth.getCookie(requestWithJWTInUrl, {});
@@ -332,8 +323,7 @@ describe('test jwt auth library', () => {
     const requestWithHeaders = httpServerMock.createOpenSearchDashboardsRequest({
       path: '/internal/v1',
       headers: {
-        authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJleGFtcGxlLmNvbSIsInN1YiI6ImpvaG4uZG9lQGV4YW1wbGUuY29tIiwiZXhwIjo5MjA4NjkyMDAsIm5hbWUiOiJKb2huIERvZSIsInJvbGVzIjoiYWRtaW4ifQ.q8CtMfAeWOGDCGZ8UB8IIV-YM9hkDS8-pq0DSXh965I',
+        authorization: `Bearer ${JWT_TEST}`,
       },
     });
     const cookieFromHeaders = jwtAuth.getCookie(requestWithHeaders, {});
@@ -342,8 +332,7 @@ describe('test jwt auth library', () => {
     const requestWithJWTInUrl = httpServerMock.createOpenSearchDashboardsRequest({
       path: '/internal/v1',
       query: {
-        awesome:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJleGFtcGxlLmNvbSIsInN1YiI6ImpvaG4uZG9lQGV4YW1wbGUuY29tIiwiZXhwIjo5MjA4NjkyMDAsIm5hbWUiOiJKb2huIERvZSIsInJvbGVzIjoiYWRtaW4ifQ.q8CtMfAeWOGDCGZ8UB8IIV-YM9hkDS8-pq0DSXh965I',
+        awesome: JWT_TEST,
       },
     });
     const cookieFromURL = jwtAuth.getCookie(requestWithJWTInUrl, {});
