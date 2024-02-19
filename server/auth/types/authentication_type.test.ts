@@ -37,9 +37,6 @@ class DummyAuthType extends AuthenticationType {
   resolveTenant(): Promise<string | undefined> {
     return Promise.resolve('dummy_tenant');
   }
-  public supportsKeepAlive(request: OpenSearchDashboardsRequest): Promise<boolean> {
-    return Promise.resolve(true);
-  }
 }
 
 describe('test tenant header', () => {

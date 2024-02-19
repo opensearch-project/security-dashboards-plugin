@@ -251,9 +251,9 @@ export class OpenIdAuthentication extends AuthenticationType {
     };
   }
 
-  // JWT auth types should get expiry from the JWT, and not override this value
-  public async supportsKeepAlive(request: OpenSearchDashboardsRequest): Promise<boolean> {
-    return false;
+  // OIDC expiry time is set by the IDP and refreshed via refreshTokens
+  getKeepAliveExpiry(cookie: SecuritySessionCookie, request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>): number {
+    return cookie.expiryTime!
   }
 
   // TODO: Add token expiration check here

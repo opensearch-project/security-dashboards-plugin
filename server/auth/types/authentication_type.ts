@@ -159,8 +159,8 @@ export abstract class AuthenticationType implements IAuthenticationType {
       }
 
       // extend session expiration time
-      if ((await this.supportsKeepAlive(request)) && this.config.session.keepalive) {
-        cookie!.expiryTime = Date.now() + this.config.session.ttl;
+      if (this.config.session.keepalive) {
+        cookie!.expiryTime = this.getKeepAliveExpiry(cookie!, request);
         this.sessionStorageFactory.asScoped(request).set(cookie!);
       }
       // cookie is valid
@@ -277,7 +277,10 @@ export abstract class AuthenticationType implements IAuthenticationType {
     request: OpenSearchDashboardsRequest,
     authInfo: any
   ): SecuritySessionCookie;
-  public abstract supportsKeepAlive(request: OpenSearchDashboardsRequest): Promise<boolean>;
+  public abstract getKeepAliveExpiry(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest,
+  ): number;
   public abstract isValidCookie(
     cookie: SecuritySessionCookie,
     request: OpenSearchDashboardsRequest

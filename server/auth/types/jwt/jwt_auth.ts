@@ -180,9 +180,9 @@ export class JwtAuthentication extends AuthenticationType {
     );
   }
 
-  // JWT auth types should get expiry from the JWT, and not override this value
-  public async supportsKeepAlive(request: OpenSearchDashboardsRequest): Promise<boolean> {
-    return false;
+  getKeepAliveExpiry(cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest): number {
+    return getExpirationDate(this.buildAuthHeaderFromCookie(cookie,request)[this.authHeaderName], Date.now() + this.config.session.ttl);
   }
 
   handleUnauthedRequest(

@@ -64,10 +64,6 @@ export class BasicAuthentication extends AuthenticationType {
     return request.headers[AUTH_HEADER_NAME] ? true : false;
   }
 
-  public async supportsKeepAlive(request: OpenSearchDashboardsRequest): Promise<boolean> {
-    return true;
-  }
-
   async getAdditionalAuthHeader(
     request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
   ): Promise<any> {
@@ -103,6 +99,11 @@ export class BasicAuthentication extends AuthenticationType {
       ((cookie.username && cookie.credentials?.authHeaderValue) ||
         (this.config.auth.anonymous_auth_enabled && cookie.isAnonymousAuth))
     );
+  }
+
+  getKeepAliveExpiry(cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest): number {
+    return Date.now() + this.config.session.ttl;
   }
 
   handleUnauthedRequest(
