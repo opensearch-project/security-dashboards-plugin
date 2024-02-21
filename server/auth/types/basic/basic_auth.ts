@@ -101,10 +101,6 @@ export class BasicAuthentication extends AuthenticationType {
     );
   }
 
-  getKeepAliveExpiry(cookie: SecuritySessionCookie, request: OpenSearchDashboardsRequest): number {
-    return Date.now() + this.config.session.ttl;
-  }
-
   handleUnauthedRequest(
     request: OpenSearchDashboardsRequest,
     response: LifecycleResponseFactory,

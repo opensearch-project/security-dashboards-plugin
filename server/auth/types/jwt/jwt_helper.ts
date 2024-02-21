@@ -27,8 +27,6 @@ export function getExpirationDate(authHeader: string | undefined, defaultExpiry:
     if (claim.exp) {
       return Math.min(claim.exp * 1000, defaultExpiry);
     }
-    return defaultExpiry;
-  } else {
-    return defaultExpiry;
   }
+  return defaultExpiry;
 }

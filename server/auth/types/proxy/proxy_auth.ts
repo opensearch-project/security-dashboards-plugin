@@ -73,13 +73,6 @@ export class ProxyAuthentication extends AuthenticationType {
       : false;
   }
 
-  public getKeepAliveExpiry(
-    cookie: SecuritySessionCookie,
-    request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
-  ): number {
-    return Date.now() + this.config.session.ttl;
-  }
-
   async getAdditionalAuthHeader(request: OpenSearchDashboardsRequest): Promise<any> {
     const authHeaders: any = {};
     const customProxyHeader = this.config.proxycache?.proxy_header;

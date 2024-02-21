@@ -266,6 +266,13 @@ export abstract class AuthenticationType implements IAuthenticationType {
     });
   }
 
+  public getKeepAliveExpiry(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): number {
+    return Date.now() + this.config.session.ttl;
+  };
+
   isPageRequest(request: OpenSearchDashboardsRequest) {
     const path = request.url.pathname || '/';
     return path.startsWith('/app/') || path === '/' || path.startsWith('/goto/');
@@ -277,10 +284,6 @@ export abstract class AuthenticationType implements IAuthenticationType {
     request: OpenSearchDashboardsRequest,
     authInfo: any
   ): SecuritySessionCookie;
-  public abstract getKeepAliveExpiry(
-    cookie: SecuritySessionCookie,
-    request: OpenSearchDashboardsRequest
-  ): number;
   public abstract isValidCookie(
     cookie: SecuritySessionCookie,
     request: OpenSearchDashboardsRequest
