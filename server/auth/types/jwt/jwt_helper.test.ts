@@ -215,7 +215,8 @@ describe('test jwt auth library', () => {
   });
 }); // re-import JWTAuth to change cookie splitter to a no-op
 
-/* eslint-disable no-shadow, @typescript-eslint/no-var-requires */ describe('JWT Expiry Tests', () => {
+/* eslint-disable no-shadow, @typescript-eslint/no-var-requires */
+describe('JWT Expiry Tests', () => {
   const setExtraAuthStorageMock = jest.fn();
   jest.resetModules();
   jest.doMock('../../../session/cookie_splitter', () => ({

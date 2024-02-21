@@ -181,7 +181,6 @@ export class JwtAuthentication extends AuthenticationType {
   }
 
   getKeepAliveExpiry(cookie: SecuritySessionCookie, request: OpenSearchDashboardsRequest): number {
-    console.log(this.buildAuthHeaderFromCookie(cookie, request)[this.authHeaderName]);
     return getExpirationDate(
       this.buildAuthHeaderFromCookie(cookie, request)[this.authHeaderName],
       Date.now() + this.config.session.ttl
