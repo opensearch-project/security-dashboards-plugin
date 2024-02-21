@@ -36,7 +36,7 @@ runs:
         plugin-version: ${{ env.PLUGIN_VERSION }}
     
     - name: Run Opensearch with A Single Plugin
-      uses: derek-ho/start-opensearch@main
+      uses: derek-ho/start-opensearch@space-security-settings
       with:
         opensearch-version: ${{ env.OPENSEARCH_VERSION }}
         plugins: "file:$(pwd)/opensearch-security.zip"

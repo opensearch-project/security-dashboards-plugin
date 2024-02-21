@@ -46,7 +46,7 @@ jobs:
           plugin-version: ${{ env.PLUGIN_VERSION }}
 
       - name: Run Opensearch with security
-        uses: derek-ho/start-opensearch@v1
+        uses: derek-ho/start-opensearch@space-security-settings
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: "file:$(pwd)/${{ env.PLUGIN_NAME }}.zip"
