@@ -34,14 +34,7 @@ runs:
         opensearch-version: ${{ env.OPENSEARCH_VERSION }}
         plugin-name: ${{ env.PLUGIN_NAME }}
         plugin-version: ${{ env.PLUGIN_VERSION }}
-
     
-    # OSD bootstrap
-    - name: Run Dashboard with Security Dashboards Plugin
-      uses: ./.github/actions/install-dashboards
-      with:
-        plugin_name: security-dashboards-plugin
-
     - name: Run Opensearch with A Single Plugin
       uses: derek-ho/start-opensearch@main
       with:
@@ -50,6 +43,12 @@ runs:
         security-enabled: true
         admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
         security_config_file: ${{ inputs.security_config_file }}
+
+    # OSD bootstrap
+    - name: Run Dashboard with Security Dashboards Plugin
+      uses: ./.github/actions/install-dashboards
+      with:
+        plugin_name: security-dashboards-plugin
 
     - name: Run OpenSearch Dashboards with provided configuration
       if: ${{ runner.os == 'Linux' }}
