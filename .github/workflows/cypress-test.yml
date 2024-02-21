@@ -10,6 +10,7 @@ env:
   OPENSEARCH_SNAPSHOT_CMD: 'node ../scripts/opensearch snapshot'
   SPEC: 'cypress/integration/plugins/security-dashboards-plugin/aggregation_view.js,'
   PLUGIN_NAME: opensearch-security
+  OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
 
 jobs:
   cypress-tests:
@@ -44,13 +45,13 @@ jobs:
           plugin-name: ${{ env.PLUGIN_NAME }}
           plugin-version: ${{ env.PLUGIN_VERSION }}
 
-      - name: Run Opensearch with A Single Plugin
-        uses: opensearch-project/security/.github/actions/start-opensearch-with-one-plugin@main
+      - name: Run Opensearch with security
+        uses: derek-ho/start-opensearch@v1
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
-          plugin-name: ${{ env.PLUGIN_NAME }}
-          setup-script-name: setup
-          admin-password: myStrongPassword123!
+          plugins: "$(pwd)/${{ env.PLUGIN_NAME }}.zip"
+          security-enabled: true
+          admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
 
       - name: Run Dashboard with Security Dashboards Plugin
         uses: ./.github/actions/install-dashboards

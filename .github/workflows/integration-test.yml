@@ -6,6 +6,7 @@ env:
   TEST_BROWSER_HEADLESS: 1
   CI: 1
   PLUGIN_NAME: opensearch-security
+  OPENSEARCH_INITIAL_ADMIN_PASSWORD: admin
 
 jobs:
   tests:
@@ -58,13 +59,13 @@ jobs:
           plugin-name: ${{ env.PLUGIN_NAME }}
           plugin-version: ${{ env.PLUGIN_VERSION }}
 
-      - name: Run Opensearch with A Single Plugin
-        uses: opensearch-project/security/.github/actions/start-opensearch-with-one-plugin@main
+      - name: Run Opensearch with security
+        uses: derek-ho/start-opensearch@v1
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
-          plugin-name: ${{ env.PLUGIN_NAME }}
-          setup-script-name: setup
-          admin-password: admin
+          plugins: "$(pwd)/${{ env.PLUGIN_NAME }}.zip"
+          security-enabled: true
+          admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
 
       # https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
       - name: Remove unnecessary files Linux
