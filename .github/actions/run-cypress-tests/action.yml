@@ -50,6 +50,21 @@ runs:
       with:
         plugin_name: security-dashboards-plugin
 
+    - name: Replace dashboards configuration
+      if: ${{ runner.os == 'Linux' }}
+      run: |
+        if [ -f ${{ inputs.dashboards_config_file }} ]; then
+          mv ${{ inputs.dashboards_config_file }} ./OpenSearch-Dashboards/config/opensearch_dashboards.yml
+        fi
+      shell: bash
+
+    - name: Run pretest script
+      if: ${{ runner.os == 'Linux' }}
+      run: |
+        cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
+        yarn pretest:jest_server
+      shell: bash
+
     - name: Run OpenSearch Dashboards with provided configuration
       if: ${{ runner.os == 'Linux' }}
       run: |
