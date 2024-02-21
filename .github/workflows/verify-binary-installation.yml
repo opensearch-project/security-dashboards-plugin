@@ -46,7 +46,7 @@ jobs:
         uses: derek-ho/start-opensearch@v1
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
-          plugin-name: ${{ env.PLUGIN_NAME }}
+          plugins: "file:$(pwd)/${{ env.PLUGIN_NAME }}.zip"
           security-enabled: true
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
 
