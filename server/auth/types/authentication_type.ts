@@ -271,7 +271,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
     request: OpenSearchDashboardsRequest
   ): number {
     return Date.now() + this.config.session.ttl;
-  };
+  }
 
   isPageRequest(request: OpenSearchDashboardsRequest) {
     const path = request.url.pathname || '/';
