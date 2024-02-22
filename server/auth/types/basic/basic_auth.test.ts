@@ -43,7 +43,7 @@ describe('Basic auth tests', () => {
     const realDateNow = Date.now.bind(global.Date);
     const dateNowStub = jest.fn(() => 0);
     global.Date.now = dateNowStub;
-    const proxyAuthentication = new BasicAuthentication(
+    const basicAuthentication = new BasicAuthentication(
       config,
       sessionStorageFactory,
       router,
@@ -63,7 +63,7 @@ describe('Basic auth tests', () => {
       path: '/internal/v1',
     });
 
-    expect(proxyAuthentication.getKeepAliveExpiry(cookie, request)).toBe(1000);
+    expect(basicAuthentication.getKeepAliveExpiry(cookie, request)).toBe(1000);
     global.Date.now = realDateNow;
   });
 });

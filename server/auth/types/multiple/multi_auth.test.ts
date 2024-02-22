@@ -46,7 +46,7 @@ describe('Multi auth tests', () => {
     const realDateNow = Date.now.bind(global.Date);
     const dateNowStub = jest.fn(() => 0);
     global.Date.now = dateNowStub;
-    const proxyAuthentication = new MultipleAuthentication(
+    const multiAuthentication = new MultipleAuthentication(
       config,
       sessionStorageFactory,
       router,
@@ -66,7 +66,7 @@ describe('Multi auth tests', () => {
       path: '/internal/v1',
     });
 
-    expect(proxyAuthentication.getKeepAliveExpiry(cookie, request)).toBe(1000); // Multi auth using basic auth's implementation
+    expect(multiAuthentication.getKeepAliveExpiry(cookie, request)).toBe(1000); // Multi auth using basic auth's implementation
     global.Date.now = realDateNow;
   });
 });
