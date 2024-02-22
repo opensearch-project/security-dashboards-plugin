@@ -46,7 +46,7 @@ runs:
 
     # OSD bootstrap
     - name: Run Dashboard with Security Dashboards Plugin
-      uses: ./.github/actions/install-dashboards
+      uses: derek-ho/setup-opensearch-dashboards@main
       with:
         plugin_name: security-dashboards-plugin
 
