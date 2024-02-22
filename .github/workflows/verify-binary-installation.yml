@@ -49,6 +49,7 @@ jobs:
         uses: derek-ho/setup-opensearch-dashboards@main
         with:
           plugin_name: security-dashboards-plugin
+          install_zip: true
 
       - name: Install plugin to OSD Linux
         run: | 
