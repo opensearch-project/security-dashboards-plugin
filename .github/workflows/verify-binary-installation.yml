@@ -22,11 +22,6 @@ jobs:
       - name: Checkout Branch
         uses: actions/checkout@v3
 
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-
       - name: Set env
         run: |
           opensearch_version=$(node -p "require('./package.json').opensearchDashboards.version")
@@ -50,70 +45,10 @@ jobs:
           security-enabled: true
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
 
-      - uses: actions/checkout@v2
+      - name: Run Dashboard with Security Dashboards Plugin
+        uses: derek-ho/setup-opensearch-dashboards@main
         with:
-          path: OpenSearch-Dashboards
-          repository: opensearch-project/OpenSearch-Dashboards
-          ref: 'main'
-          fetch-depth: 0
-          filter: |
-            cypress
-            test
-
-      - id: osd-version
-        run: |
-          echo "::set-output name=osd-version::$(jq -r '.opensearchDashboards.version | split(".") | .[:2] | join(".")' package.json)"
-          echo "::set-output name=osd-x-version::$(jq -r '.opensearchDashboards.version | split(".") | .[0]' package.json).x"
-        shell: bash
-        
-      - id: branch-switch-if-possible
-        continue-on-error: true # Defaults onto main if the branch switch doesn't work
-        if: ${{ steps.osd-version.outputs.osd-version }}
-        run: git checkout ${{ steps.osd-version.outputs.osd-version }} || git checkout ${{ steps.osd-version.outputs.osd-x-version }}
-        working-directory: ./OpenSearch-Dashboards
-        shell: bash
-
-      - id: tool-versions
-        run: |
-          echo "node_version=$(cat .node-version)" >> $GITHUB_OUTPUT
-          echo "yarn_version=$(jq -r '.engines.yarn' package.json)" >> $GITHUB_OUTPUT
-        working-directory: OpenSearch-Dashboards
-        shell: bash
-
-      - uses: actions/setup-node@v1
-        with:
-          node-version: ${{ steps.tool-versions.outputs.node_version }}
-          registry-url: 'https://registry.npmjs.org'
-
-      # loose is passed in to ignore version conflicts on cypress version used in OSD and this repo
-      - name: Setup Opensearch Dashboards
-        run: |
-          npm uninstall -g yarn
-          echo "Installing yarn ${{ steps.tool-versions.outputs.yarn_version }}"
-          npm i -g yarn@${{ steps.tool-versions.outputs.yarn_version }}
-          yarn cache clean
-          yarn add sha.js
-          yarn osd bootstrap --single-version=loose 
-          scripts/use_node scripts/build
-        working-directory: OpenSearch-Dashboards
-        shell: bash
-      
-      - uses: actions/checkout@v2
-        with:
-          path: OpenSearch-Dashboards/plugins/security-dashboards-plugin
-
-      # loose is passed in to ignore version conflicts on cypress version used in OSD and this repo
-      - name: Install dependencies
-        run: |
-          yarn osd bootstrap --single-version=loose
-        working-directory: OpenSearch-Dashboards
-        shell: bash
-
-      - name: Build Plugin Zip
-        run: |
-          yarn build
-        working-directory: OpenSearch-Dashboards/plugins/security-dashboards-plugin
-        shell: bash
+          plugin_name: security-dashboards-plugin
 
       - name: Install plugin to OSD Linux
         run: | 
