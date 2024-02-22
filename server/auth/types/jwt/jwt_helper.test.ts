@@ -244,13 +244,7 @@ describe('JWT Expiry Tests', () => {
   });
 
   test('JWT auth type sets expiryTime of cookie JWT exp less than ttl', async () => {
-    const keepAliveConfig = {
-      multitenancy: {
-        enabled: false,
-      },
-      auth: {
-        unauthenticated_routes: [] as string[],
-      },
+    const infiniteTTLConfig = {
       session: {
         keepalive: true,
         ttl: Infinity,
@@ -266,7 +260,7 @@ describe('JWT Expiry Tests', () => {
     } as SecurityPluginConfigType;
 
     const jwtAuth = new JwtAuthentication(
-      keepAliveConfig,
+      infiniteTTLConfig,
       sessionStorageFactory,
       router,
       esClient,
@@ -294,13 +288,7 @@ describe('JWT Expiry Tests', () => {
   });
 
   test('JWT auth type sets expiryTime of cookie ttl less than JWT exp', async () => {
-    const keepAliveConfig = {
-      multitenancy: {
-        enabled: false,
-      },
-      auth: {
-        unauthenticated_routes: [] as string[],
-      },
+    const lowTTLConfig = {
       session: {
         keepalive: true,
         ttl: 1000,
@@ -316,7 +304,7 @@ describe('JWT Expiry Tests', () => {
     } as SecurityPluginConfigType;
 
     const jwtAuth = new JwtAuthentication(
-      keepAliveConfig,
+      lowTTLConfig,
       sessionStorageFactory,
       router,
       esClient,
@@ -344,13 +332,7 @@ describe('JWT Expiry Tests', () => {
   });
 
   test('getKeepAliveExpiry', () => {
-    const keepAliveConfig = {
-      multitenancy: {
-        enabled: false,
-      },
-      auth: {
-        unauthenticated_routes: [] as string[],
-      },
+    const jwtConfig = {
       session: {
         keepalive: true,
         ttl: 100000,
@@ -366,7 +348,7 @@ describe('JWT Expiry Tests', () => {
     } as SecurityPluginConfigType;
 
     const jwtAuth = new JwtAuthentication(
-      keepAliveConfig,
+      jwtConfig,
       sessionStorageFactory,
       router,
       esClient,

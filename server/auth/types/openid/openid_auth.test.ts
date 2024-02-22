@@ -212,21 +212,14 @@ describe('test OpenId authHeaderValue', () => {
     const realDateNow = Date.now.bind(global.Date);
     const dateNowStub = jest.fn(() => 0);
     global.Date.now = dateNowStub;
-    const customConfig = {
+    const oidcConfig: unknown = {
       openid: {
-        pfx: 'test/certs/keyStore.p12',
-        certificate: 'test/certs/cert.pem',
-        private_key: 'test/certs/private-key.pem',
-        passphrase: '',
-        header: 'authorization',
         scope: [],
       },
     };
 
-    const openidConfig = (customConfig as unknown) as SecurityPluginConfigType;
-
     const openIdAuthentication = new OpenIdAuthentication(
-      openidConfig,
+      oidcConfig as SecurityPluginConfigType,
       sessionStorageFactory,
       router,
       esClient,
@@ -248,21 +241,14 @@ describe('test OpenId authHeaderValue', () => {
   });
 
   test('getKeepAliveExpiry', () => {
-    const customConfig = {
+    const oidcConfig: unknown = {
       openid: {
-        pfx: 'test/certs/keyStore.p12',
-        certificate: 'test/certs/cert.pem',
-        private_key: 'test/certs/private-key.pem',
-        passphrase: '',
-        header: 'authorization',
         scope: [],
       },
     };
 
-    const openidConfig = (customConfig as unknown) as SecurityPluginConfigType;
-
     const openIdAuthentication = new OpenIdAuthentication(
-      openidConfig,
+      oidcConfig as SecurityPluginConfigType,
       sessionStorageFactory,
       router,
       esClient,

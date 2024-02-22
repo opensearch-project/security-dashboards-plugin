@@ -33,16 +33,7 @@ describe('Proxy auth tests', () => {
   let sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>;
   let logger: Logger;
 
-  // Consistent with auth_handler_factory.test.ts
-  beforeEach(() => {});
-
   const config = ({
-    saml: {
-      extra_storage: {
-        cookie_prefix: 'testcookie',
-        additional_cookies: 5,
-      },
-    },
     session: {
       ttl: 1000,
     },

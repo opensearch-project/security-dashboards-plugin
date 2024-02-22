@@ -15,11 +15,8 @@
 
 import { httpServerMock } from '../../../../../../src/core/server/http/http_server.mocks';
 
-import { OpenSearchDashboardsRequest } from '../../../../../../src/core/server/http/router';
-
 import { SecurityPluginConfigType } from '../../../index';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
-import { deflateValue } from '../../../utils/compression';
 import {
   IRouter,
   CoreSetup,
@@ -35,9 +32,6 @@ describe('Multi auth tests', () => {
   let esClient: ILegacyClusterClient;
   let sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>;
   let logger: Logger;
-
-  // Consistent with auth_handler_factory.test.ts
-  beforeEach(() => {});
 
   const config = ({
     session: {
