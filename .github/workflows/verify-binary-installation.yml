@@ -70,6 +70,7 @@ jobs:
         uses: derek-ho/setup-opensearch-dashboards@main
         with:
           plugin_name: security-dashboards-plugin
+          built_plugin_name: security-dashboards
           install_zip: true
           opensearch_dashboards_yml: config.yml
           
