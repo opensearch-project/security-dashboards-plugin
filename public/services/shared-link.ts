@@ -107,8 +107,10 @@ export function setClipboardAndTarget(
   const referenceNode = document.getElementsByTagName('span').item(0);
 
   range.selectNode(referenceNode);
-  shareButton.removeAllRanges();
-  shareButton.addRange(range);
+  try {
+    shareButton.removeAllRanges();
+    shareButton.addRange(range);
+  } catch (e) { /* ignore */ }
 
   if (newValue !== originalValue) {
     target.textContent = newValue;

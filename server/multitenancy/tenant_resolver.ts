@@ -224,6 +224,12 @@ export function addTenantParameterToResolvedShortLink(request: OpenSearchDashboa
           parts.query.security_tenant = request.headers.securitytenant as string;
         }
       });
+    } else if (request.url.searchParams.get('security_tenant')) {
+      rawResponse.headers.location = modifyUrl(responsePath, (parts) => {
+        if (parts.query.security_tenant === undefined) {
+          parts.query.security_tenant = request.url.searchParams.get('security_tenant');
+        }
+      });
     }
   }
 
