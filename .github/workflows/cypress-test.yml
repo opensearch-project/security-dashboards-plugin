@@ -56,7 +56,7 @@ jobs:
       # Configure the Dashboard
       - name: Configure OpenSearch Dashboards for cypress
         run: |
-          cat << 'EOT' > cypress-config.yml
+          cat << 'EOT' > cypress-opensearch-dashboards-config.yml
           server.host: "0.0.0.0"
           opensearch.hosts: ["https://localhost:9200"]
           opensearch.ssl.verificationMode: none
@@ -69,14 +69,12 @@ jobs:
           opensearch_security.cookie.secure: false
           opensearch_security.multitenancy.enable_aggregation_view: true
           EOT
-          echo 'HERE IS THE DASHBOARD CONFIG FILE: '
-          cat cypress-config.yml
 
       - name: Run Dashboard with Security Dashboards Plugin
         uses: derek-ho/setup-opensearch-dashboards@v1
         with:
           plugin_name: security-dashboards-plugin
-          opensearch_dashboards_yml: cypress-config.yml
+          opensearch_dashboards_yml: cypress-opensearch-dashboards-config.yml
 
       - name: Configure and Run OpenSearch Dashboards with Cypress Test Cases
         run: |

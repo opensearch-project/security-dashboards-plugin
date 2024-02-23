@@ -48,7 +48,7 @@ jobs:
       # Configure the Dashboard
       - name: Configure OpenSearch Dashboards
         run: |
-          cat << 'EOT' > config.yml
+          cat << 'EOT' > opensearch-dashboards-config.yml
           server.host: "0.0.0.0"
           opensearch.hosts: ["https://localhost:9200"]
           opensearch.ssl.verificationMode: none
@@ -62,8 +62,6 @@ jobs:
           # Use this setting if you are running opensearch-dashboards without https
           opensearch_security.cookie.secure: false
           EOT
-          echo 'HERE IS THE DASHBOARD CONFIG FILE: '
-          cat config.yml
 
 
       - name: Run Dashboard with Security Dashboards Plugin
@@ -73,7 +71,7 @@ jobs:
           plugin_name: security-dashboards-plugin
           built_plugin_name: security-dashboards
           install_zip: true
-          opensearch_dashboards_yml: config.yml
+          opensearch_dashboards_yml: opensearch-dashboards-config.yml
           
       - name: Start the binary
         run: | 
