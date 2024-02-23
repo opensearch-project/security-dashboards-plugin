@@ -71,7 +71,7 @@ jobs:
           cat tenancy-disabled-config.yml
 
       - name: Run Dashboard with Security Dashboards Plugin
-        uses: derek-ho/setup-opensearch-dashboards@main
+        uses: derek-ho/setup-opensearch-dashboards@v1
         with:
           plugin_name: security-dashboards-plugin
           opensearch_dashboards_yml: tenancy-disabled-config.yml
