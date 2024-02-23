@@ -78,7 +78,7 @@ jobs:
       - name: Start the binary
         run: | 
           nohup ./bin/opensearch-dashboards &
-        working-directory: ${{ steps.setup-dashboards.outputs.dashboards-directory }}
+        working-directory: ${{ steps.setup-dashboards.outputs.dashboards-binary-directory }}
         shell: bash
 
       - name: Health check 
