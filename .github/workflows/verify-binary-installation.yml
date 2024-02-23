@@ -72,12 +72,6 @@ jobs:
           plugin_name: security-dashboards-plugin
           install_zip: true
           opensearch_dashboards_yml: config.yml
-
-      - name: Install plugin to OSD Linux
-        run: | 
-          build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64/bin/opensearch-dashboards-plugin install file:$(pwd)/plugins/security-dashboards-plugin/build/security-dashboards-${{env.PLUGIN_VERSION}}.zip
-        working-directory: OpenSearch-Dashboards
-        shell: bash
           
       - name: Start the binary
         run: | 
