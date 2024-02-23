@@ -53,26 +53,34 @@ jobs:
           security-enabled: true
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
 
+      # Configure the Dashboard
+      - name: Configure OpenSearch Dashboards for cypress
+        run: |
+          cat << 'EOT' > cypress-config.yml
+          server.host: "0.0.0.0"
+          opensearch.hosts: ["https://localhost:9200"]
+          opensearch.ssl.verificationMode: none
+          opensearch.username: "kibanaserver"
+          opensearch.password: "kibanaserver"
+          opensearch.requestHeadersWhitelist: [ authorization,securitytenant ]
+          opensearch_security.multitenancy.enabled: true
+          opensearch_security.multitenancy.tenants.preferred: ["Private", "Global"]
+          opensearch_security.readonly_mode.roles: ["kibana_read_only"]
+          opensearch_security.cookie.secure: false
+          opensearch_security.multitenancy.enable_aggregation_view: true
+          EOT
+          echo 'HERE IS THE DASHBOARD CONFIG FILE: '
+          cat cypress-config.yml
+
       - name: Run Dashboard with Security Dashboards Plugin
         uses: derek-ho/setup-opensearch-dashboards@main
         with:
           plugin_name: security-dashboards-plugin
+          opensearch_dashboards_yml: cypress-config.yml
 
       - name: Configure and Run OpenSearch Dashboards with Cypress Test Cases
         run: |
           cd ./OpenSearch-Dashboards
-          > ./config/opensearch_dashboards.yml  # Clear the file
-          echo 'server.host: "0.0.0.0"' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch.hosts: ["https://localhost:9200"]' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch.ssl.verificationMode: none' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch.username: "kibanaserver"' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch.password: "kibanaserver"' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch.requestHeadersWhitelist: [ authorization,securitytenant ]' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch_security.multitenancy.enabled: true' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch_security.multitenancy.tenants.preferred: ["Private", "Global"]' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch_security.readonly_mode.roles: ["kibana_read_only"]' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch_security.cookie.secure: false' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch_security.multitenancy.enable_aggregation_view: true' >> ./config/opensearch_dashboards.yml
           nohup yarn start --no-base-path --no-watch &
           sleep 500
           git clone https://github.com/opensearch-project/opensearch-dashboards-functional-test.git

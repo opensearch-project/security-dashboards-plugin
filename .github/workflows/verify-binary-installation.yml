@@ -45,22 +45,10 @@ jobs:
           security-enabled: true
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
 
-      - name: Run Dashboard with Security Dashboards Plugin
-        uses: derek-ho/setup-opensearch-dashboards@main
-        with:
-          plugin_name: security-dashboards-plugin
-          install_zip: true
-
-      - name: Install plugin to OSD Linux
-        run: | 
-          build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64/bin/opensearch-dashboards-plugin install file:$(pwd)/plugins/security-dashboards-plugin/build/security-dashboards-${{env.PLUGIN_VERSION}}.zip
-        working-directory: OpenSearch-Dashboards
-        shell: bash
-
-      - name: Write security settings into OSD yml file
+      # Configure the Dashboard
+      - name: Configure OpenSearch Dashboards
         run: |
-          rm -rf ./config/opensearch_dashboards.yml
-          cat << 'EOT' > ./config/opensearch_dashboards.yml
+          cat << 'EOT' > config.yml
           server.host: "0.0.0.0"
           opensearch.hosts: ["https://localhost:9200"]
           opensearch.ssl.verificationMode: none
@@ -73,9 +61,24 @@ jobs:
 
           # Use this setting if you are running opensearch-dashboards without https
           opensearch_security.cookie.secure: false
-        working-directory: OpenSearch-Dashboards/build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64
-          
+          EOT
+          echo 'HERE IS THE DASHBOARD CONFIG FILE: '
+          cat config.yml
 
+
+      - name: Run Dashboard with Security Dashboards Plugin
+        uses: derek-ho/setup-opensearch-dashboards@main
+        with:
+          plugin_name: security-dashboards-plugin
+          install_zip: true
+          opensearch_dashboards_yml: config.yml
+
+      - name: Install plugin to OSD Linux
+        run: | 
+          build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64/bin/opensearch-dashboards-plugin install file:$(pwd)/plugins/security-dashboards-plugin/build/security-dashboards-${{env.PLUGIN_VERSION}}.zip
+        working-directory: OpenSearch-Dashboards
+        shell: bash
+          
       - name: Start the binary
         run: | 
           nohup ./bin/opensearch-dashboards &

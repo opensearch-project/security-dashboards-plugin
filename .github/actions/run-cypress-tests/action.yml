@@ -49,14 +49,7 @@ runs:
       uses: derek-ho/setup-opensearch-dashboards@main
       with:
         plugin_name: security-dashboards-plugin
-
-    - name: Replace dashboards configuration
-      if: ${{ runner.os == 'Linux' }}
-      run: |
-        if [ -f ${{ inputs.dashboards_config_file }} ]; then
-          mv ${{ inputs.dashboards_config_file }} ./OpenSearch-Dashboards/config/opensearch_dashboards.yml
-        fi
-      shell: bash
+        opensearch_dashboards_yml: ${{ inputs.dashboards_config_file }}
 
     - name: Run pretest script
       if: ${{ runner.os == 'Linux' }}
