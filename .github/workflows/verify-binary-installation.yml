@@ -67,6 +67,7 @@ jobs:
 
 
       - name: Run Dashboard with Security Dashboards Plugin
+        id: setup-dashboards
         uses: derek-ho/setup-opensearch-dashboards@main
         with:
           plugin_name: security-dashboards-plugin
@@ -77,7 +78,7 @@ jobs:
       - name: Start the binary
         run: | 
           nohup ./bin/opensearch-dashboards &
-        working-directory: OpenSearch-Dashboards/build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64
+        working-directory: working-directory: ${{ steps.setup-dashboards.outputs.dashboards-directory }}
         shell: bash
 
       - name: Health check 
