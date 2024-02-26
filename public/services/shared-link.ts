@@ -110,7 +110,9 @@ export function setClipboardAndTarget(
   try {
     shareButton.removeAllRanges();
     shareButton.addRange(range);
-  } catch (e) { /* ignore */ }
+  } catch (e) {
+    /* ignore */
+  }
 
   if (newValue !== originalValue) {
     target.textContent = newValue;
