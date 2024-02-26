@@ -110,8 +110,6 @@ jobs:
                   authentication_backend:
                     type: noop
           EOT
-          echo "THIS IS THE SECURITY CONFIG FILE: "
-          cat config_openid.yml
 
       # Configure the Dashboard for OpenID setup
       - name: Create OpenSearch Dashboards Config for OpenID
@@ -136,8 +134,6 @@ jobs:
           opensearch_security.ui.openid.login.buttonname: "OIDC"
           home.disableWelcomeScreen: true
           EOT
-          echo 'HERE IS THE DASHBOARD CONFIG FILE: '
-          cat opensearch_dashboards_openid.yml
 
       - name: Run Cypress Tests
         uses: ./.github/actions/run-cypress-tests
