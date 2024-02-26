@@ -160,7 +160,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
 
       // extend session expiration time
       if (this.config.session.keepalive) {
-        cookie!.expiryTime = Date.now() + this.config.session.ttl;
+        cookie!.expiryTime = this.getKeepAliveExpiry(cookie!, request);
         this.sessionStorageFactory.asScoped(request).set(cookie!);
       }
       // cookie is valid
@@ -266,6 +266,13 @@ export abstract class AuthenticationType implements IAuthenticationType {
     });
   }
 
+  public getKeepAliveExpiry(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): number {
+    return Date.now() + this.config.session.ttl;
+  }
+
   isPageRequest(request: OpenSearchDashboardsRequest) {
     const path = request.url.pathname || '/';
     return path.startsWith('/app/') || path === '/' || path.startsWith('/goto/');
@@ -286,5 +293,10 @@ export abstract class AuthenticationType implements IAuthenticationType {
     response: LifecycleResponseFactory,
     toolkit: AuthToolkit
   ): IOpenSearchDashboardsResponse | AuthResult;
+  public abstract requestIncludesAuthInfo(request: OpenSearchDashboardsRequest): boolean;
+  public abstract buildAuthHeaderFromCookie(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): any;
   public abstract init(): Promise<void>;
 }

@@ -251,6 +251,14 @@ export class OpenIdAuthentication extends AuthenticationType {
     };
   }
 
+  // OIDC expiry time is set by the IDP and refreshed via refreshTokens
+  getKeepAliveExpiry(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
+  ): number {
+    return cookie.expiryTime!;
+  }
+
   // TODO: Add token expiration check here
   async isValidCookie(
     cookie: SecuritySessionCookie,
@@ -260,13 +268,12 @@ export class OpenIdAuthentication extends AuthenticationType {
       cookie.authType !== this.type ||
       !cookie.username ||
       !cookie.expiryTime ||
-      (!cookie.credentials?.authHeaderValue && !this.getExtraAuthStorageValue(request, cookie)) ||
-      !cookie.credentials?.expires_at
+      (!cookie.credentials?.authHeaderValue && !this.getExtraAuthStorageValue(request, cookie))
     ) {
       return false;
     }
 
-    if (cookie.credentials?.expires_at > Date.now()) {
+    if (cookie.expiryTime > Date.now()) {
       return true;
     }
 
@@ -290,8 +297,8 @@ export class OpenIdAuthentication extends AuthenticationType {
           cookie.credentials = {
             authHeaderValueExtra: true,
             refresh_token: refreshTokenResponse.refreshToken,
-            expires_at: getExpirationDate(refreshTokenResponse), // expiresIn is in second
           };
+          cookie.expiryTime = getExpirationDate(refreshTokenResponse);
 
           setExtraAuthStorage(
             request,
