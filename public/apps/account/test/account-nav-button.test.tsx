@@ -16,8 +16,9 @@
 import { shallow } from 'enzyme';
 import React from 'react';
 import { AccountNavButton, reloadAfterTenantSwitch } from '../account-nav-button';
-import { getShouldShowTenantPopup, setShouldShowTenantPopup } from '../../../utils/storage-utils';
+import { getShouldShowTenantPopup } from '../../../utils/storage-utils';
 import { getDashboardsInfo } from '../../../utils/dashboards-info-utils';
+import { render, fireEvent } from '@testing-library/react';
 
 jest.mock('../../../utils/storage-utils', () => ({
   getShouldShowTenantPopup: jest.fn(),
@@ -79,6 +80,10 @@ describe('Account navigation button', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  afterAll(() => {
+    useStateSpy.mockRestore();
   });
 
   it('renders', () => {
@@ -149,6 +154,10 @@ describe('Account navigation button, multitenancy disabled', () => {
     useStateSpy.mockImplementation((init) => [init, setState]);
   });
 
+  afterAll(() => {
+    useStateSpy.mockRestore();
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -165,6 +174,74 @@ describe('Account navigation button, multitenancy disabled', () => {
       />
     );
     expect(setState).toBeCalledTimes(0);
+  });
+});
+
+describe('Shows tenant info when multitenancy enabled, and hides it if disabled', () => {
+  test('Renders "switch-tenants" and "tenant-name" when multi-tenancy is enabled', () => {
+    const props = {
+      coreStart: {},
+      isInternalUser: true,
+      username: 'example_user',
+      tenant: 'example_tenant',
+      config: {
+        multitenancy: { enabled: true },
+        auth: {
+          type: 'dummy',
+        },
+      },
+    };
+
+    // Render the component
+    const { container, queryByText } = render(<AccountNavButton {...props} />);
+
+    // Find the popover component by data-test-subj
+    const popoverElement = container.querySelector('[data-test-subj="account-popover"]');
+
+    // Assert that the popover component is rendered
+    expect(popoverElement).toBeDefined();
+
+    // Now, simulate a click event on the button to open the popover
+    fireEvent.click(popoverElement!);
+
+    const tenantName = queryByText('example_tenant');
+    expect(tenantName).not.toBeNull();
+
+    const tenantSwitch = queryByText('Switch tenants');
+    expect(tenantSwitch).not.toBeNull();
+  });
+
+  test('Does not render "switch-tenants" and "tenant-name" when multi-tenancy is disabled', () => {
+    const props = {
+      coreStart: {},
+      isInternalUser: true,
+      username: 'example_user',
+      tenant: 'example_tenant',
+      config: {
+        multitenancy: { enabled: false },
+        auth: {
+          type: 'dummy',
+        },
+      },
+    };
+
+    // Render the component
+    const { container, queryByText } = render(<AccountNavButton {...props} />);
+
+    // Find the popover component by data-test-subj
+    const popoverElement = container.querySelector('[data-test-subj="account-popover"]');
+
+    // Assert that the popover component is rendered
+    expect(popoverElement).toBeDefined();
+
+    // Now, simulate a click event on the button to open the popover
+    fireEvent.click(popoverElement!);
+
+    const tenantName = queryByText('example_tenant');
+    expect(tenantName).toBeNull();
+
+    const tenantSwitch = queryByText('Switch tenants');
+    expect(tenantSwitch).toBeNull();
   });
 });
 
