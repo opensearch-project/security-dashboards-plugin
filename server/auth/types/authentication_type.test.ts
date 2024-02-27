@@ -16,8 +16,12 @@
 import { SecurityPluginConfigType } from '../..';
 import { AuthenticationType } from './authentication_type';
 import { httpServerMock } from '../../../../../src/core/server/mocks';
+import { OpenSearchDashboardsRequest } from '../../../../../src/core/server';
 
 class DummyAuthType extends AuthenticationType {
+  authNotRequired(request: OpenSearchDashboardsRequest): boolean {
+    return false;
+  }
   buildAuthHeaderFromCookie() {}
   getAdditionalAuthHeader() {}
   handleUnauthedRequest() {}

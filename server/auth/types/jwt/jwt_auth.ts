@@ -35,6 +35,7 @@ import {
   getExtraAuthStorageValue,
   setExtraAuthStorage,
 } from '../../../session/cookie_splitter';
+import { getExpirationDate } from './jwt_helper';
 
 export const JWT_DEFAULT_EXTRA_STORAGE_OPTIONS: ExtraAuthStorageOptions = {
   cookiePrefix: 'security_authentication_jwt',
@@ -154,13 +155,17 @@ export class JwtAuthentication extends AuthenticationType {
       this.getBearerToken(request) || '',
       this.getExtraAuthStorageOptions()
     );
+
     return {
       username: authInfo.user_name,
       credentials: {
         authHeaderValueExtra: true,
       },
       authType: this.type,
-      expiryTime: Date.now() + this.config.session.ttl,
+      expiryTime: getExpirationDate(
+        this.getBearerToken(request),
+        Date.now() + this.config.session.ttl
+      ),
     };
   }
 
@@ -172,6 +177,13 @@ export class JwtAuthentication extends AuthenticationType {
       cookie.credentials?.authHeaderValue || this.getExtraAuthStorageValue(request, cookie);
     return (
       cookie.authType === this.type && cookie.username && cookie.expiryTime && hasAuthHeaderValue
+    );
+  }
+
+  getKeepAliveExpiry(cookie: SecuritySessionCookie, request: OpenSearchDashboardsRequest): number {
+    return getExpirationDate(
+      this.buildAuthHeaderFromCookie(cookie, request)[this.authHeaderName],
+      Date.now() + this.config.session.ttl
     );
   }
 
