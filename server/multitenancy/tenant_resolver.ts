@@ -226,7 +226,7 @@ export function addTenantParameterToResolvedShortLink(request: OpenSearchDashboa
       });
     } else if (request.url.searchParams.get('security_tenant')) {
       rawResponse.headers.location = modifyUrl(responsePath, (parts) => {
-        if (parts.query.security_tenant === undefined) {
+        if (parts.query.security_tenant === undefined && parts.query.nextUrl === undefined) {
           parts.query.security_tenant = request.url.searchParams.get('security_tenant');
         }
       });
