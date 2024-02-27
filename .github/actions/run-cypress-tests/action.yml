@@ -34,89 +34,28 @@ runs:
         opensearch-version: ${{ env.OPENSEARCH_VERSION }}
         plugin-name: ${{ env.PLUGIN_NAME }}
         plugin-version: ${{ env.PLUGIN_VERSION }}
-
-    # Download OpenSearch
-    - name: Download OpenSearch for Linux
-      uses: peternied/download-file@v2
-      if: ${{ runner.os == 'Linux' }}
-      with:
-        url: https://artifacts.opensearch.org/snapshots/core/opensearch/${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/opensearch-min-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64-latest.tar.gz
-
-    # Extract downloaded tar/zip
-    - name: Extract downloaded tar
-      if: ${{ runner.os == 'Linux' }}
-      run: |
-        tar -xzf opensearch-*.tar.gz
-        rm -f opensearch-*.tar.gz
-      shell: bash
-
-    # Install the security plugin
-    - name: Install Plugin into OpenSearch for Linux
-      if: ${{ runner.os == 'Linux'}}
-      run: |
-        chmod +x ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/bin/opensearch-plugin
-        /bin/bash -c "yes | ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/bin/opensearch-plugin install file:$(pwd)/opensearch-security.zip"
-      shell: bash
     
-    - name: Replace demo configuration
-      if: ${{ runner.os == 'Linux' }}
-      run: |
-        if [ -f ${{ inputs.security_config_file }} ]; then
-          mv ${{ inputs.security_config_file }} ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/config/opensearch-security/config.yml
-        fi
-      shell: bash
-
-    # Run any configuration scripts
-    - name: Run Setup Script for Linux
-      if: ${{ runner.os == 'Linux' }}
-      run: |
-        echo "running linux setup"
-        chmod +x ./setup.sh
-        ./setup.sh
-      shell: bash
+    - name: Run Opensearch with A Single Plugin
+      uses: derek-ho/start-opensearch@v2
+      with:
+        opensearch-version: ${{ env.OPENSEARCH_VERSION }}
+        plugins: "file:$(pwd)/opensearch-security.zip"
+        security-enabled: true
+        admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
+        security_config_file: ${{ inputs.security_config_file }}
 
     # OSD bootstrap
     - name: Run Dashboard with Security Dashboards Plugin
-      uses: ./.github/actions/install-dashboards
+      uses: derek-ho/setup-opensearch-dashboards@v1
       with:
         plugin_name: security-dashboards-plugin
-
-    - name: Replace dashboards configuration
-      if: ${{ runner.os == 'Linux' }}
-      run: |
-        if [ -f ${{ inputs.dashboards_config_file }} ]; then
-          mv ${{ inputs.dashboards_config_file }} ./OpenSearch-Dashboards/config/opensearch_dashboards.yml
-        fi
-      shell: bash
+        opensearch_dashboards_yml: ${{ inputs.dashboards_config_file }}
 
     - name: Run pretest script
       if: ${{ runner.os == 'Linux' }}
       run: |
         cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
         yarn pretest:jest_server
-      shell: bash
-
-    # Run OpenSearch
-    - name: Run OpenSearch with plugin on Linux
-      if: ${{ runner.os == 'Linux'}}
-      run: |
-        /bin/bash -c "./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/bin/opensearch &"
-      shell: bash
-
-    # Give the OpenSearch process some time to boot up before sending any requires, might need to increase the default time!
-    - name: Sleep while OpenSearch starts
-      uses: peternied/action-sleep@v1
-      with:
-        seconds: 30
-
-    # Verify that the server is operational
-    - name: Check OpenSearch Running on Linux
-      if: ${{ runner.os != 'Windows'}}
-      run: curl https://localhost:9200/_cat/plugins -u 'admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}' -k -v
-      shell: bash
-
-    - if: always()
-      run: cat ./opensearch-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT/logs/opensearch.log
       shell: bash
 
     - name: Run OpenSearch Dashboards with provided configuration

@@ -66,8 +66,6 @@ jobs:
                   authentication_backend:
                     type: noop
           EOT
-          echo "THIS IS THE SECURITY CONFIG FILE: "
-          cat config_multiauth.yml
 
       # Configure the Dashboard for SAML setup
       - name: Configure OpenSearch Dashboards with multi-auth configuration including SAML
@@ -90,8 +88,6 @@ jobs:
           opensearch_security.auth.anonymous_auth_enabled: false
           home.disableWelcomeScreen: true
           EOT
-          echo 'HERE IS THE DASHBOARD CONFIG FILE: '
-          cat opensearch_dashboards_multiauth.yml
 
       - name: Run Cypress Tests
         uses: ./.github/actions/run-cypress-tests
