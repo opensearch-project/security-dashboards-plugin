@@ -73,6 +73,14 @@ describe('updateClipboard function', () => {
       addRange: jest.fn(),
     };
 
+    document.createRange = jest.fn().mockReturnValue({
+      selectNode: jest.fn(),
+    });
+    document.getSelection = jest.fn().mockReturnValue({
+      removeAllRanges: jest.fn(),
+      addRange: jest.fn(),
+    });
+
     const targetMock: any = {
       textContent: 'mocked-text-content',
     };
@@ -84,7 +92,16 @@ describe('updateClipboard function', () => {
         return targetMock;
       }
     });
-    updateClipboard('mocked-url-part', 'mocked-original-value', 'mocked-tenant');
+
+    updateClipboard(
+      'http://hostname.com/route?param1=value1',
+      'mocked-original-value',
+      'mocked-tenant'
+    );
+
+    expect(targetMock.textContent).toBe(
+      'hostname.com/route?param1=value1&security_tenant=mocked-tenant'
+    );
   });
 });
 describe('setClipboardAndTarget function', () => {
