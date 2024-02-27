@@ -12,6 +12,7 @@
   "optionalPlugins": [
     "managementOverview"
   ],
+  "requiredBundles": ["dataSourceManagement"],
   "server": true,
   "ui": true
 }
