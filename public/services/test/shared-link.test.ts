@@ -94,9 +94,19 @@ describe('setClipboardAndTarget function', () => {
       addRange: jest.fn(),
     };
 
+    document.createRange = jest.fn().mockReturnValue({
+      selectNode: jest.fn(),
+    });
+    document.getSelection = jest.fn().mockReturnValue({
+      removeAllRanges: jest.fn(),
+      addRange: jest.fn(),
+    });
+
     const targetMock: any = {
       textContent: 'mocked-text-content',
     };
     setClipboardAndTarget(shareButtonMock, targetMock, 'mocked-new-value', 'mocked-original-value');
+
+    expect(targetMock.textContent).toBe('mocked-new-value');
   });
 });
