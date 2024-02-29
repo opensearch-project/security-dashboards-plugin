@@ -103,10 +103,13 @@ export function setClipboardAndTarget(
   newValue: string,
   originalValue: string
 ) {
-  const range = document.createRange() as any;
+  let range = document.createRange() as any;
   const referenceNode = target;
 
   const selection = document.getSelection();
+  if (selection?.rangeCount === 1) {
+    range = selection.getRangeAt(0);
+  }
 
   range.selectNode(referenceNode);
   selection?.removeAllRanges();
