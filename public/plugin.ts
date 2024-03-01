@@ -13,9 +13,11 @@
  *   permissions and limitations under the License.
  */
 
+import React from 'react';
 import { BehaviorSubject } from 'rxjs';
 import { SavedObjectsManagementColumn } from 'src/plugins/saved_objects_management/public';
 import { i18n } from '@osd/i18n';
+import { ClusterSelector } from 'src/plugins/data_source_management/public';
 import {
   AppMountParameters,
   AppStatus,
@@ -189,7 +191,7 @@ export class SecurityPlugin
   public start(core: CoreStart, deps: SecurityPluginStartDependencies): SecurityPluginStart {
     const config = this.initializerContext.config.get<ClientConfigType>();
 
-    setupTopNavButton(core, config);
+    setupTopNavButton(core, config, deps);
 
     if (config.ui.autologout) {
       // logout the user when getting 401 unauthorized, e.g. when session timed out.

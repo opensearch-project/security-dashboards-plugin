@@ -10,7 +10,8 @@
     "savedObjectsManagement"
   ],
   "optionalPlugins": [
-    "managementOverview"
+    "managementOverview",
+    "dataSource"
   ],
   "requiredBundles": ["dataSourceManagement"],
   "server": true,
