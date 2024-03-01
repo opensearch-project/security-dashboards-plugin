@@ -12,7 +12,6 @@
  *   express or implied. See the License for the specific language governing
  *   permissions and limitations under the License.
  */
-import { parse } from 'url';
 import { CoreStart } from 'opensearch-dashboards/public';
 import { API_ENDPOINT_MULTITENANCY } from '../apps/configuration/constants';
 
@@ -79,7 +78,9 @@ export function updateClipboard(
     originalValue = urlPart;
   }
 
-  const { host, pathname, search } = parse(urlPart);
+  const originalUrl = new URL(urlPart);
+
+  const { protocol, host, pathname, search, hash } = originalUrl;
   const queryDelimiter = !search ? '?' : '&';
 
   // The url parser returns null if the search is empty. Change that to an empty
@@ -90,9 +91,9 @@ export function updateClipboard(
   }
 
   // A helper for finding the part in the string that we want to extend/replace
-  const valueToReplace = host! + pathname! + (search || '');
+  const valueToReplace = `${protocol!}//` + host! + pathname! + (search || '');
   const replaceWith =
-    valueToReplace + queryDelimiter + 'security_tenant=' + encodeURIComponent(tenant);
+    valueToReplace + queryDelimiter + 'security_tenant=' + encodeURIComponent(tenant) + hash;
 
   setClipboardAndTarget(shareButton, target, replaceWith, originalValue);
 }
