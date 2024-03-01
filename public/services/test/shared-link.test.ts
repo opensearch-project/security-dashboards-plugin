@@ -95,12 +95,22 @@ describe('updateClipboard function', () => {
 
     updateClipboard(
       'http://hostname.com/route?param1=value1#hash',
-      'mocked-original-value',
+      'http://hostname.com/route?param1=value1#hash',
       'mocked-tenant'
     );
 
     expect(targetMock.textContent).toBe(
       'http://hostname.com/route?param1=value1&security_tenant=mocked-tenant#hash'
+    );
+
+    updateClipboard(
+      'http://hostname.com/route?param1=value1#hash',
+      '<iframe src="http://hostname.com/route?param1=value1#hash" height="600" width="800"></iframe>',
+      'mocked-tenant'
+    );
+
+    expect(targetMock.textContent).toBe(
+      '<iframe src="http://hostname.com/route?param1=value1&security_tenant=mocked-tenant#hash" height="600" width="800"></iframe>'
     );
   });
 });
@@ -122,7 +132,7 @@ describe('setClipboardAndTarget function', () => {
     const targetMock: any = {
       textContent: 'mocked-text-content',
     };
-    setClipboardAndTarget(shareButtonMock, targetMock, 'mocked-new-value', 'mocked-original-value');
+    setClipboardAndTarget(targetMock, 'mocked-new-value', 'mocked-original-value');
 
     expect(targetMock.textContent).toBe('mocked-new-value');
   });

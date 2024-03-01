@@ -71,7 +71,6 @@ export function updateClipboard(
   originalValue: string | undefined,
   tenant: string
 ) {
-  const shareButton = document.querySelector('[data-share-url]') as any;
   const target = document.querySelector('body > span');
 
   if (!originalValue) {
@@ -79,31 +78,17 @@ export function updateClipboard(
   }
 
   const originalUrl = new URL(urlPart);
-
-  const { protocol, host, pathname, search, hash } = originalUrl;
-  const queryDelimiter = !search ? '?' : '&';
-
-  // The url parser returns null if the search is empty. Change that to an empty
-  // string so that we can use it to build the values later
-  if (search && search.toLowerCase().indexOf('security_tenant') > -1) {
-    // If we for some reason already have a tenant in the URL we skip any updates
+  if (originalUrl.searchParams?.has('security_tenant')) {
     return originalValue;
   }
+  originalUrl.searchParams.append('security_tenant', tenant);
 
-  // A helper for finding the part in the string that we want to extend/replace
-  const valueToReplace = `${protocol!}//` + host! + pathname! + (search || '');
-  const replaceWith =
-    valueToReplace + queryDelimiter + 'security_tenant=' + encodeURIComponent(tenant) + hash;
+  const originalValueWithTenant = originalValue.replace(urlPart, originalUrl.toString());
 
-  setClipboardAndTarget(shareButton, target, replaceWith, originalValue);
+  setClipboardAndTarget(target, originalValueWithTenant, originalValue);
 }
 
-export function setClipboardAndTarget(
-  shareButton: any,
-  target: any,
-  newValue: string,
-  originalValue: string
-) {
+export function setClipboardAndTarget(target: any, newValue: string, originalValue: string) {
   let range = document.createRange() as any;
   const referenceNode = target;
 
