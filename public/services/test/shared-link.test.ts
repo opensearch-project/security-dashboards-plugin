@@ -94,13 +94,13 @@ describe('updateClipboard function', () => {
     });
 
     updateClipboard(
-      'http://hostname.com/route?param1=value1',
+      'http://hostname.com/route?param1=value1#hash',
       'mocked-original-value',
       'mocked-tenant'
     );
 
     expect(targetMock.textContent).toBe(
-      'hostname.com/route?param1=value1&security_tenant=mocked-tenant'
+      'http://hostname.com/route?param1=value1&security_tenant=mocked-tenant#hash'
     );
   });
 });
