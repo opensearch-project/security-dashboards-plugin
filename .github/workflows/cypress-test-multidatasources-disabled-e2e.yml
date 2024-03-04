@@ -23,11 +23,11 @@ jobs:
       - name: Checkout Branch
         uses: actions/checkout@v3
 
-      # Configure the Dashboard for multi datasources
-      - name: Create OpenSearch Dashboards Config for OpenID
+      # Configure the Dashboard for multi datasources disabled (default)
+      - name: Create OpenSearch Dashboards Config
         if: ${{ runner.os == 'Linux' }}
         run: |
-          cat << 'EOT' > opensearch_dashboards_openid.yml
+          cat << 'EOT' > opensearch_dashboards_multidatasources.yml
           server.host: "localhost"
           opensearch.hosts: ["https://localhost:9200"]
           opensearch.ssl.verificationMode: none
