@@ -13,6 +13,7 @@
     "managementOverview",
     "dataSource"
   ],
+  "requiredBundles": ["dataSourceManagement"],
   "server": true,
   "ui": true
 }
