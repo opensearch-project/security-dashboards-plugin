@@ -7,12 +7,12 @@
   ],
   "requiredPlugins": [
     "navigation",
-    "savedObjectsManagement"
+    "savedObjectsManagement",
+    "dataSourceManagement"
   ],
   "optionalPlugins": [
     "managementOverview",
-    "dataSource",
-    "dataSourceManagement"
+    "dataSource"
   ],
   "server": true,
   "ui": true
