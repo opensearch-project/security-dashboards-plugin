@@ -91,6 +91,15 @@ Cypress.Commands.add('loginWithSamlMultiauth', () => {
   cy.get('button[id=btn-sign-in]').should('be.visible').click();
 });
 
+export const loginWithBasicAuth = () => {
+  cy.visit('http://localhost:5601', {
+    failOnStatusCode: false,
+  });
+  cy.get('[data-test-subj="user-name"]').type('admin');
+  cy.get('[data-test-subj="password"]').type('myStrongPassword123!');
+  cy.get('[data-test-subj="submit"]').click();
+};
+
 Cypress.Commands.add('shortenUrl', (data, tenant) => {
   cy.request({
     url: `http://localhost:5601${DASHBOARDS_API.SHORTEN_URL}`,

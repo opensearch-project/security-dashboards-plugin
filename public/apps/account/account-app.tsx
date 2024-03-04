@@ -38,7 +38,7 @@ function tenantSpecifiedInUrl() {
   );
 }
 
-export async function setupTopNavButton(coreStart: CoreStart, config: ClientConfigType, deps: any) {
+export async function setupTopNavButton(coreStart: CoreStart, config: ClientConfigType) {
   const authType = config.auth?.type;
   let currAuthType = '';
   if (typeof authType === 'string') {
@@ -126,26 +126,5 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
         return () => ReactDOM.unmountComponentAtNode(element);
       },
     });
-
-    if (deps.dataSource.dataSourceEnabled) {
-      coreStart.chrome.navControls.registerRight({
-        // Pin to rightmost, since newsfeed plugin is using 1000, here needs a number > 1000
-        order: 3000,
-        mount: (element: HTMLElement) => {
-          ReactDOM.render(
-            <ClusterSelector
-              savedObjectsClient={coreStart.savedObjects.client}
-              notifications={coreStart.notifications}
-              onSelectedDataSource={() => {}}
-              disabled={false}
-              hideLocalCluster={false}
-              fullWidth={true}
-            />,
-            element
-          );
-          return () => ReactDOM.unmountComponentAtNode(element);
-        },
-      });
-    }
   }
 }
