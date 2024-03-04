@@ -23,6 +23,6 @@ describe('Multi-datasources enabled', () => {
       failOnStatusCode: false,
     });
 
-    cy.get('[data-test-subj="clusterSelectorComboBox"]').should('not', 'exist');
+    cy.get('[data-test-subj="clusterSelectorComboBox"]').should('not.exist');
   });
 });
