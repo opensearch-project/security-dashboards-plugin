@@ -1,4 +1,4 @@
-name: Snapshot based E2E OIDC tests workflow
+name: E2E multi datasources enabled workflow
 
 on: [ push, pull_request ]
 
