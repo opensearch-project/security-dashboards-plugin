@@ -16,7 +16,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { CoreStart } from 'opensearch-dashboards/public';
-import { ClientConfigType } from '../../types';
 import { ClusterSelector } from '../../../../../src/plugins/data_source_management/public';
 
 export async function setupClusterSelector(coreStart: CoreStart, deps: any) {
