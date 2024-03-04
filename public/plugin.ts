@@ -13,7 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-import React from 'react';
 import { BehaviorSubject } from 'rxjs';
 import { SavedObjectsManagementColumn } from 'src/plugins/saved_objects_management/public';
 import { i18n } from '@osd/i18n';
