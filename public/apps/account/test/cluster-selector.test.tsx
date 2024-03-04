@@ -13,6 +13,7 @@
  *   permissions and limitations under the License.
  */
 
+import { SecurityPluginSetupDependencies, SecurityPluginStartDependencies } from '../../../types';
 import { setupClusterSelector } from '../cluster-selector';
 
 describe('Cluster selector', () => {
@@ -26,16 +27,12 @@ describe('Cluster selector', () => {
   };
 
   const mockDepsDataSourceEnabled = {
-    dataSource: {
-      dataSourceEnabled: true,
-    },
-  };
+    dataSource: true,
+  } as SecurityPluginStartDependencies;
 
   const mockDepsDataSourceDisabled = {
-    dataSource: {
-      dataSourceEnabled: false,
-    },
-  };
+    dataSource: false,
+  } as SecurityPluginStartDependencies;
 
   it('Should not register cluster selector if multi data source is not enabled', (done) => {
     setupClusterSelector(mockCoreStart, mockDepsDataSourceDisabled);
@@ -47,7 +44,7 @@ describe('Cluster selector', () => {
   });
 
   it('Should register cluster selector if multi data source is enabled', (done) => {
-    setupClusterSelector(mockCoreStart, mockDepsDataSourceDisabled);
+    setupClusterSelector(mockCoreStart, mockDepsDataSourceEnabled);
 
     process.nextTick(() => {
       expect(registerRightMock).toHaveBeenCalledTimes(1);
