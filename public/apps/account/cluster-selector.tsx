@@ -23,7 +23,7 @@ export async function setupClusterSelector(
   coreStart: CoreStart,
   deps: SecurityPluginStartDependencies
 ) {
-  if (deps.dataSource) {
+  if (deps.dataSource.dataSourceEnabled) {
     coreStart.chrome.navControls.registerRight({
       // Pin to left of the avatar, here needs a number < 1000
       // TODO: figure out how to show this only in the security plugin instead of being registered globally
