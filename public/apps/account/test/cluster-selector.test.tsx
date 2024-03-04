@@ -27,11 +27,15 @@ describe('Cluster selector', () => {
   };
 
   const mockDepsDataSourceEnabled = {
-    dataSource: true,
+    dataSource: {
+      dataSourceEnabled: true,
+    },
   } as SecurityPluginStartDependencies;
 
   const mockDepsDataSourceDisabled = {
-    dataSource: false,
+    dataSource: {
+      dataSourceEnabled: false,
+    },
   } as SecurityPluginStartDependencies;
 
   it('Should not register cluster selector if multi data source is not enabled', (done) => {
