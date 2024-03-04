@@ -29,7 +29,6 @@ import {
 import { constructErrorMessageAndLog } from '../error-utils';
 import { fetchCurrentAuthType } from '../../utils/logout-utils';
 import { getDashboardsInfoSafe } from '../../utils/dashboards-info-utils';
-import { ClusterSelector } from '../../../../../src/plugins/data_source_management/public';
 
 function tenantSpecifiedInUrl() {
   return (
