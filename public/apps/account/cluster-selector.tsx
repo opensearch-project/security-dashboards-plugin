@@ -17,9 +17,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { CoreStart } from 'opensearch-dashboards/public';
 import { ClusterSelector } from '../../../../../src/plugins/data_source_management/public';
+import { SecurityPluginStartDependencies } from '../../types';
 
-export async function setupClusterSelector(coreStart: CoreStart, deps: any) {
-  if (deps.dataSource.dataSourceEnabled) {
+export async function setupClusterSelector(
+  coreStart: CoreStart,
+  deps: SecurityPluginStartDependencies
+) {
+  if (deps.dataSource) {
     coreStart.chrome.navControls.registerRight({
       // Pin to left of the avatar, here needs a number < 1000
       // TODO: figure out how to show this only in the security plugin instead of being registered globally

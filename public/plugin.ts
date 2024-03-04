@@ -17,7 +17,6 @@ import React from 'react';
 import { BehaviorSubject } from 'rxjs';
 import { SavedObjectsManagementColumn } from 'src/plugins/saved_objects_management/public';
 import { i18n } from '@osd/i18n';
-import { ClusterSelector } from 'src/plugins/data_source_management/public';
 import {
   AppMountParameters,
   AppStatus,
