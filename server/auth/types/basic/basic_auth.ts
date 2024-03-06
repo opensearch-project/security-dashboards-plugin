@@ -111,21 +111,13 @@ export class BasicAuthentication extends AuthenticationType {
         request,
         this.coreSetup.http.basePath.serverBasePath
       );
-      if (this.config.auth.anonymous_auth_enabled) {
-        const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${ANONYMOUS_AUTH_LOGIN}?${nextUrlParam}`;
-        return response.redirected({
-          headers: {
-            location: `${redirectLocation}`,
-          },
-        });
-      } else {
-        const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`;
-        return response.redirected({
-          headers: {
-            location: `${redirectLocation}`,
-          },
-        });
-      }
+
+      const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`;
+      return response.redirected({
+        headers: {
+          location: `${redirectLocation}`,
+        },
+      });
     } else {
       return response.unauthorized({
         body: `Authentication required`,

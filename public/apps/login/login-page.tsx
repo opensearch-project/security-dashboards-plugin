@@ -212,7 +212,7 @@ export function LoginPage(props: LoginPageDeps) {
             </EuiFormRow>
           );
 
-          if (authOpts.length > 1) {
+          if (authOpts.length > 0) {
             if (props.config.auth.anonymous_auth_enabled) {
               const anonymousConfig = props.config.ui[AuthType.ANONYMOUS].login;
               formBody.push(

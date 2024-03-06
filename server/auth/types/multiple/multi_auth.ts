@@ -166,20 +166,13 @@ export class MultipleAuthentication extends AuthenticationType {
         this.coreSetup.http.basePath.serverBasePath
       );
 
-      if (this.config.auth.anonymous_auth_enabled) {
-        const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${ANONYMOUS_AUTH_LOGIN}?${nextUrlParam}`;
-        return response.redirected({
-          headers: {
-            location: `${redirectLocation}`,
-          },
-        });
-      }
       return response.redirected({
         headers: {
           location: `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`,
         },
       });
     } else {
+      console.log('not a page request');
       return response.unauthorized();
     }
   }

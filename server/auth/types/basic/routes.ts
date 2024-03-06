@@ -186,7 +186,9 @@ export class BasicAuthRoutes {
           }
           context.security_plugin.logger.info('The Redirect Path is ' + redirectUrl);
           try {
-            user = await this.securityClient.authenticateWithHeaders(request, {});
+            user = await this.securityClient.authenticateWithHeaders(request, {
+              _auth_request_type_: 'anonymous',
+            });
           } catch (error) {
             context.security_plugin.logger.error(
               `Failed authentication: ${error}. Redirecting to Login Page`
@@ -200,6 +202,8 @@ export class BasicAuthRoutes {
             });
           }
 
+          console.log('Anon user: ' + JSON.stringify(user));
+
           this.sessionStorageFactory.asScoped(request).clear();
           const sessionStorage: SecuritySessionCookie = {
             username: user.username,
@@ -209,6 +213,7 @@ export class BasicAuthRoutes {
           };
 
           if (user.multitenancy_enabled) {
+            request.headers._auth_request_type_ = 'anonymous';
             const selectTenant = resolveTenant({
               request,
               username: user.username,

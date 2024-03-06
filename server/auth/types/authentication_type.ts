@@ -113,6 +113,12 @@ export abstract class AuthenticationType implements IAuthenticationType {
     const authHeaders = {};
     let cookie: SecuritySessionCookie | null | undefined;
     let authInfo: any | undefined;
+
+    if (this.config.auth.anonymous_auth_enabled) {
+      const anonymousAuthHeaders = { _auth_request_type_: 'anonymous' };
+      Object.assign(authHeaders, anonymousAuthHeaders);
+    }
+
     // if this is an REST API call, suppose the request includes necessary auth header
     // see https://www.elastic.co/guide/en/opensearch-dashboards/master/using-api.html
     if (this.requestIncludesAuthInfo(request)) {
@@ -153,10 +159,14 @@ export abstract class AuthenticationType implements IAuthenticationType {
         if (request.url.pathname && request.url.pathname.startsWith('/bundles/')) {
           return toolkit.notHandled();
         }
+        console.log('Request is unauthorized');
+        console.log(request.url);
+        console.log(request.route);
 
         // send to auth workflow
         return this.handleUnauthedRequest(request, response, toolkit);
       }
+      console.log('we have a cookie: ' + JSON.stringify(cookie));
 
       // extend session expiration time
       if (this.config.session.keepalive) {
@@ -211,6 +221,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
     }
     if (!authInfo) {
       authInfo = await this.securityClient.authinfo(request, authHeaders);
+      console.log(authInfo);
     }
     authState.authInfo = authInfo;
 
