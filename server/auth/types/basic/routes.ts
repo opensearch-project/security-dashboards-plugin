@@ -212,7 +212,6 @@ export class BasicAuthRoutes {
           };
 
           if (user.multitenancy_enabled) {
-            request.headers.authorization = ANONYMOUS_AUTH_HEADER;
             const selectTenant = resolveTenant({
               request,
               username: user.username,
@@ -231,7 +230,6 @@ export class BasicAuthRoutes {
           return response.redirected({
             headers: {
               location: `${redirectUrl}`,
-              authorization: ANONYMOUS_AUTH_HEADER,
             },
           });
         } else {

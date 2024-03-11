@@ -114,6 +114,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
     let cookie: SecuritySessionCookie | null | undefined;
     let authInfo: any | undefined;
 
+    // Adds a basic auth credentials headers to requests originated as anonymous user
     if (this.config.auth.anonymous_auth_enabled) {
       const anonymousAuthHeaders = { authorization: ANONYMOUS_AUTH_HEADER };
       Object.assign(authHeaders, anonymousAuthHeaders);
@@ -159,6 +160,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
         if (request.url.pathname && request.url.pathname.startsWith('/bundles/')) {
           return toolkit.notHandled();
         }
+
         // send to auth workflow
         return this.handleUnauthedRequest(request, response, toolkit);
       }
