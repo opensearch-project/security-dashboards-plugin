@@ -36,6 +36,15 @@ const configUI = {
       buttonstyle: 'test-btn-style',
     },
   },
+  anonymous: {
+    login: {
+      title: 'Anony1',
+      subtitle: 'AnonySub1',
+      showbrandimage: true,
+      brandimage: 'http://localhost:5601/images/test.png',
+      buttonstyle: 'test-btn-style',
+    },
+  },
   openid: {
     login: {
       buttonname: 'Button1',
@@ -112,6 +121,21 @@ describe('Login page', () => {
       expect(component).toMatchSnapshot();
     });
 
+    it('renders with config value with anonymous auth enabled: string array', () => {
+      const config: ClientConfigType = {
+        ui: configUI,
+        auth: {
+          type: [AuthType.BASIC],
+          logout_url: API_AUTH_LOGOUT,
+          anonymous_auth_enabled: true,
+        },
+      };
+      const component = shallow(
+        <LoginPage http={mockHttpStart as any} chrome={chrome} config={config as any} />
+      );
+      expect(component).toMatchSnapshot();
+    });
+
     it('renders with config value: string', () => {
       const config: ClientConfigType = {
         ui: configUI,
@@ -126,12 +150,42 @@ describe('Login page', () => {
       expect(component).toMatchSnapshot();
     });
 
+    it('renders with config value with anonymous auth enabled: string', () => {
+      const config: ClientConfigType = {
+        ui: configUI,
+        auth: {
+          type: AuthType.BASIC,
+          logout_url: API_AUTH_LOGOUT,
+          anonymous_auth_enabled: true,
+        },
+      };
+      const component = shallow(
+        <LoginPage http={mockHttpStart as any} chrome={chrome} config={config as any} />
+      );
+      expect(component).toMatchSnapshot();
+    });
+
     it('renders with config value for multiauth', () => {
       const config: ClientConfigType = {
         ui: configUI,
         auth: {
           type: [AuthType.BASIC, 'openid', AuthType.SAML],
           logout_url: API_AUTH_LOGOUT,
+        },
+      };
+      const component = shallow(
+        <LoginPage http={mockHttpStart as any} chrome={chrome} config={config as any} />
+      );
+      expect(component).toMatchSnapshot();
+    });
+
+    it('renders with config value for multiauth with anonymous auth enabled', () => {
+      const config: ClientConfigType = {
+        ui: configUI,
+        auth: {
+          type: [AuthType.BASIC, 'openid', AuthType.SAML],
+          logout_url: API_AUTH_LOGOUT,
+          anonymous_auth_enabled: true,
         },
       };
       const component = shallow(
