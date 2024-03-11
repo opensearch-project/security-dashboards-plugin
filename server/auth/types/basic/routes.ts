@@ -23,6 +23,7 @@ import { SecurityPluginConfigType } from '../../..';
 import { User } from '../../user';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
 import {
+  ANONYMOUS_AUTH_HEADER,
   ANONYMOUS_AUTH_LOGIN,
   API_AUTH_LOGIN,
   API_AUTH_LOGOUT,
@@ -186,13 +187,8 @@ export class BasicAuthRoutes {
           }
           context.security_plugin.logger.info('The Redirect Path is ' + redirectUrl);
           try {
-            // user = await this.securityClient.authenticateWithHeaders(request, {
-            //   _auth_request_type_: 'anonymous',
-            // });
-            // opendistro_security_anonymous:opendistro_security_anonymous
-            const authHeader = "b3BlbmRpc3Ryb19zZWN1cml0eV9hbm9ueW1vdXM6b3BlbmRpc3Ryb19zZWN1cml0eV9hbm9ueW1vdXM="; 
             user = await this.securityClient.authenticateWithHeaders(request, {
-              authorization: `Basic ${authHeader}`,
+              authorization: ANONYMOUS_AUTH_HEADER,
             });
           } catch (error) {
             context.security_plugin.logger.error(
@@ -207,8 +203,6 @@ export class BasicAuthRoutes {
             });
           }
 
-          console.log('Anon user: ' + JSON.stringify(user));
-
           this.sessionStorageFactory.asScoped(request).clear();
           const sessionStorage: SecuritySessionCookie = {
             username: user.username,
@@ -218,8 +212,7 @@ export class BasicAuthRoutes {
           };
 
           if (user.multitenancy_enabled) {
-            request.headers._auth_request_type_ = 'anonymous';
-            request.headers.authorization = 'Basic b3BlbmRpc3Ryb19zZWN1cml0eV9hbm9ueW1vdXM6b3BlbmRpc3Ryb19zZWN1cml0eV9hbm9ueW1vdXM=';
+            request.headers.authorization = ANONYMOUS_AUTH_HEADER;
             const selectTenant = resolveTenant({
               request,
               username: user.username,
@@ -238,8 +231,7 @@ export class BasicAuthRoutes {
           return response.redirected({
             headers: {
               location: `${redirectUrl}`,
-              _auth_request_type_: "anonymous",
-              authorization: "Basic b3BlbmRpc3Ryb19zZWN1cml0eV9hbm9ueW1vdXM6b3BlbmRpc3Ryb19zZWN1cml0eV9hbm9ueW1vdXM="
+              authorization: ANONYMOUS_AUTH_HEADER,
             },
           });
         } else {

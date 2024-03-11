@@ -172,7 +172,6 @@ export class MultipleAuthentication extends AuthenticationType {
         },
       });
     } else {
-      console.log('not a page request');
       return response.unauthorized();
     }
   }

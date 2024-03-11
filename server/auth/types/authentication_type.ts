@@ -31,7 +31,7 @@ import { SecuritySessionCookie } from '../../session/security_cookie';
 import { SecurityClient } from '../../backend/opensearch_security_client';
 import { resolveTenant, isValidTenant } from '../../multitenancy/tenant_resolver';
 import { UnauthenticatedError } from '../../errors';
-import { GLOBAL_TENANT_SYMBOL } from '../../../common';
+import { ANONYMOUS_AUTH_HEADER, GLOBAL_TENANT_SYMBOL } from '../../../common';
 
 export interface IAuthenticationType {
   type: string;
@@ -115,7 +115,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
     let authInfo: any | undefined;
 
     if (this.config.auth.anonymous_auth_enabled) {
-      const anonymousAuthHeaders = { _auth_request_type_: 'anonymous', authorization: 'Basic b3BlbmRpc3Ryb19zZWN1cml0eV9hbm9ueW1vdXM6b3BlbmRpc3Ryb19zZWN1cml0eV9hbm9ueW1vdXM=' };
+      const anonymousAuthHeaders = { authorization: ANONYMOUS_AUTH_HEADER };
       Object.assign(authHeaders, anonymousAuthHeaders);
     }
 
@@ -162,7 +162,6 @@ export abstract class AuthenticationType implements IAuthenticationType {
         // send to auth workflow
         return this.handleUnauthedRequest(request, response, toolkit);
       }
-      console.log('we have a cookie: ' + JSON.stringify(cookie));
 
       // extend session expiration time
       if (this.config.session.keepalive) {
@@ -217,7 +216,6 @@ export abstract class AuthenticationType implements IAuthenticationType {
     }
     if (!authInfo) {
       authInfo = await this.securityClient.authinfo(request, authHeaders);
-      console.log(authInfo);
     }
     authState.authInfo = authInfo;
 
