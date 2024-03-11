@@ -50,8 +50,7 @@ interface LoginButtonConfig {
   buttonstyle: string;
 }
 
-function redirect(serverBasePath: string) {
-  // navigate to nextUrl
+export function getNextPath(serverBasePath: string) {
   const urlParams = new URLSearchParams(window.location.search);
   let nextUrl = urlParams.get('nextUrl');
   if (!nextUrl || nextUrl.toLowerCase().includes('//')) {
@@ -73,7 +72,12 @@ function redirect(serverBasePath: string) {
   ) {
     url.searchParams.append('security_tenant', savedTenant);
   }
-  window.location.href = url.pathname + url.search + url.hash;
+  return url.pathname + url.search + url.hash;
+}
+
+function redirect(serverBasePath: string) {
+  // navigate to nextUrl
+  window.location.href = getNextPath(serverBasePath);
 }
 
 export function extractNextUrlFromWindowLocation(): string {
