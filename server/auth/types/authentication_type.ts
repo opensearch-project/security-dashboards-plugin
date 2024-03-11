@@ -115,7 +115,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
     let authInfo: any | undefined;
 
     if (this.config.auth.anonymous_auth_enabled) {
-      const anonymousAuthHeaders = { _auth_request_type_: 'anonymous' };
+      const anonymousAuthHeaders = { _auth_request_type_: 'anonymous', authorization: 'Basic b3BlbmRpc3Ryb19zZWN1cml0eV9hbm9ueW1vdXM6b3BlbmRpc3Ryb19zZWN1cml0eV9hbm9ueW1vdXM=' };
       Object.assign(authHeaders, anonymousAuthHeaders);
     }
 
@@ -159,10 +159,6 @@ export abstract class AuthenticationType implements IAuthenticationType {
         if (request.url.pathname && request.url.pathname.startsWith('/bundles/')) {
           return toolkit.notHandled();
         }
-        console.log('Request is unauthorized');
-        console.log(request.url);
-        console.log(request.route);
-
         // send to auth workflow
         return this.handleUnauthedRequest(request, response, toolkit);
       }
