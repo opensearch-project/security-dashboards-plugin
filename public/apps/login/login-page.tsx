@@ -212,14 +212,14 @@ export function LoginPage(props: LoginPageDeps) {
             </EuiFormRow>
           );
 
-          if (authOpts.length > 0) {
-            if (props.config.auth.anonymous_auth_enabled) {
-              const anonymousConfig = props.config.ui[AuthType.ANONYMOUS].login;
-              formBody.push(
-                renderLoginButton(AuthType.ANONYMOUS, ANONYMOUS_AUTH_LOGIN, anonymousConfig)
-              );
-            }
+          if (props.config.auth.anonymous_auth_enabled) {
+            const anonymousConfig = props.config.ui[AuthType.ANONYMOUS].login;
+            formBody.push(
+              renderLoginButton(AuthType.ANONYMOUS, ANONYMOUS_AUTH_LOGIN, anonymousConfig)
+            );
+          }
 
+          if (authOpts.length > 1) {
             formBody.push(<EuiSpacer size="xs" />);
             formBody.push(<EuiHorizontalRule size="full" margin="xl" />);
             formBody.push(<EuiSpacer size="xs" />);
