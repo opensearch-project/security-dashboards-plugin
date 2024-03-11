@@ -35,6 +35,7 @@ import {
   OPENID_AUTH_LOGIN_WITH_FRAGMENT,
   SAML_AUTH_LOGIN_WITH_FRAGMENT,
 } from '../../../common';
+import { getSavedTenant } from '../../utils/storage-utils';
 
 interface LoginPageDeps {
   http: CoreStart['http'];
@@ -58,7 +59,21 @@ function redirect(serverBasePath: string) {
     // redirect to '/'.
     nextUrl = serverBasePath + '/';
   }
-  window.location.href = nextUrl + window.location.hash;
+  const savedTenant = getSavedTenant();
+  const url = new URL(
+    window.location.protocol + '//' + window.location.host + nextUrl + window.location.hash
+  );
+  if (
+    !!savedTenant &&
+    !(
+      url.searchParams.has('security_tenant') ||
+      url.searchParams.has('securitytenant') ||
+      url.searchParams.has('securityTenant_')
+    )
+  ) {
+    url.searchParams.append('security_tenant', savedTenant);
+  }
+  window.location.href = url.pathname + url.search + url.hash;
 }
 
 export function extractNextUrlFromWindowLocation(): string {
