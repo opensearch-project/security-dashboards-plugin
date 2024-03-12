@@ -28,7 +28,7 @@ import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { BasicAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
-import { LOGIN_PAGE_URI, ANONYMOUS_AUTH_LOGIN } from '../../../../common';
+import { LOGIN_PAGE_URI, ANONYMOUS_AUTH_HEADER } from '../../../../common';
 import { composeNextUrlQueryParam } from '../../../utils/next_url';
 import { AUTH_HEADER_NAME, AuthType, OPENDISTRO_SECURITY_ANONYMOUS } from '../../../../common';
 
@@ -130,7 +130,7 @@ export class BasicAuthentication extends AuthenticationType {
     request: OpenSearchDashboardsRequest
   ): any {
     if (this.config.auth.anonymous_auth_enabled && cookie.isAnonymousAuth) {
-      return {};
+      return { authorization: ANONYMOUS_AUTH_HEADER };
     }
     const headers: any = {};
     Object.assign(headers, { authorization: cookie.credentials?.authHeaderValue });
