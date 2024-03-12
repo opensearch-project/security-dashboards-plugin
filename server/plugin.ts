@@ -73,7 +73,8 @@ interface SecurityPluginSetupDeps {
   workspace: WorkspacePluginSetup;
 }
 
-export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPluginStart, SecurityPluginSetupDeps> {
+export class SecurityPlugin
+  implements Plugin<SecurityPluginSetup, SecurityPluginStart, SecurityPluginSetupDeps> {
   private readonly logger: Logger;
   // FIXME: keep an reference of admin client so that it can be used in start(), better to figureout a
   //        decent way to get adminClient in start. (maybe using getStartServices() from setup?)
