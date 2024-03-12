@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { randomString } from "@hapi/cryptiles";
+import { randomString } from '@hapi/cryptiles';
 
 export const PLUGIN_ID = 'opensearchDashboardsSecurity';
 export const PLUGIN_NAME = 'security-dashboards-plugin';
@@ -39,7 +39,7 @@ export const ANONYMOUS_AUTH_LOGIN = '/auth/anonymous';
 const ANONYMOUS_AUTH_USER: string = 'opendistro_security_anonymous';
 const RANDOM_PASS: string = randomString(12);
 const ANONYMOUS_USER_PASS: string = `${ANONYMOUS_AUTH_USER}:${RANDOM_PASS}`;
-export const ANONYMOUS_AUTH_HEADER = `Basic ${Buffer.from(ANONYMOUS_USER_PASS).toString('base64')}`
+export const ANONYMOUS_AUTH_HEADER = `Basic ${Buffer.from(ANONYMOUS_USER_PASS).toString('base64')}`;
 
 export const OPENID_AUTH_LOGOUT = '/auth/openid/logout';
 export const SAML_AUTH_LOGOUT = '/auth/saml/logout';
