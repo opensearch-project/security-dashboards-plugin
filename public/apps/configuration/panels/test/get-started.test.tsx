@@ -148,7 +148,7 @@ describe('Get started (landing page)', () => {
       jest.clearAllMocks();
     });
 
-    it('Purge cache button clicks', async () => {
+    it('Purge cache button fails', async () => {
       const button = wrapper.find('[data-test-subj="purge-cache"]');
       expect(button).toHaveLength(1);
 
@@ -161,7 +161,7 @@ describe('Get started (landing page)', () => {
       expect(ToastUtils.createUnknownErrorToast).toHaveBeenCalledTimes(1);
     });
 
-    it('Purge cache button click', async () => {
+    it('Purge cache button works', async () => {
       const button = wrapper.find('[data-test-subj="purge-cache"]');
       expect(button).toHaveLength(1);
 
