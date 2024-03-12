@@ -46,6 +46,7 @@ import { createMigrationOpenSearchClient } from '../../../src/core/server/saved_
 import { SecuritySavedObjectsClientWrapper } from './saved_objects/saved_objects_wrapper';
 import { addTenantParameterToResolvedShortLink } from './multitenancy/tenant_resolver';
 import { ReadonlyService } from './readonly/readonly_service';
+import { WorkspacePluginSetup } from '../../../src/plugins/workspace/server';
 
 export interface SecurityPluginRequestContext {
   logger: Logger;
@@ -68,7 +69,11 @@ declare module 'opensearch-dashboards/server' {
   }
 }
 
-export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPluginStart> {
+interface SecurityPluginSetupDeps {
+  workspace: WorkspacePluginSetup;
+}
+
+export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPluginStart, SecurityPluginSetupDeps> {
   private readonly logger: Logger;
   // FIXME: keep an reference of admin client so that it can be used in start(), better to figureout a
   //        decent way to get adminClient in start. (maybe using getStartServices() from setup?)
@@ -83,7 +88,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     this.savedObjectClientWrapper = new SecuritySavedObjectsClientWrapper();
   }
 
-  public async setup(core: CoreSetup) {
+  public async setup(core: CoreSetup, { workspace }: SecurityPluginSetupDeps) {
     this.logger.debug('opendistro_security: Setup');
 
     const config$ = this.initializerContext.config.create<SecurityPluginConfigType>();
@@ -138,6 +143,10 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
 
     // set up multi-tenant routes
     if (config.multitenancy?.enabled) {
+      if (workspace) {
+        this.logger.error("Both workspace and multi-tenancy features are turned on, only one of them could turned on at same time.");
+        process.exit(1);
+      }
       setupMultitenantRoutes(router, securitySessionStorageFactory, this.securityClient);
     }
 

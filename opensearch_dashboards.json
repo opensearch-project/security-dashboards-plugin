@@ -10,7 +10,8 @@
     "savedObjectsManagement"
   ],
   "optionalPlugins": [
-    "managementOverview"
+    "managementOverview",
+    "workspace"
   ],
   "server": true,
   "ui": true
