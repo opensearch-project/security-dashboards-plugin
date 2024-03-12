@@ -145,7 +145,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     if (config.multitenancy?.enabled) {
       if (workspace) {
         this.logger.error(
-          'Both workspace and multi-tenancy features are enabled, only one of them could enabled at same time.'
+          'Both workspace and multi-tenancy features are enabled, only one of them can be enabled at the same time.'
         );
         process.exit(1);
       }
