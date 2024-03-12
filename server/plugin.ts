@@ -144,7 +144,9 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     // set up multi-tenant routes
     if (config.multitenancy?.enabled) {
       if (workspace) {
-        this.logger.error("Both workspace and multi-tenancy features are turned on, only one of them could turned on at same time.");
+        this.logger.error(
+          'Both workspace and multi-tenancy features are enabled, only one of them could enabled at same time.'
+        );
         process.exit(1);
       }
       setupMultitenantRoutes(router, securitySessionStorageFactory, this.securityClient);
