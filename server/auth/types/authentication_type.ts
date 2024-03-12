@@ -115,7 +115,10 @@ export abstract class AuthenticationType implements IAuthenticationType {
     let authInfo: any | undefined;
 
     // Adds a basic auth credentials headers to requests originated as anonymous user
-    if (this.config.auth.anonymous_auth_enabled) {
+    if (
+      this.config.auth.anonymous_auth_enabled &&
+      !request.headers.hasOwnProperty('authorization')
+    ) {
       const anonymousAuthHeaders = { authorization: ANONYMOUS_AUTH_HEADER };
       Object.assign(authHeaders, anonymousAuthHeaders);
     }
