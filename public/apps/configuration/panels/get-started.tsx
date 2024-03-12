@@ -24,6 +24,7 @@ import {
   EuiSteps,
   EuiText,
   EuiTitle,
+  EuiGlobalToastList,
 } from '@elastic/eui';
 import React from 'react';
 import { FormattedMessage } from '@osd/i18n/react';
@@ -33,6 +34,13 @@ import { Action } from '../types';
 import { ResourceType } from '../../../../common';
 import { API_ENDPOINT_CACHE, DocLinks } from '../constants';
 import { ExternalLink, ExternalLinkButton } from '../utils/display-utils';
+import { httpDelete } from '../utils/request-utils';
+import {
+  createErrorToast,
+  createSuccessToast,
+  createUnknownErrorToast,
+  useToastState,
+} from '../utils/toast-utils';
 
 const addBackendStep = {
   title: 'Add backends',
@@ -162,6 +170,7 @@ export function GetStarted(props: AppDependencies) {
   } else {
     steps = setOfSteps;
   }
+  const [toasts, addToast, removeToast] = useToastState();
 
   return (
     <>
@@ -229,8 +238,20 @@ export function GetStarted(props: AppDependencies) {
             <EuiButton
               iconType="refresh"
               fill
-              onClick={() => {
-                props.coreStart.http.delete(API_ENDPOINT_CACHE);
+              onClick={async () => {
+                httpDelete(props.coreStart.http, API_ENDPOINT_CACHE)
+                  .then(() => {
+                    addToast(
+                      createSuccessToast(
+                        'cache-flush-success',
+                        'Cache purge successful',
+                        'Cache purge successful'
+                      )
+                    );
+                  })
+                  .catch(() =>
+                    addToast(createUnknownErrorToast('cache-flush-failed', 'purge cache'))
+                  );
               }}
             >
               Purge cache
@@ -274,6 +295,7 @@ export function GetStarted(props: AppDependencies) {
           </EuiText>
         </EuiPanel>
       </div>
+      <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={10000} dismissToast={removeToast} />
     </>
   );
 }
