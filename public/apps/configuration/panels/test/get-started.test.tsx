@@ -20,6 +20,18 @@ import { Action } from '../../types';
 import { ResourceType } from '../../../../../common';
 import { buildHashUrl } from '../../utils/url-builder';
 import { GetStarted } from '../get-started';
+import * as ToastUtils from '../../utils/toast-utils'; // Import all functions from toast-utils
+import * as RequestUtils from '../../utils/request-utils'; // Import all functions from request-utils
+
+jest.mock('../../utils/toast-utils', () => ({
+  createSuccessToast: jest.fn(),
+  createUnknownErrorToast: jest.fn(),
+  useToastState: jest.fn().mockReturnValue([[], jest.fn(), jest.fn()]),
+}));
+
+jest.mock('../../utils/request-utils', () => ({
+  httpDelete: jest.fn(),
+}));
 
 describe('Get started (landing page)', () => {
   const mockCoreStart = {
@@ -71,6 +83,7 @@ describe('Get started (landing page)', () => {
           config={config as any}
         />
       );
+      jest.clearAllMocks();
     });
 
     it('Review authentication and authorization button click', () => {
@@ -118,6 +131,44 @@ describe('Get started (landing page)', () => {
       expect(button).toHaveLength(1);
       button.simulate('click');
       expect(window.location.hash).toBe(buildHashUrl(ResourceType.auditLogging));
+    });
+  });
+
+  describe('Tests purge cache button', () => {
+    let wrapper;
+    beforeEach(() => {
+      wrapper = shallow(
+        <GetStarted
+          coreStart={mockCoreStart as any}
+          navigation={{} as any}
+          params={{} as any}
+          config={config as any}
+        />
+      );
+      jest.clearAllMocks();
+    });
+
+    it('Purge cache button fails', async () => {
+      const button = wrapper.find('[data-test-subj="purge-cache"]');
+      expect(button).toHaveLength(1);
+
+      // Failure case: Mock httpDelete to reject
+      jest
+        .spyOn(RequestUtils, 'httpDelete')
+        .mockRejectedValueOnce(new Error('Failed to purge cache'));
+
+      await button.props().onClick(); // Simulate button click
+      expect(ToastUtils.createUnknownErrorToast).toHaveBeenCalledTimes(1);
+    });
+
+    it('Purge cache button works', async () => {
+      const button = wrapper.find('[data-test-subj="purge-cache"]');
+      expect(button).toHaveLength(1);
+
+      // Success case: Mock httpDelete to resolve
+      jest.spyOn(RequestUtils, 'httpDelete').mockResolvedValueOnce('nice');
+      await button.props().onClick(); // Simulate button click
+      expect(ToastUtils.createSuccessToast).toHaveBeenCalledTimes(1);
     });
   });
 });
