@@ -91,33 +91,25 @@ describe('test redirect', () => {
     // Trick to mock window.location
     const originalLocation = window.location;
     delete window.location;
-    window.location = new URL(
-      "http://localhost:5601/app/login?nextUrl=%2Fapp%2Fdashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(filters:!(),refreshInterval:(pause:!f,value:900000),time:(from:now-24h,to:now))&_a=(description:'Analyze%20mock%20flight%20data%20for%20OpenSearch-Air,%20Logstash%20Airways,%20OpenSearch%20Dashboards%20Airlines%20and%20BeatsWest',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'%5BFlights%5D%20Global%20Flight%20Dashboard',viewMode:view)"
-    ) as any;
+    window.location = new URL('http://localhost:5601/app/login?nextUrl=%2Fapp%2Fdashboards') as any;
     setSavedTenant(null);
     const nextPath = getNextPath('');
-    expect(nextPath).toEqual(
-      "/app/dashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(filters:!(),refreshInterval:(pause:!f,value:900000),time:(from:now-24h,to:now))&_a=(description:'Analyze%20mock%20flight%20data%20for%20OpenSearch-Air,%20Logstash%20Airways,%20OpenSearch%20Dashboards%20Airlines%20and%20BeatsWest',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'%5BFlights%5D%20Global%20Flight%20Dashboard',viewMode:view)"
-    );
+    expect(nextPath).toEqual('/app/dashboards');
     window.location = originalLocation;
   });
 
   test('extract redirect includes security_tenant when tenant in local storage', () => {
     const originalLocation = window.location;
     delete window.location;
-    window.location = new URL(
-      "http://localhost:5601/app/login?nextUrl=%2Fapp%2Fdashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(filters:!(),refreshInterval:(pause:!f,value:900000),time:(from:now-24h,to:now))&_a=(description:'Analyze%20mock%20flight%20data%20for%20OpenSearch-Air,%20Logstash%20Airways,%20OpenSearch%20Dashboards%20Airlines%20and%20BeatsWest',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'%5BFlights%5D%20Global%20Flight%20Dashboard',viewMode:view)"
-    );
+    window.location = new URL('http://localhost:5601/app/login?nextUrl=%2Fapp%2Fdashboards');
     setSavedTenant('custom');
     const nextPath = getNextPath('');
-    expect(nextPath).toEqual(
-      "/app/dashboards?security_tenant=custom#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(filters:!(),refreshInterval:(pause:!f,value:900000),time:(from:now-24h,to:now))&_a=(description:'Analyze%20mock%20flight%20data%20for%20OpenSearch-Air,%20Logstash%20Airways,%20OpenSearch%20Dashboards%20Airlines%20and%20BeatsWest',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'%5BFlights%5D%20Global%20Flight%20Dashboard',viewMode:view)"
-    );
+    expect(nextPath).toEqual('/app/dashboards?security_tenant=custom');
     setSavedTenant(null);
     window.location = originalLocation;
   });
 
-  test('extract redirect includes security_tenant when tenant in local storage, existing url params', () => {
+  test('extract redirect includes security_tenant when tenant in local storage, existing url params and hash', () => {
     const originalLocation = window.location;
     delete window.location;
     window.location = new URL(
