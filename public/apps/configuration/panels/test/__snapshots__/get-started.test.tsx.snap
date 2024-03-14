@@ -21,7 +21,7 @@ exports[`Get started (landing page) renders when backend configuration is disabl
       dataSourcePickerReadOnly={false}
       navigation={Object {}}
       params={Object {}}
-      random={[Function]}
+      setDatasourceId={[Function]}
     />
     <EuiPageHeader>
       <EuiTitle
@@ -292,7 +292,7 @@ exports[`Get started (landing page) renders when backend configuration is enable
       dataSourcePickerReadOnly={false}
       navigation={Object {}}
       params={Object {}}
-      random={[Function]}
+      setDatasourceId={[Function]}
     />
     <EuiPageHeader>
       <EuiTitle
