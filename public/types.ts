@@ -33,10 +33,15 @@ export interface SecurityPluginSetupDependencies {
   dataSourceManagement?: DataSourceManagementPluginSetup;
 }
 
+export interface Cluster {
+  id: string;
+  label: string;
+}
+
 export interface SecurityPluginStartDependencies {
   navigation: NavigationPublicPluginStart;
   savedObjectsManagement: SavedObjectsManagementPluginStart;
-  dataSource: DataSourcePluginStart;
+  dataSource?: DataSourcePluginStart;
 }
 
 export interface AuthInfo {

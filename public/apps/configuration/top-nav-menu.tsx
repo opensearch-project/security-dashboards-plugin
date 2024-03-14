@@ -19,17 +19,17 @@ import { NavigationPublicPluginStart } from 'src/plugins/navigation/public/types
 import { ClientConfigType } from '../../types';
 import { PLUGIN_NAME } from '../../../common';
 import { AppDependencies } from '../types';
+import { Cluster } from '../../types';
 
 export interface TopNavMenuProps extends AppDependencies {
   dataSourcePickerReadOnly: boolean;
-  setDatasourceId: React.Dispatch<React.SetStateAction<string>>;
+  setDatasourceId: React.Dispatch<React.SetStateAction<Cluster>>;
 }
 
 export const SecurityPluginTopNavMenu = (props: TopNavMenuProps) => {
   const {
     coreStart,
     securityPluginStartDeps,
-    dataSourcePickerReadOnly,
     setHeaderActionMenu,
     dataSourceManagement,
     setDatasourceId,
@@ -44,7 +44,7 @@ export const SecurityPluginTopNavMenu = (props: TopNavMenuProps) => {
       savedObjects={coreStart.savedObjects.client}
       setMenuMountPoint={setHeaderActionMenu}
       notifications={coreStart.notifications}
-      dataSourceCallBackFunc={(datasource) => setDatasourceId(datasource.id)}
+      dataSourceCallBackFunc={(datasource) => setDatasourceId(datasource)}
       hideLocalCluster={false}
       fullWidth={false}
     />

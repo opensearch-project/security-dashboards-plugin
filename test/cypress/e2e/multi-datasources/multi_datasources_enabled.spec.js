@@ -35,6 +35,6 @@ describe('Multi-datasources enabled', () => {
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
     cy.contains('li.euiSelectableListItem', '9202').click();
     cy.get('[data-test-subj="purge-cache"]').click();
-    cy.get('.euiToastHeader__title').should('contain', 'successful');
+    cy.get('.euiToastHeader__title').should('contain', 'successful for 9202');
   });
 });

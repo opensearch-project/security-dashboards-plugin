@@ -19,7 +19,7 @@ import { EuiSteps } from '@elastic/eui';
 import { Action } from '../../types';
 import { ResourceType } from '../../../../../common';
 import { buildHashUrl } from '../../utils/url-builder';
-import { GetStarted } from '../get-started';
+import { GetClusterDescription, GetStarted } from '../get-started';
 import * as ToastUtils from '../../utils/toast-utils'; // Import all functions from toast-utils
 import * as RequestUtils from '../../utils/request-utils'; // Import all functions from request-utils
 
@@ -50,6 +50,7 @@ describe('Get started (landing page)', () => {
         navigation={{} as any}
         params={{} as any}
         config={config as any}
+        securityPluginStartDeps={{}}
       />
     );
     expect(component).toMatchSnapshot();
@@ -67,6 +68,7 @@ describe('Get started (landing page)', () => {
         navigation={{} as any}
         params={{} as any}
         config={config1 as any}
+        securityPluginStartDeps={{}}
       />
     );
     expect(component).toMatchSnapshot();
@@ -81,6 +83,7 @@ describe('Get started (landing page)', () => {
           navigation={{} as any}
           params={{} as any}
           config={config as any}
+          securityPluginStartDeps={{}}
         />
       );
       jest.clearAllMocks();
@@ -143,6 +146,7 @@ describe('Get started (landing page)', () => {
           navigation={{} as any}
           params={{} as any}
           config={config as any}
+          securityPluginStartDeps={{}}
         />
       );
       jest.clearAllMocks();
@@ -169,6 +173,12 @@ describe('Get started (landing page)', () => {
       jest.spyOn(RequestUtils, 'httpDelete').mockResolvedValueOnce('nice');
       await button.props().onClick(); // Simulate button click
       expect(ToastUtils.createSuccessToast).toHaveBeenCalledTimes(1);
+    });
+
+    it('Tests the GetClusterDescription helper function', () => {
+      expect(GetClusterDescription(false, { id: 'blah', label: 'blah' })).toBe('');
+      expect(GetClusterDescription(true, { id: '', label: '' })).toBe('for Local cluster');
+      expect(GetClusterDescription(true, { id: 'test', label: 'test' })).toBe('for test');
     });
   });
 });

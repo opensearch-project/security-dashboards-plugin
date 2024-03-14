@@ -37,6 +37,7 @@ import { ExternalLink, ExternalLinkButton } from '../utils/display-utils';
 import { httpDelete } from '../utils/request-utils';
 import { createSuccessToast, createUnknownErrorToast, useToastState } from '../utils/toast-utils';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
+import { Cluster } from '../../../types';
 
 const addBackendStep = {
   title: 'Add backends',
@@ -159,8 +160,16 @@ const setOfSteps = [
   },
 ];
 
+export function GetClusterDescription(dataSourceEnabled: boolean, cluster: Cluster) {
+  if (dataSourceEnabled) {
+    return `for ${cluster.label || 'Local cluster'}`;
+  }
+  return '';
+}
+
 export function GetStarted(props: AppDependencies) {
-  const [datasourceId, setDatasourceId] = useState('');
+  const dataSourceEnabled = !!props.securityPluginStartDeps.dataSource?.dataSourceEnabled;
+  const [dataSource, setDataSource] = useState<Cluster>({ id: '', label: '' });
 
   let steps;
   if (props.config.ui.backend_configurable) {
@@ -176,7 +185,7 @@ export function GetStarted(props: AppDependencies) {
         <SecurityPluginTopNavMenu
           {...props}
           dataSourcePickerReadOnly={false}
-          setDatasourceId={setDatasourceId}
+          setDatasourceId={setDataSource}
         />
         <EuiPageHeader>
           <EuiTitle size="l">
@@ -245,17 +254,28 @@ export function GetStarted(props: AppDependencies) {
               onClick={async () => {
                 try {
                   await httpDelete(props.coreStart.http, API_ENDPOINT_CACHE, {
-                    dataSourceId: datasourceId,
+                    dataSourceId: dataSource.id,
                   });
                   addToast(
                     createSuccessToast(
                       'cache-flush-success',
-                      'Cache purge successful',
-                      'Cache purge successful'
+                      `Cache purge successful ${GetClusterDescription(
+                        dataSourceEnabled,
+                        dataSource
+                      )}`,
+                      `Cache purge successful ${GetClusterDescription(
+                        dataSourceEnabled,
+                        dataSource
+                      )}`
                     )
                   );
                 } catch (err) {
-                  addToast(createUnknownErrorToast('cache-flush-failed', 'purge cache'));
+                  addToast(
+                    createUnknownErrorToast(
+                      'cache-flush-failed',
+                      `purge cache ${GetClusterDescription(dataSourceEnabled, dataSource)}`
+                    )
+                  );
                 }
               }}
             >
