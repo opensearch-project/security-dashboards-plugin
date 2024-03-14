@@ -13,11 +13,10 @@
  *   permissions and limitations under the License.
  */
 
-import { loginWithBasicAuth } from '../../support/commands';
-
 describe('Multi-datasources enabled', () => {
   it('Sanity checks the cluster selector is not visible when multi datasources is disabled', () => {
-    loginWithBasicAuth();
+    localStorage.setItem('opendistro::security::tenant::saved', '""');
+    localStorage.setItem('home:newThemeModal:show', 'false');
 
     cy.visit('http://localhost:5601/app/security-dashboards-plugin#/getstarted', {
       failOnStatusCode: false,
