@@ -28,7 +28,6 @@ import {
 } from '@elastic/eui';
 import React, { useState } from 'react';
 import { FormattedMessage } from '@osd/i18n/react';
-import { setData } from 'src/plugins/vis_type_vega/public/services';
 import { AppDependencies } from '../../types';
 import { buildHashUrl } from '../utils/url-builder';
 import { Action } from '../types';
@@ -37,6 +36,7 @@ import { API_ENDPOINT_CACHE, DocLinks } from '../constants';
 import { ExternalLink, ExternalLinkButton } from '../utils/display-utils';
 import { httpDelete } from '../utils/request-utils';
 import { createSuccessToast, createUnknownErrorToast, useToastState } from '../utils/toast-utils';
+import { SecurityPluginTopNavMenu } from '../top-nav-menu';
 
 const addBackendStep = {
   title: 'Add backends',
@@ -160,7 +160,7 @@ const setOfSteps = [
 ];
 
 export function GetStarted(props: AppDependencies) {
-  const [datasourceId, setDatasourceId] = useState(undefined);
+  const [datasourceId, setDatasourceId] = useState('');
 
   let steps;
   if (props.config.ui.backend_configurable) {
@@ -176,7 +176,7 @@ export function GetStarted(props: AppDependencies) {
         <SecurityPluginTopNavMenu
           {...props}
           dataSourcePickerReadOnly={false}
-          random={setDatasourceId}
+          setDatasourceId={setDatasourceId}
         />
         <EuiPageHeader>
           <EuiTitle size="l">

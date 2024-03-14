@@ -22,7 +22,7 @@ import { AppDependencies } from '../types';
 
 export interface TopNavMenuProps extends AppDependencies {
   dataSourcePickerReadOnly: boolean;
-  random: any;
+  setDatasourceId: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const SecurityPluginTopNavMenu = (props: TopNavMenuProps) => {
@@ -32,6 +32,7 @@ export const SecurityPluginTopNavMenu = (props: TopNavMenuProps) => {
     dataSourcePickerReadOnly,
     setHeaderActionMenu,
     dataSourceManagement,
+    setDatasourceId,
   } = props;
   const DataSourceMenu = dataSourceManagement?.ui.DataSourceMenu;
   const dataSourceEnabled = !!securityPluginStartDeps.dataSource?.dataSourceEnabled;
@@ -43,7 +44,7 @@ export const SecurityPluginTopNavMenu = (props: TopNavMenuProps) => {
       savedObjects={coreStart.savedObjects.client}
       setMenuMountPoint={setHeaderActionMenu}
       notifications={coreStart.notifications}
-      dataSourceCallBackFunc={() => {}}
+      dataSourceCallBackFunc={(datasource) => setDatasourceId(datasource.id)}
       hideLocalCluster={false}
       fullWidth={false}
     />

@@ -770,10 +770,9 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
         let esResponse;
         try {
           esResponse = await client.callAPI('opensearch_security.clearCache', {});
-          console.log(esResponse);
           return response.ok({
             body: {
-              message: 'test',
+              message: esResponse.message,
             },
           });
         } catch (error) {
