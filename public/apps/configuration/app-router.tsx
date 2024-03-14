@@ -14,8 +14,8 @@
  */
 
 import { EuiBreadcrumb, EuiPage, EuiPageBody, EuiPageSideBar } from '@elastic/eui';
-import { flow, map, mapValues, partial } from 'lodash';
-import React, { useState } from 'react';
+import { flow, partial } from 'lodash';
+import React from 'react';
 import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { AppDependencies } from '../types';
 import { AuditLogging } from './panels/audit-logging/audit-logging';
@@ -40,8 +40,6 @@ import { Action, RouteItem, SubAction } from './types';
 import { ResourceType } from '../../../common';
 import { buildHashUrl, buildUrl } from './utils/url-builder';
 import { CrossPageToast } from './cross-page-toast';
-import { useOpenSearchDashboards } from '../../../../../src/plugins/opensearch_dashboards_react/public';
-import { SecurityPluginTopNavMenu, TopNavMenu } from './top-nav-menu';
 
 const LANDING_PAGE_URL = '/getstarted';
 
@@ -147,7 +145,6 @@ function decodeParams(params: { [k: string]: string }): any {
 
 export function AppRouter(props: AppDependencies) {
   const setGlobalBreadcrumbs = flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs);
-  const [datasourceId, setDatasourceId] = useState(undefined);
 
   return (
     <Router basename={props.params.appBasePath}>
@@ -258,23 +255,14 @@ export function AppRouter(props: AppDependencies) {
               path={ROUTE_MAP.tenants.href}
               render={() => {
                 setGlobalBreadcrumbs(ResourceType.tenants);
-                return (
-                  <>
-                    <TenantList tabID={'Manage'} {...props} />
-                  </>
-                );
+                return <TenantList tabID={'Manage'} {...props} />;
               }}
             />
             <Route
               path={ROUTE_MAP.tenantsConfigureTab.href}
               render={() => {
                 setGlobalBreadcrumbs(ResourceType.tenants);
-
-                return (
-                  <>
-                    <TenantList tabID={'Configure'} {...props} />
-                  </>
-                );
+                return <TenantList tabID={'Configure'} {...props} />;
               }}
             />
             <Route
