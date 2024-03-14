@@ -91,16 +91,22 @@ Cypress.Commands.add('loginWithSamlMultiauth', () => {
   cy.get('button[id=btn-sign-in]').should('be.visible').click();
 });
 
-export const loginWithBasicAuth = () => {
-  cy.visit('http://localhost:5601', {
-    failOnStatusCode: false,
-  });
-  cy.get('[data-test-subj="user-name"]').type('admin');
-  cy.get('[data-test-subj="password"]').type('myStrongPassword123!');
-  cy.get('[data-test-subj="submit"]').click();
-  localStorage.setItem('opendistro::security::tenant::saved', '""');
-  localStorage.setItem('home:newThemeModal:show', 'false');
-};
+Cypress.Commands.overwrite('visit', (orig, url, options) => {
+  if (Cypress.env('BYPASS_LOGIN')) {
+    let newOptions = options;
+    if (options) {
+      newOptions.auth = ADMIN_AUTH;
+    } else {
+      newOptions = {
+        auth: ADMIN_AUTH,
+      };
+    }
+
+    orig(url, newOptions);
+  } else {
+    orig(url, options);
+  }
+});
 
 Cypress.Commands.add('shortenUrl', (data, tenant) => {
   cy.request({

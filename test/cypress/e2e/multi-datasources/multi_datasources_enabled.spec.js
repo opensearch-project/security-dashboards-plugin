@@ -13,8 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-import { loginWithBasicAuth } from '../../support/commands';
-
 const createDataSource = () => {
   cy.visit('http://localhost:5601/app/management/opensearch-dashboards/dataSources/create');
   cy.get('[data-test-subj="createDataSourceFormTitleField"]').type('9202');
@@ -28,7 +26,9 @@ const createDataSource = () => {
 
 describe('Multi-datasources enabled', () => {
   it('Sanity checks the cluster selector is visible when multi datasources is enabled', () => {
-    loginWithBasicAuth();
+    localStorage.setItem('opendistro::security::tenant::saved', '""');
+    localStorage.setItem('home:newThemeModal:show', 'false');
+
     createDataSource();
 
     cy.visit('http://localhost:5601/app/security-dashboards-plugin#/getstarted');
