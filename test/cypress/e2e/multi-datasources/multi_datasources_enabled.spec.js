@@ -29,12 +29,12 @@ const createDataSource = () => {
 describe('Multi-datasources enabled', () => {
   it('Sanity checks the cluster selector is visible when multi datasources is enabled', () => {
     loginWithBasicAuth();
-    createDataSource();
+    // createDataSource();
 
     cy.visit('http://localhost:5601/app/security-dashboards-plugin#/getstarted');
 
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
-    cy.contains('9202').click();
+    cy.contains('li.euiSelectableListItem', '9202').click();
     cy.get('[data-test-subj="purge-cache"]').click();
     cy.get('.euiToastHeader__title').should('contain', 'successful');
   });
