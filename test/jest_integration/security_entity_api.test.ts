@@ -351,14 +351,16 @@ describe('start OpenSearch Dashboards server', () => {
   it('delete cache', async () => {
     const deleteCacheResponse = await osdTestServer.request
       .delete(root, '/api/v1/configuration/cache')
-      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
+      .send({ dataSourceId: '' });
     expect(deleteCacheResponse.status).toEqual(200);
 
     const adminAuthCookie = await getAuthCookie(root, ADMIN_USER, ADMIN_PASSWORD);
     const deleteCacheWithCookieResponse = await osdTestServer.request
       .delete(root, '/api/v1/configuration/cache')
       .unset(AUTHORIZATION_HEADER_NAME)
-      .set('Cookie', adminAuthCookie);
+      .set('Cookie', adminAuthCookie)
+      .send({ dataSourceId: '' });
     expect(deleteCacheWithCookieResponse.status).toEqual(200);
   });
 

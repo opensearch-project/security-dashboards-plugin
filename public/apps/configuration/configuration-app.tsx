@@ -21,14 +21,24 @@ import { I18nProvider } from '@osd/i18n/react';
 import { AppMountParameters, CoreStart } from '../../../../../src/core/public';
 import { SecurityPluginStartDependencies, ClientConfigType } from '../../types';
 import { AppRouter } from './app-router';
+import { DataSourceManagementPluginSetup } from '../../../../../src/plugins/data_source_management/public';
 
 export function renderApp(
   coreStart: CoreStart,
-  navigation: SecurityPluginStartDependencies,
+  securityPluginStartDeps: SecurityPluginStartDependencies,
   params: AppMountParameters,
-  config: ClientConfigType
+  config: ClientConfigType,
+  setHeaderActionMenu: AppMountParameters['setHeaderActionMenu'],
+  dataSourceManagement?: DataSourceManagementPluginSetup
 ) {
-  const deps = { coreStart, navigation, params, config };
+  const deps = {
+    coreStart,
+    securityPluginStartDeps,
+    params,
+    config,
+    setHeaderActionMenu,
+    dataSourceManagement,
+  };
   ReactDOM.render(
     <I18nProvider>
       <AppRouter {...deps} />

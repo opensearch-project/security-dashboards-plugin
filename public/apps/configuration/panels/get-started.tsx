@@ -26,8 +26,9 @@ import {
   EuiTitle,
   EuiGlobalToastList,
 } from '@elastic/eui';
-import React from 'react';
+import React, { useState } from 'react';
 import { FormattedMessage } from '@osd/i18n/react';
+import { setData } from 'src/plugins/vis_type_vega/public/services';
 import { AppDependencies } from '../../types';
 import { buildHashUrl } from '../utils/url-builder';
 import { Action } from '../types';
@@ -159,6 +160,8 @@ const setOfSteps = [
 ];
 
 export function GetStarted(props: AppDependencies) {
+  const [datasourceId, setDatasourceId] = useState(undefined);
+
   let steps;
   if (props.config.ui.backend_configurable) {
     steps = [addBackendStep, ...setOfSteps];
@@ -170,6 +173,11 @@ export function GetStarted(props: AppDependencies) {
   return (
     <>
       <div className="panel-restrict-width">
+        <SecurityPluginTopNavMenu
+          {...props}
+          dataSourcePickerReadOnly={false}
+          random={setDatasourceId}
+        />
         <EuiPageHeader>
           <EuiTitle size="l">
             <h1>Get started</h1>
@@ -236,7 +244,9 @@ export function GetStarted(props: AppDependencies) {
               data-test-subj="purge-cache"
               onClick={async () => {
                 try {
-                  await httpDelete(props.coreStart.http, API_ENDPOINT_CACHE);
+                  await httpDelete(props.coreStart.http, API_ENDPOINT_CACHE, {
+                    dataSourceId: datasourceId,
+                  });
                   addToast(
                     createSuccessToast(
                       'cache-flush-success',

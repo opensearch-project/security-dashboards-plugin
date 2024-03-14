@@ -19,7 +19,7 @@ import { getAuthInfo } from '../../public/utils/auth-info-utils';
 import { TenancyConfigSettings } from '../../public/apps/configuration/panels/tenancy-config/types';
 
 export class SecurityClient {
-  constructor(private readonly esClient: ILegacyClusterClient) {}
+  constructor(private readonly esClient: ILegacyClusterClient | undefined) {}
 
   public async authenticate(request: OpenSearchDashboardsRequest, credentials: any): Promise<User> {
     const authHeader = Buffer.from(`${credentials.username}:${credentials.password}`).toString(

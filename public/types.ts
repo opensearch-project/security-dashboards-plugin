@@ -19,6 +19,8 @@ import {
   SavedObjectsManagementPluginStart,
 } from '../../../src/plugins/saved_objects_management/public';
 import { ManagementOverViewPluginSetup } from '../../../src/plugins/management_overview/public';
+import { DataSourcePluginStart } from '../../../src/plugins/data_source/public/types';
+import { DataSourceManagementPluginSetup } from '../../../src/plugins/data_source_management/public';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SecurityPluginSetup {}
@@ -28,11 +30,13 @@ export interface SecurityPluginStart {}
 export interface SecurityPluginSetupDependencies {
   savedObjectsManagement: SavedObjectsManagementPluginSetup;
   managementOverview?: ManagementOverViewPluginSetup;
+  dataSourceManagement?: DataSourceManagementPluginSetup;
 }
 
 export interface SecurityPluginStartDependencies {
   navigation: NavigationPublicPluginStart;
   savedObjectsManagement: SavedObjectsManagementPluginStart;
+  dataSource: DataSourcePluginStart;
 }
 
 export interface AuthInfo {

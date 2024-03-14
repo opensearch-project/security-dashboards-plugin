@@ -5,6 +5,24 @@ exports[`Get started (landing page) renders when backend configuration is disabl
   <div
     className="panel-restrict-width"
   >
+    <SecurityPluginTopNavMenu
+      config={
+        Object {
+          "ui": Object {
+            "backend_configurable": false,
+          },
+        }
+      }
+      coreStart={
+        Object {
+          "http": 1,
+        }
+      }
+      dataSourcePickerReadOnly={false}
+      navigation={Object {}}
+      params={Object {}}
+      random={[Function]}
+    />
     <EuiPageHeader>
       <EuiTitle
         size="l"
@@ -258,6 +276,24 @@ exports[`Get started (landing page) renders when backend configuration is enable
   <div
     className="panel-restrict-width"
   >
+    <SecurityPluginTopNavMenu
+      config={
+        Object {
+          "ui": Object {
+            "backend_configurable": true,
+          },
+        }
+      }
+      coreStart={
+        Object {
+          "http": 1,
+        }
+      }
+      dataSourcePickerReadOnly={false}
+      navigation={Object {}}
+      params={Object {}}
+      random={[Function]}
+    />
     <EuiPageHeader>
       <EuiTitle
         size="l"
