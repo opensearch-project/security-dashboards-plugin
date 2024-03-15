@@ -50,7 +50,7 @@ describe('SecurityPluginTopNavMenu', () => {
         securityPluginStartDeps={securityPluginStartDepsMock}
         dataSourcePickerReadOnly={false}
         dataSourceManagement={dataSourceManagementMock}
-        setHeaderActionMenu={() => {}}
+        params={{}}
       />
     );
 
@@ -72,6 +72,7 @@ describe('SecurityPluginTopNavMenu', () => {
         dataSourcePickerReadOnly={false}
         dataSourceManagement={dataSourceManagementMock}
         setHeaderActionMenu={() => {}}
+        params={{}}
       />
     );
 
