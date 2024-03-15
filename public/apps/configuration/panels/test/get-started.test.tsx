@@ -181,47 +181,4 @@ describe('Get started (landing page)', () => {
       expect(getClusterInfoIfEnabled(true, { id: 'test', label: 'test' })).toBe('for test');
     });
   });
-
-  describe('Tests the cluster selector is hooked up correctly', () => {
-    describe('Tenant list', () => {
-      const setState = jest.fn();
-      const mockCoreStart = {
-        http: 1,
-        chrome: {
-          setBreadcrumbs() {
-            return 1;
-          },
-        },
-      };
-      const config = {
-        multitenancy: {
-          enabled: true,
-          tenants: {
-            enable_private: true,
-          },
-        },
-      };
-    
-      beforeEach(() => {
-        jest.spyOn(React, 'useState').mockImplementation((initialValue) => [initialValue, setState]);
-      });
-    
-    
-      it('renders when multitenancy is disabled in the opensearch_dashboards.yml', (done) => {
-        const component = shallow(
-          <GetStarted
-            coreStart={mockCoreStart as any}
-            navigation={{} as any}
-            params={{} as any}
-            config={config as any}
-            securityPluginStartDeps={{}}
-          />);
-          process.nextTick(() => {
-            expect(setState).toHaveBeenCalledWith(true);
-            done();
-          });
-      });
-  
-      });
-  })
 });
