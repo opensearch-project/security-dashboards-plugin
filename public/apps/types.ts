@@ -23,7 +23,6 @@ export interface AppDependencies {
   params: AppMountParameters;
   config: ClientConfigType;
   dashboardsInfo: DashboardsInfo;
-  setHeaderActionMenu: AppMountParameters['setHeaderActionMenu'];
   dataSourceManagement: DataSourceManagementPluginSetup;
 }
 

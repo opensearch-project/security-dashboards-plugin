@@ -19,6 +19,8 @@ import {
   ResponseError,
   IOpenSearchDashboardsResponse,
   OpenSearchDashboardsResponseFactory,
+  RequestHandlerContext,
+  OpenSearchDashboardsRequest,
 } from 'opensearch-dashboards/server';
 import { API_PREFIX, CONFIGURATION_API_PREFIX, isValidResourceName } from '../../common';
 import { ResourceType } from '../../common';
@@ -752,33 +754,13 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
       },
     },
     async (context, request, response) => {
-      if (!dataSourceEnabled || !request.body?.dataSourceId) {
-        const client = context.security_plugin.esClient.asScoped(request);
-        let esResponse;
-        try {
-          esResponse = await client.callAsCurrentUser('opensearch_security.clearCache');
-          return response.ok({
-            body: {
-              message: esResponse.message,
-            },
-          });
-        } catch (error) {
-          return errorResponse(response, error);
-        }
-      } else {
-        const client = context.dataSource.opensearch.legacy.getClient(request.body?.dataSourceId);
-        let esResponse;
-        try {
-          esResponse = await client.callAPI('opensearch_security.clearCache', {});
-          return response.ok({
-            body: {
-              message: esResponse.message,
-            },
-          });
-        } catch (error) {
-          return errorResponse(response, error);
-        }
-      }
+      return wrapRouteWithDataSource(
+        dataSourceEnabled,
+        context,
+        request,
+        response,
+        'opensearch_security.clearCache'
+      );
     }
   );
 
@@ -901,6 +883,42 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
     }
   );
 }
+
+const wrapRouteWithDataSource = async (
+  dataSourceEnabled: boolean,
+  context: RequestHandlerContext,
+  request: OpenSearchDashboardsRequest<unknown, unknown, any>,
+  response: OpenSearchDashboardsResponseFactory,
+  endpoint: string
+) => {
+  if (!dataSourceEnabled || !request.body?.dataSourceId) {
+    const client = context.security_plugin.esClient.asScoped(request);
+    let esResponse;
+    try {
+      esResponse = await client.callAsCurrentUser(endpoint);
+      return response.ok({
+        body: {
+          message: esResponse.message,
+        },
+      });
+    } catch (error) {
+      return errorResponse(response, error);
+    }
+  } else {
+    const client = context.dataSource.opensearch.legacy.getClient(request.body?.dataSourceId);
+    let esResponse;
+    try {
+      esResponse = await client.callAPI(endpoint, {});
+      return response.ok({
+        body: {
+          message: esResponse.message,
+        },
+      });
+    } catch (error) {
+      return errorResponse(response, error);
+    }
+  }
+};
 
 function parseEsErrorResponse(error: any) {
   if (error.response) {

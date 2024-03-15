@@ -28,7 +28,6 @@ export function renderApp(
   securityPluginStartDeps: SecurityPluginStartDependencies,
   params: AppMountParameters,
   config: ClientConfigType,
-  setHeaderActionMenu: AppMountParameters['setHeaderActionMenu'],
   dataSourceManagement?: DataSourceManagementPluginSetup
 ) {
   const deps = {
@@ -36,7 +35,6 @@ export function renderApp(
     securityPluginStartDeps,
     params,
     config,
-    setHeaderActionMenu,
     dataSourceManagement,
   };
   ReactDOM.render(

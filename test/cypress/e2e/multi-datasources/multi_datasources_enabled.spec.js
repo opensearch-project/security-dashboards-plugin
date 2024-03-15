@@ -24,14 +24,30 @@ const createDataSource = () => {
   cy.get('[data-test-subj="createDataSourceButton"]').click();
 };
 
+const deleteAllDataSources = () => {
+  cy.visit('http://localhost:5601/app/management/opensearch-dashboards/dataSources');
+  cy.get('[data-test-subj="checkboxSelectAll"]').click();
+  cy.get('[data-test-subj="deleteDataSourceConnections"]').click();
+  cy.get('[data-test-subj="confirmModalConfirmButton"]').click();
+};
+
 describe('Multi-datasources enabled', () => {
-  it('Sanity checks the cluster selector is visible when multi datasources is enabled', () => {
+  before(() => {
     localStorage.setItem('opendistro::security::tenant::saved', '""');
     localStorage.setItem('home:newThemeModal:show', 'false');
     createDataSource();
+  });
 
+  after(() => {
+    deleteAllDataSources();
+  });
+
+  it('Checks Get Started Tab', () => {
     cy.visit('http://localhost:5601/app/security-dashboards-plugin#/getstarted');
-
+    // Local cluster purge cache
+    cy.get('[data-test-subj="purge-cache"]').click();
+    cy.get('.euiToastHeader__title').should('contain', 'successful for Local cluster');
+    // Remote cluster purge cache
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
     cy.contains('li.euiSelectableListItem', '9202').click();
     cy.get('[data-test-subj="purge-cache"]').click();

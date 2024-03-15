@@ -30,10 +30,11 @@ export const SecurityPluginTopNavMenu = (props: TopNavMenuProps) => {
   const {
     coreStart,
     securityPluginStartDeps,
-    setHeaderActionMenu,
+    params,
     dataSourceManagement,
     setDatasourceId,
   } = props;
+  const { setHeaderActionMenu } = params;
   const DataSourceMenu = dataSourceManagement?.ui.DataSourceMenu;
   const dataSourceEnabled = !!securityPluginStartDeps.dataSource?.dataSourceEnabled;
 

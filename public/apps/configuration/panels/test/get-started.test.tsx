@@ -19,7 +19,7 @@ import { EuiSteps } from '@elastic/eui';
 import { Action } from '../../types';
 import { ResourceType } from '../../../../../common';
 import { buildHashUrl } from '../../utils/url-builder';
-import { GetClusterDescription, GetStarted } from '../get-started';
+import { GetStarted, getClusterInfoIfEnabled } from '../get-started';
 import * as ToastUtils from '../../utils/toast-utils'; // Import all functions from toast-utils
 import * as RequestUtils from '../../utils/request-utils'; // Import all functions from request-utils
 
@@ -176,9 +176,52 @@ describe('Get started (landing page)', () => {
     });
 
     it('Tests the GetClusterDescription helper function', () => {
-      expect(GetClusterDescription(false, { id: 'blah', label: 'blah' })).toBe('');
-      expect(GetClusterDescription(true, { id: '', label: '' })).toBe('for Local cluster');
-      expect(GetClusterDescription(true, { id: 'test', label: 'test' })).toBe('for test');
+      expect(getClusterInfoIfEnabled(false, { id: 'blah', label: 'blah' })).toBe('');
+      expect(getClusterInfoIfEnabled(true, { id: '', label: '' })).toBe('for Local cluster');
+      expect(getClusterInfoIfEnabled(true, { id: 'test', label: 'test' })).toBe('for test');
     });
   });
+
+  describe('Tests the cluster selector is hooked up correctly', () => {
+    describe('Tenant list', () => {
+      const setState = jest.fn();
+      const mockCoreStart = {
+        http: 1,
+        chrome: {
+          setBreadcrumbs() {
+            return 1;
+          },
+        },
+      };
+      const config = {
+        multitenancy: {
+          enabled: true,
+          tenants: {
+            enable_private: true,
+          },
+        },
+      };
+    
+      beforeEach(() => {
+        jest.spyOn(React, 'useState').mockImplementation((initialValue) => [initialValue, setState]);
+      });
+    
+    
+      it('renders when multitenancy is disabled in the opensearch_dashboards.yml', (done) => {
+        const component = shallow(
+          <GetStarted
+            coreStart={mockCoreStart as any}
+            navigation={{} as any}
+            params={{} as any}
+            config={config as any}
+            securityPluginStartDeps={{}}
+          />);
+          process.nextTick(() => {
+            expect(setState).toHaveBeenCalledWith(true);
+            done();
+          });
+      });
+  
+      });
+  })
 });

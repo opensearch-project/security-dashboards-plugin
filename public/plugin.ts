@@ -117,7 +117,6 @@ export class SecurityPlugin
             depsStart as SecurityPluginStartDependencies,
             params,
             config,
-            params.setHeaderActionMenu,
             deps.dataSourceManagement
           );
         },

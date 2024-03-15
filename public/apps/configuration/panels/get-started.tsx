@@ -160,7 +160,7 @@ const setOfSteps = [
   },
 ];
 
-export function GetClusterDescription(dataSourceEnabled: boolean, cluster: Cluster) {
+export function getClusterInfoIfEnabled(dataSourceEnabled: boolean, cluster: Cluster) {
   if (dataSourceEnabled) {
     return `for ${cluster.label || 'Local cluster'}`;
   }
@@ -259,11 +259,11 @@ export function GetStarted(props: AppDependencies) {
                   addToast(
                     createSuccessToast(
                       'cache-flush-success',
-                      `Cache purge successful ${GetClusterDescription(
+                      `Cache purge successful ${getClusterInfoIfEnabled(
                         dataSourceEnabled,
                         dataSource
                       )}`,
-                      `Cache purge successful ${GetClusterDescription(
+                      `Cache purge successful ${getClusterInfoIfEnabled(
                         dataSourceEnabled,
                         dataSource
                       )}`
@@ -273,7 +273,7 @@ export function GetStarted(props: AppDependencies) {
                   addToast(
                     createUnknownErrorToast(
                       'cache-flush-failed',
-                      `purge cache ${GetClusterDescription(dataSourceEnabled, dataSource)}`
+                      `purge cache ${getClusterInfoIfEnabled(dataSourceEnabled, dataSource)}`
                     )
                   );
                 }
