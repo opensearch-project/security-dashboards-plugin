@@ -15,10 +15,14 @@
 
 const createDataSource = () => {
   cy.visit('http://localhost:5601/app/management/opensearch-dashboards/dataSources/create');
-  cy.get('[data-test-subj="createDataSourceFormTitleField"]').type('9202');
-  cy.get('[data-test-subj="createDataSourceFormEndpointField"]').type('http://localhost:9202');
-  cy.get('[data-test-subj="createDataSourceFormUsernameField"]').type('admin');
-  cy.get('[data-test-subj="createDataSourceFormPasswordField"]').type('myStrongPassword123!');
+  cy.get('[data-test-subj="createDataSourceFormTitleField"]').focus().type('9202');
+  cy.get('[data-test-subj="createDataSourceFormEndpointField"]')
+    .focus()
+    .type('http://localhost:9202');
+  cy.get('[data-test-subj="createDataSourceFormUsernameField"]').focus().type('admin');
+  cy.get('[data-test-subj="createDataSourceFormPasswordField"]')
+    .focus()
+    .type('myStrongPassword123!');
   cy.get('[data-test-subj="createDataSourceTestConnectionButton"]').click();
   cy.get('.euiToastHeader__title').should('contain', 'successful');
   cy.get('[data-test-subj="createDataSourceButton"]').click();
