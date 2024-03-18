@@ -60,7 +60,6 @@ jobs:
           plugin-version: ${{ env.PLUGIN_VERSION }}
 
       - name: Create remote OpenSearch Config
-        if: ${{ runner.os == 'Linux' }}
         run: | 
           cat << 'EOT' > remote_opensearch.yml
           http.port: 9202

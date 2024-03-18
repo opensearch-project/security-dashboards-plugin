@@ -25,7 +25,7 @@ const createDataSource = () => {
     .type('myStrongPassword123!');
   cy.get('[data-test-subj="createDataSourceTestConnectionButton"]').click();
   cy.get('.euiToastHeader__title').should('contain', 'successful');
-  cy.get('[data-test-subj="createDataSourceButton"]').click();
+  cy.get('[data-test-subj="createDataSourceButton"]').click({ force: true });
   // Wait for dataSource to be created
   cy.url().should('eq', 'http://localhost:5601/app/management/opensearch-dashboards/dataSources');
 };
