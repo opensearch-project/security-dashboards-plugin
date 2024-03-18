@@ -92,7 +92,7 @@ Cypress.Commands.add('loginWithSamlMultiauth', () => {
 });
 
 Cypress.Commands.overwrite('visit', (orig, url, options = {}) => {
-  if (Cypress.env('BYPASS_LOGIN')) {
+  if (Cypress.env('LOGIN_AS_ADMIN')) {
     options.auth = ADMIN_AUTH;
   }
   orig(url, options);

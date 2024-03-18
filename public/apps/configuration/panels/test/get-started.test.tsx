@@ -47,10 +47,9 @@ describe('Get started (landing page)', () => {
     const component = shallow(
       <GetStarted
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
         params={{} as any}
         config={config as any}
-        securityPluginStartDeps={{}}
+        depsStart={{}}
       />
     );
     expect(component).toMatchSnapshot();
@@ -65,10 +64,9 @@ describe('Get started (landing page)', () => {
     const component = shallow(
       <GetStarted
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
         params={{} as any}
         config={config1 as any}
-        securityPluginStartDeps={{}}
+        depsStart={{}}
       />
     );
     expect(component).toMatchSnapshot();
@@ -80,10 +78,9 @@ describe('Get started (landing page)', () => {
       wrapper = shallow(
         <GetStarted
           coreStart={mockCoreStart as any}
-          navigation={{} as any}
           params={{} as any}
           config={config as any}
-          securityPluginStartDeps={{}}
+          depsStart={{}}
         />
       );
       jest.clearAllMocks();
@@ -143,10 +140,9 @@ describe('Get started (landing page)', () => {
       wrapper = shallow(
         <GetStarted
           coreStart={mockCoreStart as any}
-          navigation={{} as any}
           params={{} as any}
           config={config as any}
-          securityPluginStartDeps={{}}
+          depsStart={{}}
         />
       );
       jest.clearAllMocks();

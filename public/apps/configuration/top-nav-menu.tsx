@@ -27,16 +27,10 @@ export interface TopNavMenuProps extends AppDependencies {
 }
 
 export const SecurityPluginTopNavMenu = (props: TopNavMenuProps) => {
-  const {
-    coreStart,
-    securityPluginStartDeps,
-    params,
-    dataSourceManagement,
-    setDatasourceId,
-  } = props;
+  const { coreStart, depsStart, params, dataSourceManagement, setDatasourceId } = props;
   const { setHeaderActionMenu } = params;
   const DataSourceMenu = dataSourceManagement?.ui.DataSourceMenu;
-  const dataSourceEnabled = !!securityPluginStartDeps.dataSource?.dataSourceEnabled;
+  const dataSourceEnabled = !!depsStart.dataSource?.dataSourceEnabled;
 
   return dataSourceEnabled ? (
     <DataSourceMenu

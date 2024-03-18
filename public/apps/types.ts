@@ -19,7 +19,7 @@ import { SecurityPluginStartDependencies, ClientConfigType, DashboardsInfo } fro
 
 export interface AppDependencies {
   coreStart: CoreStart;
-  securityPluginStartDeps: SecurityPluginStartDependencies;
+  depsStart: SecurityPluginStartDependencies;
   params: AppMountParameters;
   config: ClientConfigType;
   dashboardsInfo: DashboardsInfo;

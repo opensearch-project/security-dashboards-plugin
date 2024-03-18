@@ -25,14 +25,14 @@ import { DataSourceManagementPluginSetup } from '../../../../../src/plugins/data
 
 export function renderApp(
   coreStart: CoreStart,
-  securityPluginStartDeps: SecurityPluginStartDependencies,
+  depsStart: SecurityPluginStartDependencies,
   params: AppMountParameters,
   config: ClientConfigType,
   dataSourceManagement?: DataSourceManagementPluginSetup
 ) {
   const deps = {
     coreStart,
-    securityPluginStartDeps,
+    depsStart,
     params,
     config,
     dataSourceManagement,

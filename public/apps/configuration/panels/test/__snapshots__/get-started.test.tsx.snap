@@ -19,9 +19,8 @@ exports[`Get started (landing page) renders when backend configuration is disabl
         }
       }
       dataSourcePickerReadOnly={false}
-      navigation={Object {}}
+      depsStart={Object {}}
       params={Object {}}
-      securityPluginStartDeps={Object {}}
       setDatasourceId={[Function]}
     />
     <EuiPageHeader>
@@ -291,9 +290,8 @@ exports[`Get started (landing page) renders when backend configuration is enable
         }
       }
       dataSourcePickerReadOnly={false}
-      navigation={Object {}}
+      depsStart={Object {}}
       params={Object {}}
-      securityPluginStartDeps={Object {}}
       setDatasourceId={[Function]}
     />
     <EuiPageHeader>

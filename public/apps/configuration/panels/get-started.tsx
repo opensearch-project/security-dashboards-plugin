@@ -168,7 +168,7 @@ export function getClusterInfoIfEnabled(dataSourceEnabled: boolean, cluster: Clu
 }
 
 export function GetStarted(props: AppDependencies) {
-  const dataSourceEnabled = !!props.securityPluginStartDeps.dataSource?.dataSourceEnabled;
+  const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const [dataSource, setDataSource] = useState<Cluster>({ id: '', label: '' });
 
   let steps;

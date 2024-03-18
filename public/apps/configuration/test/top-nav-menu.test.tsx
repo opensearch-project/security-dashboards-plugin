@@ -14,12 +14,8 @@
  */
 
 import React from 'react';
-import { mount, render, shallow } from 'enzyme';
+import { render } from 'enzyme';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
-import {
-  DataSourceManagementPluginSetup,
-  DataSourceMenu,
-} from '../../../../../../src/plugins/data_source_management/public';
 
 describe('SecurityPluginTopNavMenu', () => {
   const coreStartMock = {
@@ -47,7 +43,7 @@ describe('SecurityPluginTopNavMenu', () => {
     const wrapper = render(
       <SecurityPluginTopNavMenu
         coreStart={coreStartMock}
-        securityPluginStartDeps={securityPluginStartDepsMock}
+        depsStart={securityPluginStartDepsMock}
         dataSourcePickerReadOnly={false}
         dataSourceManagement={dataSourceManagementMock}
         params={{}}
@@ -68,7 +64,7 @@ describe('SecurityPluginTopNavMenu', () => {
     const wrapper = render(
       <SecurityPluginTopNavMenu
         coreStart={coreStartMock}
-        securityPluginStartDeps={securityPluginStartDepsMock}
+        depsStart={securityPluginStartDepsMock}
         dataSourcePickerReadOnly={false}
         dataSourceManagement={dataSourceManagementMock}
         setHeaderActionMenu={() => {}}
