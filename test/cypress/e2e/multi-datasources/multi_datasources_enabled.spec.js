@@ -14,22 +14,26 @@
  */
 
 const createDataSource = () => {
-  cy.visit('http://localhost:5601/app/management/opensearch-dashboards/dataSources/create', {
-    failOnStatusCode: false,
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.config('baseUrl')}/api/saved_objects/data-source`,
+    headers: {
+      'osd-xsrf': true,
+    },
+    body: {
+      attributes: {
+        title: `9202`,
+        endpoint: `http://localhost:9202`,
+        auth: {
+          type: 'username_password',
+          credentials: {
+            username: 'admin',
+            password: 'myStrongPassword123!',
+          },
+        },
+      },
+    },
   });
-  cy.get('[data-test-subj="createDataSourceFormTitleField"]').focus().type('9202');
-  cy.get('[data-test-subj="createDataSourceFormEndpointField"]')
-    .focus()
-    .type('http://localhost:9202');
-  cy.get('[data-test-subj="createDataSourceFormUsernameField"]').focus().type('admin');
-  cy.get('[data-test-subj="createDataSourceFormPasswordField"]')
-    .focus()
-    .type('myStrongPassword123!');
-  cy.get('[data-test-subj="createDataSourceTestConnectionButton"]').click();
-  cy.get('.euiToastHeader__title').should('contain', 'successful');
-  cy.get('[data-test-subj="createDataSourceButton"]').click({ force: true });
-  // Wait for dataSource to be created
-  cy.url().should('eq', 'http://localhost:5601/app/management/opensearch-dashboards/dataSources');
 };
 
 const deleteAllDataSources = () => {
