@@ -28,7 +28,7 @@ jobs:
         if: ${{ runner.os == 'Linux' }}
         run: |
           cat << 'EOT' > opensearch_dashboards_multidatasources.yml
-          server.host: "localhost"
+          server.host: "0.0.0.0"
           opensearch.hosts: ["https://localhost:9200"]
           opensearch.ssl.verificationMode: none
           opensearch.username: "kibanaserver"
