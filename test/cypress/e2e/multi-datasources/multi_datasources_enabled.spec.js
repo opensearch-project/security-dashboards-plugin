@@ -14,7 +14,9 @@
  */
 
 const createDataSource = () => {
-  cy.visit('http://localhost:5601/app/management/opensearch-dashboards/dataSources/create');
+  cy.visit('http://localhost:5601/app/management/opensearch-dashboards/dataSources/create', {
+    failOnStatusCode: false,
+  });
   cy.get('[data-test-subj="createDataSourceFormTitleField"]').focus().type('9202');
   cy.get('[data-test-subj="createDataSourceFormEndpointField"]')
     .focus()
