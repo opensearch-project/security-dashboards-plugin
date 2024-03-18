@@ -96,6 +96,7 @@ jobs:
             .plugins-flow-framework-templates, .plugins-flow-framework-state]
           node.max_local_storage_nodes: 3
           EOT
+        shell: bash
       
       - name: Run Opensearch with A Single Plugin
         uses: derek-ho/start-opensearch@9202
