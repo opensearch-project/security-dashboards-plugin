@@ -355,6 +355,13 @@ describe('start OpenSearch Dashboards server', () => {
       .send({ dataSourceId: '' });
     expect(deleteCacheResponse.status).toEqual(200);
 
+    // Multi datasources not enabled so dataSourceId is not read
+    const deleteCacheResponseMultiDataSource = await osdTestServer.request
+      .delete(root, '/api/v1/configuration/cache')
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
+      .send({ dataSourceId: 'Derek Datasource' });
+    expect(deleteCacheResponseMultiDataSource.status).toEqual(200);
+
     const adminAuthCookie = await getAuthCookie(root, ADMIN_USER, ADMIN_PASSWORD);
     const deleteCacheWithCookieResponse = await osdTestServer.request
       .delete(root, '/api/v1/configuration/cache')
@@ -362,6 +369,13 @@ describe('start OpenSearch Dashboards server', () => {
       .set('Cookie', adminAuthCookie)
       .send({ dataSourceId: '' });
     expect(deleteCacheWithCookieResponse.status).toEqual(200);
+
+    // Multi datasources not enabled so dataSourceId is not read
+    const deleteCacheResponseMultiDataSourceCookie = await osdTestServer.request
+      .delete(root, '/api/v1/configuration/cache')
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
+      .send({ dataSourceId: 'Derek Datasource' });
+    expect(deleteCacheResponseMultiDataSourceCookie.status).toEqual(200);
   });
 
   it('restapiinfo', async () => {
@@ -406,5 +420,92 @@ describe('start OpenSearch Dashboards server', () => {
         },
       });
     expect(response.status).toEqual(200);
+  });
+});
+
+describe('start OpenSearch Dashboards server multi datasources enabled', () => {
+  let root: Root;
+
+  beforeAll(async () => {
+    root = osdTestServer.createRootWithSettings(
+      {
+        plugins: {
+          scanDirs: [resolve(__dirname, '../..')],
+        },
+        data_source: { enabled: true },
+        opensearch: {
+          hosts: ['https://localhost:9200'],
+          ignoreVersionMismatch: true,
+          ssl: { verificationMode: 'none' },
+          username: OPENSEARCH_DASHBOARDS_SERVER_USER,
+          password: OPENSEARCH_DASHBOARDS_SERVER_PASSWORD,
+        },
+        opensearch_security: {
+          multitenancy: { enabled: true, tenants: { preferred: ['Private', 'Global'] } },
+        },
+      },
+      {
+        // to make ignoreVersionMismatch setting work
+        // can be removed when we have corresponding ES version
+        dev: true,
+      }
+    );
+
+    console.log('Starting OpenSearchDashboards server..');
+    await root.setup();
+    await root.start();
+    console.log('Started OpenSearchDashboards server');
+  });
+
+  afterAll(async () => {
+    // shutdown OpenSearchDashboards server
+    await root.shutdown();
+  });
+
+  it('delete cache', async () => {
+    const deleteCacheResponseWrongDataSource = await osdTestServer.request
+      .delete(root, '/api/v1/configuration/cache')
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
+      .send({ dataSourceId: 'test' });
+
+    // Calling clear cache on a datasource that does not exist
+    expect(deleteCacheResponseWrongDataSource.status).not.toEqual(200);
+    expect(deleteCacheResponseWrongDataSource.text).toContain(
+      'Data Source Error: Saved object [data-source/test] not found'
+    );
+
+    const deleteCacheResponseEmptyDataSource = await osdTestServer.request
+      .delete(root, '/api/v1/configuration/cache')
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
+      .send({ dataSourceId: '' });
+
+    // Calling clear cache on an empty datasource calls local cluster
+    expect(deleteCacheResponseEmptyDataSource.status).toEqual(200);
+
+    const createDataSource = await osdTestServer.request
+      .post(root, '/api/saved_objects/data-source')
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
+      .send({
+        attributes: {
+          title: 'test',
+          description: '',
+          endpoint: 'http://localhost:9202',
+          auth: {
+            type: 'username_password',
+            credentials: {
+              username: 'admin',
+              password: 'myStrongPassword123!',
+            },
+          },
+        },
+      });
+
+    const deleteCacheResponseRemoteDataSource = await osdTestServer.request
+      .delete(root, '/api/v1/configuration/cache')
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
+      .send({ dataSourceId: createDataSource.body.id });
+
+    // Calling clear cache on an empty datasource calls local cluster
+    expect(deleteCacheResponseRemoteDataSource.status).toEqual(200);
   });
 });
