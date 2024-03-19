@@ -59,7 +59,7 @@ jobs:
           plugin-version: ${{ env.PLUGIN_VERSION }}
 
       - name: Run Opensearch with A Single Plugin
-        uses: opensearch-project/security/.github/actions/start-opensearch-with-one-plugin@main
+        uses: opensearch-project/security/.github/actions/start-opensearch-with-one-plugin@1.3
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugin-name: ${{ env.PLUGIN_NAME }}
