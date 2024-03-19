@@ -58,12 +58,12 @@ jobs:
           plugin-name: ${{ env.PLUGIN_NAME }}
           plugin-version: ${{ env.PLUGIN_VERSION }}
 
-      - name: Run Opensearch with security
-        uses: derek-ho/start-opensearch@v2
+      - name: Run Opensearch with A Single Plugin
+        uses: opensearch-project/security/.github/actions/start-opensearch-with-one-plugin@1.3
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
-          plugins: "file:$(pwd)/${{ env.PLUGIN_NAME }}.zip"
-          security-enabled: true
+          plugin-name: ${{ env.PLUGIN_NAME }}
+          setup-script-name: setup
           admin-password: admin
 
       - id: install-dashboards
