@@ -22,11 +22,6 @@ jobs:
       - name: Checkout Branch
         uses: actions/checkout@v3
 
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-
       - name: Set env
         run: |
           opensearch_version=$(node -p "require('./package.json').opensearchDashboards.version")
@@ -42,87 +37,18 @@ jobs:
           plugin-name: ${{ env.PLUGIN_NAME }}
           plugin-version: ${{ env.PLUGIN_VERSION }}
 
-      - name: Run Opensearch with A Single Plugin
-        uses: opensearch-project/security/.github/actions/start-opensearch-with-one-plugin@main
+      - name: Run Opensearch with security
+        uses: derek-ho/start-opensearch@v2
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
-          plugin-name: ${{ env.PLUGIN_NAME }}
-          setup-script-name: setup
+          plugins: "file:$(pwd)/${{ env.PLUGIN_NAME }}.zip"
+          security-enabled: true
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
 
-      - uses: actions/checkout@v2
-        with:
-          path: OpenSearch-Dashboards
-          repository: opensearch-project/OpenSearch-Dashboards
-          ref: 'main'
-          fetch-depth: 0
-          filter: |
-            cypress
-            test
-
-      - id: osd-version
+      # Configure the Dashboard
+      - name: Configure OpenSearch Dashboards
         run: |
-          echo "::set-output name=osd-version::$(jq -r '.opensearchDashboards.version | split(".") | .[:2] | join(".")' package.json)"
-          echo "::set-output name=osd-x-version::$(jq -r '.opensearchDashboards.version | split(".") | .[0]' package.json).x"
-        shell: bash
-        
-      - id: branch-switch-if-possible
-        continue-on-error: true # Defaults onto main if the branch switch doesn't work
-        if: ${{ steps.osd-version.outputs.osd-version }}
-        run: git checkout ${{ steps.osd-version.outputs.osd-version }} || git checkout ${{ steps.osd-version.outputs.osd-x-version }}
-        working-directory: ./OpenSearch-Dashboards
-        shell: bash
-
-      - id: tool-versions
-        run: |
-          echo "node_version=$(cat .node-version)" >> $GITHUB_OUTPUT
-          echo "yarn_version=$(jq -r '.engines.yarn' package.json)" >> $GITHUB_OUTPUT
-        working-directory: OpenSearch-Dashboards
-        shell: bash
-
-      - uses: actions/setup-node@v1
-        with:
-          node-version: ${{ steps.tool-versions.outputs.node_version }}
-          registry-url: 'https://registry.npmjs.org'
-
-      - name: Setup Opensearch Dashboards
-        run: |
-          npm uninstall -g yarn
-          echo "Installing yarn ${{ steps.tool-versions.outputs.yarn_version }}"
-          npm i -g yarn@${{ steps.tool-versions.outputs.yarn_version }}
-          yarn cache clean
-          yarn add sha.js
-          yarn osd bootstrap
-          scripts/use_node scripts/build
-        working-directory: OpenSearch-Dashboards
-        shell: bash
-      
-      - uses: actions/checkout@v2
-        with:
-          path: OpenSearch-Dashboards/plugins/security-dashboards-plugin
-
-      - name: Install dependencies
-        run: |
-          yarn osd bootstrap
-        working-directory: OpenSearch-Dashboards
-        shell: bash
-
-      - name: Build Plugin Zip
-        run: |
-          yarn build
-        working-directory: OpenSearch-Dashboards/plugins/security-dashboards-plugin
-        shell: bash
-
-      - name: Install plugin to OSD Linux
-        run: | 
-          build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64/bin/opensearch-dashboards-plugin install file:$(pwd)/plugins/security-dashboards-plugin/build/security-dashboards-${{env.PLUGIN_VERSION}}.zip
-        working-directory: OpenSearch-Dashboards
-        shell: bash
-
-      - name: Write security settings into OSD yml file
-        run: |
-          rm -rf ./config/opensearch_dashboards.yml
-          cat << 'EOT' > ./config/opensearch_dashboards.yml
+          cat << 'EOT' > opensearch-dashboards-config.yml
           server.host: "0.0.0.0"
           opensearch.hosts: ["https://localhost:9200"]
           opensearch.ssl.verificationMode: none
@@ -135,13 +61,22 @@ jobs:
 
           # Use this setting if you are running opensearch-dashboards without https
           opensearch_security.cookie.secure: false
-        working-directory: OpenSearch-Dashboards/build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64
-          
+          EOT
 
+
+      - name: Run Dashboard with Security Dashboards Plugin
+        id: setup-dashboards
+        uses: derek-ho/setup-opensearch-dashboards@v1
+        with:
+          plugin_name: security-dashboards-plugin
+          built_plugin_name: security-dashboards
+          install_zip: true
+          opensearch_dashboards_yml: opensearch-dashboards-config.yml
+          
       - name: Start the binary
         run: | 
           nohup ./bin/opensearch-dashboards &
-        working-directory: OpenSearch-Dashboards/build/opensearch-dashboards-${{ env.OPENSEARCH_VERSION }}-SNAPSHOT-linux-x64
+        working-directory: ${{ steps.setup-dashboards.outputs.dashboards-binary-directory }}
         shell: bash
 
       - name: Health check 

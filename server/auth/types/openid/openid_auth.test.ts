@@ -207,4 +207,61 @@ describe('test OpenId authHeaderValue', () => {
     expect(wreckHttpsOptions.cert).toBeUndefined();
     expect(wreckHttpsOptions.passphrase).toBeUndefined();
   });
+
+  test('Ensure expiryTime is being used to test validity of cookie', async () => {
+    const realDateNow = Date.now.bind(global.Date);
+    const dateNowStub = jest.fn(() => 0);
+    global.Date.now = dateNowStub;
+    const oidcConfig: unknown = {
+      openid: {
+        scope: [],
+      },
+    };
+
+    const openIdAuthentication = new OpenIdAuthentication(
+      oidcConfig as SecurityPluginConfigType,
+      sessionStorageFactory,
+      router,
+      esClient,
+      core,
+      logger
+    );
+    const testCookie: SecuritySessionCookie = {
+      credentials: {
+        authHeaderValue: 'Bearer eyToken',
+        expiry_time: -1,
+      },
+      expiryTime: 2000,
+      username: 'admin',
+      authType: 'openid',
+    };
+
+    expect(await openIdAuthentication.isValidCookie(testCookie, {})).toBe(true);
+    global.Date.now = realDateNow;
+  });
+
+  test('getKeepAliveExpiry', () => {
+    const oidcConfig: unknown = {
+      openid: {
+        scope: [],
+      },
+    };
+
+    const openIdAuthentication = new OpenIdAuthentication(
+      oidcConfig as SecurityPluginConfigType,
+      sessionStorageFactory,
+      router,
+      esClient,
+      core,
+      logger
+    );
+    const testCookie: SecuritySessionCookie = {
+      credentials: {
+        authHeaderValue: 'Bearer eyToken',
+      },
+      expiryTime: 1000,
+    };
+
+    expect(openIdAuthentication.getKeepAliveExpiry(testCookie, {})).toBe(1000);
+  });
 });
