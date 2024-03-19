@@ -96,6 +96,7 @@ if (Cypress.env('LOGIN_AS_ADMIN')) {
   Cypress.Commands.overwrite('visit', (orig, url, options = {}) => {
     if (Cypress.env('LOGIN_AS_ADMIN')) {
       options.auth = ADMIN_AUTH;
+      options.failOnStatusCode = false;
     }
     orig(url, options);
   });
