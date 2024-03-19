@@ -99,7 +99,7 @@ if (Cypress.env('LOGIN_AS_ADMIN')) {
       options.failOnStatusCode = false;
       options.qs = {
         security_tenant: 'private',
-      }
+      };
     }
     orig(url, options);
   });
