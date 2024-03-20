@@ -19,7 +19,7 @@ import { EuiSteps } from '@elastic/eui';
 import { Action } from '../../types';
 import { ResourceType } from '../../../../../common';
 import { buildHashUrl } from '../../utils/url-builder';
-import { GetStarted } from '../get-started';
+import { GetStarted, getClusterInfoIfEnabled } from '../get-started';
 import * as ToastUtils from '../../utils/toast-utils'; // Import all functions from toast-utils
 import * as RequestUtils from '../../utils/request-utils'; // Import all functions from request-utils
 
@@ -47,9 +47,9 @@ describe('Get started (landing page)', () => {
     const component = shallow(
       <GetStarted
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
         params={{} as any}
         config={config as any}
+        depsStart={{}}
       />
     );
     expect(component).toMatchSnapshot();
@@ -64,9 +64,9 @@ describe('Get started (landing page)', () => {
     const component = shallow(
       <GetStarted
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
         params={{} as any}
         config={config1 as any}
+        depsStart={{}}
       />
     );
     expect(component).toMatchSnapshot();
@@ -78,9 +78,9 @@ describe('Get started (landing page)', () => {
       wrapper = shallow(
         <GetStarted
           coreStart={mockCoreStart as any}
-          navigation={{} as any}
           params={{} as any}
           config={config as any}
+          depsStart={{}}
         />
       );
       jest.clearAllMocks();
@@ -140,9 +140,9 @@ describe('Get started (landing page)', () => {
       wrapper = shallow(
         <GetStarted
           coreStart={mockCoreStart as any}
-          navigation={{} as any}
           params={{} as any}
           config={config as any}
+          depsStart={{}}
         />
       );
       jest.clearAllMocks();
@@ -169,6 +169,12 @@ describe('Get started (landing page)', () => {
       jest.spyOn(RequestUtils, 'httpDelete').mockResolvedValueOnce('nice');
       await button.props().onClick(); // Simulate button click
       expect(ToastUtils.createSuccessToast).toHaveBeenCalledTimes(1);
+    });
+
+    it('Tests the GetClusterDescription helper function', () => {
+      expect(getClusterInfoIfEnabled(false, { id: 'blah', label: 'blah' })).toBe('');
+      expect(getClusterInfoIfEnabled(true, { id: '', label: '' })).toBe('for Local cluster');
+      expect(getClusterInfoIfEnabled(true, { id: 'test', label: 'test' })).toBe('for test');
     });
   });
 });

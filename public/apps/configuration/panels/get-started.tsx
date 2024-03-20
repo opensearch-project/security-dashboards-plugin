@@ -26,7 +26,7 @@ import {
   EuiTitle,
   EuiGlobalToastList,
 } from '@elastic/eui';
-import React from 'react';
+import React, { useState } from 'react';
 import { FormattedMessage } from '@osd/i18n/react';
 import { AppDependencies } from '../../types';
 import { buildHashUrl } from '../utils/url-builder';
@@ -36,6 +36,8 @@ import { API_ENDPOINT_CACHE, DocLinks } from '../constants';
 import { ExternalLink, ExternalLinkButton } from '../utils/display-utils';
 import { httpDelete } from '../utils/request-utils';
 import { createSuccessToast, createUnknownErrorToast, useToastState } from '../utils/toast-utils';
+import { SecurityPluginTopNavMenu } from '../top-nav-menu';
+import { Cluster } from '../../../types';
 
 const addBackendStep = {
   title: 'Add backends',
@@ -158,7 +160,17 @@ const setOfSteps = [
   },
 ];
 
+export function getClusterInfoIfEnabled(dataSourceEnabled: boolean, cluster: Cluster) {
+  if (dataSourceEnabled) {
+    return `for ${cluster.label || 'Local cluster'}`;
+  }
+  return '';
+}
+
 export function GetStarted(props: AppDependencies) {
+  const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
+  const [dataSource, setDataSource] = useState<Cluster>({ id: '', label: '' });
+
   let steps;
   if (props.config.ui.backend_configurable) {
     steps = [addBackendStep, ...setOfSteps];
@@ -170,6 +182,11 @@ export function GetStarted(props: AppDependencies) {
   return (
     <>
       <div className="panel-restrict-width">
+        <SecurityPluginTopNavMenu
+          {...props}
+          dataSourcePickerReadOnly={false}
+          setDatasourceId={setDataSource}
+        />
         <EuiPageHeader>
           <EuiTitle size="l">
             <h1>Get started</h1>
@@ -236,16 +253,29 @@ export function GetStarted(props: AppDependencies) {
               data-test-subj="purge-cache"
               onClick={async () => {
                 try {
-                  await httpDelete(props.coreStart.http, API_ENDPOINT_CACHE);
+                  await httpDelete(props.coreStart.http, API_ENDPOINT_CACHE, {
+                    dataSourceId: dataSource.id,
+                  });
                   addToast(
                     createSuccessToast(
                       'cache-flush-success',
-                      'Cache purge successful',
-                      'Cache purge successful'
+                      `Cache purge successful ${getClusterInfoIfEnabled(
+                        dataSourceEnabled,
+                        dataSource
+                      )}`,
+                      `Cache purge successful ${getClusterInfoIfEnabled(
+                        dataSourceEnabled,
+                        dataSource
+                      )}`
                     )
                   );
                 } catch (err) {
-                  addToast(createUnknownErrorToast('cache-flush-failed', 'purge cache'));
+                  addToast(
+                    createUnknownErrorToast(
+                      'cache-flush-failed',
+                      `purge cache ${getClusterInfoIfEnabled(dataSourceEnabled, dataSource)}`
+                    )
+                  );
                 }
               }}
             >

@@ -46,10 +46,17 @@ import { createMigrationOpenSearchClient } from '../../../src/core/server/saved_
 import { SecuritySavedObjectsClientWrapper } from './saved_objects/saved_objects_wrapper';
 import { addTenantParameterToResolvedShortLink } from './multitenancy/tenant_resolver';
 import { ReadonlyService } from './readonly/readonly_service';
+import { DataSourceManagementPlugin } from '../../../src/plugins/data_source_management/public/plugin';
+import { DataSourcePluginSetup } from '../../../src/plugins/data_source/server/types';
 
 export interface SecurityPluginRequestContext {
   logger: Logger;
   esClient: ILegacyClusterClient;
+}
+
+export interface SecurityPluginSetupDependencies {
+  dataSourceManagement: ReturnType<DataSourceManagementPlugin['setup']>;
+  dataSource: DataSourcePluginSetup;
 }
 
 declare module 'opensearch-dashboards/server' {
@@ -83,8 +90,9 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     this.savedObjectClientWrapper = new SecuritySavedObjectsClientWrapper();
   }
 
-  public async setup(core: CoreSetup) {
+  public async setup(core: CoreSetup, { dataSource }: SecurityPluginSetupDependencies) {
     this.logger.debug('opendistro_security: Setup');
+    const dataSourceEnabled = !!dataSource;
 
     const config$ = this.initializerContext.config.create<SecurityPluginConfigType>();
     const config: SecurityPluginConfigType = await config$.pipe(first()).toPromise();
@@ -97,6 +105,10 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
         plugins: [opensearchSecurityConfigurationPlugin, opensearchSecurityPlugin],
       }
     );
+    if (dataSourceEnabled) {
+      dataSource.registerCustomApiSchema(opensearchSecurityConfigurationPlugin);
+      dataSource.registerCustomApiSchema(opensearchSecurityPlugin);
+    }
 
     this.securityClient = new SecurityClient(esClient);
 
@@ -133,7 +145,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     }
 
     // Register server side APIs
-    defineRoutes(router);
+    defineRoutes(router, dataSourceEnabled);
     defineAuthTypeRoutes(router, config);
 
     // set up multi-tenant routes

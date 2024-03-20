@@ -34,8 +34,8 @@ export async function httpPut<T>(http: HttpStart, url: string, body?: object): P
   return await request<T>(http.put, url, body);
 }
 
-export async function httpDelete<T>(http: HttpStart, url: string): Promise<T> {
-  return await request<T>(http.delete, url);
+export async function httpDelete<T>(http: HttpStart, url: string, body?: object): Promise<T> {
+  return await request<T>(http.delete, url, body);
 }
 
 /**

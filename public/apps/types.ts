@@ -13,15 +13,17 @@
  *   permissions and limitations under the License.
  */
 
+import { DataSourceManagementPluginSetup } from '../../../../src/plugins/data_source_management/public';
 import { AppMountParameters, CoreStart } from '../../../../src/core/public';
 import { SecurityPluginStartDependencies, ClientConfigType, DashboardsInfo } from '../types';
 
 export interface AppDependencies {
   coreStart: CoreStart;
-  navigation: SecurityPluginStartDependencies;
+  depsStart: SecurityPluginStartDependencies;
   params: AppMountParameters;
   config: ClientConfigType;
   dashboardsInfo: DashboardsInfo;
+  dataSourceManagement: DataSourceManagementPluginSetup;
 }
 
 export interface BreadcrumbsPageDependencies extends AppDependencies {
