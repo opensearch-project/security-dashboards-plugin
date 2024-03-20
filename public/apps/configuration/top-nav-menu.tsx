@@ -14,20 +14,25 @@
  */
 
 import React from 'react';
-import { CoreStart } from 'opensearch-dashboards/public';
-import { NavigationPublicPluginStart } from 'src/plugins/navigation/public/types';
-import { ClientConfigType } from '../../types';
+import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_selector/data_source_selector';
 import { PLUGIN_NAME } from '../../../common';
 import { AppDependencies } from '../types';
-import { Cluster } from '../../types';
 
 export interface TopNavMenuProps extends AppDependencies {
   dataSourcePickerReadOnly: boolean;
-  setDatasourceId: React.Dispatch<React.SetStateAction<Cluster>>;
+  setDataSource: React.Dispatch<React.SetStateAction<DataSourceOption>>;
+  selectedDataSource: DataSourceOption;
 }
 
 export const SecurityPluginTopNavMenu = (props: TopNavMenuProps) => {
-  const { coreStart, depsStart, params, dataSourceManagement, setDatasourceId } = props;
+  const {
+    coreStart,
+    depsStart,
+    params,
+    dataSourceManagement,
+    setDataSource,
+    selectedDataSource,
+  } = props;
   const { setHeaderActionMenu } = params;
   const DataSourceMenu = dataSourceManagement?.ui.DataSourceMenu;
   const dataSourceEnabled = !!depsStart.dataSource?.dataSourceEnabled;
@@ -39,7 +44,9 @@ export const SecurityPluginTopNavMenu = (props: TopNavMenuProps) => {
       savedObjects={coreStart.savedObjects.client}
       setMenuMountPoint={setHeaderActionMenu}
       notifications={coreStart.notifications}
-      dataSourceCallBackFunc={(datasource) => setDatasourceId(datasource)}
+      dataSourceCallBackFunc={setDataSource}
+      // Single select for now
+      selectedOption={[selectedDataSource]}
       hideLocalCluster={false}
       fullWidth={false}
     />
