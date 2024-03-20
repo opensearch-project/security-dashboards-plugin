@@ -36,10 +36,9 @@ export const OPENID_AUTH_LOGIN_WITH_FRAGMENT = '/auth/openid/captureUrlFragment'
 export const SAML_AUTH_LOGIN = '/auth/saml/login';
 export const SAML_AUTH_LOGIN_WITH_FRAGMENT = '/auth/saml/captureUrlFragment';
 export const ANONYMOUS_AUTH_LOGIN = '/auth/anonymous';
-const ANONYMOUS_AUTH_USER: string = 'opendistro_security_anonymous';
-const RANDOM_PASS: string = randomString(12);
-const ANONYMOUS_USER_PASS: string = `${ANONYMOUS_AUTH_USER}:${RANDOM_PASS}`;
-export const ANONYMOUS_AUTH_HEADER = `Basic ${Buffer.from(ANONYMOUS_USER_PASS).toString('base64')}`;
+export const AUTH_REQUEST_TYPE_HEADER = 'auth_request_type';
+export const SAML_AUTH_REQUEST_TYPE = 'saml';
+
 
 export const OPENID_AUTH_LOGOUT = '/auth/openid/logout';
 export const SAML_AUTH_LOGOUT = '/auth/saml/logout';

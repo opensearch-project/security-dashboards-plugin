@@ -27,7 +27,6 @@ import {
 } from '../constant';
 import { getAuthCookie, extractAuthCookie } from '../helper/cookie';
 import wreck from '@hapi/wreck';
-import { ANONYMOUS_AUTH_HEADER } from '../../common';
 
 describe('start OpenSearch Dashboards server', () => {
   let root: Root;
@@ -141,8 +140,7 @@ describe('start OpenSearch Dashboards server', () => {
 
   it('can access home page as anonymous user', async () => {
     const response = await osdTestServer.request
-      .get(root, '/app/home#/')
-      .set(AUTHORIZATION_HEADER_NAME, ANONYMOUS_AUTH_HEADER);
+      .get(root, '/app/home#/');
     expect(response.status).toEqual(200);
   });
 
@@ -163,8 +161,7 @@ describe('start OpenSearch Dashboards server', () => {
 
   it('call authinfo API as anonymous user', async () => {
     const response = await osdTestServer.request
-      .get(root, '/api/v1/auth/authinfo')
-      .set(AUTHORIZATION_HEADER_NAME, ANONYMOUS_AUTH_HEADER);
+      .get(root, '/api/v1/auth/authinfo');
     expect(response.status).toEqual(200);
   });
 

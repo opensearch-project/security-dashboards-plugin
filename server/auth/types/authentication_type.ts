@@ -31,7 +31,7 @@ import { SecuritySessionCookie } from '../../session/security_cookie';
 import { SecurityClient } from '../../backend/opensearch_security_client';
 import { resolveTenant, isValidTenant } from '../../multitenancy/tenant_resolver';
 import { UnauthenticatedError } from '../../errors';
-import { ANONYMOUS_AUTH_HEADER, GLOBAL_TENANT_SYMBOL } from '../../../common';
+import { GLOBAL_TENANT_SYMBOL } from '../../../common';
 
 export interface IAuthenticationType {
   type: string;
@@ -113,15 +113,6 @@ export abstract class AuthenticationType implements IAuthenticationType {
     const authHeaders = {};
     let cookie: SecuritySessionCookie | null | undefined;
     let authInfo: any | undefined;
-
-    // Adds a basic auth credentials headers to requests originated as anonymous user
-    if (
-      this.config.auth.anonymous_auth_enabled &&
-      !request.headers.hasOwnProperty('authorization')
-    ) {
-      const anonymousAuthHeaders = { authorization: ANONYMOUS_AUTH_HEADER };
-      Object.assign(authHeaders, anonymousAuthHeaders);
-    }
 
     // if this is an REST API call, suppose the request includes necessary auth header
     // see https://www.elastic.co/guide/en/opensearch-dashboards/master/using-api.html

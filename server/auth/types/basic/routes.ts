@@ -23,7 +23,6 @@ import { SecurityPluginConfigType } from '../../..';
 import { User } from '../../user';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
 import {
-  ANONYMOUS_AUTH_HEADER,
   ANONYMOUS_AUTH_LOGIN,
   API_AUTH_LOGIN,
   API_AUTH_LOGOUT,
@@ -187,9 +186,7 @@ export class BasicAuthRoutes {
           }
           context.security_plugin.logger.info('The Redirect Path is ' + redirectUrl);
           try {
-            user = await this.securityClient.authenticateWithHeaders(request, {
-              authorization: ANONYMOUS_AUTH_HEADER,
-            });
+            user = await this.securityClient.authenticateWithHeaders(request, { });
           } catch (error) {
             context.security_plugin.logger.error(
               `Failed authentication: ${error}. Redirecting to Login Page`

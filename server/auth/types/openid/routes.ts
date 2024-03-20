@@ -188,7 +188,8 @@ export class OpenIdAuthRoutes {
           const user = await this.securityClient.authenticateWithHeader(
             request,
             this.openIdAuthConfig.authHeaderName as string,
-            `Bearer ${tokenResponse.idToken}`
+            `Bearer ${tokenResponse.idToken}`,
+            undefined
           );
 
           // set to cookie

@@ -24,7 +24,6 @@ import {
   isPrivateTenant,
   LOGIN_PAGE_URI,
   CUSTOM_ERROR_PAGE_URI,
-  ANONYMOUS_AUTH_HEADER,
 } from '../../common';
 import { SecurityClient } from '../backend/opensearch_security_client';
 import { IAuthenticationType, OpenSearchAuthInfo } from '../auth/types/authentication_type';

@@ -20,7 +20,7 @@ import { SecurityPluginConfigType } from '../../..';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
 import { CoreSetup } from '../../../../../../src/core/server';
 import { validateNextUrl } from '../../../utils/next_url';
-import { AuthType, SAML_AUTH_LOGIN, SAML_AUTH_LOGOUT } from '../../../../common';
+import { AuthType, SAML_AUTH_LOGIN, SAML_AUTH_LOGOUT, SAML_AUTH_REQUEST_TYPE } from '../../../../common';
 
 import {
   clearSplitCookies,
@@ -120,6 +120,7 @@ export class SamlAuthRoutes {
               `${this.coreSetup.http.basePath.serverBasePath}/app/opensearch-dashboards`;
             redirectHash = cookie.saml?.redirectHash || false;
           }
+          console.log(requestId);
           if (!requestId) {
             return response.badRequest({
               body: 'Invalid requestId',
@@ -134,12 +135,14 @@ export class SamlAuthRoutes {
           const credentials = await this.securityClient.authToken(
             requestId,
             request.body.SAMLResponse,
-            undefined
+            undefined,
+            SAML_AUTH_REQUEST_TYPE
           );
           const user = await this.securityClient.authenticateWithHeader(
             request,
             'authorization',
-            credentials.authorization
+            credentials.authorization,
+            SAML_AUTH_REQUEST_TYPE
           );
 
           let expiryTime = Date.now() + this.config.session.ttl;
@@ -211,12 +214,14 @@ export class SamlAuthRoutes {
           const credentials = await this.securityClient.authToken(
             undefined,
             request.body.SAMLResponse,
-            acsEndpoint
+            acsEndpoint,
+            SAML_AUTH_REQUEST_TYPE
           );
           const user = await this.securityClient.authenticateWithHeader(
             request,
             'authorization',
-            credentials.authorization
+            credentials.authorization,
+            SAML_AUTH_REQUEST_TYPE
           );
 
           let expiryTime = Date.now() + this.config.session.ttl;
