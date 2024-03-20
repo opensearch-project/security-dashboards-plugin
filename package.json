@@ -45,6 +45,5 @@
     "selenium-webdriver": "4.10.0",
     "glob-parent": "^5.1.2",
     "debug": "^4.3.4"
-  },
-  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
+  }
 }
