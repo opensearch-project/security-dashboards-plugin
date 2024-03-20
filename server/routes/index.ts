@@ -241,6 +241,9 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
         params: schema.object({
           resourceName: schema.string(),
         }),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     async (
@@ -256,9 +259,13 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
         } else if (request.params.resourceName === 'internalaccounts') {
           esResp = await client.callAsCurrentUser('opensearch_security.listInternalAccounts');
         } else {
-          esResp = await client.callAsCurrentUser('opensearch_security.listResource', {
-            resourceName: request.params.resourceName,
-          });
+          esResp = await wrapRouteWithDataSource(
+            dataSourceEnabled,
+            context,
+            request,
+            'opensearch_security.listResource',
+            { resourceName: request.params.resourceName }
+          );
         }
         return response.ok({
           body: {
@@ -748,19 +755,27 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
     {
       path: `${API_PREFIX}/configuration/cache`,
       validate: {
-        body: schema.object({
+        query: schema.object({
           dataSourceId: schema.maybe(schema.string()),
         }),
       },
     },
     async (context, request, response) => {
-      return wrapRouteWithDataSource(
-        dataSourceEnabled,
-        context,
-        request,
-        response,
-        'opensearch_security.clearCache'
-      );
+      try {
+        const esResp = await wrapRouteWithDataSource(
+          dataSourceEnabled,
+          context,
+          request,
+          'opensearch_security.clearCache'
+        );
+        return response.ok({
+          body: {
+            message: esResp.message,
+          },
+        });
+      } catch (error) {
+        return errorResponse(response, error);
+      }
     }
   );
 
@@ -887,36 +902,16 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
 const wrapRouteWithDataSource = async (
   dataSourceEnabled: boolean,
   context: RequestHandlerContext,
-  request: OpenSearchDashboardsRequest<unknown, unknown, any>,
-  response: OpenSearchDashboardsResponseFactory,
-  endpoint: string
+  request: OpenSearchDashboardsRequest<unknown, any, any>,
+  endpoint: string,
+  body?: Record<string, string>
 ) => {
-  if (!dataSourceEnabled || !request.body?.dataSourceId) {
+  if (!dataSourceEnabled || !request.query?.dataSourceId) {
     const client = context.security_plugin.esClient.asScoped(request);
-    let esResponse;
-    try {
-      esResponse = await client.callAsCurrentUser(endpoint);
-      return response.ok({
-        body: {
-          message: esResponse.message,
-        },
-      });
-    } catch (error) {
-      return errorResponse(response, error);
-    }
+    return await client.callAsCurrentUser(endpoint, body);
   } else {
-    const client = context.dataSource.opensearch.legacy.getClient(request.body?.dataSourceId);
-    let esResponse;
-    try {
-      esResponse = await client.callAPI(endpoint, {});
-      return response.ok({
-        body: {
-          message: esResponse.message,
-        },
-      });
-    } catch (error) {
-      return errorResponse(response, error);
-    }
+    const client = context.dataSource.opensearch.legacy.getClient(request.query?.dataSourceId);
+    return await client.callAPI(endpoint, body);
   }
 };
 

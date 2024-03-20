@@ -14,7 +14,7 @@
  */
 
 import React from 'react';
-import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_selector/data_source_selector';
+import { DataSourceOption } from '../../../../../src/plugins/data_source_management/public/components/data_source_selector/data_source_selector';
 import { PLUGIN_NAME } from '../../../common';
 import { AppDependencies } from '../types';
 

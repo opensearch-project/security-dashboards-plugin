@@ -28,7 +28,7 @@ import {
 } from '@elastic/eui';
 import React, { useContext, useState } from 'react';
 import { FormattedMessage } from '@osd/i18n/react';
-import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_selector/data_source_selector';
+import { DataSourceOption } from '../../../../../../src/plugins/data_source_management/public/components/data_source_selector/data_source_selector';
 import { AppDependencies } from '../../types';
 import { buildHashUrl } from '../utils/url-builder';
 import { Action } from '../types';
@@ -38,7 +38,6 @@ import { ExternalLink, ExternalLinkButton } from '../utils/display-utils';
 import { httpDelete } from '../utils/request-utils';
 import { createSuccessToast, createUnknownErrorToast, useToastState } from '../utils/toast-utils';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
-import { Cluster } from '../../../types';
 import { DataSourceContext } from '../app-router';
 
 const addBackendStep = {
@@ -256,7 +255,7 @@ export function GetStarted(props: AppDependencies) {
               data-test-subj="purge-cache"
               onClick={async () => {
                 try {
-                  await httpDelete(props.coreStart.http, API_ENDPOINT_CACHE, {
+                  await httpDelete(props.coreStart.http, API_ENDPOINT_CACHE, undefined, {
                     dataSourceId: dataSource.id,
                   });
                   addToast(

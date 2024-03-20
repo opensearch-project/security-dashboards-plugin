@@ -36,7 +36,9 @@ export function AuthView(props: AppDependencies) {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const config = await getSecurityConfig(props.coreStart.http);
+        const config = await getSecurityConfig(props.coreStart.http, undefined, {
+          dataSourceId: dataSource.id,
+        });
 
         setAuthentication(config.authc);
         setAuthorization(config.authz);
@@ -48,7 +50,7 @@ export function AuthView(props: AppDependencies) {
     };
 
     fetchData();
-  }, [props.coreStart.http]);
+  }, [props.coreStart.http, dataSource.id]);
 
   if (isEmpty(authentication)) {
     return <InstructionView config={props.config} />;
