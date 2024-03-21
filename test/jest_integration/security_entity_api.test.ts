@@ -509,7 +509,7 @@ describe('start OpenSearch Dashboards server multi datasources enabled', () => {
 
   it('Gets auth page correctly', async () => {
     const getAuthResponseWrongDataSource = await osdTestServer.request
-      .get(root, '/api/v1/configuration/securityconfiguration?dataSourceId=test')
+      .get(root, '/api/v1/configuration/securityconfig?dataSourceId=test')
       .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
 
     // Getting auth info on a datasource that does not exist
@@ -519,14 +519,14 @@ describe('start OpenSearch Dashboards server multi datasources enabled', () => {
     );
 
     const getAuthResponseEmptyDataSource = await osdTestServer.request
-      .get(root, '/api/v1/configuration/securityconfiguration')
+      .get(root, '/api/v1/configuration/securityconfig?dataSourceId=')
       .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
 
     // Getting auth info on an empty datasource calls local cluster
     expect(getAuthResponseEmptyDataSource.status).toEqual(200);
 
     const getAuthResponseRemoteDataSource = await osdTestServer.request
-      .get(root, `/api/v1/configuration/securityconfiguration?dataSourceId=${dataSourceId}`)
+      .get(root, `/api/v1/configuration/securityconfig?dataSourceId=${dataSourceId}`)
       .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
 
     // Getting auth info on an empty datasource calls local cluster
