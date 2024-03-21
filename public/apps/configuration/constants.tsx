@@ -213,6 +213,7 @@ export const CLUSTER_PERMISSIONS: string[] = [
   'cluster:monitor/task/get',
   'cluster:monitor/tasks/list',
   'cluster:monitor/tasks/list*',
+  'cluster:monitor/term',
   'restapi:admin/actiongroups',
   'restapi:admin/allowlist',
   'restapi:admin/internalusers',
