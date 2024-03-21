@@ -18,7 +18,6 @@ import { User } from '../auth/user';
 import { TenancyConfigSettings } from '../../public/apps/configuration/panels/tenancy-config/types';
 import { AUTH_REQUEST_TYPE_HEADER, SAML_AUTH_REQUEST_TYPE } from '../../common';
 
-
 export class SecurityClient {
   constructor(private readonly esClient: ILegacyClusterClient) {}
 
@@ -55,7 +54,7 @@ export class SecurityClient {
     headerValue: string,
     authRequestType: string | undefined,
     whitelistedHeadersAndValues: any = {},
-    additionalAuthHeaders: any = {},
+    additionalAuthHeaders: any = {}
   ): Promise<User> {
     try {
       const credentials: any = {

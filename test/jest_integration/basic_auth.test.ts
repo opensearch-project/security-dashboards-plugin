@@ -139,8 +139,7 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   it('can access home page as anonymous user', async () => {
-    const response = await osdTestServer.request
-      .get(root, '/app/home#/');
+    const response = await osdTestServer.request.get(root, '/app/home#/');
     expect(response.status).toEqual(200);
   });
 
@@ -160,8 +159,7 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   it('call authinfo API as anonymous user', async () => {
-    const response = await osdTestServer.request
-      .get(root, '/api/v1/auth/authinfo');
+    const response = await osdTestServer.request.get(root, '/api/v1/auth/authinfo');
     expect(response.status).toEqual(200);
   });
 

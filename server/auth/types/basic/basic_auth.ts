@@ -130,7 +130,7 @@ export class BasicAuthentication extends AuthenticationType {
     request: OpenSearchDashboardsRequest
   ): any {
     if (this.config.auth.anonymous_auth_enabled && cookie.isAnonymousAuth) {
-      return { };
+      return {};
     }
     const headers: any = {};
     Object.assign(headers, { authorization: cookie.credentials?.authHeaderValue });

@@ -39,7 +39,6 @@ export const ANONYMOUS_AUTH_LOGIN = '/auth/anonymous';
 export const AUTH_REQUEST_TYPE_HEADER = 'auth_request_type';
 export const SAML_AUTH_REQUEST_TYPE = 'saml';
 
-
 export const OPENID_AUTH_LOGOUT = '/auth/openid/logout';
 export const SAML_AUTH_LOGOUT = '/auth/saml/logout';
 export const ANONYMOUS_AUTH_LOGOUT = '/auth/anonymous/logout';

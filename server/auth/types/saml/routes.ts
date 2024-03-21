@@ -20,7 +20,12 @@ import { SecurityPluginConfigType } from '../../..';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
 import { CoreSetup } from '../../../../../../src/core/server';
 import { validateNextUrl } from '../../../utils/next_url';
-import { AuthType, SAML_AUTH_LOGIN, SAML_AUTH_LOGOUT, SAML_AUTH_REQUEST_TYPE } from '../../../../common';
+import {
+  AuthType,
+  SAML_AUTH_LOGIN,
+  SAML_AUTH_LOGOUT,
+  SAML_AUTH_REQUEST_TYPE,
+} from '../../../../common';
 
 import {
   clearSplitCookies,
