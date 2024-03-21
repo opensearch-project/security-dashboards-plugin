@@ -13,8 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-import { randomString } from '@hapi/cryptiles';
-
 export const PLUGIN_ID = 'opensearchDashboardsSecurity';
 export const PLUGIN_NAME = 'security-dashboards-plugin';
 
@@ -38,6 +36,7 @@ export const SAML_AUTH_LOGIN_WITH_FRAGMENT = '/auth/saml/captureUrlFragment';
 export const ANONYMOUS_AUTH_LOGIN = '/auth/anonymous';
 export const AUTH_REQUEST_TYPE_HEADER = 'auth_request_type';
 export const SAML_AUTH_REQUEST_TYPE = 'saml';
+export const OPEN_ID_AUTH_REQUEST_TYPE = 'openid';
 
 export const OPENID_AUTH_LOGOUT = '/auth/openid/logout';
 export const SAML_AUTH_LOGOUT = '/auth/saml/logout';

@@ -125,7 +125,6 @@ export class SamlAuthRoutes {
               `${this.coreSetup.http.basePath.serverBasePath}/app/opensearch-dashboards`;
             redirectHash = cookie.saml?.redirectHash || false;
           }
-          console.log(requestId);
           if (!requestId) {
             return response.badRequest({
               body: 'Invalid requestId',

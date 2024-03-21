@@ -44,6 +44,7 @@ import {
   AUTH_RESPONSE_TYPE,
   OPENID_AUTH_LOGOUT,
   LOGIN_PAGE_URI,
+  OPEN_ID_AUTH_REQUEST_TYPE,
 } from '../../../../common';
 
 import {
@@ -189,7 +190,7 @@ export class OpenIdAuthRoutes {
             request,
             this.openIdAuthConfig.authHeaderName as string,
             `Bearer ${tokenResponse.idToken}`,
-            undefined
+            OPEN_ID_AUTH_REQUEST_TYPE
           );
 
           // set to cookie
