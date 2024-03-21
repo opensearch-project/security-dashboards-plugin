@@ -473,7 +473,7 @@ describe('start OpenSearch Dashboards server multi datasources enabled', () => {
           },
         },
       });
-      dataSourceId=createDataSource.body.id;
+    dataSourceId = createDataSource.body.id;
   });
 
   afterAll(async () => {
@@ -512,25 +512,24 @@ describe('start OpenSearch Dashboards server multi datasources enabled', () => {
       .get(root, '/api/v1/configuration/securityconfiguration?dataSourceId=test')
       .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
 
-    // Calling clear cache on a datasource that does not exist
+    // Getting auth info on a datasource that does not exist
     expect(getAuthResponseWrongDataSource.status).not.toEqual(200);
     expect(getAuthResponseWrongDataSource.text).toContain(
       'Data Source Error: Saved object [data-source/test] not found'
     );
 
     const getAuthResponseEmptyDataSource = await osdTestServer.request
-    .get(root, '/api/v1/configuration/securityconfiguration')
+      .get(root, '/api/v1/configuration/securityconfiguration')
       .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
 
-    // Calling clear cache on an empty datasource calls local cluster
+    // Getting auth info on an empty datasource calls local cluster
     expect(getAuthResponseEmptyDataSource.status).toEqual(200);
 
     const getAuthResponseRemoteDataSource = await osdTestServer.request
-    .get(root, `/api/v1/configuration/securityconfiguration?dataSourceId=${dataSourceId}`)
+      .get(root, `/api/v1/configuration/securityconfiguration?dataSourceId=${dataSourceId}`)
       .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
 
-    // Calling clear cache on an empty datasource calls local cluster
+    // Getting auth info on an empty datasource calls local cluster
     expect(getAuthResponseRemoteDataSource.status).toEqual(200);
-
-  })
+  });
 });

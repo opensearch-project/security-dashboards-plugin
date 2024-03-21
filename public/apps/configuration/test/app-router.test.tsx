@@ -25,8 +25,8 @@ describe('SecurityPluginTopNavMenu', () => {
     },
     notifications: jest.fn(),
     chrome: {
-        setBreadcrumbs: jest.fn()
-    }
+      setBreadcrumbs: jest.fn(),
+    },
   };
 
   const dataSourceMenuMock = jest.fn(() => <div>Mock DataSourceMenu</div>);
@@ -44,9 +44,7 @@ describe('SecurityPluginTopNavMenu', () => {
       },
     };
 
-    const wrapper = shallow(
-      <AppRouter coreStart={coreStartMock} params={{appBasePath: ''}}/>
-    );
+    const wrapper = shallow(<AppRouter coreStart={coreStartMock} params={{ appBasePath: '' }} />);
 
     expect(wrapper).toMatchSnapshot();
   });

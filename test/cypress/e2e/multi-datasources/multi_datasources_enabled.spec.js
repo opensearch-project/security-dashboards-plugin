@@ -65,5 +65,20 @@ describe('Multi-datasources enabled', () => {
     cy.contains('li.euiSelectableListItem', '9202').click();
     cy.get('[data-test-subj="purge-cache"]').click();
     cy.get('.euiToastHeader__title').should('contain', 'successful for 9202');
+    cy.visit('http://localhost:5601/app/security-dashboards-plugin#/auth');
+    // Data source persisted across tabs
+    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').contains('9202');
+  });
+
+  it('Checks Get Started Tab', () => {
+    cy.visit('http://localhost:5601/app/security-dashboards-plugin#/auth');
+    // Local cluster purge cache
+    cy.get('.panel-header-count"]').contains('6');
+    // Remote cluster purge cache
+    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
+    cy.contains('li.euiSelectableListItem', '9202').click();
+    cy.get('.panel-header-count"]').contains('2');
+    // Data source persisted across tabs
+    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').contains('9202');
   });
 });

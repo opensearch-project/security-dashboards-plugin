@@ -70,6 +70,50 @@ jobs:
           node.max_local_storage_nodes: 3
           EOT
 
+      # Add Custom Configuration to differentiate between local and remote cluster
+      - name: Create Custom Configuration for Linux
+        if: ${{ runner.os == 'Linux'}}
+        run: |
+          echo "Creating new custom configuration"
+          cat << 'EOT' > config_custom.yml
+          ---
+          _meta:
+            type: "config"
+            config_version: 2
+          config:
+            dynamic:
+              http:
+                anonymous_auth_enabled: false
+              authc:
+                basic_internal_auth_domain:
+                  description: "Authenticate via HTTP Basic against internal users database"
+                  http_enabled: true
+                  transport_enabled: true
+                  order: 0
+                  http_authenticator:
+                    type: basic
+                    challenge: false
+                  authentication_backend:
+                    type: intern
+                saml_auth_domain:
+                  http_enabled: true
+                  transport_enabled: false
+                  order: 1
+                  http_authenticator:
+                    type: saml
+                    challenge: true
+                    config:
+                      idp:
+                        entity_id: urn:example:idp
+                        metadata_url: http://localhost:7000/metadata
+                      sp:
+                        entity_id: https://localhost:9200
+                      kibana_url: http://localhost:5601
+                      exchange_key: 6aff3042-1327-4f3d-82f0-40a157ac4464
+                  authentication_backend:
+                    type: noop
+          EOT
+
       - name: Download security plugin and create setup scripts
         uses: ./.github/actions/download-plugin
         with:
@@ -84,7 +128,7 @@ jobs:
           plugins: "file:$(pwd)/opensearch-security.zip"
           security-enabled: true
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
-          security_config_file: ${{ inputs.security_config_file }}
+          security_config_file: config_custom.yml
           opensearch_yml_file: remote_opensearch.yml
           opensearch_port: 9202
 
