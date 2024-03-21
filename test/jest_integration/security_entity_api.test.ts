@@ -464,9 +464,8 @@ describe('start OpenSearch Dashboards server multi datasources enabled', () => {
 
   it('delete cache', async () => {
     const deleteCacheResponseWrongDataSource = await osdTestServer.request
-      .delete(root, '/api/v1/configuration/cache')
-      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
-      .send({ dataSourceId: 'test' });
+      .delete(root, '/api/v1/configuration/cache?dataSourceId=test')
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
 
     // Calling clear cache on a datasource that does not exist
     expect(deleteCacheResponseWrongDataSource.status).not.toEqual(200);
@@ -476,8 +475,7 @@ describe('start OpenSearch Dashboards server multi datasources enabled', () => {
 
     const deleteCacheResponseEmptyDataSource = await osdTestServer.request
       .delete(root, '/api/v1/configuration/cache')
-      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
-      .send({ dataSourceId: '' });
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
 
     // Calling clear cache on an empty datasource calls local cluster
     expect(deleteCacheResponseEmptyDataSource.status).toEqual(200);
@@ -501,9 +499,8 @@ describe('start OpenSearch Dashboards server multi datasources enabled', () => {
       });
 
     const deleteCacheResponseRemoteDataSource = await osdTestServer.request
-      .delete(root, '/api/v1/configuration/cache')
-      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
-      .send({ dataSourceId: createDataSource.body.id });
+      .delete(root, `/api/v1/configuration/cache?dataSourceId=${createDataSource.body.id}`)
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
 
     // Calling clear cache on an empty datasource calls local cluster
     expect(deleteCacheResponseRemoteDataSource.status).toEqual(200);
