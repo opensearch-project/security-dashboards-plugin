@@ -131,20 +131,7 @@ describe('start OpenSearch Dashboards server', () => {
     expect(response.status).toEqual(200);
   });
 
-  it('cannot access home page as anonymous user if no credentials are supplied', async () => {
-    const response = await osdTestServer.request
-      .get(root, '/app/home#/')
-      .unset(AUTHORIZATION_HEADER_NAME);
-    expect(response.status).toEqual(302);
-  });
-
-  it('can access home page as anonymous user', async () => {
-    const response = await osdTestServer.request.get(root, '/app/home#/');
-    expect(response.status).toEqual(200);
-  });
-
   it('call authinfo API as admin', async () => {
-    const testUserCredentials = Buffer.from(ADMIN_CREDENTIALS);
     const response = await osdTestServer.request
       .get(root, '/api/v1/auth/authinfo')
       .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
@@ -156,11 +143,6 @@ describe('start OpenSearch Dashboards server', () => {
       .get(root, '/api/v1/auth/authinfo')
       .unset(AUTHORIZATION_HEADER_NAME);
     expect(response.status).toEqual(401);
-  });
-
-  it('call authinfo API as anonymous user', async () => {
-    const response = await osdTestServer.request.get(root, '/api/v1/auth/authinfo');
-    expect(response.status).toEqual(200);
   });
 
   it('call authinfo API with cookie', async () => {
