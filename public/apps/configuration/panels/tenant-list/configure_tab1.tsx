@@ -14,14 +14,9 @@
  */
 
 import {
-  EuiBadge,
   EuiButton,
-  EuiButtonEmpty,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiInMemoryTable,
-  EuiLink,
-  EuiPageBody,
   EuiPageContent,
   EuiPageContentHeader,
   EuiPageContentHeaderSection,
@@ -29,51 +24,28 @@ import {
   EuiText,
   EuiTitle,
   EuiGlobalToastList,
-  EuiSwitch,
-  Query,
   EuiHorizontalRule,
-  EuiFormRow,
   EuiDescribedFormGroup,
   EuiSpacer,
   EuiCheckbox,
-  EuiModal,
-  EuiModalHeader,
-  EuiModalHeaderTitle,
-  EuiModalBody,
-  EuiModalFooter,
-  EuiCodeBlock,
   EuiCallOut,
   EuiBottomBar,
   EuiComboBox,
   EuiIcon,
-  EuiPanel,
 } from '@elastic/eui';
-import { ChangeEvent } from 'react';
-import React, { ReactNode, useState, useCallback } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { SaveChangesModalGenerator } from './save_changes_modal';
 import { AppDependencies } from '../../../types';
-import { displayBoolean } from '../../utils/display-utils';
-import { updateAuditLogging } from '../../utils/audit-logging-utils';
-import { AuditLoggingSettings } from '../audit-logging/types';
-import { AuthInfo } from '../../../../types';
-import { updateTenancyConfig } from '../../utils/tenancy-config_util';
 import { TenancyConfigSettings } from '../tenancy-config/types';
-import { getAuthInfo } from '../../../../utils/auth-info-utils';
 import {
   fetchTenants,
   transformTenantData,
   updateTenancyConfiguration,
-  updateTenant,
 } from '../../utils/tenant-utils';
-import { Action, Tenant } from '../../types';
-import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
-import { useContextMenuState } from '../../utils/context-menu';
-import { TenantEditModal } from './edit-modal';
+import { Tenant } from '../../types';
 import {
   createTenancyErrorToast,
   createTenancySuccessToast,
-  createUnknownErrorToast,
-  getSuccessToastMessage,
   useToastState,
 } from '../../utils/toast-utils';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
