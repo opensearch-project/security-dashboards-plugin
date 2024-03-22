@@ -46,6 +46,8 @@ import { createMigrationOpenSearchClient } from '../../../src/core/server/saved_
 import { SecuritySavedObjectsClientWrapper } from './saved_objects/saved_objects_wrapper';
 import { addTenantParameterToResolvedShortLink } from './multitenancy/tenant_resolver';
 import { ReadonlyService } from './readonly/readonly_service';
+import { DashboardSignInOptions } from '../public/apps/configuration/types';
+import { AuthType } from '../common';
 
 export interface SecurityPluginRequestContext {
   logger: Logger;
@@ -113,8 +115,24 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     });
 
     // setup auth
+    let dashboardSignInOptions = await esClient
+      .callAsInternalUser('opensearch_security.dashboardsinfo')
+      .then((data) =>
+        data.sign_in_options.map((opt: string) => {
+          if (DashboardSignInOptions[opt] === DashboardSignInOptions.BASIC) {
+            return AuthType.BASIC;
+          } else {
+            return opt.toString().toLowerCase();
+          }
+        })
+      );
+
+    // Combine sign in options with auth.type in case there are JWT, PROXY or more auth types.
+    dashboardSignInOptions = new Set<string>([...dashboardSignInOptions, ...config.auth.type]);
+    dashboardSignInOptions = [...dashboardSignInOptions];
+
     const auth: IAuthenticationType = await getAuthenticationHandler(
-      config.auth.type,
+      dashboardSignInOptions,
       router,
       config,
       core,

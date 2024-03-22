@@ -57,6 +57,7 @@ export async function getAuthenticationHandler(
   logger: Logger
 ): Promise<IAuthenticationType> {
   let authHandlerType: IAuthHandlerConstructor;
+
   if (typeof authType === 'string' || authType.length === 1) {
     const currType = typeof authType === 'string' ? authType : authType[0];
     switch (currType.toLowerCase()) {
@@ -80,7 +81,7 @@ export async function getAuthenticationHandler(
         throw new Error(`Unsupported authentication type: ${currType}`);
     }
   } else {
-    if (config.auth.multiple_auth_enabled) {
+    if (authType.length > 1) {
       authHandlerType = MultipleAuthentication;
     } else {
       throw new Error(

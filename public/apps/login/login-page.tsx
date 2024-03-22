@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   EuiText,
   EuiFieldText,
@@ -35,6 +35,8 @@ import {
   OPENID_AUTH_LOGIN_WITH_FRAGMENT,
   SAML_AUTH_LOGIN_WITH_FRAGMENT,
 } from '../../../common';
+import { getDashboardsSignInOptions } from '../../utils/dashboards-info-utils';
+import { DashboardSignInOptions } from '../configuration/types';
 
 interface LoginPageDeps {
   http: CoreStart['http'];
@@ -81,6 +83,29 @@ export function LoginPage(props: LoginPageDeps) {
   const [loginError, setloginError] = useState('');
   const [usernameValidationFailed, setUsernameValidationFailed] = useState(false);
   const [passwordValidationFailed, setPasswordValidationFailed] = useState(false);
+  const [signInOptions, setSignInOptions] = React.useState<DashboardSignInOptions[]>([]);
+
+  // It will confirm that the sign-in option is still available. If not, it will reload the login page with the available options.
+  const reValidateSignInOption = async (option: DashboardSignInOptions) => {
+    const dashboardSignInOptions = await getDashboardsSignInOptions(props.http);
+    const isValidOption = dashboardSignInOptions.includes(DashboardSignInOptions[option]);
+    if (isValidOption === false) {
+      window.location.reload();
+    }
+  };
+
+  React.useEffect(() => {
+    const getSignInOptions = async () => {
+      try {
+        const dashboardSignInOptions = await getDashboardsSignInOptions(props.http);
+        setSignInOptions(dashboardSignInOptions);
+      } catch (e) {
+        console.error(`Unable to get sign in options ${e}`);
+      }
+    };
+
+    getSignInOptions();
+  }, [props.http]);
 
   let errorLabel: any = null;
   if (loginFailed) {
@@ -111,6 +136,8 @@ export function LoginPage(props: LoginPageDeps) {
       return;
     }
 
+    await reValidateSignInOption(DashboardSignInOptions.BASIC);
+
     try {
       await validateCurrentPassword(props.http, username, password);
       redirect(props.http.basePath.serverBasePath);
@@ -137,6 +164,9 @@ export function LoginPage(props: LoginPageDeps) {
           size="s"
           type="prime"
           className={buttonConfig.buttonstyle || 'btn-login'}
+          onClick={async () =>
+            await reValidateSignInOption(DashboardSignInOptions[authType.toUpperCase()])
+          }
           href={loginEndPointWithPath}
           iconType={buttonConfig.showbrandimage ? buttonConfig.brandimage : ''}
         >
@@ -146,22 +176,40 @@ export function LoginPage(props: LoginPageDeps) {
     );
   };
 
+  const mapSignInOptions = (options: DashboardSignInOptions[]) => {
+    const authOpts = [];
+    for (let i = 0; i < options.length; i++) {
+      // Dashboard sign-in options are taken from HTTP type property where the value is 'openid' and it needs to match with AuthType open_id;
+      if (DashboardSignInOptions[options[i]] === DashboardSignInOptions.OPENID) {
+        authOpts.push(AuthType.OPEN_ID);
+      } else {
+        const authType = AuthType[options[i]];
+        if (authType) {
+          authOpts.push(authType);
+        }
+      }
+    }
+    return authOpts;
+  };
+
   const formOptions = (options: string | string[]) => {
     let formBody = [];
     const formBodyOp = [];
-    let authOpts = [];
+    let authOpts = mapSignInOptions(signInOptions);
 
-    if (typeof options === 'string') {
-      if (options === '') {
-        authOpts.push(AuthType.BASIC);
+    if (authOpts.length === 0) {
+      if (typeof options === 'string') {
+        if (options === '') {
+          authOpts.push(AuthType.BASIC);
+        } else {
+          authOpts.push(options.toLowerCase());
+        }
       } else {
-        authOpts.push(options.toLowerCase());
-      }
-    } else {
-      if (options && options.length === 1 && options[0] === '') {
-        authOpts.push(AuthType.BASIC);
-      } else {
-        authOpts = [...options];
+        if (options && options.length === 1 && options[0] === '') {
+          authOpts.push(AuthType.BASIC);
+        } else {
+          authOpts = [...options];
+        }
       }
     }
 
@@ -172,6 +220,7 @@ export function LoginPage(props: LoginPageDeps) {
             <EuiFormRow>
               <EuiFieldText
                 data-test-subj="user-name"
+                data-testid="username"
                 aria-label="username_input"
                 placeholder="Username"
                 prepend={<EuiIcon type="user" />}
@@ -185,6 +234,7 @@ export function LoginPage(props: LoginPageDeps) {
             <EuiFormRow isInvalid={passwordValidationFailed}>
               <EuiFieldText
                 data-test-subj="password"
+                data-testid="password"
                 aria-label="password_input"
                 placeholder="Password"
                 prepend={<EuiIcon type="lock" />}
@@ -199,6 +249,7 @@ export function LoginPage(props: LoginPageDeps) {
           formBody.push(
             <EuiFormRow>
               <EuiButton
+                data-testid="login"
                 data-test-subj="submit"
                 aria-label={buttonId}
                 fill
@@ -211,19 +262,6 @@ export function LoginPage(props: LoginPageDeps) {
               </EuiButton>
             </EuiFormRow>
           );
-
-          if (authOpts.length > 1) {
-            if (props.config.auth.anonymous_auth_enabled) {
-              const anonymousConfig = props.config.ui[AuthType.ANONYMOUS].login;
-              formBody.push(
-                renderLoginButton(AuthType.ANONYMOUS, ANONYMOUS_AUTH_LOGIN, anonymousConfig)
-              );
-            }
-
-            formBody.push(<EuiSpacer size="xs" />);
-            formBody.push(<EuiHorizontalRule size="full" margin="xl" />);
-            formBody.push(<EuiSpacer size="xs" />);
-          }
           break;
         }
         case AuthType.OPEN_ID: {
@@ -240,6 +278,13 @@ export function LoginPage(props: LoginPageDeps) {
           formBodyOp.push(renderLoginButton(AuthType.SAML, samlAuthLoginUrl, samlConfig));
           break;
         }
+        case AuthType.ANONYMOUS: {
+          const anonymousConfig = props.config.ui[AuthType.ANONYMOUS].login;
+          formBody.push(
+            renderLoginButton(AuthType.ANONYMOUS, ANONYMOUS_AUTH_LOGIN, anonymousConfig)
+          );
+          break;
+        }
         default: {
           setloginFailed(true);
           setloginError(
@@ -248,6 +293,12 @@ export function LoginPage(props: LoginPageDeps) {
           break;
         }
       }
+    }
+
+    if (authOpts.length > 1) {
+      formBody.push(<EuiSpacer size="xs" />);
+      formBody.push(<EuiHorizontalRule size="full" margin="xl" />);
+      formBody.push(<EuiSpacer size="xs" />);
     }
 
     formBody = formBody.concat(formBodyOp);
