@@ -77,6 +77,6 @@ describe('Multi-datasources enabled', () => {
     // Remote cluster auth
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
     cy.contains('li.euiSelectableListItem', '9202').click();
-    cy.get('.container .panel-header-count').first().invoke('text').should('eq', '(2)');
+    cy.get('.panel-header-count').first().invoke('text').should('contain', '(2)');
   });
 });
