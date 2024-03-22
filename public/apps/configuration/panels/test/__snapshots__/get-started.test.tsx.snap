@@ -21,7 +21,12 @@ exports[`Get started (landing page) renders when backend configuration is disabl
       dataSourcePickerReadOnly={false}
       depsStart={Object {}}
       params={Object {}}
-      setDatasourceId={[Function]}
+      selectedDataSource={
+        Object {
+          "id": "test",
+        }
+      }
+      setDataSource={[MockFunction]}
     />
     <EuiPageHeader>
       <EuiTitle
@@ -292,7 +297,12 @@ exports[`Get started (landing page) renders when backend configuration is enable
       dataSourcePickerReadOnly={false}
       depsStart={Object {}}
       params={Object {}}
-      setDatasourceId={[Function]}
+      selectedDataSource={
+        Object {
+          "id": "test",
+        }
+      }
+      setDataSource={[MockFunction]}
     />
     <EuiPageHeader>
       <EuiTitle

@@ -30,10 +30,10 @@ export interface PermissionListingItem {
 }
 
 export async function fetchActionGroups(http: HttpStart): Promise<DataObject<ActionGroupItem>> {
-  const actiongroups = await httpGet<ObjectsMessage<ActionGroupItem>>(
+  const actiongroups = await httpGet<ObjectsMessage<ActionGroupItem>>({
     http,
-    API_ENDPOINT_ACTIONGROUPS
-  );
+    url: API_ENDPOINT_ACTIONGROUPS,
+  });
   return actiongroups.data;
 }
 
@@ -98,6 +98,6 @@ export async function updateActionGroup(
 
 export async function requestDeleteActionGroups(http: HttpStart, groups: string[]) {
   for (const group of groups) {
-    await httpDelete(http, getResourceUrl(API_ENDPOINT_ACTIONGROUPS, group));
+    await httpDelete({ http, url: getResourceUrl(API_ENDPOINT_ACTIONGROUPS, group) });
   }
 }

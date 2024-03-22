@@ -23,6 +23,6 @@ export async function updateAuditLogging(http: HttpStart, updateObject: AuditLog
 }
 
 export async function getAuditLogging(http: HttpStart): Promise<AuditLoggingSettings> {
-  const rawConfiguration = await httpGet<any>(http, API_ENDPOINT_AUDITLOGGING);
+  const rawConfiguration = await httpGet<any>({ http, url: API_ENDPOINT_AUDITLOGGING });
   return rawConfiguration?.config;
 }

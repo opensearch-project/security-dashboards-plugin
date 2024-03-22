@@ -13,17 +13,30 @@
  *   permissions and limitations under the License.
  */
 
-import { HttpStart, HttpHandler } from 'opensearch-dashboards/public';
+import { HttpStart, HttpHandler, HttpFetchQuery } from 'opensearch-dashboards/public';
 
-export async function request<T>(requestFunc: HttpHandler, url: string, body?: object): Promise<T> {
-  if (body) {
-    return (await requestFunc(url, { body: JSON.stringify(body) })) as T;
-  }
-  return (await requestFunc(url)) as T;
+interface RequestType {
+  http: HttpStart;
+  url: string;
+  body?: object;
+  query?: HttpFetchQuery;
 }
 
-export async function httpGet<T>(http: HttpStart, url: string): Promise<T> {
-  return await request<T>(http.get, url);
+export async function request<T>(
+  requestFunc: HttpHandler,
+  url: string,
+  body?: object,
+  query?: HttpFetchQuery
+): Promise<T> {
+  if (body) {
+    return (await requestFunc(url, { body: JSON.stringify(body), query })) as T;
+  }
+  return (await requestFunc(url, { query })) as T;
+}
+
+export async function httpGet<T>(params: RequestType): Promise<T> {
+  const { http, url, body, query } = params;
+  return await request<T>(http.get, url, body, query);
 }
 
 export async function httpPost<T>(http: HttpStart, url: string, body?: object): Promise<T> {
@@ -34,8 +47,9 @@ export async function httpPut<T>(http: HttpStart, url: string, body?: object): P
   return await request<T>(http.put, url, body);
 }
 
-export async function httpDelete<T>(http: HttpStart, url: string, body?: object): Promise<T> {
-  return await request<T>(http.delete, url, body);
+export async function httpDelete<T>(params: RequestType): Promise<T> {
+  const { http, url, body, query } = params;
+  return await request<T>(http.delete, url, body, query);
 }
 
 /**

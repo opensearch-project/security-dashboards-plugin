@@ -23,6 +23,6 @@ export async function updateTenancyConfig(http: HttpStart, updateObject: Tenancy
 }
 
 export async function getTenancyConfig(http: HttpStart): Promise<TenancyConfigSettings> {
-  const rawConfiguration = await httpGet<any>(http, API_ENDPOINT_TENANCY_CONFIGS);
+  const rawConfiguration = await httpGet<any>({ http, url: API_ENDPOINT_TENANCY_CONFIGS });
   return rawConfiguration;
 }

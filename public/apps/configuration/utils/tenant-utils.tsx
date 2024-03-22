@@ -64,7 +64,7 @@ export const PRIVATE_USER_DICT: { [key: string]: string } = {
 };
 
 export async function fetchTenants(http: HttpStart): Promise<DataObject<Tenant>> {
-  return (await httpGet<ObjectsMessage<Tenant>>(http, API_ENDPOINT_TENANTS)).data;
+  return (await httpGet<ObjectsMessage<Tenant>>({ http, url: API_ENDPOINT_TENANTS })).data;
 }
 
 export async function fetchTenantNameList(http: HttpStart): Promise<string[]> {
@@ -89,7 +89,7 @@ export function transformTenantData(rawTenantData: DataObject<Tenant>): Tenant[]
 }
 
 export async function fetchCurrentTenant(http: HttpStart): Promise<string> {
-  return await httpGet<string>(http, API_ENDPOINT_MULTITENANCY);
+  return await httpGet<string>({ http, url: API_ENDPOINT_MULTITENANCY });
 }
 
 export async function updateTenant(
@@ -111,7 +111,7 @@ export async function updateTenancyConfiguration(
 
 export async function requestDeleteTenant(http: HttpStart, tenants: string[]) {
   for (const tenant of tenants) {
-    await httpDelete(http, getResourceUrl(API_ENDPOINT_TENANTS, tenant));
+    await httpDelete({ http, url: getResourceUrl(API_ENDPOINT_TENANTS, tenant) });
   }
 }
 

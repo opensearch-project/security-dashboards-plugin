@@ -17,11 +17,9 @@ import { HttpStart } from 'opensearch-dashboards/public';
 import { API_ENDPOINT_DASHBOARDSINFO } from '../../common';
 import { httpGet, httpGetWithIgnores } from '../apps/configuration/utils/request-utils';
 import { DashboardsInfo } from '../types';
-import { AccountInfo } from '../apps/account/types';
-import { API_ENDPOINT_ACCOUNT_INFO } from '../apps/account/constants';
 
 export async function getDashboardsInfo(http: HttpStart) {
-  return await httpGet<DashboardsInfo>(http, API_ENDPOINT_DASHBOARDSINFO);
+  return await httpGet<DashboardsInfo>({ http, url: API_ENDPOINT_DASHBOARDSINFO });
 }
 
 export async function getDashboardsInfoSafe(http: HttpStart): Promise<DashboardsInfo | undefined> {

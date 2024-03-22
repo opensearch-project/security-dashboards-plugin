@@ -26,8 +26,9 @@ import {
   EuiTitle,
   EuiGlobalToastList,
 } from '@elastic/eui';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { FormattedMessage } from '@osd/i18n/react';
+import { DataSourceOption } from '../../../../../../src/plugins/data_source_management/public/components/data_source_selector/data_source_selector';
 import { AppDependencies } from '../../types';
 import { buildHashUrl } from '../utils/url-builder';
 import { Action } from '../types';
@@ -37,7 +38,7 @@ import { ExternalLink, ExternalLinkButton } from '../utils/display-utils';
 import { httpDelete } from '../utils/request-utils';
 import { createSuccessToast, createUnknownErrorToast, useToastState } from '../utils/toast-utils';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
-import { Cluster } from '../../../types';
+import { DataSourceContext } from '../app-router';
 
 const addBackendStep = {
   title: 'Add backends',
@@ -160,7 +161,7 @@ const setOfSteps = [
   },
 ];
 
-export function getClusterInfoIfEnabled(dataSourceEnabled: boolean, cluster: Cluster) {
+export function getClusterInfoIfEnabled(dataSourceEnabled: boolean, cluster: DataSourceOption) {
   if (dataSourceEnabled) {
     return `for ${cluster.label || 'Local cluster'}`;
   }
@@ -169,7 +170,7 @@ export function getClusterInfoIfEnabled(dataSourceEnabled: boolean, cluster: Clu
 
 export function GetStarted(props: AppDependencies) {
   const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
-  const [dataSource, setDataSource] = useState<Cluster>({ id: '', label: '' });
+  const { dataSource, setDataSource } = useContext(DataSourceContext)!;
 
   let steps;
   if (props.config.ui.backend_configurable) {
@@ -185,7 +186,8 @@ export function GetStarted(props: AppDependencies) {
         <SecurityPluginTopNavMenu
           {...props}
           dataSourcePickerReadOnly={false}
-          setDatasourceId={setDataSource}
+          setDataSource={setDataSource}
+          selectedDataSource={dataSource}
         />
         <EuiPageHeader>
           <EuiTitle size="l">
@@ -253,8 +255,12 @@ export function GetStarted(props: AppDependencies) {
               data-test-subj="purge-cache"
               onClick={async () => {
                 try {
-                  await httpDelete(props.coreStart.http, API_ENDPOINT_CACHE, {
-                    dataSourceId: dataSource.id,
+                  await httpDelete({
+                    http: props.coreStart.http,
+                    url: API_ENDPOINT_CACHE,
+                    query: {
+                      dataSourceId: dataSource.id,
+                    },
                   });
                   addToast(
                     createSuccessToast(

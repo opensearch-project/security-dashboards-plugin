@@ -425,6 +425,7 @@ describe('start OpenSearch Dashboards server', () => {
 
 describe('start OpenSearch Dashboards server multi datasources enabled', () => {
   let root: Root;
+  let dataSourceId: string;
 
   beforeAll(async () => {
     root = osdTestServer.createRootWithSettings(
@@ -455,33 +456,6 @@ describe('start OpenSearch Dashboards server multi datasources enabled', () => {
     await root.setup();
     await root.start();
     console.log('Started OpenSearchDashboards server');
-  });
-
-  afterAll(async () => {
-    // shutdown OpenSearchDashboards server
-    await root.shutdown();
-  });
-
-  it('delete cache', async () => {
-    const deleteCacheResponseWrongDataSource = await osdTestServer.request
-      .delete(root, '/api/v1/configuration/cache')
-      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
-      .send({ dataSourceId: 'test' });
-
-    // Calling clear cache on a datasource that does not exist
-    expect(deleteCacheResponseWrongDataSource.status).not.toEqual(200);
-    expect(deleteCacheResponseWrongDataSource.text).toContain(
-      'Data Source Error: Saved object [data-source/test] not found'
-    );
-
-    const deleteCacheResponseEmptyDataSource = await osdTestServer.request
-      .delete(root, '/api/v1/configuration/cache')
-      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
-      .send({ dataSourceId: '' });
-
-    // Calling clear cache on an empty datasource calls local cluster
-    expect(deleteCacheResponseEmptyDataSource.status).toEqual(200);
-
     const createDataSource = await osdTestServer.request
       .post(root, '/api/saved_objects/data-source')
       .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
@@ -499,13 +473,63 @@ describe('start OpenSearch Dashboards server multi datasources enabled', () => {
           },
         },
       });
+    dataSourceId = createDataSource.body.id;
+  });
+
+  afterAll(async () => {
+    // shutdown OpenSearchDashboards server
+    await root.shutdown();
+  });
+
+  it('delete cache', async () => {
+    const deleteCacheResponseWrongDataSource = await osdTestServer.request
+      .delete(root, '/api/v1/configuration/cache?dataSourceId=test')
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
+
+    // Calling clear cache on a datasource that does not exist
+    expect(deleteCacheResponseWrongDataSource.status).not.toEqual(200);
+    expect(deleteCacheResponseWrongDataSource.text).toContain(
+      'Data Source Error: Saved object [data-source/test] not found'
+    );
+
+    const deleteCacheResponseEmptyDataSource = await osdTestServer.request
+      .delete(root, '/api/v1/configuration/cache')
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
+
+    // Calling clear cache on an empty datasource calls local cluster
+    expect(deleteCacheResponseEmptyDataSource.status).toEqual(200);
 
     const deleteCacheResponseRemoteDataSource = await osdTestServer.request
-      .delete(root, '/api/v1/configuration/cache')
-      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
-      .send({ dataSourceId: createDataSource.body.id });
+      .delete(root, `/api/v1/configuration/cache?dataSourceId=${dataSourceId}`)
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
 
     // Calling clear cache on an empty datasource calls local cluster
     expect(deleteCacheResponseRemoteDataSource.status).toEqual(200);
+  });
+
+  it('Gets auth page correctly', async () => {
+    const getAuthResponseWrongDataSource = await osdTestServer.request
+      .get(root, '/api/v1/configuration/securityconfig?dataSourceId=test')
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
+
+    // Getting auth info on a datasource that does not exist
+    expect(getAuthResponseWrongDataSource.status).not.toEqual(200);
+    expect(getAuthResponseWrongDataSource.text).toContain(
+      'Data Source Error: Saved object [data-source/test] not found'
+    );
+
+    const getAuthResponseEmptyDataSource = await osdTestServer.request
+      .get(root, '/api/v1/configuration/securityconfig?dataSourceId=')
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
+
+    // Getting auth info on an empty datasource calls local cluster
+    expect(getAuthResponseEmptyDataSource.status).toEqual(200);
+
+    const getAuthResponseRemoteDataSource = await osdTestServer.request
+      .get(root, `/api/v1/configuration/securityconfig?dataSourceId=${dataSourceId}`)
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
+
+    // Getting auth info on an empty datasource calls local cluster
+    expect(getAuthResponseRemoteDataSource.status).toEqual(200);
   });
 });
