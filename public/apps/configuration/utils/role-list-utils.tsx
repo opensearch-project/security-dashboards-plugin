@@ -106,5 +106,5 @@ export function fetchRole(http: HttpStart): Promise<any> {
 
 // TODO: have a type definition for it
 export function fetchRoleMapping(http: HttpStart): Promise<any> {
-  return httpGet<any>(http, API_ENDPOINT_ROLESMAPPING);
+  return httpGet<any>({ http, url: API_ENDPOINT_ROLESMAPPING });
 }
