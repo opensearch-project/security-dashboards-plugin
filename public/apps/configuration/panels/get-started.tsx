@@ -255,8 +255,12 @@ export function GetStarted(props: AppDependencies) {
               data-test-subj="purge-cache"
               onClick={async () => {
                 try {
-                  await httpDelete(props.coreStart.http, API_ENDPOINT_CACHE, undefined, {
-                    dataSourceId: dataSource.id,
+                  await httpDelete({
+                    http: props.coreStart.http,
+                    url: API_ENDPOINT_CACHE,
+                    query: {
+                      dataSourceId: dataSource.id,
+                    },
                   });
                   addToast(
                     createSuccessToast(

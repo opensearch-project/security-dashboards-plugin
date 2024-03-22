@@ -39,7 +39,7 @@ export function transformUserData(rawData: DataObject<InternalUser>): InternalUs
 
 export async function requestDeleteUsers(http: HttpStart, users: string[]) {
   for (const user of users) {
-    await httpDelete(http, getResourceUrl(API_ENDPOINT_INTERNALUSERS, user));
+    await httpDelete({ http, url: getResourceUrl(API_ENDPOINT_INTERNALUSERS, user) });
   }
 }
 
@@ -52,7 +52,7 @@ async function getUserListRaw(
     ENDPOINT = API_ENDPOINT_SERVICEACCOUNTS;
   }
 
-  return await httpGet<ObjectsMessage<InternalUser>>(http, ENDPOINT);
+  return await httpGet<ObjectsMessage<InternalUser>>({ http, url: ENDPOINT });
 }
 
 export async function getUserList(

@@ -15,6 +15,13 @@
 
 import { HttpStart, HttpHandler, HttpFetchQuery } from 'opensearch-dashboards/public';
 
+interface RequestType {
+  http: HttpStart;
+  url: string;
+  body?: object;
+  query?: HttpFetchQuery;
+}
+
 export async function request<T>(
   requestFunc: HttpHandler,
   url: string,
@@ -27,12 +34,8 @@ export async function request<T>(
   return (await requestFunc(url, { query })) as T;
 }
 
-export async function httpGet<T>(
-  http: HttpStart,
-  url: string,
-  body?: object,
-  query?: HttpFetchQuery
-): Promise<T> {
+export async function httpGet<T>(params: RequestType): Promise<T> {
+  const { http, url, body, query } = params;
   return await request<T>(http.get, url, body, query);
 }
 
@@ -44,14 +47,8 @@ export async function httpPut<T>(http: HttpStart, url: string, body?: object): P
   return await request<T>(http.put, url, body);
 }
 
-export async function httpDelete<T>(
-  http: HttpStart,
-  url: string,
-  body?: object,
-  query?: HttpFetchQuery
-): Promise<T> {
-  console.log(query);
-  console.log(body);
+export async function httpDelete<T>(params: RequestType): Promise<T> {
+  const { http, url, body, query } = params;
   return await request<T>(http.delete, url, body, query);
 }
 

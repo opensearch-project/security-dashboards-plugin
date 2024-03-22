@@ -26,7 +26,7 @@ import { httpGet, httpGetWithIgnores, httpPost } from '../configuration/utils/re
 import { setShouldShowTenantPopup } from '../../utils/storage-utils';
 
 export function fetchAccountInfo(http: HttpStart): Promise<AccountInfo> {
-  return httpGet(http, API_ENDPOINT_ACCOUNT_INFO);
+  return httpGet({ http, url: API_ENDPOINT_ACCOUNT_INFO });
 }
 
 export async function fetchAccountInfoSafe(http: HttpStart): Promise<AccountInfo | undefined> {

@@ -45,5 +45,5 @@ export function interceptError(logoutUrl: string, thisWindow: Window): any {
 }
 
 export async function fetchCurrentAuthType(http: HttpStart): Promise<any> {
-  return await httpGet(http, API_ENDPOINT_AUTHTYPE);
+  return await httpGet({ http, url: API_ENDPOINT_AUTHTYPE });
 }

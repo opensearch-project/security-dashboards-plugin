@@ -94,14 +94,14 @@ export function buildSearchFilterOptions(roleList: any[], attrName: string): Arr
 // Submit request to delete given roles. No error handling in this function.
 export async function requestDeleteRoles(http: HttpStart, roles: string[]) {
   for (const role of roles) {
-    await httpDelete(http, getResourceUrl(API_ENDPOINT_ROLES, role));
+    await httpDelete({ http, url: getResourceUrl(API_ENDPOINT_ROLES, role) });
     await httpDeleteWithIgnores(http, getResourceUrl(API_ENDPOINT_ROLESMAPPING, role), [404]);
   }
 }
 
 // TODO: have a type definition for it
 export function fetchRole(http: HttpStart): Promise<any> {
-  return httpGet<any>(http, API_ENDPOINT_ROLES);
+  return httpGet<any>({ http, url: API_ENDPOINT_ROLES });
 }
 
 // TODO: have a type definition for it

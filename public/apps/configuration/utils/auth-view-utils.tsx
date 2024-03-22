@@ -17,7 +17,7 @@ import { HttpFetchQuery, HttpStart } from 'opensearch-dashboards/public';
 import { API_ENDPOINT_SECURITYCONFIG } from '../constants';
 import { httpGet } from './request-utils';
 
-export async function getSecurityConfig(http: HttpStart, body?: object, query?: HttpFetchQuery) {
-  const rawSecurityConfig = await httpGet<any>(http, API_ENDPOINT_SECURITYCONFIG, body, query);
+export async function getSecurityConfig(http: HttpStart, query?: HttpFetchQuery) {
+  const rawSecurityConfig = await httpGet<any>({ http, url: API_ENDPOINT_SECURITYCONFIG, query });
   return rawSecurityConfig.data.config.dynamic;
 }
