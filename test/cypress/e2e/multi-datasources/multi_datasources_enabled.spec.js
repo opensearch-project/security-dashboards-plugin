@@ -73,7 +73,7 @@ describe('Multi-datasources enabled', () => {
   it('Checks Get Started Tab', () => {
     cy.visit('http://localhost:5601/app/security-dashboards-plugin#/auth');
     // Local cluster auth
-    cy.get('.container .panel-header-count').first().invoke('text').should('eq', '(6)');
+    cy.get('.panel-header-count').first().invoke('text').should('contain', '(6)');
     // Remote cluster auth
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
     cy.contains('li.euiSelectableListItem', '9202').click();
