@@ -17,10 +17,7 @@ import { EuiBreadcrumb, EuiPage, EuiPageBody, EuiPageSideBar } from '@elastic/eu
 import { flow, partial } from 'lodash';
 import React, { createContext, useState } from 'react';
 import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
-import {
-  DataSourceOption,
-  LocalCluster,
-} from '../../../../../src/plugins/data_source_management/public/components/data_source_selector/data_source_selector';
+import { DataSourceOption } from '../../../../../src/plugins/data_source_management/public/components/data_source_selector/data_source_selector';
 import { AppDependencies } from '../types';
 import { AuditLogging } from './panels/audit-logging/audit-logging';
 import { AuditLoggingEditSettings } from './panels/audit-logging/audit-logging-edit-settings';
@@ -156,7 +153,11 @@ export const DataSourceContext = createContext<DataSourceContextType | null>(nul
 
 export function AppRouter(props: AppDependencies) {
   const setGlobalBreadcrumbs = flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs);
-  const [dataSource, setDataSource] = useState<DataSourceOption>(LocalCluster);
+  const [dataSource, setDataSource] = useState<DataSourceOption>({
+    id: '',
+    label: 'Local cluster',
+    checked: 'on',
+  });
 
   return (
     <DataSourceContext.Provider value={{ dataSource, setDataSource }}>

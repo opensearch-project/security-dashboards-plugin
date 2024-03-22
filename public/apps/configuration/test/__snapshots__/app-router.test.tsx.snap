@@ -5,6 +5,7 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
   value={
     Object {
       "dataSource": Object {
+        "checked": "on",
         "id": "",
         "label": "Local cluster",
       },
