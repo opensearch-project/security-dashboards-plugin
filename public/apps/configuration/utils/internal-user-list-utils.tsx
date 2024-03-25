@@ -43,7 +43,7 @@ export async function requestDeleteUsers(http: HttpStart, users: string[], query
   }
 }
 
-async function getUserListRaw(
+export async function getUserListRaw(
   http: HttpStart,
   userType: string,
   query?: HttpFetchQuery
