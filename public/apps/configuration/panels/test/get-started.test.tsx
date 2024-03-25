@@ -175,11 +175,5 @@ describe('Get started (landing page)', () => {
       await button.props().onClick(); // Simulate button click
       expect(ToastUtils.createSuccessToast).toHaveBeenCalledTimes(1);
     });
-
-    it('Tests the GetClusterDescription helper function', () => {
-      expect(getClusterInfoIfEnabled(false, { id: 'blah', label: 'blah' })).toBe('');
-      expect(getClusterInfoIfEnabled(true, { id: '', label: '' })).toBe('for Local cluster');
-      expect(getClusterInfoIfEnabled(true, { id: 'test', label: 'test' })).toBe('for test');
-    });
   });
 });

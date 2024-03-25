@@ -257,7 +257,12 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
         if (request.params.resourceName === ResourceType.serviceAccounts.toLowerCase()) {
           esResp = await client.callAsCurrentUser('opensearch_security.listServiceAccounts');
         } else if (request.params.resourceName === 'internalaccounts') {
-          esResp = await client.callAsCurrentUser('opensearch_security.listInternalAccounts');
+          esResp = await wrapRouteWithDataSource(
+            dataSourceEnabled,
+            context,
+            request,
+            'opensearch_security.listInternalAccounts'
+          );
         } else {
           esResp = await wrapRouteWithDataSource(
             dataSourceEnabled,
@@ -359,6 +364,9 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
           resourceName: schema.string(),
           id: schema.string(),
         }),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     async (
@@ -366,13 +374,17 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
       request,
       response
     ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
-      const client = context.security_plugin.esClient.asScoped(request);
-      let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opensearch_security.getResource', {
-          resourceName: request.params.resourceName,
-          id: request.params.id,
-        });
+        const esResp = await wrapRouteWithDataSource(
+          dataSourceEnabled,
+          context,
+          request,
+          'opensearch_security.getResource',
+          {
+            resourceName: request.params.resourceName,
+            id: request.params.id,
+          }
+        );
         return response.ok({ body: esResp[request.params.id] });
       } catch (error) {
         return errorResponse(response, error);
@@ -393,6 +405,9 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
             minLength: 1,
           }),
         }),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     async (
@@ -400,13 +415,17 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
       request,
       response
     ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
-      const client = context.security_plugin.esClient.asScoped(request);
-      let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opensearch_security.deleteResource', {
-          resourceName: request.params.resourceName,
-          id: request.params.id,
-        });
+        const esResp = await wrapRouteWithDataSource(
+          dataSourceEnabled,
+          context,
+          request,
+          'opensearch_security.deleteResource',
+          {
+            resourceName: request.params.resourceName,
+            id: request.params.id,
+          }
+        );
         return response.ok({
           body: {
             message: esResp.message,
@@ -436,6 +455,9 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
           resourceName: schema.string(),
         }),
         body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     async (
@@ -448,13 +470,17 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
       } catch (error) {
         return response.badRequest({ body: error });
       }
-      const client = context.security_plugin.esClient.asScoped(request);
-      let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opensearch_security.saveResourceWithoutId', {
-          resourceName: request.params.resourceName,
-          body: request.body,
-        });
+        const esResp = await wrapRouteWithDataSource(
+          dataSourceEnabled,
+          context,
+          request,
+          'opensearch_security.saveResourceWithoutId',
+          {
+            resourceName: request.params.resourceName,
+            body: request.body,
+          }
+        );
         return response.ok({
           body: {
             message: esResp.message,
@@ -480,6 +506,9 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
           }),
         }),
         body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     async (
@@ -492,14 +521,18 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
       } catch (error) {
         return response.badRequest({ body: error });
       }
-      const client = context.security_plugin.esClient.asScoped(request);
-      let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opensearch_security.saveResource', {
-          resourceName: request.params.resourceName,
-          id: request.params.id,
-          body: request.body,
-        });
+        const esResp = await wrapRouteWithDataSource(
+          dataSourceEnabled,
+          context,
+          request,
+          'opensearch_security.saveResource',
+          {
+            resourceName: request.params.resourceName,
+            id: request.params.id,
+            body: request.body,
+          }
+        );
         return response.ok({
           body: {
             message: esResp.message,

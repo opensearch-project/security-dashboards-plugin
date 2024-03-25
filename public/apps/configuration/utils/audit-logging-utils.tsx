@@ -19,7 +19,7 @@ import { API_ENDPOINT_AUDITLOGGING, API_ENDPOINT_AUDITLOGGING_UPDATE } from '../
 import { httpGet, httpPost } from './request-utils';
 
 export async function updateAuditLogging(http: HttpStart, updateObject: AuditLoggingSettings) {
-  return await httpPost(http, API_ENDPOINT_AUDITLOGGING_UPDATE, updateObject);
+  return await httpPost({ http, url: API_ENDPOINT_AUDITLOGGING_UPDATE, body: updateObject });
 }
 
 export async function getAuditLogging(http: HttpStart): Promise<AuditLoggingSettings> {

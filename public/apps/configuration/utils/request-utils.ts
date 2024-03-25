@@ -39,8 +39,9 @@ export async function httpGet<T>(params: RequestType): Promise<T> {
   return await request<T>(http.get, url, body, query);
 }
 
-export async function httpPost<T>(http: HttpStart, url: string, body?: object): Promise<T> {
-  return await request<T>(http.post, url, body);
+export async function httpPost<T>(params: RequestType): Promise<T> {
+  const { http, url, body, query } = params;
+  return await request<T>(http.post, url, body, query);
 }
 
 export async function httpPut<T>(http: HttpStart, url: string, body?: object): Promise<T> {

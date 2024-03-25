@@ -39,6 +39,7 @@ import { httpDelete } from '../utils/request-utils';
 import { createSuccessToast, createUnknownErrorToast, useToastState } from '../utils/toast-utils';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
 import { DataSourceContext } from '../app-router';
+import { getClusterInfoIfEnabled, createDataSourceQuery } from '../../../utils/datasource-utils';
 
 const addBackendStep = {
   title: 'Add backends',
@@ -161,13 +162,6 @@ const setOfSteps = [
   },
 ];
 
-export function getClusterInfoIfEnabled(dataSourceEnabled: boolean, cluster: DataSourceOption) {
-  if (dataSourceEnabled) {
-    return `for ${cluster.label || 'Local cluster'}`;
-  }
-  return '';
-}
-
 export function GetStarted(props: AppDependencies) {
   const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
@@ -258,9 +252,7 @@ export function GetStarted(props: AppDependencies) {
                   await httpDelete({
                     http: props.coreStart.http,
                     url: API_ENDPOINT_CACHE,
-                    query: {
-                      dataSourceId: dataSource.id,
-                    },
+                    query: createDataSourceQuery(dataSource.id),
                   });
                   addToast(
                     createSuccessToast(

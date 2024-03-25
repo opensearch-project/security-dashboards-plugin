@@ -37,6 +37,10 @@ jest.mock('../../utils/context-menu', () => ({
     .fn()
     .mockImplementation((buttonText, buttonProps, children) => [children, jest.fn()]),
 }));
+jest.mock('react', () => ({
+  ...jest.requireActual('react'),
+  useContext: jest.fn().mockReturnValue({ dataSource: { id: 'test' }, setDataSource: jest.fn() }), // Mock the useContext hook to return dummy datasource and setdatasource function
+}));
 
 import { getAuthInfo } from '../../../../utils/auth-info-utils';
 import { buildHashUrl } from '../../utils/url-builder';

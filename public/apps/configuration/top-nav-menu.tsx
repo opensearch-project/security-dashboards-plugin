@@ -32,6 +32,7 @@ export const SecurityPluginTopNavMenu = (props: TopNavMenuProps) => {
     dataSourceManagement,
     setDataSource,
     selectedDataSource,
+    dataSourcePickerReadOnly,
   } = props;
   const { setHeaderActionMenu } = params;
   const DataSourceMenu = dataSourceManagement?.ui.DataSourceMenu;
@@ -45,6 +46,7 @@ export const SecurityPluginTopNavMenu = (props: TopNavMenuProps) => {
       setMenuMountPoint={setHeaderActionMenu}
       notifications={coreStart.notifications}
       dataSourceCallBackFunc={setDataSource}
+      disableDataSourceSelectable={dataSourcePickerReadOnly}
       // Single select for now
       selectedOption={[selectedDataSource]}
       hideLocalCluster={false}

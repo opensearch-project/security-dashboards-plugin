@@ -93,7 +93,11 @@ export async function updateActionGroup(
   groupName: string,
   updateObject: ActionGroupUpdate
 ): Promise<ActionGroupUpdate> {
-  return await httpPost(http, getResourceUrl(API_ENDPOINT_ACTIONGROUPS, groupName), updateObject);
+  return await httpPost({
+    http,
+    url: getResourceUrl(API_ENDPOINT_ACTIONGROUPS, groupName),
+    body: updateObject,
+  });
 }
 
 export async function requestDeleteActionGroups(http: HttpStart, groups: string[]) {

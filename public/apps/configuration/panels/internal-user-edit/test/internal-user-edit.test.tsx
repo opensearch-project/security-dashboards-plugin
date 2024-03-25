@@ -31,6 +31,10 @@ jest.mock('../../../utils/toast-utils', () => ({
   createUnknownErrorToast: jest.fn(),
   useToastState: jest.fn().mockReturnValue([[], jest.fn(), jest.fn()]),
 }));
+jest.mock('react', () => ({
+  ...jest.requireActual('react'),
+  useContext: jest.fn().mockReturnValue({ dataSource: { id: 'test' }, setDataSource: jest.fn() }), // Mock the useContext hook to return dummy datasource and setdatasource function
+}));
 
 describe('Internal user edit', () => {
   const sampleUsername = 'user1';
@@ -79,7 +83,9 @@ describe('Internal user edit', () => {
       />
     );
 
-    expect(getUserDetail).toBeCalledWith(mockCoreStart.http, sampleUsername);
+    expect(getUserDetail).toBeCalledWith(mockCoreStart.http, sampleUsername, {
+      dataSourceId: 'test',
+    });
   });
 
   it('should not submit if password is empty on creation', () => {
