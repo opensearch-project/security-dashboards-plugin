@@ -142,14 +142,20 @@ export class SecurityPlugin
     defineRoutes(router);
     defineAuthTypeRoutes(router, config);
 
+    // multitenancyinfo is application level
+    const dashboardsInfo = await esClient.callAsInternalUser(
+      'opensearch_security.multitenancyinfo'
+    );
+
+    if (workspace && config.multitenancy?.enabled && dashboardsInfo.multitenancy_enabled) {
+      this.logger.error(
+        'Both workspace and multi-tenancy features are enabled, only one of them can be enabled at the same time.'
+      );
+      process.exit(1);
+    }
+
     // set up multi-tenant routes
     if (config.multitenancy?.enabled) {
-      if (workspace) {
-        this.logger.error(
-          'Both workspace and multi-tenancy features are enabled, only one of them can be enabled at the same time.'
-        );
-        process.exit(1);
-      }
       setupMultitenantRoutes(router, securitySessionStorageFactory, this.securityClient);
     }
 
