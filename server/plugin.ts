@@ -15,6 +15,7 @@
 
 import { first } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { CriticalError } from '../../../src/core/server/errors';
 import {
   PluginInitializerContext,
   CoreSetup,
@@ -148,10 +149,10 @@ export class SecurityPlugin
     );
 
     if (workspace && config.multitenancy?.enabled && dashboardsInfo.multitenancy_enabled) {
-      this.logger.error(
-        'Both workspace and multi-tenancy features are enabled, only one of them can be enabled at the same time.'
-      );
-      process.exit(1);
+      const message =
+        'Both workspace and multi-tenancy features are enabled, only one of them can be enabled at the same time.';
+      this.logger.error(message);
+      throw new CriticalError(message, 'InvalidConfig', 64);
     }
 
     // set up multi-tenant routes
