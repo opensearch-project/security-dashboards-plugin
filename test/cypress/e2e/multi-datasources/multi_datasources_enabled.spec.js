@@ -70,7 +70,7 @@ describe('Multi-datasources enabled', () => {
     cy.clearLocalStorage();
   });
 
-  it.skip('Checks Get Started Tab', () => {
+  it('Checks Get Started Tab', () => {
     cy.visit('http://localhost:5601/app/security-dashboards-plugin#/getstarted');
     // Local cluster purge cache
     cy.get('[data-test-subj="purge-cache"]').click();
@@ -85,7 +85,7 @@ describe('Multi-datasources enabled', () => {
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').contains('9202');
   });
 
-  it.skip('Checks Auth Tab', () => {
+  it('Checks Auth Tab', () => {
     cy.visit('http://localhost:5601/app/security-dashboards-plugin#/auth');
     // Local cluster auth
     cy.get('.panel-header-count').first().invoke('text').should('contain', '(6)');
@@ -103,7 +103,7 @@ describe('Multi-datasources enabled', () => {
     // Create an internal user in the remote cluster
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
     // Increase timeout for this since it is immediately after page load
-    cy.contains('li.euiSelectableListItem', '9202', { timeout: 1000 }).click();
+    cy.contains('li.euiSelectableListItem', '9202', { timeout: 3000 }).click();
     cy.get('[data-test-subj="create-user"]').click();
     cy.get('[data-test-subj="name-text"]').focus().type('9202-user');
     cy.get('[data-test-subj="password"]').focus().type('myStrongPassword123!');
