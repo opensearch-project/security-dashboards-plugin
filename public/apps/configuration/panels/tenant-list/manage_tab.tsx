@@ -68,7 +68,7 @@ import { useContextMenuState } from '../../utils/context-menu';
 import { generateResourceName } from '../../utils/resource-utils';
 import { DocLinks } from '../../constants';
 import { TenantList } from './tenant-list';
-import { getBreadcrumbs, Route_MAP } from '../../app-router';
+import { getBreadcrumbs } from '../../app-router';
 import { buildUrl } from '../../utils/url-builder';
 import { CrossPageToast } from '../../cross-page-toast';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';

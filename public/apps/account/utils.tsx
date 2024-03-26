@@ -14,12 +14,7 @@
  */
 
 import { HttpStart } from 'opensearch-dashboards/public';
-import {
-  API_AUTH_LOGOUT,
-  LOGIN_PAGE_URI,
-  OPENID_AUTH_LOGOUT,
-  SAML_AUTH_LOGOUT,
-} from '../../../common';
+import { API_AUTH_LOGOUT, OPENID_AUTH_LOGOUT, SAML_AUTH_LOGOUT } from '../../../common';
 import { API_ENDPOINT_ACCOUNT_INFO } from './constants';
 import { AccountInfo } from './types';
 import { httpGet, httpGetWithIgnores, httpPost } from '../configuration/utils/request-utils';
