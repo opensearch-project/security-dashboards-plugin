@@ -15,7 +15,6 @@
 
 import { ILegacyClusterClient, OpenSearchDashboardsRequest } from '../../../../src/core/server';
 import { User } from '../auth/user';
-import { getAuthInfo } from '../../public/utils/auth-info-utils';
 import { TenancyConfigSettings } from '../../public/apps/configuration/panels/tenancy-config/types';
 
 export class SecurityClient {

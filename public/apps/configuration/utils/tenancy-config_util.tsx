@@ -15,7 +15,7 @@
 
 import { HttpStart } from 'opensearch-dashboards/public';
 import { API_ENDPOINT_TENANCY_CONFIGS } from '../constants';
-import { httpGet, httpPut, httpPost } from './request-utils';
+import { httpGet, httpPost } from './request-utils';
 import { TenancyConfigSettings } from '../panels/tenancy-config/types';
 
 export async function updateTenancyConfig(http: HttpStart, updateObject: TenancyConfigSettings) {
