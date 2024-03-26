@@ -388,5 +388,5 @@ describe('JWT Expiry Tests', () => {
     jwtAuth.buildAuthHeaderFromCookie.mockRestore();
   });
 
-  /* @typescript-eslint/no-var-requires */
+  /* eslint-enable @typescript-eslint/no-var-requires */
 });
