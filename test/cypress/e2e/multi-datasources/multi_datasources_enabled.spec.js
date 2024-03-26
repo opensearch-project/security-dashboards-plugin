@@ -103,7 +103,7 @@ describe('Multi-datasources enabled', () => {
     // Create an internal user in the remote cluster
     cy.contains('h3', 'Internal users');
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
-    cy.contains('li.euiSelectableListItem', '9202').click();
+    cy.contains('li.euiSelectableListItem', '9202', { timeout: 5000 }).click();
     cy.get('[data-test-subj="create-user"]').click();
     cy.get('[data-test-subj="name-text"]').focus().type('9202-user');
     cy.get('[data-test-subj="password"]').focus().type('myStrongPassword123!');
