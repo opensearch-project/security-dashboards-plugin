@@ -98,6 +98,14 @@ export function ConfigureTab1(props: AppDependencies) {
         handleSave={async (updatedConfiguration1: TenancyConfigSettings) => {
           try {
             console.log('Calling API');
+            if (
+              updatedConfiguration1.multitenancy_enabled &&
+              props.coreStart.application.capabilities.workspaces.enabled
+            ) {
+              throw new Error(
+                'Multi-tenancy is not allowed to enable as workspace is enabled, you can disable workspace and retry.'
+              );
+            }
             await updateTenancyConfiguration(props.coreStart.http, updatedConfiguration1);
             setSaveChangesModal(null);
             setChangeInMultiTenancyOption(0);
@@ -349,6 +357,7 @@ export function ConfigureTab1(props: AppDependencies) {
                 label={'Enabled'}
                 checked={updatedConfiguration.multitenancy_enabled}
                 onChange={() => onSwitchChangeTenancyEnabled()}
+                disabled={props.coreStart.application.capabilities.workspaces.enabled}
               />
             </EuiDescribedFormGroup>
           </EuiPageContentHeaderSection>

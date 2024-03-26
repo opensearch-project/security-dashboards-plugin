@@ -15,6 +15,7 @@
 
 import { first } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { CriticalError } from '../../../src/core/server/errors';
 import {
   PluginInitializerContext,
   CoreSetup,
@@ -46,6 +47,7 @@ import { createMigrationOpenSearchClient } from '../../../src/core/server/saved_
 import { SecuritySavedObjectsClientWrapper } from './saved_objects/saved_objects_wrapper';
 import { addTenantParameterToResolvedShortLink } from './multitenancy/tenant_resolver';
 import { ReadonlyService } from './readonly/readonly_service';
+import { WorkspacePluginSetup } from '../../../src/plugins/workspace/server';
 
 export interface SecurityPluginRequestContext {
   logger: Logger;
@@ -68,7 +70,12 @@ declare module 'opensearch-dashboards/server' {
   }
 }
 
-export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPluginStart> {
+interface SecurityPluginSetupDeps {
+  workspace: WorkspacePluginSetup;
+}
+
+export class SecurityPlugin
+  implements Plugin<SecurityPluginSetup, SecurityPluginStart, SecurityPluginSetupDeps> {
   private readonly logger: Logger;
   // FIXME: keep an reference of admin client so that it can be used in start(), better to figureout a
   //        decent way to get adminClient in start. (maybe using getStartServices() from setup?)
@@ -83,7 +90,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     this.savedObjectClientWrapper = new SecuritySavedObjectsClientWrapper();
   }
 
-  public async setup(core: CoreSetup) {
+  public async setup(core: CoreSetup, { workspace }: SecurityPluginSetupDeps) {
     this.logger.debug('opendistro_security: Setup');
 
     const config$ = this.initializerContext.config.create<SecurityPluginConfigType>();
@@ -135,6 +142,18 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     // Register server side APIs
     defineRoutes(router);
     defineAuthTypeRoutes(router, config);
+
+    // multitenancyinfo is application level
+    const dashboardsInfo = await esClient.callAsInternalUser(
+      'opensearch_security.multitenancyinfo'
+    );
+
+    if (workspace && config.multitenancy?.enabled && dashboardsInfo.multitenancy_enabled) {
+      const message =
+        'Both workspace and multi-tenancy features are enabled, only one of them can be enabled at the same time.';
+      this.logger.error(message);
+      throw new CriticalError(message, 'InvalidConfig', 64);
+    }
 
     // set up multi-tenant routes
     if (config.multitenancy?.enabled) {
