@@ -49,7 +49,10 @@ export const SecurityPluginTopNavMenu = (props: TopNavMenuProps) => {
         showDataSourceSelectable: dataSourceEnabled,
         notifications: coreStart.notifications,
         activeOption: [selectedDataSource],
-        onSelectedDataSources: setDataSource,
+        onSelectedDataSources: (dataSources: DataSourceOption[]) => {
+          // single select for now
+          setDataSource(dataSources[0]);
+        },
       }}
     />
   ) : null;

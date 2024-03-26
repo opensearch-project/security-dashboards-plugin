@@ -85,7 +85,7 @@ describe('Multi-datasources enabled', () => {
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').contains('9202');
   });
 
-  it.skip('Checks Auth Tab', () => {
+  it('Checks Auth Tab', () => {
     cy.visit('http://localhost:5601/app/security-dashboards-plugin#/auth');
     // Local cluster auth
     cy.get('.panel-header-count').first().invoke('text').should('contain', '(6)');
