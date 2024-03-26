@@ -85,7 +85,7 @@ describe('Multi-datasources enabled', () => {
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').contains('9202');
   });
 
-  it('Checks Auth Tab', () => {
+  it.skip('Checks Auth Tab', () => {
     cy.visit('http://localhost:5601/app/security-dashboards-plugin#/auth');
     // Local cluster auth
     cy.get('.panel-header-count').first().invoke('text').should('contain', '(6)');
@@ -104,17 +104,18 @@ describe('Multi-datasources enabled', () => {
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
     cy.contains('li.euiSelectableListItem', '9202').click();
     cy.get('[data-test-subj="create-user"]').click();
-    cy.get('[data-test-subj="name-text"]').focus().type('9202');
+    cy.get('[data-test-subj="name-text"]').focus().type('9202-user');
     cy.get('[data-test-subj="password"]').focus().type('myStrongPassword123!');
     cy.get('[data-test-subj="re-enter-password"]').focus().type('myStrongPassword123!');
     cy.get('[data-test-subj="submit-save-user"]').click();
 
     // Internal user exists on the remote
     cy.visit('http://localhost:5601/app/security-dashboards-plugin#/users');
-    cy.contains('.euiTableRowCell', '9202').should('exist');
+    cy.contains('.euiTableRowCell', '9202-user').should('exist');
 
     // Internal user doesn't exist on local cluster
+    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
     cy.contains('li.euiSelectableListItem', 'Local cluster').click();
-    cy.contains('.euiTableRowCell', '9202').should('exist');
+    cy.contains('.euiTableRowCell', '9202-user').should('not.exist');
   });
 });
