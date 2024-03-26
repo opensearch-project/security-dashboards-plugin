@@ -101,9 +101,9 @@ describe('Multi-datasources enabled', () => {
   it('Checks Users Tab', () => {
     cy.visit('http://localhost:5601/app/security-dashboards-plugin#/users');
     // Create an internal user in the remote cluster
+    cy.contains('h3', 'Internal users');
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
-    // Increase timeout for this since it is immediately after page load
-    cy.contains('li.euiSelectableListItem', '9202', { timeout: 3000 }).click();
+    cy.contains('li.euiSelectableListItem', '9202').click();
     cy.get('[data-test-subj="create-user"]').click();
     cy.get('[data-test-subj="name-text"]').focus().type('9202-user');
     cy.get('[data-test-subj="password"]').focus().type('myStrongPassword123!');
