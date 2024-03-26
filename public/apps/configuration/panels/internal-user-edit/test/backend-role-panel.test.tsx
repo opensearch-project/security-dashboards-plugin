@@ -13,8 +13,8 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiFieldText, EuiFlexGroup, EuiFormRow } from '@elastic/eui';
-import { mount, shallow } from 'enzyme';
+import { EuiFieldText, EuiFlexGroup } from '@elastic/eui';
+import { shallow } from 'enzyme';
 import React from 'react';
 import {
   appendElementToArray,
