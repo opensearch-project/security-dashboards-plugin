@@ -114,7 +114,6 @@ describe('Multi-datasources enabled', () => {
     cy.contains('.euiTableRowCell', '9202').should('exist');
 
     // Internal user doesn't exist on local cluster
-    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
     cy.contains('li.euiSelectableListItem', 'Local cluster').click();
     cy.contains('.euiTableRowCell', '9202').should('exist');
   });
