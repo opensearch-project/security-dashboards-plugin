@@ -37,10 +37,25 @@ const createDataSource = () => {
 };
 
 const deleteAllDataSources = () => {
-  cy.visit('http://localhost:5601/app/management/opensearch-dashboards/dataSources');
-  cy.get('[data-test-subj="checkboxSelectAll"]').click();
-  cy.get('[data-test-subj="deleteDataSourceConnections"]').click();
-  cy.get('[data-test-subj="confirmModalConfirmButton"]').click();
+  cy.request(
+    'GET',
+    `${Cypress.config(
+      'baseUrl'
+    )}/api/saved_objects/_find?fields=id&fields=description&fields=title&per_page=10000&type=data-source`
+  ).then((resp) => {
+    if (resp && resp.body && resp.body.saved_objects) {
+      resp.body.saved_objects.map(({ id }) => {
+        cy.request({
+          method: 'DELETE',
+          url: `${Cypress.config('baseUrl')}/api/saved_objects/data-source/${id}`,
+          body: { force: false },
+          headers: {
+            'osd-xsrf': true,
+          },
+        });
+      });
+    }
+  });
 };
 
 describe('Multi-datasources enabled', () => {
@@ -78,5 +93,29 @@ describe('Multi-datasources enabled', () => {
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
     cy.contains('li.euiSelectableListItem', '9202').click();
     cy.get('.panel-header-count').first().invoke('text').should('contain', '(2)');
+    cy.visit('http://localhost:5601/app/security-dashboards-plugin#/users');
+    // Data source persisted across tabs
+    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').contains('9202');
+  });
+
+  it('Checks Users Tab', () => {
+    cy.visit('http://localhost:5601/app/security-dashboards-plugin#/users');
+    // Create an internal user in the remote cluster
+    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
+    cy.contains('li.euiSelectableListItem', '9202').click();
+    cy.get('[data-test-subj="create-user"]').click();
+    cy.get('[data-test-subj="name-text"]').focus().type('9202');
+    cy.get('[data-test-subj="password"]').focus().type('myStrongPassword123!');
+    cy.get('[data-test-subj="re-enter-password"]').focus().type('myStrongPassword123!');
+    cy.get('[data-test-subj="submit-save-user"]').click();
+
+    // Internal user exists on the remote
+    cy.visit('http://localhost:5601/app/security-dashboards-plugin#/users');
+    cy.contains('.euiTableRowCell', '9202').should('exist');
+
+    // Internal user doesn't exist on local cluster
+    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
+    cy.contains('li.euiSelectableListItem', 'Local cluster').click();
+    cy.contains('.euiTableRowCell', '9202').should('exist');
   });
 });

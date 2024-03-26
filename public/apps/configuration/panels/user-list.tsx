@@ -242,7 +242,11 @@ export function UserList(props: AppDependencies) {
             <EuiFlexGroup>
               <EuiFlexItem>{actionsMenu}</EuiFlexItem>
               <EuiFlexItem>
-                <EuiButton fill href={buildHashUrl(ResourceType.users, Action.create)}>
+                <EuiButton
+                  fill
+                  href={buildHashUrl(ResourceType.users, Action.create)}
+                  data-test-subj="create-user"
+                >
                   Create user account
                 </EuiButton>
               </EuiFlexItem>

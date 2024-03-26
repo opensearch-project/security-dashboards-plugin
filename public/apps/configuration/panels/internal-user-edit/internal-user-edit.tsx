@@ -206,7 +206,13 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
           </EuiButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton id="submit" fill onClick={updateUserHandler} disabled={!isFormValid}>
+          <EuiButton
+            id="submit"
+            fill
+            onClick={updateUserHandler}
+            disabled={!isFormValid}
+            data-test-subj="submit-save-user"
+          >
             {props.action === 'edit' ? 'Save changes' : 'Create'}
           </EuiButton>
         </EuiFlexItem>
