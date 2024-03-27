@@ -23,7 +23,7 @@ const createDataSource = () => {
     body: {
       attributes: {
         title: `9202`,
-        endpoint: `http://localhost:9202`,
+        endpoint: `https://localhost:9202`,
         auth: {
           type: 'username_password',
           credentials: {
