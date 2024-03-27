@@ -43,7 +43,6 @@ import {
   AUTH_GRANT_TYPE,
   AUTH_RESPONSE_TYPE,
   OPENID_AUTH_LOGOUT,
-  LOGIN_PAGE_URI,
   OPEN_ID_AUTH_REQUEST_TYPE,
 } from '../../../../common';
 
