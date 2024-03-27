@@ -15,6 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest , windows-latest ]
+        os_bwc_version: [2.0.0, 2.1.0, 2.2.0, 2.3.0, 2.4.0, 2.5.0, 2.6.0, 2.7.0, 2.8.0, 2.9.0, 2.10.0, 2.11.0, 2.12.0, 3.0.0]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -55,58 +56,18 @@ jobs:
       - name: Download security plugin and create setup scripts
         uses: ./.github/actions/download-plugin
         with:
-          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
-          plugin-name: ${{ env.PLUGIN_NAME }}
-          plugin-version: ${{ env.PLUGIN_VERSION }}
-
-      - name: Create remote OpenSearch Config
-        run: | 
-          cat << 'EOT' > remote_opensearch.yml
-          http.port: 9202
-          plugins.security.ssl.transport.pemcert_filepath: esnode.pem
-          plugins.security.ssl.transport.pemkey_filepath: esnode-key.pem
-          plugins.security.ssl.transport.pemtrustedcas_filepath: root-ca.pem
-          plugins.security.ssl.transport.enforce_hostname_verification: false
-          plugins.security.ssl.http.pemcert_filepath: esnode.pem
-          plugins.security.ssl.http.pemkey_filepath: esnode-key.pem
-          plugins.security.ssl.http.pemtrustedcas_filepath: root-ca.pem
-          plugins.security.allow_unsafe_democertificates: true
-          plugins.security.allow_default_init_securityindex: true
-          plugins.security.authcz.admin_dn:
-            - 'CN=A,OU=UNIT,O=ORG,L=TORONTO,ST=ONTARIO,C=CA'
-          plugins.security.nodes_dn:
-            - 'CN=node1.dns.a-record,OU=UNIT,O=ORG,L=TORONTO,ST=ONTARIO,C=CA'
-            - 'CN=node2.dns.a-record,OU=UNIT,O=ORG,L=TORONTO,ST=ONTARIO,C=CA'
-          plugins.security.audit.type: internal_opensearch
-          plugins.security.enable_snapshot_restore_privilege: true
-          plugins.security.check_snapshot_restore_write_privileges: true
-          # TODO: change this back to true/just append to the created opensearch.yml the new port
-          # after the self-signed certs issue is fixed
-          plugins.security.ssl.http.enabled: false 
-          plugins.security.restapi.roles_enabled: [all_access, security_rest_api_access]
-          plugins.security.system_indices.enabled: true
-          plugins.security.system_indices.indices: [.plugins-ml-config, .plugins-ml-connector,
-            .plugins-ml-model-group, .plugins-ml-model, .plugins-ml-task, .plugins-ml-conversation-meta,
-            .plugins-ml-conversation-interactions, .plugins-ml-memory-meta, .plugins-ml-memory-message,
-            .opendistro-alerting-config, .opendistro-alerting-alert*, .opendistro-anomaly-results*,
-            .opendistro-anomaly-detector*, .opendistro-anomaly-checkpoints, .opendistro-anomaly-detection-state,
-            .opendistro-reports-*, .opensearch-notifications-*, .opensearch-notebooks, .opensearch-observability,
-            .ql-datasources, .opendistro-asynchronous-search-response*, .replication-metadata-store,
-            .opensearch-knn-models, .geospatial-ip2geo-data*, .plugins-flow-framework-config,
-            .plugins-flow-framework-templates, .plugins-flow-framework-state]
-          node.max_local_storage_nodes: 3
-          EOT
-        shell: bash
+          opensearch-version: ${{ matrix.os_bwc_version }}
+          plugin-name: ${{ env.PLUGIN_NAME }}-${{matrix.os_bwc_version}}
+          plugin-version: ${{matrix.os_bwc_version}}.0
       
       - name: Run Opensearch with A Single Plugin
-        uses: derek-ho/start-opensearch@9202
+        uses: derek-ho/start-opensearch@v3
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: "file:$(pwd)/opensearch-security.zip"
           security-enabled: true
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
           security_config_file: ${{ inputs.security_config_file }}
-          opensearch_yml_file: remote_opensearch.yml
           opensearch_port: 9202
 
       - name: Check OpenSearch is running

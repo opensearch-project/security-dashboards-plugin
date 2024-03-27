@@ -438,7 +438,7 @@ describe('start OpenSearch Dashboards server multi datasources enabled', () => {
         plugins: {
           scanDirs: [resolve(__dirname, '../..')],
         },
-        data_source: { enabled: true },
+        data_source: { enabled: true, ssl: { verificationMode: 'none' } },
         opensearch: {
           hosts: ['https://localhost:9200'],
           ignoreVersionMismatch: true,
