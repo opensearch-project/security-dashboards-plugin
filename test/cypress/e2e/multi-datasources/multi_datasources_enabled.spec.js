@@ -85,7 +85,7 @@ describe('Multi-datasources enabled', () => {
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').contains('9202');
   });
 
-  it.skip('Checks Auth Tab', () => {
+  it('Checks Auth Tab', () => {
     cy.visit('http://localhost:5601/app/security-dashboards-plugin#/auth');
     // Local cluster auth
     cy.get('.panel-header-count').first().invoke('text').should('contain', '(6)');
@@ -102,8 +102,10 @@ describe('Multi-datasources enabled', () => {
     cy.visit('http://localhost:5601/app/security-dashboards-plugin#/users');
     // Create an internal user in the remote cluster
     cy.contains('h3', 'Internal users');
+    cy.contains('a', 'logstash');
+    // TODO replace these with navigating to urls that get read to determine datasource, since these are flaky
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
-    cy.get('li.euiSelectableListItem[title="9202"]').should('be.visible').click();
+    cy.contains('li.euiSelectableListItem', '9202').click();
     cy.get('[data-test-subj="create-user"]').click();
     cy.get('[data-test-subj="name-text"]').focus().type('9202-user');
     cy.get('[data-test-subj="password"]').focus().type('myStrongPassword123!');
