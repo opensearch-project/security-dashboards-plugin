@@ -13,23 +13,34 @@
  *   permissions and limitations under the License.
  */
 
-import { HttpStart } from 'opensearch-dashboards/public';
+import { HttpFetchQuery, HttpStart } from 'opensearch-dashboards/public';
 import { API_ENDPOINT_INTERNALUSERS } from '../constants';
 import { InternalUser, InternalUserUpdate } from '../types';
 import { httpGet, httpPost } from './request-utils';
 import { getResourceUrl } from './resource-utils';
 
-export async function getUserDetail(http: HttpStart, username: string): Promise<InternalUser> {
+export async function getUserDetail(
+  http: HttpStart,
+  username: string,
+  query: HttpFetchQuery
+): Promise<InternalUser> {
   return await httpGet<InternalUser>({
     http,
     url: getResourceUrl(API_ENDPOINT_INTERNALUSERS, username),
+    query,
   });
 }
 
 export async function updateUser(
   http: HttpStart,
   username: string,
-  updateObject: InternalUserUpdate
+  updateObject: InternalUserUpdate,
+  query: HttpFetchQuery
 ): Promise<InternalUser> {
-  return await httpPost(http, getResourceUrl(API_ENDPOINT_INTERNALUSERS, username), updateObject);
+  return await httpPost({
+    http,
+    url: getResourceUrl(API_ENDPOINT_INTERNALUSERS, username),
+    body: updateObject,
+    query,
+  });
 }

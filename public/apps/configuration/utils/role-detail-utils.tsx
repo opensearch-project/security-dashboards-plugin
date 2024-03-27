@@ -24,5 +24,9 @@ export async function getRoleDetail(http: HttpStart, roleName: string): Promise<
 }
 
 export async function updateRole(http: HttpStart, roleName: string, updateObject: RoleUpdate) {
-  return await httpPost(http, getResourceUrl(API_ENDPOINT_ROLES, roleName), updateObject);
+  return await httpPost({
+    http,
+    url: getResourceUrl(API_ENDPOINT_ROLES, roleName),
+    body: updateObject,
+  });
 }

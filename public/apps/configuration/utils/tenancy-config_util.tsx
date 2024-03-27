@@ -19,7 +19,7 @@ import { httpGet, httpPut, httpPost } from './request-utils';
 import { TenancyConfigSettings } from '../panels/tenancy-config/types';
 
 export async function updateTenancyConfig(http: HttpStart, updateObject: TenancyConfigSettings) {
-  return await httpPost(http, API_ENDPOINT_TENANCY_CONFIGS, updateObject);
+  return await httpPost({ http, url: API_ENDPOINT_TENANCY_CONFIGS, body: updateObject });
 }
 
 export async function getTenancyConfig(http: HttpStart): Promise<TenancyConfigSettings> {

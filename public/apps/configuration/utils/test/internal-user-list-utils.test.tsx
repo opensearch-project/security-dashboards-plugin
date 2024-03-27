@@ -13,7 +13,13 @@
  *   permissions and limitations under the License.
  */
 
-import { transformUserData } from '../internal-user-list-utils';
+import { fetchUserNameList, getUserList, transformUserData } from '../internal-user-list-utils';
+import { httpGet } from '../request-utils';
+import * as InternalUserListUtils from '../internal-user-list-utils';
+
+jest.mock('../../utils/request-utils', () => ({
+  httpGet: jest.fn().mockResolvedValue({ data: {} }),
+}));
 
 describe('Internal user list utils', () => {
   const userList = {
@@ -31,5 +37,103 @@ describe('Internal user list utils', () => {
       },
     ];
     expect(result).toEqual(expectedUserList);
+  });
+
+  it('getUserList calls httpGet with the correct parameters for internal users', async () => {
+    const httpMock = {}; // Mock HttpStart object
+    const userType = 'internalaccounts';
+    const query = { dataSourceId: 'test' };
+
+    // Mock the response data from httpGet
+    const mockRawData = {
+      data: {
+        // your mocked data here
+      },
+    };
+
+    // Mock the return value of getUserListRaw
+    jest.spyOn(InternalUserListUtils, 'getUserListRaw').mockResolvedValue(mockRawData);
+
+    // Call the function you want to test
+    const test = await getUserList(httpMock, userType, query);
+
+    // Assert that httpGet was called with the correct parameters
+    expect(httpGet).toHaveBeenCalledWith({
+      http: httpMock,
+      url: '/api/v1/configuration/internalaccounts',
+      query,
+    });
+    expect(test).toEqual([]);
+  });
+
+  it('getUserList calls httpGet with the correct parameters for service accounts', async () => {
+    const httpMock = {}; // Mock HttpStart object
+    const userType = 'serviceAccounts';
+    const query = { dataSourceId: 'test' };
+
+    // Mock the response data from httpGet
+    const mockRawData = {
+      data: {},
+    };
+
+    // Mock the return value of getUserListRaw
+    jest.spyOn(InternalUserListUtils, 'getUserListRaw').mockResolvedValue(mockRawData);
+
+    // Call the function you want to test
+    const test = await getUserList(httpMock, userType, query);
+
+    // Assert that httpGet was called with the correct parameters
+    expect(httpGet).toHaveBeenCalledWith({
+      http: httpMock,
+      url: '/api/v1/configuration/serviceaccounts',
+      query,
+    });
+    expect(test).toEqual([]);
+  });
+
+  it('fetchUserNameList calls httpGet with the correct parameters for service accounts', async () => {
+    const httpMock = {}; // Mock HttpStart object
+    const userType = 'serviceAccounts';
+
+    // Mock the response data from httpGet
+    const mockRawData = {
+      data: {},
+    };
+
+    // Mock the return value of getUserListRaw
+    jest.spyOn(InternalUserListUtils, 'getUserListRaw').mockResolvedValue(mockRawData);
+
+    // Call the function you want to test
+    const test = await fetchUserNameList(httpMock, userType);
+
+    // Assert that httpGet was called with the correct parameters
+    expect(httpGet).toHaveBeenCalledWith({
+      http: httpMock,
+      url: '/api/v1/configuration/serviceaccounts',
+    });
+    expect(test).toEqual([]);
+  });
+
+  it('fetchUserNameList calls httpGet with the correct parameters for internal users', async () => {
+    const httpMock = {}; // Mock HttpStart object
+    const userType = 'internalaccounts';
+
+    // Mock the response data from httpGet
+    const mockRawData = {
+      data: {},
+    };
+
+    // Mock the return value of getUserListRaw
+    jest.spyOn(InternalUserListUtils, 'getUserListRaw').mockResolvedValue(mockRawData);
+
+    // Call the function you want to test
+    const test = await fetchUserNameList(httpMock, userType);
+
+    // Assert that httpGet was called with the correct parameters
+    expect(httpGet).toHaveBeenCalledWith({
+      http: httpMock,
+      url: '/api/v1/configuration/internalaccounts',
+    });
+    expect(test).toEqual([]);
   });
 });

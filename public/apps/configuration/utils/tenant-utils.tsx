@@ -97,7 +97,11 @@ export async function updateTenant(
   tenantName: string,
   updateObject: TenantUpdate
 ) {
-  return await httpPost(http, getResourceUrl(API_ENDPOINT_TENANTS, tenantName), updateObject);
+  return await httpPost({
+    http,
+    url: getResourceUrl(API_ENDPOINT_TENANTS, tenantName),
+    body: updateObject,
+  });
 }
 
 export async function updateTenancyConfiguration(
@@ -116,7 +120,7 @@ export async function requestDeleteTenant(http: HttpStart, tenants: string[]) {
 }
 
 export async function selectTenant(http: HttpStart, selectObject: TenantSelect): Promise<string> {
-  return await httpPost<string>(http, API_ENDPOINT_MULTITENANCY, selectObject);
+  return await httpPost<string>({ http, url: API_ENDPOINT_MULTITENANCY, body: selectObject });
 }
 
 export const RESOLVED_GLOBAL_TENANT = 'Global';

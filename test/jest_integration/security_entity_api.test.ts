@@ -26,7 +26,12 @@ import {
   AUTHORIZATION_HEADER_NAME,
 } from '../constant';
 import { extractAuthCookie, getAuthCookie } from '../helper/cookie';
-import { createOrUpdateEntityAsAdmin, getEntityAsAdmin } from '../helper/entity_operation';
+import {
+  createOrUpdateEntityAsAdmin,
+  createOrUpdateEntityAsAdminWithDataSource,
+  getEntityAsAdmin,
+  getEntityAsAdminWithDataSource,
+} from '../helper/entity_operation';
 
 describe('start OpenSearch Dashboards server', () => {
   let root: Root;
@@ -531,5 +536,78 @@ describe('start OpenSearch Dashboards server multi datasources enabled', () => {
 
     // Getting auth info on an empty datasource calls local cluster
     expect(getAuthResponseRemoteDataSource.status).toEqual(200);
+  });
+
+  it('create/get/update/list/delete internal user for external datasource', async () => {
+    const testUsername = `test_user_${Date.now()}`;
+    const testUserPassword = 'testUserPassword123';
+
+    const createUserResponse = await createOrUpdateEntityAsAdminWithDataSource(
+      root,
+      'internalusers',
+      testUsername,
+      {
+        description: 'test user description',
+        password: testUserPassword,
+        backend_roles: ['arbitrary_backend_role'],
+      },
+      dataSourceId
+    );
+    expect(createUserResponse.status).toEqual(200);
+
+    const getUserResponse = await getEntityAsAdminWithDataSource(
+      root,
+      'internalusers',
+      testUsername,
+      dataSourceId
+    );
+    expect(getUserResponse.status).toEqual(200);
+    expect(getUserResponse.body.description).toEqual('test user description');
+    expect(getUserResponse.body.backend_roles).toContain('arbitrary_backend_role');
+
+    const listUserResponse = await osdTestServer.request
+      .get(root, `/api/v1/configuration/internalusers?dataSourceId=${dataSourceId}`)
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
+    expect(listUserResponse.status).toEqual(200);
+    expect(listUserResponse.body.total).toBeGreaterThan(2);
+    expect(listUserResponse.body.data[testUsername]).toBeTruthy();
+
+    const updateUserResponse = await createOrUpdateEntityAsAdminWithDataSource(
+      root,
+      'internalusers',
+      testUsername,
+      {
+        description: 'new description',
+        password: testUserPassword,
+        backend_roles: ['arbitrary_backend_role'],
+      },
+      dataSourceId
+    );
+    expect(updateUserResponse.status).toEqual(200);
+
+    const getUpdatedUserResponse = await getEntityAsAdminWithDataSource(
+      root,
+      'internalusers',
+      testUsername,
+      dataSourceId
+    );
+    expect(getUpdatedUserResponse.status).toEqual(200);
+    expect(getUpdatedUserResponse.body.description).toEqual('new description');
+
+    const deleteUserResponse = await osdTestServer.request
+      .delete(
+        root,
+        `/api/v1/configuration/internalusers/${testUsername}?dataSourceId=${dataSourceId}`
+      )
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
+    expect(deleteUserResponse.status).toEqual(200);
+
+    const getDeletedUserResponse = await getEntityAsAdminWithDataSource(
+      root,
+      'internalusers',
+      testUsername,
+      dataSourceId
+    );
+    expect(getDeletedUserResponse.status).toEqual(404);
   });
 });

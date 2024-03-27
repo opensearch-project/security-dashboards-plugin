@@ -14,7 +14,8 @@
  */
 
 import React from 'react';
-import { DataSourceOption } from '../../../../../src/plugins/data_source_management/public/components/data_source_selector/data_source_selector';
+import { DataSourceSelectableConfig } from 'src/plugins/data_source_management/public';
+import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
 import { PLUGIN_NAME } from '../../../common';
 import { AppDependencies } from '../types';
 
@@ -32,23 +33,27 @@ export const SecurityPluginTopNavMenu = (props: TopNavMenuProps) => {
     dataSourceManagement,
     setDataSource,
     selectedDataSource,
+    dataSourcePickerReadOnly,
   } = props;
   const { setHeaderActionMenu } = params;
-  const DataSourceMenu = dataSourceManagement?.ui.DataSourceMenu;
+  const DataSourceMenu = dataSourceManagement?.ui.getDataSourceMenu<DataSourceSelectableConfig>();
+
   const dataSourceEnabled = !!depsStart.dataSource?.dataSourceEnabled;
 
   return dataSourceEnabled ? (
     <DataSourceMenu
-      showDataSourceSelectable={dataSourceEnabled}
-      appName={PLUGIN_NAME}
-      savedObjects={coreStart.savedObjects.client}
       setMenuMountPoint={setHeaderActionMenu}
-      notifications={coreStart.notifications}
-      dataSourceCallBackFunc={setDataSource}
-      // Single select for now
-      selectedOption={[selectedDataSource]}
-      hideLocalCluster={false}
-      fullWidth={false}
+      componentType={dataSourcePickerReadOnly ? 'DataSourceView' : 'DataSourceSelectable'}
+      componentConfig={{
+        savedObjects: coreStart.savedObjects.client,
+        notifications: coreStart.notifications,
+        activeOption: [selectedDataSource],
+        onSelectedDataSources: (dataSources) => {
+          // single select for now
+          setDataSource(dataSources[0]);
+        },
+        fullWidth: true,
+      }}
     />
   ) : null;
 };

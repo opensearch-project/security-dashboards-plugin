@@ -57,5 +57,9 @@ export async function updateRoleMapping(
   roleName: string,
   updateObject: RoleMappingDetail
 ) {
-  return await httpPost(http, getResourceUrl(API_ENDPOINT_ROLESMAPPING, roleName), updateObject);
+  return await httpPost({
+    http,
+    url: getResourceUrl(API_ENDPOINT_ROLESMAPPING, roleName),
+    body: updateObject,
+  });
 }

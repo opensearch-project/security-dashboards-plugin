@@ -29,7 +29,7 @@ describe('SecurityPluginTopNavMenu', () => {
 
   const dataSourceManagementMock = {
     ui: {
-      DataSourceMenu: dataSourceMenuMock,
+      getDataSourceMenu: jest.fn().mockReturnValue(dataSourceMenuMock),
     },
   };
 

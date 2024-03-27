@@ -34,7 +34,7 @@ export async function fetchAccountInfoSafe(http: HttpStart): Promise<AccountInfo
 }
 
 export async function logout(http: HttpStart, logoutUrl?: string): Promise<void> {
-  await httpPost(http, API_AUTH_LOGOUT);
+  await httpPost({ http, url: API_AUTH_LOGOUT });
   setShouldShowTenantPopup(null);
   // Clear everything in the sessionStorage since they can contain sensitive information
   sessionStorage.clear();
@@ -70,8 +70,12 @@ export async function updateNewPassword(
   newPassword: string,
   currentPassword: string
 ): Promise<void> {
-  await httpPost(http, API_ENDPOINT_ACCOUNT_INFO, {
-    password: newPassword,
-    current_password: currentPassword,
+  await httpPost({
+    http,
+    url: API_ENDPOINT_ACCOUNT_INFO,
+    body: {
+      password: newPassword,
+      current_password: currentPassword,
+    },
   });
 }

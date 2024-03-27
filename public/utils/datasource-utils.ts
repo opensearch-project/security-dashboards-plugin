@@ -13,20 +13,15 @@
  *   permissions and limitations under the License.
  */
 
-import { HttpStart } from 'opensearch-dashboards/public';
-import { httpPost } from '../apps/configuration/utils/request-utils';
+import { DataSourceOption } from '../../../../src/plugins/data_source_management/public/components/data_source_selector/data_source_selector';
 
-export async function validateCurrentPassword(
-  http: HttpStart,
-  userName: string,
-  currentPassword: string
-): Promise<void> {
-  await httpPost({
-    http,
-    url: '/auth/login',
-    body: {
-      username: userName,
-      password: currentPassword,
-    },
-  });
+export function createDataSourceQuery(dataSourceId: string) {
+  return { dataSourceId };
+}
+
+export function getClusterInfoIfEnabled(dataSourceEnabled: boolean, cluster: DataSourceOption) {
+  if (dataSourceEnabled) {
+    return `for ${cluster.label || 'Local cluster'}`;
+  }
+  return '';
 }
