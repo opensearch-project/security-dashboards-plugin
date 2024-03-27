@@ -227,7 +227,11 @@ export function PermissionList(props: AppDependencies) {
   const handleDelete = async () => {
     const groupsToDelete: string[] = selection.map((r) => r.name);
     try {
-      await requestDeleteActionGroups(props.coreStart.http, groupsToDelete);
+      await requestDeleteActionGroups(
+        props.coreStart.http,
+        groupsToDelete,
+        createDataSourceQuery(dataSource.id)
+      );
       setPermissionList(difference(permissionList, selection));
       setSelection([]);
     } catch (e) {
@@ -287,13 +291,17 @@ export function PermissionList(props: AppDependencies) {
         groupName={initialGroupName}
         action={action}
         allowedActions={initialAllowedAction}
+        dataSourceId={dataSource.id}
         optionUniverse={permissionList.map((group) => stringToComboBoxOption(group.name))}
         handleClose={() => setEditModal(null)}
         handleSave={async (groupName, allowedAction) => {
           try {
-            await updateActionGroup(props.coreStart.http, groupName, {
-              allowed_actions: allowedAction,
-            });
+            await updateActionGroup(
+              props.coreStart.http,
+              groupName,
+              { allowed_actions: allowedAction },
+              createDataSourceQuery(dataSource.id)
+            );
             setEditModal(null);
             fetchData();
             addToast({
@@ -345,7 +353,7 @@ export function PermissionList(props: AppDependencies) {
     <>
       <SecurityPluginTopNavMenu
         {...props}
-        dataSourcePickerReadOnly={true}
+        dataSourcePickerReadOnly={false}
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />

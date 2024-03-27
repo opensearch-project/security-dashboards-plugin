@@ -101,17 +101,23 @@ export async function mergeAllPermissions(
 export async function updateActionGroup(
   http: HttpStart,
   groupName: string,
-  updateObject: ActionGroupUpdate
+  updateObject: ActionGroupUpdate,
+  query: HttpFetchQuery
 ): Promise<ActionGroupUpdate> {
   return await httpPost({
     http,
     url: getResourceUrl(API_ENDPOINT_ACTIONGROUPS, groupName),
     body: updateObject,
+    query,
   });
 }
 
-export async function requestDeleteActionGroups(http: HttpStart, groups: string[]) {
+export async function requestDeleteActionGroups(
+  http: HttpStart,
+  groups: string[],
+  query: HttpFetchQuery
+) {
   for (const group of groups) {
-    await httpDelete({ http, url: getResourceUrl(API_ENDPOINT_ACTIONGROUPS, group) });
+    await httpDelete({ http, url: getResourceUrl(API_ENDPOINT_ACTIONGROUPS, group), query });
   }
 }
