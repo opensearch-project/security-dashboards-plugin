@@ -91,7 +91,7 @@ jobs:
           security-enabled: true
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
           security_config_file: config_custom.yml
-          opensearch_port: 9202
+          port: 9202
 
       - name: Check OpenSearch is running
           # Verify that the server is operational
