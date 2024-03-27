@@ -23,7 +23,7 @@ const createDataSource = () => {
     body: {
       attributes: {
         title: `9202`,
-        endpoint: `http://localhost:9202`,
+        endpoint: `https://localhost:9202`,
         auth: {
           type: 'username_password',
           credentials: {
@@ -85,7 +85,7 @@ describe('Multi-datasources enabled', () => {
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').contains('9202');
   });
 
-  it.skip('Checks Auth Tab', () => {
+  it('Checks Auth Tab', () => {
     cy.visit('http://localhost:5601/app/security-dashboards-plugin#/auth');
     // Local cluster auth
     cy.get('.panel-header-count').first().invoke('text').should('contain', '(6)');
@@ -98,7 +98,7 @@ describe('Multi-datasources enabled', () => {
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').contains('9202');
   });
 
-  it('Checks Users Tab', () => {
+  it.skip('Checks Users Tab', () => {
     cy.visit('http://localhost:5601/app/security-dashboards-plugin#/users');
     // Create an internal user in the remote cluster
     cy.contains('h3', 'Internal users');
