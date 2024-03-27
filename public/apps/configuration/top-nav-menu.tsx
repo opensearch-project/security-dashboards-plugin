@@ -16,7 +16,6 @@
 import React from 'react';
 import { DataSourceSelectableConfig } from 'src/plugins/data_source_management/public';
 import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
-import { PLUGIN_NAME } from '../../../common';
 import { AppDependencies } from '../types';
 
 export interface TopNavMenuProps extends AppDependencies {
