@@ -70,7 +70,7 @@ jobs:
           plugin-version: ${{ env.PLUGIN_VERSION }}
       
       - name: Run Opensearch with A Single Plugin Remote Cluster
-        uses: derek-ho/start-opensearch@v3
+        uses: derek-ho/start-opensearch@graceful-t
         with:
           opensearch-version: ${{ matrix.os_bwc_version }}
           plugins: "file:$(pwd)/opensearch-security-${{matrix.os_bwc_version}}.zip"
@@ -82,7 +82,7 @@ jobs:
       - name: Check OpenSearch is running
           # Verify that the server is operational
         run: |
-          curl http://localhost:9202/_cat/plugins -v -u admin:myStrongPassword123!
+          curl http://localhost:9202/_cat/plugins -v -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
         shell: bash
 
       - name: Run Opensearch with security
