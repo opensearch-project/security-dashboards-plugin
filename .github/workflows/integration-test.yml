@@ -66,7 +66,7 @@ jobs:
 
       - name: Check OpenSearch remote is running
         run: |
-          curl http://localhost:9202/_cat/plugins -v -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
+          curl https://localhost:9202/_cat/plugins -v -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
         shell: bash
 
       - name: Run Opensearch with security
