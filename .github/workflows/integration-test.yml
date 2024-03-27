@@ -35,9 +35,6 @@ jobs:
           echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
         shell: bash
 
-      - uses: browser-actions/setup-geckodriver@v0.0.0
-      - run: geckodriver --version
-
       - name: Download security plugin and create setup scripts for remote cluster
         uses: ./.github/actions/download-plugin
         with:
