@@ -14,6 +14,10 @@ inputs:
     description: 'The version of security plugin that should be used, e.g "3.0.0.0"'
     required: true
 
+  download-location:
+    description: 'The location of where to download the plugin'
+    required: true
+
 runs:
   using: "composite"
   steps:
@@ -22,7 +26,7 @@ runs:
         -DremoteRepositories=https://aws.oss.sonatype.org/content/repositories/snapshots/ \
         -Dartifact=org.opensearch.plugin:${{ inputs.plugin-name }}:${{ inputs.plugin-version }}-SNAPSHOT:zip \
         -Dtransitive=false \
-        -Ddest=${{ inputs.plugin-name }}.zip
+        -Ddest=${{ inputs.download-location }}.zip
       shell: bash
 
     - name: Create Setup Script for Linux

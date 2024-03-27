@@ -15,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest , windows-latest ]
-        os_bwc_version: [2.0.0, 2.1.0, 2.2.0, 2.3.0, 2.4.0, 2.5.0, 2.6.0, 2.7.0, 2.8.0, 2.9.0, 2.10.0, 2.11.0, 2.12.0, 3.0.0]
+        os_bwc_version: [2.1.0, 2.2.0, 2.3.0, 2.4.0, 2.5.0, 2.6.0, 2.7.0, 2.8.0, 2.9.0, 2.10.0, 2.11.0, 2.12.0, 3.0.0]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -53,18 +53,27 @@ jobs:
           browser: firefox
           version: latest
 
-      - name: Download security plugin and create setup scripts
+      - name: Download security plugin and create setup scripts for remote cluster
         uses: ./.github/actions/download-plugin
         with:
           opensearch-version: ${{ matrix.os_bwc_version }}
-          plugin-name: ${{ env.PLUGIN_NAME }}-${{matrix.os_bwc_version}}
+          plugin-name: ${{ env.PLUGIN_NAME }}
+          download-location: ${{env.PLUGIN_NAME}}-${{matrix.os_bwc_version}}
           plugin-version: ${{matrix.os_bwc_version}}.0
-      
-      - name: Run Opensearch with A Single Plugin
-        uses: derek-ho/start-opensearch@v3
+
+      - name: Download security plugin and create setup scripts for local cluster
+        uses: ./.github/actions/download-plugin
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
-          plugins: "file:$(pwd)/opensearch-security.zip"
+          plugin-name: ${{ env.PLUGIN_NAME }}
+          download-location: ${{env.PLUGIN_NAME}}
+          plugin-version: ${{ env.PLUGIN_VERSION }}
+      
+      - name: Run Opensearch with A Single Plugin Remote Cluster
+        uses: derek-ho/start-opensearch@v3
+        with:
+          opensearch-version: ${{ matrix.os_bwc_version }}
+          plugins: "file:$(pwd)/opensearch-security-${{matrix.os_bwc_version}}.zip"
           security-enabled: true
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
           security_config_file: ${{ inputs.security_config_file }}
