@@ -468,7 +468,7 @@ describe('start OpenSearch Dashboards server multi datasources enabled', () => {
         attributes: {
           title: 'test',
           description: '',
-          endpoint: 'http://localhost:9202',
+          endpoint: 'https://localhost:9202',
           auth: {
             type: 'username_password',
             credentials: {
