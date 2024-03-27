@@ -96,7 +96,7 @@ jobs:
       - name: Check OpenSearch is running
           # Verify that the server is operational
         run: |
-          curl http://localhost:9202/_cat/plugins -v -u admin:myStrongPassword123!
+          curl https://localhost:9202/_cat/plugins -v -u admin:myStrongPassword123!
         shell: bash
 
       # Configure the Dashboard for multi datasources
