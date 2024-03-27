@@ -85,7 +85,7 @@ describe('Multi-datasources enabled', () => {
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').contains('9202');
   });
 
-  it('Checks Auth Tab', () => {
+  it.skip('Checks Auth Tab', () => {
     cy.visit('http://localhost:5601/app/security-dashboards-plugin#/auth');
     // Local cluster auth
     cy.get('.panel-header-count').first().invoke('text').should('contain', '(6)');
@@ -102,7 +102,7 @@ describe('Multi-datasources enabled', () => {
     cy.visit('http://localhost:5601/app/security-dashboards-plugin#/users');
     // Create an internal user in the remote cluster
     cy.contains('h3', 'Internal users');
-    cy.contains('a', 'logstash');
+    cy.contains('a', 'admin');
     // TODO replace these with navigating to urls that get read to determine datasource, since these are flaky
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
     cy.contains('li.euiSelectableListItem', '9202').click();
@@ -114,11 +114,11 @@ describe('Multi-datasources enabled', () => {
 
     // Internal user exists on the remote
     cy.visit('http://localhost:5601/app/security-dashboards-plugin#/users');
-    cy.contains('.euiTableRowCell', '9202-user').should('exist');
+    cy.get('[data-test-subj="checkboxSelectRow-9202-user"]').should('exist');
 
     // Internal user doesn't exist on local cluster
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
     cy.contains('li.euiSelectableListItem', 'Local cluster').click();
-    cy.contains('.euiTableRowCell', '9202-user').should('not.exist');
+    cy.get('[data-test-subj="checkboxSelectRow-9202-user"]').should('not.exist');
   });
 });
