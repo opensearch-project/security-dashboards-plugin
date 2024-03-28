@@ -39,10 +39,9 @@ import {
 import { OpenIdAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
 import { callTokenEndpoint } from './helper';
-import { composeNextUrlQueryParam } from '../../../utils/next_url';
 import { getObjectProperties } from '../../../utils/object_properties_defined';
 import { getExpirationDate } from './helper';
-import { AuthType, OPENID_AUTH_LOGIN } from '../../../../common';
+import { AuthType } from '../../../../common';
 import {
   ExtraAuthStorageOptions,
   getExtraAuthStorageValue,

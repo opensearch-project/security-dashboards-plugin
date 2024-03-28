@@ -23,6 +23,7 @@ module.exports = {
   },
   plugins: [
     'cypress',
+    "unused-imports"
   ],
   rules: {
     // "@osd/eslint/require-license-header": "off"
@@ -44,6 +45,9 @@ module.exports = {
     'cypress/assertion-before-screenshot': 'warn',
     'cypress/no-force': 'warn',
     'cypress/no-async-tests': 'error',
+    // Unused imports and variables rules
+    "no-unused-vars": "off",
+    "unused-imports/no-unused-imports": "error",
   },
   overrides: [
     {

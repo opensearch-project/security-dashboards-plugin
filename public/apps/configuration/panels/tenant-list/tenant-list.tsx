@@ -23,12 +23,11 @@ import {
   EuiButton,
 } from '@elastic/eui';
 import { Route } from 'react-router-dom';
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ManageTab } from './manage_tab';
 import { ConfigureTab1 } from './configure_tab1';
 import { AppDependencies } from '../../../types';
 import { ExternalLink } from '../../utils/display-utils';
-import { displayBoolean } from '../../utils/display-utils';
 import { DocLinks } from '../../constants';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
 import { TenantInstructionView } from './tenant-instruction-view';

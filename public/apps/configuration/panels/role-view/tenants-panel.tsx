@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   EuiInMemoryTable,
   EuiLink,

@@ -13,7 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-import { ParsedUrlQuery } from 'querystring';
 import {
   SessionStorageFactory,
   IRouter,

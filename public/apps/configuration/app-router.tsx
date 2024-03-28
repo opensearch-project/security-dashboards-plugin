@@ -14,7 +14,7 @@
  */
 
 import { EuiBreadcrumb, EuiPage, EuiPageBody, EuiPageSideBar } from '@elastic/eui';
-import { flow, map, mapValues, partial } from 'lodash';
+import { flow, partial } from 'lodash';
 import React from 'react';
 import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { AppDependencies } from '../types';

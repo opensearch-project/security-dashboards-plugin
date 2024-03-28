@@ -40,7 +40,7 @@ import {
 } from '../configuration/utils/tenant-utils';
 import { fetchAccountInfo } from './utils';
 import { constructErrorMessageAndLog } from '../error-utils';
-import { getSavedTenant, setSavedTenant } from '../../utils/storage-utils';
+import { setSavedTenant } from '../../utils/storage-utils';
 import { getDashboardsInfo } from '../../utils/dashboards-info-utils';
 
 interface TenantSwitchPanelProps {

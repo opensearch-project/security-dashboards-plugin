@@ -15,7 +15,7 @@
 
 import './_index.scss';
 // @ts-ignore : Component not used
-import React, { Component } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppMountParameters, CoreStart } from '../../../../../src/core/public';
 import { LoginPage } from './login-page';
