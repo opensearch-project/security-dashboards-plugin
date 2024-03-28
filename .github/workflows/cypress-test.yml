@@ -44,6 +44,7 @@ jobs:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugin-name: ${{ env.PLUGIN_NAME }}
           plugin-version: ${{ env.PLUGIN_VERSION }}
+          download-location: ${{ env.PLUGIN_NAME }}
 
       - name: Run Opensearch with security
         uses: derek-ho/start-opensearch@v2
