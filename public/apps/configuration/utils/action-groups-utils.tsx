@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { HttpStart } from 'opensearch-dashboards/public';
+import { HttpStart, HttpFetchQuery } from 'opensearch-dashboards/public';
 import { map } from 'lodash';
 import { API_ENDPOINT_ACTIONGROUPS, CLUSTER_PERMISSIONS, INDEX_PERMISSIONS } from '../constants';
 import { DataObject, ActionGroupItem, ActionGroupUpdate, ObjectsMessage } from '../types';
@@ -29,10 +29,14 @@ export interface PermissionListingItem {
   hasIndexPermission: boolean;
 }
 
-export async function fetchActionGroups(http: HttpStart): Promise<DataObject<ActionGroupItem>> {
+export async function fetchActionGroups(
+  http: HttpStart,
+  query: HttpFetchQuery
+): Promise<DataObject<ActionGroupItem>> {
   const actiongroups = await httpGet<ObjectsMessage<ActionGroupItem>>({
     http,
     url: API_ENDPOINT_ACTIONGROUPS,
+    query,
   });
   return actiongroups.data;
 }
@@ -50,8 +54,11 @@ export function transformActionGroupsToListingFormat(
   }));
 }
 
-export async function fetchActionGroupListing(http: HttpStart): Promise<PermissionListingItem[]> {
-  return transformActionGroupsToListingFormat(await fetchActionGroups(http));
+export async function fetchActionGroupListing(
+  http: HttpStart,
+  query: HttpFetchQuery
+): Promise<PermissionListingItem[]> {
+  return transformActionGroupsToListingFormat(await fetchActionGroups(http, query));
 }
 
 function getClusterSinglePermissions(): PermissionListingItem[] {
@@ -76,8 +83,11 @@ function getIndexSinglePermissions(): PermissionListingItem[] {
   }));
 }
 
-export async function getAllPermissionsListing(http: HttpStart): Promise<PermissionListingItem[]> {
-  return mergeAllPermissions(await fetchActionGroups(http));
+export async function getAllPermissionsListing(
+  http: HttpStart,
+  query: HttpFetchQuery
+): Promise<PermissionListingItem[]> {
+  return mergeAllPermissions(await fetchActionGroups(http, query));
 }
 
 export async function mergeAllPermissions(
@@ -91,17 +101,23 @@ export async function mergeAllPermissions(
 export async function updateActionGroup(
   http: HttpStart,
   groupName: string,
-  updateObject: ActionGroupUpdate
+  updateObject: ActionGroupUpdate,
+  query: HttpFetchQuery
 ): Promise<ActionGroupUpdate> {
   return await httpPost({
     http,
     url: getResourceUrl(API_ENDPOINT_ACTIONGROUPS, groupName),
     body: updateObject,
+    query,
   });
 }
 
-export async function requestDeleteActionGroups(http: HttpStart, groups: string[]) {
+export async function requestDeleteActionGroups(
+  http: HttpStart,
+  groups: string[],
+  query: HttpFetchQuery
+) {
   for (const group of groups) {
-    await httpDelete({ http, url: getResourceUrl(API_ENDPOINT_ACTIONGROUPS, group) });
+    await httpDelete({ http, url: getResourceUrl(API_ENDPOINT_ACTIONGROUPS, group), query });
   }
 }
