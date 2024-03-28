@@ -99,6 +99,12 @@ describe('Permission list page ', () => {
   });
 
   describe('PermissionList', () => {
+    const mockCoreStart = {
+      http: 1,
+    };
+    const dataSourceQuery = {
+      dataSourceId: 'test',
+    };
     it('render empty', () => {
       const component = shallow(
         <PermissionList
@@ -116,14 +122,14 @@ describe('Permission list page ', () => {
       jest.spyOn(React, 'useEffect').mockImplementationOnce((f) => f());
       shallow(
         <PermissionList
-          coreStart={{} as any}
+          coreStart={mockCoreStart as any}
           navigation={{} as any}
           params={{} as any}
           config={{} as any}
         />
       );
 
-      expect(fetchActionGroups).toBeCalled();
+      expect(fetchActionGroups).toBeCalledWith(mockCoreStart.http, dataSourceQuery);
     });
 
     it('fetch data error', () => {
@@ -152,7 +158,7 @@ describe('Permission list page ', () => {
     it('submit change', () => {
       const component = shallow(
         <PermissionList
-          coreStart={{} as any}
+          coreStart={mockCoreStart as any}
           navigation={{} as any}
           params={{} as any}
           config={{} as any}
@@ -162,7 +168,12 @@ describe('Permission list page ', () => {
       const submitFunc = component.find(PermissionEditModal).prop('handleSave');
       submitFunc('group1', []);
 
-      expect(updateActionGroup).toBeCalled();
+      expect(updateActionGroup).toBeCalledWith(
+        mockCoreStart.http,
+        'group1',
+        { allowed_actions: [] },
+        dataSourceQuery
+      );
     });
 
     it('submit change error', () => {
@@ -191,7 +202,7 @@ describe('Permission list page ', () => {
     it('delete action group', (done) => {
       shallow(
         <PermissionList
-          coreStart={{} as any}
+          coreStart={mockCoreStart as any}
           navigation={{} as any}
           params={{} as any}
           config={{} as any}
@@ -202,7 +213,7 @@ describe('Permission list page ', () => {
       deleteFunc();
 
       process.nextTick(() => {
-        expect(requestDeleteActionGroups).toBeCalled();
+        expect(requestDeleteActionGroups).toBeCalledWith(mockCoreStart.http, [], dataSourceQuery);
         done();
       });
     });
