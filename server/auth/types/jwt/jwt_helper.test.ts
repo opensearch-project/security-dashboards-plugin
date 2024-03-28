@@ -14,7 +14,7 @@
  */
 
 import { getAuthenticationHandler } from '../../auth_handler_factory';
-import { JWT_DEFAULT_EXTRA_STORAGE_OPTIONS, JwtAuthentication } from './jwt_auth';
+import { JWT_DEFAULT_EXTRA_STORAGE_OPTIONS } from './jwt_auth';
 import {
   CoreSetup,
   ILegacyClusterClient,
@@ -215,7 +215,7 @@ describe('test jwt auth library', () => {
   });
 }); // re-import JWTAuth to change cookie splitter to a no-op
 
-/* eslint-disable no-shadow, @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-var-requires */
 describe('JWT Expiry Tests', () => {
   const setExtraAuthStorageMock = jest.fn();
   jest.resetModules();
@@ -388,5 +388,5 @@ describe('JWT Expiry Tests', () => {
     jwtAuth.buildAuthHeaderFromCookie.mockRestore();
   });
 
-  /* eslint-enable no-shadow, @typescript-eslint/no-var-requires */
+  /* eslint-enable @typescript-eslint/no-var-requires */
 });
