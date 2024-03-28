@@ -25,7 +25,7 @@ import {
 import { OpenSearchDashboardsResponse } from '../../../../../../src/core/server/http/router';
 import { SecurityPluginConfigType } from '../../..';
 import { AuthenticationType } from '../authentication_type';
-import { ANONYMOUS_AUTH_LOGIN, AuthType, LOGIN_PAGE_URI } from '../../../../common';
+import { AuthType, LOGIN_PAGE_URI } from '../../../../common';
 import { composeNextUrlQueryParam } from '../../../utils/next_url';
 import { MultiAuthRoutes } from './routes';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
@@ -166,14 +166,6 @@ export class MultipleAuthentication extends AuthenticationType {
         this.coreSetup.http.basePath.serverBasePath
       );
 
-      if (this.config.auth.anonymous_auth_enabled) {
-        const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${ANONYMOUS_AUTH_LOGIN}?${nextUrlParam}`;
-        return response.redirected({
-          headers: {
-            location: `${redirectLocation}`,
-          },
-        });
-      }
       return response.redirected({
         headers: {
           location: `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`,

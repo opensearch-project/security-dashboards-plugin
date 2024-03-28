@@ -43,6 +43,7 @@ import {
   AUTH_GRANT_TYPE,
   AUTH_RESPONSE_TYPE,
   OPENID_AUTH_LOGOUT,
+  OPEN_ID_AUTH_REQUEST_TYPE,
 } from '../../../../common';
 
 import {
@@ -187,7 +188,8 @@ export class OpenIdAuthRoutes {
           const user = await this.securityClient.authenticateWithHeader(
             request,
             this.openIdAuthConfig.authHeaderName as string,
-            `Bearer ${tokenResponse.idToken}`
+            `Bearer ${tokenResponse.idToken}`,
+            OPEN_ID_AUTH_REQUEST_TYPE
           );
 
           // set to cookie

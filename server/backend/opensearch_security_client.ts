@@ -16,6 +16,7 @@
 import { ILegacyClusterClient, OpenSearchDashboardsRequest } from '../../../../src/core/server';
 import { User } from '../auth/user';
 import { TenancyConfigSettings } from '../../public/apps/configuration/panels/tenancy-config/types';
+import { AUTH_REQUEST_TYPE_HEADER, SAML_AUTH_REQUEST_TYPE } from '../../common';
 
 export class SecurityClient {
   constructor(private readonly esClient: ILegacyClusterClient) {}
@@ -51,6 +52,7 @@ export class SecurityClient {
     request: OpenSearchDashboardsRequest,
     headerName: string,
     headerValue: string,
+    authRequestType: string | undefined,
     whitelistedHeadersAndValues: any = {},
     additionalAuthHeaders: any = {}
   ): Promise<User> {
@@ -63,6 +65,7 @@ export class SecurityClient {
       if (headerValue) {
         headers[headerName] = headerValue;
       }
+      headers.AUTH_REQUEST_TYPE_HEADER = authRequestType;
 
       // cannot get config elasticsearch.requestHeadersWhitelist from kibana.yml file in new platfrom
       // meanwhile, do we really need to save all headers in cookie?
@@ -182,7 +185,9 @@ export class SecurityClient {
   public async getSamlHeader(request: OpenSearchDashboardsRequest) {
     try {
       // response is expected to be an error
-      await this.esClient.asScoped(request).callAsCurrentUser('opensearch_security.authinfo');
+      await this.esClient.asScoped(request).callAsCurrentUser('opensearch_security.authinfo', {
+        [AUTH_REQUEST_TYPE_HEADER]: SAML_AUTH_REQUEST_TYPE,
+      });
     } catch (error: any) {
       // the error looks like
       // wwwAuthenticateDirective:
@@ -220,7 +225,8 @@ export class SecurityClient {
   public async authToken(
     requestId: string | undefined,
     samlResponse: any,
-    acsEndpoint: any | undefined = undefined
+    acsEndpoint: any | undefined = undefined,
+    authRequestType: string | undefined
   ) {
     const body = {
       RequestId: requestId,
@@ -230,6 +236,7 @@ export class SecurityClient {
     try {
       return await this.esClient.asScoped().callAsCurrentUser('opensearch_security.authtoken', {
         body,
+        [AUTH_REQUEST_TYPE_HEADER]: authRequestType,
       });
     } catch (error: any) {
       console.log(error);

@@ -28,7 +28,7 @@ import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { BasicAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
-import { LOGIN_PAGE_URI, ANONYMOUS_AUTH_LOGIN } from '../../../../common';
+import { LOGIN_PAGE_URI } from '../../../../common';
 import { composeNextUrlQueryParam } from '../../../utils/next_url';
 import { AUTH_HEADER_NAME, AuthType, OPENDISTRO_SECURITY_ANONYMOUS } from '../../../../common';
 
@@ -111,21 +111,13 @@ export class BasicAuthentication extends AuthenticationType {
         request,
         this.coreSetup.http.basePath.serverBasePath
       );
-      if (this.config.auth.anonymous_auth_enabled) {
-        const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${ANONYMOUS_AUTH_LOGIN}?${nextUrlParam}`;
-        return response.redirected({
-          headers: {
-            location: `${redirectLocation}`,
-          },
-        });
-      } else {
-        const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`;
-        return response.redirected({
-          headers: {
-            location: `${redirectLocation}`,
-          },
-        });
-      }
+
+      const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`;
+      return response.redirected({
+        headers: {
+          location: `${redirectLocation}`,
+        },
+      });
     } else {
       return response.unauthorized({
         body: `Authentication required`,
