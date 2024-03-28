@@ -114,11 +114,40 @@ describe('Multi-datasources enabled', () => {
 
     // Internal user exists on the remote
     cy.visit('http://localhost:5601/app/security-dashboards-plugin#/users');
+    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
+    cy.contains('li.euiSelectableListItem', '9202').click();
     cy.get('[data-test-subj="checkboxSelectRow-9202-user"]').should('exist');
 
     // Internal user doesn't exist on local cluster
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
     cy.contains('li.euiSelectableListItem', 'Local cluster').click();
     cy.get('[data-test-subj="checkboxSelectRow-9202-user"]').should('not.exist');
+  });
+
+  it('Checks Permissions Tab', () => {
+    cy.visit('http://localhost:5601/app/security-dashboards-plugin#/permissions');
+    // Create a permission in the remote cluster
+    cy.contains('h3', 'Permissions');
+    // Select 9202 cluster
+    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
+    cy.contains('li.euiSelectableListItem', '9202').click();
+
+    // Create an action group
+    cy.get('[id="Create action group"]').click();
+    cy.contains('li.euiFlexItem', 'Create from blank').click();
+    cy.get('[data-test-subj="name-text"]').focus().type('test-permission-ag');
+    cy.get('[data-test-subj="comboBoxInput"]').focus().type('some_permission');
+    cy.get('[id="submit"]').click();
+
+    // Permission exists on the remote data source
+    cy.visit('http://localhost:5601/app/security-dashboards-plugin#/permissions');
+    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
+    cy.contains('li.euiSelectableListItem', '9202').click();
+    cy.get('[data-test-subj="checkboxSelectRow-test-permission-ag"]').should('exist');
+
+    // Permission doesn't exist on local cluster
+    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
+    cy.contains('li.euiSelectableListItem', 'Local cluster').click();
+    cy.get('[data-test-subj="checkboxSelectRow-test-permission-ag"]').should('not.exist');
   });
 });
