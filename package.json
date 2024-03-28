@@ -21,7 +21,8 @@
     "lint": "yarn run lint:es && yarn run lint:style",
     "pretest:jest_server": "node ./test/jest_integration/runIdpServer.js &",
     "test:jest_server": "node ./test/run_jest_tests.js --config ./test/jest.config.server.js",
-    "test:jest_ui": "node ./test/run_jest_tests.js --config ./test/jest.config.ui.js"
+    "test:jest_ui": "node ./test/run_jest_tests.js --config ./test/jest.config.ui.js",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@elastic/eslint-import-resolver-kibana": "link:../../packages/osd-eslint-import-resolver-opensearch-dashboards",
@@ -34,7 +35,8 @@
     "saml-idp": "^1.2.1",
     "selfsigned": "^2.0.1",
     "typescript": "4.0.2",
-    "eslint-plugin-cypress": "^2.8.1"
+    "eslint-plugin-cypress": "^2.8.1",
+    "husky": "^8.0.0"
   },
   "dependencies": {
     "@hapi/cryptiles": "5.0.0",
