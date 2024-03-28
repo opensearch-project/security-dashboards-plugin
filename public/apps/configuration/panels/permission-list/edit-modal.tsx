@@ -39,7 +39,6 @@ interface PermissionEditModalDeps {
   groupName: string;
   action: Action;
   allowedActions: string[];
-  dataSourceId: string;
   optionUniverse: ComboBoxOptions;
   handleClose: () => void;
   handleSave: (groupName: string, allowedActions: string[]) => Promise<void>;

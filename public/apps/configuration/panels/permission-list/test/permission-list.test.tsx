@@ -49,6 +49,11 @@ jest.mock('../../../utils/toast-utils', () => ({
   useToastState: jest.fn().mockReturnValue([[], jest.fn(), jest.fn()]),
 }));
 
+jest.mock('react', () => ({
+  ...jest.requireActual('react'),
+  useContext: jest.fn().mockReturnValue({ dataSource: { id: 'test' }, setDataSource: jest.fn() }), // Mock the useContext hook to return dummy datasource and setdatasource function
+}));
+
 describe('Permission list page ', () => {
   const sampleActionGroup: PermissionListingItem = {
     name: 'group',
