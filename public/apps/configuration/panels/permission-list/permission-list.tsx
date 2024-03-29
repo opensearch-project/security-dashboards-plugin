@@ -87,7 +87,7 @@ export function toggleRowDetails(
   });
 }
 
-export function renderRowExpanstionArrow(
+export function renderRowExpansionArrow(
   itemIdToExpandedRowMap: ExpandedRowMapInterface,
   actionGroupDict: DataObject<ActionGroupItem>,
   setItemIdToExpandedRowMap: Dispatch<SetStateAction<ExpandedRowMapInterface>>
@@ -139,7 +139,7 @@ function getColumns(
       align: RIGHT_ALIGNMENT,
       width: '40px',
       isExpander: true,
-      render: renderRowExpanstionArrow(
+      render: renderRowExpansionArrow(
         itemIdToExpandedRowMap,
         actionGroupDict,
         setItemIdToExpandedRowMap
@@ -323,7 +323,11 @@ export function PermissionList(props: AppDependencies) {
   };
 
   const createActionGroupMenuItems = [
-    <EuiButtonEmpty key="create-from-blank" onClick={() => showEditModal('', Action.create, [])}>
+    <EuiButtonEmpty
+      key="create-from-blank"
+      id="create-from-blank"
+      onClick={() => showEditModal('', Action.create, [])}
+    >
       Create from blank
     </EuiButtonEmpty>,
     <EuiButtonEmpty

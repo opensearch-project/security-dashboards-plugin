@@ -19,7 +19,7 @@ import {
   PermissionList,
   renderBooleanToCheckMark,
   toggleRowDetails,
-  renderRowExpanstionArrow,
+  renderRowExpansionArrow,
 } from '../permission-list';
 import { EuiInMemoryTable, EuiButtonIcon } from '@elastic/eui';
 import {
@@ -78,7 +78,7 @@ describe('Permission list page ', () => {
 
   describe('renderRowExpanstionArrow', () => {
     it('should render down arrow when collapsed', () => {
-      const renderFunc = renderRowExpanstionArrow({}, {}, jest.fn());
+      const renderFunc = renderRowExpansionArrow({}, {}, jest.fn());
       const Wrapper = () => <>{renderFunc(sampleActionGroup)}</>;
       const component = shallow(<Wrapper />);
 
@@ -86,7 +86,7 @@ describe('Permission list page ', () => {
     });
 
     it('should render up arrow when expanded', () => {
-      const renderFunc = renderRowExpanstionArrow(
+      const renderFunc = renderRowExpansionArrow(
         { [sampleActionGroup.name]: sampleActionGroup },
         {},
         jest.fn()
