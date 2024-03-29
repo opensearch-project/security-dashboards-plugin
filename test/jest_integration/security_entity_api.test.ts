@@ -29,6 +29,8 @@ import { extractAuthCookie, getAuthCookie } from '../helper/cookie';
 import {
   createOrUpdateEntityAsAdmin,
   createOrUpdateEntityAsAdminWithDataSource,
+  deleteEntityAsAdminWithDataSource,
+  getAllEntitiesAsAdminWithDataSource,
   getEntityAsAdmin,
   getEntityAsAdminWithDataSource,
 } from '../helper/entity_operation';
@@ -478,6 +480,7 @@ describe('start OpenSearch Dashboards server multi datasources enabled', () => {
           },
         },
       });
+    expect(createDataSource.status).toEqual(200);
     dataSourceId = createDataSource.body.id;
   });
 
@@ -541,10 +544,11 @@ describe('start OpenSearch Dashboards server multi datasources enabled', () => {
   it('create/get/update/list/delete internal user for external datasource', async () => {
     const testUsername = `test_user_${Date.now()}`;
     const testUserPassword = 'testUserPassword123';
+    const entityType = 'internalusers';
 
     const createUserResponse = await createOrUpdateEntityAsAdminWithDataSource(
       root,
-      'internalusers',
+      entityType,
       testUsername,
       {
         description: 'test user description',
@@ -557,7 +561,7 @@ describe('start OpenSearch Dashboards server multi datasources enabled', () => {
 
     const getUserResponse = await getEntityAsAdminWithDataSource(
       root,
-      'internalusers',
+      entityType,
       testUsername,
       dataSourceId
     );
@@ -565,16 +569,18 @@ describe('start OpenSearch Dashboards server multi datasources enabled', () => {
     expect(getUserResponse.body.description).toEqual('test user description');
     expect(getUserResponse.body.backend_roles).toContain('arbitrary_backend_role');
 
-    const listUserResponse = await osdTestServer.request
-      .get(root, `/api/v1/configuration/internalusers?dataSourceId=${dataSourceId}`)
-      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
+    const listUserResponse = await getAllEntitiesAsAdminWithDataSource(
+      root,
+      entityType,
+      dataSourceId
+    );
     expect(listUserResponse.status).toEqual(200);
     expect(listUserResponse.body.total).toBeGreaterThan(2);
     expect(listUserResponse.body.data[testUsername]).toBeTruthy();
 
     const updateUserResponse = await createOrUpdateEntityAsAdminWithDataSource(
       root,
-      'internalusers',
+      entityType,
       testUsername,
       {
         description: 'new description',
@@ -587,27 +593,107 @@ describe('start OpenSearch Dashboards server multi datasources enabled', () => {
 
     const getUpdatedUserResponse = await getEntityAsAdminWithDataSource(
       root,
-      'internalusers',
+      entityType,
       testUsername,
       dataSourceId
     );
     expect(getUpdatedUserResponse.status).toEqual(200);
     expect(getUpdatedUserResponse.body.description).toEqual('new description');
 
-    const deleteUserResponse = await osdTestServer.request
-      .delete(
-        root,
-        `/api/v1/configuration/internalusers/${testUsername}?dataSourceId=${dataSourceId}`
-      )
-      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
+    const deleteUserResponse = await deleteEntityAsAdminWithDataSource(
+      root,
+      entityType,
+      testUsername,
+      dataSourceId
+    );
     expect(deleteUserResponse.status).toEqual(200);
 
     const getDeletedUserResponse = await getEntityAsAdminWithDataSource(
       root,
-      'internalusers',
+      entityType,
       testUsername,
       dataSourceId
     );
     expect(getDeletedUserResponse.status).toEqual(404);
+  });
+
+  it('CRUD Permissions for external datasource', async () => {
+    const entityType = 'actiongroups';
+    const testActionGroupName = `test_action_group_${Date.now()}`;
+
+    const createActionGroupResponse = await createOrUpdateEntityAsAdminWithDataSource(
+      root,
+      entityType,
+      testActionGroupName,
+      {
+        allowed_actions: ['some_allowed_action'],
+      },
+      dataSourceId
+    );
+    expect(createActionGroupResponse.status).toEqual(200);
+
+    const getActionGroupsResponse = await getAllEntitiesAsAdminWithDataSource(
+      root,
+      entityType,
+      dataSourceId
+    );
+    expect(getActionGroupsResponse.status).toEqual(200);
+    expect(getActionGroupsResponse.body.data?.hasOwnProperty(testActionGroupName)).toBe(true);
+    expect(getActionGroupsResponse.body.data[testActionGroupName].allowed_actions).toContain(
+      'some_allowed_action'
+    );
+
+    // verify that this AG is not created in Local Cluster
+    const getActionGroupsResponseLocalCluster = await getAllEntitiesAsAdminWithDataSource(
+      root,
+      entityType,
+      ''
+    );
+    expect(getActionGroupsResponseLocalCluster.status).toEqual(200);
+    expect(getActionGroupsResponseLocalCluster.body.data?.hasOwnProperty(testActionGroupName)).toBe(
+      false
+    );
+
+    const updatePermissionResponse = await createOrUpdateEntityAsAdminWithDataSource(
+      root,
+      entityType,
+      testActionGroupName,
+      {
+        allowed_actions: ['some_allowed_action', 'another_permission'],
+      },
+      dataSourceId
+    );
+    expect(updatePermissionResponse.status).toEqual(200);
+
+    const getUpdatedActionGroupsResponse = await getAllEntitiesAsAdminWithDataSource(
+      root,
+      entityType,
+      dataSourceId
+    );
+    expect(getUpdatedActionGroupsResponse.status).toEqual(200);
+    expect(getUpdatedActionGroupsResponse.body.data?.hasOwnProperty(testActionGroupName)).toBe(
+      true
+    );
+    expect(getUpdatedActionGroupsResponse.body.data[testActionGroupName].allowed_actions).toContain(
+      'another_permission'
+    );
+
+    const deleteActionGroupResponse = await deleteEntityAsAdminWithDataSource(
+      root,
+      entityType,
+      testActionGroupName,
+      dataSourceId
+    );
+    expect(deleteActionGroupResponse.status).toEqual(200);
+
+    const getDeletedActionGroupsResponse = await getAllEntitiesAsAdminWithDataSource(
+      root,
+      entityType,
+      dataSourceId
+    );
+    expect(getDeletedActionGroupsResponse.status).toEqual(200);
+    expect(getDeletedActionGroupsResponse.body.data?.hasOwnProperty(testActionGroupName)).toBe(
+      false
+    );
   });
 });

@@ -34,7 +34,14 @@ import {
   Query,
 } from '@elastic/eui';
 import { difference } from 'lodash';
-import React, { Dispatch, ReactNode, SetStateAction, useCallback, useState } from 'react';
+import React, {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useCallback,
+  useState,
+  useContext,
+} from 'react';
 import { AppDependencies } from '../../../types';
 import { Action, DataObject, ActionGroupItem, ExpandedRowMapInterface } from '../../types';
 import {
@@ -54,6 +61,9 @@ import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 import { useContextMenuState } from '../../utils/context-menu';
 import { generateResourceName } from '../../utils/resource-utils';
 import { DocLinks } from '../../constants';
+import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
+import { DataSourceContext } from '../../app-router';
+import { createDataSourceQuery } from '../../../../utils/datasource-utils';
 
 export function renderBooleanToCheckMark(value: boolean): React.ReactNode {
   return value ? <EuiIcon type="check" /> : '';
@@ -77,7 +87,7 @@ export function toggleRowDetails(
   });
 }
 
-export function renderRowExpanstionArrow(
+export function renderRowExpansionArrow(
   itemIdToExpandedRowMap: ExpandedRowMapInterface,
   actionGroupDict: DataObject<ActionGroupItem>,
   setItemIdToExpandedRowMap: Dispatch<SetStateAction<ExpandedRowMapInterface>>
@@ -129,7 +139,7 @@ function getColumns(
       align: RIGHT_ALIGNMENT,
       width: '40px',
       isExpander: true,
-      render: renderRowExpanstionArrow(
+      render: renderRowExpansionArrow(
         itemIdToExpandedRowMap,
         actionGroupDict,
         setItemIdToExpandedRowMap
@@ -182,6 +192,8 @@ export function PermissionList(props: AppDependencies) {
   const [selection, setSelection] = React.useState<PermissionListingItem[]>([]);
   const [itemIdToExpandedRowMap, setItemIdToExpandedRowMap] = useState<ExpandedRowMapInterface>({});
 
+  const { dataSource, setDataSource } = useContext(DataSourceContext)!;
+
   // Modal state
   const [editModal, setEditModal] = useState<ReactNode>(null);
 
@@ -194,7 +206,10 @@ export function PermissionList(props: AppDependencies) {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const actionGroups = await fetchActionGroups(props.coreStart.http);
+      const actionGroups = await fetchActionGroups(
+        props.coreStart.http,
+        createDataSourceQuery(dataSource.id)
+      );
       setActionGroupDict(actionGroups);
       setPermissionList(await mergeAllPermissions(actionGroups));
     } catch (e) {
@@ -203,16 +218,20 @@ export function PermissionList(props: AppDependencies) {
     } finally {
       setLoading(false);
     }
-  }, [props.coreStart.http]);
+  }, [props.coreStart.http, dataSource.id]);
 
   React.useEffect(() => {
     fetchData();
-  }, [props.coreStart.http, fetchData]);
+  }, [props.coreStart.http, fetchData, dataSource.id]);
 
   const handleDelete = async () => {
     const groupsToDelete: string[] = selection.map((r) => r.name);
     try {
-      await requestDeleteActionGroups(props.coreStart.http, groupsToDelete);
+      await requestDeleteActionGroups(
+        props.coreStart.http,
+        groupsToDelete,
+        createDataSourceQuery(dataSource.id)
+      );
       setPermissionList(difference(permissionList, selection));
       setSelection([]);
     } catch (e) {
@@ -276,9 +295,12 @@ export function PermissionList(props: AppDependencies) {
         handleClose={() => setEditModal(null)}
         handleSave={async (groupName, allowedAction) => {
           try {
-            await updateActionGroup(props.coreStart.http, groupName, {
-              allowed_actions: allowedAction,
-            });
+            await updateActionGroup(
+              props.coreStart.http,
+              groupName,
+              { allowed_actions: allowedAction },
+              createDataSourceQuery(dataSource.id)
+            );
             setEditModal(null);
             fetchData();
             addToast({
@@ -301,7 +323,11 @@ export function PermissionList(props: AppDependencies) {
   };
 
   const createActionGroupMenuItems = [
-    <EuiButtonEmpty key="create-from-blank" onClick={() => showEditModal('', Action.create, [])}>
+    <EuiButtonEmpty
+      key="create-from-blank"
+      id="create-from-blank"
+      onClick={() => showEditModal('', Action.create, [])}
+    >
       Create from blank
     </EuiButtonEmpty>,
     <EuiButtonEmpty
@@ -328,6 +354,12 @@ export function PermissionList(props: AppDependencies) {
 
   return (
     <>
+      <SecurityPluginTopNavMenu
+        {...props}
+        dataSourcePickerReadOnly={false}
+        setDataSource={setDataSource}
+        selectedDataSource={dataSource}
+      />
       <EuiPageHeader>
         <EuiTitle size="l">
           <h1>Permissions</h1>

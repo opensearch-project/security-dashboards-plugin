@@ -70,7 +70,14 @@ export function renderCustomization(reserved: boolean, props: UIProps) {
         <EuiIcon type={reserved ? 'lock' : 'pencil'} />
       </EuiFlexItem>
       <EuiFlexItem grow={false}>
-        <EuiText className={props.cssClassName}>{reserved ? 'Reserved' : 'Custom'}</EuiText>
+        <EuiText
+          className={props.cssClassName}
+          data-test-subj={
+            reserved ? 'filter-reserved-action-groups' : 'filter-custom-action-groups'
+          }
+        >
+          {reserved ? 'Reserved' : 'Custom'}
+        </EuiText>
       </EuiFlexItem>
     </EuiFlexGroup>
   );

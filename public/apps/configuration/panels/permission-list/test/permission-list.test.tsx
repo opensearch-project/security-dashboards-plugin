@@ -19,7 +19,7 @@ import {
   PermissionList,
   renderBooleanToCheckMark,
   toggleRowDetails,
-  renderRowExpanstionArrow,
+  renderRowExpansionArrow,
 } from '../permission-list';
 import { EuiInMemoryTable, EuiButtonIcon } from '@elastic/eui';
 import {
@@ -49,6 +49,11 @@ jest.mock('../../../utils/toast-utils', () => ({
   useToastState: jest.fn().mockReturnValue([[], jest.fn(), jest.fn()]),
 }));
 
+jest.mock('react', () => ({
+  ...jest.requireActual('react'),
+  useContext: jest.fn().mockReturnValue({ dataSource: { id: 'test' }, setDataSource: jest.fn() }), // Mock the useContext hook to return dummy datasource and setdatasource function
+}));
+
 describe('Permission list page ', () => {
   const sampleActionGroup: PermissionListingItem = {
     name: 'group',
@@ -73,7 +78,7 @@ describe('Permission list page ', () => {
 
   describe('renderRowExpanstionArrow', () => {
     it('should render down arrow when collapsed', () => {
-      const renderFunc = renderRowExpanstionArrow({}, {}, jest.fn());
+      const renderFunc = renderRowExpansionArrow({}, {}, jest.fn());
       const Wrapper = () => <>{renderFunc(sampleActionGroup)}</>;
       const component = shallow(<Wrapper />);
 
@@ -81,7 +86,7 @@ describe('Permission list page ', () => {
     });
 
     it('should render up arrow when expanded', () => {
-      const renderFunc = renderRowExpanstionArrow(
+      const renderFunc = renderRowExpansionArrow(
         { [sampleActionGroup.name]: sampleActionGroup },
         {},
         jest.fn()
@@ -94,6 +99,12 @@ describe('Permission list page ', () => {
   });
 
   describe('PermissionList', () => {
+    const mockCoreStart = {
+      http: 1,
+    };
+    const dataSourceQuery = {
+      dataSourceId: 'test',
+    };
     it('render empty', () => {
       const component = shallow(
         <PermissionList
@@ -111,14 +122,14 @@ describe('Permission list page ', () => {
       jest.spyOn(React, 'useEffect').mockImplementationOnce((f) => f());
       shallow(
         <PermissionList
-          coreStart={{} as any}
+          coreStart={mockCoreStart as any}
           navigation={{} as any}
           params={{} as any}
           config={{} as any}
         />
       );
 
-      expect(fetchActionGroups).toBeCalled();
+      expect(fetchActionGroups).toBeCalledWith(mockCoreStart.http, dataSourceQuery);
     });
 
     it('fetch data error', () => {
@@ -147,7 +158,7 @@ describe('Permission list page ', () => {
     it('submit change', () => {
       const component = shallow(
         <PermissionList
-          coreStart={{} as any}
+          coreStart={mockCoreStart as any}
           navigation={{} as any}
           params={{} as any}
           config={{} as any}
@@ -157,7 +168,12 @@ describe('Permission list page ', () => {
       const submitFunc = component.find(PermissionEditModal).prop('handleSave');
       submitFunc('group1', []);
 
-      expect(updateActionGroup).toBeCalled();
+      expect(updateActionGroup).toBeCalledWith(
+        mockCoreStart.http,
+        'group1',
+        { allowed_actions: [] },
+        dataSourceQuery
+      );
     });
 
     it('submit change error', () => {
@@ -186,7 +202,7 @@ describe('Permission list page ', () => {
     it('delete action group', (done) => {
       shallow(
         <PermissionList
-          coreStart={{} as any}
+          coreStart={mockCoreStart as any}
           navigation={{} as any}
           params={{} as any}
           config={{} as any}
@@ -197,7 +213,7 @@ describe('Permission list page ', () => {
       deleteFunc();
 
       process.nextTick(() => {
-        expect(requestDeleteActionGroups).toBeCalled();
+        expect(requestDeleteActionGroups).toBeCalledWith(mockCoreStart.http, [], dataSourceQuery);
         done();
       });
     });
