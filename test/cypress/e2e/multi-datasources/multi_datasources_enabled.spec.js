@@ -101,7 +101,7 @@ describe('Multi-datasources enabled', () => {
     // Remote cluster auth
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
     cy.get('[title="9202"]').click();
-    cy.get('.panel-header-count').first().invoke('text').should('contain', '(2)');
+    cy.get('.panel-header-count').first().invoke('text').should('contain', '(6)');
   });
 
   it('Checks Users Tab', () => {
@@ -157,7 +157,7 @@ describe('Multi-datasources enabled', () => {
 
     // Create an action group
     cy.get('[id="Create action group"]').click();
-    cy.contains('div.euiFlexItem > button', 'Create from blank').click();
+    cy.get('[id="create-from-blank"]').click();
     cy.get('[data-test-subj="name-text"]')
       .focus()
       .type('test_permission_ag', { force: true })
@@ -167,7 +167,7 @@ describe('Multi-datasources enabled', () => {
 
     // Permission exists on the remote data source
     cy.get('[data-text="Customization"]').click();
-    cy.contains('div.euiFilterSelect__items > button', 'Custom').click();
+    cy.get('[data-test-subj="filter-custom-action-groups"]').click();
     cy.get('[data-test-subj="checkboxSelectRow-test_permission_ag"]').should('exist');
 
     // Permission doesn't exist on local cluster
