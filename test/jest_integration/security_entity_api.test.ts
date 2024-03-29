@@ -643,6 +643,17 @@ describe('start OpenSearch Dashboards server multi datasources enabled', () => {
       'some_allowed_action'
     );
 
+    // verify that this AG is not created in Local Cluster
+    const getActionGroupsResponseLocalCluster = await getAllEntitiesAsAdminWithDataSource(
+      root,
+      entityType,
+      ''
+    );
+    expect(getActionGroupsResponseLocalCluster.status).toEqual(200);
+    expect(getActionGroupsResponseLocalCluster.body.data?.hasOwnProperty(testActionGroupName)).toBe(
+      false
+    );
+
     const updatePermissionResponse = await createOrUpdateEntityAsAdminWithDataSource(
       root,
       entityType,
