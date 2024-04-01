@@ -136,12 +136,12 @@ export class SamlAuthRoutes {
         }
 
         try {
-          const credentials = await this.securityClient.authToken(
+          const credentials = await this.securityClient.authToken({
             requestId,
-            request.body.SAMLResponse,
-            undefined,
-            SAML_AUTH_REQUEST_TYPE
-          );
+            samlResponse: request.body.SAMLResponse,
+            acsEndpoint: undefined,
+            authRequestType: SAML_AUTH_REQUEST_TYPE,
+          });
           const user = await this.securityClient.authenticateWithHeader(
             request,
             'authorization',
@@ -215,12 +215,12 @@ export class SamlAuthRoutes {
       async (context, request, response) => {
         const acsEndpoint = `${this.coreSetup.http.basePath.serverBasePath}/_opendistro/_security/saml/acs/idpinitiated`;
         try {
-          const credentials = await this.securityClient.authToken(
-            undefined,
-            request.body.SAMLResponse,
+          const credentials = await this.securityClient.authToken({
+            requestId: undefined,
+            samlResponse: request.body.SAMLResponse,
             acsEndpoint,
-            SAML_AUTH_REQUEST_TYPE
-          );
+            authRequestType: SAML_AUTH_REQUEST_TYPE,
+          });
           const user = await this.securityClient.authenticateWithHeader(
             request,
             'authorization',

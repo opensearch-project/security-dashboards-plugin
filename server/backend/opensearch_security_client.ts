@@ -222,12 +222,12 @@ export class SecurityClient {
     throw new Error(`Invalid SAML configuration.`);
   }
 
-  public async authToken(
-    requestId: string | undefined,
-    samlResponse: any,
-    acsEndpoint: any | undefined = undefined,
-    authRequestType: string | undefined
-  ) {
+  public async authToken({
+    requestId,
+    samlResponse,
+    acsEndpoint = undefined,
+    authRequestType,
+  }: AuthTokenParams) {
     const body = {
       RequestId: requestId,
       SAMLResponse: samlResponse,
@@ -243,4 +243,11 @@ export class SecurityClient {
       throw new Error('failed to get token');
     }
   }
+}
+
+interface AuthTokenParams {
+  requestId?: string;
+  samlResponse: any;
+  acsEndpoint?: any;
+  authRequestType?: string;
 }
