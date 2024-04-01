@@ -13,6 +13,7 @@ This document contains a list of maintainers in this repo. See [opensearch-proje
 | Craig Perkins    | [cwperks](https://github.com/cwperks)                 | Amazon      |
 | Ryan Liang       | [RyanL1997](https://github.com/RyanL1997)             | Amazon      |
 | Stephen Crawford | [scrawfor99](https://github.com/scrawfor99)           | Amazon      |
+| Derek Ho         | [derek-ho](https://github.com/derek-ho)               | Amazon      |
 
 ## Emeritus
 
