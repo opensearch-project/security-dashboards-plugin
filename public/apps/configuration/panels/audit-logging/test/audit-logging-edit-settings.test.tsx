@@ -21,6 +21,10 @@ import { buildHashUrl } from '../../../utils/url-builder';
 import { ResourceType } from '../../../../../../common';
 
 jest.mock('../../../utils/audit-logging-utils');
+jest.mock('react', () => ({
+  ...jest.requireActual('react'),
+  useContext: jest.fn().mockReturnValue({ dataSource: { id: 'test' }, setDataSource: jest.fn() }), // Mock the useContext hook to return dummy datasource and setdatasource function
+}));
 
 // eslint-disable-next-line
 const mockAuditLoggingUtils = require('../../../utils/audit-logging-utils');

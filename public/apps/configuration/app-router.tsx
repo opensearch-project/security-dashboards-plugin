@@ -149,15 +149,13 @@ export interface DataSourceContextType {
   setDataSource: React.Dispatch<React.SetStateAction<DataSourceOption>>;
 }
 
+export const LocalCluster = { label: 'Local cluster', id: '' };
+
 export const DataSourceContext = createContext<DataSourceContextType | null>(null);
 
 export function AppRouter(props: AppDependencies) {
   const setGlobalBreadcrumbs = flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs);
-  const [dataSource, setDataSource] = useState<DataSourceOption>({
-    id: '',
-    label: 'Local cluster',
-    checked: 'on',
-  });
+  const [dataSource, setDataSource] = useState<DataSourceOption>(LocalCluster);
 
   return (
     <DataSourceContext.Provider value={{ dataSource, setDataSource }}>

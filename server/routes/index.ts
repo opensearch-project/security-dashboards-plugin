@@ -674,18 +674,24 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
   router.get(
     {
       path: `${API_PREFIX}/configuration/audit`,
-      validate: false,
+      validate: {
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
+      },
     },
     async (
       context,
       request,
       response
     ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
-      const client = context.security_plugin.esClient.asScoped(request);
-
-      let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opensearch_security.getAudit');
+        const esResp = await wrapRouteWithDataSource(
+          dataSourceEnabled,
+          context,
+          request,
+          'opensearch_security.getAudit'
+        );
 
         return response.ok({
           body: esResp,
@@ -759,15 +765,22 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
       path: `${API_PREFIX}/configuration/audit/config`,
       validate: {
         body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     async (context, request, response) => {
-      const client = context.security_plugin.esClient.asScoped(request);
-      let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opensearch_security.saveAudit', {
-          body: request.body,
-        });
+        const esResp = await wrapRouteWithDataSource(
+          dataSourceEnabled,
+          context,
+          request,
+          'opensearch_security.saveAudit',
+          {
+            body: request.body,
+          }
+        );
         return response.ok({
           body: {
             message: esResp.message,
