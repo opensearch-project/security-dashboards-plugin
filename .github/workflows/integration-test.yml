@@ -34,24 +34,6 @@ jobs:
           echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
         shell: bash
 
-      - uses: browser-actions/setup-geckodriver@v0.0.0
-      - run: geckodriver --version
-
-      - name: Set up Firefox browser
-        if: ${{ runner.os == 'Linux' }}
-        uses: browser-actions/setup-firefox@v1
-
-      - run: firefox --version
-        if: ${{ runner.os == 'Linux' }}
-
-      # Browser-action version does not work on Windows
-      - name: Set up Firefox browser for Windows
-        if: ${{ runner.os == 'Windows' }}
-        uses: RyanL1997/setup-browser@main
-        with:
-          browser: firefox
-          version: latest
-
       - name: Download security plugin and create setup scripts
         uses: ./.github/actions/download-plugin
         with:
