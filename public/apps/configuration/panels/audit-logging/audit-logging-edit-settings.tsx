@@ -37,13 +37,14 @@ import { useToastState } from '../../utils/toast-utils';
 import { setCrossPageToast } from '../../utils/storage-utils';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { DataSourceContext } from '../../app-router';
-import { createDataSourceQuery } from '../../../../utils/datasource-utils';
+import { createDataSourceQuery, getClusterInfoIfEnabled } from '../../../../utils/datasource-utils';
 
 interface AuditLoggingEditSettingProps extends AppDependencies {
   setting: 'general' | 'compliance';
 }
 
 export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
+  const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const [editConfig, setEditConfig] = React.useState<AuditLoggingSettings>({});
   const [toasts, addToast, removeToast] = useToastState();
   const [invalidSettings, setInvalidSettings] = React.useState<string[]>([]);
@@ -132,9 +133,13 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
       };
 
       if (props.setting === 'general') {
-        addSuccessToast('General settings saved');
+        addSuccessToast(
+          `General settings saved ${getClusterInfoIfEnabled(dataSourceEnabled, dataSource)}`
+        );
       } else {
-        addSuccessToast('Compliance settings saved');
+        addSuccessToast(
+          `Compliance settings saved ${getClusterInfoIfEnabled(dataSourceEnabled, dataSource)}`
+        );
       }
 
       window.location.href = buildHashUrl(ResourceType.auditLogging);
@@ -143,7 +148,11 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
         id: 'update-result',
         color: 'danger',
         iconType: 'alert',
-        title: 'Failed to update audit configuration due to ' + e?.message,
+        title:
+          `Failed to update audit configuration ${getClusterInfoIfEnabled(
+            dataSourceEnabled,
+            dataSource
+          )} due to ` + e?.message,
       };
 
       addToast(failureToast);

@@ -193,6 +193,7 @@ describe('Multi-datasources enabled', () => {
 
   it('Checks Audit Logs Tab', () => {
     cy.visit('http://localhost:5601/app/security-dashboards-plugin#/auditLogging');
+    cy.get('[data-test-subj="general-settings"]').should('exist');
 
     // Select remote cluster
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();

@@ -57,7 +57,7 @@ describe('Audit logs edit', () => {
     shallow(
       <AuditLoggingEditSettings
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{}}
         setting="general"
         params={{} as any}
         config={{} as any}
@@ -93,7 +93,7 @@ describe('Audit logs edit', () => {
     shallow(
       <AuditLoggingEditSettings
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{}}
         setting="compliance"
         params={{} as any}
         config={{} as any}
@@ -116,7 +116,7 @@ describe('Audit logs edit', () => {
     shallow(
       <AuditLoggingEditSettings
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{}}
         setting="compliance"
         params={{} as any}
         config={{} as any}
@@ -133,7 +133,7 @@ describe('Audit logs edit', () => {
     const component = shallow(
       <AuditLoggingEditSettings
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{}}
         setting="compliance"
         params={{} as any}
         config={{} as any}
@@ -147,7 +147,7 @@ describe('Audit logs edit', () => {
     const component = shallow(
       <AuditLoggingEditSettings
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{}}
         setting="compliance"
         params={{} as any}
         config={{} as any}
@@ -162,7 +162,7 @@ describe('Audit logs edit', () => {
     const component = shallow(
       <AuditLoggingEditSettings
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{}}
         setting="general"
         params={{} as any}
         config={{} as any}
