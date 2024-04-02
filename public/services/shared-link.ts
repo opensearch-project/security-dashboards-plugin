@@ -12,7 +12,6 @@
  *   express or implied. See the License for the specific language governing
  *   permissions and limitations under the License.
  */
-import { parse } from 'url';
 import { CoreStart } from 'opensearch-dashboards/public';
 import { API_ENDPOINT_MULTITENANCY } from '../apps/configuration/constants';
 
@@ -72,45 +71,38 @@ export function updateClipboard(
   originalValue: string | undefined,
   tenant: string
 ) {
-  const shareButton = document.querySelector('[data-share-url]') as any;
   const target = document.querySelector('body > span');
 
   if (!originalValue) {
     originalValue = urlPart;
   }
 
-  const { host, pathname, search } = parse(urlPart);
-  const queryDelimiter = !search ? '?' : '&';
-
-  // The url parser returns null if the search is empty. Change that to an empty
-  // string so that we can use it to build the values later
-  if (search && search.toLowerCase().indexOf('security_tenant') > -1) {
-    // If we for some reason already have a tenant in the URL we skip any updates
+  const originalUrl = new URL(urlPart);
+  if (originalUrl.searchParams?.has('security_tenant')) {
     return originalValue;
   }
+  originalUrl.searchParams.append('security_tenant', tenant);
 
-  // A helper for finding the part in the string that we want to extend/replace
-  const valueToReplace = host! + pathname! + (search || '');
-  const replaceWith =
-    valueToReplace + queryDelimiter + 'security_tenant=' + encodeURIComponent(tenant);
+  const originalValueWithTenant = originalValue.replace(urlPart, originalUrl.toString());
 
-  setClipboardAndTarget(shareButton, target, replaceWith, originalValue);
+  setClipboardAndTarget(target, originalValueWithTenant, originalValue);
 }
 
-export function setClipboardAndTarget(
-  shareButton: any,
-  target: any,
-  newValue: string,
-  originalValue: string
-) {
-  const range = document.createRange() as any;
-  const referenceNode = document.getElementsByTagName('span').item(0);
+export function setClipboardAndTarget(target: any, newValue: string, originalValue: string) {
+  let range = document.createRange() as any;
+  const referenceNode = target;
+
+  const selection = document.getSelection();
+  if (selection?.rangeCount === 1) {
+    range = selection.getRangeAt(0);
+  }
 
   range.selectNode(referenceNode);
-  shareButton.removeAllRanges();
-  shareButton.addRange(range);
+  selection?.removeAllRanges();
 
   if (newValue !== originalValue) {
     target.textContent = newValue;
   }
+
+  selection?.addRange(range);
 }

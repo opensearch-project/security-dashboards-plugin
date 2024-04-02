@@ -189,6 +189,7 @@ exports[`Get started (landing page) renders when backend configuration is disabl
           By default, the security plugin caches authenticated users, along with their roles and permissions. This option will purge cached users, roles and permissions.
         </p>
         <EuiButton
+          data-test-subj="purge-cache"
           fill={true}
           iconType="refresh"
           onClick={[Function]}
@@ -243,6 +244,12 @@ exports[`Get started (landing page) renders when backend configuration is disabl
       </EuiText>
     </EuiPanel>
   </div>
+  <EuiGlobalToastList
+    dismissToast={[MockFunction]}
+    side="right"
+    toastLifeTimeMs={10000}
+    toasts={Array []}
+  />
 </Fragment>
 `;
 
@@ -502,6 +509,7 @@ exports[`Get started (landing page) renders when backend configuration is enable
           By default, the security plugin caches authenticated users, along with their roles and permissions. This option will purge cached users, roles and permissions.
         </p>
         <EuiButton
+          data-test-subj="purge-cache"
           fill={true}
           iconType="refresh"
           onClick={[Function]}
@@ -556,5 +564,11 @@ exports[`Get started (landing page) renders when backend configuration is enable
       </EuiText>
     </EuiPanel>
   </div>
+  <EuiGlobalToastList
+    dismissToast={[MockFunction]}
+    side="right"
+    toastLifeTimeMs={10000}
+    toasts={Array []}
+  />
 </Fragment>
 `;

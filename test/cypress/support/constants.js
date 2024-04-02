@@ -40,3 +40,7 @@ export const SEC_API = {
   ROLE_BASE: `${SEC_API_PREFIX}/roles`,
   ROLE_MAPPING_BASE: `${SEC_API_PREFIX}/rolesmapping`,
 };
+export const DASHBOARDS_API = {
+  SHORTEN_URL: '/api/shorten_url',
+};
+export const SHORTEN_URL_DATA = { url: '/app/home#/tutorial_directory' };

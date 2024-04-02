@@ -43,7 +43,6 @@ import {
   AUTH_GRANT_TYPE,
   AUTH_RESPONSE_TYPE,
   OPENID_AUTH_LOGOUT,
-  LOGIN_PAGE_URI,
 } from '../../../../common';
 
 import {
@@ -196,10 +195,9 @@ export class OpenIdAuthRoutes {
             username: user.username,
             credentials: {
               authHeaderValueExtra: true,
-              expires_at: getExpirationDate(tokenResponse),
             },
             authType: AuthType.OPEN_ID,
-            expiryTime: Date.now() + this.config.session.ttl,
+            expiryTime: getExpirationDate(tokenResponse),
           };
           if (this.config.openid?.refresh_tokens && tokenResponse.refreshToken) {
             Object.assign(sessionStorage.credentials, {

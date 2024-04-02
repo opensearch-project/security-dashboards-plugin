@@ -59,9 +59,12 @@ export class SamlAuthentication extends AuthenticationType {
   }
 
   private generateNextUrl(request: OpenSearchDashboardsRequest): string {
-    const path =
+    let path =
       this.coreSetup.http.basePath.serverBasePath +
       (request.url.pathname || '/app/opensearch-dashboards');
+    if (request.url.search) {
+      path += request.url.search;
+    }
     return escape(path);
   }
 
@@ -125,6 +128,14 @@ export class SamlAuthentication extends AuthenticationType {
 
   async getAdditionalAuthHeader(request: OpenSearchDashboardsRequest): Promise<any> {
     return {};
+  }
+
+  // SAML expiry time is set by the IDP and returned via the security backend. Keep alive should not modify this value.
+  public getKeepAliveExpiry(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
+  ): number {
+    return cookie.expiryTime!;
   }
 
   getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {

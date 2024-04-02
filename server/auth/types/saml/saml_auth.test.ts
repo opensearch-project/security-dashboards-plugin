@@ -115,4 +115,28 @@ describe('test SAML authHeaderValue', () => {
 
     expect(headers).toEqual(expectedHeaders);
   });
+
+  test('getKeepAliveExpiry', () => {
+    const samlAuthentication = new SamlAuthentication(
+      config,
+      sessionStorageFactory,
+      router,
+      esClient,
+      core,
+      logger
+    );
+
+    const cookie: SecuritySessionCookie = {
+      credentials: {
+        authHeaderValueExtra: true,
+      },
+      expiryTime: 1000,
+    };
+
+    const request = httpServerMock.createOpenSearchDashboardsRequest({
+      path: '/internal/v1',
+    });
+
+    expect(samlAuthentication.getKeepAliveExpiry(cookie, request)).toBe(1000);
+  });
 });

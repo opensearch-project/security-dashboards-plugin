@@ -85,7 +85,7 @@ export function AccountNavButton(props: {
   }, [props.coreStart.http]);
 
   // Check if the tenant modal should be shown on load
-  if (isMultiTenancyEnabled && getShouldShowTenantPopup() && props.config.multitenancy.enabled) {
+  if (getShouldShowTenantPopup()) {
     setShouldShowTenantPopup(false);
     showTenantSwitchPanel();
   }
@@ -108,15 +108,17 @@ export function AccountNavButton(props: {
               }
             />
           </EuiListGroup>
-          <EuiListGroupItem
-            color="subdued"
-            key="tenant"
-            label={
-              <EuiText size="xs" id="tenantName">
-                {resolveTenantName(props.tenant || '', username)}
-              </EuiText>
-            }
-          />
+          {isMultiTenancyEnabled && props.config.multitenancy.enabled && (
+            <EuiListGroupItem
+              color="subdued"
+              key="tenant"
+              label={
+                <EuiText size="xs" id="tenantName">
+                  {resolveTenantName(props.tenant || '', username)}
+                </EuiText>
+              }
+            />
+          )}
         </EuiFlexItem>
       </EuiFlexGroup>
 

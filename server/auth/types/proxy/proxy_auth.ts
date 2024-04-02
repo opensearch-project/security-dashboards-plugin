@@ -30,7 +30,6 @@ import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { ProxyAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
-import { isValidTenant } from '../../../multitenancy/tenant_resolver';
 
 export class ProxyAuthentication extends AuthenticationType {
   private static readonly XFF: string = 'x-forwarded-for';
@@ -135,7 +134,10 @@ export class ProxyAuthentication extends AuthenticationType {
     }
   }
 
-  buildAuthHeaderFromCookie(cookie: SecuritySessionCookie): any {
+  buildAuthHeaderFromCookie(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest
+  ): any {
     const authHeaders: any = {};
     if (get(cookie.credentials, this.userHeaderName)) {
       authHeaders[this.userHeaderName] = cookie.credentials[this.userHeaderName];

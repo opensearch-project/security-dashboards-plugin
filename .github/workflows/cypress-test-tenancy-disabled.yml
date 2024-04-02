@@ -10,6 +10,7 @@ env:
   OPENSEARCH_SNAPSHOT_CMD: 'node ../scripts/opensearch snapshot'
   SPEC: 'cypress/integration/plugins/security-dashboards-plugin/aggregation_view.js,'
   PLUGIN_NAME: opensearch-security
+  OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
 
 jobs:
   cypress-tests-multitenancy-disabled:
@@ -44,31 +45,38 @@ jobs:
           plugin-name: ${{ env.PLUGIN_NAME }}
           plugin-version: ${{ env.PLUGIN_VERSION }}
 
-      - name: Run Opensearch with A Single Plugin
-        uses: opensearch-project/security/.github/actions/start-opensearch-with-one-plugin@main
+      - name: Run Opensearch with security
+        uses: derek-ho/start-opensearch@v2
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
-          plugin-name: ${{ env.PLUGIN_NAME }}
-          setup-script-name: setup
-          admin-password: myStrongPassword123!
+          plugins: "file:$(pwd)/${{ env.PLUGIN_NAME }}.zip"
+          security-enabled: true
+          admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
+
+      # Configure the Dashboard
+      - name: Configure OpenSearch Dashboards with tenancy disabled
+        run: |
+          cat << 'EOT' > tenancy-disabled-opensearch-dashboards-config.yml
+          server.host: "0.0.0.0"
+          opensearch.hosts: ["https://localhost:9200"]
+          opensearch.ssl.verificationMode: none
+          opensearch.username: "kibanaserver"
+          opensearch.password: "kibanaserver"
+          opensearch.requestHeadersWhitelist: [ authorization,securitytenant ]
+          opensearch_security.multitenancy.enabled: false
+          opensearch_security.readonly_mode.roles: ["kibana_read_only"]
+          opensearch_security.cookie.secure: false
+          EOT
 
       - name: Run Dashboard with Security Dashboards Plugin
-        uses: ./.github/actions/install-dashboards
+        uses: derek-ho/setup-opensearch-dashboards@v1
         with:
           plugin_name: security-dashboards-plugin
+          opensearch_dashboards_yml: tenancy-disabled-opensearch-dashboards-config.yml
 
       - name: Configure and Run OpenSearch Dashboards with Cypress Test Cases
         run: |
           cd ./OpenSearch-Dashboards
-          echo 'server.host: "0.0.0.0"' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch.hosts: ["https://localhost:9200"]' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch.ssl.verificationMode: none' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch.username: "kibanaserver"' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch.password: "kibanaserver"' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch.requestHeadersWhitelist: [ authorization,securitytenant ]' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch_security.multitenancy.enabled: false' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch_security.readonly_mode.roles: ["kibana_read_only"]' >> ./config/opensearch_dashboards.yml
-          echo 'opensearch_security.cookie.secure: false' >> ./config/opensearch_dashboards.yml
           nohup yarn start --no-base-path --no-watch &
           sleep 500
           git clone https://github.com/opensearch-project/opensearch-dashboards-functional-test.git

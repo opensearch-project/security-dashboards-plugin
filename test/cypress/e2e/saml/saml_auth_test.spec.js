@@ -18,7 +18,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ALL_ACCESS_ROLE } from '../../support/constants';
+import { ALL_ACCESS_ROLE, SHORTEN_URL_DATA } from '../../support/constants';
 
 import samlUserRoleMapping from '../../fixtures/saml/samlUserRoleMappiing.json';
 
@@ -120,5 +120,19 @@ describe('Log in via SAML', () => {
     cy.get('#osdOverviewPageHeader__title').should('be.visible');
 
     cy.get('#tenantName').should('have.text', 'Private');
+  });
+
+  it('Login to Dashboard with Goto URL', () => {
+    localStorage.setItem('home:newThemeModal:show', 'false');
+    cy.shortenUrl(SHORTEN_URL_DATA, 'global').then((response) => {
+      // We need to explicitly clear cookies,
+      // since the Shorten URL api is return's set-cookie header for admin user.
+      cy.clearCookies().then(() => {
+        const gotoUrl = `http://localhost:5601/goto/${response.urlId}?security_tenant=global`;
+        cy.visit(gotoUrl);
+        samlLogin();
+        cy.getCookie('security_authentication').should('exist');
+      });
+    });
   });
 });

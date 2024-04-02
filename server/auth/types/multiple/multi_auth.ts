@@ -17,14 +17,14 @@ import {
   SessionStorageFactory,
   IRouter,
   ILegacyClusterClient,
-  OpenSearchDashboardsRequest,
   Logger,
   LifecycleResponseFactory,
+  OpenSearchDashboardsRequest,
   AuthToolkit,
-} from '../../../../opensearch-dashboards/server';
+} from 'opensearch-dashboards/server';
 import { OpenSearchDashboardsResponse } from '../../../../../../src/core/server/http/router';
 import { SecurityPluginConfigType } from '../../..';
-import { AuthenticationType, IAuthenticationType } from '../authentication_type';
+import { AuthenticationType } from '../authentication_type';
 import { ANONYMOUS_AUTH_LOGIN, AuthType, LOGIN_PAGE_URI } from '../../../../common';
 import { composeNextUrlQueryParam } from '../../../utils/next_url';
 import { MultiAuthRoutes } from './routes';
@@ -128,6 +128,19 @@ export class MultipleAuthentication extends AuthenticationType {
 
   getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
     return {};
+  }
+
+  getKeepAliveExpiry(
+    cookie: SecuritySessionCookie,
+    request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
+  ): number {
+    const reqAuthType = cookie?.authType?.toLowerCase();
+    if (reqAuthType && this.authHandlers.has(reqAuthType)) {
+      return this.authHandlers.get(reqAuthType)!.getKeepAliveExpiry(cookie, request);
+    } else {
+      // default to TTL setting
+      return Date.now() + this.config.session.ttl;
+    }
   }
 
   async isValidCookie(
