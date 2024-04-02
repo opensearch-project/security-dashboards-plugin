@@ -34,6 +34,11 @@ import {
   getEntityAsAdmin,
   getEntityAsAdminWithDataSource,
 } from '../helper/entity_operation';
+import {
+  testAuditLogDisabledSettings,
+  testAuditLogEnabledSettings,
+  testAuditLogSettings,
+} from './constants';
 
 describe('start OpenSearch Dashboards server', () => {
   let root: Root;
@@ -428,6 +433,19 @@ describe('start OpenSearch Dashboards server', () => {
       });
     expect(response.status).toEqual(200);
   });
+
+  it('Audit logging', async () => {
+    const getAuditLoggingResponse = await osdTestServer.request
+      .get(root, '/api/v1/configuration/audit')
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
+    expect(getAuditLoggingResponse.status).toEqual(200);
+
+    const changeAuditLogResponse = await osdTestServer.request
+      .post(root, '/api/v1/configuration/audit/config')
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
+      .send(testAuditLogEnabledSettings);
+    expect(changeAuditLogResponse.status).toEqual(200);
+  });
 });
 
 describe('start OpenSearch Dashboards server multi datasources enabled', () => {
@@ -695,5 +713,32 @@ describe('start OpenSearch Dashboards server multi datasources enabled', () => {
     expect(getDeletedActionGroupsResponse.body.data?.hasOwnProperty(testActionGroupName)).toBe(
       false
     );
+  });
+
+  // Skip tenant multi datasource tests since it is locked to local cluster
+
+  it('Audit logging', async () => {
+    const getAuditLoggingResponseRemote = await osdTestServer.request
+      .get(root, `/api/v1/configuration/audit?dataSourceId=${dataSourceId}`)
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
+    expect(getAuditLoggingResponseRemote.status).toEqual(200);
+
+    const changeAuditLogResponseRemote = await osdTestServer.request
+      .post(root, `/api/v1/configuration/audit/config?dataSourceId=${dataSourceId}`)
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
+      .send(testAuditLogDisabledSettings);
+    expect(changeAuditLogResponseRemote.status).toEqual(200);
+
+    const getAuditLoggingResponse = await osdTestServer.request
+      .get(root, `/api/v1/configuration/audit`)
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
+    expect(getAuditLoggingResponse.status).toEqual(200);
+    expect(getAuditLoggingResponse.body.config.enabled).toEqual(true);
+
+    const checkAuditLogSettingsRemote = await osdTestServer.request
+      .get(root, `/api/v1/configuration/audit?dataSourceId=${dataSourceId}`)
+      .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
+    expect(checkAuditLogSettingsRemote.status).toEqual(200);
+    expect(checkAuditLogSettingsRemote.body.config.enabled).toEqual(false);
   });
 });
