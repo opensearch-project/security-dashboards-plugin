@@ -13,16 +13,23 @@
  *   permissions and limitations under the License.
  */
 
-import { HttpStart } from 'opensearch-dashboards/public';
+import { HttpFetchQuery, HttpStart } from 'opensearch-dashboards/public';
 import { AuditLoggingSettings } from '../panels/audit-logging/types';
 import { API_ENDPOINT_AUDITLOGGING, API_ENDPOINT_AUDITLOGGING_UPDATE } from '../constants';
 import { httpGet, httpPost } from './request-utils';
 
-export async function updateAuditLogging(http: HttpStart, updateObject: AuditLoggingSettings) {
-  return await httpPost({ http, url: API_ENDPOINT_AUDITLOGGING_UPDATE, body: updateObject });
+export async function updateAuditLogging(
+  http: HttpStart,
+  updateObject: AuditLoggingSettings,
+  query: HttpFetchQuery
+) {
+  return await httpPost({ http, url: API_ENDPOINT_AUDITLOGGING_UPDATE, body: updateObject, query });
 }
 
-export async function getAuditLogging(http: HttpStart): Promise<AuditLoggingSettings> {
-  const rawConfiguration = await httpGet<any>({ http, url: API_ENDPOINT_AUDITLOGGING });
+export async function getAuditLogging(
+  http: HttpStart,
+  query: HttpFetchQuery
+): Promise<AuditLoggingSettings> {
+  const rawConfiguration = await httpGet<any>({ http, url: API_ENDPOINT_AUDITLOGGING, query });
   return rawConfiguration?.config;
 }

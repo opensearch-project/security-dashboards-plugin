@@ -179,4 +179,46 @@ describe('Multi-datasources enabled', () => {
     );
     cy.get('[data-test-subj="checkboxSelectRow-test_permission_ag"]').should('not.exist');
   });
+
+  it('Checks Tenancy Tab', () => {
+    // Datasource is locked to local cluster for tenancy tab
+    cy.visit('http://localhost:5601/app/security-dashboards-plugin#/tenants');
+    cy.contains('h1', 'Multi-tenancy');
+    cy.get('[data-test-subj="dataSourceViewContextMenuHeaderLink"]').should(
+      'contain',
+      'Local cluster'
+    );
+    cy.get('[data-test-subj="dataSourceViewContextMenuHeaderLink"]').should('be.disabled');
+  });
+
+  it('Checks Audit Logs Tab', () => {
+    cy.visit('http://localhost:5601/app/security-dashboards-plugin#/auditLogging');
+    cy.get('[data-test-subj="general-settings"]').should('exist');
+
+    // Select remote cluster
+    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
+    cy.get('[title="9202"]').click();
+    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
+      'contain',
+      '9202'
+    );
+
+    cy.get('[data-test-subj="general-settings-configure"]').click();
+    cy.get('[data-test-subj="dataSourceViewContextMenuHeaderLink"]').should('contain', '9202');
+
+    cy.get('[data-test-subj="comboBoxInput"]').last().type('blah');
+    cy.get('[data-test-subj="save"]').click();
+
+    cy.get('[data-test-subj="general-settings"]').should('contain', 'blah');
+
+    // Select local cluster
+    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
+    cy.get('[title="Local cluster"]').click();
+    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
+      'contain',
+      'Local cluster'
+    );
+
+    cy.get('[data-test-subj="general-settings"]').should('not.contain', 'blah');
+  });
 });

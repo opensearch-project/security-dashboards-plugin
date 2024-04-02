@@ -21,6 +21,10 @@ import { buildHashUrl } from '../../../utils/url-builder';
 import { ResourceType } from '../../../../../../common';
 
 jest.mock('../../../utils/audit-logging-utils');
+jest.mock('react', () => ({
+  ...jest.requireActual('react'),
+  useContext: jest.fn().mockReturnValue({ dataSource: { id: 'test' }, setDataSource: jest.fn() }), // Mock the useContext hook to return dummy datasource and setdatasource function
+}));
 
 // eslint-disable-next-line
 const mockAuditLoggingUtils = require('../../../utils/audit-logging-utils');
@@ -53,7 +57,7 @@ describe('Audit logs edit', () => {
     shallow(
       <AuditLoggingEditSettings
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{}}
         setting="general"
         params={{} as any}
         config={{} as any}
@@ -89,7 +93,7 @@ describe('Audit logs edit', () => {
     shallow(
       <AuditLoggingEditSettings
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{}}
         setting="compliance"
         params={{} as any}
         config={{} as any}
@@ -112,7 +116,7 @@ describe('Audit logs edit', () => {
     shallow(
       <AuditLoggingEditSettings
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{}}
         setting="compliance"
         params={{} as any}
         config={{} as any}
@@ -129,7 +133,7 @@ describe('Audit logs edit', () => {
     const component = shallow(
       <AuditLoggingEditSettings
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{}}
         setting="compliance"
         params={{} as any}
         config={{} as any}
@@ -143,7 +147,7 @@ describe('Audit logs edit', () => {
     const component = shallow(
       <AuditLoggingEditSettings
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{}}
         setting="compliance"
         params={{} as any}
         config={{} as any}
@@ -158,7 +162,7 @@ describe('Audit logs edit', () => {
     const component = shallow(
       <AuditLoggingEditSettings
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{}}
         setting="general"
         params={{} as any}
         config={{} as any}
