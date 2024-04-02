@@ -15,15 +15,7 @@
 
 import React from 'react';
 import { CoreStart } from 'opensearch-dashboards/public';
-import {
-  EuiFieldText,
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiFormControlLayout,
-  EuiFormRow,
-  EuiIcon,
-  EuiSpacer,
-} from '@elastic/eui';
+import { EuiFieldText, EuiFlexGroup, EuiFlexItem, EuiFormRow, EuiIcon } from '@elastic/eui';
 import { FormRow } from './form-row';
 import { PASSWORD_INSTRUCTION } from '../../apps-constants';
 import { getDashboardsInfo } from '../../../utils/dashboards-info-utils';
