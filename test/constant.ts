@@ -17,7 +17,7 @@ export const OPENSEARCH_DASHBOARDS_SERVER_USER: string = 'kibanaserver';
 export const OPENSEARCH_DASHBOARDS_SERVER_PASSWORD: string = 'kibanaserver';
 
 export const ADMIN_USER: string = 'admin';
-export const ADMIN_PASSWORD: string = 'admin';
+export const ADMIN_PASSWORD: string = process.env.ADMIN_PASSWORD || 'admin';
 const ADMIN_USER_PASS: string = `${ADMIN_USER}:${ADMIN_PASSWORD}`;
 export const ADMIN_CREDENTIALS: string = `Basic ${Buffer.from(ADMIN_USER_PASS).toString('base64')}`;
 export const AUTHORIZATION_HEADER_NAME: string = 'Authorization';
