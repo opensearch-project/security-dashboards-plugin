@@ -16,7 +16,7 @@
 import { ILegacyClusterClient, OpenSearchDashboardsRequest } from '../../../../src/core/server';
 import { User } from '../auth/user';
 import { TenancyConfigSettings } from '../../public/apps/configuration/panels/tenancy-config/types';
-import { AUTH_REQUEST_TYPE_HEADER, SAML_AUTH_REQUEST_TYPE } from '../../common';
+import { AUTH_REQUEST_TYPE_HEADER, AuthType, SAML_AUTH_REQUEST_TYPE } from '../../common';
 
 export class SecurityClient {
   constructor(private readonly esClient: ILegacyClusterClient) {}
@@ -32,6 +32,7 @@ export class SecurityClient {
           headers: {
             authorization: `Basic ${authHeader}`,
           },
+          AUTH_REQUEST_TYPE_HEADER: AuthType.BASIC,
         });
       return {
         username: credentials.username,
