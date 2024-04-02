@@ -185,7 +185,7 @@ export function AuditLogging(props: AuditLoggingProps) {
         {statusPanel}
         <EuiSpacer />
 
-        <EuiPanel>
+        <EuiPanel data-test-subj="general-settings">
           <EuiFlexGroup>
             <EuiFlexItem>
               <EuiTitle>
