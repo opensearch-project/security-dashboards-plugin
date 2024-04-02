@@ -57,16 +57,20 @@ export const PasswordStrengthBar = (props: PasswordStrengthBarProps) => {
             data-test-subj="password-strength-progress"
           />
         </EuiFlexItem>
-        {passwordStrength.feedback.warning && <EuiFlexItem>
-          <EuiText size="xs" data-test-subj="password-strength-feedback-warning">
-            {passwordStrength.feedback.warning}
-          </EuiText>
-        </EuiFlexItem>}
-        {passwordStrength.feedback.suggestions && <EuiFlexItem>
-          <EuiText size="xs" data-test-subj="password-strength-feedback-suggestions">
-            {passwordStrength.feedback.suggestions}
-          </EuiText>
-        </EuiFlexItem>}
+        {passwordStrength.feedback.warning && (
+          <EuiFlexItem>
+            <EuiText size="xs" data-test-subj="password-strength-feedback-warning">
+              {passwordStrength.feedback.warning}
+            </EuiText>
+          </EuiFlexItem>
+        )}
+        {passwordStrength.feedback.suggestions && (
+          <EuiFlexItem>
+            <EuiText size="xs" data-test-subj="password-strength-feedback-suggestions">
+              {passwordStrength.feedback.suggestions}
+            </EuiText>
+          </EuiFlexItem>
+        )}
       </EuiFlexGroup>
     )
   );

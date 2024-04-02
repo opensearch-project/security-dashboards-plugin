@@ -128,28 +128,27 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
           <EuiSpacer />
 
           <EuiFlexGroup direction="row">
-        <EuiFlexItem grow={false}>
-
-          <FormRow
-            headerText="New password"
-            helpText={passwordHelpText}
-            isInvalid={isNewPasswordInvalid}
-          >
-            <EuiFieldPassword
-              data-test-subj="new-password"
-              onChange={function (e: React.ChangeEvent<HTMLInputElement>) {
-                setNewPassword(e.target.value);
-                setIsNewPasswordInvalid(false);
-                setIsRepeatNewPasswordInvalid(repeatNewPassword !== newPassword);
-              }}
-              isInvalid={isNewPasswordInvalid}
-            />
-          </FormRow>
-          <EuiFormRow>
-            <PasswordStrengthBar password={newPassword} />
-          </EuiFormRow>
-        </EuiFlexItem>
-      </EuiFlexGroup>
+            <EuiFlexItem grow={false}>
+              <FormRow
+                headerText="New password"
+                helpText={passwordHelpText}
+                isInvalid={isNewPasswordInvalid}
+              >
+                <EuiFieldPassword
+                  data-test-subj="new-password"
+                  onChange={function (e: React.ChangeEvent<HTMLInputElement>) {
+                    setNewPassword(e.target.value);
+                    setIsNewPasswordInvalid(false);
+                    setIsRepeatNewPasswordInvalid(repeatNewPassword !== newPassword);
+                  }}
+                  isInvalid={isNewPasswordInvalid}
+                />
+              </FormRow>
+              <EuiFormRow>
+                <PasswordStrengthBar password={newPassword} />
+              </EuiFormRow>
+            </EuiFlexItem>
+          </EuiFlexGroup>
 
           <FormRow
             headerText="Re-enter new password"
