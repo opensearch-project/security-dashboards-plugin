@@ -19,6 +19,9 @@ import {
   EuiButtonEmpty,
   EuiCallOut,
   EuiFieldPassword,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiFormRow,
   EuiModal,
   EuiModalBody,
   EuiModalFooter,
@@ -33,6 +36,7 @@ import { PASSWORD_INSTRUCTION } from '../apps-constants';
 import { constructErrorMessageAndLog } from '../error-utils';
 import { validateCurrentPassword } from '../../utils/login-utils';
 import { getDashboardsInfo } from '../../utils/dashboards-info-utils';
+import { PasswordStrengthBar } from '../configuration/utils/password-strength-bar';
 
 interface PasswordResetPanelProps {
   coreStart: CoreStart;
@@ -121,6 +125,10 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
               isInvalid={isCurrentPasswordInvalid}
             />
           </FormRow>
+          <EuiSpacer />
+
+          <EuiFlexGroup direction="row">
+        <EuiFlexItem grow={false}>
 
           <FormRow
             headerText="New password"
@@ -137,6 +145,11 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
               isInvalid={isNewPasswordInvalid}
             />
           </FormRow>
+          <EuiFormRow>
+            <PasswordStrengthBar password={newPassword} />
+          </EuiFormRow>
+        </EuiFlexItem>
+      </EuiFlexGroup>
 
           <FormRow
             headerText="Re-enter new password"
