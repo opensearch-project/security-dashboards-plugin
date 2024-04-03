@@ -191,6 +191,17 @@ describe('Multi-datasources enabled', () => {
     cy.get('[data-test-subj="dataSourceViewContextMenuHeaderLink"]').should('be.disabled');
   });
 
+  it('Checks Service Accounts Tab', () => {
+    // Datasource is locked to local cluster for tenancy tab
+    cy.visit('http://localhost:5601/app/security-dashboards-plugin#/serviceAccounts');
+    cy.contains('h1', 'Multi-tenancy');
+    cy.get('[data-test-subj="dataSourceViewContextMenuHeaderLink"]').should(
+      'contain',
+      'Local cluster'
+    );
+    cy.get('[data-test-subj="dataSourceViewContextMenuHeaderLink"]').should('be.disabled');
+  });
+
   it('Checks Audit Logs Tab', () => {
     cy.visit('http://localhost:5601/app/security-dashboards-plugin#/auditLogging');
     cy.get('[data-test-subj="general-settings"]').should('exist');
