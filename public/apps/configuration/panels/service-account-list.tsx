@@ -161,7 +161,7 @@ export function ServiceAccountList(props: AppDependencies) {
 
   return (
     <>
-    <SecurityPluginTopNavMenu
+      <SecurityPluginTopNavMenu
         {...props}
         dataSourcePickerReadOnly={true}
         setDataSource={() => {}}
