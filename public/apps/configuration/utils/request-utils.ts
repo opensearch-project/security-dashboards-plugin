@@ -22,12 +22,15 @@ interface RequestType {
   query?: HttpFetchQuery;
 }
 
-export async function request<T>(
-  requestFunc: HttpHandler,
-  url: string,
-  body?: object,
-  query?: HttpFetchQuery
-): Promise<T> {
+interface RequestParams {
+  requestFunc: HttpHandler;
+  url: string;
+  body?: object;
+  query?: HttpFetchQuery;
+}
+
+export async function request<T>(params: RequestParams): Promise<T> {
+  const { requestFunc, url, body, query } = params;
   if (body) {
     return (await requestFunc(url, { body: JSON.stringify(body), query })) as T;
   }
@@ -36,21 +39,28 @@ export async function request<T>(
 
 export async function httpGet<T>(params: RequestType): Promise<T> {
   const { http, url, body, query } = params;
-  return await request<T>(http.get, url, body, query);
+  return await request<T>({ requestFunc: http.get, url, body, query });
 }
 
 export async function httpPost<T>(params: RequestType): Promise<T> {
   const { http, url, body, query } = params;
-  return await request<T>(http.post, url, body, query);
+  return await request<T>({ requestFunc: http.post, url, body, query });
 }
 
 export async function httpPut<T>(http: HttpStart, url: string, body?: object): Promise<T> {
-  return await request<T>(http.put, url, body);
+  return await request<T>({ requestFunc: http.put, url, body });
 }
 
 export async function httpDelete<T>(params: RequestType): Promise<T> {
   const { http, url, body, query } = params;
-  return await request<T>(http.delete, url, body, query);
+  return await request<T>({ requestFunc: http.delete, url, body, query });
+}
+
+interface RequestTypeWithIgnore extends RequestType {
+  ignores: number[];
+}
+interface RequestParamsWithIgnore extends RequestParams {
+  ignores: number[];
 }
 
 /**
@@ -60,13 +70,11 @@ export async function httpDelete<T>(params: RequestType): Promise<T> {
  * @param ignores the error codes to be ignored
  */
 export async function requestWithIgnores<T>(
-  requestFunc: HttpHandler,
-  url: string,
-  ignores: number[],
-  body?: object
+  params: RequestParamsWithIgnore
 ): Promise<T | undefined> {
+  const { requestFunc, url, ignores, body, query } = params;
   try {
-    return await request<T>(requestFunc, url, body);
+    return await request<T>({ requestFunc, url, body, query });
   } catch (e) {
     if (!ignores.includes(e?.response?.status)) {
       throw e;
@@ -74,26 +82,21 @@ export async function requestWithIgnores<T>(
   }
 }
 
-export async function httpGetWithIgnores<T>(
-  http: HttpStart,
-  url: string,
-  ignores: number[]
-): Promise<T | undefined> {
-  return await requestWithIgnores<T>(http.get, url, ignores);
+export async function httpGetWithIgnores<T>(params: RequestTypeWithIgnore): Promise<T | undefined> {
+  const { http, url, ignores, query } = params;
+  return await requestWithIgnores<T>({ requestFunc: http.get, url, ignores, query });
 }
 
 export async function httpPostWithIgnores<T>(
-  http: HttpStart,
-  url: string,
-  ignores: number[]
+  params: RequestTypeWithIgnore
 ): Promise<T | undefined> {
-  return await requestWithIgnores<T>(http.post, url, ignores);
+  const { http, url, ignores, query } = params;
+  return await requestWithIgnores<T>({ requestFunc: http.post, url, ignores, query });
 }
 
 export async function httpDeleteWithIgnores<T>(
-  http: HttpStart,
-  url: string,
-  ignores: number[]
+  params: RequestTypeWithIgnore
 ): Promise<T | undefined> {
-  return await requestWithIgnores<T>(http.delete, url, ignores);
+  const { http, url, ignores, query } = params;
+  return await requestWithIgnores<T>({ requestFunc: http.delete, url, ignores, query });
 }

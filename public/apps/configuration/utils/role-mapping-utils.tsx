@@ -14,7 +14,7 @@
  */
 
 import { map } from 'lodash';
-import { HttpStart } from '../../../../../../src/core/public';
+import { HttpFetchQuery, HttpStart } from '../../../../../../src/core/public';
 import { API_ENDPOINT_ROLESMAPPING } from '../constants';
 import { RoleMappingDetail } from '../types';
 import { httpGetWithIgnores, httpPost } from './request-utils';
@@ -30,12 +30,17 @@ export enum UserType {
   external = 'Backend role',
 }
 
-export async function getRoleMappingData(http: HttpStart, roleName: string) {
-  return httpGetWithIgnores<RoleMappingDetail>(
+export async function getRoleMappingData(
+  http: HttpStart,
+  roleName: string,
+  query?: HttpFetchQuery
+) {
+  return httpGetWithIgnores<RoleMappingDetail>({
     http,
-    getResourceUrl(API_ENDPOINT_ROLESMAPPING, roleName),
-    [404]
-  );
+    url: getResourceUrl(API_ENDPOINT_ROLESMAPPING, roleName),
+    ignores: [404],
+    query,
+  });
 }
 
 export function transformRoleMappingData(rawData: RoleMappingDetail): MappedUsersListing[] {
@@ -55,11 +60,13 @@ export function transformRoleMappingData(rawData: RoleMappingDetail): MappedUser
 export async function updateRoleMapping(
   http: HttpStart,
   roleName: string,
-  updateObject: RoleMappingDetail
+  updateObject: RoleMappingDetail,
+  query?: HttpFetchQuery
 ) {
   return await httpPost({
     http,
     url: getResourceUrl(API_ENDPOINT_ROLESMAPPING, roleName),
     body: updateObject,
+    query,
   });
 }

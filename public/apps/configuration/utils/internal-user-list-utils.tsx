@@ -65,6 +65,10 @@ export async function getUserList(
   return transformUserData(rawData.data);
 }
 
-export async function fetchUserNameList(http: HttpStart, userType: string): Promise<string[]> {
-  return Object.keys((await getUserListRaw(http, userType)).data);
+export async function fetchUserNameList(
+  http: HttpStart,
+  userType: string,
+  query?: HttpFetchQuery
+): Promise<string[]> {
+  return Object.keys((await getUserListRaw(http, userType, query)).data);
 }

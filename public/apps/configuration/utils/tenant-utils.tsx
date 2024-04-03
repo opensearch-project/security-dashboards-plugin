@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { HttpStart } from 'opensearch-dashboards/public';
+import { HttpFetchQuery, HttpStart } from 'opensearch-dashboards/public';
 import { map } from 'lodash';
 import React from 'react';
 import { i18n } from '@osd/i18n';
@@ -63,12 +63,18 @@ export const PRIVATE_USER_DICT: { [key: string]: string } = {
   Description: 'Only visible to the current logged in user',
 };
 
-export async function fetchTenants(http: HttpStart): Promise<DataObject<Tenant>> {
-  return (await httpGet<ObjectsMessage<Tenant>>({ http, url: API_ENDPOINT_TENANTS })).data;
+export async function fetchTenants(
+  http: HttpStart,
+  query: HttpFetchQuery
+): Promise<DataObject<Tenant>> {
+  return (await httpGet<ObjectsMessage<Tenant>>({ http, url: API_ENDPOINT_TENANTS, query })).data;
 }
 
-export async function fetchTenantNameList(http: HttpStart): Promise<string[]> {
-  return Object.keys(await fetchTenants(http));
+export async function fetchTenantNameList(
+  http: HttpStart,
+  query: HttpFetchQuery
+): Promise<string[]> {
+  return Object.keys(await fetchTenants(http, query));
 }
 
 export function transformTenantData(rawTenantData: DataObject<Tenant>): Tenant[] {

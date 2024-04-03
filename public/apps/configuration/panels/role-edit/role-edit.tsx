@@ -24,7 +24,7 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { isEmpty } from 'lodash';
 import { BreadcrumbsPageDependencies } from '../../../types';
 import { CLUSTER_PERMISSIONS, DocLinks, INDEX_PERMISSIONS } from '../../constants';
@@ -57,6 +57,9 @@ import { setCrossPageToast } from '../../utils/storage-utils';
 import { ExternalLink } from '../../utils/display-utils';
 import { generateResourceName } from '../../utils/resource-utils';
 import { NameRow } from '../../utils/name-row';
+import { DataSourceContext } from '../../app-router';
+import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
+import { createDataSourceQuery } from '../../../../utils/datasource-utils';
 
 interface RoleEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -86,12 +89,18 @@ export function RoleEdit(props: RoleEditDeps) {
 
   const [isFormValid, setIsFormValid] = useState<boolean>(true);
 
+  const { dataSource, setDataSource } = useContext(DataSourceContext)!;
+
   React.useEffect(() => {
     const action = props.action;
     if (action === 'edit' || action === 'duplicate') {
       const fetchData = async () => {
         try {
-          const roleData = await getRoleDetail(props.coreStart.http, props.sourceRoleName);
+          const roleData = await getRoleDetail(
+            props.coreStart.http,
+            props.sourceRoleName,
+            createDataSourceQuery(dataSource.id)
+          );
           setRoleClusterPermission(roleData.cluster_permissions.map(stringToComboBoxOption));
           setRoleIndexPermission(buildIndexPermissionState(roleData.index_permissions));
           setRoleTenantPermission(buildTenantPermissionState(roleData.tenant_permissions));
@@ -105,13 +114,16 @@ export function RoleEdit(props: RoleEditDeps) {
 
       fetchData();
     }
-  }, [addToast, props.action, props.coreStart.http, props.sourceRoleName]);
+  }, [addToast, props.action, props.coreStart.http, props.sourceRoleName, dataSource.id]);
 
   const [actionGroups, setActionGroups] = useState<Array<[string, ActionGroupItem]>>([]);
   React.useEffect(() => {
     const fetchActionGroupNames = async () => {
       try {
-        const actionGroupsObject = await fetchActionGroups(props.coreStart.http);
+        const actionGroupsObject = await fetchActionGroups(
+          props.coreStart.http,
+          createDataSourceQuery(dataSource.id)
+        );
         setActionGroups(Object.entries(actionGroupsObject));
       } catch (e) {
         addToast(createUnknownErrorToast('actionGroup', 'load data'));
@@ -120,13 +132,15 @@ export function RoleEdit(props: RoleEditDeps) {
     };
 
     fetchActionGroupNames();
-  }, [addToast, props.coreStart.http]);
+  }, [addToast, props.coreStart.http, dataSource.id]);
 
   const [tenantNames, setTenantNames] = React.useState<string[]>([]);
   React.useEffect(() => {
     const fetchTenantNames = async () => {
       try {
-        setTenantNames(await fetchTenantNameList(props.coreStart.http));
+        setTenantNames(
+          await fetchTenantNameList(props.coreStart.http, createDataSourceQuery(dataSource.id))
+        );
       } catch (e) {
         addToast(createUnknownErrorToast('tenant', 'load data'));
         console.error(e);
@@ -134,7 +148,7 @@ export function RoleEdit(props: RoleEditDeps) {
     };
 
     fetchTenantNames();
-  }, [addToast, props.coreStart.http]);
+  }, [addToast, props.coreStart.http, dataSource.id]);
 
   const updateRoleHandler = async () => {
     try {
@@ -146,11 +160,16 @@ export function RoleEdit(props: RoleEditDeps) {
         (v: RoleTenantPermissionStateClass) => !isEmpty(v.tenantPatterns)
       );
 
-      await updateRole(props.coreStart.http, roleName, {
-        cluster_permissions: roleClusterPermission.map(comboBoxOptionToString),
-        index_permissions: unbuildIndexPermissionState(validIndexPermission),
-        tenant_permissions: unbuildTenantPermissionState(validTenantPermission),
-      });
+      await updateRole(
+        props.coreStart.http,
+        roleName,
+        {
+          cluster_permissions: roleClusterPermission.map(comboBoxOptionToString),
+          index_permissions: unbuildIndexPermissionState(validIndexPermission),
+          tenant_permissions: unbuildTenantPermissionState(validTenantPermission),
+        },
+        createDataSourceQuery(dataSource.id)
+      );
 
       setCrossPageToast(buildUrl(ResourceType.roles, Action.view, roleName), {
         id: 'updateRoleSucceeded',
@@ -215,6 +234,12 @@ export function RoleEdit(props: RoleEditDeps) {
 
   return (
     <>
+      <SecurityPluginTopNavMenu
+        {...props}
+        dataSourcePickerReadOnly={true}
+        setDataSource={setDataSource}
+        selectedDataSource={dataSource}
+      />
       {props.buildBreadcrumbs(TITLE_TEXT_DICT[props.action])}
       <EuiPageHeader>
         <EuiText size="xs" color="subdued" className="panel-header-subtext">
