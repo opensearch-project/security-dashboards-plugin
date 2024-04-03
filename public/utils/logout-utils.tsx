@@ -13,19 +13,21 @@
  *   permissions and limitations under the License.
  */
 
-import { setShouldShowTenantPopup } from './storage-utils';
 import {
   HttpInterceptorResponseError,
   HttpStart,
   IHttpInterceptController,
 } from '../../../../src/core/public';
-import { CUSTOM_ERROR_PAGE_URI, LOGIN_PAGE_URI, API_ENDPOINT_AUTHTYPE } from '../../common';
+import { API_ENDPOINT_AUTHTYPE, CUSTOM_ERROR_PAGE_URI, LOGIN_PAGE_URI } from '../../common';
 import { httpGet } from '../apps/configuration/utils/request-utils';
+import { setShouldShowTenantPopup } from './storage-utils';
 
 export function interceptError(logoutUrl: string, thisWindow: Window): any {
   return (httpErrorResponse: HttpInterceptorResponseError, _: IHttpInterceptController) => {
     if (httpErrorResponse.response?.status === 401) {
       setShouldShowTenantPopup(null);
+      // Clear everything in the sessionStorage since they can contain sensitive information
+      sessionStorage.clear();
       if (
         !(
           thisWindow.location.pathname.toLowerCase().includes(LOGIN_PAGE_URI) ||
