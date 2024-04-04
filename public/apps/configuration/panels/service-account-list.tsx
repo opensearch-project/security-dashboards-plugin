@@ -42,6 +42,8 @@ import { ExternalLink, tableItemsUIProps, truncatedListView } from '../utils/dis
 import { getUserList, InternalUsersListing } from '../utils/internal-user-list-utils';
 import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { buildHashUrl } from '../utils/url-builder';
+import { LocalCluster } from '../app-router';
+import { SecurityPluginTopNavMenu } from '../top-nav-menu';
 
 export function dictView(items: Dictionary<string>) {
   if (isEmpty(items)) {
@@ -159,6 +161,12 @@ export function ServiceAccountList(props: AppDependencies) {
 
   return (
     <>
+      <SecurityPluginTopNavMenu
+        {...props}
+        dataSourcePickerReadOnly={true}
+        setDataSource={() => {}}
+        selectedDataSource={LocalCluster}
+      />
       <EuiPageHeader>
         <EuiTitle size="l">
           <h1>Service accounts</h1>
