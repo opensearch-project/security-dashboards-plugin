@@ -370,7 +370,11 @@ export function RoleView(props: RoleViewProps) {
       color="danger"
       onClick={async () => {
         try {
-          await requestDeleteRoles(props.coreStart.http, [props.roleName]);
+          await requestDeleteRoles(
+            props.coreStart.http,
+            [props.roleName],
+            createDataSourceQuery(dataSource.id)
+          );
           setCrossPageToast(buildUrl(ResourceType.roles), {
             id: 'deleteRole',
             color: 'success',

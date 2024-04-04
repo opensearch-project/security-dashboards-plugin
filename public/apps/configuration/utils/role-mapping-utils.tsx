@@ -30,11 +30,7 @@ export enum UserType {
   external = 'Backend role',
 }
 
-export async function getRoleMappingData(
-  http: HttpStart,
-  roleName: string,
-  query?: HttpFetchQuery
-) {
+export async function getRoleMappingData(http: HttpStart, roleName: string, query: HttpFetchQuery) {
   return httpGetWithIgnores<RoleMappingDetail>({
     http,
     url: getResourceUrl(API_ENDPOINT_ROLESMAPPING, roleName),
@@ -61,7 +57,7 @@ export async function updateRoleMapping(
   http: HttpStart,
   roleName: string,
   updateObject: RoleMappingDetail,
-  query?: HttpFetchQuery
+  query: HttpFetchQuery
 ) {
   return await httpPost({
     http,
