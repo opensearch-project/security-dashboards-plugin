@@ -30,7 +30,7 @@ export function fetchAccountInfo(http: HttpStart): Promise<AccountInfo> {
 }
 
 export async function fetchAccountInfoSafe(http: HttpStart): Promise<AccountInfo | undefined> {
-  return httpGetWithIgnores<AccountInfo>(http, API_ENDPOINT_ACCOUNT_INFO, [401]);
+  return httpGetWithIgnores<AccountInfo>({ http, url: API_ENDPOINT_ACCOUNT_INFO, ignores: [401] });
 }
 
 export async function logout(http: HttpStart, logoutUrl?: string): Promise<void> {

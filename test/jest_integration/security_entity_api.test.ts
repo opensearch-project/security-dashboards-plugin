@@ -741,4 +741,172 @@ describe('start OpenSearch Dashboards server multi datasources enabled', () => {
     expect(checkAuditLogSettingsRemote.status).toEqual(200);
     expect(checkAuditLogSettingsRemote.body.config.enabled).toEqual(false);
   });
+
+  it('CRUD Roles for external datasource', async () => {
+    const rolesEntity = 'roles';
+    const rolesMappingEntity = 'rolesmapping';
+    const testRoleName = `test_role_${Date.now()}`;
+
+    const payload = {
+      cluster_permissions: ['cluster_manage_pipelines'],
+      index_permissions: [
+        {
+          index_patterns: ['*'],
+          dls: '',
+          fls: [],
+          masked_fields: [],
+          allowed_actions: ['data_access'],
+        },
+      ],
+      tenant_permissions: [
+        {
+          tenant_patterns: ['global_tenant'],
+          allowed_actions: ['kibana_all_write'],
+        },
+      ],
+    };
+
+    const createRoleRespone = await createOrUpdateEntityAsAdminWithDataSource(
+      root,
+      rolesEntity,
+      testRoleName,
+      payload,
+      dataSourceId
+    );
+    expect(createRoleRespone.status).toEqual(200);
+
+    const getRolesResponse = await getAllEntitiesAsAdminWithDataSource(
+      root,
+      rolesEntity,
+      dataSourceId
+    );
+    expect(getRolesResponse.status).toEqual(200);
+    expect(getRolesResponse.body.data?.hasOwnProperty(testRoleName)).toBe(true);
+    expect(getRolesResponse.body.data[testRoleName].cluster_permissions).toContain(
+      'cluster_manage_pipelines'
+    );
+
+    // verify that this AG is not created in Local Cluster
+    const getRolesResponseLocalCluster = await getAllEntitiesAsAdminWithDataSource(
+      root,
+      rolesEntity,
+      ''
+    );
+    expect(getRolesResponseLocalCluster.status).toEqual(200);
+    expect(getRolesResponseLocalCluster.body.data?.hasOwnProperty(testRoleName)).toBe(false);
+
+    // Update
+    const updatePayload = {
+      cluster_permissions: ['cluster_manage_pipelines', 'manage_snapshots'],
+      index_permissions: [
+        {
+          index_patterns: ['*'],
+          dls: '',
+          fls: [],
+          masked_fields: [],
+          allowed_actions: ['data_access'],
+        },
+      ],
+      tenant_permissions: [
+        {
+          tenant_patterns: ['global_tenant'],
+          allowed_actions: ['kibana_all_write'],
+        },
+      ],
+    };
+    const updateRoleResponse = await createOrUpdateEntityAsAdminWithDataSource(
+      root,
+      rolesEntity,
+      testRoleName,
+      updatePayload,
+      dataSourceId
+    );
+    expect(updateRoleResponse.status).toEqual(200);
+
+    const getUpdatedRoleResponse = await getAllEntitiesAsAdminWithDataSource(
+      root,
+      rolesEntity,
+      dataSourceId
+    );
+    expect(getUpdatedRoleResponse.status).toEqual(200);
+    expect(getUpdatedRoleResponse.body.data?.hasOwnProperty(testRoleName)).toBe(true);
+    expect(getUpdatedRoleResponse.body.data[testRoleName].cluster_permissions).toContain(
+      'manage_snapshots'
+    );
+
+    // update RoleMapping
+    const getRoleMappingResponse = await getEntityAsAdminWithDataSource(
+      root,
+      rolesMappingEntity,
+      testRoleName,
+      dataSourceId
+    );
+    expect(getRoleMappingResponse.status).toEqual(404); // no mapping at first
+
+    const rolesMappingPayload = {
+      users: ['admin'],
+      backend_roles: [],
+      hosts: [],
+    };
+
+    const createRoleMappingResponse = await createOrUpdateEntityAsAdminWithDataSource(
+      root,
+      rolesMappingEntity,
+      testRoleName,
+      rolesMappingPayload,
+      dataSourceId
+    );
+    expect(createRoleMappingResponse.status).toEqual(200);
+
+    const getUpdatedRoleMappingResponse = await getEntityAsAdminWithDataSource(
+      root,
+      rolesMappingEntity,
+      testRoleName,
+      dataSourceId
+    );
+    expect(getUpdatedRoleMappingResponse.status).toEqual(200);
+    expect(getUpdatedRoleMappingResponse.body.users).toContain('admin');
+
+    // delete RoleMapping
+    const getRolesMappingToDelete = await getEntityAsAdminWithDataSource(
+      root,
+      rolesMappingEntity,
+      testRoleName,
+      dataSourceId
+    );
+    expect(getRolesMappingToDelete.status).toEqual(200);
+
+    const deleteRoleMapping = await deleteEntityAsAdminWithDataSource(
+      root,
+      rolesMappingEntity,
+      testRoleName,
+      dataSourceId
+    );
+    expect(deleteRoleMapping.status).toEqual(200);
+
+    const getRoleMappingUpdated = await getEntityAsAdminWithDataSource(
+      root,
+      rolesMappingEntity,
+      testRoleName,
+      dataSourceId
+    );
+    expect(getRoleMappingUpdated.status).toEqual(404); // no mapping after first
+
+    // Delete
+    const deleteRolesResponse = await deleteEntityAsAdminWithDataSource(
+      root,
+      rolesEntity,
+      testRoleName,
+      dataSourceId
+    );
+    expect(deleteRolesResponse.status).toEqual(200);
+
+    const getDeletedRoleResponse = await getAllEntitiesAsAdminWithDataSource(
+      root,
+      rolesEntity,
+      dataSourceId
+    );
+    expect(getDeletedRoleResponse.status).toEqual(200);
+    expect(getDeletedRoleResponse.body.data?.hasOwnProperty(testRoleName)).toBe(false);
+  });
 });

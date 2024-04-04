@@ -2,6 +2,40 @@
 
 exports[`Role view basic rendering when permission tab is selected 1`] = `
 <Fragment>
+  <SecurityPluginTopNavMenu
+    buildBreadcrumbs={
+      [MockFunction] {
+        "calls": Array [
+          Array [
+            "role",
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      }
+    }
+    config={Object {}}
+    coreStart={
+      Object {
+        "http": 1,
+      }
+    }
+    dataSourcePickerReadOnly={true}
+    navigation={Object {}}
+    params={Object {}}
+    prevAction=""
+    roleName="role"
+    selectedDataSource={
+      Object {
+        "id": "test",
+      }
+    }
+    setDataSource={[MockFunction]}
+  />
   <EuiPageContentHeader>
     <EuiPageContentHeaderSection>
       <EuiTitle
@@ -293,6 +327,40 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
 
 exports[`Role view renders when mapped user tab is selected 1`] = `
 <Fragment>
+  <SecurityPluginTopNavMenu
+    buildBreadcrumbs={
+      [MockFunction] {
+        "calls": Array [
+          Array [
+            "role",
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      }
+    }
+    config={Object {}}
+    coreStart={
+      Object {
+        "http": 1,
+      }
+    }
+    dataSourcePickerReadOnly={true}
+    navigation={Object {}}
+    params={Object {}}
+    prevAction="mapuser"
+    roleName="role"
+    selectedDataSource={
+      Object {
+        "id": "test",
+      }
+    }
+    setDataSource={[MockFunction]}
+  />
   <EuiPageContentHeader>
     <EuiPageContentHeaderSection>
       <EuiTitle

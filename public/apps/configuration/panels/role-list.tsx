@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   EuiFlexGroup,
   EuiText,
@@ -54,6 +54,9 @@ import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { useDeleteConfirmState } from '../utils/delete-confirm-modal-utils';
 import { useContextMenuState } from '../utils/context-menu';
 import { DocLinks } from '../constants';
+import { DataSourceContext } from '../app-router';
+import { SecurityPluginTopNavMenu } from '../top-nav-menu';
+import { createDataSourceQuery } from '../../../utils/datasource-utils';
 
 const columns: Array<EuiBasicTableColumn<RoleListing>> = [
   {
@@ -105,13 +108,20 @@ export function RoleList(props: AppDependencies) {
   const [errorFlag, setErrorFlag] = React.useState(false);
   const [selection, setSelection] = React.useState<RoleListing[]>([]);
   const [loading, setLoading] = useState(false);
+  const { dataSource, setDataSource } = useContext(DataSourceContext)!;
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const rawRoleData = await fetchRole(props.coreStart.http);
-        const rawRoleMappingData = await fetchRoleMapping(props.coreStart.http);
+        const rawRoleData = await fetchRole(
+          props.coreStart.http,
+          createDataSourceQuery(dataSource.id)
+        );
+        const rawRoleMappingData = await fetchRoleMapping(
+          props.coreStart.http,
+          createDataSourceQuery(dataSource.id)
+        );
         const processedData = transformRoleData(rawRoleData, rawRoleMappingData);
         setRoleData(processedData);
       } catch (e) {
@@ -123,12 +133,16 @@ export function RoleList(props: AppDependencies) {
     };
 
     fetchData();
-  }, [props.coreStart.http]);
+  }, [props.coreStart.http, dataSource.id]);
 
   const handleDelete = async () => {
     const rolesToDelete: string[] = selection.map((r) => r.roleName);
     try {
-      await requestDeleteRoles(props.coreStart.http, rolesToDelete);
+      await requestDeleteRoles(
+        props.coreStart.http,
+        rolesToDelete,
+        createDataSourceQuery(dataSource.id)
+      );
       // Refresh from server (calling fetchData) does not work here, the server still return the roles
       // that had been just deleted, probably because ES takes some time to sync to all nodes.
       // So here remove the selected roles from local memory directly.
@@ -250,6 +264,12 @@ export function RoleList(props: AppDependencies) {
 
   return (
     <>
+      <SecurityPluginTopNavMenu
+        {...props}
+        dataSourcePickerReadOnly={false}
+        setDataSource={setDataSource}
+        selectedDataSource={dataSource}
+      />
       <EuiPageHeader>
         <EuiTitle size="l">
           <h1>Roles</h1>
@@ -278,7 +298,11 @@ export function RoleList(props: AppDependencies) {
             <EuiFlexGroup>
               <EuiFlexItem>{actionsMenu}</EuiFlexItem>
               <EuiFlexItem>
-                <EuiButton fill href={buildHashUrl(ResourceType.roles, Action.create)}>
+                <EuiButton
+                  fill
+                  href={buildHashUrl(ResourceType.roles, Action.create)}
+                  data-test-subj="create-role"
+                >
                   Create role
                 </EuiButton>
               </EuiFlexItem>

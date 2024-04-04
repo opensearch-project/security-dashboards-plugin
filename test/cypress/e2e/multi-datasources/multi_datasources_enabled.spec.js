@@ -69,6 +69,7 @@ const deleteAllDataSources = () => {
 
 describe('Multi-datasources enabled', () => {
   before(() => {
+    deleteAllDataSources();
     localStorage.setItem('opendistro::security::tenant::saved', '""');
     localStorage.setItem('home:newThemeModal:show', 'false');
     createDataSource();
@@ -164,10 +165,11 @@ describe('Multi-datasources enabled', () => {
       .should('have.value', 'test_permission_ag');
     cy.get('[data-test-subj="comboBoxInput"]').focus().type('some_permission');
     cy.get('[id="submit"]').click();
+    closeToast();
 
     // Permission exists on the remote data source
     cy.get('[data-text="Customization"]').click();
-    cy.get('[data-test-subj="filter-custom-action-groups"]').click();
+    cy.get('[data-test-subj="filter-custom"]').click();
     cy.get('[data-test-subj="checkboxSelectRow-test_permission_ag"]').should('exist');
 
     // Permission doesn't exist on local cluster
@@ -206,6 +208,7 @@ describe('Multi-datasources enabled', () => {
     cy.get('[data-test-subj="general-settings-configure"]').click();
     cy.get('[data-test-subj="dataSourceViewContextMenuHeaderLink"]').should('contain', '9202');
 
+    closeToast();
     cy.get('[data-test-subj="comboBoxInput"]').last().type('blah');
     cy.get('[data-test-subj="save"]').click();
 
@@ -220,5 +223,51 @@ describe('Multi-datasources enabled', () => {
     );
 
     cy.get('[data-test-subj="general-settings"]').should('not.contain', 'blah');
+  });
+
+  it('Checks Roles Tab', () => {
+    Cypress.on('uncaught:exception', (err) => !err.message.includes('ResizeObserver'));
+
+    cy.visit('http://localhost:5601/app/security-dashboards-plugin#/roles');
+    cy.contains('h3', 'Roles');
+
+    closeToast();
+
+    // select remote data source
+    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
+    cy.get('[title="9202"]').click();
+
+    // create a role on remote data source
+    cy.get('[data-test-subj="create-role"]').click();
+    cy.contains('h1', 'Create Role');
+    cy.get('[data-test-subj="name-text"]').focus().type('9202-role');
+    cy.get('[data-test-subj="comboBoxToggleListButton"]').first().click();
+    cy.get('button[title="manage_snapshots"]').should('be.visible');
+    cy.get('button[title="manage_snapshots"]').click({ force: true });
+
+    cy.get('[data-test-subj="comboBoxInput"]').first().should('contain', 'manage_snapshots');
+    cy.get('[data-test-subj="create-or-update-role"]').click();
+
+    cy.get('.euiToastHeader__title').should('contain', 'Role "9202-role" successfully created');
+    closeToast();
+
+    // role exists on the remote
+    cy.visit('http://localhost:5601/app/security-dashboards-plugin#/roles');
+    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
+      'contain',
+      '9202'
+    );
+    cy.get('[data-text="Customization"]').click();
+    cy.get('[data-test-subj="filter-custom"]').click();
+    cy.get('[data-test-subj="checkboxSelectRow-9202-role"]').should('exist');
+
+    // Role doesn't exist on local cluster
+    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').click();
+    cy.get('[title="Local cluster"]').click();
+    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
+      'contain',
+      'Local cluster'
+    );
+    cy.get('[data-test-subj="checkboxSelectRow-9202-role"]').should('not.exist');
   });
 });

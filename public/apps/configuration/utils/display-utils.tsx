@@ -72,9 +72,7 @@ export function renderCustomization(reserved: boolean, props: UIProps) {
       <EuiFlexItem grow={false}>
         <EuiText
           className={props.cssClassName}
-          data-test-subj={
-            reserved ? 'filter-reserved-action-groups' : 'filter-custom-action-groups'
-          }
+          data-test-subj={reserved ? 'filter-reserved' : 'filter-custom'}
         >
           {reserved ? 'Reserved' : 'Custom'}
         </EuiText>

@@ -23,5 +23,9 @@ export async function getDashboardsInfo(http: HttpStart) {
 }
 
 export async function getDashboardsInfoSafe(http: HttpStart): Promise<DashboardsInfo | undefined> {
-  return httpGetWithIgnores<DashboardsInfo>(http, API_ENDPOINT_DASHBOARDSINFO, [401]);
+  return httpGetWithIgnores<DashboardsInfo>({
+    http,
+    url: API_ENDPOINT_DASHBOARDSINFO,
+    ignores: [401],
+  });
 }
