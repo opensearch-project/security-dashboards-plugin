@@ -69,6 +69,7 @@ const deleteAllDataSources = () => {
 
 describe('Multi-datasources enabled', () => {
   before(() => {
+    deleteAllDataSources();
     localStorage.setItem('opendistro::security::tenant::saved', '""');
     localStorage.setItem('home:newThemeModal:show', 'false');
     createDataSource();
@@ -164,6 +165,7 @@ describe('Multi-datasources enabled', () => {
       .should('have.value', 'test_permission_ag');
     cy.get('[data-test-subj="comboBoxInput"]').focus().type('some_permission');
     cy.get('[id="submit"]').click();
+    closeToast();
 
     // Permission exists on the remote data source
     cy.get('[data-text="Customization"]').click();
@@ -224,10 +226,7 @@ describe('Multi-datasources enabled', () => {
   });
 
   it('Checks Roles Tab', () => {
-    Cypress.on(
-      'uncaught:exception',
-      (err) => !err.message.includes('ResizeObserver loop limit exceeded')
-    );
+    Cypress.on('uncaught:exception', (err) => !err.message.includes('ResizeObserver'));
 
     cy.visit('http://localhost:5601/app/security-dashboards-plugin#/roles');
     cy.contains('h3', 'Roles');
