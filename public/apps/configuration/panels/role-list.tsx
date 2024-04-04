@@ -298,7 +298,11 @@ export function RoleList(props: AppDependencies) {
             <EuiFlexGroup>
               <EuiFlexItem>{actionsMenu}</EuiFlexItem>
               <EuiFlexItem>
-                <EuiButton fill href={buildHashUrl(ResourceType.roles, Action.create)}>
+                <EuiButton
+                  fill
+                  href={buildHashUrl(ResourceType.roles, Action.create)}
+                  data-test-subj="create-role"
+                >
                   Create role
                 </EuiButton>
               </EuiFlexItem>

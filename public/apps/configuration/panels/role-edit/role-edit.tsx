@@ -296,7 +296,12 @@ export function RoleEdit(props: RoleEditDeps) {
           </EuiButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton fill onClick={updateRoleHandler} disabled={!isFormValid}>
+          <EuiButton
+            fill
+            onClick={updateRoleHandler}
+            disabled={!isFormValid}
+            data-test-subj="create-or-update-role"
+          >
             {props.action === 'edit' ? 'Update' : 'Create'}
           </EuiButton>
         </EuiFlexItem>
