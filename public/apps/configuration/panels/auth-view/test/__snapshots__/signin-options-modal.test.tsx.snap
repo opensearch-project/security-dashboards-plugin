@@ -1,0 +1,88 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test sign-in options modal Render should render SignIn Options modal with 2 options 1`] = `
+<div>
+  <EuiButton
+    data-testid="edit"
+    onClick={[Function]}
+  >
+    Edit
+  </EuiButton>
+  <EuiModal
+    onClose={[Function]}
+  >
+    <EuiModalHeader>
+      <EuiModalHeaderTitle>
+        Dashboard Sign In Options
+      </EuiModalHeaderTitle>
+    </EuiModalHeader>
+    <EuiModalBody>
+      Enable/Disable sign-in options for OpenSearch Dashboard.
+      <EuiSpacer />
+      <EuiBasicTable
+        columns={
+          Array [
+            Object {
+              "data-test-subj": "name",
+              "field": "name",
+              "mobileOptions": Object {
+                "enlarge": true,
+                "header": false,
+                "render": [Function],
+                "truncateText": false,
+                "width": "100%",
+              },
+              "name": "Name",
+              "sortable": true,
+            },
+          ]
+        }
+        itemId="name"
+        items={
+          Array [
+            Object {
+              "name": "BASIC",
+              "status": true,
+            },
+            Object {
+              "name": "SAML",
+              "status": false,
+            },
+          ]
+        }
+        noItemsMessage="No items found"
+        responsive={true}
+        rowHeader="name"
+        selection={
+          Object {
+            "initialSelected": Array [
+              Object {
+                "name": "BASIC",
+                "status": true,
+              },
+            ],
+            "onSelectionChange": [Function],
+          }
+        }
+        tableCaption="Dashboard sign in options available"
+        tableLayout="fixed"
+      />
+    </EuiModalBody>
+    <EuiModalFooter>
+      <EuiButton
+        onClick={[Function]}
+      >
+        Cancel
+      </EuiButton>
+      <EuiButton
+        data-testid="update"
+        disabled={false}
+        fill={true}
+        onClick={[Function]}
+      >
+        Update
+      </EuiButton>
+    </EuiModalFooter>
+  </EuiModal>
+</div>
+`;

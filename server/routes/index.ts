@@ -20,7 +20,13 @@ import {
   IOpenSearchDashboardsResponse,
   OpenSearchDashboardsResponseFactory,
 } from 'opensearch-dashboards/server';
-import { API_PREFIX, CONFIGURATION_API_PREFIX, isValidResourceName } from '../../common';
+import {
+  API_ENDPOINT_DASHBOARD_SIGNIN_OPTIONS,
+  API_PREFIX,
+  CONFIGURATION_API_PREFIX,
+  isValidResourceName,
+} from '../../common';
+import { DashboardSignInOptions } from '../../public/apps/configuration/types';
 import { ResourceType } from '../../common';
 
 // TODO: consider to extract entity CRUD operations and put it into a client class
@@ -567,6 +573,65 @@ export function defineRoutes(router: IRouter) {
 
         return response.ok({
           body: esResp,
+        });
+      } catch (error) {
+        return errorResponse(response, error);
+      }
+    }
+  );
+
+  router.get(
+    {
+      path: `${API_ENDPOINT_DASHBOARD_SIGNIN_OPTIONS}`,
+      validate: false,
+      options: {
+        authRequired: false,
+      },
+    },
+    async (
+      context,
+      request,
+      response
+    ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
+      const client = context.security_plugin.esClient.asScoped(request);
+      let esResp;
+      try {
+        esResp = await client.callAsInternalUser('opensearch_security.dashboardsinfo');
+        return response.ok({
+          body: esResp.sign_in_options,
+        });
+      } catch (error) {
+        return errorResponse(response, error);
+      }
+    }
+  );
+
+  router.put(
+    {
+      path: `${API_ENDPOINT_DASHBOARD_SIGNIN_OPTIONS}`,
+      validate: {
+        body: schema.object({
+          sign_in_options: schema.arrayOf(schema.any(), {
+            defaultValue: [DashboardSignInOptions.BASIC],
+          }),
+        }),
+      },
+    },
+    async (
+      context,
+      request,
+      response
+    ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
+      const client = context.security_plugin.esClient.asScoped(request);
+      let esResp;
+      try {
+        esResp = await client.callAsCurrentUser('opensearch_security.tenancy_configs', {
+          body: request.body,
+        });
+        return response.ok({
+          body: {
+            message: esResp.message,
+          },
         });
       } catch (error) {
         return errorResponse(response, error);
