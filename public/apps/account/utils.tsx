@@ -14,11 +14,11 @@
  */
 
 import { HttpStart } from 'opensearch-dashboards/public';
-import { API_AUTH_LOGOUT, OPENID_AUTH_LOGOUT, SAML_AUTH_LOGOUT } from '../../../common';
+import { API_AUTH_LOGOUT } from '../../../common';
+import { setShouldShowTenantPopup } from '../../utils/storage-utils';
+import { httpGet, httpGetWithIgnores, httpPost } from '../configuration/utils/request-utils';
 import { API_ENDPOINT_ACCOUNT_INFO } from './constants';
 import { AccountInfo } from './types';
-import { httpGet, httpGetWithIgnores, httpPost } from '../configuration/utils/request-utils';
-import { setShouldShowTenantPopup } from '../../utils/storage-utils';
 
 export function fetchAccountInfo(http: HttpStart): Promise<AccountInfo> {
   return httpGet(http, API_ENDPOINT_ACCOUNT_INFO);
@@ -38,19 +38,6 @@ export async function logout(http: HttpStart, logoutUrl?: string): Promise<void>
   const nextUrl = encodeURIComponent(basePath);
   window.location.href =
     logoutUrl || `${http.basePath.serverBasePath}/app/login?nextUrl=${nextUrl}`;
-}
-
-export async function samlLogout(http: HttpStart): Promise<void> {
-  // This will ensure tenancy is picked up from local storage in the next login.
-  setShouldShowTenantPopup(null);
-  window.location.href = `${http.basePath.serverBasePath}${SAML_AUTH_LOGOUT}`;
-}
-
-export async function openidLogout(http: HttpStart): Promise<void> {
-  // This will ensure tenancy is picked up from local storage in the next login.
-  setShouldShowTenantPopup(null);
-  sessionStorage.clear();
-  window.location.href = `${http.basePath.serverBasePath}${OPENID_AUTH_LOGOUT}`;
 }
 
 export async function externalLogout(http: HttpStart, logoutEndpoint: string): Promise<void> {
