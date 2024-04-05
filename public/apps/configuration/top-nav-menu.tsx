@@ -17,6 +17,7 @@ import React from 'react';
 import { DataSourceSelectableConfig } from 'src/plugins/data_source_management/public';
 import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
 import { AppDependencies } from '../types';
+import { setDataSourceIdInUrl } from '../../utils/datasource-utils';
 
 export interface TopNavMenuProps extends AppDependencies {
   dataSourcePickerReadOnly: boolean;
@@ -54,6 +55,11 @@ export const SecurityPluginTopNavMenu = (props: TopNavMenuProps) => {
 
   const dataSourceEnabled = !!depsStart.dataSource?.dataSourceEnabled;
 
+  const wrapSetDataSourceWithUpdateUrl = (dataSources: DataSourceOption[]) => {
+    setDataSourceIdInUrl(dataSources[0].id);
+    setDataSource(dataSources[0]);
+  };
+
   return dataSourceEnabled ? (
     <DataSourceMenu
       setMenuMountPoint={setHeaderActionMenu}
@@ -63,10 +69,7 @@ export const SecurityPluginTopNavMenu = (props: TopNavMenuProps) => {
         notifications: coreStart.notifications,
         activeOption: [selectedDataSource],
         dataSourceFilter: (ds) => compatibleVersion.has(ds.attributes.version),
-        onSelectedDataSources: (dataSources) => {
-          // single select for now
-          setDataSource(dataSources[0]);
-        },
+        onSelectedDataSources: wrapSetDataSourceWithUpdateUrl,
         fullWidth: true,
       }}
     />

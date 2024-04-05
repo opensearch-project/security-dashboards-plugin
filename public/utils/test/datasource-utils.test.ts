@@ -13,7 +13,12 @@
  *   permissions and limitations under the License.
  */
 
-import { createDataSourceQuery, getClusterInfoIfEnabled } from '../datasource-utils';
+import {
+  createDataSourceQuery,
+  getClusterInfoIfEnabled,
+  getDataSourceIdFromUrl,
+  setDataSourceIdInUrl,
+} from '../datasource-utils';
 
 describe('Tests datasource utils', () => {
   it('Tests the GetClusterDescription helper function', () => {
@@ -24,5 +29,45 @@ describe('Tests datasource utils', () => {
 
   it('Tests the create DataSource query helper function', () => {
     expect(createDataSourceQuery('test')).toStrictEqual({ dataSourceId: 'test' });
+  });
+
+  it('Tests getting the datasource from the url', () => {
+    const mockSearchNoDataSourceId = '?foo=bar&baz=qux';
+    Object.defineProperty(window, 'location', {
+      value: { search: mockSearchNoDataSourceId },
+      writable: true,
+    });
+    expect(getDataSourceIdFromUrl()).toBe('');
+    const mockSearchDataSourceIdNotfirst = '?foo=bar&baz=qux&dataSourceId=test';
+    Object.defineProperty(window, 'location', {
+      value: { search: mockSearchDataSourceIdNotfirst },
+      writable: true,
+    });
+    expect(getDataSourceIdFromUrl()).toBe('test');
+    const mockSearchDataSourceIdFirst = '?dataSourceId=test';
+    Object.defineProperty(window, 'location', {
+      value: { search: mockSearchDataSourceIdFirst },
+      writable: true,
+    });
+    expect(getDataSourceIdFromUrl()).toBe('test');
+  });
+
+  it('Tests setting the datasource in the url', () => {
+    const replaceState = jest.fn();
+    const mockUrl = 'http://localhost:5601/app/security-dashboards-plugin#/auth';
+    Object.defineProperty(window, 'location', {
+      value: { href: mockUrl },
+      writable: true,
+    });
+    Object.defineProperty(window, 'history', {
+      value: { replaceState },
+      writable: true,
+    });
+    setDataSourceIdInUrl('test');
+    expect(replaceState).toBeCalledWith(
+      {},
+      '',
+      'http://localhost:5601/app/security-dashboards-plugin?dataSourceId=test#/auth'
+    );
   });
 });

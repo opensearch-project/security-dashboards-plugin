@@ -19,9 +19,21 @@ export function createDataSourceQuery(dataSourceId: string) {
   return { dataSourceId };
 }
 
+const DATASOURCEURLKEY = 'dataSourceId';
+
 export function getClusterInfoIfEnabled(dataSourceEnabled: boolean, cluster: DataSourceOption) {
   if (dataSourceEnabled) {
     return `for ${cluster.label || 'Local cluster'}`;
   }
   return '';
+}
+
+export function getDataSourceIdFromUrl(): string {
+  return new URLSearchParams(window.location.search).get(DATASOURCEURLKEY) || '';
+}
+
+export function setDataSourceIdInUrl(dataSourceId: string) {
+  const url = new URL(window.location.href);
+  url.searchParams.set(DATASOURCEURLKEY, dataSourceId);
+  window.history.replaceState({}, '', url.toString());
 }
