@@ -109,7 +109,7 @@ describe('Permission list page ', () => {
       const component = shallow(
         <PermissionList
           coreStart={{} as any}
-          navigation={{} as any}
+          depsStart={{} as any}
           params={{} as any}
           config={{} as any}
         />
@@ -123,7 +123,7 @@ describe('Permission list page ', () => {
       shallow(
         <PermissionList
           coreStart={mockCoreStart as any}
-          navigation={{} as any}
+          depsStart={{} as any}
           params={{} as any}
           config={{} as any}
         />
@@ -145,7 +145,7 @@ describe('Permission list page ', () => {
       shallow(
         <PermissionList
           coreStart={{} as any}
-          navigation={{} as any}
+          depsStart={{} as any}
           params={{} as any}
           config={{} as any}
         />
@@ -159,7 +159,7 @@ describe('Permission list page ', () => {
       const component = shallow(
         <PermissionList
           coreStart={mockCoreStart as any}
-          navigation={{} as any}
+          depsStart={{} as any}
           params={{} as any}
           config={{} as any}
         />
@@ -186,7 +186,7 @@ describe('Permission list page ', () => {
       const component = shallow(
         <PermissionList
           coreStart={{} as any}
-          navigation={{} as any}
+          depsStart={{} as any}
           params={{} as any}
           config={{} as any}
         />
@@ -203,7 +203,7 @@ describe('Permission list page ', () => {
       shallow(
         <PermissionList
           coreStart={mockCoreStart as any}
-          navigation={{} as any}
+          depsStart={{} as any}
           params={{} as any}
           config={{} as any}
         />
@@ -223,7 +223,7 @@ describe('Permission list page ', () => {
       const component = shallow(
         <PermissionList
           coreStart={{} as any}
-          navigation={{} as any}
+          depsStart={{} as any}
           params={{} as any}
           config={{} as any}
         />

@@ -63,7 +63,7 @@ import { generateResourceName } from '../../utils/resource-utils';
 import { DocLinks } from '../../constants';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { DataSourceContext } from '../../app-router';
-import { createDataSourceQuery } from '../../../../utils/datasource-utils';
+import { createDataSourceQuery, getClusterInfoIfEnabled } from '../../../../utils/datasource-utils';
 
 export function renderBooleanToCheckMark(value: boolean): React.ReactNode {
   return value ? <EuiIcon type="check" /> : '';
@@ -192,6 +192,7 @@ export function PermissionList(props: AppDependencies) {
   const [selection, setSelection] = React.useState<PermissionListingItem[]>([]);
   const [itemIdToExpandedRowMap, setItemIdToExpandedRowMap] = useState<ExpandedRowMapInterface>({});
 
+  const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
 
   // Modal state
@@ -305,7 +306,11 @@ export function PermissionList(props: AppDependencies) {
             fetchData();
             addToast({
               id: 'saveSucceeded',
-              title: getSuccessToastMessage('Action group', action, groupName),
+              title: `${getSuccessToastMessage(
+                'Action group',
+                action,
+                groupName
+              )} ${getClusterInfoIfEnabled(dataSourceEnabled, dataSource)}`,
               color: 'success',
             });
           } catch (e) {

@@ -21,7 +21,7 @@ import { setCrossPageToast } from '../../../utils/storage-utils';
 import { fetchTenantNameList } from '../../../utils/tenant-utils';
 import { ClusterPermissionPanel } from '../cluster-permission-panel';
 import { IndexPermissionPanel } from '../index-permission-panel';
-import { getSuccessToastMessage, RoleEdit } from '../role-edit';
+import { RoleEdit } from '../role-edit';
 import { TenantPanel } from '../tenant-panel';
 
 jest.mock('../../../utils/role-detail-utils', () => ({
@@ -63,7 +63,7 @@ describe('Role edit', () => {
         sourceRoleName={sampleSourceRole}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -89,7 +89,7 @@ describe('Role edit', () => {
         sourceRoleName={sampleSourceRole}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -112,7 +112,7 @@ describe('Role edit', () => {
         sourceRoleName={sampleSourceRole}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />

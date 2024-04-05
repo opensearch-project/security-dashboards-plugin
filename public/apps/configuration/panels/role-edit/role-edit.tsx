@@ -59,7 +59,7 @@ import { generateResourceName } from '../../utils/resource-utils';
 import { NameRow } from '../../utils/name-row';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
-import { createDataSourceQuery } from '../../../../utils/datasource-utils';
+import { createDataSourceQuery, getClusterInfoIfEnabled } from '../../../../utils/datasource-utils';
 
 interface RoleEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -89,6 +89,7 @@ export function RoleEdit(props: RoleEditDeps) {
 
   const [isFormValid, setIsFormValid] = useState<boolean>(true);
 
+  const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
 
   React.useEffect(() => {
@@ -174,7 +175,10 @@ export function RoleEdit(props: RoleEditDeps) {
       setCrossPageToast(buildUrl(ResourceType.roles, Action.view, roleName), {
         id: 'updateRoleSucceeded',
         color: 'success',
-        title: getSuccessToastMessage('Role', props.action, roleName),
+        title: `${getSuccessToastMessage('Role', props.action, roleName)} ${getClusterInfoIfEnabled(
+          dataSourceEnabled,
+          dataSource
+        )}`,
       });
       // Redirect to role view
       window.location.href = buildHashUrl(ResourceType.roles, Action.view, roleName);
