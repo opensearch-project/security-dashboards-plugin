@@ -20,12 +20,7 @@ import { SecurityPluginConfigType } from '../../..';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
 import { CoreSetup } from '../../../../../../src/core/server';
 import { validateNextUrl } from '../../../utils/next_url';
-import {
-  AuthType,
-  SAML_AUTH_LOGIN,
-  SAML_AUTH_LOGOUT,
-  SAML_AUTH_REQUEST_TYPE,
-} from '../../../../common';
+import { AuthType, SAML_AUTH_LOGIN, SAML_AUTH_LOGOUT } from '../../../../common';
 
 import {
   clearSplitCookies,
@@ -140,13 +135,13 @@ export class SamlAuthRoutes {
             requestId,
             samlResponse: request.body.SAMLResponse,
             acsEndpoint: undefined,
-            authRequestType: SAML_AUTH_REQUEST_TYPE,
+            authRequestType: AuthType.SAML,
           });
           const user = await this.securityClient.authenticateWithHeader(
             request,
             'authorization',
             credentials.authorization,
-            SAML_AUTH_REQUEST_TYPE
+            AuthType.SAML
           );
 
           let expiryTime = Date.now() + this.config.session.ttl;
@@ -219,13 +214,13 @@ export class SamlAuthRoutes {
             requestId: undefined,
             samlResponse: request.body.SAMLResponse,
             acsEndpoint,
-            authRequestType: SAML_AUTH_REQUEST_TYPE,
+            authRequestType: AuthType.SAML,
           });
           const user = await this.securityClient.authenticateWithHeader(
             request,
             'authorization',
             credentials.authorization,
-            SAML_AUTH_REQUEST_TYPE
+            AuthType.SAML
           );
 
           let expiryTime = Date.now() + this.config.session.ttl;
@@ -387,7 +382,7 @@ export class SamlAuthRoutes {
       },
       async (context, request, response) => {
         try {
-          const authInfo = await this.securityClient.authinfo(request);
+          const authInfo = await this.securityClient.authinfo(request, AuthType.SAML);
           await clearSplitCookies(
             request,
             this.getExtraAuthStorageOptions(context.security_plugin.logger)

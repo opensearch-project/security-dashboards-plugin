@@ -119,7 +119,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
       try {
         const additionalAuthHeader = await this.getAdditionalAuthHeader(request);
         Object.assign(authHeaders, additionalAuthHeader);
-        authInfo = await this.securityClient.authinfo(request, additionalAuthHeader);
+        authInfo = await this.securityClient.authinfo(request, '', additionalAuthHeader);
         cookie = this.getCookie(request, authInfo);
 
         // set tenant from cookie if exist
@@ -210,7 +210,8 @@ export abstract class AuthenticationType implements IAuthenticationType {
       }
     }
     if (!authInfo) {
-      authInfo = await this.securityClient.authinfo(request, authHeaders);
+      const authRequestType = cookie.isAnonymousAuth ? 'anonymous' : cookie.authType;
+      authInfo = await this.securityClient.authinfo(request, authRequestType, authHeaders);
     }
     authState.authInfo = authInfo;
 
@@ -243,9 +244,10 @@ export abstract class AuthenticationType implements IAuthenticationType {
     authHeader: any,
     authInfo: any
   ): Promise<string | undefined> {
+    const authType = cookie.isAnonymousAuth ? 'anonymous' : cookie.authType;
     if (!authInfo) {
       try {
-        authInfo = await this.securityClient.authinfo(request, authHeader);
+        authInfo = await this.securityClient.authinfo(request, authType, authHeader);
       } catch (error: any) {
         throw new UnauthenticatedError(error);
       }

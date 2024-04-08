@@ -13,6 +13,8 @@
  *   permissions and limitations under the License.
  */
 
+import { AUTH_TYPE_PARAM } from '../../common';
+
 // eslint-disable-next-line import/no-default-export
 export default function (Client: any, config: any, components: any) {
   const ca = components.clientAction.factory;
@@ -26,7 +28,34 @@ export default function (Client: any, config: any, components: any) {
    */
   Client.prototype.opensearch_security.prototype.authinfo = ca({
     url: {
-      fmt: '/_plugins/_security/authinfo',
+      fmt: `/_plugins/_security/authinfo`,
+      opt: {
+        [AUTH_TYPE_PARAM]: {
+          type: 'string',
+          required: false,
+        },
+      },
+      template: (requestObj) => {
+        const obj = requestObj || (requestObj = {});
+        let __p = '/_plugins/_security/authinfo';
+        const __q = []; // Array to hold query string components
+
+        // Iterate over the object properties to construct the query string
+        for (const key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            // Ensure the value is a string to avoid URL encoding issues
+            const value = String(obj[key]);
+            __q.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
+          }
+        }
+
+        // If there are query parameters, append them to the URL
+        if (__q.length > 0) {
+          __p += '?' + __q.join('&');
+        }
+
+        return __p;
+      },
     },
   });
 

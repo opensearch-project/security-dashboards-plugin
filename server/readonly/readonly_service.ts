@@ -104,7 +104,8 @@ export class ReadonlyService extends BaseReadonlyService {
         return false;
       }
 
-      const authInfo = await this.securityClient.authinfo(request, headers);
+      const authType = cookie ? (cookie.isAnonymousAuth ? 'anonymous' : cookie.authType) : '';
+      const authInfo = await this.securityClient.authinfo(request, authType, headers);
 
       if (!authInfo.user_requested_tenant && cookie) {
         authInfo.user_requested_tenant = cookie.tenant;

@@ -208,7 +208,9 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   it('enforce authentication on api/status route', async () => {
-    const response = await osdTestServer.request.get(root, '/api/status');
+    const response = await osdTestServer.request
+      .get(root, '/api/status')
+      .unset(AUTHORIZATION_HEADER_NAME);
     expect(response.status).toEqual(401);
   });
 

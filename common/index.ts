@@ -34,9 +34,7 @@ export const OPENID_AUTH_LOGIN_WITH_FRAGMENT = '/auth/openid/captureUrlFragment'
 export const SAML_AUTH_LOGIN = '/auth/saml/login';
 export const SAML_AUTH_LOGIN_WITH_FRAGMENT = '/auth/saml/captureUrlFragment';
 export const ANONYMOUS_AUTH_LOGIN = '/auth/anonymous';
-export const AUTH_REQUEST_TYPE_HEADER = 'auth_request_type';
-export const SAML_AUTH_REQUEST_TYPE = 'saml';
-export const OPEN_ID_AUTH_REQUEST_TYPE = 'openid';
+export const AUTH_TYPE_PARAM = 'auth_type';
 
 export const OPENID_AUTH_LOGOUT = '/auth/openid/logout';
 export const SAML_AUTH_LOGOUT = '/auth/saml/logout';
