@@ -31,7 +31,7 @@ import { SecuritySessionCookie } from '../../session/security_cookie';
 import { SecurityClient } from '../../backend/opensearch_security_client';
 import { resolveTenant, isValidTenant } from '../../multitenancy/tenant_resolver';
 import { UnauthenticatedError } from '../../errors';
-import { GLOBAL_TENANT_SYMBOL } from '../../../common';
+import { AuthType, GLOBAL_TENANT_SYMBOL } from '../../../common';
 
 export interface IAuthenticationType {
   type: string;
@@ -210,7 +210,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
       }
     }
     if (!authInfo) {
-      const authRequestType = cookie.isAnonymousAuth ? 'anonymous' : cookie.authType;
+      const authRequestType = cookie.isAnonymousAuth ? AuthType.ANONYMOUS : cookie.authType;
       authInfo = await this.securityClient.authinfo(request, authRequestType, authHeaders);
     }
     authState.authInfo = authInfo;
@@ -244,7 +244,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
     authHeader: any,
     authInfo: any
   ): Promise<string | undefined> {
-    const authType = cookie.isAnonymousAuth ? 'anonymous' : cookie.authType;
+    const authType = cookie.isAnonymousAuth ? AuthType.ANONYMOUS : cookie.authType;
     if (!authInfo) {
       try {
         authInfo = await this.securityClient.authinfo(request, authType, authHeader);
