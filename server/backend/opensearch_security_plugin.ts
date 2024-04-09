@@ -14,6 +14,7 @@
  */
 
 import { AUTH_TYPE_PARAM } from '../../common';
+import { addQueryParamsToURLIfAny } from './utils';
 
 // eslint-disable-next-line import/no-default-export
 export default function (Client: any, config: any, components: any) {
@@ -35,27 +36,7 @@ export default function (Client: any, config: any, components: any) {
           required: false,
         },
       },
-      template: (requestObj) => {
-        const obj = requestObj || (requestObj = {});
-        let __p = '/_plugins/_security/authinfo';
-        const __q = []; // Array to hold query string components
-
-        // Iterate over the object properties to construct the query string
-        for (const key in obj) {
-          if (obj.hasOwnProperty(key)) {
-            // Ensure the value is a string to avoid URL encoding issues
-            const value = String(obj[key]);
-            __q.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
-          }
-        }
-
-        // If there are query parameters, append them to the URL
-        if (__q.length > 0) {
-          __p += '?' + __q.join('&');
-        }
-
-        return __p;
-      },
+      template: (params) => addQueryParamsToURLIfAny(params, '/_plugins/_security/authinfo'),
     },
   });
 
