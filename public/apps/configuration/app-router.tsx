@@ -41,7 +41,7 @@ import { Action, RouteItem, SubAction } from './types';
 import { ResourceType } from '../../../common';
 import { buildHashUrl, buildUrl } from './utils/url-builder';
 import { CrossPageToast } from './cross-page-toast';
-import { getDataSourceIdFromUrl } from '../../utils/datasource-utils';
+import { getDataSourceFromUrl } from '../../utils/datasource-utils';
 
 const LANDING_PAGE_URL = '/getstarted';
 
@@ -156,11 +156,13 @@ export const DataSourceContext = createContext<DataSourceContextType | null>(nul
 
 export function AppRouter(props: AppDependencies) {
   const setGlobalBreadcrumbs = flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs);
-  const dataSourceId = getDataSourceIdFromUrl();
-  console.log(dataSourceId);
+  const dataSourceId = getDataSourceFromUrl();
+  console.log(dataSourceId)
+  
   const [dataSource, setDataSource] = useState<DataSourceOption>(
-    dataSourceId ? { id: dataSourceId } : LocalCluster
+    dataSourceId ? dataSourceId : null
   );
+  console.log(dataSource)
 
   return (
     <DataSourceContext.Provider value={{ dataSource, setDataSource }}>

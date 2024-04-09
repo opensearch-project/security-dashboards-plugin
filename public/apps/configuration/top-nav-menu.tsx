@@ -13,11 +13,11 @@
  *   permissions and limitations under the License.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { DataSourceSelectableConfig } from 'src/plugins/data_source_management/public';
 import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
 import { AppDependencies } from '../types';
-import { setDataSourceIdInUrl } from '../../utils/datasource-utils';
+import { setDataSourceInUrl } from '../../utils/datasource-utils';
 
 export interface TopNavMenuProps extends AppDependencies {
   dataSourcePickerReadOnly: boolean;
@@ -25,22 +25,7 @@ export interface TopNavMenuProps extends AppDependencies {
   selectedDataSource: DataSourceOption;
 }
 
-const compatibleVersion = new Set([
-  '2.1',
-  '2.2',
-  '2.3',
-  '2.4',
-  '2.5',
-  '2.6',
-  '2.7',
-  '2.8',
-  '2.9',
-  '2.10',
-  '2.11',
-  '2.12',
-]);
-
-export const SecurityPluginTopNavMenu = (props: TopNavMenuProps) => {
+export const SecurityPluginTopNavMenu = React.memo((props: TopNavMenuProps) => {
   const {
     coreStart,
     depsStart,
@@ -50,13 +35,16 @@ export const SecurityPluginTopNavMenu = (props: TopNavMenuProps) => {
     selectedDataSource,
     dataSourcePickerReadOnly,
   } = props;
+  console.log(selectedDataSource)
   const { setHeaderActionMenu } = params;
   const DataSourceMenu = dataSourceManagement?.ui.getDataSourceMenu<DataSourceSelectableConfig>();
 
   const dataSourceEnabled = !!depsStart.dataSource?.dataSourceEnabled;
 
   const wrapSetDataSourceWithUpdateUrl = (dataSources: DataSourceOption[]) => {
-    setDataSourceIdInUrl(dataSources[0].id);
+    console.log(dataSources);
+    console.log('active option' + (selectedDataSource ? [JSON.stringify(selectedDataSource)] : []))
+    setDataSourceInUrl(dataSources[0]);
     setDataSource(dataSources[0]);
   };
 
@@ -67,11 +55,12 @@ export const SecurityPluginTopNavMenu = (props: TopNavMenuProps) => {
       componentConfig={{
         savedObjects: coreStart.savedObjects.client,
         notifications: coreStart.notifications,
-        activeOption: [selectedDataSource],
-        dataSourceFilter: (ds) => compatibleVersion.has(ds.attributes.version),
+        activeOption: selectedDataSource ? [selectedDataSource] : [],
         onSelectedDataSources: wrapSetDataSourceWithUpdateUrl,
         fullWidth: true,
       }}
     />
   ) : null;
-};
+}, (prevProps, newProps) => prevProps.selectedDataSource.id === newProps.selectedDataSource.id && prevProps.dataSourcePickerReadOnly === newProps.dataSourcePickerReadOnly);
+
+
