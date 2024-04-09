@@ -68,7 +68,7 @@ import { useContextMenuState } from '../../utils/context-menu';
 import { generateResourceName } from '../../utils/resource-utils';
 import { DocLinks } from '../../constants';
 import { TenantList } from './tenant-list';
-import { getBreadcrumbs, Route_MAP } from '../../app-router';
+import { getBreadcrumbs, LocalCluster, Route_MAP } from '../../app-router';
 import { buildUrl } from '../../utils/url-builder';
 import { CrossPageToast } from '../../cross-page-toast';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
@@ -90,6 +90,7 @@ export function ManageTab(props: AppDependencies) {
   const [isMultiTenancyEnabled, setIsMultiTenancyEnabled] = useState(false);
   const [isPrivateTenantEnabled, setIsPrivateTenantEnabled] = useState(false);
   const [dashboardsDefaultTenant, setDashboardsDefaultTenant] = useState('');
+  const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
 
   const { http } = props.coreStart;
 
@@ -465,7 +466,13 @@ export function ManageTab(props: AppDependencies) {
             fetchData();
             addToast({
               id: 'saveSucceeded',
-              title: getSuccessToastMessage('Tenant', action, tenantName),
+              title: getSuccessToastMessage(
+                'Tenant',
+                action,
+                tenantName,
+                dataSourceEnabled,
+                LocalCluster
+              ),
               color: 'success',
             });
           } catch (e) {

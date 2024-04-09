@@ -17,7 +17,6 @@ import { EuiBreadcrumb, EuiPage, EuiPageBody, EuiPageSideBar } from '@elastic/eu
 import { flow, partial } from 'lodash';
 import React, { createContext, useState } from 'react';
 import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
-import { DataSourceOption } from '../../../../../src/plugins/data_source_management/public/components/data_source_selector/data_source_selector';
 import { AppDependencies } from '../types';
 import { AuditLogging } from './panels/audit-logging/audit-logging';
 import { AuditLoggingEditSettings } from './panels/audit-logging/audit-logging-edit-settings';
@@ -42,6 +41,7 @@ import { ResourceType } from '../../../common';
 import { buildHashUrl, buildUrl } from './utils/url-builder';
 import { CrossPageToast } from './cross-page-toast';
 import { getDataSourceFromUrl } from '../../utils/datasource-utils';
+import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
 
 const LANDING_PAGE_URL = '/getstarted';
 
@@ -156,13 +156,11 @@ export const DataSourceContext = createContext<DataSourceContextType | null>(nul
 
 export function AppRouter(props: AppDependencies) {
   const setGlobalBreadcrumbs = flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs);
-  const dataSourceId = getDataSourceFromUrl();
-  console.log(dataSourceId)
-  
+  const dataSourceFromUrl = getDataSourceFromUrl();
+
   const [dataSource, setDataSource] = useState<DataSourceOption>(
-    dataSourceId ? dataSourceId : null
+    dataSourceFromUrl 
   );
-  console.log(dataSource)
 
   return (
     <DataSourceContext.Provider value={{ dataSource, setDataSource }}>

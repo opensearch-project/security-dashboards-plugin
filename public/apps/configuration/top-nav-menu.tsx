@@ -35,15 +35,12 @@ export const SecurityPluginTopNavMenu = React.memo((props: TopNavMenuProps) => {
     selectedDataSource,
     dataSourcePickerReadOnly,
   } = props;
-  console.log(selectedDataSource)
   const { setHeaderActionMenu } = params;
   const DataSourceMenu = dataSourceManagement?.ui.getDataSourceMenu<DataSourceSelectableConfig>();
 
   const dataSourceEnabled = !!depsStart.dataSource?.dataSourceEnabled;
 
   const wrapSetDataSourceWithUpdateUrl = (dataSources: DataSourceOption[]) => {
-    console.log(dataSources);
-    console.log('active option' + (selectedDataSource ? [JSON.stringify(selectedDataSource)] : []))
     setDataSourceInUrl(dataSources[0]);
     setDataSource(dataSources[0]);
   };

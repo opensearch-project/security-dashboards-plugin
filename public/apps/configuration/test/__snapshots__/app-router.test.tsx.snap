@@ -4,10 +4,7 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
 <ContextProvider
   value={
     Object {
-      "dataSource": Object {
-        "id": "",
-        "label": "Local cluster",
-      },
+      "dataSource": Object {},
       "setDataSource": [Function],
     }
   }

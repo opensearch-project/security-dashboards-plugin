@@ -175,7 +175,10 @@ export function RoleEdit(props: RoleEditDeps) {
       setCrossPageToast(buildUrl(ResourceType.roles, Action.view, roleName), {
         id: 'updateRoleSucceeded',
         color: 'success',
-        title: `${getSuccessToastMessage('Role', props.action, roleName)} ${getClusterInfoIfEnabled(
+        title: `${getSuccessToastMessage(
+          'Role',
+          props.action,
+          roleName,
           dataSourceEnabled,
           dataSource
         )}`,

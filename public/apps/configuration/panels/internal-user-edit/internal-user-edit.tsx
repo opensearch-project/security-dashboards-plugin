@@ -136,7 +136,10 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
       setCrossPageToast(buildUrl(ResourceType.users), {
         id: 'updateUserSucceeded',
         color: 'success',
-        title: `${getSuccessToastMessage('User', props.action, userName)} ${getClusterInfoIfEnabled(
+        title: `${getSuccessToastMessage(
+          'User',
+          props.action,
+          userName,
           dataSourceEnabled,
           dataSource
         )}`,

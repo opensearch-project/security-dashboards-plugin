@@ -16,8 +16,10 @@
 import {
   createDataSourceQuery,
   getClusterInfoIfEnabled,
+  getDataSourceFromUrl,
   getDataSourceIdFromUrl,
   setDataSourceIdInUrl,
+  setDataSourceInUrl,
 } from '../datasource-utils';
 
 describe('Tests datasource utils', () => {
@@ -37,19 +39,25 @@ describe('Tests datasource utils', () => {
       value: { search: mockSearchNoDataSourceId },
       writable: true,
     });
-    expect(getDataSourceIdFromUrl()).toBe('');
-    const mockSearchDataSourceIdNotfirst = '?foo=bar&baz=qux&dataSourceId=test';
+    expect(getDataSourceFromUrl()).toEqual({});
+    const mockSearchDataSourceIdNotfirst = '?foo=bar&baz=qux&dataSource=%7B"id"%3A"94ffa650-f11a-11ee-a585-793f7b098e1a"%2C"label"%3A"9202"%7D';
     Object.defineProperty(window, 'location', {
       value: { search: mockSearchDataSourceIdNotfirst },
       writable: true,
     });
-    expect(getDataSourceIdFromUrl()).toBe('test');
-    const mockSearchDataSourceIdFirst = '?dataSourceId=test';
+    expect(getDataSourceFromUrl()).toEqual({
+      "id": "94ffa650-f11a-11ee-a585-793f7b098e1a",
+      "label": "9202",
+      });
+    const mockSearchDataSourceIdFirst = '?dataSource=%7B"id"%3A"94ffa650-f11a-11ee-a585-793f7b098e1a"%2C"label"%3A"9202"%7D';
     Object.defineProperty(window, 'location', {
       value: { search: mockSearchDataSourceIdFirst },
       writable: true,
     });
-    expect(getDataSourceIdFromUrl()).toBe('test');
+    expect(getDataSourceFromUrl()).toEqual({
+      "id": "94ffa650-f11a-11ee-a585-793f7b098e1a",
+      "label": "9202",
+      });
   });
 
   it('Tests setting the datasource in the url', () => {
@@ -63,11 +71,11 @@ describe('Tests datasource utils', () => {
       value: { replaceState },
       writable: true,
     });
-    setDataSourceIdInUrl('test');
+    setDataSourceInUrl({"id":"","label":"Local cluster"});
     expect(replaceState).toBeCalledWith(
       {},
       '',
-      'http://localhost:5601/app/security-dashboards-plugin?dataSourceId=test#/auth'
+      'http://localhost:5601/app/security-dashboards-plugin?dataSource=%7B%22id%22%3A%22%22%2C%22label%22%3A%22Local+cluster%22%7D#/auth'
     );
   });
 });

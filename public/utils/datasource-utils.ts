@@ -13,14 +13,13 @@
  *   permissions and limitations under the License.
  */
 
-import { DataSourceOption } from "src/plugins/data_source_management/public/components/data_source_menu/types";
-
+import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
 
 export function createDataSourceQuery(dataSourceId: string) {
   return { dataSourceId };
 }
 
-const DATASOURCEURLKEY = 'dataSourceId';
+const DATASOURCEURLKEY = 'dataSource';
 
 export function getClusterInfoIfEnabled(dataSourceEnabled: boolean, cluster: DataSourceOption) {
   if (dataSourceEnabled) {

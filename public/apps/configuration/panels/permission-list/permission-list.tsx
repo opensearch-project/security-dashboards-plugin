@@ -309,8 +309,10 @@ export function PermissionList(props: AppDependencies) {
               title: `${getSuccessToastMessage(
                 'Action group',
                 action,
-                groupName
-              )} ${getClusterInfoIfEnabled(dataSourceEnabled, dataSource)}`,
+                groupName,
+                dataSourceEnabled,
+                dataSource
+              )}`,
               color: 'success',
             });
           } catch (e) {
