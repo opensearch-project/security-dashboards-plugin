@@ -16,7 +16,7 @@
 import { addQueryParamsToURLIfAny } from '../utils';
 
 describe('Test backend utils', () => {
-  it('checks isAnonymousPage', () => {
+  it('checks addQueryParamsToURLIfAny', () => {
     const url = '/_plugins/_security/abc';
 
     const requestObject = { foo: 'bar', por: 'que' };
