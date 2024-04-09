@@ -25,39 +25,42 @@ export interface TopNavMenuProps extends AppDependencies {
   selectedDataSource: DataSourceOption;
 }
 
-export const SecurityPluginTopNavMenu = React.memo((props: TopNavMenuProps) => {
-  const {
-    coreStart,
-    depsStart,
-    params,
-    dataSourceManagement,
-    setDataSource,
-    selectedDataSource,
-    dataSourcePickerReadOnly,
-  } = props;
-  const { setHeaderActionMenu } = params;
-  const DataSourceMenu = dataSourceManagement?.ui.getDataSourceMenu<DataSourceSelectableConfig>();
+export const SecurityPluginTopNavMenu = React.memo(
+  (props: TopNavMenuProps) => {
+    const {
+      coreStart,
+      depsStart,
+      params,
+      dataSourceManagement,
+      setDataSource,
+      selectedDataSource,
+      dataSourcePickerReadOnly,
+    } = props;
+    const { setHeaderActionMenu } = params;
+    const DataSourceMenu = dataSourceManagement?.ui.getDataSourceMenu<DataSourceSelectableConfig>();
 
-  const dataSourceEnabled = !!depsStart.dataSource?.dataSourceEnabled;
+    const dataSourceEnabled = !!depsStart.dataSource?.dataSourceEnabled;
 
-  const wrapSetDataSourceWithUpdateUrl = (dataSources: DataSourceOption[]) => {
-    setDataSourceInUrl(dataSources[0]);
-    setDataSource(dataSources[0]);
-  };
+    const wrapSetDataSourceWithUpdateUrl = (dataSources: DataSourceOption[]) => {
+      setDataSourceInUrl(dataSources[0]);
+      setDataSource(dataSources[0]);
+    };
 
-  return dataSourceEnabled ? (
-    <DataSourceMenu
-      setMenuMountPoint={setHeaderActionMenu}
-      componentType={dataSourcePickerReadOnly ? 'DataSourceView' : 'DataSourceSelectable'}
-      componentConfig={{
-        savedObjects: coreStart.savedObjects.client,
-        notifications: coreStart.notifications,
-        activeOption: selectedDataSource ? [selectedDataSource] : [],
-        onSelectedDataSources: wrapSetDataSourceWithUpdateUrl,
-        fullWidth: true,
-      }}
-    />
-  ) : null;
-}, (prevProps, newProps) => prevProps.selectedDataSource.id === newProps.selectedDataSource.id && prevProps.dataSourcePickerReadOnly === newProps.dataSourcePickerReadOnly);
-
-
+    return dataSourceEnabled ? (
+      <DataSourceMenu
+        setMenuMountPoint={setHeaderActionMenu}
+        componentType={dataSourcePickerReadOnly ? 'DataSourceView' : 'DataSourceSelectable'}
+        componentConfig={{
+          savedObjects: coreStart.savedObjects.client,
+          notifications: coreStart.notifications,
+          activeOption: [selectedDataSource],
+          onSelectedDataSources: wrapSetDataSourceWithUpdateUrl,
+          fullWidth: true,
+        }}
+      />
+    ) : null;
+  },
+  (prevProps, newProps) =>
+    prevProps.selectedDataSource.id === newProps.selectedDataSource.id &&
+    prevProps.dataSourcePickerReadOnly === newProps.dataSourcePickerReadOnly
+);

@@ -23,7 +23,7 @@ import {
   EuiTitle,
   EuiGlobalToastList,
 } from '@elastic/eui';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { BreadcrumbsPageDependencies } from '../../../types';
 import { InternalUsersPanel } from './users-panel';
 import {

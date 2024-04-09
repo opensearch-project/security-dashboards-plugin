@@ -63,7 +63,7 @@ import { generateResourceName } from '../../utils/resource-utils';
 import { DocLinks } from '../../constants';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { DataSourceContext } from '../../app-router';
-import { createDataSourceQuery, getClusterInfoIfEnabled } from '../../../../utils/datasource-utils';
+import { createDataSourceQuery } from '../../../../utils/datasource-utils';
 
 export function renderBooleanToCheckMark(value: boolean): React.ReactNode {
   return value ? <EuiIcon type="check" /> : '';

@@ -40,24 +40,26 @@ describe('Tests datasource utils', () => {
       writable: true,
     });
     expect(getDataSourceFromUrl()).toEqual({});
-    const mockSearchDataSourceIdNotfirst = '?foo=bar&baz=qux&dataSource=%7B"id"%3A"94ffa650-f11a-11ee-a585-793f7b098e1a"%2C"label"%3A"9202"%7D';
+    const mockSearchDataSourceIdNotfirst =
+      '?foo=bar&baz=qux&dataSource=%7B"id"%3A"94ffa650-f11a-11ee-a585-793f7b098e1a"%2C"label"%3A"9202"%7D';
     Object.defineProperty(window, 'location', {
       value: { search: mockSearchDataSourceIdNotfirst },
       writable: true,
     });
     expect(getDataSourceFromUrl()).toEqual({
-      "id": "94ffa650-f11a-11ee-a585-793f7b098e1a",
-      "label": "9202",
-      });
-    const mockSearchDataSourceIdFirst = '?dataSource=%7B"id"%3A"94ffa650-f11a-11ee-a585-793f7b098e1a"%2C"label"%3A"9202"%7D';
+      id: '94ffa650-f11a-11ee-a585-793f7b098e1a',
+      label: '9202',
+    });
+    const mockSearchDataSourceIdFirst =
+      '?dataSource=%7B"id"%3A"94ffa650-f11a-11ee-a585-793f7b098e1a"%2C"label"%3A"9202"%7D';
     Object.defineProperty(window, 'location', {
       value: { search: mockSearchDataSourceIdFirst },
       writable: true,
     });
     expect(getDataSourceFromUrl()).toEqual({
-      "id": "94ffa650-f11a-11ee-a585-793f7b098e1a",
-      "label": "9202",
-      });
+      id: '94ffa650-f11a-11ee-a585-793f7b098e1a',
+      label: '9202',
+    });
   });
 
   it('Tests setting the datasource in the url', () => {
@@ -71,7 +73,7 @@ describe('Tests datasource utils', () => {
       value: { replaceState },
       writable: true,
     });
-    setDataSourceInUrl({"id":"","label":"Local cluster"});
+    setDataSourceInUrl({ id: '', label: 'Local cluster' });
     expect(replaceState).toBeCalledWith(
       {},
       '',
