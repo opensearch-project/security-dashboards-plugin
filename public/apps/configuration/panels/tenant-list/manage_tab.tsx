@@ -487,7 +487,7 @@ export function ManageTab(props: AppDependencies) {
           <EuiPageContentHeaderSection>
             <EuiTitle size="s">
               <h3>
-                Tenants
+                Dashboards tenants
                 <span className="panel-header-count">
                   {' '}
                   ({Query.execute(query || '', tenantData).length})

@@ -10,7 +10,7 @@ exports[`Tenant list Action menu click Duplicate click 1`] = `
           size="s"
         >
           <h3>
-            Tenants
+            Dashboards tenants
             <span
               className="panel-header-count"
             >
@@ -198,7 +198,7 @@ exports[`Tenant list Action menu click Edit click 1`] = `
           size="s"
         >
           <h3>
-            Tenants
+            Dashboards tenants
             <span
               className="panel-header-count"
             >
