@@ -42,11 +42,9 @@ export const SecurityPluginTopNavMenu = React.memo(
     const dataSourceEnabled = !!depsStart.dataSource?.dataSourceEnabled;
 
     const wrapSetDataSourceWithUpdateUrl = (dataSources: DataSourceOption[]) => {
-      console.log(dataSources);
       setDataSourceInUrl(dataSources[0]);
       setDataSource(dataSources[0]);
     };
-    console.log(selectedDataSource);
 
     return dataSourceEnabled ? (
       <DataSourceMenu
