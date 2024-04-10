@@ -46,6 +46,7 @@ describe('SecurityPluginTopNavMenu', () => {
         depsStart={securityPluginStartDepsMock}
         dataSourcePickerReadOnly={false}
         dataSourceManagement={dataSourceManagementMock}
+        selectedDataSource={{}}
         params={{}}
       />
     );

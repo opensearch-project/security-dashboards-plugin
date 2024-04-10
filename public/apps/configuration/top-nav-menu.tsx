@@ -42,9 +42,11 @@ export const SecurityPluginTopNavMenu = React.memo(
     const dataSourceEnabled = !!depsStart.dataSource?.dataSourceEnabled;
 
     const wrapSetDataSourceWithUpdateUrl = (dataSources: DataSourceOption[]) => {
+      console.log(dataSources);
       setDataSourceInUrl(dataSources[0]);
       setDataSource(dataSources[0]);
     };
+    console.log(selectedDataSource);
 
     return dataSourceEnabled ? (
       <DataSourceMenu
@@ -53,7 +55,8 @@ export const SecurityPluginTopNavMenu = React.memo(
         componentConfig={{
           savedObjects: coreStart.savedObjects.client,
           notifications: coreStart.notifications,
-          activeOption: [selectedDataSource],
+          activeOption:
+            selectedDataSource.id || selectedDataSource.label ? [selectedDataSource] : undefined,
           onSelectedDataSources: wrapSetDataSourceWithUpdateUrl,
           fullWidth: true,
         }}
