@@ -28,9 +28,9 @@ import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { BasicAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
-import { LOGIN_PAGE_URI } from '../../../../common';
 import { composeNextUrlQueryParam } from '../../../utils/next_url';
 import {
+  LOGIN_PAGE_URI,
   ANONYMOUS_AUTH_LOGIN,
   AUTH_HEADER_NAME,
   AuthType,
