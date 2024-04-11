@@ -227,11 +227,16 @@ describe('start OpenSearch Dashboards server', () => {
       .unset(AUTHORIZATION_HEADER_NAME);
 
     expect(response.status).toEqual(302);
-    expect(response.header.location).toEqual('/app/login?nextUrl=%2Fapp%2Fhome');
+    expect(response.header.location).toEqual('/auth/anonymous?nextUrl=%2Fapp%2Fhome');
 
     const response2 = await osdTestServer.request.get(root, response.header.location);
 
-    expect(response2.status).toEqual(200);
+    expect(response2.status).toEqual(302);
+    expect(response2.header.location).toEqual('/app/login?nextUrl=%2Fapp%2Fhome');
+
+    const response3 = await osdTestServer.request.get(root, response2.header.location);
+
+    expect(response3.status).toEqual(200);
   });
 
   it('redirect for home follows login for anonymous auth disabled', async () => {
@@ -260,10 +265,14 @@ describe('start OpenSearch Dashboards server', () => {
       .unset(AUTHORIZATION_HEADER_NAME);
 
     expect(response.status).toEqual(302);
-    expect(response.header.location).toEqual(expectedPath);
 
     const response2 = await osdTestServer.request.get(root, response.header.location);
 
-    expect(response2.status).toEqual(200);
+    expect(response2.status).toEqual(302);
+    expect(response2.header.location).toEqual(expectedPath);
+
+    const response3 = await osdTestServer.request.get(root, response2.header.location);
+
+    expect(response3.status).toEqual(200);
   });
 });

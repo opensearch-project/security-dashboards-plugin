@@ -219,8 +219,7 @@ export class SamlAuthRoutes {
           const user = await this.securityClient.authenticateWithHeader(
             request,
             'authorization',
-            credentials.authorization,
-            AuthType.SAML
+            credentials.authorization
           );
 
           let expiryTime = Date.now() + this.config.session.ttl;

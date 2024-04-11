@@ -186,11 +186,7 @@ export class BasicAuthRoutes {
           }
           context.security_plugin.logger.info('The Redirect Path is ' + redirectUrl);
           try {
-            user = await this.securityClient.authenticateWithHeaders(
-              request,
-              AuthType.ANONYMOUS,
-              {}
-            );
+            user = await this.securityClient.authenticateWithHeaders(request, {});
           } catch (error) {
             context.security_plugin.logger.error(
               `Failed authentication: ${error}. Redirecting to Login Page`

@@ -53,7 +53,6 @@ export class SecurityClient {
     request: OpenSearchDashboardsRequest,
     headerName: string,
     headerValue: string,
-    authRequestType: string,
     whitelistedHeadersAndValues: any = {},
     additionalAuthHeaders: any = {}
   ): Promise<User> {
@@ -72,7 +71,6 @@ export class SecurityClient {
       const esResponse = await this.esClient
         .asScoped(request)
         .callAsCurrentUser('opensearch_security.authinfo', {
-          [AUTH_TYPE_PARAM]: authRequestType,
           headers,
         });
       return {
@@ -90,14 +88,12 @@ export class SecurityClient {
 
   public async authenticateWithHeaders(
     request: OpenSearchDashboardsRequest,
-    authRequestType: string,
     additionalAuthHeaders: any = {}
   ): Promise<User> {
     try {
       const esResponse = await this.esClient
         .asScoped(request)
         .callAsCurrentUser('opensearch_security.authinfo', {
-          [AUTH_TYPE_PARAM]: authRequestType,
           headers: additionalAuthHeaders,
         });
       return {
@@ -112,16 +108,11 @@ export class SecurityClient {
     }
   }
 
-  public async authinfo(
-    request: OpenSearchDashboardsRequest,
-    authRequestType: string = '',
-    headers: any = {}
-  ) {
+  public async authinfo(request: OpenSearchDashboardsRequest, headers: any = {}) {
     try {
       return await this.esClient
         .asScoped(request)
         .callAsCurrentUser('opensearch_security.authinfo', {
-          [AUTH_TYPE_PARAM]: authRequestType,
           headers,
         });
     } catch (error: any) {

@@ -24,7 +24,6 @@ import {
   isPrivateTenant,
   LOGIN_PAGE_URI,
   CUSTOM_ERROR_PAGE_URI,
-  AuthType,
 } from '../../common';
 import { SecurityClient } from '../backend/opensearch_security_client';
 import { IAuthenticationType, OpenSearchAuthInfo } from '../auth/types/authentication_type';
@@ -105,12 +104,7 @@ export class ReadonlyService extends BaseReadonlyService {
         return false;
       }
 
-      const authType = cookie
-        ? cookie.isAnonymousAuth
-          ? AuthType.ANONYMOUS
-          : cookie.authType
-        : '';
-      const authInfo = await this.securityClient.authinfo(request, authType, headers);
+      const authInfo = await this.securityClient.authinfo(request, headers);
 
       if (!authInfo.user_requested_tenant && cookie) {
         authInfo.user_requested_tenant = cookie.tenant;

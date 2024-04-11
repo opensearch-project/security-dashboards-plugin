@@ -13,9 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-import { AUTH_TYPE_PARAM } from '../../common';
-import { addQueryParamsToURLIfAny } from './utils';
-
 // eslint-disable-next-line import/no-default-export
 export default function (Client: any, config: any, components: any) {
   const ca = components.clientAction.factory;
@@ -29,14 +26,7 @@ export default function (Client: any, config: any, components: any) {
    */
   Client.prototype.opensearch_security.prototype.authinfo = ca({
     url: {
-      fmt: `/_plugins/_security/authinfo`,
-      opt: {
-        [AUTH_TYPE_PARAM]: {
-          type: 'string',
-          required: false,
-        },
-      },
-      template: (params) => addQueryParamsToURLIfAny(params, '/_plugins/_security/authinfo'),
+      fmt: '/_plugins/_security/authinfo',
     },
   });
 
