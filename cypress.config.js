@@ -21,7 +21,6 @@ module.exports = defineConfig({
   defaultCommandTimeout: 60000,
   requestTimeout: 60000,
   responseTimeout: 60000,
-  experimentalMemoryManagement: true,
   e2e: {
     setupNodeEvents(on, config) {},
     supportFile: 'test/cypress/support/e2e.js',

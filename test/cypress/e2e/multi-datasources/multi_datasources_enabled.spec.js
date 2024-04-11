@@ -41,11 +41,9 @@ const closeToast = () => {
   // remove browser incompatibiltiy toast causing flakyness (cause it has higher z-index than Create button making it invisible)
   cy.get('.euiToast')
     .contains('Your browser does not meet the security requirements for OpenSearch Dashboards')
-    .then((toast) => {
-      if (toast.length > 0) {
-        cy.get('[data-test-subj="toastCloseButton"]').first().click();
-      }
-    });
+    .find('[data-test-subj="toastCloseButton"]').click();
+      
+  
 };
 
 const deleteAllDataSources = () => {
