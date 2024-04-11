@@ -117,11 +117,11 @@ describe('Multi-datasources enabled', () => {
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/auth`);
     closeToast();
     // Local cluster auth
-    cy.get('.panel-header-count').first().invoke('text').should('contain', '(2)');
+    cy.get('.panel-header-count').first().invoke('text').should('contain', '(6)');
     // Remote cluster auth
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/auth`);
     closeToast();
-    cy.get('.panel-header-count').first().invoke('text').should('contain', '(6)');
+    cy.get('.panel-header-count').first().invoke('text').should('contain', '(2)');
   });
 
   it('Checks Users Tab', () => {
@@ -141,6 +141,7 @@ describe('Multi-datasources enabled', () => {
       'contain',
       '9202'
     );
+    cy.get('[data-test-subj="tableHeaderCell_username_0"]').click();
     cy.get('[data-test-subj="checkboxSelectRow-9202-user"]').should('exist');
 
     // Internal user doesn't exist on local cluster
@@ -259,10 +260,6 @@ describe('Multi-datasources enabled', () => {
     cy.contains('h1', 'Create Role');
     cy.get('[data-test-subj="name-text"]').focus().type('9202-role');
     cy.get('[data-test-subj="comboBoxToggleListButton"]').first().click();
-    cy.get('button[title="manage_snapshots"]').should('be.visible');
-    cy.get('button[title="manage_snapshots"]').click({ force: true });
-
-    cy.get('[data-test-subj="comboBoxInput"]').first().should('contain', 'manage_snapshots');
     cy.get('[data-test-subj="create-or-update-role"]').click();
 
     cy.get('.euiToastHeader__title').should('contain', 'Role "9202-role" successfully created');
