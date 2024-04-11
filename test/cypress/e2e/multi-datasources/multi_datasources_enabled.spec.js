@@ -271,8 +271,7 @@ describe('Multi-datasources enabled', () => {
       'contain',
       '9202'
     );
-    cy.get('[data-text="Customization"]').click();
-    cy.get('div[data-test-subj="filter-custom"]').contains('Custom').click();
+    cy.get('[data-test-subj="tableHeaderCell_roleName_0"]').click();
     cy.get('[data-test-subj="checkboxSelectRow-9202-role"]').should('exist');
 
     // Role doesn't exist on local cluster
