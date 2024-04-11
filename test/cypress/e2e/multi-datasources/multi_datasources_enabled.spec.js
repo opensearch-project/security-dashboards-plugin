@@ -203,7 +203,7 @@ describe('Multi-datasources enabled', () => {
     // Datasource is locked to local cluster for tenancy tab
     cy.visit('http://localhost:5601/app/security-dashboards-plugin#/tenants');
     closeToast();
-    cy.contains('h1', 'Multi-tenancy');
+    cy.contains('h1', 'Dashboards multi-tenancy');
     cy.get('[data-test-subj="dataSourceViewContextMenuHeaderLink"]').should(
       'contain',
       'Local cluster'
