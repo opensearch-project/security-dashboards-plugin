@@ -32,7 +32,6 @@ export class SecurityClient {
           headers: {
             authorization: `Basic ${authHeader}`,
           },
-          [AUTH_TYPE_PARAM]: AuthType.BASIC,
         });
       return {
         username: credentials.username,
