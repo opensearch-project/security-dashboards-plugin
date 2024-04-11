@@ -35,6 +35,7 @@ import {
   OPENID_AUTH_LOGIN_WITH_FRAGMENT,
   SAML_AUTH_LOGIN_WITH_FRAGMENT,
 } from '../../../common';
+import { getSavedTenant } from '../../utils/storage-utils';
 
 interface LoginPageDeps {
   http: CoreStart['http'];
@@ -49,8 +50,7 @@ interface LoginButtonConfig {
   buttonstyle: string;
 }
 
-function redirect(serverBasePath: string) {
-  // navigate to nextUrl
+export function getNextPath(serverBasePath: string) {
   const urlParams = new URLSearchParams(window.location.search);
   let nextUrl = urlParams.get('nextUrl');
   if (!nextUrl || nextUrl.toLowerCase().includes('//')) {
@@ -58,7 +58,26 @@ function redirect(serverBasePath: string) {
     // redirect to '/'.
     nextUrl = serverBasePath + '/';
   }
-  window.location.href = nextUrl + window.location.hash;
+  const savedTenant = getSavedTenant();
+  const url = new URL(
+    window.location.protocol + '//' + window.location.host + nextUrl + window.location.hash
+  );
+  if (
+    !!savedTenant &&
+    !(
+      url.searchParams.has('security_tenant') ||
+      url.searchParams.has('securitytenant') ||
+      url.searchParams.has('securityTenant_')
+    )
+  ) {
+    url.searchParams.append('security_tenant', savedTenant);
+  }
+  return url.pathname + url.search + url.hash;
+}
+
+function redirect(serverBasePath: string) {
+  // navigate to nextUrl
+  window.location.href = getNextPath(serverBasePath);
 }
 
 export function extractNextUrlFromWindowLocation(): string {

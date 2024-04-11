@@ -13,15 +13,39 @@
  *   permissions and limitations under the License.
  */
 
+import { LOGIN_PAGE_URI } from '../../../../common';
 import { interceptError } from '../../../utils/logout-utils';
 import { setShouldShowTenantPopup } from '../../../utils/storage-utils';
-import { LOGIN_PAGE_URI } from '../../../../common';
 
 jest.mock('../../../utils/storage-utils', () => ({
   setShouldShowTenantPopup: jest.fn(),
 }));
 
+interface LooseObject {
+  [key: string]: any;
+}
+
+// Mock sessionStorage
+const sessionStorageMock = (() => {
+  let store = {} as LooseObject;
+  return {
+    clear() {
+      store = {};
+    },
+  };
+})();
+
+Object.defineProperty(window, 'sessionStorage', { value: sessionStorageMock });
+
 describe('Intercept error handler', () => {
+  beforeEach(() => {
+    jest.spyOn(window.sessionStorage, 'clear');
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   const fakeError401 = {
     response: {
       status: 401,
@@ -34,15 +58,28 @@ describe('Intercept error handler', () => {
     },
   };
 
-  it('Intercept error handler Should call setShouldShowTenantPopup on session timeout', () => {
+  it('Intercept error handler should call setShouldShowTenantPopup on session timeout', () => {
     const sessionTimeoutFn = interceptError(LOGIN_PAGE_URI, window);
     sessionTimeoutFn(fakeError401, null);
     expect(setShouldShowTenantPopup).toBeCalledTimes(1);
+    expect(sessionStorage.clear).toBeCalledTimes(1);
   });
 
-  it('Intercept error handler Should not call setShouldShowTenantPopup on session timeout', () => {
+  it('Intercept error handler should clear the session', () => {
+    const sessionTimeoutFn = interceptError(LOGIN_PAGE_URI, window);
+    sessionTimeoutFn(fakeError401, null);
+    expect(sessionStorage.clear).toBeCalledTimes(1);
+  });
+
+  it('Intercept error handler should not call setShouldShowTenantPopup on session timeout', () => {
     const sessionTimeoutFn = interceptError(LOGIN_PAGE_URI, window);
     sessionTimeoutFn(fakeError400, null);
     expect(setShouldShowTenantPopup).toBeCalledTimes(0);
+  });
+
+  it('Intercept error handler should not clear the session', () => {
+    const sessionTimeoutFn = interceptError(LOGIN_PAGE_URI, window);
+    sessionTimeoutFn(fakeError400, null);
+    expect(sessionStorage.clear).toBeCalledTimes(0);
   });
 });

@@ -39,7 +39,6 @@ import {
 import { httpDelete, httpGet, httpPost, httpPut } from './request-utils';
 import { getResourceUrl } from './resource-utils';
 import {
-  API_ENDPOINT_DASHBOARDSINFO,
   DEFAULT_TENANT,
   GLOBAL_TENANT_RENDERING_TEXT,
   GLOBAL_TENANT_SYMBOL,
@@ -47,7 +46,6 @@ import {
   isGlobalTenant,
   isRenderingPrivateTenant,
   PRIVATE_TENANT_RENDERING_TEXT,
-  SAML_AUTH_LOGIN,
 } from '../../../../common';
 import { TenancyConfigSettings } from '../panels/tenancy-config/types';
 

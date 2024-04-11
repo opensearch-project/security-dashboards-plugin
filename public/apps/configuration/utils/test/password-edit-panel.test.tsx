@@ -16,7 +16,6 @@
 import { mount, shallow } from 'enzyme';
 import React from 'react';
 import { PasswordEditPanel } from '../password-edit-panel';
-import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
 
 const mockDashboardsInfo = {
   multitenancy_enabled: true,

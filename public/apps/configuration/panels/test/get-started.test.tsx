@@ -19,7 +19,7 @@ import { EuiSteps } from '@elastic/eui';
 import { Action } from '../../types';
 import { ResourceType } from '../../../../../common';
 import { buildHashUrl } from '../../utils/url-builder';
-import { GetStarted, getClusterInfoIfEnabled } from '../get-started';
+import { GetStarted } from '../get-started';
 import * as ToastUtils from '../../utils/toast-utils'; // Import all functions from toast-utils
 import * as RequestUtils from '../../utils/request-utils'; // Import all functions from request-utils
 

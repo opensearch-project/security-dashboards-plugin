@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiButton, EuiFieldText } from '@elastic/eui';
+import { EuiButton } from '@elastic/eui';
 import { shallow } from 'enzyme';
 import React from 'react';
 import { updateRole } from '../../../utils/role-detail-utils';
@@ -21,7 +21,7 @@ import { setCrossPageToast } from '../../../utils/storage-utils';
 import { fetchTenantNameList } from '../../../utils/tenant-utils';
 import { ClusterPermissionPanel } from '../cluster-permission-panel';
 import { IndexPermissionPanel } from '../index-permission-panel';
-import { getSuccessToastMessage, RoleEdit } from '../role-edit';
+import { RoleEdit } from '../role-edit';
 import { TenantPanel } from '../tenant-panel';
 
 jest.mock('../../../utils/role-detail-utils', () => ({

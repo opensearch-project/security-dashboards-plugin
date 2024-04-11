@@ -29,7 +29,7 @@ import {
   EuiTitle,
   Query,
 } from '@elastic/eui';
-import { Dictionary, difference, isEmpty, map } from 'lodash';
+import { Dictionary, isEmpty, map } from 'lodash';
 import React, { useState } from 'react';
 import { getAuthInfo } from '../../../utils/auth-info-utils';
 import { AppDependencies } from '../../types';

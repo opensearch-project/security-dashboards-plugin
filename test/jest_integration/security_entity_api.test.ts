@@ -34,11 +34,7 @@ import {
   getEntityAsAdmin,
   getEntityAsAdminWithDataSource,
 } from '../helper/entity_operation';
-import {
-  testAuditLogDisabledSettings,
-  testAuditLogEnabledSettings,
-  testAuditLogSettings,
-} from './constants';
+import { testAuditLogDisabledSettings, testAuditLogEnabledSettings } from './constants';
 
 describe('start OpenSearch Dashboards server', () => {
   let root: Root;
