@@ -158,9 +158,7 @@ export function AppRouter(props: AppDependencies) {
   const setGlobalBreadcrumbs = flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs);
   const dataSourceFromUrl = getDataSourceFromUrl();
 
-  const [dataSource, setDataSource] = useState<DataSourceOption>(
-    dataSourceFromUrl ? dataSourceFromUrl : null
-  );
+  const [dataSource, setDataSource] = useState<DataSourceOption>(dataSourceFromUrl);
 
   return (
     <DataSourceContext.Provider value={{ dataSource, setDataSource }}>
