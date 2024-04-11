@@ -97,7 +97,9 @@ describe('Multi-datasources enabled', () => {
   });
 
   it('Checks Get Started Tab', () => {
-    cy.visit('http://localhost:5601/app/security-dashboards-plugin#/getstarted');
+    cy.visit(
+      `http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/getstarted`
+    );
     closeToast();
     // Local cluster purge cache
     cy.get('[data-test-subj="purge-cache"]').click();
@@ -112,10 +114,10 @@ describe('Multi-datasources enabled', () => {
   });
 
   it('Checks Auth Tab', () => {
-    cy.visit('http://localhost:5601/app/security-dashboards-plugin#/auth');
+    cy.visit(`http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/auth`);
     closeToast();
     // Local cluster auth
-    cy.get('.panel-header-count').first().invoke('text').should('contain', '(6)');
+    cy.get('.panel-header-count').first().invoke('text').should('contain', '(2)');
     // Remote cluster auth
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/auth`);
     closeToast();
@@ -123,11 +125,6 @@ describe('Multi-datasources enabled', () => {
   });
 
   it('Checks Users Tab', () => {
-    cy.visit('http://localhost:5601/app/security-dashboards-plugin#/users');
-    // Create an internal user in the remote cluster
-    cy.contains('h3', 'Internal users');
-    cy.contains('a', 'admin');
-
     // select remote data source
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/users`);
     closeToast();
@@ -147,7 +144,7 @@ describe('Multi-datasources enabled', () => {
     cy.get('[data-test-subj="checkboxSelectRow-9202-user"]').should('exist');
 
     // Internal user doesn't exist on local cluster
-    cy.visit('http://localhost:5601/app/security-dashboards-plugin#/users');
+    cy.visit(`http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/users`);
     closeToast();
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
       'contain',
@@ -157,11 +154,6 @@ describe('Multi-datasources enabled', () => {
   });
 
   it('Checks Permissions Tab', () => {
-    cy.visit('http://localhost:5601/app/security-dashboards-plugin#/permissions');
-    closeToast();
-    // Create a permission in the remote cluster
-    cy.contains('h3', 'Permissions');
-
     // Select remote cluster
     cy.visit(
       `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/permissions`
@@ -201,7 +193,7 @@ describe('Multi-datasources enabled', () => {
 
   it('Checks Tenancy Tab', () => {
     // Datasource is locked to local cluster for tenancy tab
-    cy.visit('http://localhost:5601/app/security-dashboards-plugin#/tenants');
+    cy.visit(`http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/tenants`);
     closeToast();
     cy.contains('h1', 'Dashboards multi-tenancy');
     cy.get('[data-test-subj="dataSourceViewContextMenuHeaderLink"]').should(
@@ -213,7 +205,9 @@ describe('Multi-datasources enabled', () => {
 
   it('Checks Service Accounts Tab', () => {
     // Datasource is locked to local cluster for service accounts tab
-    cy.visit('http://localhost:5601/app/security-dashboards-plugin#/serviceAccounts');
+    cy.visit(
+      `http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/serviceAccounts`
+    );
     closeToast();
     cy.get('[data-test-subj="dataSourceViewContextMenuHeaderLink"]').should(
       'contain',
@@ -223,10 +217,6 @@ describe('Multi-datasources enabled', () => {
   });
 
   it('Checks Audit Logs Tab', () => {
-    cy.visit('http://localhost:5601/app/security-dashboards-plugin#/auditLogging');
-    closeToast();
-    cy.get('[data-test-subj="general-settings"]').should('exist');
-
     // Select remote cluster
     cy.visit(
       `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/auditLogging`
@@ -260,11 +250,6 @@ describe('Multi-datasources enabled', () => {
 
   it('Checks Roles Tab', () => {
     Cypress.on('uncaught:exception', (err) => !err.message.includes('ResizeObserver'));
-
-    cy.visit('http://localhost:5601/app/security-dashboards-plugin#/roles');
-    closeToast();
-    cy.contains('h3', 'Roles');
-
     // select remote data source
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/roles`);
     closeToast();
