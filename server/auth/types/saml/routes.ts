@@ -381,7 +381,7 @@ export class SamlAuthRoutes {
       },
       async (context, request, response) => {
         try {
-          const authInfo = await this.securityClient.authinfo(request, AuthType.SAML);
+          const authInfo = await this.securityClient.authinfo(request);
           await clearSplitCookies(
             request,
             this.getExtraAuthStorageOptions(context.security_plugin.logger)
