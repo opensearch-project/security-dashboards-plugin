@@ -15,7 +15,6 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import { SecurityPluginTopNavMenu } from '../top-nav-menu';
 import { AppRouter } from '../app-router';
 
 describe('SecurityPluginTopNavMenu', () => {

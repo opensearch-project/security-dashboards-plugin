@@ -23,16 +23,15 @@ import {
   EuiButton,
 } from '@elastic/eui';
 import { Route } from 'react-router-dom';
-import React, { useState, useMemo, useCallback, useContext } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ManageTab } from './manage_tab';
 import { ConfigureTab1 } from './configure_tab1';
 import { AppDependencies } from '../../../types';
 import { ExternalLink } from '../../utils/display-utils';
-import { displayBoolean } from '../../utils/display-utils';
 import { DocLinks } from '../../constants';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
 import { TenantInstructionView } from './tenant-instruction-view';
-import { DataSourceContext, LocalCluster } from '../../app-router';
+import { LocalCluster } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 
 interface TenantListProps extends AppDependencies {
@@ -144,7 +143,7 @@ export function TenantList(props: TenantListProps) {
       />
       <EuiPageHeader>
         <EuiTitle size="l">
-          <h1>Multi-tenancy</h1>
+          <h1>Dashboards multi-tenancy</h1>
         </EuiTitle>
       </EuiPageHeader>
       <EuiText size="s" color="subdued" grow={true} textAlign={'left'}>

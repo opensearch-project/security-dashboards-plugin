@@ -17,8 +17,6 @@ import {
   createDataSourceQuery,
   getClusterInfoIfEnabled,
   getDataSourceFromUrl,
-  getDataSourceIdFromUrl,
-  setDataSourceIdInUrl,
   setDataSourceInUrl,
 } from '../datasource-utils';
 

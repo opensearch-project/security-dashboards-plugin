@@ -56,7 +56,7 @@ runs:
       if: ${{ runner.os == 'Linux' }}
       run: |
         cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
-        yarn pretest:jest_server
+        yarn runIdp
       shell: bash
 
     - name: Run OpenSearch Dashboards with provided configuration

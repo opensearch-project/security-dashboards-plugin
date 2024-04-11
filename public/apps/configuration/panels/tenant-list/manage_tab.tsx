@@ -68,7 +68,7 @@ import { useContextMenuState } from '../../utils/context-menu';
 import { generateResourceName } from '../../utils/resource-utils';
 import { DocLinks } from '../../constants';
 import { TenantList } from './tenant-list';
-import { getBreadcrumbs, LocalCluster, Route_MAP } from '../../app-router';
+import { LocalCluster, getBreadcrumbs } from '../../app-router';
 import { buildUrl } from '../../utils/url-builder';
 import { CrossPageToast } from '../../cross-page-toast';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
@@ -494,7 +494,7 @@ export function ManageTab(props: AppDependencies) {
           <EuiPageContentHeaderSection>
             <EuiTitle size="s">
               <h3>
-                Tenants
+                Dashboards tenants
                 <span className="panel-header-count">
                   {' '}
                   ({Query.execute(query || '', tenantData).length})

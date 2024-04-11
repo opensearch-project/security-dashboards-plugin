@@ -26,9 +26,8 @@ import {
   EuiTitle,
   EuiGlobalToastList,
 } from '@elastic/eui';
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { FormattedMessage } from '@osd/i18n/react';
-import { DataSourceOption } from '../../../../../../src/plugins/data_source_management/public/components/data_source_selector/data_source_selector';
 import { AppDependencies } from '../../types';
 import { buildHashUrl } from '../utils/url-builder';
 import { Action } from '../types';

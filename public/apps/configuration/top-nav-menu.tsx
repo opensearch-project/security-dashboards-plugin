@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import { DataSourceSelectableConfig } from 'src/plugins/data_source_management/public';
 import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
 import { AppDependencies } from '../types';

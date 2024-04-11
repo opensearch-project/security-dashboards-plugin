@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiButton, EuiFieldText } from '@elastic/eui';
+import { EuiButton } from '@elastic/eui';
 import { shallow } from 'enzyme';
 import React from 'react';
 import { updateRole } from '../../../utils/role-detail-utils';

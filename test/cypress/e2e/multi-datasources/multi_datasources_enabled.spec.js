@@ -39,17 +39,16 @@ const createDataSource = () => {
 
 const closeToast = () => {
   // remove browser incompatibiltiy toast causing flakyness (cause it has higher z-index than Create button making it invisible)
-  cy.get('body').then((body) => {
-    if (body.find('[data-test-subj="toastCloseButton"]').length > 0) {
-      cy.get('.euiToast')
-        .contains('Your browser does not meet the security requirements for OpenSearch Dashboards')
-        .then((toast) => {
-          if (toast.length > 0) {
-            cy.get('[data-test-subj="toastCloseButton"]').first().click();
-          }
-        });
-    }
-  });
+  cy.get('.euiToastHeader__title')
+    .should(
+      'contain',
+      'Your browser does not meet the security requirements for OpenSearch Dashboards'
+    )
+    .then((toast) => {
+      if (toast.length > 0) {
+        cy.get('[data-test-subj="toastCloseButton"]').first().click();
+      }
+    });
 };
 
 const deleteAllDataSources = () => {
