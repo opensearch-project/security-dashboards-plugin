@@ -39,7 +39,9 @@ const createDataSource = () => {
 
 const closeToast = () => {
   // remove browser incompatibiltiy toast causing flakyness (cause it has higher z-index than Create button making it invisible)
-  cy.get('[class="euiToast euiToast--warning euiGlobalToastListItem"]').find('[data-test-subj="toastCloseButton"]').first()
+  cy.get('[class="euiToast euiToast--warning euiGlobalToastListItem"]')
+    .find('[data-test-subj="toastCloseButton"]')
+    .first()
     .click();
 };
 
