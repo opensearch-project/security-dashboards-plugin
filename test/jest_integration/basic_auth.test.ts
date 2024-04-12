@@ -132,7 +132,6 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   it('call authinfo API as admin', async () => {
-    const testUserCredentials = Buffer.from(ADMIN_CREDENTIALS);
     const response = await osdTestServer.request
       .get(root, '/api/v1/auth/authinfo')
       .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
@@ -142,7 +141,7 @@ describe('start OpenSearch Dashboards server', () => {
   it('call authinfo API without credentials', async () => {
     const response = await osdTestServer.request
       .get(root, '/api/v1/auth/authinfo')
-      .unset('Authorization');
+      .unset(AUTHORIZATION_HEADER_NAME);
     expect(response.status).toEqual(401);
   });
 
@@ -209,7 +208,9 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   it('enforce authentication on api/status route', async () => {
-    const response = await osdTestServer.request.get(root, '/api/status');
+    const response = await osdTestServer.request
+      .get(root, '/api/status')
+      .unset(AUTHORIZATION_HEADER_NAME);
     expect(response.status).toEqual(401);
   });
 

@@ -135,7 +135,7 @@ export function TenantList(props: TenantListProps) {
     <>
       <EuiPageHeader>
         <EuiTitle size="l">
-          <h1>Multi-tenancy</h1>
+          <h1>Dashboards multi-tenancy</h1>
         </EuiTitle>
       </EuiPageHeader>
       <EuiText size="s" color="subdued" grow={true} textAlign={'left'}>

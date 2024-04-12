@@ -28,9 +28,14 @@ import { SecurityPluginConfigType } from '../../..';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { BasicAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
-import { LOGIN_PAGE_URI, ANONYMOUS_AUTH_LOGIN } from '../../../../common';
 import { composeNextUrlQueryParam } from '../../../utils/next_url';
-import { AUTH_HEADER_NAME, AuthType, OPENDISTRO_SECURITY_ANONYMOUS } from '../../../../common';
+import {
+  LOGIN_PAGE_URI,
+  ANONYMOUS_AUTH_LOGIN,
+  AUTH_HEADER_NAME,
+  AuthType,
+  OPENDISTRO_SECURITY_ANONYMOUS,
+} from '../../../../common';
 
 export class BasicAuthentication extends AuthenticationType {
   public readonly type: string = AuthType.BASIC;
