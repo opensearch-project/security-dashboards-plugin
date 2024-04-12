@@ -192,6 +192,7 @@ export function PermissionList(props: AppDependencies) {
   const [selection, setSelection] = React.useState<PermissionListingItem[]>([]);
   const [itemIdToExpandedRowMap, setItemIdToExpandedRowMap] = useState<ExpandedRowMapInterface>({});
 
+  const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
 
   // Modal state
@@ -305,7 +306,13 @@ export function PermissionList(props: AppDependencies) {
             fetchData();
             addToast({
               id: 'saveSucceeded',
-              title: getSuccessToastMessage('Action group', action, groupName),
+              title: `${getSuccessToastMessage(
+                'Action group',
+                action,
+                groupName,
+                dataSourceEnabled,
+                dataSource
+              )}`,
               color: 'success',
             });
           } catch (e) {

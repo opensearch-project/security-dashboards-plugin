@@ -75,6 +75,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
   const [toasts, addToast, removeToast] = useToastState();
 
   const [isFormValid, setIsFormValid] = useState<boolean>(true);
+  const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
 
   React.useEffect(() => {
@@ -135,7 +136,13 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
       setCrossPageToast(buildUrl(ResourceType.users), {
         id: 'updateUserSucceeded',
         color: 'success',
-        title: getSuccessToastMessage('User', props.action, userName),
+        title: `${getSuccessToastMessage(
+          'User',
+          props.action,
+          userName,
+          dataSourceEnabled,
+          dataSource
+        )}`,
       });
       // Redirect to user listing
       window.location.href = buildHashUrl(ResourceType.users);

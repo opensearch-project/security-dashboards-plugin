@@ -98,7 +98,7 @@ describe('Tenant list', () => {
     const component = shallow(
       <ManageTab
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={config as any}
       />
@@ -126,7 +126,7 @@ describe('Tenant list', () => {
     const component = shallow(
       <ManageTab
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={config1 as any}
       />
@@ -145,7 +145,7 @@ describe('Tenant list', () => {
     shallow(
       <ManageTab
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={config as any}
       />
@@ -175,7 +175,7 @@ describe('Tenant list', () => {
     shallow(
       <ManageTab
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={config as any}
       />
@@ -195,7 +195,7 @@ describe('Tenant list', () => {
     shallow(
       <ManageTab
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={config as any}
       />
@@ -220,7 +220,7 @@ describe('Tenant list', () => {
     shallow(
       <ManageTab
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={config as any}
       />
@@ -239,7 +239,7 @@ describe('Tenant list', () => {
     const component = shallow(
       <ManageTab
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={config as any}
       />
@@ -261,7 +261,7 @@ describe('Tenant list', () => {
     const component = shallow(
       <ManageTab
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={config as any}
       />
@@ -299,7 +299,7 @@ describe('Tenant list', () => {
       const component = shallow(
         <ManageTab
           coreStart={mockCoreStart as any}
-          navigation={{} as any}
+          depsStart={{} as any}
           params={{} as any}
           config={config as any}
         />
@@ -315,7 +315,7 @@ describe('Tenant list', () => {
       const component = shallow(
         <ManageTab
           coreStart={mockCoreStart as any}
-          navigation={{} as any}
+          depsStart={{} as any}
           params={{} as any}
           config={config as any}
         />
@@ -335,7 +335,7 @@ describe('Tenant list', () => {
       const component = shallow(
         <ManageTab
           coreStart={mockCoreStart as any}
-          navigation={{} as any}
+          depsStart={{} as any}
           params={{} as any}
           config={config as any}
         />
@@ -364,7 +364,7 @@ describe('Tenant list', () => {
       component = shallow(
         <ManageTab
           coreStart={mockCoreStart as any}
-          navigation={{} as any}
+          depsStart={{} as any}
           params={{} as any}
           config={config as any}
         />

@@ -5,7 +5,7 @@ exports[`Get started (landing page) renders when backend configuration is disabl
   <div
     className="panel-restrict-width"
   >
-    <SecurityPluginTopNavMenu
+    <Memo()
       config={
         Object {
           "ui": Object {
@@ -281,7 +281,7 @@ exports[`Get started (landing page) renders when backend configuration is enable
   <div
     className="panel-restrict-width"
   >
-    <SecurityPluginTopNavMenu
+    <Memo()
       config={
         Object {
           "ui": Object {

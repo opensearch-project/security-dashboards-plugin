@@ -2,7 +2,7 @@
 
 exports[`Role view basic rendering when permission tab is selected 1`] = `
 <Fragment>
-  <SecurityPluginTopNavMenu
+  <Memo()
     buildBreadcrumbs={
       [MockFunction] {
         "calls": Array [
@@ -25,7 +25,7 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
       }
     }
     dataSourcePickerReadOnly={true}
-    navigation={Object {}}
+    depsStart={Object {}}
     params={Object {}}
     prevAction=""
     roleName="role"
@@ -327,7 +327,7 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
 
 exports[`Role view renders when mapped user tab is selected 1`] = `
 <Fragment>
-  <SecurityPluginTopNavMenu
+  <Memo()
     buildBreadcrumbs={
       [MockFunction] {
         "calls": Array [
@@ -350,7 +350,7 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
       }
     }
     dataSourcePickerReadOnly={true}
-    navigation={Object {}}
+    depsStart={Object {}}
     params={Object {}}
     prevAction="mapuser"
     roleName="role"

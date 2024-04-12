@@ -45,7 +45,7 @@ import { setCrossPageToast } from '../../utils/storage-utils';
 import { ExternalLink } from '../../utils/display-utils';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { DataSourceContext } from '../../app-router';
-import { createDataSourceQuery } from '../../../../utils/datasource-utils';
+import { createDataSourceQuery, getClusterInfoIfEnabled } from '../../../../utils/datasource-utils';
 
 interface RoleEditMappedUserProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -63,6 +63,7 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
   const [userNames, setUserNames] = useState<string[]>([]);
   const [hosts, setHosts] = React.useState<string[]>([]);
   const [toasts, addToast, removeToast] = useToastState();
+  const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
 
   React.useEffect(() => {
@@ -130,7 +131,10 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
         {
           id: 'updateRoleMappingSucceeded',
           color: 'success',
-          title: 'Role "' + props.roleName + '" successfully updated.',
+          title: `Role "${props.roleName}" successfully updated ${getClusterInfoIfEnabled(
+            dataSourceEnabled,
+            dataSource
+          )}`,
         }
       );
       window.location.href = buildHashUrl(

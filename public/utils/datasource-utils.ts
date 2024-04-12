@@ -13,15 +13,27 @@
  *   permissions and limitations under the License.
  */
 
-import { DataSourceOption } from '../../../../src/plugins/data_source_management/public/components/data_source_selector/data_source_selector';
+import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
 
 export function createDataSourceQuery(dataSourceId: string) {
   return { dataSourceId };
 }
+
+const DATASOURCEURLKEY = 'dataSource';
 
 export function getClusterInfoIfEnabled(dataSourceEnabled: boolean, cluster: DataSourceOption) {
   if (dataSourceEnabled) {
     return `for ${cluster.label || 'Local cluster'}`;
   }
   return '';
+}
+
+export function getDataSourceFromUrl(): DataSourceOption {
+  return JSON.parse(new URLSearchParams(window.location.search).get(DATASOURCEURLKEY) || '{}');
+}
+
+export function setDataSourceInUrl(dataSource: DataSourceOption) {
+  const url = new URL(window.location.href);
+  url.searchParams.set(DATASOURCEURLKEY, JSON.stringify(dataSource));
+  window.history.replaceState({}, '', url.toString());
 }

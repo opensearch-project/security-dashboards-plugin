@@ -72,7 +72,7 @@ import { requestDeleteRoles } from '../../utils/role-list-utils';
 import { setCrossPageToast } from '../../utils/storage-utils';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
-import { createDataSourceQuery } from '../../../../utils/datasource-utils';
+import { createDataSourceQuery, getClusterInfoIfEnabled } from '../../../../utils/datasource-utils';
 
 interface RoleViewProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -111,6 +111,7 @@ export function RoleView(props: RoleViewProps) {
   const [toasts, addToast, removeToast] = useToastState();
   const [isReserved, setIsReserved] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
 
   const PERMISSIONS_TAB_INDEX = 0;
@@ -378,7 +379,10 @@ export function RoleView(props: RoleViewProps) {
           setCrossPageToast(buildUrl(ResourceType.roles), {
             id: 'deleteRole',
             color: 'success',
-            title: props.roleName + ' deleted.',
+            title: `${props.roleName} deleted ${getClusterInfoIfEnabled(
+              dataSourceEnabled,
+              dataSource
+            )}`,
           });
           window.location.href = buildHashUrl(ResourceType.roles);
         } catch (e) {

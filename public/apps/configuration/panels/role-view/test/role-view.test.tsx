@@ -100,7 +100,7 @@ describe('Role view', () => {
         prevAction=""
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -123,7 +123,7 @@ describe('Role view', () => {
         prevAction={SubAction.mapuser}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -138,7 +138,7 @@ describe('Role view', () => {
         prevAction={SubAction.mapuser}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -159,7 +159,7 @@ describe('Role view', () => {
         prevAction={SubAction.mapuser}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -178,7 +178,7 @@ describe('Role view', () => {
         prevAction=""
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -207,7 +207,7 @@ describe('Role view', () => {
         prevAction=""
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -223,7 +223,7 @@ describe('Role view', () => {
         prevAction=""
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -249,7 +249,7 @@ describe('Role view', () => {
         prevAction=""
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -271,7 +271,7 @@ describe('Role view', () => {
         prevAction=""
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -291,7 +291,7 @@ describe('Role view', () => {
         prevAction=""
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />

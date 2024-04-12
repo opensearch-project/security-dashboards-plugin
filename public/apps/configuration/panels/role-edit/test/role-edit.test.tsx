@@ -63,7 +63,7 @@ describe('Role edit', () => {
         sourceRoleName={sampleSourceRole}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -89,7 +89,7 @@ describe('Role edit', () => {
         sourceRoleName={sampleSourceRole}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -112,7 +112,7 @@ describe('Role edit', () => {
         sourceRoleName={sampleSourceRole}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
