@@ -16,6 +16,7 @@
 import { ILegacyClusterClient, OpenSearchDashboardsRequest } from '../../../../src/core/server';
 import { User } from '../auth/user';
 import { TenancyConfigSettings } from '../../public/apps/configuration/panels/tenancy-config/types';
+import { AUTH_TYPE_PARAM, AuthType } from '../../common';
 
 export class SecurityClient {
   constructor(private readonly esClient: ILegacyClusterClient) {}
@@ -182,7 +183,9 @@ export class SecurityClient {
   public async getSamlHeader(request: OpenSearchDashboardsRequest) {
     try {
       // response is expected to be an error
-      await this.esClient.asScoped(request).callAsCurrentUser('opensearch_security.authinfo');
+      await this.esClient.asScoped(request).callAsCurrentUser('opensearch_security.authinfo', {
+        [AUTH_TYPE_PARAM]: AuthType.SAML,
+      });
     } catch (error: any) {
       // the error looks like
       // wwwAuthenticateDirective:
@@ -217,11 +220,12 @@ export class SecurityClient {
     throw new Error(`Invalid SAML configuration.`);
   }
 
-  public async authToken(
-    requestId: string | undefined,
-    samlResponse: any,
-    acsEndpoint: any | undefined = undefined
-  ) {
+  public async authToken({
+    requestId,
+    samlResponse,
+    acsEndpoint = undefined,
+    authRequestType,
+  }: AuthTokenParams) {
     const body = {
       RequestId: requestId,
       SAMLResponse: samlResponse,
@@ -230,10 +234,18 @@ export class SecurityClient {
     try {
       return await this.esClient.asScoped().callAsCurrentUser('opensearch_security.authtoken', {
         body,
+        [AUTH_TYPE_PARAM]: authRequestType,
       });
     } catch (error: any) {
       console.log(error);
       throw new Error('failed to get token');
     }
   }
+}
+
+interface AuthTokenParams {
+  requestId?: string;
+  samlResponse: any;
+  acsEndpoint?: any;
+  authRequestType?: string;
 }

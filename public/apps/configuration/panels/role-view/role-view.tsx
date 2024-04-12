@@ -14,7 +14,6 @@
  */
 
 import React, { useState, useContext } from 'react';
-
 import {
   EuiButton,
   EuiPageContentHeader,
