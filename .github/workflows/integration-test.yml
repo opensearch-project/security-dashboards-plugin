@@ -6,7 +6,7 @@ env:
   TEST_BROWSER_HEADLESS: 1
   CI: 1
   PLUGIN_NAME: opensearch-security
-  OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
+  OPENSEARCH_INITIAL_ADMIN_PASSWORD: admin
 
 jobs:
   tests:
