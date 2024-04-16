@@ -33,4 +33,5 @@ module.exports = defineConfig({
     adminPassword: 'myStrongPassword123!',
   },
   experimentalMemoryManagement: true,
+  numTestsKeptInMemory: 0
 });
