@@ -37,14 +37,6 @@ const createDataSource = () => {
   });
 };
 
-const closeToast = () => {
-  // remove browser incompatibiltiy toast causing flakyness (cause it has higher z-index than Create button making it invisible)
-  cy.get('[class="euiToast euiToast--warning euiGlobalToastListItem"]')
-    .find('[data-test-subj="toastCloseButton"]')
-    .first()
-    .click();
-};
-
 const deleteAllDataSources = () => {
   cy.request(
     'GET',
@@ -103,18 +95,29 @@ describe('Multi-datasources enabled', () => {
 
     // Local cluster purge cache
     cy.get('[data-test-subj="purge-cache"]').click();
-    cy.get('.euiToastHeader__title').should('contain', 'successful for Local cluster');
+    cy.get('[class="euiToast euiToast--success euiGlobalToastListItem"]')
+      .get('.euiToastHeader__title')
+      .should('contain', 'successful for Local cluster');
     // Remote cluster purge cache
     cy.visit(
       `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/getstarted`
     );
 
+    cy.contains('h1', 'Get started');
+    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
+      'contain',
+      '9202'
+    );
+
     cy.get('[data-test-subj="purge-cache"]').click();
-    cy.get('.euiToastHeader__title').should('contain', 'successful for 9202');
+    cy.get('[class="euiToast euiToast--success euiGlobalToastListItem"]')
+      .get('.euiToastHeader__title')
+      .should('contain', 'successful for 9202');
   });
 
   it('Checks Auth Tab', () => {
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/auth`);
+    cy.contains('h1', 'Authentication and authorization');
 
     // Local cluster auth
     cy.get('.panel-header-count').first().invoke('text').should('contain', '(6)');
