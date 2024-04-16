@@ -100,7 +100,7 @@ describe('Multi-datasources enabled', () => {
     cy.visit(
       `http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/getstarted`
     );
-    closeToast();
+
     // Local cluster purge cache
     cy.get('[data-test-subj="purge-cache"]').click();
     cy.get('.euiToastHeader__title').should('contain', 'successful for Local cluster');
@@ -108,26 +108,25 @@ describe('Multi-datasources enabled', () => {
     cy.visit(
       `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/getstarted`
     );
-    closeToast();
+
     cy.get('[data-test-subj="purge-cache"]').click();
     cy.get('.euiToastHeader__title').should('contain', 'successful for 9202');
   });
 
   it('Checks Auth Tab', () => {
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/auth`);
-    closeToast();
+
     // Local cluster auth
     cy.get('.panel-header-count').first().invoke('text').should('contain', '(6)');
     // Remote cluster auth
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/auth`);
-    closeToast();
+
     cy.get('.panel-header-count').first().invoke('text').should('contain', '(2)');
   });
 
   it('Checks Users Tab', () => {
     // select remote data source
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/users`);
-    closeToast();
 
     // create a user on remote data source
     cy.get('[data-test-subj="create-user"]').click();
@@ -146,7 +145,7 @@ describe('Multi-datasources enabled', () => {
 
     // Internal user doesn't exist on local cluster
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/users`);
-    closeToast();
+
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
       'contain',
       'Local cluster'
@@ -159,7 +158,7 @@ describe('Multi-datasources enabled', () => {
     cy.visit(
       `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/permissions`
     );
-    closeToast();
+
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
       'contain',
       '9202'
@@ -184,7 +183,7 @@ describe('Multi-datasources enabled', () => {
     cy.visit(
       `http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/permissions`
     );
-    closeToast();
+
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
       'contain',
       'Local cluster'
@@ -195,7 +194,7 @@ describe('Multi-datasources enabled', () => {
   it('Checks Tenancy Tab', () => {
     // Datasource is locked to local cluster for tenancy tab
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/tenants`);
-    closeToast();
+
     cy.contains('h1', 'Dashboards multi-tenancy');
     cy.get('[data-test-subj="dataSourceViewContextMenuHeaderLink"]').should(
       'contain',
@@ -209,7 +208,7 @@ describe('Multi-datasources enabled', () => {
     cy.visit(
       `http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/serviceAccounts`
     );
-    closeToast();
+
     cy.get('[data-test-subj="dataSourceViewContextMenuHeaderLink"]').should(
       'contain',
       'Local cluster'
@@ -222,7 +221,7 @@ describe('Multi-datasources enabled', () => {
     cy.visit(
       `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/auditLogging`
     );
-    closeToast();
+
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
       'contain',
       '9202'
@@ -240,7 +239,7 @@ describe('Multi-datasources enabled', () => {
     cy.visit(
       `http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/auditLogging`
     );
-    closeToast();
+
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
       'contain',
       'Local cluster'
@@ -253,7 +252,6 @@ describe('Multi-datasources enabled', () => {
     Cypress.on('uncaught:exception', (err) => !err.message.includes('ResizeObserver'));
     // select remote data source
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/roles`);
-    closeToast();
 
     // create a role on remote data source
     cy.get('[data-test-subj="create-role"]').click();
@@ -266,7 +264,7 @@ describe('Multi-datasources enabled', () => {
 
     // role exists on the remote
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/roles`);
-    closeToast();
+
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
       'contain',
       '9202'
@@ -276,7 +274,7 @@ describe('Multi-datasources enabled', () => {
 
     // Role doesn't exist on local cluster
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/roles`);
-    closeToast();
+
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
       'contain',
       'Local cluster'
