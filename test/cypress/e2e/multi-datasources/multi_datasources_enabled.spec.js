@@ -172,15 +172,14 @@ describe('Multi-datasources enabled', () => {
     cy.get('[id="create-from-blank"]').click();
     cy.get('[data-test-subj="name-text"]')
       .focus()
-      .type('test_permission_ag', { force: true })
-      .should('have.value', 'test_permission_ag');
+      .type('9202-permission', { force: true })
+      .should('have.value', '9202-permission');
     cy.get('[data-test-subj="comboBoxInput"]').focus().type('some_permission');
     cy.get('[id="submit"]').click();
 
     // Permission exists on the remote data source
-    cy.get('[data-text="Customization"]').click();
-    cy.get('[data-test-subj="filter-custom"]').click();
-    cy.get('[data-test-subj="checkboxSelectRow-test_permission_ag"]').should('exist');
+    cy.get('[data-test-subj="tableHeaderCell_name_0"]').click();
+    cy.get('[data-test-subj="checkboxSelectRow-9202-permission"]').should('exist');
 
     // Permission doesn't exist on local cluster
     cy.visit(
