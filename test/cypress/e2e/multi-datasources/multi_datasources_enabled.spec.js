@@ -234,6 +234,10 @@ describe('Multi-datasources enabled', () => {
 
     cy.get('[data-test-subj="comboBoxInput"]').last().type('blah');
     cy.get('[data-test-subj="save"]').click();
+    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
+      'contain',
+      '9202'
+    );
 
     cy.get('[data-test-subj="general-settings"]').should('contain', 'blah');
 
@@ -259,10 +263,11 @@ describe('Multi-datasources enabled', () => {
     cy.get('[data-test-subj="create-role"]').click();
     cy.contains('h1', 'Create Role');
     cy.get('[data-test-subj="name-text"]').focus().type('9202-role');
-    cy.get('[data-test-subj="comboBoxToggleListButton"]').first().click();
     cy.get('[data-test-subj="create-or-update-role"]').click();
 
-    cy.get('.euiToastHeader__title').should('contain', 'Role "9202-role" successfully created');
+    cy.get('[class="euiToast euiToast--success euiGlobalToastListItem"]')
+      .get('.euiToastHeader__title')
+      .should('contain', 'Role "9202-role" successfully created');
 
     // role exists on the remote
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/roles`);
