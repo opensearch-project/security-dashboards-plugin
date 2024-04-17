@@ -26,12 +26,11 @@ module.exports = defineConfig({
     supportFile: 'test/cypress/support/e2e.js',
     baseUrl: 'http://localhost:5601',
     specPattern: 'test/cypress/e2e/**/*.spec.js',
+    experimentalMemoryManagement: true,
   },
   env: {
     openSearchUrl: 'https://localhost:9200',
     adminUserName: 'admin',
     adminPassword: 'myStrongPassword123!',
   },
-  experimentalMemoryManagement: true,
-  numTestsKeptInMemory: 0
 });
