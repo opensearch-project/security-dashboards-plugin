@@ -328,7 +328,7 @@ export function ConfigureTab1(props: AppDependencies) {
         <EuiPageContentHeader>
           <EuiPageContentHeaderSection>
             <EuiTitle size="l">
-              <h3>Multi-tenancy</h3>
+              <h3>Dashboards multi-tenancy</h3>
             </EuiTitle>
             <EuiHorizontalRule />
 
@@ -360,7 +360,7 @@ export function ConfigureTab1(props: AppDependencies) {
         <EuiPageContentHeader>
           <EuiPageContentHeaderSection>
             <EuiTitle size="l">
-              <h3>Tenants</h3>
+              <h3>Dashboards tenants</h3>
             </EuiTitle>
             <EuiHorizontalRule />
             <EuiDescribedFormGroup
@@ -368,7 +368,7 @@ export function ConfigureTab1(props: AppDependencies) {
               description={
                 <p4>
                   {' '}
-                  Global tenant is shared amaong all Dashboards users and cannot be disabled.{' '}
+                  Global tenant is shared among all Dashboards users and cannot be disabled.{' '}
                 </p4>
               }
               className="described-form-group2"
@@ -407,7 +407,7 @@ export function ConfigureTab1(props: AppDependencies) {
         <EuiPageContentHeader>
           <EuiPageContentHeaderSection>
             <EuiTitle size="l">
-              <h3>Default tenant</h3>
+              <h3>Dashboards default tenant</h3>
             </EuiTitle>
             <EuiHorizontalRule />
             <EuiDescribedFormGroup

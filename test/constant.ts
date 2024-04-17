@@ -13,13 +13,8 @@
  *   permissions and limitations under the License.
  */
 
-import { version, opensearchDashboards } from '../package.json';
-
 export const OPENSEARCH_DASHBOARDS_SERVER_USER: string = 'kibanaserver';
 export const OPENSEARCH_DASHBOARDS_SERVER_PASSWORD: string = 'kibanaserver';
-
-export const ELASTICSEARCH_VERSION: string = opensearchDashboards.version;
-export const SECURITY_ES_PLUGIN_VERSION: string = version;
 
 export const ADMIN_USER: string = 'admin';
 export const ADMIN_PASSWORD: string = process.env.ADMIN_PASSWORD || 'admin';
