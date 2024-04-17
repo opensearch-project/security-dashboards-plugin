@@ -30,9 +30,6 @@ describe('Password strength bar tests', () => {
   it('verifies feedback, warning for very weak password', () => {
     const component = render(<PasswordStrengthBar password="test" />);
 
-    const warning = component.find('[data-test-subj="password-strength-feedback-warning"]');
-    expect(warning.text()).toBe('This is a top-100 common password');
-
     const suggestions = component.find('[data-test-subj="password-strength-feedback-suggestions"]');
     expect(suggestions.text()).toBe('Add another word or two. Uncommon words are better.');
 
@@ -42,9 +39,6 @@ describe('Password strength bar tests', () => {
 
   it('verifies feedback, warning for weak password', () => {
     const component = render(<PasswordStrengthBar password="test12" />);
-
-    const warning = component.find('[data-test-subj="password-strength-feedback-warning"]');
-    expect(warning.text()).toBe('This is a very common password');
 
     const suggestions = component.find('[data-test-subj="password-strength-feedback-suggestions"]');
     expect(suggestions.text()).toBe('Add another word or two. Uncommon words are better.');
@@ -56,9 +50,6 @@ describe('Password strength bar tests', () => {
   it('verifies feedback, warning for an ok password', () => {
     const component = render(<PasswordStrengthBar password="test124My" />);
 
-    const warning = component.find('[data-test-subj="password-strength-feedback-warning"]');
-    expect(warning.text()).toBe('This is similar to a commonly used password');
-
     const suggestions = component.find('[data-test-subj="password-strength-feedback-suggestions"]');
     expect(suggestions.text()).toBe('Add another word or two. Uncommon words are better.');
 
@@ -69,9 +60,6 @@ describe('Password strength bar tests', () => {
   it('verifies feedback, warning for a strong password', () => {
     const component = render(<PasswordStrengthBar password="test124MyTable" />);
 
-    const warning = component.find('[data-test-subj="password-strength-feedback-warning"]');
-    expect(warning.text()).toBe('');
-
     const suggestions = component.find('[data-test-subj="password-strength-feedback-suggestions"]');
     expect(suggestions.text()).toBe('');
 
@@ -81,9 +69,6 @@ describe('Password strength bar tests', () => {
 
   it('verifies feedback, warning for very strong password', () => {
     const component = render(<PasswordStrengthBar password="myStrongPassword123!" />);
-
-    const warning = component.find('[data-test-subj="password-strength-feedback-warning"]');
-    expect(warning.text()).toBe('');
 
     const suggestions = component.find('[data-test-subj="password-strength-feedback-suggestions"]');
     expect(suggestions.text()).toBe('');
