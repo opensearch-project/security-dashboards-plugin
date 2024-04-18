@@ -178,17 +178,10 @@ describe('Multi-datasources enabled', () => {
   });
 
   it('Checks Audit Logs Tab', () => {
-    // Select remote cluster
+
     cy.visit(
-      `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/auditLogging`
+      `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/auditLogging/edit/generalSettings`
     );
-
-    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
-      'contain',
-      '9202'
-    );
-
-    cy.get('[data-test-subj="general-settings-configure"]').click();
     cy.get('[data-test-subj="dataSourceViewButton"]').should('contain', '9202');
 
     cy.get('[data-test-subj="comboBoxInput"]').last().type('blah');
