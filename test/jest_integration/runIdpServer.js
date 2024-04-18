@@ -23,9 +23,16 @@ const pems = generate(null, {
   days: 7300,
 });
 
+var argv = require('minimist')(process.argv.slice(2));
+// When --basePath is passed without an arg its interpeted as a boolean flag with value set to true
+let basePath = '';
+if ((typeof argv.basePath) == 'string' && argv.basePath) {
+  basePath = argv.basePath
+}
+
 // Create certificate pair on the fly and pass it to runServer
 runServer({
-  acsUrl: 'http://localhost:5601/_opendistro/_security/saml/acs',
+  acsUrl: `http://localhost:5601${basePath}/_opendistro/_security/saml/acs`,
   audience: 'https://localhost:9200',
   cert: pems.cert,
   key: pems.private.toString().replace(/\r\n/, '\n'),

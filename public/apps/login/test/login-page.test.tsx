@@ -91,7 +91,7 @@ describe('test extractNextUrlFromWindowLocation', () => {
     const originalLocation = window.location;
     delete window.location;
     window.location = new URL('http://localhost:5601/app/home');
-    expect(extractNextUrlFromWindowLocation()).toEqual('?nextUrl=%2F');
+    expect(extractNextUrlFromWindowLocation()).toEqual('');
   });
 });
 

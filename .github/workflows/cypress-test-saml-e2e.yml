@@ -102,3 +102,4 @@ jobs:
           security_config_file: config_saml.yml
           dashboards_config_file: opensearch_dashboards_saml.yml
           yarn_command: 'yarn cypress:run --browser chrome --headless --spec "test/cypress/e2e/saml/*.js"'
+          osd_base_path: ${{ matrix.basePath }}
