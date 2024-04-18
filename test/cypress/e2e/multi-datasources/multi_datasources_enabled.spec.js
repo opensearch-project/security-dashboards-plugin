@@ -134,7 +134,7 @@ describe('Multi-datasources enabled', () => {
     cy.get('[data-test-subj="checkboxSelectRow-9202-user"]').should('exist');
   });
 
-  it.skip('Checks Permissions Tab', () => {
+  it('Checks Permissions Tab', () => {
     // Select remote cluster
     cy.visit(
       `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/permissions`
