@@ -163,11 +163,11 @@ describe('Multi-datasources enabled', () => {
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/tenants`);
 
     cy.contains('h1', 'Dashboards multi-tenancy');
-    cy.get('[data-test-subj="dataSourceViewContextMenuHeaderLink"]').should(
+    cy.get('[data-test-subj="dataSourceViewButton"]').should(
       'contain',
       'Local cluster'
     );
-    cy.get('[data-test-subj="dataSourceViewContextMenuHeaderLink"]').should('be.disabled');
+    cy.get('[data-test-subj="dataSourceViewButton"]').should('be.disabled');
   });
 
   it('Checks Service Accounts Tab', () => {
@@ -176,11 +176,11 @@ describe('Multi-datasources enabled', () => {
       `http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/serviceAccounts`
     );
 
-    cy.get('[data-test-subj="dataSourceViewContextMenuHeaderLink"]').should(
+    cy.get('[data-test-subj="dataSourceViewButton"]').should(
       'contain',
       'Local cluster'
     );
-    cy.get('[data-test-subj="dataSourceViewContextMenuHeaderLink"]').should('be.disabled');
+    cy.get('[data-test-subj="dataSourceViewButton"]').should('be.disabled');
   });
 
   it('Checks Audit Logs Tab', () => {
@@ -195,7 +195,7 @@ describe('Multi-datasources enabled', () => {
     );
 
     cy.get('[data-test-subj="general-settings-configure"]').click();
-    cy.get('[data-test-subj="dataSourceViewContextMenuHeaderLink"]').should('contain', '9202');
+    cy.get('[data-test-subj="dataSourceViewButton"]').should('contain', '9202');
 
     cy.get('[data-test-subj="comboBoxInput"]').last().type('blah');
     cy.get('[data-test-subj="save"]').click();
