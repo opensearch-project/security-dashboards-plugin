@@ -336,8 +336,10 @@ export class OpenIdAuthRoutes {
                 }
                 let params = new URLSearchParams(window.location.search);
                 let nextUrl = params.get("nextUrl");
-                finalUrl = "login?nextUrl=" + encodeURIComponent(nextUrl);
-                finalUrl += "&redirectHash=" + encodeURIComponent(redirectHash);
+                finalUrl = "login?redirectHash=" + encodeURIComponent(redirectHash);
+                if (!!nextUrl) {
+                  finalUrl += "&nextUrl=" + encodeURIComponent(nextUrl);
+                }
                 window.location.replace(finalUrl);
               `,
         });
