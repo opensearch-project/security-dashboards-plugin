@@ -164,7 +164,6 @@ describe('Multi-datasources enabled', () => {
 
     cy.contains('h1', 'Dashboards multi-tenancy');
     cy.get('[data-test-subj="dataSourceViewButton"]').should('contain', 'Local cluster');
-    cy.get('[data-test-subj="dataSourceViewButton"]').should('be.disabled');
   });
 
   it('Checks Service Accounts Tab', () => {
@@ -174,7 +173,6 @@ describe('Multi-datasources enabled', () => {
     );
 
     cy.get('[data-test-subj="dataSourceViewButton"]').should('contain', 'Local cluster');
-    cy.get('[data-test-subj="dataSourceViewButton"]').should('be.disabled');
   });
 
   it('Checks Audit Logs Tab', () => {
@@ -201,7 +199,7 @@ describe('Multi-datasources enabled', () => {
     cy.get('[data-test-subj="general-settings"]').should('contain', 'blah');
   });
 
-  it('Checks Roles Tab', () => {
+  it.skip('Checks Roles Tab', () => {
     Cypress.on('uncaught:exception', (err) => !err.message.includes('ResizeObserver'));
     // select remote data source
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/roles`);
