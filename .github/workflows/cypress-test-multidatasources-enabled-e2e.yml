@@ -32,6 +32,14 @@ jobs:
           echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
         shell: bash
 
+      # https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
+      - name: Remove unnecessary files Linux
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+
+
       # Add Custom Configuration to differentiate between local and remote cluster
       - name: Create Custom Configuration for Linux
         if: ${{ runner.os == 'Linux'}}
