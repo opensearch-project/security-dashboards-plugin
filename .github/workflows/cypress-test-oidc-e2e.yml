@@ -117,6 +117,7 @@ jobs:
         run: |
           cat << 'EOT' > opensearch_dashboards_openid.yml
           server.host: "localhost"
+          server.basePath: "osd"
           opensearch.hosts: ["https://localhost:9200"]
           opensearch.ssl.verificationMode: none
           opensearch.username: "kibanaserver"
