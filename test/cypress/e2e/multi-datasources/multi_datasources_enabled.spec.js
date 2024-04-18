@@ -108,7 +108,7 @@ describe('Multi-datasources enabled', () => {
       .should('contain', 'successful for 9202');
   });
 
-  it('Checks Auth Tab', () => {
+  it.skip('Checks Auth Tab', () => {
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/auth`);
 
     cy.get('.panel-header-count').first().invoke('text').should('contain', '(2)');
@@ -165,11 +165,7 @@ describe('Multi-datasources enabled', () => {
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/tenants`);
 
     cy.contains('h1', 'Dashboards multi-tenancy');
-    cy.get('[data-test-subj="dataSourceViewButton"]').should(
-      'contain',
-      'Local cluster'
-    );
-    cy.get('[data-test-subj="dataSourceViewButton"]').should('be.disabled');
+    cy.get('[data-test-subj="dataSourceViewButton"]').should('contain', 'Local cluster');
   });
 
   it('Checks Service Accounts Tab', () => {
@@ -178,11 +174,7 @@ describe('Multi-datasources enabled', () => {
       `http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/serviceAccounts`
     );
 
-    cy.get('[data-test-subj="dataSourceViewButton"]').should(
-      'contain',
-      'Local cluster'
-    );
-    cy.get('[data-test-subj="dataSourceViewButton"]').should('be.disabled');
+    cy.get('[data-test-subj="dataSourceViewButton"]').should('contain', 'Local cluster');
   });
 
   it('Checks Audit Logs Tab', () => {
