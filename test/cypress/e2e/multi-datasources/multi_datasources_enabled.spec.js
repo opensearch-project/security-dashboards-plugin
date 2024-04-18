@@ -70,8 +70,7 @@ let externalDataSourceUrl;
 let localDataSourceUrl;
 
 describe('Multi-datasources enabled', () => {
-  before(() => {
-    deleteAllDataSources();
+  beforeEach(() => {
     localStorage.setItem('opendistro::security::tenant::saved', '""');
     localStorage.setItem('home:newThemeModal:show', 'false');
     createDataSource().then((resp) => {
@@ -83,9 +82,11 @@ describe('Multi-datasources enabled', () => {
     });
   });
 
-  after(() => {
+  afterEach(() => {
+    cy.clearCookies();
+    cy.clearAllLocalStorage();
+    cy.clearAllSessionStorage();
     deleteAllDataSources();
-    cy.clearLocalStorage();
   });
 
   it('Checks Get Started Tab', () => {

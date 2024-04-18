@@ -21,12 +21,13 @@ module.exports = defineConfig({
   defaultCommandTimeout: 60000,
   requestTimeout: 60000,
   responseTimeout: 60000,
+  experimentalMemoryManagement: true,
+  numTestsKeptInMemory: 0,
   e2e: {
     setupNodeEvents(on, config) {},
     supportFile: 'test/cypress/support/e2e.js',
     baseUrl: 'http://localhost:5601',
     specPattern: 'test/cypress/e2e/**/*.spec.js',
-    experimentalMemoryManagement: true,
   },
   env: {
     openSearchUrl: 'https://localhost:9200',
