@@ -17,6 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest ]
+        basePath: [ "", "/osd" ]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -88,6 +89,12 @@ jobs:
           opensearch_security.auth.anonymous_auth_enabled: false
           home.disableWelcomeScreen: true
           EOT
+
+      - name: Run OSD with basePath
+        if: ${{ matrix.basePath != '' }}
+        run: |
+          echo "server.basePath: \"${{ matrix.basePath }}\"" >> opensearch_dashboards_openid.yml
+          echo "server.rewriteBasePath: true" >> opensearch_dashboards_openid.yml
 
       - name: Run Cypress Tests
         uses: ./.github/actions/run-cypress-tests

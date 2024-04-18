@@ -141,7 +141,7 @@ jobs:
       - name: Run OSD with basePath
         if: ${{ matrix.basePath != '' }}
         run: |
-          echo "server.basePath: \"osd\"" >> opensearch_dashboards_openid.yml
+          echo "server.basePath: \"${{ matrix.basePath }}\"" >> opensearch_dashboards_openid.yml
           echo "server.rewriteBasePath: true" >> opensearch_dashboards_openid.yml
 
       - name: Run Cypress Tests
