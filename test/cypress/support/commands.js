@@ -100,6 +100,7 @@ if (Cypress.env('LOGIN_AS_ADMIN')) {
       options.qs = {
         security_tenant: 'private',
       };
+      options.headers = { securitytenant: ['private'], 'osd-xsrf': true };
     }
     orig(url, options);
   });
