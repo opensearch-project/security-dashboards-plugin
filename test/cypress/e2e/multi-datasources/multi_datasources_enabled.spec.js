@@ -163,10 +163,7 @@ describe('Multi-datasources enabled', () => {
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/tenants`);
 
     cy.contains('h1', 'Dashboards multi-tenancy');
-    cy.get('[data-test-subj="dataSourceViewButton"]').should(
-      'contain',
-      'Local cluster'
-    );
+    cy.get('[data-test-subj="dataSourceViewButton"]').should('contain', 'Local cluster');
     cy.get('[data-test-subj="dataSourceViewButton"]').should('be.disabled');
   });
 
@@ -176,10 +173,7 @@ describe('Multi-datasources enabled', () => {
       `http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/serviceAccounts`
     );
 
-    cy.get('[data-test-subj="dataSourceViewButton"]').should(
-      'contain',
-      'Local cluster'
-    );
+    cy.get('[data-test-subj="dataSourceViewButton"]').should('contain', 'Local cluster');
     cy.get('[data-test-subj="dataSourceViewButton"]').should('be.disabled');
   });
 
