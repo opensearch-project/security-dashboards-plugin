@@ -71,6 +71,7 @@ let localDataSourceUrl;
 
 describe('Multi-datasources enabled', () => {
   beforeEach(() => {
+    deleteAllDataSources();
     localStorage.setItem('opendistro::security::tenant::saved', '""');
     localStorage.setItem('home:newThemeModal:show', 'false');
     createDataSource().then((resp) => {
