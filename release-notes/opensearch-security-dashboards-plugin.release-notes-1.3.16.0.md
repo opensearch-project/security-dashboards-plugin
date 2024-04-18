@@ -1,6 +1,6 @@
 ## Version 1.3.16.0
 
-Compatible with OpenSearch-Dashboards 1.3.14
+Compatible with OpenSearch-Dashboards 1.3.16
 
 ### Bug Fixes
 
