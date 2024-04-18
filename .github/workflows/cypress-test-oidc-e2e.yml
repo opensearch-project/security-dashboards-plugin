@@ -117,6 +117,7 @@ jobs:
         if: ${{ runner.os == 'Linux' }}
         run: |
           cat << 'EOT' > opensearch_dashboards_openid.yml
+          server.host: "localhost"
           opensearch.hosts: ["https://localhost:9200"]
           opensearch.ssl.verificationMode: none
           opensearch.username: "kibanaserver"
