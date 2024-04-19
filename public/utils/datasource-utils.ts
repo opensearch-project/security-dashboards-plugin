@@ -13,7 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-import { url } from 'inspector';
 import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
 
 export function createDataSourceQuery(dataSourceId: string) {
