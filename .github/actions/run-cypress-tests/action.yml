@@ -59,10 +59,10 @@ runs:
       if: ${{ runner.os == 'Linux' }}
       run: |
         cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
-        if [[ ${{ inputs.osd_base_path }} != '' ]]; then
-          yarn runIdp --basePath ${{ inputs.osd_base_path }} &
-        else
+        if [ -z "${{ inputs.osd_base_path }}" ]; then
           yarn runIdp &
+        else
+          yarn runIdp --basePath ${{ inputs.osd_base_path }} &
         fi
       shell: bash
 
@@ -95,9 +95,9 @@ runs:
     - name: Run Cypress
       run : |
         yarn add cypress --save-dev
-        if [[ ${{ inputs.osd_base_path }} != '' ]]; then
-          eval ${{ inputs.yarn_command }} --basePath ${{ inputs.osd_base_path }}
-        else
+        if [ -z "${{ inputs.osd_base_path }}" ]; then
           eval ${{ inputs.yarn_command }}
+        else
+          eval ${{ inputs.yarn_command }} --basePath ${{ inputs.osd_base_path }}
         fi
       shell: bash
