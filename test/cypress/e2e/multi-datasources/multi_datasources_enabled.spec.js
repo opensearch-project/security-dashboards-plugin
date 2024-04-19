@@ -125,6 +125,8 @@ describe('Multi-datasources enabled', () => {
     cy.get('[data-test-subj="re-enter-password"]').focus().type('myStrongPassword123!');
     cy.get('[data-test-subj="submit-save-user"]').click();
 
+    cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/users`);
+
     // Internal user exists on the remote
     cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
       'contain',
@@ -155,6 +157,10 @@ describe('Multi-datasources enabled', () => {
     cy.get('[data-test-subj="comboBoxInput"]').focus().type('some_permission');
     cy.get('[id="submit"]').click();
 
+    cy.visit(
+      `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/permissions`
+    );
+
     // Permission exists on the remote data source
     cy.get('[data-test-subj="tableHeaderCell_name_0"]').click();
     cy.get('[data-test-subj="checkboxSelectRow-9202-permission"]').should('exist');
@@ -178,7 +184,6 @@ describe('Multi-datasources enabled', () => {
   });
 
   it('Checks Audit Logs Tab', () => {
-
     cy.visit(
       `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/auditLogging/edit/generalSettings`
     );
@@ -191,6 +196,9 @@ describe('Multi-datasources enabled', () => {
       '9202'
     );
 
+    cy.visit(
+      `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/auditLogging/edit/generalSettings`
+    );
     cy.get('[data-test-subj="general-settings"]').should('contain', 'blah');
   });
 
