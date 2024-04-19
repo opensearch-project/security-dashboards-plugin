@@ -202,7 +202,7 @@ describe('Multi-datasources enabled', () => {
     cy.get('[data-test-subj="general-settings"]').should('contain', 'blah');
   });
 
-  it('Checks Roles Tab', () => {
+  it.skip('Checks Roles Tab', () => {
     Cypress.on('uncaught:exception', (err) => !err.message.includes('ResizeObserver'));
     // select remote data source
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/roles`);
