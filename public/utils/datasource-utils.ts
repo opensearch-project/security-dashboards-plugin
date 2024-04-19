@@ -13,6 +13,7 @@
  *   permissions and limitations under the License.
  */
 
+import { url } from 'inspector';
 import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
 
 export function createDataSourceQuery(dataSourceId: string) {
@@ -29,7 +30,9 @@ export function getClusterInfoIfEnabled(dataSourceEnabled: boolean, cluster: Dat
 }
 
 export function getDataSourceFromUrl(): DataSourceOption {
-  return JSON.parse(new URLSearchParams(window.location.search).get(DATASOURCEURLKEY) || '{}');
+  const urlParams = new URLSearchParams(window.location.search);
+  const dataSourceParam = (urlParams && urlParams.get(DATASOURCEURLKEY)) || '{}';
+  return JSON.parse(dataSourceParam);
 }
 
 export function setDataSourceInUrl(dataSource: DataSourceOption) {
