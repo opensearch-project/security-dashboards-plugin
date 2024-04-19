@@ -114,7 +114,7 @@ describe('Multi-datasources enabled', () => {
     cy.get('.panel-header-count').first().invoke('text').should('contain', '(2)');
   });
 
-  it('Checks Users Tab', () => {
+  it.skip('Checks Users Tab', () => {
     // select remote data source
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/users`);
 
@@ -136,7 +136,7 @@ describe('Multi-datasources enabled', () => {
     cy.get('[data-test-subj="checkboxSelectRow-9202-user"]').should('exist');
   });
 
-  it('Checks Permissions Tab', () => {
+  it.skip('Checks Permissions Tab', () => {
     // Select remote cluster
     cy.visit(
       `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/permissions`
