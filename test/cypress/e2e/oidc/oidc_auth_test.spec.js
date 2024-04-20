@@ -60,14 +60,14 @@ describe('Log in via OIDC', () => {
 
     kcLogin();
 
+    cy.getCookie('security_authentication').should('exist');
+
     localStorage.setItem('opendistro::security::tenant::saved', '""');
     localStorage.setItem('home:newThemeModal:show', 'false');
 
     cy.visit(`http://localhost:5601${basePath}/app/dev_tools#/console`);
 
     cy.get('a').contains('Dev Tools').should('be.visible');
-
-    cy.getCookie('security_authentication').should('exist');
   });
 
   it('Login to Dashboard with Hash', () => {
