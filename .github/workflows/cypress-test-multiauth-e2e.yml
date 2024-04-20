@@ -93,13 +93,22 @@ jobs:
       - name: Run OSD with basePath
         if: ${{ matrix.basePath != '' }}
         run: |
-          echo "server.basePath: \"${{ matrix.basePath }}\"" >> opensearch_dashboards_openid.yml
-          echo "server.rewriteBasePath: true" >> opensearch_dashboards_openid.yml
+          echo "server.basePath: \"${{ matrix.basePath }}\"" >> opensearch_dashboards_multiauth.yml
+          echo "server.rewriteBasePath: true" >> opensearch_dashboards_multiauth.yml
 
-      - name: Run Cypress Tests
+      - name: Run Cypress Tests with basePath
+        if: ${{ matrix.basePath != '' }}
         uses: ./.github/actions/run-cypress-tests
         with:
           security_config_file: config_multiauth.yml
           dashboards_config_file: opensearch_dashboards_multiauth.yml
-          yarn_command: 'yarn cypress:run --browser chrome --headless --env loginMethod=saml_multiauth ${{ matrix.basePath != '' ? `--env basePath=${matrix.basePath}` : '' }} --spec "test/cypress/e2e/saml/*.js"'
+          yarn_command: 'yarn cypress:run --browser chrome --headless --env loginMethod=saml_multiauth --env basePath=${{ matrix.basePath }} --spec "test/cypress/e2e/saml/*.js"'
           osd_base_path: ${{ matrix.basePath }}
+
+      - name: Run Cypress Tests
+        if: ${{ matrix.basePath == '' }}
+        uses: ./.github/actions/run-cypress-tests
+        with:
+          security_config_file: config_multiauth.yml
+          dashboards_config_file: opensearch_dashboards_multiauth.yml
+          yarn_command: 'yarn cypress:run --browser chrome --headless --env loginMethod=saml_multiauth --spec "test/cypress/e2e/saml/*.js"'

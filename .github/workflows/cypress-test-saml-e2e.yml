@@ -96,10 +96,19 @@ jobs:
           echo "server.basePath: \"${{ matrix.basePath }}\"" >> opensearch_dashboards_saml.yml
           echo "server.rewriteBasePath: true" >> opensearch_dashboards_saml.yml
 
-      - name: Run Cypress Tests
+      - name: Run Cypress Tests with basePath
+        if: ${{ matrix.basePath != '' }}
         uses: ./.github/actions/run-cypress-tests
         with:
           security_config_file: config_saml.yml
           dashboards_config_file: opensearch_dashboards_saml.yml
-          yarn_command: 'yarn cypress:run --browser chrome --headless --spec "test/cypress/e2e/saml/*.js" ${{ matrix.basePath != '' ? `--env basePath=${matrix.basePath}` : '' }}'
+          yarn_command: 'yarn cypress:run --browser chrome --headless --spec "test/cypress/e2e/saml/*.js" --env basePath=${{ matrix.basePath }}'
           osd_base_path: ${{ matrix.basePath }}
+
+      - name: Run Cypress Tests with basePath
+        if: ${{ matrix.basePath == '' }}
+        uses: ./.github/actions/run-cypress-tests
+        with:
+          security_config_file: config_saml.yml
+          dashboards_config_file: opensearch_dashboards_saml.yml
+          yarn_command: 'yarn cypress:run --browser chrome --headless --spec "test/cypress/e2e/saml/*.js"'

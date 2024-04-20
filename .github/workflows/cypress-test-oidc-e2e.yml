@@ -142,10 +142,19 @@ jobs:
           echo "server.basePath: \"${{ matrix.basePath }}\"" >> opensearch_dashboards_openid.yml
           echo "server.rewriteBasePath: true" >> opensearch_dashboards_openid.yml
 
-      - name: Run Cypress Tests
+      - name: Run Cypress Tests with basePath
+        if: ${{ matrix.basePath != '' }}
         uses: ./.github/actions/run-cypress-tests
         with:
           security_config_file: config_openid.yml
           dashboards_config_file: opensearch_dashboards_openid.yml
-          yarn_command: 'yarn cypress:run --browser chrome --headless --spec "test/cypress/e2e/oidc/*.js" ${{ matrix.basePath != '' ? `--env basePath=${matrix.basePath}` : '' }}'
+          yarn_command: 'yarn cypress:run --browser chrome --headless --spec "test/cypress/e2e/oidc/*.js" --env basePath=${{ matrix.basePath }}'
           osd_base_path: ${{ matrix.basePath }}
+
+      - name: Run Cypress Tests with basePath
+        if: ${{ matrix.basePath == '' }}
+        uses: ./.github/actions/run-cypress-tests
+        with:
+          security_config_file: config_openid.yml
+          dashboards_config_file: opensearch_dashboards_openid.yml
+          yarn_command: 'yarn cypress:run --browser chrome --headless --spec "test/cypress/e2e/oidc/*.js"'
