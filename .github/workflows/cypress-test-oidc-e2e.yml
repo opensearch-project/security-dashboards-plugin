@@ -130,9 +130,7 @@ jobs:
           opensearch_security.openid.connect_url: "http://127.0.0.1:8080/auth/realms/master/.well-known/openid-configuration"
           opensearch_security.openid.client_id: "opensearch"
           opensearch_security.openid.client_secret: "${{ env.TEST_KEYCLOAK_CLIENT_SECRET }}"
-          opensearch_security.auth.type: ["openid"]
-          opensearch_security.auth.multiple_auth_enabled: true
-          opensearch_security.ui.openid.login.buttonname: "OIDC"
+          opensearch_security.auth.type: "openid"
           home.disableWelcomeScreen: true
           EOT
 
@@ -151,7 +149,7 @@ jobs:
           yarn_command: 'yarn cypress:run --browser chrome --headless --spec "test/cypress/e2e/oidc/*.js" --env basePath=${{ matrix.basePath }}'
           osd_base_path: ${{ matrix.basePath }}
 
-      - name: Run Cypress Tests with basePath
+      - name: Run Cypress Tests
         if: ${{ matrix.basePath == '' }}
         uses: ./.github/actions/run-cypress-tests
         with:

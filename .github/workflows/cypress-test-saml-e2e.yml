@@ -105,7 +105,7 @@ jobs:
           yarn_command: 'yarn cypress:run --browser chrome --headless --spec "test/cypress/e2e/saml/*.js" --env basePath=${{ matrix.basePath }}'
           osd_base_path: ${{ matrix.basePath }}
 
-      - name: Run Cypress Tests with basePath
+      - name: Run Cypress Tests
         if: ${{ matrix.basePath == '' }}
         uses: ./.github/actions/run-cypress-tests
         with:
