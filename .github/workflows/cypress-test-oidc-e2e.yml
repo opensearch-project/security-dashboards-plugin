@@ -148,3 +148,4 @@ jobs:
           security_config_file: config_openid.yml
           dashboards_config_file: opensearch_dashboards_openid.yml
           yarn_command: 'yarn cypress:run --browser chrome --headless --spec "test/cypress/e2e/oidc/*.js"'
+          osd_base_path: ${{ matrix.basePath }}

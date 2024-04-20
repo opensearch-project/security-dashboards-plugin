@@ -102,3 +102,4 @@ jobs:
           security_config_file: config_multiauth.yml
           dashboards_config_file: opensearch_dashboards_multiauth.yml
           yarn_command: 'yarn cypress:run --browser chrome --headless --env loginMethod=saml_multiauth --spec "test/cypress/e2e/saml/*.js"'
+          osd_base_path: ${{ matrix.basePath }}
