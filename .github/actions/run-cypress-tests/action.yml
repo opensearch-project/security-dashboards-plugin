@@ -70,7 +70,11 @@ runs:
       if: ${{ runner.os == 'Linux' }}
       run: |
         cd ./OpenSearch-Dashboards
-        nohup yarn start --no-base-path --no-watch | tee dashboard.log &
+        if [ -z "${{ inputs.osd_base_path }}" ]; then
+          nohup yarn start --no-base-path --no-watch | tee dashboard.log &
+        else
+          nohup yarn start --no-watch | tee dashboard.log &
+        fi
       shell: bash
 
     # Check if OSD is ready with a max timeout of 600 seconds
