@@ -20,11 +20,23 @@
 
 const basePath = Cypress.env('basePath') || '';
 
+before(() => {
+  cy.intercept('https://localhost:9200');
+
+  // Avoid Cypress lock onto the ipv4 range, so fake `visit()` before `request()`.
+  // See: https://github.com/cypress-io/cypress/issues/25397#issuecomment-1402556488
+  cy.visit(`http://localhost:5601${basePath}`);
+
+  cy.clearCookies();
+  cy.clearLocalStorage();
+});
+
+afterEach(() => {
+  cy.clearCookies();
+  cy.clearLocalStorage();
+});
+
 describe('Log in via OIDC', () => {
-  afterEach(() => {
-    cy.clearCookies();
-    cy.clearLocalStorage();
-  });
 
   const kcLogin = () => {
     cy.origin('http://127.0.0.1:8080', () => {
