@@ -54,7 +54,7 @@ describe('Log in via OIDC', () => {
   });
 
   it('Login to app/dev_tools#/console when OIDC is enabled', () => {
-    cy.visit(`http://localhost:5601${basePath}/app/opensearch_dashboards_overview`, {
+    cy.visit(`http://localhost:5601${basePath}/app/dev_tools#/console`, {
       failOnStatusCode: false,
     });
 
@@ -64,12 +64,6 @@ describe('Log in via OIDC', () => {
 
     localStorage.setItem('opendistro::security::tenant::saved', '""');
     localStorage.setItem('home:newThemeModal:show', 'false');
-
-    cy.url().then(() => {
-      cy.visit(`http://localhost:5601${basePath}/app/dev_tools#/console`, {
-        failOnStatusCode: false,
-      });
-    });
 
     cy.get('a').contains('Dev Tools').should('be.visible');
   });
