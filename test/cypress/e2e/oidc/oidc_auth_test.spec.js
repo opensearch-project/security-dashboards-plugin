@@ -37,7 +37,6 @@ afterEach(() => {
 });
 
 describe('Log in via OIDC', () => {
-
   const kcLogin = () => {
     cy.origin('http://127.0.0.1:8080', () => {
       const login = 'admin';
