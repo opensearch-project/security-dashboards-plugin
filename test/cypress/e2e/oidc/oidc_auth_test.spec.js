@@ -65,8 +65,10 @@ describe('Log in via OIDC', () => {
     localStorage.setItem('opendistro::security::tenant::saved', '""');
     localStorage.setItem('home:newThemeModal:show', 'false');
 
-    cy.visit(`http://localhost:5601${basePath}/app/dev_tools#/console`, {
-      failOnStatusCode: false,
+    cy.url().then(() => {
+      cy.visit(`http://localhost:5601${basePath}/app/dev_tools#/console`, {
+        failOnStatusCode: false,
+      });
     });
 
     cy.get('a').contains('Dev Tools').should('be.visible');
