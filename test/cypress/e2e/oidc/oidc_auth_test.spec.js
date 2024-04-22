@@ -117,6 +117,10 @@ describe('Log in via OIDC', () => {
 
     cy.get('button[data-test-subj^="log-out-"]').click();
 
+    cy.visit(`http://localhost:5601${basePath}/app/opensearch_dashboards_overview#/`, {
+      failOnStatusCode: false,
+    });
+
     kcLogin();
 
     cy.get('#user-icon-btn').should('be.visible');
