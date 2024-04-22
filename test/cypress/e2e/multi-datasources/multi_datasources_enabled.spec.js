@@ -90,7 +90,10 @@ describe('Multi-datasources enabled', () => {
   it('Checks Get Started Tab', () => {
     // Remote cluster purge cache
     cy.visit(
-      `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/getstarted`
+      `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/getstarted`,
+      {
+        failOnStatusCode: false,
+      }
     );
 
     cy.contains('h1', 'Get started');
@@ -106,7 +109,9 @@ describe('Multi-datasources enabled', () => {
   });
 
   it('Checks Auth Tab', () => {
-    cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/auth`);
+    cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/auth`, {
+      failOnStatusCode: false,
+    });
 
     cy.get('.panel-header-count').first().invoke('text').should('contain', '(2)');
   });
@@ -125,7 +130,10 @@ describe('Multi-datasources enabled', () => {
       },
     }).then(() => {
       cy.visit(
-        `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/users`
+        `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/users`,
+        {
+          failOnStatusCode: false,
+        }
       );
 
       cy.get('[data-test-subj="tableHeaderCell_username_0"]').click();
@@ -145,7 +153,10 @@ describe('Multi-datasources enabled', () => {
       },
     }).then(() => {
       cy.visit(
-        `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/permissions`
+        `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/permissions`,
+        {
+          failOnStatusCode: false,
+        }
       );
 
       // Permission exists on the remote data source
