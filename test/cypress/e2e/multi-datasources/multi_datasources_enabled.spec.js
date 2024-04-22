@@ -75,7 +75,7 @@ describe('Multi-datasources enabled', () => {
     localStorage.setItem('home:newThemeModal:show', 'false');
     createDataSource().then((resp) => {
       if (resp && resp.body) {
-        cy.log(JSON.stringify(resp.body))
+        cy.log(JSON.stringify(resp.body));
         externalDataSourceId = resp.body.id;
       }
       externalDataSourceUrl = createUrlParam(externalTitle, externalDataSourceId);
@@ -145,7 +145,7 @@ describe('Multi-datasources enabled', () => {
         allowed_actions: [],
       },
     }).then(() => {
-      cy.log(externalDataSourceUrl)
+      cy.log(externalDataSourceUrl);
       cy.visit(
         `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/permissions`
       );
