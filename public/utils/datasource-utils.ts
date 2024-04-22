@@ -29,9 +29,7 @@ export function getClusterInfoIfEnabled(dataSourceEnabled: boolean, cluster: Dat
 }
 
 export function getDataSourceFromUrl(): DataSourceOption {
-  const urlParams = new URLSearchParams(window.location.search);
-  const dataSourceParam = (urlParams && urlParams.get(DATASOURCEURLKEY)) || '{}';
-  return JSON.parse(dataSourceParam);
+  return JSON.parse(new URLSearchParams(window.location.search).get(DATASOURCEURLKEY) || '{}');
 }
 
 export function setDataSourceInUrl(dataSource: DataSourceOption) {

@@ -61,7 +61,6 @@ const deleteAllDataSources = () => {
 
 const createUrlParam = (label, id) => {
   const dataSourceObj = { label, id };
-
   return `?dataSource=${JSON.stringify(dataSourceObj)}`;
 };
 
@@ -70,12 +69,13 @@ let externalDataSourceUrl;
 let localDataSourceUrl;
 
 describe('Multi-datasources enabled', () => {
-  beforeEach(() => {
+  before(() => {
     deleteAllDataSources();
     localStorage.setItem('opendistro::security::tenant::saved', '""');
     localStorage.setItem('home:newThemeModal:show', 'false');
     createDataSource().then((resp) => {
       if (resp && resp.body) {
+        cy.log(JSON.stringify(resp.body))
         externalDataSourceId = resp.body.id;
       }
       externalDataSourceUrl = createUrlParam(externalTitle, externalDataSourceId);
@@ -83,10 +83,8 @@ describe('Multi-datasources enabled', () => {
     });
   });
 
-  afterEach(() => {
-    cy.clearCookies();
+  after(() => {
     cy.clearAllLocalStorage();
-    cy.clearAllSessionStorage();
     deleteAllDataSources();
   });
 
@@ -136,34 +134,26 @@ describe('Multi-datasources enabled', () => {
     cy.get('[data-test-subj="checkboxSelectRow-9202-user"]').should('exist');
   });
 
-  it.skip('Checks Permissions Tab', () => {
-    // Select remote cluster
-    cy.visit(
-      `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/permissions`
-    );
+  it('Checks Permissions Tab', () => {
+    cy.request({
+      method: 'POST',
+      url: `http://localhost:5601/api/v1/configuration/actiongroups/9202-permission?dataSourceId=${externalDataSourceId}`,
+      headers: {
+        'osd-xsrf': true,
+      },
+      body: {
+        allowed_actions: [],
+      },
+    }).then(() => {
+      cy.log(externalDataSourceUrl)
+      cy.visit(
+        `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/permissions`
+      );
 
-    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
-      'contain',
-      '9202'
-    );
-
-    // Create an action group
-    cy.get('[id="Create action group"]').click();
-    cy.get('[id="create-from-blank"]').click();
-    cy.get('[data-test-subj="name-text"]')
-      .focus()
-      .type('9202-permission', { force: true })
-      .should('have.value', '9202-permission');
-    cy.get('[data-test-subj="comboBoxInput"]').focus().type('some_permission');
-    cy.get('[id="submit"]').click();
-
-    cy.visit(
-      `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/permissions`
-    );
-
-    // Permission exists on the remote data source
-    cy.get('[data-test-subj="tableHeaderCell_name_0"]').click();
-    cy.get('[data-test-subj="checkboxSelectRow-9202-permission"]').should('exist');
+      // Permission exists on the remote data source
+      cy.get('[data-test-subj="tableHeaderCell_name_0"]').click();
+      cy.get('[data-test-subj="checkboxSelectRow-9202-permission"]').should('exist');
+    });
   });
 
   it('Checks Tenancy Tab', () => {
