@@ -173,23 +173,60 @@ describe('Multi-datasources enabled', () => {
     cy.get('[data-test-subj="dataSourceViewButton"]').should('contain', 'Local cluster');
   });
 
-  it.skip('Checks Audit Logs Tab', () => {
-    cy.visit(
-      `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/auditLogging/edit/generalSettings`
-    );
-    cy.get('[data-test-subj="dataSourceViewButton"]').should('contain', '9202');
+  it('Checks Audit Logs Tab', () => {
+    cy.request({
+      method: 'POST',
+      url: `http://localhost:5601/api/v1/configuration/audit/config?dataSourceId=${externalDataSourceId}`,
+      headers: {
+        'osd-xsrf': true,
+      },
+      body: {
+        "compliance": {
+            "enabled": true,
+            "write_log_diffs": false,
+            "read_watched_fields": {},
+            "read_ignore_users": [
+                "kibanaserver"
+            ],
+            "write_watched_indices": [],
+            "write_ignore_users": [
+                "kibanaserver"
+            ],
+            "internal_config": false,
+            "read_metadata_only": false,
+            "write_metadata_only": false,
+            "external_config": false
+        },
+        "enabled": false,
+        "audit": {
+            "ignore_users": [
+                "kibanaserver"
+            ],
+            "ignore_requests": [],
+            "disabled_rest_categories": [
+                "AUTHENTICATED",
+                "GRANTED_PRIVILEGES"
+            ],
+            "disabled_transport_categories": [
+                "AUTHENTICATED",
+                "GRANTED_PRIVILEGES"
+            ],
+            "log_request_body": true,
+            "resolve_indices": true,
+            "resolve_bulk_requests": false,
+            "enable_transport": true,
+            "enable_rest": true,
+            "exclude_sensitive_headers": true
+        }
+    }
+    }).then(() => {
+      cy.visit(
+        `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/auditLogging`
+      );
+      cy.get('[class="euiSwitch__label"]').should('contain', 'Disabled');
+    })
 
-    cy.get('[data-test-subj="comboBoxInput"]').last().type('blah');
-    cy.get('[data-test-subj="save"]').click();
-    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
-      'contain',
-      '9202'
-    );
-
-    cy.visit(
-      `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/auditLogging/edit/generalSettings`
-    );
-    cy.get('[data-test-subj="general-settings"]').should('contain', 'blah');
+  
   });
 
   it.skip('Checks Roles Tab', () => {
