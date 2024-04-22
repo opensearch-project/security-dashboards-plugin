@@ -27,9 +27,9 @@ describe('Log in via OIDC', () => {
   });
 
   const kcLogin = () => {
-    cy.origin('http://localhost:8080', () => {
+    cy.origin('http://127.0.0.1:8080', () => {
       const login = 'admin';
-      const password = 'Pa55w0rd';
+      const password = 'admin';
 
       cy.get('#kc-page-title').should('be.visible');
       cy.get('input[id=username]').should('be.visible').type(login);
