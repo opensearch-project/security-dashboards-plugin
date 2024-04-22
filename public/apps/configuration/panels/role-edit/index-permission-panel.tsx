@@ -23,7 +23,7 @@ import {
   EuiSuperSelect,
   EuiTextArea,
 } from '@elastic/eui';
-import React, { Dispatch, Fragment, SetStateAction } from 'react';
+import React, { Dispatch, Fragment, SetStateAction, useEffect } from 'react';
 import { isEmpty } from 'lodash';
 import { RoleIndexPermission } from '../../types';
 import { ResourceType } from '../../../../../common';
@@ -320,9 +320,11 @@ export function IndexPermissionPanel(props: {
 }) {
   const { state, optionUniverse, setState } = props;
   // Show one empty row if there is no data.
-  if (isEmpty(state)) {
-    setState([getEmptyIndexPermission()]);
-  }
+  useEffect(() => {
+    if (isEmpty(state)) {
+      setState([getEmptyIndexPermission()]);
+    }
+  }, [state, setState]);
   return (
     <PanelWithHeader
       headerText="Index permissions"

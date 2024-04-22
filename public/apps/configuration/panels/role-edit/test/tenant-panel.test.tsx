@@ -24,6 +24,7 @@ import {
 import { shallow } from 'enzyme';
 import React from 'react';
 import { EuiComboBox, EuiButton, EuiSuperSelect } from '@elastic/eui';
+import { render } from '@testing-library/react';
 
 jest.mock('../../../utils/array-state-utils');
 // eslint-disable-next-line
@@ -76,7 +77,7 @@ describe('Role edit - tenant panel', () => {
     const setState = jest.fn();
 
     it('render an empty row if data is empty', () => {
-      shallow(<TenantPanel state={[]} optionUniverse={optionUniverse} setState={setState} />);
+      render(<TenantPanel state={[]} optionUniverse={optionUniverse} setState={setState} />);
 
       expect(setState).toHaveBeenCalledWith([
         {

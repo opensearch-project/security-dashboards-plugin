@@ -14,6 +14,7 @@
  */
 
 import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 import React from 'react';
 import { RoleIndexPermission, ComboBoxOptions, FieldLevelSecurityMethod } from '../../../types';
 import { stringToComboBoxOption } from '../../../utils/combo-box-utils';
@@ -180,7 +181,7 @@ describe('Role edit - index permission panel', () => {
       const state: RoleIndexPermissionStateClass[] = [];
       const optionUniverse: ComboBoxOptions = [];
 
-      shallow(<IndexPermissionPanel {...{ state, optionUniverse, setState }} />);
+      render(<IndexPermissionPanel {...{ state, optionUniverse, setState }} />);
 
       expect(setState).toHaveBeenCalledTimes(1);
     });

@@ -32,5 +32,4 @@ module.exports = defineConfig({
     adminUserName: 'admin',
     adminPassword: 'myStrongPassword123!',
   },
-  experimentalMemoryManagement: true,
 });

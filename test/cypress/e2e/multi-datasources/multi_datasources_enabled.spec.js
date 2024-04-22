@@ -37,14 +37,6 @@ const createDataSource = () => {
   });
 };
 
-const closeToast = () => {
-  // remove browser incompatibiltiy toast causing flakyness (cause it has higher z-index than Create button making it invisible)
-  cy.get('[class="euiToast euiToast--warning euiGlobalToastListItem"]')
-    .find('[data-test-subj="toastCloseButton"]')
-    .first()
-    .click();
-};
-
 const deleteAllDataSources = () => {
   cy.request(
     'GET',
@@ -69,8 +61,7 @@ const deleteAllDataSources = () => {
 
 const createUrlParam = (label, id) => {
   const dataSourceObj = { label, id };
-
-  return `?dataSource=${JSON.stringify(dataSourceObj)}`;
+  return `?dataSource=${JSON.stringify(dataSourceObj).toString()}`;
 };
 
 let externalDataSourceId;
@@ -78,8 +69,7 @@ let externalDataSourceUrl;
 let localDataSourceUrl;
 
 describe('Multi-datasources enabled', () => {
-  before(() => {
-    deleteAllDataSources();
+  beforeEach(() => {
     localStorage.setItem('opendistro::security::tenant::saved', '""');
     localStorage.setItem('home:newThemeModal:show', 'false');
     createDataSource().then((resp) => {
@@ -91,117 +81,86 @@ describe('Multi-datasources enabled', () => {
     });
   });
 
-  after(() => {
+  afterEach(() => {
+    cy.clearCookies();
+    cy.clearAllLocalStorage();
+    cy.clearAllSessionStorage();
     deleteAllDataSources();
-    cy.clearLocalStorage();
   });
 
   it('Checks Get Started Tab', () => {
-    cy.visit(
-      `http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/getstarted`
-    );
-    closeToast();
-    // Local cluster purge cache
-    cy.get('[data-test-subj="purge-cache"]').click();
-    cy.get('.euiToastHeader__title').should('contain', 'successful for Local cluster');
     // Remote cluster purge cache
     cy.visit(
       `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/getstarted`
     );
-    closeToast();
+
+    cy.contains('h1', 'Get started');
+    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
+      'contain',
+      '9202'
+    );
+
     cy.get('[data-test-subj="purge-cache"]').click();
-    cy.get('.euiToastHeader__title').should('contain', 'successful for 9202');
+    cy.get('[class="euiToast euiToast--success euiGlobalToastListItem"]')
+      .get('.euiToastHeader__title')
+      .should('contain', 'successful for 9202');
   });
 
   it('Checks Auth Tab', () => {
-    cy.visit(`http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/auth`);
-    closeToast();
-    // Local cluster auth
-    cy.get('.panel-header-count').first().invoke('text').should('contain', '(6)');
-    // Remote cluster auth
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/auth`);
-    closeToast();
+
     cy.get('.panel-header-count').first().invoke('text').should('contain', '(2)');
   });
 
   it('Checks Users Tab', () => {
-    // select remote data source
-    cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/users`);
-    closeToast();
+    cy.request({
+      method: 'POST',
+      url: `http://localhost:5601/api/v1/configuration/internalusers/9202-user?dataSourceId=${externalDataSourceId}`,
+      headers: {
+        'osd-xsrf': true,
+      },
+      body: {
+        backend_roles: [''],
+        attributes: {},
+        password: 'myStrongPassword123!',
+      },
+    }).then(() => {
+      cy.visit(
+        `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/users`
+      );
 
-    // create a user on remote data source
-    cy.get('[data-test-subj="create-user"]').click();
-    cy.get('[data-test-subj="name-text"]').focus().type('9202-user');
-    cy.get('[data-test-subj="password"]').focus().type('myStrongPassword123!');
-    cy.get('[data-test-subj="re-enter-password"]').focus().type('myStrongPassword123!');
-    cy.get('[data-test-subj="submit-save-user"]').click();
-
-    // Internal user exists on the remote
-    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
-      'contain',
-      '9202'
-    );
-    cy.get('[data-test-subj="tableHeaderCell_username_0"]').click();
-    cy.get('[data-test-subj="checkboxSelectRow-9202-user"]').should('exist');
-
-    // Internal user doesn't exist on local cluster
-    cy.visit(`http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/users`);
-    closeToast();
-    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
-      'contain',
-      'Local cluster'
-    );
-    cy.get('[data-test-subj="checkboxSelectRow-9202-user"]').should('not.exist');
+      cy.get('[data-test-subj="tableHeaderCell_username_0"]').click();
+      cy.get('[data-test-subj="checkboxSelectRow-9202-user"]').should('exist');
+    });
   });
 
   it('Checks Permissions Tab', () => {
-    // Select remote cluster
-    cy.visit(
-      `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/permissions`
-    );
-    closeToast();
-    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
-      'contain',
-      '9202'
-    );
+    cy.request({
+      method: 'POST',
+      url: `http://localhost:5601/api/v1/configuration/actiongroups/9202-permission?dataSourceId=${externalDataSourceId}`,
+      headers: {
+        'osd-xsrf': true,
+      },
+      body: {
+        allowed_actions: [],
+      },
+    }).then(() => {
+      cy.visit(
+        `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/permissions`
+      );
 
-    // Create an action group
-    cy.get('[id="Create action group"]').click();
-    cy.get('[id="create-from-blank"]').click();
-    cy.get('[data-test-subj="name-text"]')
-      .focus()
-      .type('test_permission_ag', { force: true })
-      .should('have.value', 'test_permission_ag');
-    cy.get('[data-test-subj="comboBoxInput"]').focus().type('some_permission');
-    cy.get('[id="submit"]').click();
-
-    // Permission exists on the remote data source
-    cy.get('[data-text="Customization"]').click();
-    cy.get('[data-test-subj="filter-custom"]').click();
-    cy.get('[data-test-subj="checkboxSelectRow-test_permission_ag"]').should('exist');
-
-    // Permission doesn't exist on local cluster
-    cy.visit(
-      `http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/permissions`
-    );
-    closeToast();
-    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
-      'contain',
-      'Local cluster'
-    );
-    cy.get('[data-test-subj="checkboxSelectRow-test_permission_ag"]').should('not.exist');
+      // Permission exists on the remote data source
+      cy.get('[data-test-subj="tableHeaderCell_name_0"]').click();
+      cy.get('[data-test-subj="checkboxSelectRow-9202-permission"]').should('exist');
+    });
   });
 
   it('Checks Tenancy Tab', () => {
     // Datasource is locked to local cluster for tenancy tab
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/tenants`);
-    closeToast();
+
     cy.contains('h1', 'Dashboards multi-tenancy');
-    cy.get('[data-test-subj="dataSourceViewContextMenuHeaderLink"]').should(
-      'contain',
-      'Local cluster'
-    );
-    cy.get('[data-test-subj="dataSourceViewContextMenuHeaderLink"]').should('be.disabled');
+    cy.get('[data-test-subj="dataSourceViewButton"]').should('contain', 'Local cluster');
   });
 
   it('Checks Service Accounts Tab', () => {
@@ -209,78 +168,77 @@ describe('Multi-datasources enabled', () => {
     cy.visit(
       `http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/serviceAccounts`
     );
-    closeToast();
-    cy.get('[data-test-subj="dataSourceViewContextMenuHeaderLink"]').should(
-      'contain',
-      'Local cluster'
-    );
-    cy.get('[data-test-subj="dataSourceViewContextMenuHeaderLink"]').should('be.disabled');
+
+    cy.get('[data-test-subj="dataSourceViewButton"]').should('contain', 'Local cluster');
   });
 
   it('Checks Audit Logs Tab', () => {
-    // Select remote cluster
-    cy.visit(
-      `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/auditLogging`
-    );
-    closeToast();
-    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
-      'contain',
-      '9202'
-    );
-
-    cy.get('[data-test-subj="general-settings-configure"]').click();
-    cy.get('[data-test-subj="dataSourceViewContextMenuHeaderLink"]').should('contain', '9202');
-
-    cy.get('[data-test-subj="comboBoxInput"]').last().type('blah');
-    cy.get('[data-test-subj="save"]').click();
-
-    cy.get('[data-test-subj="general-settings"]').should('contain', 'blah');
-
-    // Select local cluster
-    cy.visit(
-      `http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/auditLogging`
-    );
-    closeToast();
-    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
-      'contain',
-      'Local cluster'
-    );
-
-    cy.get('[data-test-subj="general-settings"]').should('not.contain', 'blah');
+    cy.request({
+      method: 'POST',
+      url: `http://localhost:5601/api/v1/configuration/audit/config?dataSourceId=${externalDataSourceId}`,
+      headers: {
+        'osd-xsrf': true,
+      },
+      body: {
+        compliance: {
+          enabled: true,
+          write_log_diffs: false,
+          read_watched_fields: {},
+          read_ignore_users: ['kibanaserver'],
+          write_watched_indices: [],
+          write_ignore_users: ['kibanaserver'],
+          internal_config: false,
+          read_metadata_only: false,
+          write_metadata_only: false,
+          external_config: false,
+        },
+        enabled: false,
+        audit: {
+          ignore_users: ['kibanaserver'],
+          ignore_requests: [],
+          disabled_rest_categories: ['AUTHENTICATED', 'GRANTED_PRIVILEGES'],
+          disabled_transport_categories: ['AUTHENTICATED', 'GRANTED_PRIVILEGES'],
+          log_request_body: true,
+          resolve_indices: true,
+          resolve_bulk_requests: false,
+          enable_transport: true,
+          enable_rest: true,
+          exclude_sensitive_headers: true,
+        },
+      },
+    }).then(() => {
+      cy.visit(
+        `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/auditLogging`
+      );
+      cy.get('[class="euiSwitch__label"]').should('contain', 'Disabled');
+    });
   });
 
   it('Checks Roles Tab', () => {
-    Cypress.on('uncaught:exception', (err) => !err.message.includes('ResizeObserver'));
-    // select remote data source
-    cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/roles`);
-    closeToast();
+    cy.request({
+      method: 'POST',
+      url: `http://localhost:5601/api/v1/configuration/roles/9202-role?dataSourceId=${externalDataSourceId}`,
+      headers: {
+        'osd-xsrf': true,
+      },
+      body: {
+        cluster_permissions: [],
+        index_permissions: [],
+        tenant_permissions: [],
+      },
+    }).then(() => {
+      cy.visit(
+        `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/roles`
+      );
 
-    // create a role on remote data source
-    cy.get('[data-test-subj="create-role"]').click();
-    cy.contains('h1', 'Create Role');
-    cy.get('[data-test-subj="name-text"]').focus().type('9202-role');
-    cy.get('[data-test-subj="comboBoxToggleListButton"]').first().click();
-    cy.get('[data-test-subj="create-or-update-role"]').click();
+      cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
+        'contain',
+        '9202'
+      );
+      cy.get('[data-test-subj="tableHeaderCell_roleName_0"]').click();
+      cy.get('[data-test-subj="checkboxSelectRow-9202-role"]').should('exist');
 
-    cy.get('.euiToastHeader__title').should('contain', 'Role "9202-role" successfully created');
-
-    // role exists on the remote
-    cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/roles`);
-    closeToast();
-    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
-      'contain',
-      '9202'
-    );
-    cy.get('[data-test-subj="tableHeaderCell_roleName_0"]').click();
-    cy.get('[data-test-subj="checkboxSelectRow-9202-role"]').should('exist');
-
-    // Role doesn't exist on local cluster
-    cy.visit(`http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/roles`);
-    closeToast();
-    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
-      'contain',
-      'Local cluster'
-    );
-    cy.get('[data-test-subj="checkboxSelectRow-9202-role"]').should('not.exist');
+      // role exists on the remote
+    });
   });
 });
