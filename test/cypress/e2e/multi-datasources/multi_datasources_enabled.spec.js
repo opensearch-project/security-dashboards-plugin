@@ -181,52 +181,38 @@ describe('Multi-datasources enabled', () => {
         'osd-xsrf': true,
       },
       body: {
-        "compliance": {
-            "enabled": true,
-            "write_log_diffs": false,
-            "read_watched_fields": {},
-            "read_ignore_users": [
-                "kibanaserver"
-            ],
-            "write_watched_indices": [],
-            "write_ignore_users": [
-                "kibanaserver"
-            ],
-            "internal_config": false,
-            "read_metadata_only": false,
-            "write_metadata_only": false,
-            "external_config": false
+        compliance: {
+          enabled: true,
+          write_log_diffs: false,
+          read_watched_fields: {},
+          read_ignore_users: ['kibanaserver'],
+          write_watched_indices: [],
+          write_ignore_users: ['kibanaserver'],
+          internal_config: false,
+          read_metadata_only: false,
+          write_metadata_only: false,
+          external_config: false,
         },
-        "enabled": false,
-        "audit": {
-            "ignore_users": [
-                "kibanaserver"
-            ],
-            "ignore_requests": [],
-            "disabled_rest_categories": [
-                "AUTHENTICATED",
-                "GRANTED_PRIVILEGES"
-            ],
-            "disabled_transport_categories": [
-                "AUTHENTICATED",
-                "GRANTED_PRIVILEGES"
-            ],
-            "log_request_body": true,
-            "resolve_indices": true,
-            "resolve_bulk_requests": false,
-            "enable_transport": true,
-            "enable_rest": true,
-            "exclude_sensitive_headers": true
-        }
-    }
+        enabled: false,
+        audit: {
+          ignore_users: ['kibanaserver'],
+          ignore_requests: [],
+          disabled_rest_categories: ['AUTHENTICATED', 'GRANTED_PRIVILEGES'],
+          disabled_transport_categories: ['AUTHENTICATED', 'GRANTED_PRIVILEGES'],
+          log_request_body: true,
+          resolve_indices: true,
+          resolve_bulk_requests: false,
+          enable_transport: true,
+          enable_rest: true,
+          exclude_sensitive_headers: true,
+        },
+      },
     }).then(() => {
       cy.visit(
         `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/auditLogging`
       );
       cy.get('[class="euiSwitch__label"]').should('contain', 'Disabled');
-    })
-
-  
+    });
   });
 
   it.skip('Checks Roles Tab', () => {
