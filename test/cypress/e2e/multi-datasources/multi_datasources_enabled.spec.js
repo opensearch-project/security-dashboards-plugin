@@ -112,26 +112,26 @@ describe('Multi-datasources enabled', () => {
     cy.get('.panel-header-count').first().invoke('text').should('contain', '(2)');
   });
 
-  it.skip('Checks Users Tab', () => {
-    // select remote data source
-    cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/users`);
+  it('Checks Users Tab', () => {
+    cy.request({
+      method: 'POST',
+      url: `http://localhost:5601/api/v1/configuration/internalusers/9202-user?dataSourceId=${externalDataSourceId}`,
+      headers: {
+        'osd-xsrf': true,
+      },
+      body: {
+        backend_roles: [''],
+        attributes: {},
+        password: 'myStrongPassword123!',
+      },
+    }).then(() => {
+      cy.visit(
+        `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/users`
+      );
 
-    // create a user on remote data source
-    cy.get('[data-test-subj="create-user"]').click();
-    cy.get('[data-test-subj="name-text"]').focus().type('9202-user');
-    cy.get('[data-test-subj="password"]').focus().type('myStrongPassword123!');
-    cy.get('[data-test-subj="re-enter-password"]').focus().type('myStrongPassword123!');
-    cy.get('[data-test-subj="submit-save-user"]').click();
-
-    cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/users`);
-
-    // Internal user exists on the remote
-    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
-      'contain',
-      '9202'
-    );
-    cy.get('[data-test-subj="tableHeaderCell_username_0"]').click();
-    cy.get('[data-test-subj="checkboxSelectRow-9202-user"]').should('exist');
+      cy.get('[data-test-subj="tableHeaderCell_username_0"]').click();
+      cy.get('[data-test-subj="checkboxSelectRow-9202-user"]').should('exist');
+    });
   });
 
   it('Checks Permissions Tab', () => {
@@ -145,7 +145,6 @@ describe('Multi-datasources enabled', () => {
         allowed_actions: [],
       },
     }).then(() => {
-      cy.log(externalDataSourceUrl);
       cy.visit(
         `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/permissions`
       );
