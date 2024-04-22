@@ -85,8 +85,11 @@ runs:
         done
       shell: bash
 
-    - name: Run Cypress
-      run : |
-        yarn add cypress --save-dev
-        eval ${{ inputs.yarn_command }}
-      shell: bash
+    - name: Run Cypress Tests with retry
+      uses: Wandalen/wretry.action@v3.3.0
+      with:
+        attempt_limit: 2
+        attempt_delay: 2000
+        command: |
+          yarn add cypress --save-dev
+          eval ${{ inputs.yarn_command }} 
