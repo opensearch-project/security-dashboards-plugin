@@ -130,6 +130,7 @@ jobs:
           opensearch_security.openid.connect_url: "http://127.0.0.1:8080/auth/realms/master/.well-known/openid-configuration"
           opensearch_security.openid.client_id: "opensearch"
           opensearch_security.openid.client_secret: "${{ env.TEST_KEYCLOAK_CLIENT_SECRET }}"
+          opensearch_security.openid.base_redirect_url: http://localhost:5601${{ matrix.basePath }}
           opensearch_security.auth.type: "openid"
           home.disableWelcomeScreen: true
           EOT

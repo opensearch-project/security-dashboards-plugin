@@ -53,20 +53,20 @@ describe('Log in via OIDC', () => {
     cy.getCookie('security_authentication').should('exist');
   });
 
-  // it('Login to app/dev_tools#/console when OIDC is enabled', () => {
-  //   cy.visit(`http://localhost:5601${basePath}/app/dev_tools#/console`, {
-  //     failOnStatusCode: false,
-  //   });
+  it('Login to app/dev_tools#/console when OIDC is enabled', () => {
+    cy.visit(`http://localhost:5601${basePath}/app/dev_tools#/console`, {
+      failOnStatusCode: false,
+    });
 
-  //   kcLogin();
+    kcLogin();
 
-  //   cy.getCookie('security_authentication').should('exist');
+    cy.getCookie('security_authentication').should('exist');
 
-  //   localStorage.setItem('opendistro::security::tenant::saved', '""');
-  //   localStorage.setItem('home:newThemeModal:show', 'false');
+    localStorage.setItem('opendistro::security::tenant::saved', '""');
+    localStorage.setItem('home:newThemeModal:show', 'false');
 
-  //   cy.get('a').contains('Dev Tools').should('be.visible');
-  // });
+    cy.get('a').contains('Dev Tools').should('be.visible');
+  });
 
   it('Login to Dashboard with Hash', () => {
     const urlWithHash = `http://localhost:5601${basePath}/app/security-dashboards-plugin#/getstarted`;
