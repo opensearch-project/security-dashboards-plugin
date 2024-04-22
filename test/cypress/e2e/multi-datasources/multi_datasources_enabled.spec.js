@@ -215,29 +215,31 @@ describe('Multi-datasources enabled', () => {
     });
   });
 
-  it.skip('Checks Roles Tab', () => {
-    Cypress.on('uncaught:exception', (err) => !err.message.includes('ResizeObserver'));
-    // select remote data source
-    cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/roles`);
+  it('Checks Roles Tab', () => {
+    cy.request({
+      method: 'POST',
+      url: `http://localhost:5601/api/v1/configuration/roles/9202-role?dataSourceId=${externalDataSourceId}`,
+      headers: {
+        'osd-xsrf': true,
+      },
+      body: {
+        cluster_permissions: [],
+        index_permissions: [],
+        tenant_permissions: [],
+      },
+    }).then(() => {
+      cy.visit(
+        `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/roles`
+      );
 
-    // create a role on remote data source
-    cy.get('[data-test-subj="create-role"]').click();
-    cy.contains('h1', 'Create Role');
-    cy.get('[data-test-subj="name-text"]').focus().type('9202-role');
-    cy.get('[data-test-subj="create-or-update-role"]').click();
+      cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
+        'contain',
+        '9202'
+      );
+      cy.get('[data-test-subj="tableHeaderCell_roleName_0"]').click();
+      cy.get('[data-test-subj="checkboxSelectRow-9202-role"]').should('exist');
 
-    cy.get('[class="euiToast euiToast--success euiGlobalToastListItem"]')
-      .get('.euiToastHeader__title')
-      .should('contain', 'Role "9202-role" successfully created');
-
-    // role exists on the remote
-    cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/roles`);
-
-    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
-      'contain',
-      '9202'
-    );
-    cy.get('[data-test-subj="tableHeaderCell_roleName_0"]').click();
-    cy.get('[data-test-subj="checkboxSelectRow-9202-role"]').should('exist');
+      // role exists on the remote
+    });
   });
 });
