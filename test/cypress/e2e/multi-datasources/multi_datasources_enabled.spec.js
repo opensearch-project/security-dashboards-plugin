@@ -61,7 +61,7 @@ const deleteAllDataSources = () => {
 
 const createUrlParam = (label, id) => {
   const dataSourceObj = { label, id };
-  return `?dataSource=${JSON.stringify(dataSourceObj)}`;
+  return `?dataSource=${JSON.stringify(dataSourceObj).toString()}`;
 };
 
 let externalDataSourceId;
@@ -75,7 +75,6 @@ describe('Multi-datasources enabled', () => {
     localStorage.setItem('home:newThemeModal:show', 'false');
     createDataSource().then((resp) => {
       if (resp && resp.body) {
-        cy.log(JSON.stringify(resp.body));
         externalDataSourceId = resp.body.id;
       }
       externalDataSourceUrl = createUrlParam(externalTitle, externalDataSourceId);
