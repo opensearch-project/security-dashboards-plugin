@@ -21,7 +21,7 @@ export function createDataSourceQuery(dataSourceId: string) {
 
 const DATASOURCEURLKEY = 'dataSource';
 
-export function getClusterInfoIfEnabled(dataSourceEnabled: boolean, cluster: DataSourceOption) {
+export function getClusterInfo(dataSourceEnabled: boolean, cluster: DataSourceOption) {
   if (dataSourceEnabled) {
     return `for ${cluster.label || 'Local cluster'}`;
   }

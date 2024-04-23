@@ -37,7 +37,7 @@ import { useToastState } from '../../utils/toast-utils';
 import { setCrossPageToast } from '../../utils/storage-utils';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { DataSourceContext } from '../../app-router';
-import { createDataSourceQuery, getClusterInfoIfEnabled } from '../../../../utils/datasource-utils';
+import { createDataSourceQuery, getClusterInfo } from '../../../../utils/datasource-utils';
 
 interface AuditLoggingEditSettingProps extends AppDependencies {
   setting: 'general' | 'compliance';
@@ -133,12 +133,10 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
       };
 
       if (props.setting === 'general') {
-        addSuccessToast(
-          `General settings saved ${getClusterInfoIfEnabled(dataSourceEnabled, dataSource)}`
-        );
+        addSuccessToast(`General settings saved ${getClusterInfo(dataSourceEnabled, dataSource)}`);
       } else {
         addSuccessToast(
-          `Compliance settings saved ${getClusterInfoIfEnabled(dataSourceEnabled, dataSource)}`
+          `Compliance settings saved ${getClusterInfo(dataSourceEnabled, dataSource)}`
         );
       }
 
@@ -149,7 +147,7 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
         color: 'danger',
         iconType: 'alert',
         title:
-          `Failed to update audit configuration ${getClusterInfoIfEnabled(
+          `Failed to update audit configuration ${getClusterInfo(
             dataSourceEnabled,
             dataSource
           )} due to ` + e?.message,

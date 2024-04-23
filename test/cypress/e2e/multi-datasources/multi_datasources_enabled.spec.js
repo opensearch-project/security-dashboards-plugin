@@ -109,7 +109,7 @@ describe('Multi-datasources enabled', () => {
   it('Checks Auth Tab', () => {
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/auth`);
 
-    cy.get('.panel-header-count').first().invoke('text').should('contain', '(2)');
+    cy.get('.panel-header-count').first().invoke('text').should('contain', '(1)');
   });
 
   it('Checks Users Tab', () => {

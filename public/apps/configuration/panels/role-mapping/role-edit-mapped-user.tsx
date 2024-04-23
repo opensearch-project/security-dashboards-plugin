@@ -45,7 +45,7 @@ import { setCrossPageToast } from '../../utils/storage-utils';
 import { ExternalLink } from '../../utils/display-utils';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { DataSourceContext } from '../../app-router';
-import { createDataSourceQuery, getClusterInfoIfEnabled } from '../../../../utils/datasource-utils';
+import { createDataSourceQuery, getClusterInfo } from '../../../../utils/datasource-utils';
 
 interface RoleEditMappedUserProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -131,7 +131,7 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
         {
           id: 'updateRoleMappingSucceeded',
           color: 'success',
-          title: `Role "${props.roleName}" successfully updated ${getClusterInfoIfEnabled(
+          title: `Role "${props.roleName}" successfully updated ${getClusterInfo(
             dataSourceEnabled,
             dataSource
           )}`,

@@ -56,23 +56,6 @@ jobs:
                     challenge: false
                   authentication_backend:
                     type: intern
-                saml_auth_domain:
-                  http_enabled: true
-                  transport_enabled: false
-                  order: 1
-                  http_authenticator:
-                    type: saml
-                    challenge: true
-                    config:
-                      idp:
-                        entity_id: urn:example:idp
-                        metadata_url: http://localhost:7000/metadata
-                      sp:
-                        entity_id: https://localhost:9200
-                      kibana_url: http://localhost:5601
-                      exchange_key: 6aff3042-1327-4f3d-82f0-40a157ac4464
-                  authentication_backend:
-                    type: noop
           EOT
 
       - name: Download security plugin and create setup scripts
@@ -96,7 +79,7 @@ jobs:
       - name: Check OpenSearch is running
           # Verify that the server is operational
         run: |
-          curl https://localhost:9202/_cat/plugins -v -u admin:myStrongPassword123! -k
+          curl https://localhost:9202/_cat/plugins -v -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} -k
         shell: bash
 
       # Configure the Dashboard for multi datasources

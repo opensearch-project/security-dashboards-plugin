@@ -38,7 +38,7 @@ import { httpDelete } from '../utils/request-utils';
 import { createSuccessToast, createUnknownErrorToast, useToastState } from '../utils/toast-utils';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
 import { DataSourceContext } from '../app-router';
-import { getClusterInfoIfEnabled, createDataSourceQuery } from '../../../utils/datasource-utils';
+import { getClusterInfo, createDataSourceQuery } from '../../../utils/datasource-utils';
 
 const addBackendStep = {
   title: 'Add backends',
@@ -256,21 +256,15 @@ export function GetStarted(props: AppDependencies) {
                   addToast(
                     createSuccessToast(
                       'cache-flush-success',
-                      `Cache purge successful ${getClusterInfoIfEnabled(
-                        dataSourceEnabled,
-                        dataSource
-                      )}`,
-                      `Cache purge successful ${getClusterInfoIfEnabled(
-                        dataSourceEnabled,
-                        dataSource
-                      )}`
+                      `Cache purge successful ${getClusterInfo(dataSourceEnabled, dataSource)}`,
+                      `Cache purge successful ${getClusterInfo(dataSourceEnabled, dataSource)}`
                     )
                   );
                 } catch (err) {
                   addToast(
                     createUnknownErrorToast(
                       'cache-flush-failed',
-                      `purge cache ${getClusterInfoIfEnabled(dataSourceEnabled, dataSource)}`
+                      `purge cache ${getClusterInfo(dataSourceEnabled, dataSource)}`
                     )
                   );
                 }

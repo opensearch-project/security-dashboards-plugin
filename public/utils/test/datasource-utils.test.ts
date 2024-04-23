@@ -15,16 +15,16 @@
 
 import {
   createDataSourceQuery,
-  getClusterInfoIfEnabled,
+  getClusterInfo,
   getDataSourceFromUrl,
   setDataSourceInUrl,
 } from '../datasource-utils';
 
 describe('Tests datasource utils', () => {
   it('Tests the GetClusterDescription helper function', () => {
-    expect(getClusterInfoIfEnabled(false, { id: 'blah', label: 'blah' })).toBe('');
-    expect(getClusterInfoIfEnabled(true, { id: '', label: '' })).toBe('for Local cluster');
-    expect(getClusterInfoIfEnabled(true, { id: 'test', label: 'test' })).toBe('for test');
+    expect(getClusterInfo(false, { id: 'blah', label: 'blah' })).toBe('');
+    expect(getClusterInfo(true, { id: '', label: '' })).toBe('for Local cluster');
+    expect(getClusterInfo(true, { id: 'test', label: 'test' })).toBe('for test');
   });
 
   it('Tests the create DataSource query helper function', () => {

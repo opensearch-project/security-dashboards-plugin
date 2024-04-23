@@ -945,6 +945,11 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
   );
 }
 
+/**
+ * A helper function to wrap API calls with the appropriate client. If the multiple datasources feature is disabled, it will use
+ * the existing client provided by the security plugin. Otherwise, it will use the one provided by the datasource plugin based on the id
+ * that we extract via the UI.
+ */
 const wrapRouteWithDataSource = async (
   dataSourceEnabled: boolean,
   context: RequestHandlerContext,

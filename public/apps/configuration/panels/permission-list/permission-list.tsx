@@ -330,11 +330,7 @@ export function PermissionList(props: AppDependencies) {
   };
 
   const createActionGroupMenuItems = [
-    <EuiButtonEmpty
-      key="create-from-blank"
-      id="create-from-blank"
-      onClick={() => showEditModal('', Action.create, [])}
-    >
+    <EuiButtonEmpty key="create-from-blank" onClick={() => showEditModal('', Action.create, [])}>
       Create from blank
     </EuiButtonEmpty>,
     <EuiButtonEmpty

@@ -28,3 +28,4 @@ runs:
         -Dtransitive=false \
         -Ddest=${{ inputs.download-location }}.zip
       shell: bash
+      

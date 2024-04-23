@@ -46,7 +46,6 @@ import { createMigrationOpenSearchClient } from '../../../src/core/server/saved_
 import { SecuritySavedObjectsClientWrapper } from './saved_objects/saved_objects_wrapper';
 import { addTenantParameterToResolvedShortLink } from './multitenancy/tenant_resolver';
 import { ReadonlyService } from './readonly/readonly_service';
-import { DataSourceManagementPlugin } from '../../../src/plugins/data_source_management/public/plugin';
 import { DataSourcePluginSetup } from '../../../src/plugins/data_source/server/types';
 
 export interface SecurityPluginRequestContext {
@@ -55,7 +54,6 @@ export interface SecurityPluginRequestContext {
 }
 
 export interface SecurityPluginSetupDependencies {
-  dataSourceManagement: ReturnType<DataSourceManagementPlugin['setup']>;
   dataSource: DataSourcePluginSetup;
 }
 

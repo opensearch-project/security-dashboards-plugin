@@ -15,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest , windows-latest ]
-        os_bwc_version: [2.4.0, 2.5.0, 2.6.0, 2.7.0, 2.8.0, 2.9.0, 2.10.0, 2.11.0, 2.12.0, 3.0.0]
+        datasource_version: [1.3.9, 2.4.0, 2.5.0, 2.13.0, 3.0.0]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -38,10 +38,10 @@ jobs:
       - name: Download security plugin and create setup scripts for remote cluster
         uses: ./.github/actions/download-plugin
         with:
-          opensearch-version: ${{ matrix.os_bwc_version }}
+          opensearch-version: ${{ matrix.datasource_version }}
           plugin-name: ${{ env.PLUGIN_NAME }}
-          download-location: ${{env.PLUGIN_NAME}}-${{matrix.os_bwc_version}}
-          plugin-version: ${{matrix.os_bwc_version}}.0
+          download-location: ${{env.PLUGIN_NAME}}-${{matrix.datasource_version}}
+          plugin-version: ${{matrix.datasource_version}}.0
 
       - name: Download security plugin and create setup scripts for local cluster
         uses: ./.github/actions/download-plugin
@@ -54,8 +54,8 @@ jobs:
       - name: Run Opensearch with A Single Plugin Remote Cluster
         uses: derek-ho/start-opensearch@graceful-t
         with:
-          opensearch-version: ${{ matrix.os_bwc_version }}
-          plugins: "file:$(pwd)/opensearch-security-${{matrix.os_bwc_version}}.zip"
+          opensearch-version: ${{ matrix.datasource_version }}
+          plugins: "file:$(pwd)/opensearch-security-${{matrix.datasource_version}}.zip"
           security-enabled: true
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
           security_config_file: ${{ inputs.security_config_file }}
