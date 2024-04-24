@@ -52,7 +52,7 @@ jobs:
           plugin-version: ${{ env.PLUGIN_VERSION }}
       
       - name: Run Opensearch with A Single Plugin Remote Cluster
-        uses: derek-ho/start-opensearch@graceful-t
+        uses: derek-ho/start-opensearch@v4
         with:
           opensearch-version: ${{ matrix.datasource_version }}
           plugins: "file:$(pwd)/opensearch-security-${{matrix.datasource_version}}.zip"
