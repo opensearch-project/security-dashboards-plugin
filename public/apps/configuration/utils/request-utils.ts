@@ -15,16 +15,29 @@
 
 import { HttpStart, HttpHandler, HttpFetchQuery } from 'opensearch-dashboards/public';
 
-interface RequestType {
-  http: HttpStart;
+interface BaseRequestParams {
   url: string;
   body?: object;
 }
 
-interface RequestParams {
+interface BaseRequestParamsWithIgnores extends BaseRequestParams {
+  ignores: number[];
+}
+
+interface CreateRequestParams extends BaseRequestParams {
+  http: HttpStart;
+}
+
+interface ExecuteRequestParams extends BaseRequestParams {
   requestFunc: HttpHandler;
-  url: string;
-  body?: object;
+  query: HttpFetchQuery;
+}
+
+interface CreateRequestWithIgnoreParams extends BaseRequestParamsWithIgnores {
+  http: HttpStart;
+}
+interface ExecuteRequestWithIgnoreParams extends BaseRequestParamsWithIgnores {
+  requestFunc: HttpHandler;
   query: HttpFetchQuery;
 }
 
@@ -43,26 +56,29 @@ export class RequestContext {
     };
   }
 
-  public async httpGet<T>(params: RequestType): Promise<T> {
+  public async httpGet<T>(params: CreateRequestParams): Promise<T> {
     const { http, url, body } = params;
     return await request<T>({ requestFunc: http.get, url, body, query: this.query });
   }
 
-  public async httpPost<T>(params: RequestType): Promise<T> {
+  public async httpPost<T>(params: CreateRequestParams): Promise<T> {
     const { http, url, body } = params;
     return await request<T>({ requestFunc: http.post, url, body, query: this.query });
   }
 
-  public async httpPut<T>(http: HttpStart, url: string, body?: object): Promise<T> {
+  public async httpPut<T>(params: CreateRequestParams): Promise<T> {
+    const { http, url, body } = params;
     return await request<T>({ requestFunc: http.put, url, body, query: this.query });
   }
 
-  public async httpDelete<T>(params: RequestType): Promise<T> {
+  public async httpDelete<T>(params: CreateRequestParams): Promise<T> {
     const { http, url, body } = params;
     return await request<T>({ requestFunc: http.delete, url, body, query: this.query });
   }
 
-  public async httpDeleteWithIgnores<T>(params: RequestTypeWithIgnore): Promise<T | undefined> {
+  public async httpDeleteWithIgnores<T>(
+    params: CreateRequestWithIgnoreParams
+  ): Promise<T | undefined> {
     const { http, url, ignores } = params;
     return await requestWithIgnores<T>({
       requestFunc: http.delete,
@@ -72,26 +88,20 @@ export class RequestContext {
     });
   }
 
-  public async httpGetWithIgnores<T>(params: RequestTypeWithIgnore): Promise<T | undefined> {
+  public async httpGetWithIgnores<T>(
+    params: CreateRequestWithIgnoreParams
+  ): Promise<T | undefined> {
     const { http, url, ignores } = params;
     return await requestWithIgnores<T>({ requestFunc: http.get, url, ignores, query: this.query });
   }
 }
 
-export async function request<T>(params: RequestParams): Promise<T> {
-  console.log(params);
+export async function request<T>(params: ExecuteRequestParams): Promise<T> {
   const { requestFunc, url, body, query } = params;
   if (body) {
     return (await requestFunc(url, { body: JSON.stringify(body), query })) as T;
   }
   return (await requestFunc(url, { query })) as T;
-}
-
-interface RequestTypeWithIgnore extends RequestType {
-  ignores: number[];
-}
-interface RequestParamsWithIgnore extends RequestParams {
-  ignores: number[];
 }
 
 /**
@@ -101,7 +111,7 @@ interface RequestParamsWithIgnore extends RequestParams {
  * @param ignores the error codes to be ignored
  */
 export async function requestWithIgnores<T>(
-  params: RequestParamsWithIgnore
+  params: ExecuteRequestWithIgnoreParams
 ): Promise<T | undefined> {
   const { requestFunc, url, ignores, body, query } = params;
   try {

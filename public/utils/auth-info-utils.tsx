@@ -14,12 +14,12 @@
  */
 
 import { HttpStart } from 'opensearch-dashboards/public';
-import { API_ENDPOINT_AUTHINFO, LocalClusterId } from '../../common';
+import { API_ENDPOINT_AUTHINFO, LOCAL_CLUSTER_ID } from '../../common';
 import { createRequestContextWithDataSourceId } from '../apps/configuration/utils/request-utils';
 import { AuthInfo } from '../types';
 
 export async function getAuthInfo(http: HttpStart) {
-  return await createRequestContextWithDataSourceId(LocalClusterId).httpGet<AuthInfo>({
+  return await createRequestContextWithDataSourceId(LOCAL_CLUSTER_ID).httpGet<AuthInfo>({
     http,
     url: API_ENDPOINT_AUTHINFO,
   });

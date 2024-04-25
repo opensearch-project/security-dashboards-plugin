@@ -45,7 +45,7 @@ import {
   globalTenantName,
   isGlobalTenant,
   isRenderingPrivateTenant,
-  LocalClusterId,
+  LOCAL_CLUSTER_ID,
   PRIVATE_TENANT_RENDERING_TEXT,
 } from '../../../../common';
 import { TenancyConfigSettings } from '../panels/tenancy-config/types';
@@ -99,7 +99,7 @@ export function transformTenantData(rawTenantData: DataObject<Tenant>): Tenant[]
 }
 
 export async function fetchCurrentTenant(http: HttpStart): Promise<string> {
-  return await createRequestContextWithDataSourceId(LocalClusterId).httpGet<string>({
+  return await createRequestContextWithDataSourceId(LOCAL_CLUSTER_ID).httpGet<string>({
     http,
     url: API_ENDPOINT_MULTITENANCY,
   });
@@ -110,7 +110,7 @@ export async function updateTenant(
   tenantName: string,
   updateObject: TenantUpdate
 ) {
-  return await createRequestContextWithDataSourceId(LocalClusterId).httpPost({
+  return await createRequestContextWithDataSourceId(LOCAL_CLUSTER_ID).httpPost({
     http,
     url: getResourceUrl(API_ENDPOINT_TENANTS, tenantName),
     body: updateObject,
@@ -122,7 +122,7 @@ export async function updateTenancyConfiguration(
   updatedTenancyConfig: TenancyConfigSettings
 ) {
   // Tenancy locked to local cluster
-  await createRequestContextWithDataSourceId(LocalClusterId).httpPut(
+  await createRequestContextWithDataSourceId(LOCAL_CLUSTER_ID).httpPut(
     http,
     API_ENDPOINT_TENANCY_CONFIGS,
     updatedTenancyConfig
@@ -132,7 +132,7 @@ export async function updateTenancyConfiguration(
 
 export async function requestDeleteTenant(http: HttpStart, tenants: string[]) {
   for (const tenant of tenants) {
-    await createRequestContextWithDataSourceId(LocalClusterId).httpDelete({
+    await createRequestContextWithDataSourceId(LOCAL_CLUSTER_ID).httpDelete({
       http,
       url: getResourceUrl(API_ENDPOINT_TENANTS, tenant),
     });
@@ -140,7 +140,7 @@ export async function requestDeleteTenant(http: HttpStart, tenants: string[]) {
 }
 
 export async function selectTenant(http: HttpStart, selectObject: TenantSelect): Promise<string> {
-  return await createRequestContextWithDataSourceId(LocalClusterId).httpPost<string>({
+  return await createRequestContextWithDataSourceId(LOCAL_CLUSTER_ID).httpPost<string>({
     http,
     url: API_ENDPOINT_MULTITENANCY,
     body: selectObject,

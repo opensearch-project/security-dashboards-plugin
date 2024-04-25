@@ -22,7 +22,7 @@ import {
   API_ENDPOINT_AUTHTYPE,
   CUSTOM_ERROR_PAGE_URI,
   LOGIN_PAGE_URI,
-  LocalClusterId,
+  LOCAL_CLUSTER_ID,
 } from '../../common';
 import { createRequestContextWithDataSourceId } from '../apps/configuration/utils/request-utils';
 import { setShouldShowTenantPopup } from './storage-utils';
@@ -52,7 +52,7 @@ export function interceptError(logoutUrl: string, thisWindow: Window): any {
 }
 
 export async function fetchCurrentAuthType(http: HttpStart): Promise<any> {
-  return await createRequestContextWithDataSourceId(LocalClusterId).httpGet({
+  return await createRequestContextWithDataSourceId(LOCAL_CLUSTER_ID).httpGet({
     http,
     url: API_ENDPOINT_AUTHTYPE,
   });
