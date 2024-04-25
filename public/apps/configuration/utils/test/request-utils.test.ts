@@ -41,5 +41,10 @@ describe('RequestContext', () => {
     expect(context.query).toEqual({ dataSourceId: 'test' });
   });
 
+  it('should have the correct query based on local cluster context', () => {
+    const context = requestUtils.createLocalClusterRequestContext();
+    expect(context.query).toEqual({ dataSourceId: '' });
+  });
+
   // You can write similar tests for other methods like httpPost, httpPut, httpDelete, etc.
 });

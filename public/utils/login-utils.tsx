@@ -14,15 +14,14 @@
  */
 
 import { HttpStart } from 'opensearch-dashboards/public';
-import { createRequestContextWithDataSourceId } from '../apps/configuration/utils/request-utils';
-import { LOCAL_CLUSTER_ID } from '../../common';
+import { createLocalClusterRequestContext } from '../apps/configuration/utils/request-utils';
 
 export async function validateCurrentPassword(
   http: HttpStart,
   userName: string,
   currentPassword: string
 ): Promise<void> {
-  await createRequestContextWithDataSourceId(LOCAL_CLUSTER_ID).httpPost({
+  await createLocalClusterRequestContext().httpPost({
     http,
     url: '/auth/login',
     body: {

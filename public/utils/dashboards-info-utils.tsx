@@ -14,19 +14,19 @@
  */
 
 import { HttpStart } from 'opensearch-dashboards/public';
-import { API_ENDPOINT_DASHBOARDSINFO, LOCAL_CLUSTER_ID } from '../../common';
-import { createRequestContextWithDataSourceId } from '../apps/configuration/utils/request-utils';
+import { API_ENDPOINT_DASHBOARDSINFO } from '../../common';
 import { DashboardsInfo } from '../types';
+import { createLocalClusterRequestContext } from '../apps/configuration/utils/request-utils';
 
 export async function getDashboardsInfo(http: HttpStart) {
-  return await createRequestContextWithDataSourceId(LOCAL_CLUSTER_ID).httpGet<DashboardsInfo>({
+  return await createLocalClusterRequestContext().httpGet<DashboardsInfo>({
     http,
     url: API_ENDPOINT_DASHBOARDSINFO,
   });
 }
 
 export async function getDashboardsInfoSafe(http: HttpStart): Promise<DashboardsInfo | undefined> {
-  return createRequestContextWithDataSourceId(LOCAL_CLUSTER_ID).httpGetWithIgnores<DashboardsInfo>({
+  return createLocalClusterRequestContext().httpGetWithIgnores<DashboardsInfo>({
     http,
     url: API_ENDPOINT_DASHBOARDSINFO,
     ignores: [401],

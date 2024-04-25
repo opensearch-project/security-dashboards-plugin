@@ -14,6 +14,7 @@
  */
 
 import { HttpStart, HttpHandler, HttpFetchQuery } from 'opensearch-dashboards/public';
+import { LOCAL_CLUSTER_ID } from '../../../../common';
 
 interface BaseRequestParams {
   url: string;
@@ -46,6 +47,10 @@ export function createRequestContextWithDataSourceId(dataSourceId: string) {
     throw new Error('dataSourceId is not present');
   }
   return new RequestContext(dataSourceId);
+}
+
+export function createLocalClusterRequestContext() {
+  return new RequestContext(LOCAL_CLUSTER_ID);
 }
 
 export class RequestContext {

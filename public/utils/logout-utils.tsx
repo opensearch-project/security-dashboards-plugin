@@ -18,13 +18,8 @@ import {
   HttpStart,
   IHttpInterceptController,
 } from '../../../../src/core/public';
-import {
-  API_ENDPOINT_AUTHTYPE,
-  CUSTOM_ERROR_PAGE_URI,
-  LOGIN_PAGE_URI,
-  LOCAL_CLUSTER_ID,
-} from '../../common';
-import { createRequestContextWithDataSourceId } from '../apps/configuration/utils/request-utils';
+import { API_ENDPOINT_AUTHTYPE, CUSTOM_ERROR_PAGE_URI, LOGIN_PAGE_URI } from '../../common';
+import { createLocalClusterRequestContext } from '../apps/configuration/utils/request-utils';
 import { setShouldShowTenantPopup } from './storage-utils';
 
 export function interceptError(logoutUrl: string, thisWindow: Window): any {
@@ -52,7 +47,7 @@ export function interceptError(logoutUrl: string, thisWindow: Window): any {
 }
 
 export async function fetchCurrentAuthType(http: HttpStart): Promise<any> {
-  return await createRequestContextWithDataSourceId(LOCAL_CLUSTER_ID).httpGet({
+  return await createLocalClusterRequestContext().httpGet({
     http,
     url: API_ENDPOINT_AUTHTYPE,
   });
