@@ -14,22 +14,32 @@
  */
 
 import { HttpStart } from 'opensearch-dashboards/public';
-import { API_AUTH_LOGOUT } from '../../../common';
+import { API_AUTH_LOGOUT, LocalClusterId } from '../../../common';
 import { setShouldShowTenantPopup } from '../../utils/storage-utils';
-import { httpGet, httpGetWithIgnores, httpPost } from '../configuration/utils/request-utils';
+import { createRequestContextWithDataSourceId } from '../configuration/utils/request-utils';
 import { API_ENDPOINT_ACCOUNT_INFO } from './constants';
 import { AccountInfo } from './types';
 
 export function fetchAccountInfo(http: HttpStart): Promise<AccountInfo> {
-  return httpGet({ http, url: API_ENDPOINT_ACCOUNT_INFO });
+  return createRequestContextWithDataSourceId(LocalClusterId).httpGet({
+    http,
+    url: API_ENDPOINT_ACCOUNT_INFO,
+  });
 }
 
 export async function fetchAccountInfoSafe(http: HttpStart): Promise<AccountInfo | undefined> {
-  return httpGetWithIgnores<AccountInfo>({ http, url: API_ENDPOINT_ACCOUNT_INFO, ignores: [401] });
+  return createRequestContextWithDataSourceId(LocalClusterId).httpGetWithIgnores<AccountInfo>({
+    http,
+    url: API_ENDPOINT_ACCOUNT_INFO,
+    ignores: [401],
+  });
 }
 
 export async function logout(http: HttpStart, logoutUrl?: string): Promise<void> {
-  await httpPost({ http, url: API_AUTH_LOGOUT });
+  await createRequestContextWithDataSourceId(LocalClusterId).httpPost({
+    http,
+    url: API_AUTH_LOGOUT,
+  });
   setShouldShowTenantPopup(null);
   // Clear everything in the sessionStorage since they can contain sensitive information
   sessionStorage.clear();
@@ -52,7 +62,7 @@ export async function updateNewPassword(
   newPassword: string,
   currentPassword: string
 ): Promise<void> {
-  await httpPost({
+  await createRequestContextWithDataSourceId(LocalClusterId).httpPost({
     http,
     url: API_ENDPOINT_ACCOUNT_INFO,
     body: {

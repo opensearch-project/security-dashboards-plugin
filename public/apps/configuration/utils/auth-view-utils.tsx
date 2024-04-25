@@ -13,11 +13,14 @@
  *   permissions and limitations under the License.
  */
 
-import { HttpFetchQuery, HttpStart } from 'opensearch-dashboards/public';
+import { HttpStart } from 'opensearch-dashboards/public';
 import { API_ENDPOINT_SECURITYCONFIG } from '../constants';
-import { httpGet } from './request-utils';
+import { createRequestContextWithDataSourceId } from './request-utils';
 
-export async function getSecurityConfig(http: HttpStart, query?: HttpFetchQuery) {
-  const rawSecurityConfig = await httpGet<any>({ http, url: API_ENDPOINT_SECURITYCONFIG, query });
+export async function getSecurityConfig(http: HttpStart, dataSourceId: string) {
+  const rawSecurityConfig = await createRequestContextWithDataSourceId(dataSourceId).httpGet<any>({
+    http,
+    url: API_ENDPOINT_SECURITYCONFIG,
+  });
   return rawSecurityConfig.data.config.dynamic;
 }

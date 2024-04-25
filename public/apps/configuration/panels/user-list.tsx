@@ -50,7 +50,6 @@ import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { buildHashUrl } from '../utils/url-builder';
 import { DataSourceContext } from '../app-router';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
-import { createDataSourceQuery } from '../../../utils/datasource-utils';
 
 export function dictView(items: Dictionary<string>) {
   if (isEmpty(items)) {
@@ -115,7 +114,7 @@ export function UserList(props: AppDependencies) {
         const userDataPromise = getUserList(
           props.coreStart.http,
           ResourceType.users,
-          createDataSourceQuery(dataSource.id)
+          dataSource.id
         );
         setCurrentUsername((await getAuthInfo(props.coreStart.http)).user_name);
         setUserData(await userDataPromise);
@@ -133,11 +132,7 @@ export function UserList(props: AppDependencies) {
   const handleDelete = async () => {
     const usersToDelete: string[] = selection.map((r) => r.username);
     try {
-      await requestDeleteUsers(
-        props.coreStart.http,
-        usersToDelete,
-        createDataSourceQuery(dataSource.id)
-      );
+      await requestDeleteUsers(props.coreStart.http, usersToDelete, dataSource.id);
       // Refresh from server (calling fetchData) does not work here, the server still return the users
       // that had been just deleted, probably because ES takes some time to sync to all nodes.
       // So here remove the selected users from local memory directly.

@@ -102,9 +102,6 @@ describe('Permission list page ', () => {
     const mockCoreStart = {
       http: 1,
     };
-    const dataSourceQuery = {
-      dataSourceId: 'test',
-    };
     it('render empty', () => {
       const component = shallow(
         <PermissionList
@@ -129,7 +126,7 @@ describe('Permission list page ', () => {
         />
       );
 
-      expect(fetchActionGroups).toBeCalledWith(mockCoreStart.http, dataSourceQuery);
+      expect(fetchActionGroups).toBeCalledWith(mockCoreStart.http, 'test');
     });
 
     it('fetch data error', () => {
@@ -172,7 +169,7 @@ describe('Permission list page ', () => {
         mockCoreStart.http,
         'group1',
         { allowed_actions: [] },
-        dataSourceQuery
+        'test'
       );
     });
 
@@ -213,7 +210,7 @@ describe('Permission list page ', () => {
       deleteFunc();
 
       process.nextTick(() => {
-        expect(requestDeleteActionGroups).toBeCalledWith(mockCoreStart.http, [], dataSourceQuery);
+        expect(requestDeleteActionGroups).toBeCalledWith(mockCoreStart.http, [], 'test');
         done();
       });
     });

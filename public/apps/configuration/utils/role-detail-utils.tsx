@@ -13,21 +13,20 @@
  *   permissions and limitations under the License.
  */
 
-import { HttpFetchQuery, HttpStart } from 'opensearch-dashboards/public';
+import { HttpStart } from 'opensearch-dashboards/public';
 import { API_ENDPOINT_ROLES } from '../constants';
 import { RoleDetail, RoleUpdate } from '../types';
-import { httpGet, httpPost } from './request-utils';
+import { createRequestContextWithDataSourceId } from './request-utils';
 import { getResourceUrl } from './resource-utils';
 
 export async function getRoleDetail(
   http: HttpStart,
   roleName: string,
-  query: HttpFetchQuery
+  dataSourceId: string
 ): Promise<RoleDetail> {
-  return await httpGet<RoleDetail>({
+  return await createRequestContextWithDataSourceId(dataSourceId).httpGet<RoleDetail>({
     http,
     url: getResourceUrl(API_ENDPOINT_ROLES, roleName),
-    query,
   });
 }
 
@@ -35,12 +34,11 @@ export async function updateRole(
   http: HttpStart,
   roleName: string,
   updateObject: RoleUpdate,
-  query: HttpFetchQuery
+  dataSourceId: string
 ) {
-  return await httpPost({
+  return await createRequestContextWithDataSourceId(dataSourceId).httpPost({
     http,
     url: getResourceUrl(API_ENDPOINT_ROLES, roleName),
     body: updateObject,
-    query,
   });
 }

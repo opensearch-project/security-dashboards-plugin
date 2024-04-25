@@ -14,10 +14,10 @@
  */
 
 import { map } from 'lodash';
-import { HttpFetchQuery, HttpStart } from '../../../../../../src/core/public';
+import { HttpStart } from '../../../../../../src/core/public';
 import { API_ENDPOINT_ROLESMAPPING } from '../constants';
 import { RoleMappingDetail } from '../types';
-import { httpGetWithIgnores, httpPost } from './request-utils';
+import { createRequestContextWithDataSourceId } from './request-utils';
 import { getResourceUrl } from './resource-utils';
 
 export interface MappedUsersListing {
@@ -30,12 +30,11 @@ export enum UserType {
   external = 'Backend role',
 }
 
-export async function getRoleMappingData(http: HttpStart, roleName: string, query: HttpFetchQuery) {
-  return httpGetWithIgnores<RoleMappingDetail>({
+export async function getRoleMappingData(http: HttpStart, roleName: string, dataSourceId: string) {
+  return createRequestContextWithDataSourceId(dataSourceId).httpGetWithIgnores<RoleMappingDetail>({
     http,
     url: getResourceUrl(API_ENDPOINT_ROLESMAPPING, roleName),
     ignores: [404],
-    query,
   });
 }
 
@@ -57,12 +56,11 @@ export async function updateRoleMapping(
   http: HttpStart,
   roleName: string,
   updateObject: RoleMappingDetail,
-  query: HttpFetchQuery
+  dataSourceId: string
 ) {
-  return await httpPost({
+  return await createRequestContextWithDataSourceId(dataSourceId).httpPost({
     http,
     url: getResourceUrl(API_ENDPOINT_ROLESMAPPING, roleName),
     body: updateObject,
-    query,
   });
 }

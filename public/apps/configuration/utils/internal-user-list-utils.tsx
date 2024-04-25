@@ -14,7 +14,7 @@
  */
 
 import { map } from 'lodash';
-import { HttpFetchQuery, HttpStart } from '../../../../../../src/core/public';
+import { HttpStart } from '../../../../../../src/core/public';
 import {
   API_ENDPOINT_INTERNALACCOUNTS,
   API_ENDPOINT_INTERNALUSERS,
@@ -22,7 +22,7 @@ import {
 } from '../constants';
 import { DataObject, InternalUser, ObjectsMessage } from '../types';
 import { ResourceType } from '../../../../common';
-import { httpDelete, httpGet } from './request-utils';
+import { createRequestContextWithDataSourceId } from './request-utils';
 import { getResourceUrl } from './resource-utils';
 
 export interface InternalUsersListing extends InternalUser {
@@ -37,38 +37,43 @@ export function transformUserData(rawData: DataObject<InternalUser>): InternalUs
   }));
 }
 
-export async function requestDeleteUsers(http: HttpStart, users: string[], query: HttpFetchQuery) {
+export async function requestDeleteUsers(http: HttpStart, users: string[], dataSourceId: string) {
   for (const user of users) {
-    await httpDelete({ http, url: getResourceUrl(API_ENDPOINT_INTERNALUSERS, user), query });
+    await createRequestContextWithDataSourceId(dataSourceId).httpDelete({
+      http,
+      url: getResourceUrl(API_ENDPOINT_INTERNALUSERS, user),
+    });
   }
 }
 
 export async function getUserListRaw(
   http: HttpStart,
   userType: string,
-  query?: HttpFetchQuery
+  dataSourceId: string
 ): Promise<ObjectsMessage<InternalUser>> {
   let ENDPOINT = API_ENDPOINT_INTERNALACCOUNTS;
   if (userType === ResourceType.serviceAccounts) {
     ENDPOINT = API_ENDPOINT_SERVICEACCOUNTS;
   }
 
-  return await httpGet<ObjectsMessage<InternalUser>>({ http, url: ENDPOINT, query });
+  return await createRequestContextWithDataSourceId(dataSourceId).httpGet<
+    ObjectsMessage<InternalUser>
+  >({ http, url: ENDPOINT });
 }
 
 export async function getUserList(
   http: HttpStart,
   userType: string,
-  query?: HttpFetchQuery
+  dataSourceId: string
 ): Promise<InternalUsersListing[]> {
-  const rawData = await getUserListRaw(http, userType, query);
+  const rawData = await getUserListRaw(http, userType, dataSourceId);
   return transformUserData(rawData.data);
 }
 
 export async function fetchUserNameList(
   http: HttpStart,
   userType: string,
-  query?: HttpFetchQuery
+  dataSourceId: string
 ): Promise<string[]> {
-  return Object.keys((await getUserListRaw(http, userType, query)).data);
+  return Object.keys((await getUserListRaw(http, userType, dataSourceId)).data);
 }

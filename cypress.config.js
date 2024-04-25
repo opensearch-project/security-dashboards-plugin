@@ -31,5 +31,9 @@ module.exports = defineConfig({
     openSearchUrl: 'https://localhost:9200',
     adminUserName: 'admin',
     adminPassword: 'myStrongPassword123!',
+    externalDataSourceAdminUserName: 'admin',
+    externalDataSourceAdminPassword: 'myStrongPassword123!',
+    externalDataSourceLabel: '9202',
+    externalDataSourceEndpoint: 'https://localhost:9202'
   },
 });

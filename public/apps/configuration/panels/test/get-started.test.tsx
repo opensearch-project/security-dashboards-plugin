@@ -22,15 +22,12 @@ import { buildHashUrl } from '../../utils/url-builder';
 import { GetStarted } from '../get-started';
 import * as ToastUtils from '../../utils/toast-utils'; // Import all functions from toast-utils
 import * as RequestUtils from '../../utils/request-utils'; // Import all functions from request-utils
+import { RequestContext } from '../../utils/request-utils';
 
 jest.mock('../../utils/toast-utils', () => ({
   createSuccessToast: jest.fn(),
   createUnknownErrorToast: jest.fn(),
   useToastState: jest.fn().mockReturnValue([[], jest.fn(), jest.fn()]),
-}));
-
-jest.mock('../../utils/request-utils', () => ({
-  httpDelete: jest.fn(),
 }));
 
 jest.mock('react', () => ({
@@ -158,8 +155,10 @@ describe('Get started (landing page)', () => {
       expect(button).toHaveLength(1);
 
       // Failure case: Mock httpDelete to reject
+      // Success case: Mock httpDelete to resolve
+      const mockRequestContext = new RequestContext('dummyDataSourceId');
       jest
-        .spyOn(RequestUtils, 'httpDelete')
+        .spyOn(mockRequestContext, 'httpDelete')
         .mockRejectedValueOnce(new Error('Failed to purge cache'));
 
       await button.props().onClick(); // Simulate button click
@@ -171,7 +170,14 @@ describe('Get started (landing page)', () => {
       expect(button).toHaveLength(1);
 
       // Success case: Mock httpDelete to resolve
-      jest.spyOn(RequestUtils, 'httpDelete').mockResolvedValueOnce('nice');
+      const mockRequestContext = new RequestContext('dummyDataSourceId');
+      jest.spyOn(mockRequestContext, 'httpDelete').mockResolvedValueOnce('nice');
+
+      // Mock the createRequestContextWithDataSourceId function to return the mock instance
+      jest
+        .spyOn(RequestUtils, 'createRequestContextWithDataSourceId')
+        .mockReturnValue(mockRequestContext);
+
       await button.props().onClick(); // Simulate button click
       expect(ToastUtils.createSuccessToast).toHaveBeenCalledTimes(1);
     });

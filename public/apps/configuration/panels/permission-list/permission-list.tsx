@@ -63,7 +63,6 @@ import { generateResourceName } from '../../utils/resource-utils';
 import { DocLinks } from '../../constants';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { DataSourceContext } from '../../app-router';
-import { createDataSourceQuery } from '../../../../utils/datasource-utils';
 
 export function renderBooleanToCheckMark(value: boolean): React.ReactNode {
   return value ? <EuiIcon type="check" /> : '';
@@ -207,10 +206,7 @@ export function PermissionList(props: AppDependencies) {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const actionGroups = await fetchActionGroups(
-        props.coreStart.http,
-        createDataSourceQuery(dataSource.id)
-      );
+      const actionGroups = await fetchActionGroups(props.coreStart.http, dataSource.id);
       setActionGroupDict(actionGroups);
       setPermissionList(await mergeAllPermissions(actionGroups));
     } catch (e) {
@@ -228,11 +224,7 @@ export function PermissionList(props: AppDependencies) {
   const handleDelete = async () => {
     const groupsToDelete: string[] = selection.map((r) => r.name);
     try {
-      await requestDeleteActionGroups(
-        props.coreStart.http,
-        groupsToDelete,
-        createDataSourceQuery(dataSource.id)
-      );
+      await requestDeleteActionGroups(props.coreStart.http, groupsToDelete, dataSource.id);
       setPermissionList(difference(permissionList, selection));
       setSelection([]);
     } catch (e) {
@@ -300,7 +292,7 @@ export function PermissionList(props: AppDependencies) {
               props.coreStart.http,
               groupName,
               { allowed_actions: allowedAction },
-              createDataSourceQuery(dataSource.id)
+              dataSource.id
             );
             setEditModal(null);
             fetchData();

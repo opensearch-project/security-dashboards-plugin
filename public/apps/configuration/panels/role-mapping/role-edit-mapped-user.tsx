@@ -45,7 +45,7 @@ import { setCrossPageToast } from '../../utils/storage-utils';
 import { ExternalLink } from '../../utils/display-utils';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { DataSourceContext } from '../../app-router';
-import { createDataSourceQuery, getClusterInfo } from '../../../../utils/datasource-utils';
+import { getClusterInfo } from '../../../../utils/datasource-utils';
 
 interface RoleEditMappedUserProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -72,7 +72,7 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
         const originalRoleMapData: RoleMappingDetail | undefined = await getRoleMappingData(
           props.coreStart.http,
           props.roleName,
-          createDataSourceQuery(dataSource.id)
+          dataSource.id
         );
         if (originalRoleMapData) {
           setInternalUsers(originalRoleMapData.users.map(stringToComboBoxOption));
@@ -92,11 +92,7 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
     const fetchInternalUserNames = async () => {
       try {
         setUserNames(
-          await fetchUserNameList(
-            props.coreStart.http,
-            ResourceType.users,
-            createDataSourceQuery(dataSource.id)
-          )
+          await fetchUserNameList(props.coreStart.http, ResourceType.users, dataSource.id)
         );
       } catch (e) {
         addToast(createUnknownErrorToast('fetchInternalUserNames', 'load data'));
@@ -120,12 +116,7 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
         hosts,
       };
 
-      await updateRoleMapping(
-        props.coreStart.http,
-        props.roleName,
-        updateObject,
-        createDataSourceQuery(dataSource.id)
-      );
+      await updateRoleMapping(props.coreStart.http, props.roleName, updateObject, dataSource.id);
       setCrossPageToast(
         buildUrl(ResourceType.roles, Action.view, props.roleName, SubAction.mapuser),
         {

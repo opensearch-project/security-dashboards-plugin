@@ -128,7 +128,7 @@ describe('Role edit', () => {
         index_permissions: [],
         tenant_permissions: [],
       },
-      { dataSourceId: 'test' }
+      'test'
     );
 
     process.nextTick(() => {

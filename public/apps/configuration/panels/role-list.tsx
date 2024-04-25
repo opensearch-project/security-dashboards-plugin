@@ -56,7 +56,6 @@ import { useContextMenuState } from '../utils/context-menu';
 import { DocLinks } from '../constants';
 import { DataSourceContext } from '../app-router';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
-import { createDataSourceQuery } from '../../../utils/datasource-utils';
 
 const columns: Array<EuiBasicTableColumn<RoleListing>> = [
   {
@@ -114,14 +113,8 @@ export function RoleList(props: AppDependencies) {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const rawRoleData = await fetchRole(
-          props.coreStart.http,
-          createDataSourceQuery(dataSource.id)
-        );
-        const rawRoleMappingData = await fetchRoleMapping(
-          props.coreStart.http,
-          createDataSourceQuery(dataSource.id)
-        );
+        const rawRoleData = await fetchRole(props.coreStart.http, dataSource.id);
+        const rawRoleMappingData = await fetchRoleMapping(props.coreStart.http, dataSource.id);
         const processedData = transformRoleData(rawRoleData, rawRoleMappingData);
         setRoleData(processedData);
       } catch (e) {
@@ -138,11 +131,7 @@ export function RoleList(props: AppDependencies) {
   const handleDelete = async () => {
     const rolesToDelete: string[] = selection.map((r) => r.roleName);
     try {
-      await requestDeleteRoles(
-        props.coreStart.http,
-        rolesToDelete,
-        createDataSourceQuery(dataSource.id)
-      );
+      await requestDeleteRoles(props.coreStart.http, rolesToDelete, dataSource.id);
       // Refresh from server (calling fetchData) does not work here, the server still return the roles
       // that had been just deleted, probably because ES takes some time to sync to all nodes.
       // So here remove the selected roles from local memory directly.

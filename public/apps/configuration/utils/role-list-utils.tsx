@@ -14,9 +14,9 @@
  */
 
 import { map, chain } from 'lodash';
-import { HttpStart, HttpFetchQuery } from '../../../../../../src/core/public';
+import { HttpStart } from '../../../../../../src/core/public';
 import { API_ENDPOINT_ROLES, API_ENDPOINT_ROLESMAPPING } from '../constants';
-import { httpDelete, httpDeleteWithIgnores, httpGet } from './request-utils';
+import { createRequestContextWithDataSourceId } from './request-utils';
 import { getResourceUrl } from './resource-utils';
 
 export interface RoleListing {
@@ -92,24 +92,32 @@ export function buildSearchFilterOptions(roleList: any[], attrName: string): Arr
 }
 
 // Submit request to delete given roles. No error handling in this function.
-export async function requestDeleteRoles(http: HttpStart, roles: string[], query: HttpFetchQuery) {
+export async function requestDeleteRoles(http: HttpStart, roles: string[], dataSourceId: string) {
   for (const role of roles) {
-    await httpDelete({ http, url: getResourceUrl(API_ENDPOINT_ROLES, role), query });
-    await httpDeleteWithIgnores({
+    await createRequestContextWithDataSourceId(dataSourceId).httpDelete({
+      http,
+      url: getResourceUrl(API_ENDPOINT_ROLES, role),
+    });
+    await createRequestContextWithDataSourceId(dataSourceId).httpDeleteWithIgnores({
       http,
       url: getResourceUrl(API_ENDPOINT_ROLESMAPPING, role),
       ignores: [404],
-      query,
     });
   }
 }
 
 // TODO: have a type definition for it
-export function fetchRole(http: HttpStart, query: HttpFetchQuery): Promise<any> {
-  return httpGet<any>({ http, url: API_ENDPOINT_ROLES, query });
+export function fetchRole(http: HttpStart, dataSourceId: string): Promise<any> {
+  return createRequestContextWithDataSourceId(dataSourceId).httpGet<any>({
+    http,
+    url: API_ENDPOINT_ROLES,
+  });
 }
 
 // TODO: have a type definition for it
-export function fetchRoleMapping(http: HttpStart, query: HttpFetchQuery): Promise<any> {
-  return httpGet<any>({ http, url: API_ENDPOINT_ROLESMAPPING, query });
+export function fetchRoleMapping(http: HttpStart, dataSourceId: string): Promise<any> {
+  return createRequestContextWithDataSourceId(dataSourceId).httpGet<any>({
+    http,
+    url: API_ENDPOINT_ROLESMAPPING,
+  });
 }

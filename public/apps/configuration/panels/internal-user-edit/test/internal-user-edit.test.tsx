@@ -83,9 +83,7 @@ describe('Internal user edit', () => {
       />
     );
 
-    expect(getUserDetail).toBeCalledWith(mockCoreStart.http, sampleUsername, {
-      dataSourceId: 'test',
-    });
+    expect(getUserDetail).toBeCalledWith(mockCoreStart.http, sampleUsername, 'test');
   });
 
   it('should not submit if password is empty on creation', () => {

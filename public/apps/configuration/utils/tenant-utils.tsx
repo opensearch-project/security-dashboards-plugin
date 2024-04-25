@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { HttpFetchQuery, HttpStart } from 'opensearch-dashboards/public';
+import { HttpStart } from 'opensearch-dashboards/public';
 import { map } from 'lodash';
 import React from 'react';
 import { i18n } from '@osd/i18n';
@@ -36,7 +36,7 @@ import {
   TenantSelect,
   TenantUpdate,
 } from '../types';
-import { httpDelete, httpGet, httpPost, httpPut } from './request-utils';
+import { createRequestContextWithDataSourceId } from './request-utils';
 import { getResourceUrl } from './resource-utils';
 import {
   DEFAULT_TENANT,
@@ -45,6 +45,7 @@ import {
   globalTenantName,
   isGlobalTenant,
   isRenderingPrivateTenant,
+  LocalClusterId,
   PRIVATE_TENANT_RENDERING_TEXT,
 } from '../../../../common';
 import { TenancyConfigSettings } from '../panels/tenancy-config/types';
@@ -63,16 +64,21 @@ export const PRIVATE_USER_DICT: { [key: string]: string } = {
 
 export async function fetchTenants(
   http: HttpStart,
-  query: HttpFetchQuery
+  dataSourceId: string
 ): Promise<DataObject<Tenant>> {
-  return (await httpGet<ObjectsMessage<Tenant>>({ http, url: API_ENDPOINT_TENANTS, query })).data;
+  return (
+    await createRequestContextWithDataSourceId(dataSourceId).httpGet<ObjectsMessage<Tenant>>({
+      http,
+      url: API_ENDPOINT_TENANTS,
+    })
+  ).data;
 }
 
 export async function fetchTenantNameList(
   http: HttpStart,
-  query: HttpFetchQuery
+  dataSourceId: string
 ): Promise<string[]> {
-  return Object.keys(await fetchTenants(http, query));
+  return Object.keys(await fetchTenants(http, dataSourceId));
 }
 
 export function transformTenantData(rawTenantData: DataObject<Tenant>): Tenant[] {
@@ -93,7 +99,10 @@ export function transformTenantData(rawTenantData: DataObject<Tenant>): Tenant[]
 }
 
 export async function fetchCurrentTenant(http: HttpStart): Promise<string> {
-  return await httpGet<string>({ http, url: API_ENDPOINT_MULTITENANCY });
+  return await createRequestContextWithDataSourceId(LocalClusterId).httpGet<string>({
+    http,
+    url: API_ENDPOINT_MULTITENANCY,
+  });
 }
 
 export async function updateTenant(
@@ -101,7 +110,7 @@ export async function updateTenant(
   tenantName: string,
   updateObject: TenantUpdate
 ) {
-  return await httpPost({
+  return await createRequestContextWithDataSourceId(LocalClusterId).httpPost({
     http,
     url: getResourceUrl(API_ENDPOINT_TENANTS, tenantName),
     body: updateObject,
@@ -112,19 +121,30 @@ export async function updateTenancyConfiguration(
   http: HttpStart,
   updatedTenancyConfig: TenancyConfigSettings
 ) {
-  await httpPut(http, API_ENDPOINT_TENANCY_CONFIGS, updatedTenancyConfig);
-
+  // Tenancy locked to local cluster
+  await createRequestContextWithDataSourceId(LocalClusterId).httpPut(
+    http,
+    API_ENDPOINT_TENANCY_CONFIGS,
+    updatedTenancyConfig
+  );
   return;
 }
 
 export async function requestDeleteTenant(http: HttpStart, tenants: string[]) {
   for (const tenant of tenants) {
-    await httpDelete({ http, url: getResourceUrl(API_ENDPOINT_TENANTS, tenant) });
+    await createRequestContextWithDataSourceId(LocalClusterId).httpDelete({
+      http,
+      url: getResourceUrl(API_ENDPOINT_TENANTS, tenant),
+    });
   }
 }
 
 export async function selectTenant(http: HttpStart, selectObject: TenantSelect): Promise<string> {
-  return await httpPost<string>({ http, url: API_ENDPOINT_MULTITENANCY, body: selectObject });
+  return await createRequestContextWithDataSourceId(LocalClusterId).httpPost<string>({
+    http,
+    url: API_ENDPOINT_MULTITENANCY,
+    body: selectObject,
+  });
 }
 
 export const RESOLVED_GLOBAL_TENANT = 'Global';

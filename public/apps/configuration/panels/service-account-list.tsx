@@ -35,7 +35,7 @@ import { getAuthInfo } from '../../../utils/auth-info-utils';
 import { AppDependencies } from '../../types';
 import { API_ENDPOINT_SERVICEACCOUNTS, DocLinks } from '../constants';
 import { Action } from '../types';
-import { ResourceType } from '../../../../common';
+import { LocalClusterId, ResourceType } from '../../../../common';
 import { EMPTY_FIELD_VALUE } from '../ui-constants';
 import { useContextMenuState } from '../utils/context-menu';
 import { ExternalLink, tableItemsUIProps, truncatedListView } from '../utils/display-utils';
@@ -104,7 +104,11 @@ export function ServiceAccountList(props: AppDependencies) {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const userDataPromise = getUserList(props.coreStart.http, ResourceType.serviceAccounts);
+        const userDataPromise = getUserList(
+          props.coreStart.http,
+          ResourceType.serviceAccounts,
+          LocalClusterId
+        );
         setCurrentUsername((await getAuthInfo(props.coreStart.http)).user_name);
         setUserData(await userDataPromise);
       } catch (e) {

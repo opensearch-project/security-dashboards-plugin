@@ -25,7 +25,6 @@ import { getSecurityConfig } from '../../utils/auth-view-utils';
 import { InstructionView } from './instruction-view';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
-import { createDataSourceQuery } from '../../../../utils/datasource-utils';
 
 export function AuthView(props: AppDependencies) {
   const [authentication, setAuthentication] = React.useState([]);
@@ -37,10 +36,7 @@ export function AuthView(props: AppDependencies) {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const config = await getSecurityConfig(
-          props.coreStart.http,
-          createDataSourceQuery(dataSource.id)
-        );
+        const config = await getSecurityConfig(props.coreStart.http, dataSource.id);
 
         setAuthentication(config.authc);
         setAuthorization(config.authz);

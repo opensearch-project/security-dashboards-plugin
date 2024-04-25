@@ -71,7 +71,7 @@ import { requestDeleteRoles } from '../../utils/role-list-utils';
 import { setCrossPageToast } from '../../utils/storage-utils';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
-import { createDataSourceQuery, getClusterInfo } from '../../../../utils/datasource-utils';
+import { getClusterInfo } from '../../../../utils/datasource-utils';
 
 interface RoleViewProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -123,23 +123,16 @@ export function RoleView(props: RoleViewProps) {
         const originalRoleMapData = await getRoleMappingData(
           props.coreStart.http,
           props.roleName,
-          createDataSourceQuery(dataSource.id)
+          dataSource.id
         );
         if (originalRoleMapData) {
           setMappedUsers(transformRoleMappingData(originalRoleMapData));
           setHosts(originalRoleMapData.hosts);
         }
 
-        const actionGroups = await fetchActionGroups(
-          props.coreStart.http,
-          createDataSourceQuery(dataSource.id)
-        );
+        const actionGroups = await fetchActionGroups(props.coreStart.http, dataSource.id);
         setActionGroupDict(actionGroups);
-        const roleData = await getRoleDetail(
-          props.coreStart.http,
-          props.roleName,
-          createDataSourceQuery(dataSource.id)
-        );
+        const roleData = await getRoleDetail(props.coreStart.http, props.roleName, dataSource.id);
         setIsReserved(roleData.reserved);
         setRoleClusterPermission(roleData.cluster_permissions);
         setRoleIndexPermission(transformRoleIndexPermissions(roleData.index_permissions));
@@ -170,12 +163,7 @@ export function RoleView(props: RoleViewProps) {
         backend_roles: difference(externalIdentities, usersToDelete),
         hosts,
       };
-      await updateRoleMapping(
-        props.coreStart.http,
-        props.roleName,
-        updateObject,
-        createDataSourceQuery(dataSource.id)
-      );
+      await updateRoleMapping(props.coreStart.http, props.roleName, updateObject, dataSource.id);
 
       setMappedUsers(difference(mappedUsers, selection));
       setSelection([]);
@@ -283,6 +271,7 @@ export function RoleView(props: RoleViewProps) {
             coreStart={props.coreStart}
             loading={loading}
             isReserved={isReserved}
+            dataSourceId={dataSource.id}
           />
         </>
       ),
@@ -370,11 +359,7 @@ export function RoleView(props: RoleViewProps) {
       color="danger"
       onClick={async () => {
         try {
-          await requestDeleteRoles(
-            props.coreStart.http,
-            [props.roleName],
-            createDataSourceQuery(dataSource.id)
-          );
+          await requestDeleteRoles(props.coreStart.http, [props.roleName], dataSource.id);
           setCrossPageToast(buildUrl(ResourceType.roles), {
             id: 'deleteRole',
             color: 'success',

@@ -42,7 +42,7 @@ import { flow } from 'lodash';
 import { getCurrentUser } from '../../../../utils/auth-info-utils';
 import { AppDependencies } from '../../../types';
 import { Action, Tenant } from '../../types';
-import { ResourceType } from '../../../../../common';
+import { LocalClusterId, ResourceType } from '../../../../../common';
 import { ExternalLink, renderCustomization, tableItemsUIProps } from '../../utils/display-utils';
 import {
   fetchTenants,
@@ -97,7 +97,7 @@ export function ManageTab(props: AppDependencies) {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const rawTenantData = await fetchTenants(http);
+      const rawTenantData = await fetchTenants(http, LocalClusterId);
       const processedTenantData = transformTenantData(rawTenantData);
       const activeTenant = await fetchCurrentTenant(http);
       const currentUser = await getCurrentUser(http);

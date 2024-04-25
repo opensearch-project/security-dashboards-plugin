@@ -49,7 +49,6 @@ import { constructErrorMessageAndLog } from '../../../error-utils';
 import { BackendRolePanel } from './backend-role-panel';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
-import { createDataSourceQuery } from '../../../../utils/datasource-utils';
 
 interface InternalUserEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -86,7 +85,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
           const user = await getUserDetail(
             props.coreStart.http,
             props.sourceUserName,
-            createDataSourceQuery(dataSource.id)
+            dataSource.id
           );
           setAttributes(buildAttributeState(user.attributes));
           setBackendRoles(user.backend_roles);
@@ -126,12 +125,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
         updateObject.password = password;
       }
 
-      await updateUser(
-        props.coreStart.http,
-        userName,
-        updateObject,
-        createDataSourceQuery(dataSource.id)
-      );
+      await updateUser(props.coreStart.http, userName, updateObject, dataSource.id);
 
       setCrossPageToast(buildUrl(ResourceType.users), {
         id: 'updateUserSucceeded',

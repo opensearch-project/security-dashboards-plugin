@@ -37,7 +37,7 @@ import { useToastState } from '../../utils/toast-utils';
 import { setCrossPageToast } from '../../utils/storage-utils';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { DataSourceContext } from '../../app-router';
-import { createDataSourceQuery, getClusterInfo } from '../../../../utils/datasource-utils';
+import { getClusterInfo } from '../../../../utils/datasource-utils';
 
 interface AuditLoggingEditSettingProps extends AppDependencies {
   setting: 'general' | 'compliance';
@@ -68,10 +68,7 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
   React.useEffect(() => {
     const fetchConfig = async () => {
       try {
-        const fetchedConfig = await getAuditLogging(
-          props.coreStart.http,
-          createDataSourceQuery(dataSource.id)
-        );
+        const fetchedConfig = await getAuditLogging(props.coreStart.http, dataSource.id);
         setEditConfig(fetchedConfig);
       } catch (e) {
         console.log(e);
@@ -114,11 +111,7 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
 
   const saveConfig = async (configToUpdate: AuditLoggingSettings) => {
     try {
-      await updateAuditLogging(
-        props.coreStart.http,
-        configToUpdate,
-        createDataSourceQuery(dataSource.id)
-      );
+      await updateAuditLogging(props.coreStart.http, configToUpdate, dataSource.id);
 
       const addSuccessToast = (text: string) => {
         const successToast: Toast = {

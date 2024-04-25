@@ -118,7 +118,7 @@ describe('Role mapping edit', () => {
         backend_roles: [],
         hosts: [],
       },
-      { dataSourceId: 'test' }
+      'test'
     );
   });
 

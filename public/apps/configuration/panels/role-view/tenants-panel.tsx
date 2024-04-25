@@ -49,6 +49,7 @@ interface RoleViewTenantsPanelProps {
   coreStart: CoreStart;
   loading: boolean;
   isReserved: boolean;
+  dataSourceId: string;
 }
 
 export function TenantsPanel(props: RoleViewTenantsPanelProps) {
@@ -62,7 +63,7 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const rawTenantData = await fetchTenants(props.coreStart.http);
+        const rawTenantData = await fetchTenants(props.coreStart.http, props.dataSourceId);
         const processedTenantData = transformTenantData(rawTenantData);
         setTenantPermissionDetail(
           transformRoleTenantPermissionData(props.tenantPermissions, processedTenantData)

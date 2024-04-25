@@ -45,7 +45,6 @@ import { ViewSettingGroup } from './view-setting-group';
 import { DocLinks } from '../../constants';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
-import { createDataSourceQuery } from '../../../../utils/datasource-utils';
 
 interface AuditLoggingProps extends AppDependencies {
   fromType: string;
@@ -144,11 +143,7 @@ export function AuditLogging(props: AuditLoggingProps) {
       const updatedConfiguration = { ...configuration };
       updatedConfiguration.enabled = !updatedConfiguration.enabled;
 
-      await updateAuditLogging(
-        props.coreStart.http,
-        updatedConfiguration,
-        createDataSourceQuery(dataSource.id)
-      );
+      await updateAuditLogging(props.coreStart.http, updatedConfiguration, dataSource.id);
 
       setConfiguration(updatedConfiguration);
     } catch (e) {
@@ -159,10 +154,7 @@ export function AuditLogging(props: AuditLoggingProps) {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const auditLogging = await getAuditLogging(
-          props.coreStart.http,
-          createDataSourceQuery(dataSource.id)
-        );
+        const auditLogging = await getAuditLogging(props.coreStart.http, dataSource.id);
         setConfiguration(auditLogging);
       } catch (e) {
         // TODO: switch to better error handling.

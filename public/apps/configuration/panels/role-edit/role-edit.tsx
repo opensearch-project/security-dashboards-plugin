@@ -59,7 +59,6 @@ import { generateResourceName } from '../../utils/resource-utils';
 import { NameRow } from '../../utils/name-row';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
-import { createDataSourceQuery } from '../../../../utils/datasource-utils';
 
 interface RoleEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -100,7 +99,7 @@ export function RoleEdit(props: RoleEditDeps) {
           const roleData = await getRoleDetail(
             props.coreStart.http,
             props.sourceRoleName,
-            createDataSourceQuery(dataSource.id)
+            dataSource.id
           );
           setRoleClusterPermission(roleData.cluster_permissions.map(stringToComboBoxOption));
           setRoleIndexPermission(buildIndexPermissionState(roleData.index_permissions));
@@ -121,10 +120,7 @@ export function RoleEdit(props: RoleEditDeps) {
   React.useEffect(() => {
     const fetchActionGroupNames = async () => {
       try {
-        const actionGroupsObject = await fetchActionGroups(
-          props.coreStart.http,
-          createDataSourceQuery(dataSource.id)
-        );
+        const actionGroupsObject = await fetchActionGroups(props.coreStart.http, dataSource.id);
         setActionGroups(Object.entries(actionGroupsObject));
       } catch (e) {
         addToast(createUnknownErrorToast('actionGroup', 'load data'));
@@ -139,9 +135,7 @@ export function RoleEdit(props: RoleEditDeps) {
   React.useEffect(() => {
     const fetchTenantNames = async () => {
       try {
-        setTenantNames(
-          await fetchTenantNameList(props.coreStart.http, createDataSourceQuery(dataSource.id))
-        );
+        setTenantNames(await fetchTenantNameList(props.coreStart.http, dataSource.id));
       } catch (e) {
         addToast(createUnknownErrorToast('tenant', 'load data'));
         console.error(e);
@@ -169,7 +163,7 @@ export function RoleEdit(props: RoleEditDeps) {
           index_permissions: unbuildIndexPermissionState(validIndexPermission),
           tenant_permissions: unbuildTenantPermissionState(validTenantPermission),
         },
-        createDataSourceQuery(dataSource.id)
+        dataSource.id
       );
 
       setCrossPageToast(buildUrl(ResourceType.roles, Action.view, roleName), {

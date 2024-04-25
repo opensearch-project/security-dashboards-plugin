@@ -34,11 +34,11 @@ import { Action } from '../types';
 import { ResourceType } from '../../../../common';
 import { API_ENDPOINT_CACHE, DocLinks } from '../constants';
 import { ExternalLink, ExternalLinkButton } from '../utils/display-utils';
-import { httpDelete } from '../utils/request-utils';
+import { createRequestContextWithDataSourceId } from '../utils/request-utils';
 import { createSuccessToast, createUnknownErrorToast, useToastState } from '../utils/toast-utils';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
 import { DataSourceContext } from '../app-router';
-import { getClusterInfo, createDataSourceQuery } from '../../../utils/datasource-utils';
+import { getClusterInfo } from '../../../utils/datasource-utils';
 
 const addBackendStep = {
   title: 'Add backends',
@@ -248,10 +248,9 @@ export function GetStarted(props: AppDependencies) {
               data-test-subj="purge-cache"
               onClick={async () => {
                 try {
-                  await httpDelete({
+                  await createRequestContextWithDataSourceId(dataSource.id).httpDelete({
                     http: props.coreStart.http,
                     url: API_ENDPOINT_CACHE,
-                    query: createDataSourceQuery(dataSource.id),
                   });
                   addToast(
                     createSuccessToast(

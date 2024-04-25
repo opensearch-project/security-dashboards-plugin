@@ -13,7 +13,6 @@
  *   permissions and limitations under the License.
  */
 
-const externalTitle = '9202';
 const createDataSource = () => {
   return cy.request({
     method: 'POST',
@@ -23,13 +22,13 @@ const createDataSource = () => {
     },
     body: {
       attributes: {
-        title: externalTitle,
-        endpoint: 'https://localhost:9202',
+        title: Cypress.env('externalDataSourceLabel'),
+        endpoint: Cypress.env('externalDataSourceEndpoint'),
         auth: {
           type: 'username_password',
           credentials: {
-            username: 'admin',
-            password: 'myStrongPassword123!',
+            username: Cypress.env('externalDataSourceAdminUserName'),
+            password: Cypress.env('externalDataSourceAdminPassword'),
           },
         },
       },
@@ -76,7 +75,10 @@ describe('Multi-datasources enabled', () => {
       if (resp && resp.body) {
         externalDataSourceId = resp.body.id;
       }
-      externalDataSourceUrl = createUrlParam(externalTitle, externalDataSourceId);
+      externalDataSourceUrl = createUrlParam(
+        Cypress.env('externalDataSourceLabel'),
+        externalDataSourceId
+      );
       localDataSourceUrl = createUrlParam('Local cluster', '');
     });
   });
@@ -122,7 +124,7 @@ describe('Multi-datasources enabled', () => {
       body: {
         backend_roles: [''],
         attributes: {},
-        password: 'myStrongPassword123!',
+        password: 'myStrongPassword12345678!',
       },
     }).then(() => {
       cy.visit(
