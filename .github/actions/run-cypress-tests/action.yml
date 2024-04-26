@@ -38,6 +38,7 @@ runs:
         opensearch-version: ${{ env.OPENSEARCH_VERSION }}
         plugin-name: ${{ env.PLUGIN_NAME }}
         plugin-version: ${{ env.PLUGIN_VERSION }}
+        download-location: ${{ env.PLUGIN_NAME }}
     
     - name: Run Opensearch with A Single Plugin
       uses: derek-ho/start-opensearch@v2
@@ -71,9 +72,9 @@ runs:
       run: |
         cd ./OpenSearch-Dashboards
         if [ -z "${{ inputs.osd_base_path }}" ]; then
-          nohup yarn start --no-base-path --no-watch | tee dashboard.log &
+          nohup yarn start --no-base-path --no-watch --csp.warnLegacyBrowsers=false | tee dashboard.log &
         else
-          nohup yarn start --no-watch | tee dashboard.log &
+          nohup yarn start --no-watch --csp.warnLegacyBrowsers=false | tee dashboard.log &
         fi
       shell: bash
 
@@ -96,8 +97,11 @@ runs:
         done
       shell: bash
 
-    - name: Run Cypress
-      run : |
-        yarn add cypress --save-dev
-        eval ${{ inputs.yarn_command }}
-      shell: bash
+    - name: Run Cypress Tests with retry
+      uses: Wandalen/wretry.action@v3.3.0
+      with:
+        attempt_limit: 5
+        attempt_delay: 2000
+        command: |
+          yarn add cypress --save-dev
+          eval ${{ inputs.yarn_command }} 

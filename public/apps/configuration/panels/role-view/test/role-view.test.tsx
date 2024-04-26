@@ -72,6 +72,10 @@ jest.mock('../../../utils/toast-utils', () => ({
   createUnknownErrorToast: jest.fn(),
   useToastState: jest.fn().mockReturnValue([[], jest.fn(), jest.fn()]),
 }));
+jest.mock('react', () => ({
+  ...jest.requireActual('react'),
+  useContext: jest.fn().mockReturnValue({ dataSource: { id: 'test' }, setDataSource: jest.fn() }), // Mock the useContext hook to return dummy datasource and setdatasource function
+}));
 
 describe('Role view', () => {
   const setState = jest.fn();
@@ -96,7 +100,7 @@ describe('Role view', () => {
         prevAction=""
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -119,7 +123,7 @@ describe('Role view', () => {
         prevAction={SubAction.mapuser}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -134,7 +138,7 @@ describe('Role view', () => {
         prevAction={SubAction.mapuser}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -155,7 +159,7 @@ describe('Role view', () => {
         prevAction={SubAction.mapuser}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -174,7 +178,7 @@ describe('Role view', () => {
         prevAction=""
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -203,7 +207,7 @@ describe('Role view', () => {
         prevAction=""
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -219,7 +223,7 @@ describe('Role view', () => {
         prevAction=""
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -245,7 +249,7 @@ describe('Role view', () => {
         prevAction=""
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -267,7 +271,7 @@ describe('Role view', () => {
         prevAction=""
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -287,7 +291,7 @@ describe('Role view', () => {
         prevAction=""
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />

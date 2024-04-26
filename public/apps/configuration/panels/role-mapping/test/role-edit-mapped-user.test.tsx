@@ -26,6 +26,10 @@ jest.mock('../../../utils/role-mapping-utils');
 jest.mock('../../../utils/internal-user-list-utils', () => ({
   fetchUserNameList: jest.fn().mockReturnValue([]),
 }));
+jest.mock('react', () => ({
+  ...jest.requireActual('react'),
+  useContext: jest.fn().mockReturnValue({ dataSource: { id: 'test' }, setDataSource: jest.fn() }), // Mock the useContext hook to return dummy datasource and setdatasource function
+}));
 // eslint-disable-next-line
 const roleMappingUtils = require('../../../utils/role-mapping-utils');
 
@@ -52,7 +56,7 @@ describe('Role mapping edit', () => {
         roleName={sampleRole}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -77,7 +81,7 @@ describe('Role mapping edit', () => {
         roleName={sampleRole}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -98,7 +102,7 @@ describe('Role mapping edit', () => {
         roleName={sampleRole}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -106,11 +110,16 @@ describe('Role mapping edit', () => {
     // click update
     component.find('#map').last().simulate('click');
 
-    expect(updateRoleMapping).toBeCalledWith(mockCoreStart.http, sampleRole, {
-      users: [],
-      backend_roles: [],
-      hosts: [],
-    });
+    expect(updateRoleMapping).toBeCalledWith(
+      mockCoreStart.http,
+      sampleRole,
+      {
+        users: [],
+        backend_roles: [],
+        hosts: [],
+      },
+      'test'
+    );
   });
 
   it('submit update error', () => {
@@ -126,7 +135,7 @@ describe('Role mapping edit', () => {
         roleName={sampleRole}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />

@@ -28,7 +28,7 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import React from 'react';
+import React, { useContext } from 'react';
 import { FormattedMessage } from '@osd/i18n/react';
 import { AppDependencies } from '../../../types';
 import { ResourceType } from '../../../../../common';
@@ -43,6 +43,8 @@ import {
 import { AuditLoggingSettings } from './types';
 import { ViewSettingGroup } from './view-setting-group';
 import { DocLinks } from '../../constants';
+import { DataSourceContext } from '../../app-router';
+import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 
 interface AuditLoggingProps extends AppDependencies {
   fromType: string;
@@ -134,13 +136,14 @@ export function renderComplianceSettings(config: AuditLoggingSettings) {
 
 export function AuditLogging(props: AuditLoggingProps) {
   const [configuration, setConfiguration] = React.useState<AuditLoggingSettings>({});
+  const { dataSource, setDataSource } = useContext(DataSourceContext)!;
 
   const onSwitchChange = async () => {
     try {
       const updatedConfiguration = { ...configuration };
       updatedConfiguration.enabled = !updatedConfiguration.enabled;
 
-      await updateAuditLogging(props.coreStart.http, updatedConfiguration);
+      await updateAuditLogging(props.coreStart.http, updatedConfiguration, dataSource.id);
 
       setConfiguration(updatedConfiguration);
     } catch (e) {
@@ -151,7 +154,7 @@ export function AuditLogging(props: AuditLoggingProps) {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const auditLogging = await getAuditLogging(props.coreStart.http);
+        const auditLogging = await getAuditLogging(props.coreStart.http, dataSource.id);
         setConfiguration(auditLogging);
       } catch (e) {
         // TODO: switch to better error handling.
@@ -160,7 +163,7 @@ export function AuditLogging(props: AuditLoggingProps) {
     };
 
     fetchData();
-  }, [props.coreStart.http, props.fromType]);
+  }, [props.coreStart.http, props.fromType, dataSource.id]);
 
   const statusPanel = renderStatusPanel(onSwitchChange, configuration.enabled || false);
 
@@ -174,7 +177,7 @@ export function AuditLogging(props: AuditLoggingProps) {
         {statusPanel}
         <EuiSpacer />
 
-        <EuiPanel>
+        <EuiPanel data-test-subj="general-settings">
           <EuiFlexGroup>
             <EuiFlexItem>
               <EuiTitle>
@@ -226,5 +229,15 @@ export function AuditLogging(props: AuditLoggingProps) {
     );
   }
 
-  return <div className="panel-restrict-width">{content}</div>;
+  return (
+    <div className="panel-restrict-width">
+      <SecurityPluginTopNavMenu
+        {...props}
+        dataSourcePickerReadOnly={false}
+        setDataSource={setDataSource}
+        selectedDataSource={dataSource}
+      />
+      {content}
+    </div>
+  );
 }

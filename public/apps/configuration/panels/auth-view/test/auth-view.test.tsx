@@ -17,6 +17,11 @@ import { shallow } from 'enzyme';
 import React from 'react';
 import { AuthView } from '../auth-view';
 
+jest.mock('react', () => ({
+  ...jest.requireActual('react'),
+  useContext: jest.fn().mockReturnValue({ dataSource: { id: 'test' }, setDataSource: jest.fn() }), // Mock the useContext hook to return dummy datasource and setdatasource function
+}));
+
 // eslint-disable-next-line
 const mockAuthViewUtils = require('../../../utils/auth-view-utils');
 

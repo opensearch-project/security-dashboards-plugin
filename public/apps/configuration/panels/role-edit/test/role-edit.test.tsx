@@ -38,6 +38,10 @@ jest.mock('../../../utils/action-groups-utils', () => ({
 }));
 jest.mock('../../../utils/tenant-utils');
 jest.mock('../../../utils/storage-utils');
+jest.mock('react', () => ({
+  ...jest.requireActual('react'),
+  useContext: jest.fn().mockReturnValue({ dataSource: { id: 'test' }, setDataSource: jest.fn() }), // Mock the useContext hook to return dummy datasource and setdatasource function
+}));
 
 describe('Role edit', () => {
   const sampleSourceRole = 'role';
@@ -59,7 +63,7 @@ describe('Role edit', () => {
         sourceRoleName={sampleSourceRole}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -85,7 +89,7 @@ describe('Role edit', () => {
         sourceRoleName={sampleSourceRole}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -108,7 +112,7 @@ describe('Role edit', () => {
         sourceRoleName={sampleSourceRole}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -116,11 +120,16 @@ describe('Role edit', () => {
     // click update
     component.find(EuiButton).last().simulate('click');
 
-    expect(updateRole).toBeCalledWith(mockCoreStart.http, '', {
-      cluster_permissions: [],
-      index_permissions: [],
-      tenant_permissions: [],
-    });
+    expect(updateRole).toBeCalledWith(
+      mockCoreStart.http,
+      '',
+      {
+        cluster_permissions: [],
+        index_permissions: [],
+        tenant_permissions: [],
+      },
+      'test'
+    );
 
     process.nextTick(() => {
       expect(setCrossPageToast).toHaveBeenCalled();
