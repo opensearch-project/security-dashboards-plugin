@@ -31,7 +31,7 @@ import {
   Query,
 } from '@elastic/eui';
 import { Dictionary, difference, isEmpty, map } from 'lodash';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { getAuthInfo } from '../../../utils/auth-info-utils';
 import { AppDependencies } from '../../types';
 import { API_ENDPOINT_INTERNALUSERS, DocLinks } from '../constants';
@@ -48,6 +48,8 @@ import {
 } from '../utils/internal-user-list-utils';
 import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { buildHashUrl } from '../utils/url-builder';
+import { DataSourceContext } from '../app-router';
+import { SecurityPluginTopNavMenu } from '../top-nav-menu';
 
 export function dictView(items: Dictionary<string>) {
   if (isEmpty(items)) {
@@ -103,12 +105,17 @@ export function UserList(props: AppDependencies) {
   const [currentUsername, setCurrentUsername] = useState('');
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState<Query | null>(null);
+  const { dataSource, setDataSource } = useContext(DataSourceContext)!;
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const userDataPromise = getUserList(props.coreStart.http);
+        const userDataPromise = getUserList(
+          props.coreStart.http,
+          ResourceType.users,
+          dataSource.id
+        );
         setCurrentUsername((await getAuthInfo(props.coreStart.http)).user_name);
         setUserData(await userDataPromise);
       } catch (e) {
@@ -120,12 +127,12 @@ export function UserList(props: AppDependencies) {
     };
 
     fetchData();
-  }, [props.coreStart.http]);
+  }, [props.coreStart.http, dataSource.id]);
 
   const handleDelete = async () => {
     const usersToDelete: string[] = selection.map((r) => r.username);
     try {
-      await requestDeleteUsers(props.coreStart.http, usersToDelete);
+      await requestDeleteUsers(props.coreStart.http, usersToDelete, dataSource.id);
       // Refresh from server (calling fetchData) does not work here, the server still return the users
       // that had been just deleted, probably because ES takes some time to sync to all nodes.
       // So here remove the selected users from local memory directly.
@@ -194,6 +201,12 @@ export function UserList(props: AppDependencies) {
 
   return (
     <>
+      <SecurityPluginTopNavMenu
+        {...props}
+        dataSourcePickerReadOnly={false}
+        setDataSource={setDataSource}
+        selectedDataSource={dataSource}
+      />
       <EuiPageHeader>
         <EuiTitle size="l">
           <h1>Internal users</h1>

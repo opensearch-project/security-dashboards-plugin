@@ -101,21 +101,30 @@ describe('Toast utils', () => {
 
   describe('getSuccessToastMessage', () => {
     it('should return successful create message', () => {
-      const result = getSuccessToastMessage('User', 'create', 'user1');
+      const result = getSuccessToastMessage('User', 'create', 'user1', false, { id: '' });
 
-      expect(result).toEqual('User "user1" successfully created');
+      expect(result).toEqual('User "user1" successfully created ');
     });
 
     it('should return successful update message', () => {
-      const result = getSuccessToastMessage('Role', 'edit', 'role1');
+      const result = getSuccessToastMessage('Role', 'edit', 'role1', false, { id: '' });
 
-      expect(result).toEqual('Role "role1" successfully updated');
+      expect(result).toEqual('Role "role1" successfully updated ');
     });
 
     it('should return empty message for unknown action', () => {
-      const result = getSuccessToastMessage('User', '', 'user1');
+      const result = getSuccessToastMessage('User', '', 'user1', false, { id: '' });
 
       expect(result).toEqual('');
+    });
+
+    it('should return successful update message for remote cluster', () => {
+      const result = getSuccessToastMessage('Role', 'edit', 'role1', true, {
+        id: '',
+        label: 'blah',
+      });
+
+      expect(result).toEqual('Role "role1" successfully updated for blah');
     });
   });
 });

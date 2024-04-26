@@ -16,17 +16,29 @@
 import { HttpStart } from 'opensearch-dashboards/public';
 import { API_ENDPOINT_INTERNALUSERS } from '../constants';
 import { InternalUser, InternalUserUpdate } from '../types';
-import { httpGet, httpPost } from './request-utils';
+import { createRequestContextWithDataSourceId } from './request-utils';
 import { getResourceUrl } from './resource-utils';
 
-export async function getUserDetail(http: HttpStart, username: string): Promise<InternalUser> {
-  return await httpGet<InternalUser>(http, getResourceUrl(API_ENDPOINT_INTERNALUSERS, username));
+export async function getUserDetail(
+  http: HttpStart,
+  username: string,
+  dataSourceId: string
+): Promise<InternalUser> {
+  return await createRequestContextWithDataSourceId(dataSourceId).httpGet<InternalUser>({
+    http,
+    url: getResourceUrl(API_ENDPOINT_INTERNALUSERS, username),
+  });
 }
 
 export async function updateUser(
   http: HttpStart,
   username: string,
-  updateObject: InternalUserUpdate
+  updateObject: InternalUserUpdate,
+  dataSourceId: string
 ): Promise<InternalUser> {
-  return await httpPost(http, getResourceUrl(API_ENDPOINT_INTERNALUSERS, username), updateObject);
+  return await createRequestContextWithDataSourceId(dataSourceId).httpPost({
+    http,
+    url: getResourceUrl(API_ENDPOINT_INTERNALUSERS, username),
+    body: updateObject,
+  });
 }

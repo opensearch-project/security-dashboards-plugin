@@ -16,8 +16,6 @@ jobs:
       matrix:
         os: [ ubuntu-latest , windows-latest ]
     runs-on: ${{ matrix.os }}
-    env:
-      OPENSEARCH_INITIAL_ADMIN_PASSWORD: admin
 
     steps:
       - name: Checkout Branch
@@ -36,12 +34,36 @@ jobs:
           echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
         shell: bash
 
-      - name: Download security plugin and create setup scripts
+      - name: Download security plugin and create setup scripts for remote cluster
         uses: ./.github/actions/download-plugin
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugin-name: ${{ env.PLUGIN_NAME }}
+          download-location: ${{env.PLUGIN_NAME}}-${{ env.OPENSEARCH_VERSION }}
           plugin-version: ${{ env.PLUGIN_VERSION }}
+
+      - name: Download security plugin and create setup scripts for local cluster
+        uses: ./.github/actions/download-plugin
+        with:
+          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
+          plugin-name: ${{ env.PLUGIN_NAME }}
+          download-location: ${{env.PLUGIN_NAME}}
+          plugin-version: ${{ env.PLUGIN_VERSION }}
+      
+      - name: Run Opensearch with A Single Plugin Remote Cluster
+        uses: derek-ho/start-opensearch@v4
+        with:
+          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
+          plugins: "file:$(pwd)/opensearch-security-${{ env.OPENSEARCH_VERSION }}.zip"
+          security-enabled: true
+          admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
+          security_config_file: ${{ inputs.security_config_file }}
+          port: 9202
+
+      - name: Check OpenSearch remote is running
+        run: |
+          curl https://localhost:9202/_cat/plugins -v -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} -k
+        shell: bash
 
       - name: Run Opensearch with security
         uses: derek-ho/start-opensearch@v2

@@ -241,6 +241,21 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
 <div
   className="panel-restrict-width"
 >
+  <Memo()
+    coreStart={
+      Object {
+        "http": 1,
+      }
+    }
+    dataSourcePickerReadOnly={false}
+    navigation={Object {}}
+    selectedDataSource={
+      Object {
+        "id": "test",
+      }
+    }
+    setDataSource={[MockFunction]}
+  />
   <EuiPanel>
     <EuiTitle>
       <h3>
@@ -321,7 +336,9 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
     </EuiForm>
   </EuiPanel>
   <EuiSpacer />
-  <EuiPanel>
+  <EuiPanel
+    data-test-subj="general-settings"
+  >
     <EuiFlexGroup>
       <EuiFlexItem>
         <EuiTitle>

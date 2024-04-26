@@ -1,0 +1,49 @@
+name: E2E multi datasources disabled workflow
+
+on: [ push, pull_request ]
+
+env:
+  OPENSEARCH_VERSION: '3.0.0'
+  CI: 1
+  # avoid warnings like "tput: No value for $TERM and no -T specified"
+  TERM: xterm
+  PLUGIN_NAME: opensearch-security
+  OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
+  
+jobs:
+  tests:
+    name: Run Cypress multidatasources tests
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest ]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v3
+
+      # Configure the Dashboard for multi datasources disabled (default)
+      - name: Create OpenSearch Dashboards Config
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          cat << 'EOT' > opensearch_dashboards_multidatasources.yml
+          server.host: "0.0.0.0"
+          opensearch.hosts: ["https://localhost:9200"]
+          opensearch.ssl.verificationMode: none
+          opensearch.username: "kibanaserver"
+          opensearch.password: "kibanaserver"
+          opensearch.requestHeadersWhitelist: [ authorization,securitytenant ]
+          opensearch_security.multitenancy.enabled: false
+          opensearch_security.multitenancy.tenants.preferred: ["Private", "Global"]
+          opensearch_security.readonly_mode.roles: ["kibana_read_only"]
+          opensearch_security.cookie.secure: false
+          data_source.enabled: false
+          home.disableWelcomeScreen: true
+          EOT
+
+      - name: Run Cypress Tests
+        uses: ./.github/actions/run-cypress-tests
+        with:
+          dashboards_config_file: opensearch_dashboards_multidatasources.yml
+          yarn_command: 'yarn cypress:run --browser chrome --headless --env LOGIN_AS_ADMIN=true --spec "test/cypress/e2e/multi-datasources/multi_datasources_disabled.spec.js"'

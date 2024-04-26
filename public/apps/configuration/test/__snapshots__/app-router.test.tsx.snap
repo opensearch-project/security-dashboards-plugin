@@ -1,0 +1,545 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enabled 1`] = `
+<ContextProvider
+  value={
+    Object {
+      "dataSource": Object {},
+      "setDataSource": [Function],
+    }
+  }
+>
+  <HashRouter
+    basename=""
+  >
+    <EuiPage>
+      <Route
+        exact={true}
+        key="/getstarted"
+        path="/getstarted"
+      >
+        <EuiPageSideBar>
+          <NavPanel
+            items={
+              Array [
+                Object {
+                  "href": "/getstarted",
+                  "name": "Get Started",
+                },
+                Object {
+                  "href": "/auth",
+                  "name": "Authentication",
+                },
+                Object {
+                  "href": "/roles",
+                  "name": "Roles",
+                },
+                Object {
+                  "href": "/users",
+                  "name": "Internal users",
+                },
+                Object {
+                  "href": "/permissions",
+                  "name": "Permissions",
+                },
+                Object {
+                  "href": "/tenants",
+                  "name": "Tenants",
+                },
+                Object {
+                  "href": "/auditLogging",
+                  "name": "Audit logs",
+                },
+                Object {
+                  "href": "/tenantsConfigureTab",
+                  "name": "",
+                },
+              ]
+            }
+          />
+        </EuiPageSideBar>
+      </Route>
+      <Route
+        exact={true}
+        key="/auth"
+        path="/auth"
+      >
+        <EuiPageSideBar>
+          <NavPanel
+            items={
+              Array [
+                Object {
+                  "href": "/getstarted",
+                  "name": "Get Started",
+                },
+                Object {
+                  "href": "/auth",
+                  "name": "Authentication",
+                },
+                Object {
+                  "href": "/roles",
+                  "name": "Roles",
+                },
+                Object {
+                  "href": "/users",
+                  "name": "Internal users",
+                },
+                Object {
+                  "href": "/permissions",
+                  "name": "Permissions",
+                },
+                Object {
+                  "href": "/tenants",
+                  "name": "Tenants",
+                },
+                Object {
+                  "href": "/auditLogging",
+                  "name": "Audit logs",
+                },
+                Object {
+                  "href": "/tenantsConfigureTab",
+                  "name": "",
+                },
+              ]
+            }
+          />
+        </EuiPageSideBar>
+      </Route>
+      <Route
+        exact={true}
+        key="/roles"
+        path="/roles"
+      >
+        <EuiPageSideBar>
+          <NavPanel
+            items={
+              Array [
+                Object {
+                  "href": "/getstarted",
+                  "name": "Get Started",
+                },
+                Object {
+                  "href": "/auth",
+                  "name": "Authentication",
+                },
+                Object {
+                  "href": "/roles",
+                  "name": "Roles",
+                },
+                Object {
+                  "href": "/users",
+                  "name": "Internal users",
+                },
+                Object {
+                  "href": "/permissions",
+                  "name": "Permissions",
+                },
+                Object {
+                  "href": "/tenants",
+                  "name": "Tenants",
+                },
+                Object {
+                  "href": "/auditLogging",
+                  "name": "Audit logs",
+                },
+                Object {
+                  "href": "/tenantsConfigureTab",
+                  "name": "",
+                },
+              ]
+            }
+          />
+        </EuiPageSideBar>
+      </Route>
+      <Route
+        exact={true}
+        key="/users"
+        path="/users"
+      >
+        <EuiPageSideBar>
+          <NavPanel
+            items={
+              Array [
+                Object {
+                  "href": "/getstarted",
+                  "name": "Get Started",
+                },
+                Object {
+                  "href": "/auth",
+                  "name": "Authentication",
+                },
+                Object {
+                  "href": "/roles",
+                  "name": "Roles",
+                },
+                Object {
+                  "href": "/users",
+                  "name": "Internal users",
+                },
+                Object {
+                  "href": "/permissions",
+                  "name": "Permissions",
+                },
+                Object {
+                  "href": "/tenants",
+                  "name": "Tenants",
+                },
+                Object {
+                  "href": "/auditLogging",
+                  "name": "Audit logs",
+                },
+                Object {
+                  "href": "/tenantsConfigureTab",
+                  "name": "",
+                },
+              ]
+            }
+          />
+        </EuiPageSideBar>
+      </Route>
+      <Route
+        exact={true}
+        key="/permissions"
+        path="/permissions"
+      >
+        <EuiPageSideBar>
+          <NavPanel
+            items={
+              Array [
+                Object {
+                  "href": "/getstarted",
+                  "name": "Get Started",
+                },
+                Object {
+                  "href": "/auth",
+                  "name": "Authentication",
+                },
+                Object {
+                  "href": "/roles",
+                  "name": "Roles",
+                },
+                Object {
+                  "href": "/users",
+                  "name": "Internal users",
+                },
+                Object {
+                  "href": "/permissions",
+                  "name": "Permissions",
+                },
+                Object {
+                  "href": "/tenants",
+                  "name": "Tenants",
+                },
+                Object {
+                  "href": "/auditLogging",
+                  "name": "Audit logs",
+                },
+                Object {
+                  "href": "/tenantsConfigureTab",
+                  "name": "",
+                },
+              ]
+            }
+          />
+        </EuiPageSideBar>
+      </Route>
+      <Route
+        exact={true}
+        key="/tenants"
+        path="/tenants"
+      >
+        <EuiPageSideBar>
+          <NavPanel
+            items={
+              Array [
+                Object {
+                  "href": "/getstarted",
+                  "name": "Get Started",
+                },
+                Object {
+                  "href": "/auth",
+                  "name": "Authentication",
+                },
+                Object {
+                  "href": "/roles",
+                  "name": "Roles",
+                },
+                Object {
+                  "href": "/users",
+                  "name": "Internal users",
+                },
+                Object {
+                  "href": "/permissions",
+                  "name": "Permissions",
+                },
+                Object {
+                  "href": "/tenants",
+                  "name": "Tenants",
+                },
+                Object {
+                  "href": "/auditLogging",
+                  "name": "Audit logs",
+                },
+                Object {
+                  "href": "/tenantsConfigureTab",
+                  "name": "",
+                },
+              ]
+            }
+          />
+        </EuiPageSideBar>
+      </Route>
+      <Route
+        exact={true}
+        key="/auditLogging"
+        path="/auditLogging"
+      >
+        <EuiPageSideBar>
+          <NavPanel
+            items={
+              Array [
+                Object {
+                  "href": "/getstarted",
+                  "name": "Get Started",
+                },
+                Object {
+                  "href": "/auth",
+                  "name": "Authentication",
+                },
+                Object {
+                  "href": "/roles",
+                  "name": "Roles",
+                },
+                Object {
+                  "href": "/users",
+                  "name": "Internal users",
+                },
+                Object {
+                  "href": "/permissions",
+                  "name": "Permissions",
+                },
+                Object {
+                  "href": "/tenants",
+                  "name": "Tenants",
+                },
+                Object {
+                  "href": "/auditLogging",
+                  "name": "Audit logs",
+                },
+                Object {
+                  "href": "/tenantsConfigureTab",
+                  "name": "",
+                },
+              ]
+            }
+          />
+        </EuiPageSideBar>
+      </Route>
+      <Route
+        exact={true}
+        key="/tenantsConfigureTab"
+        path="/tenantsConfigureTab"
+      >
+        <EuiPageSideBar>
+          <NavPanel
+            items={
+              Array [
+                Object {
+                  "href": "/getstarted",
+                  "name": "Get Started",
+                },
+                Object {
+                  "href": "/auth",
+                  "name": "Authentication",
+                },
+                Object {
+                  "href": "/roles",
+                  "name": "Roles",
+                },
+                Object {
+                  "href": "/users",
+                  "name": "Internal users",
+                },
+                Object {
+                  "href": "/permissions",
+                  "name": "Permissions",
+                },
+                Object {
+                  "href": "/tenants",
+                  "name": "Tenants",
+                },
+                Object {
+                  "href": "/auditLogging",
+                  "name": "Audit logs",
+                },
+                Object {
+                  "href": "/tenantsConfigureTab",
+                  "name": "",
+                },
+              ]
+            }
+          />
+        </EuiPageSideBar>
+      </Route>
+      <Route
+        exact={true}
+        key="/auditLogging/edit/generalSettings"
+        path="/auditLogging/edit/generalSettings"
+      >
+        <EuiPageSideBar>
+          <NavPanel
+            items={
+              Array [
+                Object {
+                  "href": "/getstarted",
+                  "name": "Get Started",
+                },
+                Object {
+                  "href": "/auth",
+                  "name": "Authentication",
+                },
+                Object {
+                  "href": "/roles",
+                  "name": "Roles",
+                },
+                Object {
+                  "href": "/users",
+                  "name": "Internal users",
+                },
+                Object {
+                  "href": "/permissions",
+                  "name": "Permissions",
+                },
+                Object {
+                  "href": "/tenants",
+                  "name": "Tenants",
+                },
+                Object {
+                  "href": "/auditLogging",
+                  "name": "Audit logs",
+                },
+                Object {
+                  "href": "/tenantsConfigureTab",
+                  "name": "",
+                },
+              ]
+            }
+          />
+        </EuiPageSideBar>
+      </Route>
+      <Route
+        exact={true}
+        key="/auditLogging/edit/complianceSettings"
+        path="/auditLogging/edit/complianceSettings"
+      >
+        <EuiPageSideBar>
+          <NavPanel
+            items={
+              Array [
+                Object {
+                  "href": "/getstarted",
+                  "name": "Get Started",
+                },
+                Object {
+                  "href": "/auth",
+                  "name": "Authentication",
+                },
+                Object {
+                  "href": "/roles",
+                  "name": "Roles",
+                },
+                Object {
+                  "href": "/users",
+                  "name": "Internal users",
+                },
+                Object {
+                  "href": "/permissions",
+                  "name": "Permissions",
+                },
+                Object {
+                  "href": "/tenants",
+                  "name": "Tenants",
+                },
+                Object {
+                  "href": "/auditLogging",
+                  "name": "Audit logs",
+                },
+                Object {
+                  "href": "/tenantsConfigureTab",
+                  "name": "",
+                },
+              ]
+            }
+          />
+        </EuiPageSideBar>
+      </Route>
+      <EuiPageBody>
+        <Switch>
+          <Route
+            path="/roles/edit/:roleName/mapuser"
+            render={[Function]}
+          />
+          <Route
+            path="/roles/view/:roleName/:prevAction?"
+            render={[Function]}
+          />
+          <Route
+            path="/roles/:action/:sourceRoleName?"
+            render={[Function]}
+          />
+          <Route
+            path="/roles"
+            render={[Function]}
+          />
+          <Route
+            path="/auth"
+            render={[Function]}
+          />
+          <Route
+            path="/users/:action/:sourceUserName?"
+            render={[Function]}
+          />
+          <Route
+            path="/users"
+            render={[Function]}
+          />
+          <Route
+            path="/auditLogging/edit/generalSettings"
+            render={[Function]}
+          />
+          <Route
+            path="/auditLogging/edit/complianceSettings"
+            render={[Function]}
+          />
+          <Route
+            path="/auditLogging/:fromType?"
+            render={[Function]}
+          />
+          <Route
+            path="/permissions"
+            render={[Function]}
+          />
+          <Route
+            path="/tenants"
+            render={[Function]}
+          />
+          <Route
+            path="/tenantsConfigureTab"
+            render={[Function]}
+          />
+          <Route
+            path="/getstarted"
+            render={[Function]}
+          />
+          <Redirect
+            exact={true}
+            from="/"
+            to="/getstarted"
+          />
+        </Switch>
+      </EuiPageBody>
+      <CrossPageToast />
+    </EuiPage>
+  </HashRouter>
+</ContextProvider>
+`;

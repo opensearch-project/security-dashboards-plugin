@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { EuiPageHeader, EuiSpacer, EuiTitle } from '@elastic/eui';
 import { isEmpty } from 'lodash';
 import { AuthenticationSequencePanel } from './authentication-sequence-panel';
@@ -23,17 +23,20 @@ import { AppDependencies } from '../../../types';
 import { ExternalLinkButton } from '../../utils/display-utils';
 import { getSecurityConfig } from '../../utils/auth-view-utils';
 import { InstructionView } from './instruction-view';
+import { DataSourceContext } from '../../app-router';
+import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 
 export function AuthView(props: AppDependencies) {
   const [authentication, setAuthentication] = React.useState([]);
   const [authorization, setAuthorization] = React.useState([]);
   const [loading, setLoading] = useState(false);
+  const { dataSource, setDataSource } = useContext(DataSourceContext)!;
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const config = await getSecurityConfig(props.coreStart.http);
+        const config = await getSecurityConfig(props.coreStart.http, dataSource.id);
 
         setAuthentication(config.authc);
         setAuthorization(config.authz);
@@ -45,7 +48,7 @@ export function AuthView(props: AppDependencies) {
     };
 
     fetchData();
-  }, [props.coreStart.http]);
+  }, [props.coreStart.http, dataSource.id]);
 
   if (isEmpty(authentication)) {
     return <InstructionView config={props.config} />;
@@ -53,6 +56,12 @@ export function AuthView(props: AppDependencies) {
 
   return (
     <>
+      <SecurityPluginTopNavMenu
+        {...props}
+        dataSourcePickerReadOnly={false}
+        setDataSource={setDataSource}
+        selectedDataSource={dataSource}
+      />
       <EuiPageHeader>
         <EuiTitle size="l">
           <h1>Authentication and authorization</h1>

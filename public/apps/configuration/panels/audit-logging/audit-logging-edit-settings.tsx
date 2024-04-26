@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   EuiButton,
   EuiFlexGroup,
@@ -35,15 +35,20 @@ import { ResourceType } from '../../../../../common';
 import { getAuditLogging, updateAuditLogging } from '../../utils/audit-logging-utils';
 import { useToastState } from '../../utils/toast-utils';
 import { setCrossPageToast } from '../../utils/storage-utils';
+import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
+import { DataSourceContext } from '../../app-router';
+import { getClusterInfo } from '../../../../utils/datasource-utils';
 
 interface AuditLoggingEditSettingProps extends AppDependencies {
   setting: 'general' | 'compliance';
 }
 
 export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
+  const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const [editConfig, setEditConfig] = React.useState<AuditLoggingSettings>({});
   const [toasts, addToast, removeToast] = useToastState();
   const [invalidSettings, setInvalidSettings] = React.useState<string[]>([]);
+  const { dataSource, setDataSource } = useContext(DataSourceContext)!;
 
   const handleChange = (path: string, val: boolean | string[] | SettingMapItem) => {
     setEditConfig((previousEditedConfig) => {
@@ -63,7 +68,7 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
   React.useEffect(() => {
     const fetchConfig = async () => {
       try {
-        const fetchedConfig = await getAuditLogging(props.coreStart.http);
+        const fetchedConfig = await getAuditLogging(props.coreStart.http, dataSource.id);
         setEditConfig(fetchedConfig);
       } catch (e) {
         console.log(e);
@@ -71,7 +76,7 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
     };
 
     fetchConfig();
-  }, [props.coreStart.http]);
+  }, [props.coreStart.http, dataSource.id]);
 
   const renderSaveAndCancel = () => {
     return (
@@ -106,7 +111,7 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
 
   const saveConfig = async (configToUpdate: AuditLoggingSettings) => {
     try {
-      await updateAuditLogging(props.coreStart.http, configToUpdate);
+      await updateAuditLogging(props.coreStart.http, configToUpdate, dataSource.id);
 
       const addSuccessToast = (text: string) => {
         const successToast: Toast = {
@@ -121,9 +126,11 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
       };
 
       if (props.setting === 'general') {
-        addSuccessToast('General settings saved');
+        addSuccessToast(`General settings saved ${getClusterInfo(dataSourceEnabled, dataSource)}`);
       } else {
-        addSuccessToast('Compliance settings saved');
+        addSuccessToast(
+          `Compliance settings saved ${getClusterInfo(dataSourceEnabled, dataSource)}`
+        );
       }
 
       window.location.href = buildHashUrl(ResourceType.auditLogging);
@@ -132,7 +139,11 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
         id: 'update-result',
         color: 'danger',
         iconType: 'alert',
-        title: 'Failed to update audit configuration due to ' + e?.message,
+        title:
+          `Failed to update audit configuration ${getClusterInfo(
+            dataSourceEnabled,
+            dataSource
+          )} due to ` + e?.message,
       };
 
       addToast(failureToast);
@@ -237,5 +248,15 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
     content = renderComplianceSetting();
   }
 
-  return <div className="panel-restrict-width">{content}</div>;
+  return (
+    <div className="panel-restrict-width">
+      <SecurityPluginTopNavMenu
+        {...props}
+        dataSourcePickerReadOnly={true}
+        setDataSource={setDataSource}
+        selectedDataSource={dataSource}
+      />
+      {content}
+    </div>
+  );
 }
