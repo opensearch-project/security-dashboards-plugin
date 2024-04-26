@@ -15,6 +15,8 @@
 
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 import { useState, useCallback } from 'react';
+import { getClusterInfo } from '../../../utils/datasource-utils';
+import { DataSourceOption } from '../../../../../../src/plugins/data_source_management/public/components/data_source_menu/types';
 
 export function createErrorToast(id: string, title: string, text: string): Toast {
   return {
@@ -66,14 +68,22 @@ export function useToastState(): [Toast[], (toAdd: Toast) => void, (toDelete: To
 export function getSuccessToastMessage(
   resourceType: string,
   action: string,
-  userName: string
+  userName: string,
+  dataSourceEnabled: boolean,
+  dataSource: DataSourceOption
 ): string {
   switch (action) {
     case 'create':
     case 'duplicate':
-      return `${resourceType} "${userName}" successfully created`;
+      return `${resourceType} "${userName}" successfully created ${getClusterInfo(
+        dataSourceEnabled,
+        dataSource
+      )}`;
     case 'edit':
-      return `${resourceType} "${userName}" successfully updated`;
+      return `${resourceType} "${userName}" successfully updated ${getClusterInfo(
+        dataSourceEnabled,
+        dataSource
+      )}`;
     default:
       return '';
   }

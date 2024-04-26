@@ -24,7 +24,7 @@ import {
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { BreadcrumbsPageDependencies } from '../../../types';
 import { InternalUserUpdate } from '../../types';
 import { ResourceType } from '../../../../../common';
@@ -47,6 +47,8 @@ import { NameRow } from '../../utils/name-row';
 import { DocLinks } from '../../constants';
 import { constructErrorMessageAndLog } from '../../../error-utils';
 import { BackendRolePanel } from './backend-role-panel';
+import { DataSourceContext } from '../../app-router';
+import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 
 interface InternalUserEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -72,13 +74,19 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
   const [toasts, addToast, removeToast] = useToastState();
 
   const [isFormValid, setIsFormValid] = useState<boolean>(true);
+  const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
+  const { dataSource, setDataSource } = useContext(DataSourceContext)!;
 
   React.useEffect(() => {
     const action = props.action;
     if (action === 'edit' || action === 'duplicate') {
       const fetchData = async () => {
         try {
-          const user = await getUserDetail(props.coreStart.http, props.sourceUserName);
+          const user = await getUserDetail(
+            props.coreStart.http,
+            props.sourceUserName,
+            dataSource.id
+          );
           setAttributes(buildAttributeState(user.attributes));
           setBackendRoles(user.backend_roles);
           setUserName(generateResourceName(action, props.sourceUserName));
@@ -90,7 +98,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
 
       fetchData();
     }
-  }, [addToast, props.action, props.coreStart.http, props.sourceUserName]);
+  }, [addToast, props.action, props.coreStart.http, props.sourceUserName, dataSource.id]);
 
   const updateUserHandler = async () => {
     try {
@@ -117,12 +125,18 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
         updateObject.password = password;
       }
 
-      await updateUser(props.coreStart.http, userName, updateObject);
+      await updateUser(props.coreStart.http, userName, updateObject, dataSource.id);
 
       setCrossPageToast(buildUrl(ResourceType.users), {
         id: 'updateUserSucceeded',
         color: 'success',
-        title: getSuccessToastMessage('User', props.action, userName),
+        title: `${getSuccessToastMessage(
+          'User',
+          props.action,
+          userName,
+          dataSourceEnabled,
+          dataSource
+        )}`,
       });
       // Redirect to user listing
       window.location.href = buildHashUrl(ResourceType.users);
@@ -135,6 +149,12 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
 
   return (
     <>
+      <SecurityPluginTopNavMenu
+        {...props}
+        dataSourcePickerReadOnly={true}
+        setDataSource={setDataSource}
+        selectedDataSource={dataSource}
+      />
       {props.buildBreadcrumbs(TITLE_TEXT_DICT[props.action])}
       <EuiSpacer />
       <EuiPageHeader>
@@ -187,7 +207,13 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
           </EuiButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton id="submit" fill onClick={updateUserHandler} disabled={!isFormValid}>
+          <EuiButton
+            id="submit"
+            fill
+            onClick={updateUserHandler}
+            disabled={!isFormValid}
+            data-test-subj="submit-save-user"
+          >
             {props.action === 'edit' ? 'Save changes' : 'Create'}
           </EuiButton>
         </EuiFlexItem>

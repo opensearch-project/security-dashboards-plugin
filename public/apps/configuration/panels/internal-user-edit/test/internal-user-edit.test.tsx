@@ -31,6 +31,10 @@ jest.mock('../../../utils/toast-utils', () => ({
   createUnknownErrorToast: jest.fn(),
   useToastState: jest.fn().mockReturnValue([[], jest.fn(), jest.fn()]),
 }));
+jest.mock('react', () => ({
+  ...jest.requireActual('react'),
+  useContext: jest.fn().mockReturnValue({ dataSource: { id: 'test' }, setDataSource: jest.fn() }), // Mock the useContext hook to return dummy datasource and setdatasource function
+}));
 
 describe('Internal user edit', () => {
   const sampleUsername = 'user1';
@@ -52,7 +56,7 @@ describe('Internal user edit', () => {
         sourceUserName={sampleUsername}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -73,13 +77,13 @@ describe('Internal user edit', () => {
         sourceUserName={sampleUsername}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
     );
 
-    expect(getUserDetail).toBeCalledWith(mockCoreStart.http, sampleUsername);
+    expect(getUserDetail).toBeCalledWith(mockCoreStart.http, sampleUsername, 'test');
   });
 
   it('should not submit if password is empty on creation', () => {
@@ -92,7 +96,7 @@ describe('Internal user edit', () => {
         sourceUserName={sampleUsername}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -112,7 +116,7 @@ describe('Internal user edit', () => {
         sourceUserName={sampleUsername}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />
@@ -134,7 +138,7 @@ describe('Internal user edit', () => {
         sourceUserName={sampleUsername}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        navigation={{} as any}
+        depsStart={{} as any}
         params={{} as any}
         config={{} as any}
       />

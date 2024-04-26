@@ -91,6 +91,20 @@ Cypress.Commands.add('loginWithSamlMultiauth', () => {
   cy.get('button[id=btn-sign-in]').should('be.visible').click();
 });
 
+if (Cypress.env('LOGIN_AS_ADMIN')) {
+  // Define custom cy.visit() only if LOGIN_AS_ADMIN is true
+  Cypress.Commands.overwrite('visit', (orig, url, options = {}) => {
+    if (Cypress.env('LOGIN_AS_ADMIN')) {
+      options.auth = ADMIN_AUTH;
+      options.failOnStatusCode = false;
+      options.qs = {
+        security_tenant: 'private',
+      };
+    }
+    orig(url, options);
+  });
+}
+
 Cypress.Commands.add('shortenUrl', (data, tenant) => {
   cy.request({
     url: `http://localhost:5601${DASHBOARDS_API.SHORTEN_URL}`,

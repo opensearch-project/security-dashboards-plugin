@@ -17,7 +17,7 @@ import { map } from 'lodash';
 import { HttpStart } from '../../../../../../src/core/public';
 import { API_ENDPOINT_INTERNALUSERS } from '../constants';
 import { DataObject, InternalUser, ObjectsMessage } from '../types';
-import { httpDelete, httpGet } from './request-utils';
+import { createRequestContextWithDataSourceId } from './request-utils';
 import { getResourceUrl } from './resource-utils';
 
 export interface InternalUsersListing extends InternalUser {
@@ -32,21 +32,38 @@ export function transformUserData(rawData: DataObject<InternalUser>): InternalUs
   }));
 }
 
-export async function requestDeleteUsers(http: HttpStart, users: string[]) {
+export async function requestDeleteUsers(http: HttpStart, users: string[], dataSourceId: string) {
   for (const user of users) {
-    await httpDelete(http, getResourceUrl(API_ENDPOINT_INTERNALUSERS, user));
+    await createRequestContextWithDataSourceId(dataSourceId).httpDelete({
+      http,
+      url: getResourceUrl(API_ENDPOINT_INTERNALUSERS, user),
+    });
   }
 }
 
-async function getUserListRaw(http: HttpStart): Promise<ObjectsMessage<InternalUser>> {
-  return await httpGet<ObjectsMessage<InternalUser>>(http, API_ENDPOINT_INTERNALUSERS);
+export async function getUserListRaw(
+  http: HttpStart,
+  userType: string,
+  dataSourceId: string
+): Promise<ObjectsMessage<InternalUser>> {
+  return await createRequestContextWithDataSourceId(dataSourceId).httpGet<
+    ObjectsMessage<InternalUser>
+  >({ http, url: API_ENDPOINT_INTERNALUSERS });
 }
 
-export async function getUserList(http: HttpStart): Promise<InternalUsersListing[]> {
-  const rawData = await getUserListRaw(http);
+export async function getUserList(
+  http: HttpStart,
+  userType: string,
+  dataSourceId: string
+): Promise<InternalUsersListing[]> {
+  const rawData = await getUserListRaw(http, userType, dataSourceId);
   return transformUserData(rawData.data);
 }
 
-export async function fetchUserNameList(http: HttpStart): Promise<string[]> {
-  return Object.keys((await getUserListRaw(http)).data);
+export async function fetchUserNameList(
+  http: HttpStart,
+  userType: string,
+  dataSourceId: string
+): Promise<string[]> {
+  return Object.keys((await getUserListRaw(http, userType, dataSourceId)).data);
 }

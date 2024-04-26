@@ -33,3 +33,48 @@ export async function getEntityAsAdmin(root: Root, entityType: string, entityId:
     .get(root, `/api/v1/configuration/${entityType}/${entityId}`)
     .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
 }
+
+export async function createOrUpdateEntityAsAdminWithDataSource(
+  root: Root,
+  entityType: string,
+  entityId: string,
+  body: any,
+  dataSourceId: string
+) {
+  return await osdTestServer.request
+    .post(root, `/api/v1/configuration/${entityType}/${entityId}?dataSourceId=${dataSourceId}`)
+    .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
+    .send(body);
+}
+
+export async function getEntityAsAdminWithDataSource(
+  root: Root,
+  entityType: string,
+  entityId: string,
+  dataSourceId: string
+) {
+  return await osdTestServer.request
+    .get(root, `/api/v1/configuration/${entityType}/${entityId}?dataSourceId=${dataSourceId}`)
+    .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
+}
+
+export async function getAllEntitiesAsAdminWithDataSource(
+  root: Root,
+  entityType: string,
+  dataSourceId: string
+) {
+  return await osdTestServer.request
+    .get(root, `/api/v1/configuration/${entityType}?dataSourceId=${dataSourceId}`)
+    .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
+}
+
+export async function deleteEntityAsAdminWithDataSource(
+  root: Root,
+  entityType: string,
+  entityId: string,
+  dataSourceId: string
+) {
+  return await osdTestServer.request
+    .delete(root, `/api/v1/configuration/${entityType}/${entityId}?dataSourceId=${dataSourceId}`)
+    .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
+}

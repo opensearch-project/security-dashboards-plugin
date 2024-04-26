@@ -10,7 +10,9 @@
     "savedObjectsManagement"
   ],
   "optionalPlugins": [
-    "managementOverview"
+    "managementOverview",
+    "dataSource",
+    "dataSourceManagement"
   ],
   "server": true,
   "ui": true

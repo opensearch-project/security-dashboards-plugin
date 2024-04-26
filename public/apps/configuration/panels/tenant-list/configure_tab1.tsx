@@ -49,6 +49,7 @@ import {
   useToastState,
 } from '../../utils/toast-utils';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
+import { LOCAL_CLUSTER_ID } from '../../../../../common';
 
 export function ConfigureTab1(props: AppDependencies) {
   const [isMultiTenancyEnabled, setIsMultiTenancyEnabled] = useState(false);
@@ -191,7 +192,7 @@ export function ConfigureTab1(props: AppDependencies) {
           default_tenant: (await getDashboardsInfo(props.coreStart.http)).default_tenant,
         });
 
-        const rawTenantData = await fetchTenants(props.coreStart.http);
+        const rawTenantData = await fetchTenants(props.coreStart.http, LOCAL_CLUSTER_ID);
         const processedTenantData = transformTenantData(rawTenantData);
         setTenantData(processedTenantData);
       } catch (e) {

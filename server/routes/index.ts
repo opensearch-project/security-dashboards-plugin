@@ -19,11 +19,13 @@ import {
   ResponseError,
   IOpenSearchDashboardsResponse,
   OpenSearchDashboardsResponseFactory,
+  RequestHandlerContext,
+  OpenSearchDashboardsRequest,
 } from 'opensearch-dashboards/server';
 import { API_PREFIX, CONFIGURATION_API_PREFIX, isValidResourceName } from '../../common';
 
 // TODO: consider to extract entity CRUD operations and put it into a client class
-export function defineRoutes(router: IRouter) {
+export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
   const internalUserSchema = schema.object({
     description: schema.maybe(schema.string()),
     password: schema.maybe(schema.string()),
@@ -238,6 +240,9 @@ export function defineRoutes(router: IRouter) {
         params: schema.object({
           resourceName: schema.string(),
         }),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     async (
@@ -245,12 +250,14 @@ export function defineRoutes(router: IRouter) {
       request,
       response
     ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
-      const client = context.security_plugin.esClient.asScoped(request);
-      let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opensearch_security.listResource', {
-          resourceName: request.params.resourceName,
-        });
+        const esResp = await wrapRouteWithDataSource(
+          dataSourceEnabled,
+          context,
+          request,
+          'opensearch_security.listResource',
+          { resourceName: request.params.resourceName }
+        );
         return response.ok({
           body: {
             total: Object.keys(esResp).length,
@@ -343,6 +350,9 @@ export function defineRoutes(router: IRouter) {
           resourceName: schema.string(),
           id: schema.string(),
         }),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     async (
@@ -350,13 +360,17 @@ export function defineRoutes(router: IRouter) {
       request,
       response
     ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
-      const client = context.security_plugin.esClient.asScoped(request);
-      let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opensearch_security.getResource', {
-          resourceName: request.params.resourceName,
-          id: request.params.id,
-        });
+        const esResp = await wrapRouteWithDataSource(
+          dataSourceEnabled,
+          context,
+          request,
+          'opensearch_security.getResource',
+          {
+            resourceName: request.params.resourceName,
+            id: request.params.id,
+          }
+        );
         return response.ok({ body: esResp[request.params.id] });
       } catch (error) {
         return errorResponse(response, error);
@@ -377,6 +391,9 @@ export function defineRoutes(router: IRouter) {
             minLength: 1,
           }),
         }),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     async (
@@ -384,13 +401,17 @@ export function defineRoutes(router: IRouter) {
       request,
       response
     ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
-      const client = context.security_plugin.esClient.asScoped(request);
-      let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opensearch_security.deleteResource', {
-          resourceName: request.params.resourceName,
-          id: request.params.id,
-        });
+        const esResp = await wrapRouteWithDataSource(
+          dataSourceEnabled,
+          context,
+          request,
+          'opensearch_security.deleteResource',
+          {
+            resourceName: request.params.resourceName,
+            id: request.params.id,
+          }
+        );
         return response.ok({
           body: {
             message: esResp.message,
@@ -420,6 +441,9 @@ export function defineRoutes(router: IRouter) {
           resourceName: schema.string(),
         }),
         body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     async (
@@ -432,13 +456,17 @@ export function defineRoutes(router: IRouter) {
       } catch (error) {
         return response.badRequest({ body: error });
       }
-      const client = context.security_plugin.esClient.asScoped(request);
-      let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opensearch_security.saveResourceWithoutId', {
-          resourceName: request.params.resourceName,
-          body: request.body,
-        });
+        const esResp = await wrapRouteWithDataSource(
+          dataSourceEnabled,
+          context,
+          request,
+          'opensearch_security.saveResourceWithoutId',
+          {
+            resourceName: request.params.resourceName,
+            body: request.body,
+          }
+        );
         return response.ok({
           body: {
             message: esResp.message,
@@ -464,6 +492,9 @@ export function defineRoutes(router: IRouter) {
           }),
         }),
         body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     async (
@@ -476,14 +507,18 @@ export function defineRoutes(router: IRouter) {
       } catch (error) {
         return response.badRequest({ body: error });
       }
-      const client = context.security_plugin.esClient.asScoped(request);
-      let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opensearch_security.saveResource', {
-          resourceName: request.params.resourceName,
-          id: request.params.id,
-          body: request.body,
-        });
+        const esResp = await wrapRouteWithDataSource(
+          dataSourceEnabled,
+          context,
+          request,
+          'opensearch_security.saveResource',
+          {
+            resourceName: request.params.resourceName,
+            id: request.params.id,
+            body: request.body,
+          }
+        );
         return response.ok({
           body: {
             message: esResp.message,
@@ -625,18 +660,24 @@ export function defineRoutes(router: IRouter) {
   router.get(
     {
       path: `${API_PREFIX}/configuration/audit`,
-      validate: false,
+      validate: {
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
+      },
     },
     async (
       context,
       request,
       response
     ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
-      const client = context.security_plugin.esClient.asScoped(request);
-
-      let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opensearch_security.getAudit');
+        const esResp = await wrapRouteWithDataSource(
+          dataSourceEnabled,
+          context,
+          request,
+          'opensearch_security.getAudit'
+        );
 
         return response.ok({
           body: esResp,
@@ -710,15 +751,22 @@ export function defineRoutes(router: IRouter) {
       path: `${API_PREFIX}/configuration/audit/config`,
       validate: {
         body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
       },
     },
     async (context, request, response) => {
-      const client = context.security_plugin.esClient.asScoped(request);
-      let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opensearch_security.saveAudit', {
-          body: request.body,
-        });
+        const esResp = await wrapRouteWithDataSource(
+          dataSourceEnabled,
+          context,
+          request,
+          'opensearch_security.saveAudit',
+          {
+            body: request.body,
+          }
+        );
         return response.ok({
           body: {
             message: esResp.message,
@@ -738,16 +786,23 @@ export function defineRoutes(router: IRouter) {
   router.delete(
     {
       path: `${API_PREFIX}/configuration/cache`,
-      validate: false,
+      validate: {
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
+      },
     },
     async (context, request, response) => {
-      const client = context.security_plugin.esClient.asScoped(request);
-      let esResponse;
       try {
-        esResponse = await client.callAsCurrentUser('opensearch_security.clearCache');
+        const esResp = await wrapRouteWithDataSource(
+          dataSourceEnabled,
+          context,
+          request,
+          'opensearch_security.clearCache'
+        );
         return response.ok({
           body: {
-            message: esResponse.message,
+            message: esResp.message,
           },
         });
       } catch (error) {
@@ -875,6 +930,27 @@ export function defineRoutes(router: IRouter) {
     }
   );
 }
+
+/**
+ * A helper function to wrap API calls with the appropriate client. If the multiple datasources feature is disabled, it will use
+ * the existing client provided by the security plugin. Otherwise, it will use the one provided by the datasource plugin based on the id
+ * that we extract via the UI.
+ */
+const wrapRouteWithDataSource = async (
+  dataSourceEnabled: boolean,
+  context: RequestHandlerContext,
+  request: OpenSearchDashboardsRequest<unknown, any, any>,
+  endpoint: string,
+  body?: Record<string, string>
+) => {
+  if (!dataSourceEnabled || !request.query?.dataSourceId) {
+    const client = context.security_plugin.esClient.asScoped(request);
+    return await client.callAsCurrentUser(endpoint, body);
+  } else {
+    const client = context.dataSource.opensearch.legacy.getClient(request.query?.dataSourceId);
+    return await client.callAPI(endpoint, body);
+  }
+};
 
 function parseEsErrorResponse(error: any) {
   if (error.response) {

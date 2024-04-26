@@ -36,6 +36,11 @@ jest.mock('../../utils/context-menu', () => ({
 jest.mock('../../utils/delete-confirm-modal-utils', () => ({
   useDeleteConfirmState: jest.fn().mockReturnValue([jest.fn(), '']),
 }));
+jest.mock('react', () => ({
+  ...jest.requireActual('react'),
+  useContext: jest.fn().mockReturnValue({ dataSource: { id: 'test' }, setDataSource: jest.fn() }), // Mock the useContext hook to return dummy datasource and setdatasource function
+}));
+
 // eslint-disable-next-line
 const mockRoleListUtils = require('../../utils/role-list-utils');
 

@@ -15,11 +15,14 @@
 
 import { HttpStart } from 'opensearch-dashboards/public';
 import { API_ENDPOINT_AUTHINFO } from '../../common';
-import { httpGet } from '../apps/configuration/utils/request-utils';
 import { AuthInfo } from '../types';
+import { createLocalClusterRequestContext } from '../apps/configuration/utils/request-utils';
 
 export async function getAuthInfo(http: HttpStart) {
-  return await httpGet<AuthInfo>(http, API_ENDPOINT_AUTHINFO);
+  return await createLocalClusterRequestContext().httpGet<AuthInfo>({
+    http,
+    url: API_ENDPOINT_AUTHINFO,
+  });
 }
 
 export async function getCurrentUser(http: HttpStart) {

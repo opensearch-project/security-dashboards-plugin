@@ -2,6 +2,40 @@
 
 exports[`Role view basic rendering when permission tab is selected 1`] = `
 <Fragment>
+  <Memo()
+    buildBreadcrumbs={
+      [MockFunction] {
+        "calls": Array [
+          Array [
+            "role",
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      }
+    }
+    config={Object {}}
+    coreStart={
+      Object {
+        "http": 1,
+      }
+    }
+    dataSourcePickerReadOnly={true}
+    depsStart={Object {}}
+    params={Object {}}
+    prevAction=""
+    roleName="role"
+    selectedDataSource={
+      Object {
+        "id": "test",
+      }
+    }
+    setDataSource={[MockFunction]}
+  />
   <EuiPageContentHeader>
     <EuiPageContentHeaderSection>
       <EuiTitle
@@ -80,6 +114,7 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
                 "http": 1,
               }
             }
+            dataSourceId="test"
             errorFlag={false}
             isReserved={false}
             loading={false}
@@ -129,6 +164,7 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
                   "http": 1,
                 }
               }
+              dataSourceId="test"
               errorFlag={false}
               isReserved={false}
               loading={false}
@@ -293,6 +329,40 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
 
 exports[`Role view renders when mapped user tab is selected 1`] = `
 <Fragment>
+  <Memo()
+    buildBreadcrumbs={
+      [MockFunction] {
+        "calls": Array [
+          Array [
+            "role",
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      }
+    }
+    config={Object {}}
+    coreStart={
+      Object {
+        "http": 1,
+      }
+    }
+    dataSourcePickerReadOnly={true}
+    depsStart={Object {}}
+    params={Object {}}
+    prevAction="mapuser"
+    roleName="role"
+    selectedDataSource={
+      Object {
+        "id": "test",
+      }
+    }
+    setDataSource={[MockFunction]}
+  />
   <EuiPageContentHeader>
     <EuiPageContentHeaderSection>
       <EuiTitle
@@ -512,6 +582,7 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
                   "http": 1,
                 }
               }
+              dataSourceId="test"
               errorFlag={false}
               isReserved={false}
               loading={false}

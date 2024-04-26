@@ -14,6 +14,10 @@ inputs:
     description: 'The version of security plugin that should be used, e.g "2.6.0.0"'
     required: true
 
+  download-location:
+    description: 'The location of where to download the plugin'
+    required: true
+
 runs:
   using: "composite"
   steps:
@@ -22,26 +26,6 @@ runs:
         -DremoteRepositories=https://aws.oss.sonatype.org/content/repositories/snapshots/ \
         -Dartifact=org.opensearch.plugin:${{ inputs.plugin-name }}:${{ inputs.plugin-version }}-SNAPSHOT:zip \
         -Dtransitive=false \
-        -Ddest=${{ inputs.plugin-name }}.zip
+        -Ddest=${{ inputs.download-location }}.zip
       shell: bash
-
-    - name: Create Setup Script for Linux
-      if: ${{ runner.os == 'Linux' }}
-      run: |
-        cat > setup.sh <<'EOF'
-        chmod +x  ./opensearch-${{ inputs.opensearch-version}}-SNAPSHOT/plugins/${{ inputs.plugin-name }}/tools/install_demo_configuration.sh 
-        /bin/bash -c "yes | ./opensearch-${{ inputs.opensearch-version}}-SNAPSHOT/plugins/${{ inputs.plugin-name }}/tools/install_demo_configuration.sh -t"
-        echo "plugins.security.unsupported.restapi.allow_securityconfig_modification: true" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT/config/opensearch.yml
-        echo "cluster.routing.allocation.disk.threshold_enabled: false" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT/config/opensearch.yml
-        EOF
-      shell: bash
-
-    - name: Create Setup Script for Windows
-      if: ${{ runner.os == 'Windows' }}
-      run: |
-        New-Item .\setup.bat -type file
-        Set-Content .\setup.bat -Value "powershell.exe -noexit -command `".\opensearch-${{ inputs.opensearch-version}}-SNAPSHOT\plugins\${{ inputs.plugin-name }}\tools\install_demo_configuration.bat -y -i -c -t`""
-        Add-Content -Path .\setup.bat -Value "echo plugins.security.unsupported.restapi.allow_securityconfig_modification: true >> .\opensearch-${{ inputs.opensearch-version}}-SNAPSHOT\config\opensearch.yml"
-        Add-Content -Path .\setup.bat -Value "echo cluster.routing.allocation.disk.threshold_enabled: false >> .\opensearch-${{ inputs.opensearch-version}}-SNAPSHOT\config\opensearch.yml"
-        Get-Content .\setup.bat
-      shell: pwsh
+      
