@@ -111,7 +111,11 @@ export function UserList(props: AppDependencies) {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const userDataPromise = getUserList(props.coreStart.http, dataSource.id);
+        const userDataPromise = getUserList(
+          props.coreStart.http,
+          ResourceType.users,
+          dataSource.id
+        );
         setCurrentUsername((await getAuthInfo(props.coreStart.http)).user_name);
         setUserData(await userDataPromise);
       } catch (e) {
