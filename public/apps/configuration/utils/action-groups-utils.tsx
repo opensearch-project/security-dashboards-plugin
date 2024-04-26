@@ -17,7 +17,7 @@ import { HttpStart } from 'opensearch-dashboards/public';
 import { map } from 'lodash';
 import { API_ENDPOINT_ACTIONGROUPS, CLUSTER_PERMISSIONS, INDEX_PERMISSIONS } from '../constants';
 import { DataObject, ActionGroupItem, ActionGroupUpdate, ObjectsMessage } from '../types';
-import { httpDelete, httpGet, httpPost } from './request-utils';
+import { createRequestContextWithDataSourceId } from './request-utils';
 import { getResourceUrl } from './resource-utils';
 
 export interface PermissionListingItem {
@@ -29,11 +29,16 @@ export interface PermissionListingItem {
   hasIndexPermission: boolean;
 }
 
-export async function fetchActionGroups(http: HttpStart): Promise<DataObject<ActionGroupItem>> {
-  const actiongroups = await httpGet<ObjectsMessage<ActionGroupItem>>(
+export async function fetchActionGroups(
+  http: HttpStart,
+  dataSourceId: string
+): Promise<DataObject<ActionGroupItem>> {
+  const actiongroups = await createRequestContextWithDataSourceId(dataSourceId).httpGet<
+    ObjectsMessage<ActionGroupItem>
+  >({
     http,
-    API_ENDPOINT_ACTIONGROUPS
-  );
+    url: API_ENDPOINT_ACTIONGROUPS,
+  });
   return actiongroups.data;
 }
 
@@ -48,10 +53,6 @@ export function transformActionGroupsToListingFormat(
     hasClusterPermission: value.type === 'cluster' || value.type === 'all',
     hasIndexPermission: value.type === 'index' || value.type === 'all',
   }));
-}
-
-export async function fetchActionGroupListing(http: HttpStart): Promise<PermissionListingItem[]> {
-  return transformActionGroupsToListingFormat(await fetchActionGroups(http));
 }
 
 function getClusterSinglePermissions(): PermissionListingItem[] {
@@ -76,10 +77,6 @@ function getIndexSinglePermissions(): PermissionListingItem[] {
   }));
 }
 
-export async function getAllPermissionsListing(http: HttpStart): Promise<PermissionListingItem[]> {
-  return mergeAllPermissions(await fetchActionGroups(http));
-}
-
 export async function mergeAllPermissions(
   actionGroups: DataObject<ActionGroupItem>
 ): Promise<PermissionListingItem[]> {
@@ -91,13 +88,25 @@ export async function mergeAllPermissions(
 export async function updateActionGroup(
   http: HttpStart,
   groupName: string,
-  updateObject: ActionGroupUpdate
+  updateObject: ActionGroupUpdate,
+  dataSourceId: string
 ): Promise<ActionGroupUpdate> {
-  return await httpPost(http, getResourceUrl(API_ENDPOINT_ACTIONGROUPS, groupName), updateObject);
+  return await createRequestContextWithDataSourceId(dataSourceId).httpPost({
+    http,
+    url: getResourceUrl(API_ENDPOINT_ACTIONGROUPS, groupName),
+    body: updateObject,
+  });
 }
 
-export async function requestDeleteActionGroups(http: HttpStart, groups: string[]) {
+export async function requestDeleteActionGroups(
+  http: HttpStart,
+  groups: string[],
+  dataSourceId: string
+) {
   for (const group of groups) {
-    await httpDelete(http, getResourceUrl(API_ENDPOINT_ACTIONGROUPS, group));
+    await createRequestContextWithDataSourceId(dataSourceId).httpDelete({
+      http,
+      url: getResourceUrl(API_ENDPOINT_ACTIONGROUPS, group),
+    });
   }
 }

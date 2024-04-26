@@ -1,0 +1,109 @@
+name: E2E multi datasources enabled workflow
+
+on: [ push, pull_request ]
+
+env:
+  OPENSEARCH_VERSION: '3.0.0'
+  CI: 1
+  # avoid warnings like "tput: No value for $TERM and no -T specified"
+  TERM: xterm
+  PLUGIN_NAME: opensearch-security
+  OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
+  
+jobs:
+  tests:
+    name: Run Cypress multidatasources tests
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest ]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v3
+
+      - name: Set env
+        run: |
+          opensearch_version=$(node -p "require('./package.json').opensearchDashboards.version")
+          plugin_version=$(node -p "require('./package.json').version")
+          echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
+          echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
+        shell: bash
+
+      # Add Custom Configuration to differentiate between local and remote cluster
+      - name: Create Custom Configuration for Linux
+        if: ${{ runner.os == 'Linux'}}
+        run: |
+          echo "Creating new custom configuration"
+          cat << 'EOT' > config_custom.yml
+          ---
+          _meta:
+            type: "config"
+            config_version: 2
+          config:
+            dynamic:
+              http:
+                anonymous_auth_enabled: false
+              authc:
+                basic_internal_auth_domain:
+                  description: "Authenticate via HTTP Basic against internal users database"
+                  http_enabled: true
+                  transport_enabled: true
+                  order: 0
+                  http_authenticator:
+                    type: basic
+                    challenge: false
+                  authentication_backend:
+                    type: intern
+          EOT
+
+      - name: Download security plugin and create setup scripts
+        uses: ./.github/actions/download-plugin
+        with:
+          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
+          plugin-name: ${{ env.PLUGIN_NAME }}
+          plugin-version: ${{ env.PLUGIN_VERSION }}
+          download-location: ${{env.PLUGIN_NAME}}
+      
+      - name: Run Opensearch with A Single Plugin
+        uses: derek-ho/start-opensearch@v4
+        with:
+          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
+          plugins: "file:$(pwd)/opensearch-security.zip"
+          security-enabled: true
+          admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
+          security_config_file: config_custom.yml
+          port: 9202
+
+      - name: Check OpenSearch is running
+          # Verify that the server is operational
+        run: |
+          curl https://localhost:9202/_cat/plugins -v -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} -k
+        shell: bash
+
+      # Configure the Dashboard for multi datasources
+      - name: Create OpenSearch Dashboards Config
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          cat << 'EOT' > opensearch_dashboards_multidatasources.yml
+          server.host: "localhost"
+          opensearch.hosts: ["https://localhost:9200"]
+          opensearch.ssl.verificationMode: none
+          opensearch.username: "kibanaserver"
+          opensearch.password: "kibanaserver"
+          opensearch.requestHeadersWhitelist: [ authorization,securitytenant ]
+          opensearch_security.multitenancy.enabled: true
+          opensearch_security.multitenancy.tenants.preferred: ["Private", "Global"]
+          opensearch_security.readonly_mode.roles: ["kibana_read_only"]
+          opensearch_security.cookie.secure: false
+          data_source.enabled: true
+          home.disableWelcomeScreen: true
+          data_source.ssl.verificationMode: none
+          EOT
+
+      - name: Run Cypress Tests
+        uses: ./.github/actions/run-cypress-tests
+        with:
+          dashboards_config_file: opensearch_dashboards_multidatasources.yml
+          yarn_command: 'yarn cypress:run --browser chrome --headless --env LOGIN_AS_ADMIN=true --spec "test/cypress/e2e/multi-datasources/multi_datasources_enabled.spec.js"'

@@ -15,14 +15,13 @@
 
 import { HttpStart } from 'opensearch-dashboards/public';
 import { API_ENDPOINT_TENANCY_CONFIGS } from '../constants';
-import { httpGet, httpPost } from './request-utils';
 import { TenancyConfigSettings } from '../panels/tenancy-config/types';
-
-export async function updateTenancyConfig(http: HttpStart, updateObject: TenancyConfigSettings) {
-  return await httpPost(http, API_ENDPOINT_TENANCY_CONFIGS, updateObject);
-}
+import { createLocalClusterRequestContext } from './request-utils';
 
 export async function getTenancyConfig(http: HttpStart): Promise<TenancyConfigSettings> {
-  const rawConfiguration = await httpGet<any>(http, API_ENDPOINT_TENANCY_CONFIGS);
+  const rawConfiguration = await createLocalClusterRequestContext().httpGet<any>({
+    http,
+    url: API_ENDPOINT_TENANCY_CONFIGS,
+  });
   return rawConfiguration;
 }

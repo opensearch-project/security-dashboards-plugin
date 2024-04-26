@@ -26,7 +26,7 @@ import {
   EuiTitle,
   EuiGlobalToastList,
 } from '@elastic/eui';
-import React from 'react';
+import React, { useContext } from 'react';
 import { FormattedMessage } from '@osd/i18n/react';
 import { AppDependencies } from '../../types';
 import { buildHashUrl } from '../utils/url-builder';
@@ -34,8 +34,11 @@ import { Action } from '../types';
 import { ResourceType } from '../../../../common';
 import { API_ENDPOINT_CACHE, DocLinks } from '../constants';
 import { ExternalLink, ExternalLinkButton } from '../utils/display-utils';
-import { httpDelete } from '../utils/request-utils';
+import { createRequestContextWithDataSourceId } from '../utils/request-utils';
 import { createSuccessToast, createUnknownErrorToast, useToastState } from '../utils/toast-utils';
+import { SecurityPluginTopNavMenu } from '../top-nav-menu';
+import { DataSourceContext } from '../app-router';
+import { getClusterInfo } from '../../../utils/datasource-utils';
 
 const addBackendStep = {
   title: 'Add backends',
@@ -159,6 +162,9 @@ const setOfSteps = [
 ];
 
 export function GetStarted(props: AppDependencies) {
+  const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
+  const { dataSource, setDataSource } = useContext(DataSourceContext)!;
+
   let steps;
   if (props.config.ui.backend_configurable) {
     steps = [addBackendStep, ...setOfSteps];
@@ -170,6 +176,12 @@ export function GetStarted(props: AppDependencies) {
   return (
     <>
       <div className="panel-restrict-width">
+        <SecurityPluginTopNavMenu
+          {...props}
+          dataSourcePickerReadOnly={false}
+          setDataSource={setDataSource}
+          selectedDataSource={dataSource}
+        />
         <EuiPageHeader>
           <EuiTitle size="l">
             <h1>Get started</h1>
@@ -236,16 +248,24 @@ export function GetStarted(props: AppDependencies) {
               data-test-subj="purge-cache"
               onClick={async () => {
                 try {
-                  await httpDelete(props.coreStart.http, API_ENDPOINT_CACHE);
+                  await createRequestContextWithDataSourceId(dataSource.id).httpDelete({
+                    http: props.coreStart.http,
+                    url: API_ENDPOINT_CACHE,
+                  });
                   addToast(
                     createSuccessToast(
                       'cache-flush-success',
-                      'Cache purge successful',
-                      'Cache purge successful'
+                      `Cache purge successful ${getClusterInfo(dataSourceEnabled, dataSource)}`,
+                      `Cache purge successful ${getClusterInfo(dataSourceEnabled, dataSource)}`
                     )
                   );
                 } catch (err) {
-                  addToast(createUnknownErrorToast('cache-flush-failed', 'purge cache'));
+                  addToast(
+                    createUnknownErrorToast(
+                      'cache-flush-failed',
+                      `purge cache ${getClusterInfo(dataSourceEnabled, dataSource)}`
+                    )
+                  );
                 }
               }}
             >

@@ -13,29 +13,100 @@
  *   permissions and limitations under the License.
  */
 
-import { HttpStart, HttpHandler } from 'opensearch-dashboards/public';
+import { HttpStart, HttpHandler, HttpFetchQuery } from 'opensearch-dashboards/public';
+import { LOCAL_CLUSTER_ID } from '../../../../common';
 
-export async function request<T>(requestFunc: HttpHandler, url: string, body?: object): Promise<T> {
-  if (body) {
-    return (await requestFunc(url, { body: JSON.stringify(body) })) as T;
+interface BaseRequestParams {
+  url: string;
+  body?: object;
+}
+
+interface BaseRequestParamsWithIgnores extends BaseRequestParams {
+  ignores: number[];
+}
+
+interface CreateRequestParams extends BaseRequestParams {
+  http: HttpStart;
+}
+
+interface ExecuteRequestParams extends BaseRequestParams {
+  requestFunc: HttpHandler;
+  query: HttpFetchQuery;
+}
+
+interface CreateRequestWithIgnoreParams extends BaseRequestParamsWithIgnores {
+  http: HttpStart;
+}
+interface ExecuteRequestWithIgnoreParams extends BaseRequestParamsWithIgnores {
+  requestFunc: HttpHandler;
+  query: HttpFetchQuery;
+}
+
+export function createRequestContextWithDataSourceId(dataSourceId: string) {
+  if (dataSourceId === undefined) {
+    throw new Error('dataSourceId is not present');
   }
-  return (await requestFunc(url)) as T;
+  return new RequestContext(dataSourceId);
 }
 
-export async function httpGet<T>(http: HttpStart, url: string): Promise<T> {
-  return await request<T>(http.get, url);
+export function createLocalClusterRequestContext() {
+  return new RequestContext(LOCAL_CLUSTER_ID);
 }
 
-export async function httpPost<T>(http: HttpStart, url: string, body?: object): Promise<T> {
-  return await request<T>(http.post, url, body);
+export class RequestContext {
+  query: HttpFetchQuery;
+  constructor(private readonly dataSourceId: string) {
+    this.query = {
+      dataSourceId: this.dataSourceId,
+    };
+  }
+
+  public async httpGet<T>(params: CreateRequestParams): Promise<T> {
+    const { http, url, body } = params;
+    return await request<T>({ requestFunc: http.get, url, body, query: this.query });
+  }
+
+  public async httpPost<T>(params: CreateRequestParams): Promise<T> {
+    const { http, url, body } = params;
+    return await request<T>({ requestFunc: http.post, url, body, query: this.query });
+  }
+
+  public async httpPut<T>(params: CreateRequestParams): Promise<T> {
+    const { http, url, body } = params;
+    return await request<T>({ requestFunc: http.put, url, body, query: this.query });
+  }
+
+  public async httpDelete<T>(params: CreateRequestParams): Promise<T> {
+    const { http, url, body } = params;
+    return await request<T>({ requestFunc: http.delete, url, body, query: this.query });
+  }
+
+  public async httpDeleteWithIgnores<T>(
+    params: CreateRequestWithIgnoreParams
+  ): Promise<T | undefined> {
+    const { http, url, ignores } = params;
+    return await requestWithIgnores<T>({
+      requestFunc: http.delete,
+      url,
+      ignores,
+      query: this.query,
+    });
+  }
+
+  public async httpGetWithIgnores<T>(
+    params: CreateRequestWithIgnoreParams
+  ): Promise<T | undefined> {
+    const { http, url, ignores } = params;
+    return await requestWithIgnores<T>({ requestFunc: http.get, url, ignores, query: this.query });
+  }
 }
 
-export async function httpPut<T>(http: HttpStart, url: string, body?: object): Promise<T> {
-  return await request<T>(http.put, url, body);
-}
-
-export async function httpDelete<T>(http: HttpStart, url: string): Promise<T> {
-  return await request<T>(http.delete, url);
+export async function request<T>(params: ExecuteRequestParams): Promise<T> {
+  const { requestFunc, url, body, query } = params;
+  if (body) {
+    return (await requestFunc(url, { body: JSON.stringify(body), query })) as T;
+  }
+  return (await requestFunc(url, { query })) as T;
 }
 
 /**
@@ -45,40 +116,14 @@ export async function httpDelete<T>(http: HttpStart, url: string): Promise<T> {
  * @param ignores the error codes to be ignored
  */
 export async function requestWithIgnores<T>(
-  requestFunc: HttpHandler,
-  url: string,
-  ignores: number[],
-  body?: object
+  params: ExecuteRequestWithIgnoreParams
 ): Promise<T | undefined> {
+  const { requestFunc, url, ignores, body, query } = params;
   try {
-    return await request<T>(requestFunc, url, body);
+    return await request<T>({ requestFunc, url, body, query });
   } catch (e) {
     if (!ignores.includes(e?.response?.status)) {
       throw e;
     }
   }
-}
-
-export async function httpGetWithIgnores<T>(
-  http: HttpStart,
-  url: string,
-  ignores: number[]
-): Promise<T | undefined> {
-  return await requestWithIgnores<T>(http.get, url, ignores);
-}
-
-export async function httpPostWithIgnores<T>(
-  http: HttpStart,
-  url: string,
-  ignores: number[]
-): Promise<T | undefined> {
-  return await requestWithIgnores<T>(http.post, url, ignores);
-}
-
-export async function httpDeleteWithIgnores<T>(
-  http: HttpStart,
-  url: string,
-  ignores: number[]
-): Promise<T | undefined> {
-  return await requestWithIgnores<T>(http.delete, url, ignores);
 }

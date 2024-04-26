@@ -23,7 +23,7 @@ import {
   EuiTitle,
   EuiGlobalToastList,
 } from '@elastic/eui';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { BreadcrumbsPageDependencies } from '../../../types';
 import { InternalUsersPanel } from './users-panel';
 import {
@@ -43,6 +43,9 @@ import { createErrorToast, createUnknownErrorToast, useToastState } from '../../
 import { DocLinks } from '../../constants';
 import { setCrossPageToast } from '../../utils/storage-utils';
 import { ExternalLink } from '../../utils/display-utils';
+import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
+import { DataSourceContext } from '../../app-router';
+import { getClusterInfo } from '../../../../utils/datasource-utils';
 
 interface RoleEditMappedUserProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -60,13 +63,16 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
   const [userNames, setUserNames] = useState<string[]>([]);
   const [hosts, setHosts] = React.useState<string[]>([]);
   const [toasts, addToast, removeToast] = useToastState();
+  const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
+  const { dataSource, setDataSource } = useContext(DataSourceContext)!;
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
         const originalRoleMapData: RoleMappingDetail | undefined = await getRoleMappingData(
           props.coreStart.http,
-          props.roleName
+          props.roleName,
+          dataSource.id
         );
         if (originalRoleMapData) {
           setInternalUsers(originalRoleMapData.users.map(stringToComboBoxOption));
@@ -80,12 +86,14 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
     };
 
     fetchData();
-  }, [addToast, props.coreStart.http, props.roleName]);
+  }, [addToast, props.coreStart.http, props.roleName, dataSource.id]);
 
   React.useEffect(() => {
     const fetchInternalUserNames = async () => {
       try {
-        setUserNames(await fetchUserNameList(props.coreStart.http));
+        setUserNames(
+          await fetchUserNameList(props.coreStart.http, ResourceType.users, dataSource.id)
+        );
       } catch (e) {
         addToast(createUnknownErrorToast('fetchInternalUserNames', 'load data'));
         console.error(e);
@@ -93,7 +101,7 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
     };
 
     fetchInternalUserNames();
-  }, [addToast, props.coreStart.http]);
+  }, [addToast, props.coreStart.http, dataSource.id]);
   const internalUserOptions = userNames.map(stringToComboBoxOption);
 
   const updateRoleMappingHandler = async () => {
@@ -108,13 +116,16 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
         hosts,
       };
 
-      await updateRoleMapping(props.coreStart.http, props.roleName, updateObject);
+      await updateRoleMapping(props.coreStart.http, props.roleName, updateObject, dataSource.id);
       setCrossPageToast(
         buildUrl(ResourceType.roles, Action.view, props.roleName, SubAction.mapuser),
         {
           id: 'updateRoleMappingSucceeded',
           color: 'success',
-          title: 'Role "' + props.roleName + '" successfully updated.',
+          title: `Role "${props.roleName}" successfully updated ${getClusterInfo(
+            dataSourceEnabled,
+            dataSource
+          )}`,
         }
       );
       window.location.href = buildHashUrl(
@@ -135,6 +146,12 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
 
   return (
     <>
+      <SecurityPluginTopNavMenu
+        {...props}
+        dataSourcePickerReadOnly={true}
+        setDataSource={setDataSource}
+        selectedDataSource={dataSource}
+      />
       {props.buildBreadcrumbs(props.roleName, TITLE_TEXT_DICT[SubAction.mapuser])}
       <EuiPageHeader>
         <EuiText size="xs" color="subdued">
