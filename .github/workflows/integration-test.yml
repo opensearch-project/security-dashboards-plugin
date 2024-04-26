@@ -6,7 +6,7 @@ env:
   TEST_BROWSER_HEADLESS: 1
   CI: 1
   PLUGIN_NAME: opensearch-security
-  OPENSEARCH_INITIAL_ADMIN_PASSWORD: admin
+  OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
 
 jobs:
   tests:
@@ -15,7 +15,6 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest , windows-latest ]
-        datasource_version: [2.4.0, 2.13.0, 3.0.0]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -38,10 +37,10 @@ jobs:
       - name: Download security plugin and create setup scripts for remote cluster
         uses: ./.github/actions/download-plugin
         with:
-          opensearch-version: ${{ matrix.datasource_version }}
+          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugin-name: ${{ env.PLUGIN_NAME }}
-          download-location: ${{env.PLUGIN_NAME}}-${{matrix.datasource_version}}
-          plugin-version: ${{matrix.datasource_version}}.0
+          download-location: ${{env.PLUGIN_NAME}}-${{ env.OPENSEARCH_VERSION }}
+          plugin-version: ${{ env.PLUGIN_VERSION }}
 
       - name: Download security plugin and create setup scripts for local cluster
         uses: ./.github/actions/download-plugin
@@ -54,8 +53,8 @@ jobs:
       - name: Run Opensearch with A Single Plugin Remote Cluster
         uses: derek-ho/start-opensearch@v4
         with:
-          opensearch-version: ${{ matrix.datasource_version }}
-          plugins: "file:$(pwd)/opensearch-security-${{matrix.datasource_version}}.zip"
+          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
+          plugins: "file:$(pwd)/opensearch-security-${{ env.OPENSEARCH_VERSION }}.zip"
           security-enabled: true
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
           security_config_file: ${{ inputs.security_config_file }}
