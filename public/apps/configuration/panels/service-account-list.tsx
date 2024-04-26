@@ -35,13 +35,15 @@ import { getAuthInfo } from '../../../utils/auth-info-utils';
 import { AppDependencies } from '../../types';
 import { API_ENDPOINT_SERVICEACCOUNTS, DocLinks } from '../constants';
 import { Action } from '../types';
-import { ResourceType } from '../../../../common';
+import { LOCAL_CLUSTER_ID, ResourceType } from '../../../../common';
 import { EMPTY_FIELD_VALUE } from '../ui-constants';
 import { useContextMenuState } from '../utils/context-menu';
 import { ExternalLink, tableItemsUIProps, truncatedListView } from '../utils/display-utils';
 import { getUserList, InternalUsersListing } from '../utils/internal-user-list-utils';
 import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { buildHashUrl } from '../utils/url-builder';
+import { LocalCluster } from '../app-router';
+import { SecurityPluginTopNavMenu } from '../top-nav-menu';
 
 export function dictView(items: Dictionary<string>) {
   if (isEmpty(items)) {
@@ -102,7 +104,11 @@ export function ServiceAccountList(props: AppDependencies) {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const userDataPromise = getUserList(props.coreStart.http, ResourceType.serviceAccounts);
+        const userDataPromise = getUserList(
+          props.coreStart.http,
+          ResourceType.serviceAccounts,
+          LOCAL_CLUSTER_ID
+        );
         setCurrentUsername((await getAuthInfo(props.coreStart.http)).user_name);
         setUserData(await userDataPromise);
       } catch (e) {
@@ -159,6 +165,12 @@ export function ServiceAccountList(props: AppDependencies) {
 
   return (
     <>
+      <SecurityPluginTopNavMenu
+        {...props}
+        dataSourcePickerReadOnly={true}
+        setDataSource={() => {}}
+        selectedDataSource={LocalCluster}
+      />
       <EuiPageHeader>
         <EuiTitle size="l">
           <h1>Service accounts</h1>

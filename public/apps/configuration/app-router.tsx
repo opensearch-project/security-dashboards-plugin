@@ -15,8 +15,9 @@
 
 import { EuiBreadcrumb, EuiPage, EuiPageBody, EuiPageSideBar } from '@elastic/eui';
 import { flow, partial } from 'lodash';
-import React from 'react';
+import React, { createContext, useState } from 'react';
 import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
 import { AppDependencies } from '../types';
 import { AuditLogging } from './panels/audit-logging/audit-logging';
 import { AuditLoggingEditSettings } from './panels/audit-logging/audit-logging-edit-settings';
@@ -40,6 +41,7 @@ import { Action, RouteItem, SubAction } from './types';
 import { ResourceType } from '../../../common';
 import { buildHashUrl, buildUrl } from './utils/url-builder';
 import { CrossPageToast } from './cross-page-toast';
+import { getDataSourceFromUrl } from '../../utils/datasource-utils';
 
 const LANDING_PAGE_URL = '/getstarted';
 
@@ -143,140 +145,154 @@ function decodeParams(params: { [k: string]: string }): any {
   }, {});
 }
 
+export interface DataSourceContextType {
+  dataSource: DataSourceOption;
+  setDataSource: React.Dispatch<React.SetStateAction<DataSourceOption>>;
+}
+
+export const LocalCluster = { label: 'Local cluster', id: '' };
+
+export const DataSourceContext = createContext<DataSourceContextType | null>(null);
+
 export function AppRouter(props: AppDependencies) {
   const setGlobalBreadcrumbs = flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs);
+  const dataSourceFromUrl = getDataSourceFromUrl();
+
+  const [dataSource, setDataSource] = useState<DataSourceOption>(dataSourceFromUrl);
 
   return (
-    <Router basename={props.params.appBasePath}>
-      <EuiPage>
-        {allNavPanelUrls.map((route) => (
-          // Create different routes to update the 'selected' nav item .
-          <Route key={route} path={route} exact>
-            <EuiPageSideBar>
-              <NavPanel items={ROUTE_LIST} />
-            </EuiPageSideBar>
-          </Route>
-        ))}
-        <EuiPageBody>
-          <Switch>
-            <Route
-              path={buildUrl(ResourceType.roles, Action.edit) + '/:roleName/' + SubAction.mapuser}
-              render={(match) => (
-                <RoleEditMappedUser
-                  buildBreadcrumbs={partial(setGlobalBreadcrumbs, ResourceType.roles)}
-                  {...{ ...props, ...decodeParams(match.match.params) }}
-                />
-              )}
-            />
-            <Route
-              path={buildUrl(ResourceType.roles, Action.view) + '/:roleName/:prevAction?'}
-              render={(match) => (
-                <RoleView
-                  buildBreadcrumbs={partial(setGlobalBreadcrumbs, ResourceType.roles)}
-                  {...{ ...props, ...decodeParams(match.match.params) }}
-                />
-              )}
-            />
-            <Route
-              path={buildUrl(ResourceType.roles) + '/:action/:sourceRoleName?'}
-              render={(match) => (
-                <RoleEdit
-                  buildBreadcrumbs={partial(setGlobalBreadcrumbs, ResourceType.roles)}
-                  {...{ ...props, ...decodeParams(match.match.params) }}
-                />
-              )}
-            />
-            <Route
-              path={ROUTE_MAP.roles.href}
-              render={() => {
-                setGlobalBreadcrumbs(ResourceType.roles);
-                return <RoleList {...props} />;
-              }}
-            />
-            <Route
-              path={ROUTE_MAP.auth.href}
-              render={() => {
-                setGlobalBreadcrumbs(ResourceType.auth);
-                return <AuthView {...props} />;
-              }}
-            />
-            <Route
-              path={buildUrl(ResourceType.users) + '/:action/:sourceUserName?'}
-              render={(match) => (
-                <InternalUserEdit
-                  buildBreadcrumbs={partial(setGlobalBreadcrumbs, ResourceType.users)}
-                  {...{ ...props, ...decodeParams(match.match.params) }}
-                />
-              )}
-            />
-            <Route
-              path={ROUTE_MAP.users.href}
-              render={() => {
-                setGlobalBreadcrumbs(ResourceType.users);
-                return <UserList {...props} />;
-              }}
-            />
-            <Route
-              path={ROUTE_MAP.serviceAccounts.href}
-              render={() => {
-                setGlobalBreadcrumbs(ResourceType.serviceAccounts);
-                return <ServiceAccountList {...props} />;
-              }}
-            />
-            <Route
-              path={buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT}
-              render={() => {
-                setGlobalBreadcrumbs(ResourceType.auditLogging, 'General settings');
-                return <AuditLoggingEditSettings setting={'general'} {...props} />;
-              }}
-            />
-            <Route
-              path={buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT}
-              render={() => {
-                setGlobalBreadcrumbs(ResourceType.auditLogging, 'Compliance settings');
-                return <AuditLoggingEditSettings setting={'compliance'} {...props} />;
-              }}
-            />
-            <Route
-              path={ROUTE_MAP.auditLogging.href + '/:fromType?'}
-              render={(match) => {
-                setGlobalBreadcrumbs(ResourceType.auditLogging);
-                return <AuditLogging {...{ ...props, ...match.match.params }} />;
-              }}
-            />
-            <Route
-              path={ROUTE_MAP.permissions.href}
-              render={() => {
-                setGlobalBreadcrumbs(ResourceType.permissions);
-                return <PermissionList {...props} />;
-              }}
-            />
-            <Route
-              path={ROUTE_MAP.tenants.href}
-              render={() => {
-                setGlobalBreadcrumbs(ResourceType.tenants);
-                return <TenantList tabID={'Manage'} {...props} />;
-              }}
-            />
-            <Route
-              path={ROUTE_MAP.tenantsConfigureTab.href}
-              render={() => {
-                setGlobalBreadcrumbs(ResourceType.tenants);
-                return <TenantList tabID={'Configure'} {...props} />;
-              }}
-            />
-            <Route
-              path={ROUTE_MAP.getStarted.href}
-              render={() => {
-                setGlobalBreadcrumbs();
-                return <GetStarted {...props} />;
-              }}
-            />
-            <Redirect exact from="/" to={LANDING_PAGE_URL} />
-          </Switch>
-        </EuiPageBody>
-        <CrossPageToast />
-      </EuiPage>
-    </Router>
+    <DataSourceContext.Provider value={{ dataSource, setDataSource }}>
+      <Router basename={props.params.appBasePath}>
+        <EuiPage>
+          {allNavPanelUrls.map((route) => (
+            // Create different routes to update the 'selected' nav item .
+            <Route key={route} path={route} exact>
+              <EuiPageSideBar>
+                <NavPanel items={ROUTE_LIST} />
+              </EuiPageSideBar>
+            </Route>
+          ))}
+          <EuiPageBody>
+            <Switch>
+              <Route
+                path={buildUrl(ResourceType.roles, Action.edit) + '/:roleName/' + SubAction.mapuser}
+                render={(match) => (
+                  <RoleEditMappedUser
+                    buildBreadcrumbs={partial(setGlobalBreadcrumbs, ResourceType.roles)}
+                    {...{ ...props, ...decodeParams(match.match.params) }}
+                  />
+                )}
+              />
+              <Route
+                path={buildUrl(ResourceType.roles, Action.view) + '/:roleName/:prevAction?'}
+                render={(match) => (
+                  <RoleView
+                    buildBreadcrumbs={partial(setGlobalBreadcrumbs, ResourceType.roles)}
+                    {...{ ...props, ...decodeParams(match.match.params) }}
+                  />
+                )}
+              />
+              <Route
+                path={buildUrl(ResourceType.roles) + '/:action/:sourceRoleName?'}
+                render={(match) => (
+                  <RoleEdit
+                    buildBreadcrumbs={partial(setGlobalBreadcrumbs, ResourceType.roles)}
+                    {...{ ...props, ...decodeParams(match.match.params) }}
+                  />
+                )}
+              />
+              <Route
+                path={ROUTE_MAP.roles.href}
+                render={() => {
+                  setGlobalBreadcrumbs(ResourceType.roles);
+                  return <RoleList {...props} />;
+                }}
+              />
+              <Route
+                path={ROUTE_MAP.auth.href}
+                render={() => {
+                  setGlobalBreadcrumbs(ResourceType.auth);
+                  return <AuthView {...props} />;
+                }}
+              />
+              <Route
+                path={buildUrl(ResourceType.users) + '/:action/:sourceUserName?'}
+                render={(match) => (
+                  <InternalUserEdit
+                    buildBreadcrumbs={partial(setGlobalBreadcrumbs, ResourceType.users)}
+                    {...{ ...props, ...decodeParams(match.match.params) }}
+                  />
+                )}
+              />
+              <Route
+                path={ROUTE_MAP.users.href}
+                render={() => {
+                  setGlobalBreadcrumbs(ResourceType.users);
+                  return <UserList {...props} />;
+                }}
+              />
+              <Route
+                path={ROUTE_MAP.serviceAccounts.href}
+                render={() => {
+                  setGlobalBreadcrumbs(ResourceType.serviceAccounts);
+                  return <ServiceAccountList {...props} />;
+                }}
+              />
+              <Route
+                path={buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT}
+                render={() => {
+                  setGlobalBreadcrumbs(ResourceType.auditLogging, 'General settings');
+                  return <AuditLoggingEditSettings setting={'general'} {...props} />;
+                }}
+              />
+              <Route
+                path={buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT}
+                render={() => {
+                  setGlobalBreadcrumbs(ResourceType.auditLogging, 'Compliance settings');
+                  return <AuditLoggingEditSettings setting={'compliance'} {...props} />;
+                }}
+              />
+              <Route
+                path={ROUTE_MAP.auditLogging.href + '/:fromType?'}
+                render={(match) => {
+                  setGlobalBreadcrumbs(ResourceType.auditLogging);
+                  return <AuditLogging {...{ ...props, ...match.match.params }} />;
+                }}
+              />
+              <Route
+                path={ROUTE_MAP.permissions.href}
+                render={() => {
+                  setGlobalBreadcrumbs(ResourceType.permissions);
+                  return <PermissionList {...props} />;
+                }}
+              />
+              <Route
+                path={ROUTE_MAP.tenants.href}
+                render={() => {
+                  setGlobalBreadcrumbs(ResourceType.tenants);
+                  return <TenantList tabID={'Manage'} {...props} />;
+                }}
+              />
+              <Route
+                path={ROUTE_MAP.tenantsConfigureTab.href}
+                render={() => {
+                  setGlobalBreadcrumbs(ResourceType.tenants);
+                  return <TenantList tabID={'Configure'} {...props} />;
+                }}
+              />
+              <Route
+                path={ROUTE_MAP.getStarted.href}
+                render={() => {
+                  setGlobalBreadcrumbs();
+                  return <GetStarted {...props} />;
+                }}
+              />
+              <Redirect exact from="/" to={LANDING_PAGE_URL} />
+            </Switch>
+          </EuiPageBody>
+          <CrossPageToast />
+        </EuiPage>
+      </Router>
+    </DataSourceContext.Provider>
   );
 }

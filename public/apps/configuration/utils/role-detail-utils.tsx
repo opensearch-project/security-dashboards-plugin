@@ -16,13 +16,29 @@
 import { HttpStart } from 'opensearch-dashboards/public';
 import { API_ENDPOINT_ROLES } from '../constants';
 import { RoleDetail, RoleUpdate } from '../types';
-import { httpGet, httpPost } from './request-utils';
+import { createRequestContextWithDataSourceId } from './request-utils';
 import { getResourceUrl } from './resource-utils';
 
-export async function getRoleDetail(http: HttpStart, roleName: string): Promise<RoleDetail> {
-  return await httpGet<RoleDetail>(http, getResourceUrl(API_ENDPOINT_ROLES, roleName));
+export async function getRoleDetail(
+  http: HttpStart,
+  roleName: string,
+  dataSourceId: string
+): Promise<RoleDetail> {
+  return await createRequestContextWithDataSourceId(dataSourceId).httpGet<RoleDetail>({
+    http,
+    url: getResourceUrl(API_ENDPOINT_ROLES, roleName),
+  });
 }
 
-export async function updateRole(http: HttpStart, roleName: string, updateObject: RoleUpdate) {
-  return await httpPost(http, getResourceUrl(API_ENDPOINT_ROLES, roleName), updateObject);
+export async function updateRole(
+  http: HttpStart,
+  roleName: string,
+  updateObject: RoleUpdate,
+  dataSourceId: string
+) {
+  return await createRequestContextWithDataSourceId(dataSourceId).httpPost({
+    http,
+    url: getResourceUrl(API_ENDPOINT_ROLES, roleName),
+    body: updateObject,
+  });
 }

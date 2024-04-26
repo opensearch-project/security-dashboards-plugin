@@ -13,7 +13,16 @@
  *   permissions and limitations under the License.
  */
 
-import { transformUserData } from '../internal-user-list-utils';
+import { fetchUserNameList, getUserList, transformUserData } from '../internal-user-list-utils';
+// Import RequestContext
+
+const mockedHttpGet = jest.fn().mockResolvedValue({ data: {} });
+
+jest.mock('../../utils/request-utils', () => ({
+  createRequestContextWithDataSourceId: jest.fn(() => ({
+    httpGet: mockedHttpGet,
+  })),
+}));
 
 describe('Internal user list utils', () => {
   const userList = {
@@ -31,5 +40,57 @@ describe('Internal user list utils', () => {
       },
     ];
     expect(result).toEqual(expectedUserList);
+  });
+
+  it('getUserList calls httpGet with the correct parameters for internal users', async () => {
+    const httpMock = {}; // Mock HttpStart object
+    const userType = 'internalaccounts';
+
+    const test = await getUserList(httpMock, userType, 'test');
+
+    expect(mockedHttpGet).toHaveBeenCalledWith({
+      http: httpMock,
+      url: '/api/v1/configuration/internalaccounts',
+    });
+    expect(test).toEqual([]);
+  });
+
+  it('getUserList calls httpGet with the correct parameters for service accounts', async () => {
+    const httpMock = {};
+    const userType = 'serviceAccounts';
+
+    const test = await getUserList(httpMock, userType, 'test');
+
+    expect(mockedHttpGet).toHaveBeenCalledWith({
+      http: httpMock,
+      url: '/api/v1/configuration/serviceaccounts',
+    });
+    expect(test).toEqual([]);
+  });
+
+  it('fetchUserNameList calls httpGet with the correct parameters for service accounts', async () => {
+    const httpMock = {};
+    const userType = 'serviceAccounts';
+
+    const test = await fetchUserNameList(httpMock, userType, '');
+
+    expect(mockedHttpGet).toHaveBeenCalledWith({
+      http: httpMock,
+      url: '/api/v1/configuration/serviceaccounts',
+    });
+    expect(test).toEqual([]);
+  });
+
+  it('fetchUserNameList calls httpGet with the correct parameters for internal users', async () => {
+    const httpMock = {};
+    const userType = 'internalaccounts';
+
+    const test = await fetchUserNameList(httpMock, userType, '');
+
+    expect(mockedHttpGet).toHaveBeenCalledWith({
+      http: httpMock,
+      url: '/api/v1/configuration/internalaccounts',
+    });
+    expect(test).toEqual([]);
   });
 });

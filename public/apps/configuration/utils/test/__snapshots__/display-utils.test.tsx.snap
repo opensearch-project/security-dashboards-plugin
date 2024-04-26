@@ -16,6 +16,7 @@ exports[`Display utils Render Customization column when reserved = False 1`] = `
   >
     <EuiText
       className="table-items"
+      data-test-subj="filter-custom"
     >
       Custom
     </EuiText>
@@ -39,6 +40,7 @@ exports[`Display utils Render Customization column when reserved = True 1`] = `
   >
     <EuiText
       className="table-items"
+      data-test-subj="filter-reserved"
     >
       Reserved
     </EuiText>

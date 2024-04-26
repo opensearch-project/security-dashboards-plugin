@@ -16,13 +16,27 @@
 import { HttpStart } from 'opensearch-dashboards/public';
 import { AuditLoggingSettings } from '../panels/audit-logging/types';
 import { API_ENDPOINT_AUDITLOGGING, API_ENDPOINT_AUDITLOGGING_UPDATE } from '../constants';
-import { httpGet, httpPost } from './request-utils';
+import { createRequestContextWithDataSourceId } from './request-utils';
 
-export async function updateAuditLogging(http: HttpStart, updateObject: AuditLoggingSettings) {
-  return await httpPost(http, API_ENDPOINT_AUDITLOGGING_UPDATE, updateObject);
+export async function updateAuditLogging(
+  http: HttpStart,
+  updateObject: AuditLoggingSettings,
+  dataSourceId: string
+) {
+  return await createRequestContextWithDataSourceId(dataSourceId).httpPost({
+    http,
+    url: API_ENDPOINT_AUDITLOGGING_UPDATE,
+    body: updateObject,
+  });
 }
 
-export async function getAuditLogging(http: HttpStart): Promise<AuditLoggingSettings> {
-  const rawConfiguration = await httpGet<any>(http, API_ENDPOINT_AUDITLOGGING);
+export async function getAuditLogging(
+  http: HttpStart,
+  dataSourceId: string
+): Promise<AuditLoggingSettings> {
+  const rawConfiguration = await createRequestContextWithDataSourceId(dataSourceId).httpGet<any>({
+    http,
+    url: API_ENDPOINT_AUDITLOGGING,
+  });
   return rawConfiguration?.config;
 }

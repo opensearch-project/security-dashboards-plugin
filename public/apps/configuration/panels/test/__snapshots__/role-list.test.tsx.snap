@@ -17,6 +17,7 @@ exports[`Role list Render columns render Customization column 1`] = `
   >
     <EuiText
       className="table-items"
+      data-test-subj="filter-reserved"
     >
       Reserved
     </EuiText>
