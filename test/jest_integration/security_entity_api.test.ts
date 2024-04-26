@@ -489,7 +489,7 @@ describe('start OpenSearch Dashboards server multi datasources enabled', () => {
             type: 'username_password',
             credentials: {
               username: 'admin',
-              password: 'admin',
+              password: 'myStrongPassword123!',
             },
           },
         },
