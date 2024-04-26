@@ -50,33 +50,7 @@ describe('Internal user list utils', () => {
 
     expect(mockedHttpGet).toHaveBeenCalledWith({
       http: httpMock,
-      url: '/api/v1/configuration/internalaccounts',
-    });
-    expect(test).toEqual([]);
-  });
-
-  it('getUserList calls httpGet with the correct parameters for service accounts', async () => {
-    const httpMock = {};
-    const userType = 'serviceAccounts';
-
-    const test = await getUserList(httpMock, userType, 'test');
-
-    expect(mockedHttpGet).toHaveBeenCalledWith({
-      http: httpMock,
-      url: '/api/v1/configuration/serviceaccounts',
-    });
-    expect(test).toEqual([]);
-  });
-
-  it('fetchUserNameList calls httpGet with the correct parameters for service accounts', async () => {
-    const httpMock = {};
-    const userType = 'serviceAccounts';
-
-    const test = await fetchUserNameList(httpMock, userType, '');
-
-    expect(mockedHttpGet).toHaveBeenCalledWith({
-      http: httpMock,
-      url: '/api/v1/configuration/serviceaccounts',
+      url: '/api/v1/configuration/internalusers',
     });
     expect(test).toEqual([]);
   });
@@ -89,7 +63,7 @@ describe('Internal user list utils', () => {
 
     expect(mockedHttpGet).toHaveBeenCalledWith({
       http: httpMock,
-      url: '/api/v1/configuration/internalaccounts',
+      url: '/api/v1/configuration/internalusers',
     });
     expect(test).toEqual([]);
   });
