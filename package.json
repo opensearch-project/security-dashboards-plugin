@@ -30,14 +30,15 @@
     "@types/hapi__wreck": "^15.0.1",
     "cypress": "^13.6.0",
     "cypress-mochawesome-reporter": "^3.3.0",
-    "gulp-rename": "2.0.0",
-    "jose": "^5.2.4",
-    "saml-idp": "^1.2.1",
-    "selfsigned": "^2.0.1",
-    "typescript": "4.0.2",
     "eslint-plugin-cypress": "^2.8.1",
     "eslint-plugin-unused-imports": "3.1.0",
-    "husky": "^8.0.0"
+    "gulp-rename": "2.0.0",
+    "husky": "^8.0.0",
+    "jose": "^5.2.4",
+    "minimist": "^1.2.8",
+    "saml-idp": "^1.2.1",
+    "selfsigned": "^2.0.1",
+    "typescript": "4.0.2"
   },
   "dependencies": {
     "@hapi/cryptiles": "5.0.0",
