@@ -97,10 +97,7 @@ describe('Multi-datasources enabled', () => {
     );
 
     cy.contains('h1', 'Get started');
-    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
-      'contain',
-      '9202'
-    );
+    cy.get('[data-test-subj="dataSourceSelectableButton"]').should('contain', '9202');
 
     cy.get('[data-test-subj="purge-cache"]').click();
     cy.get('[class="euiToast euiToast--success euiGlobalToastListItem"]')
@@ -233,10 +230,7 @@ describe('Multi-datasources enabled', () => {
         `http://localhost:5601/app/security-dashboards-plugin${externalDataSourceUrl}#/roles`
       );
 
-      cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should(
-        'contain',
-        '9202'
-      );
+      cy.get('[data-test-subj="dataSourceSelectableButton"]').should('contain', '9202');
       cy.get('[data-test-subj="tableHeaderCell_roleName_0"]').click();
       cy.get('[data-test-subj="checkboxSelectRow-9202-role"]').should('exist');
 

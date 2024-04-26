@@ -124,11 +124,11 @@ export async function updateTenancyConfiguration(
   updatedTenancyConfig: TenancyConfigSettings
 ) {
   // Tenancy locked to local cluster
-  await createLocalClusterRequestContext().httpPut(
+  await createLocalClusterRequestContext().httpPut({
     http,
-    API_ENDPOINT_TENANCY_CONFIGS,
-    updatedTenancyConfig
-  );
+    url: API_ENDPOINT_TENANCY_CONFIGS,
+    body: updatedTenancyConfig,
+  });
   return;
 }
 

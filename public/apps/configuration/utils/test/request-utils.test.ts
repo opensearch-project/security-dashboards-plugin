@@ -45,6 +45,4 @@ describe('RequestContext', () => {
     const context = requestUtils.createLocalClusterRequestContext();
     expect(context.query).toEqual({ dataSourceId: '' });
   });
-
-  // You can write similar tests for other methods like httpPost, httpPut, httpDelete, etc.
 });
