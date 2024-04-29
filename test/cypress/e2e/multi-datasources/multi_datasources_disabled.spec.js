@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-describe('Multi-datasources enabled', () => {
+describe('Multi-datasources disabled', () => {
   beforeEach(() => {
     localStorage.setItem('opendistro::security::tenant::saved', '""');
     localStorage.setItem('home:newThemeModal:show', 'false');
