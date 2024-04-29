@@ -16,10 +16,6 @@
 import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
 import { LocalCluster } from '../apps/configuration/app-router';
 
-export function createDataSourceQuery(dataSourceId: string) {
-  return { dataSourceId };
-}
-
 const DATASOURCEURLKEY = 'dataSource';
 
 export function getClusterInfo(dataSourceEnabled: boolean, cluster: DataSourceOption) {
