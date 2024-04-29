@@ -14,7 +14,6 @@
  */
 
 import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
-import { LocalCluster } from '../apps/configuration/app-router';
 
 const DATASOURCEURLKEY = 'dataSource';
 
@@ -27,8 +26,7 @@ export function getClusterInfo(dataSourceEnabled: boolean, cluster: DataSourceOp
 
 export function getDataSourceFromUrl(): DataSourceOption {
   const urlParams = new URLSearchParams(window.location.search);
-  const dataSourceParam =
-    (urlParams && urlParams.get(DATASOURCEURLKEY)) || JSON.stringify(LocalCluster);
+  const dataSourceParam = (urlParams && urlParams.get(DATASOURCEURLKEY)) || '{}';
   return JSON.parse(dataSourceParam);
 }
 

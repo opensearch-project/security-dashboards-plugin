@@ -43,7 +43,9 @@ describe('SecurityPluginTopNavMenu', () => {
       },
     };
 
-    const wrapper = shallow(<AppRouter coreStart={coreStartMock} params={{ appBasePath: '' }} />);
+    const wrapper = shallow(
+      <AppRouter coreStart={coreStartMock} depsStart={{}} params={{ appBasePath: '' }} />
+    );
 
     expect(wrapper).toMatchSnapshot();
   });

@@ -28,7 +28,7 @@ describe('Tests datasource utils', () => {
       value: { search: mockSearchNoDataSourceId },
       writable: true,
     });
-    expect(getDataSourceFromUrl()).toEqual({ id: '', label: 'Local cluster' });
+    expect(getDataSourceFromUrl()).toEqual({});
     const mockSearchDataSourceIdNotfirst =
       '?foo=bar&baz=qux&dataSource=%7B"id"%3A"94ffa650-f11a-11ee-a585-793f7b098e1a"%2C"label"%3A"9202"%7D';
     Object.defineProperty(window, 'location', {
