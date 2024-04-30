@@ -13,22 +13,13 @@
  *   permissions and limitations under the License.
  */
 
-import {
-  createDataSourceQuery,
-  getClusterInfo,
-  getDataSourceFromUrl,
-  setDataSourceInUrl,
-} from '../datasource-utils';
+import { getClusterInfo, getDataSourceFromUrl, setDataSourceInUrl } from '../datasource-utils';
 
 describe('Tests datasource utils', () => {
   it('Tests the GetClusterDescription helper function', () => {
     expect(getClusterInfo(false, { id: 'blah', label: 'blah' })).toBe('');
     expect(getClusterInfo(true, { id: '', label: '' })).toBe('for Local cluster');
     expect(getClusterInfo(true, { id: 'test', label: 'test' })).toBe('for test');
-  });
-
-  it('Tests the create DataSource query helper function', () => {
-    expect(createDataSourceQuery('test')).toStrictEqual({ dataSourceId: 'test' });
   });
 
   it('Tests getting the datasource from the url', () => {
