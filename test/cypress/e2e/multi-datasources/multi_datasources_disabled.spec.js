@@ -13,15 +13,28 @@
  *   permissions and limitations under the License.
  */
 
-describe('Multi-datasources enabled', () => {
-  it('Sanity checks the cluster selector is not visible when multi datasources is disabled', () => {
+describe('Multi-datasources disabled', () => {
+  beforeEach(() => {
     localStorage.setItem('opendistro::security::tenant::saved', '""');
     localStorage.setItem('home:newThemeModal:show', 'false');
+  });
 
-    cy.visit('http://localhost:5601/app/security-dashboards-plugin#/getstarted', {
-      failOnStatusCode: false,
-    });
+  afterEach(() => {
+    cy.clearCookies();
+    cy.clearAllLocalStorage();
+    cy.clearAllSessionStorage();
+  });
 
-    cy.get('[data-test-subj="dataSourceSelectableContextMenuHeaderLink"]').should('not.exist');
+  it('Checks Get Started Tab', () => {
+    // Remote cluster purge cache
+    cy.visit(`http://localhost:5601/app/security-dashboards-plugin#/getstarted`);
+
+    cy.contains('h1', 'Get started');
+    cy.get('[data-test-subj="dataSourceSelectableButton"]').should('not.exist');
+
+    cy.get('[data-test-subj="purge-cache"]').click();
+    cy.get('[class="euiToast euiToast--success euiGlobalToastListItem"]')
+      .get('.euiToastHeader__title')
+      .should('contain', 'Cache purge successful');
   });
 });
