@@ -16,6 +16,11 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { AppRouter } from '../app-router';
+import { getDataSourceFromUrl } from '../../../utils/datasource-utils';
+
+jest.mock('../../../utils/datasource-utils', () => ({
+  getDataSourceFromUrl: jest.fn(),
+}));
 
 describe('SecurityPluginTopNavMenu', () => {
   const coreStartMock = {
@@ -43,8 +48,46 @@ describe('SecurityPluginTopNavMenu', () => {
       },
     };
 
-    const wrapper = shallow(<AppRouter coreStart={coreStartMock} params={{ appBasePath: '' }} />);
+    const wrapper = shallow(
+      <AppRouter coreStart={coreStartMock} depsStart={{}} params={{ appBasePath: '' }} />
+    );
 
     expect(wrapper).toMatchSnapshot();
+  });
+
+  it('getDataSourceFromUrl not called when MDS is disabled', () => {
+    const securityPluginStartDepsMock = {
+      dataSource: {
+        dataSourceEnabled: false,
+      },
+    };
+
+    shallow(
+      <AppRouter
+        coreStart={coreStartMock}
+        depsStart={securityPluginStartDepsMock}
+        params={{ appBasePath: '' }}
+      />
+    );
+
+    expect(getDataSourceFromUrl).not.toHaveBeenCalled();
+  });
+
+  it('getDataSourceFromUrl called when MDS is enabled', () => {
+    const securityPluginStartDepsMock = {
+      dataSource: {
+        dataSourceEnabled: true,
+      },
+    };
+
+    shallow(
+      <AppRouter
+        coreStart={coreStartMock}
+        depsStart={securityPluginStartDepsMock}
+        params={{ appBasePath: '' }}
+      />
+    );
+
+    expect(getDataSourceFromUrl).toHaveBeenCalled();
   });
 });
