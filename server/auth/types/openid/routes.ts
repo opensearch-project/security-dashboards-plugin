@@ -195,9 +195,10 @@ export class OpenIdAuthRoutes {
             username: user.username,
             credentials: {
               authHeaderValueExtra: true,
+              expiryTime: getExpirationDate(tokenResponse),              
             },
             authType: AuthType.OPEN_ID,
-            expiryTime: getExpirationDate(tokenResponse),
+            expiryTime: Date.now() + this.config.session.ttl,
           };
           if (this.config.openid?.refresh_tokens && tokenResponse.refreshToken) {
             Object.assign(sessionStorage.credentials, {
