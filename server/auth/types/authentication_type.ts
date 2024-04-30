@@ -114,7 +114,6 @@ export abstract class AuthenticationType implements IAuthenticationType {
     let cookie: SecuritySessionCookie | null | undefined;
     let authInfo: any | undefined;
     // if this is an REST API call, suppose the request includes necessary auth header
-    // see https://www.elastic.co/guide/en/opensearch-dashboards/master/using-api.html
     if (this.requestIncludesAuthInfo(request)) {
       try {
         const additionalAuthHeader = await this.getAdditionalAuthHeader(request);
