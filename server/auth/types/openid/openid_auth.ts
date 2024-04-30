@@ -298,6 +298,7 @@ export class OpenIdAuthentication extends AuthenticationType {
             refresh_token: refreshTokenResponse.refreshToken,
             expiryTime: getExpirationDate(refreshTokenResponse),
           };
+          cookie.expiryTime = Date.now() + this.config.session.ttl;
 
           setExtraAuthStorage(
             request,
