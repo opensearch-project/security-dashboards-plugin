@@ -15,10 +15,11 @@
 
 import React from 'react';
 import { CoreStart } from 'opensearch-dashboards/public';
-import { EuiFieldText, EuiIcon } from '@elastic/eui';
+import { EuiFieldText, EuiFlexGroup, EuiFlexItem, EuiFormRow, EuiIcon } from '@elastic/eui';
 import { FormRow } from './form-row';
 import { PASSWORD_INSTRUCTION } from '../../apps-constants';
 import { getDashboardsInfo } from '../../../utils/dashboards-info-utils';
+import { PasswordStrengthBar } from './password-strength-bar';
 
 export function PasswordEditPanel(props: {
   coreStart: CoreStart;
@@ -61,14 +62,21 @@ export function PasswordEditPanel(props: {
 
   return (
     <>
-      <FormRow headerText="Password" helpText={passwordHelpText}>
-        <EuiFieldText
-          data-test-subj="password"
-          prepend={<EuiIcon type="lock" />}
-          type="password"
-          onChange={passwordChangeHandler}
-        />
-      </FormRow>
+      <EuiFlexGroup direction="row">
+        <EuiFlexItem grow={false}>
+          <FormRow headerText="Password" helpText={passwordHelpText}>
+            <EuiFieldText
+              data-test-subj="password"
+              prepend={<EuiIcon type="lock" />}
+              type="password"
+              onChange={passwordChangeHandler}
+            />
+          </FormRow>
+          <EuiFormRow>
+            <PasswordStrengthBar password={password} />
+          </EuiFormRow>
+        </EuiFlexItem>
+      </EuiFlexGroup>
 
       <FormRow
         headerText="Re-enter password"

@@ -65,7 +65,7 @@ describe('Log in via OIDC', () => {
     localStorage.setItem('opendistro::security::tenant::saved', '""');
     localStorage.setItem('home:newThemeModal:show', 'false');
 
-    cy.get('a').contains('Dev Tools').should('be.visible');
+    cy.get('a[data-test-subj="breadcrumb first last"]').contains('Dev Tools').should('be.visible');
   });
 
   it('Login to Dashboard with Hash', () => {
