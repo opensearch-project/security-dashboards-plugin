@@ -63,7 +63,7 @@ describe('Log in via OIDC', () => {
 
     cy.visit('http://localhost:5601/app/dev_tools#/console');
 
-    cy.get('a').contains('Dev Tools').should('be.visible');
+    cy.get('a[data-test-subj="breadcrumb first last"]').contains('Dev Tools').should('be.visible');
 
     cy.getCookie('security_authentication').should('exist');
   });
