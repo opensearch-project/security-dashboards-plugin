@@ -88,3 +88,4 @@ jobs:
           yarn cypress:run-with-security-and-aggregation-view --browser chrome --spec "cypress/integration/plugins/security-dashboards-plugin/aggregation_view.js"
           yarn cypress:run-with-security --browser chrome --spec "cypress/integration/plugins/security-dashboards-plugin/multi_tenancy.js"
           yarn cypress:run-with-security --browser chrome --spec "cypress/integration/plugins/security-dashboards-plugin/default_tenant.js"
+          yarn cypress:run-with-security --browser chrome --spec "cypress/integration/plugins/security/*.js"
