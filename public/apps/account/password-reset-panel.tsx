@@ -19,6 +19,9 @@ import {
   EuiButtonEmpty,
   EuiCallOut,
   EuiFieldPassword,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiFormRow,
   EuiModal,
   EuiModalBody,
   EuiModalFooter,
@@ -33,6 +36,7 @@ import { PASSWORD_INSTRUCTION } from '../apps-constants';
 import { constructErrorMessageAndLog } from '../error-utils';
 import { validateCurrentPassword } from '../../utils/login-utils';
 import { getDashboardsInfo } from '../../utils/dashboards-info-utils';
+import { PasswordStrengthBar } from '../configuration/utils/password-strength-bar';
 
 interface PasswordResetPanelProps {
   coreStart: CoreStart;
@@ -121,22 +125,30 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
               isInvalid={isCurrentPasswordInvalid}
             />
           </FormRow>
+          <EuiSpacer />
 
-          <FormRow
-            headerText="New password"
-            helpText={passwordHelpText}
-            isInvalid={isNewPasswordInvalid}
-          >
-            <EuiFieldPassword
-              data-test-subj="new-password"
-              onChange={function (e: React.ChangeEvent<HTMLInputElement>) {
-                setNewPassword(e.target.value);
-                setIsNewPasswordInvalid(false);
-                setIsRepeatNewPasswordInvalid(repeatNewPassword !== newPassword);
-              }}
-              isInvalid={isNewPasswordInvalid}
-            />
-          </FormRow>
+          <EuiFlexGroup direction="row">
+            <EuiFlexItem grow={false}>
+              <FormRow
+                headerText="New password"
+                helpText={passwordHelpText}
+                isInvalid={isNewPasswordInvalid}
+              >
+                <EuiFieldPassword
+                  data-test-subj="new-password"
+                  onChange={function (e: React.ChangeEvent<HTMLInputElement>) {
+                    setNewPassword(e.target.value);
+                    setIsNewPasswordInvalid(false);
+                    setIsRepeatNewPasswordInvalid(repeatNewPassword !== newPassword);
+                  }}
+                  isInvalid={isNewPasswordInvalid}
+                />
+              </FormRow>
+              <EuiFormRow>
+                <PasswordStrengthBar password={newPassword} />
+              </EuiFormRow>
+            </EuiFlexItem>
+          </EuiFlexGroup>
 
           <FormRow
             headerText="Re-enter new password"
