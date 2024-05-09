@@ -209,6 +209,7 @@ export function PermissionList(props: AppDependencies) {
       const actionGroups = await fetchActionGroups(props.coreStart.http, dataSource.id);
       setActionGroupDict(actionGroups);
       setPermissionList(await mergeAllPermissions(actionGroups));
+      setErrorFlag(false);
     } catch (e) {
       console.log(e);
       setErrorFlag(true);

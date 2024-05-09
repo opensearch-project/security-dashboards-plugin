@@ -117,6 +117,7 @@ export function RoleList(props: AppDependencies) {
         const rawRoleMappingData = await fetchRoleMapping(props.coreStart.http, dataSource.id);
         const processedData = transformRoleData(rawRoleData, rawRoleMappingData);
         setRoleData(processedData);
+        setErrorFlag(false);
       } catch (e) {
         console.log(e);
         setErrorFlag(true);
