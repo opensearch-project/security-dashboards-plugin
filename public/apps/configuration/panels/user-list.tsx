@@ -118,6 +118,7 @@ export function UserList(props: AppDependencies) {
         );
         setCurrentUsername((await getAuthInfo(props.coreStart.http)).user_name);
         setUserData(await userDataPromise);
+        setErrorFlag(false);
       } catch (e) {
         console.log(e);
         setErrorFlag(true);
