@@ -54,7 +54,9 @@ export const SecurityPluginTopNavMenu = React.memo(
           savedObjects: coreStart.savedObjects.client,
           notifications: coreStart.notifications,
           activeOption:
-            selectedDataSource && (selectedDataSource.id || selectedDataSource.label) ? [selectedDataSource] : undefined,
+            selectedDataSource && (selectedDataSource.id || selectedDataSource.label)
+              ? [selectedDataSource]
+              : undefined,
           onSelectedDataSources: wrapSetDataSourceWithUpdateUrl,
           fullWidth: true,
         }}
@@ -63,9 +65,11 @@ export const SecurityPluginTopNavMenu = React.memo(
   },
   (prevProps, newProps) => {
     if (prevProps.selectedDataSource && newProps.selectedDataSource) {
-      return prevProps.selectedDataSource.id === newProps.selectedDataSource.id &&
-      prevProps.dataSourcePickerReadOnly === newProps.dataSourcePickerReadOnly;
+      return (
+        prevProps.selectedDataSource.id === newProps.selectedDataSource.id &&
+        prevProps.dataSourcePickerReadOnly === newProps.dataSourcePickerReadOnly
+      );
     }
     return false;
-  } 
+  }
 );

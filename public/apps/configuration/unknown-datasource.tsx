@@ -15,43 +15,38 @@
 
 import React from 'react';
 import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
+import { EuiPageHeader, EuiTitle, EuiButton } from '@elastic/eui';
 import { AppDependencies } from '../types';
 import { setDataSourceInUrl } from '../../utils/datasource-utils';
-import {
-  EuiPageHeader,
-  EuiTitle,
-  EuiButton
-} from '@elastic/eui'
 
 const LocalCluster = {
   label: 'Local Cluster',
-  id: ''
+  id: '',
 };
 
 export interface UnknownDataSourceProps extends AppDependencies {
   setDataSource: React.Dispatch<React.SetStateAction<DataSourceOption>>;
 }
 
-export const UnknownDataSourcePage = React.memo(
-  (props: UnknownDataSourceProps) => {
-    const {
-      setDataSource,
-    } = props;
+export const UnknownDataSourcePage = React.memo((props: UnknownDataSourceProps) => {
+  const { setDataSource } = props;
 
-    const wrapSetDataSourceWithUpdateUrl = () => {
-      setDataSourceInUrl(LocalCluster);
-      console.log(window.location.href)
-      setDataSource(LocalCluster);
-    };
+  const wrapSetDataSourceWithUpdateUrl = () => {
+    setDataSourceInUrl(LocalCluster);
+    console.log(window.location.href);
+    setDataSource(LocalCluster);
+  };
 
-    return (
-      <>
+  return (
+    <>
       <EuiPageHeader>
         <EuiTitle size="l">
           <h1>Unknown DataSource</h1>
         </EuiTitle>
       </EuiPageHeader>
-      <EuiButton title="Switch to default" onClick={() => wrapSetDataSourceWithUpdateUrl()}>Switch to default</EuiButton>
-      </>
-    );
-  });
+      <EuiButton title="Switch to default" onClick={() => wrapSetDataSourceWithUpdateUrl()}>
+        Switch to default
+      </EuiButton>
+    </>
+  );
+});

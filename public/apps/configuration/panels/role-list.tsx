@@ -269,7 +269,7 @@ export function RoleList(props: AppDependencies) {
           selectedDataSource={dataSource}
         />
       </>
-    )
+    );
   }
 
   return (
