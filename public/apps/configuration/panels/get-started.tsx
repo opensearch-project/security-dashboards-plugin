@@ -39,6 +39,7 @@ import { createSuccessToast, createUnknownErrorToast, useToastState } from '../u
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
 import { DataSourceContext } from '../app-router';
 import { getClusterInfo } from '../../../utils/datasource-utils';
+import { UnknownDataSourcePage } from '../unknown-datasource';
 
 const addBackendStep = {
   title: 'Add backends',
@@ -173,6 +174,22 @@ export function GetStarted(props: AppDependencies) {
   }
   const [toasts, addToast, removeToast] = useToastState();
 
+  if (dataSourceEnabled && dataSource === undefined) {
+    return (
+    <>
+      <SecurityPluginTopNavMenu
+        {...props}
+        dataSourcePickerReadOnly={false}
+        setDataSource={setDataSource}
+        selectedDataSource={dataSource}
+      />
+      <UnknownDataSourcePage
+        {...props}
+        setDataSource={setDataSource}
+      />
+    </>
+    )
+  }
   return (
     <>
       <div className="panel-restrict-width">

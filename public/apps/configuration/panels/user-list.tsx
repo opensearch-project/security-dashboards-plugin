@@ -50,6 +50,7 @@ import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { buildHashUrl } from '../utils/url-builder';
 import { DataSourceContext } from '../app-router';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
+import { UnknownDataSourcePage } from '../unknown-datasource';
 
 export function dictView(items: Dictionary<string>) {
   if (isEmpty(items)) {
@@ -99,6 +100,7 @@ export function getColumns(currentUsername: string) {
 }
 
 export function UserList(props: AppDependencies) {
+  const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const [userData, setUserData] = React.useState<InternalUsersListing[]>([]);
   const [errorFlag, setErrorFlag] = React.useState(false);
   const [selection, setSelection] = React.useState<InternalUsersListing[]>([]);
@@ -127,7 +129,7 @@ export function UserList(props: AppDependencies) {
     };
 
     fetchData();
-  }, [props.coreStart.http, dataSource.id]);
+  }, [props.coreStart.http, dataSource]);
 
   const handleDelete = async () => {
     const usersToDelete: string[] = selection.map((r) => r.username);
@@ -198,6 +200,23 @@ export function UserList(props: AppDependencies) {
   ];
 
   const [actionsMenu, closeActionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);
+
+  if (dataSourceEnabled && dataSource === undefined) {
+    return (
+    <>
+      <SecurityPluginTopNavMenu
+        {...props}
+        dataSourcePickerReadOnly={false}
+        setDataSource={setDataSource}
+        selectedDataSource={dataSource}
+      />
+      <UnknownDataSourcePage
+        {...props}
+        setDataSource={setDataSource}
+      />
+    </>
+    )
+  }
 
   return (
     <>

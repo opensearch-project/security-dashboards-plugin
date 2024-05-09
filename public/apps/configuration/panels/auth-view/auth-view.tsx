@@ -25,11 +25,13 @@ import { getSecurityConfig } from '../../utils/auth-view-utils';
 import { InstructionView } from './instruction-view';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
+import { UnknownDataSourcePage } from '../../unknown-datasource';
 
 export function AuthView(props: AppDependencies) {
   const [authentication, setAuthentication] = React.useState([]);
   const [authorization, setAuthorization] = React.useState([]);
   const [loading, setLoading] = useState(false);
+  const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
 
   React.useEffect(() => {
@@ -48,12 +50,28 @@ export function AuthView(props: AppDependencies) {
     };
 
     fetchData();
-  }, [props.coreStart.http, dataSource.id]);
+  }, [props.coreStart.http, dataSource]);
 
   if (isEmpty(authentication)) {
     return <InstructionView config={props.config} />;
   }
 
+  if (dataSourceEnabled && dataSource === undefined) {
+    return (
+    <>
+      <SecurityPluginTopNavMenu
+        {...props}
+        dataSourcePickerReadOnly={false}
+        setDataSource={setDataSource}
+        selectedDataSource={dataSource}
+      />
+      <UnknownDataSourcePage
+        {...props}
+        setDataSource={setDataSource}
+      />
+    </>
+    )
+  }
   return (
     <>
       <SecurityPluginTopNavMenu

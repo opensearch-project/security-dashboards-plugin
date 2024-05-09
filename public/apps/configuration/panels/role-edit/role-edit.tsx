@@ -59,6 +59,7 @@ import { generateResourceName } from '../../utils/resource-utils';
 import { NameRow } from '../../utils/name-row';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
+import { UnknownDataSourcePage } from '../../unknown-datasource';
 
 interface RoleEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -114,7 +115,7 @@ export function RoleEdit(props: RoleEditDeps) {
 
       fetchData();
     }
-  }, [addToast, props.action, props.coreStart.http, props.sourceRoleName, dataSource.id]);
+  }, [addToast, props.action, props.coreStart.http, props.sourceRoleName, dataSource]);
 
   const [actionGroups, setActionGroups] = useState<Array<[string, ActionGroupItem]>>([]);
   React.useEffect(() => {
@@ -129,7 +130,7 @@ export function RoleEdit(props: RoleEditDeps) {
     };
 
     fetchActionGroupNames();
-  }, [addToast, props.coreStart.http, dataSource.id]);
+  }, [addToast, props.coreStart.http, dataSource]);
 
   const [tenantNames, setTenantNames] = React.useState<string[]>([]);
   React.useEffect(() => {
@@ -143,7 +144,7 @@ export function RoleEdit(props: RoleEditDeps) {
     };
 
     fetchTenantNames();
-  }, [addToast, props.coreStart.http, dataSource.id]);
+  }, [addToast, props.coreStart.http, dataSource]);
 
   const updateRoleHandler = async () => {
     try {
@@ -232,6 +233,23 @@ export function RoleEdit(props: RoleEditDeps) {
   ];
 
   const tenantOptions = tenantNames.map(stringToComboBoxOption);
+
+  if (dataSourceEnabled && dataSource === undefined) {
+    return (
+    <>
+      <SecurityPluginTopNavMenu
+        {...props}
+        dataSourcePickerReadOnly={false}
+        setDataSource={setDataSource}
+        selectedDataSource={dataSource}
+      />
+      <UnknownDataSourcePage
+        {...props}
+        setDataSource={setDataSource}
+      />
+    </>
+    )
+  }
 
   return (
     <>

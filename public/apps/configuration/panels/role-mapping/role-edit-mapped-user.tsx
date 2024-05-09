@@ -46,6 +46,7 @@ import { ExternalLink } from '../../utils/display-utils';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { DataSourceContext } from '../../app-router';
 import { getClusterInfo } from '../../../../utils/datasource-utils';
+import { UnknownDataSourcePage } from '../../unknown-datasource';
 
 interface RoleEditMappedUserProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -86,7 +87,7 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
     };
 
     fetchData();
-  }, [addToast, props.coreStart.http, props.roleName, dataSource.id]);
+  }, [addToast, props.coreStart.http, props.roleName, dataSource]);
 
   React.useEffect(() => {
     const fetchInternalUserNames = async () => {
@@ -101,7 +102,7 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
     };
 
     fetchInternalUserNames();
-  }, [addToast, props.coreStart.http, dataSource.id]);
+  }, [addToast, props.coreStart.http, dataSource]);
   const internalUserOptions = userNames.map(stringToComboBoxOption);
 
   const updateRoleMappingHandler = async () => {
@@ -143,6 +144,23 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
       }
     }
   };
+
+  if (dataSourceEnabled && dataSource === undefined) {
+    return (
+    <>
+      <SecurityPluginTopNavMenu
+        {...props}
+        dataSourcePickerReadOnly={false}
+        setDataSource={setDataSource}
+        selectedDataSource={dataSource}
+      />
+      <UnknownDataSourcePage
+        {...props}
+        setDataSource={setDataSource}
+      />
+    </>
+    )
+  }
 
   return (
     <>

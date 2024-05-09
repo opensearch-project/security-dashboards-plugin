@@ -56,6 +56,7 @@ import { useContextMenuState } from '../utils/context-menu';
 import { DocLinks } from '../constants';
 import { DataSourceContext } from '../app-router';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
+import { UnknownDataSourcePage } from '../unknown-datasource';
 
 const columns: Array<EuiBasicTableColumn<RoleListing>> = [
   {
@@ -103,6 +104,7 @@ const columns: Array<EuiBasicTableColumn<RoleListing>> = [
 ];
 
 export function RoleList(props: AppDependencies) {
+  const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const [roleData, setRoleData] = React.useState<RoleListing[]>([]);
   const [errorFlag, setErrorFlag] = React.useState(false);
   const [selection, setSelection] = React.useState<RoleListing[]>([]);
@@ -126,7 +128,7 @@ export function RoleList(props: AppDependencies) {
     };
 
     fetchData();
-  }, [props.coreStart.http, dataSource.id]);
+  }, [props.coreStart.http, dataSource]);
 
   const handleDelete = async () => {
     const rolesToDelete: string[] = selection.map((r) => r.roleName);
@@ -250,6 +252,25 @@ export function RoleList(props: AppDependencies) {
       ],
     });
   }, [roleData]);
+
+  if (dataSourceEnabled && dataSource === undefined) {
+    return (
+      <>
+        <SecurityPluginTopNavMenu
+          {...props}
+          dataSourcePickerReadOnly={false}
+          setDataSource={setDataSource}
+          selectedDataSource={dataSource}
+        />
+        <UnknownDataSourcePage
+          {...props}
+          dataSourcePickerReadOnly={false}
+          setDataSource={setDataSource}
+          selectedDataSource={dataSource}
+        />
+      </>
+    )
+  }
 
   return (
     <>

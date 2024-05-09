@@ -27,7 +27,13 @@ export function getClusterInfo(dataSourceEnabled: boolean, cluster: DataSourceOp
 export function getDataSourceFromUrl(): DataSourceOption {
   const urlParams = new URLSearchParams(window.location.search);
   const dataSourceParam = (urlParams && urlParams.get(DATASOURCEURLKEY)) || '{}';
-  return JSON.parse(dataSourceParam);
+  // following block is needed if the dataSource param is set to non-JSON value, say 'undefined'
+  try {
+    return JSON.parse(dataSourceParam);
+  } catch (e) {
+    console.error('Failed to parse dataSourceParam:', dataSourceParam);
+    return JSON.parse('{}');  // Return an empty object or some default value if parsing fails
+  }
 }
 
 export function setDataSourceInUrl(dataSource: DataSourceOption) {

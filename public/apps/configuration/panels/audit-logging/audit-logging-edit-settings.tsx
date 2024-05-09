@@ -38,6 +38,7 @@ import { setCrossPageToast } from '../../utils/storage-utils';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { DataSourceContext } from '../../app-router';
 import { getClusterInfo } from '../../../../utils/datasource-utils';
+import { UnknownDataSourcePage } from '../../unknown-datasource';
 
 interface AuditLoggingEditSettingProps extends AppDependencies {
   setting: 'general' | 'compliance';
@@ -76,7 +77,7 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
     };
 
     fetchConfig();
-  }, [props.coreStart.http, dataSource.id]);
+  }, [props.coreStart.http, dataSource]);
 
   const renderSaveAndCancel = () => {
     return (
@@ -246,6 +247,23 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
     content = renderGeneralSettings();
   } else {
     content = renderComplianceSetting();
+  }
+
+  if (dataSourceEnabled && dataSource === undefined) {
+    return (
+    <>
+      <SecurityPluginTopNavMenu
+        {...props}
+        dataSourcePickerReadOnly={false}
+        setDataSource={setDataSource}
+        selectedDataSource={dataSource}
+      />
+      <UnknownDataSourcePage
+        {...props}
+        setDataSource={setDataSource}
+      />
+    </>
+    )
   }
 
   return (

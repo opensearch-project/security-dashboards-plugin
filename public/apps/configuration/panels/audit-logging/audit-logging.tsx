@@ -45,6 +45,7 @@ import { ViewSettingGroup } from './view-setting-group';
 import { DocLinks } from '../../constants';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
+import { UnknownDataSourcePage } from '../../unknown-datasource';
 
 interface AuditLoggingProps extends AppDependencies {
   fromType: string;
@@ -135,6 +136,7 @@ export function renderComplianceSettings(config: AuditLoggingSettings) {
 }
 
 export function AuditLogging(props: AuditLoggingProps) {
+  const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const [configuration, setConfiguration] = React.useState<AuditLoggingSettings>({});
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
 
@@ -163,7 +165,7 @@ export function AuditLogging(props: AuditLoggingProps) {
     };
 
     fetchData();
-  }, [props.coreStart.http, props.fromType, dataSource.id]);
+  }, [props.coreStart.http, props.fromType, dataSource]);
 
   const statusPanel = renderStatusPanel(onSwitchChange, configuration.enabled || false);
 
@@ -227,6 +229,23 @@ export function AuditLogging(props: AuditLoggingProps) {
         </EuiPanel>
       </>
     );
+  }
+
+  if (dataSourceEnabled && dataSource === undefined) {
+    return (
+    <>
+      <SecurityPluginTopNavMenu
+        {...props}
+        dataSourcePickerReadOnly={false}
+        setDataSource={setDataSource}
+        selectedDataSource={dataSource}
+      />
+      <UnknownDataSourcePage
+        {...props}
+        setDataSource={setDataSource}
+      />
+    </>
+    )
   }
 
   return (

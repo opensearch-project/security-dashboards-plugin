@@ -63,6 +63,7 @@ import { generateResourceName } from '../../utils/resource-utils';
 import { DocLinks } from '../../constants';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { DataSourceContext } from '../../app-router';
+import { UnknownDataSourcePage } from '../../unknown-datasource';
 
 export function renderBooleanToCheckMark(value: boolean): React.ReactNode {
   return value ? <EuiIcon type="check" /> : '';
@@ -215,11 +216,11 @@ export function PermissionList(props: AppDependencies) {
     } finally {
       setLoading(false);
     }
-  }, [props.coreStart.http, dataSource.id]);
+  }, [props.coreStart.http, dataSource]);
 
   React.useEffect(() => {
     fetchData();
-  }, [props.coreStart.http, fetchData, dataSource.id]);
+  }, [props.coreStart.http, fetchData, dataSource]);
 
   const handleDelete = async () => {
     const groupsToDelete: string[] = selection.map((r) => r.name);
@@ -346,6 +347,23 @@ export function PermissionList(props: AppDependencies) {
     { fill: true },
     createActionGroupMenuItems
   );
+
+  if (dataSourceEnabled && dataSource === undefined) {
+    return (
+    <>
+      <SecurityPluginTopNavMenu
+        {...props}
+        dataSourcePickerReadOnly={false}
+        setDataSource={setDataSource}
+        selectedDataSource={dataSource}
+      />
+      <UnknownDataSourcePage
+        {...props}
+        setDataSource={setDataSource}
+      />
+    </>
+    )
+  }
 
   return (
     <>

@@ -72,6 +72,7 @@ import { setCrossPageToast } from '../../utils/storage-utils';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { getClusterInfo } from '../../../../utils/datasource-utils';
+import { UnknownDataSourcePage } from '../../unknown-datasource';
 
 interface RoleViewProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -147,7 +148,7 @@ export function RoleView(props: RoleViewProps) {
     };
 
     fetchData();
-  }, [addToast, props.coreStart.http, props.roleName, props.prevAction, dataSource.id]);
+  }, [addToast, props.coreStart.http, props.roleName, props.prevAction, dataSource]);
 
   const handleRoleMappingDelete = async () => {
     try {
@@ -389,6 +390,23 @@ export function RoleView(props: RoleViewProps) {
         </EuiFlexItem>
       </EuiFlexGroup>
     );
+  }
+
+  if (dataSourceEnabled && dataSource === undefined) {
+    return (
+    <>
+      <SecurityPluginTopNavMenu
+        {...props}
+        dataSourcePickerReadOnly={false}
+        setDataSource={setDataSource}
+        selectedDataSource={dataSource}
+      />
+      <UnknownDataSourcePage
+        {...props}
+        setDataSource={setDataSource}
+      />
+    </>
+    )
   }
 
   return (

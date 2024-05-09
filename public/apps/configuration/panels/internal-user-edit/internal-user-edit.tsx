@@ -49,6 +49,7 @@ import { constructErrorMessageAndLog } from '../../../error-utils';
 import { BackendRolePanel } from './backend-role-panel';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
+import { UnknownDataSourcePage } from '../../unknown-datasource';
 
 interface InternalUserEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -98,7 +99,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
 
       fetchData();
     }
-  }, [addToast, props.action, props.coreStart.http, props.sourceUserName, dataSource.id]);
+  }, [addToast, props.action, props.coreStart.http, props.sourceUserName, dataSource]);
 
   const updateUserHandler = async () => {
     try {
@@ -146,6 +147,23 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
       );
     }
   };
+
+  if (dataSourceEnabled && dataSource === undefined) {
+    return (
+    <>
+      <SecurityPluginTopNavMenu
+        {...props}
+        dataSourcePickerReadOnly={false}
+        setDataSource={setDataSource}
+        selectedDataSource={dataSource}
+      />
+      <UnknownDataSourcePage
+        {...props}
+        setDataSource={setDataSource}
+      />
+    </>
+    )
+  }
 
   return (
     <>
