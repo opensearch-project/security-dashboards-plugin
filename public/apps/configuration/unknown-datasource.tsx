@@ -14,34 +14,32 @@
  */
 
 import React from 'react';
-import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
-import { EuiPageHeader, EuiTitle, EuiButton } from '@elastic/eui';
+import { EuiPageHeader, EuiTitle, EuiText, EuiPageBody } from '@opensearch-project/oui';
 import { AppDependencies } from '../types';
-import { setDataSourceInUrl } from '../../utils/datasource-utils';
-import { LocalCluster } from './app-router';
 
-export interface UnknownDataSourceProps extends AppDependencies {
-  setDataSource: React.Dispatch<React.SetStateAction<DataSourceOption>>;
-}
+export type UnknownDataSourceProps = AppDependencies;
 
 export const UnknownDataSourcePage = React.memo((props: UnknownDataSourceProps) => {
-  const { setDataSource } = props;
-
-  const defaultToLocalCluster = () => {
-    setDataSourceInUrl(LocalCluster);
-    setDataSource(LocalCluster);
-  };
-
   return (
     <>
       <EuiPageHeader>
         <EuiTitle size="l">
-          <h1>Unknown DataSource</h1>
+          <h1>Unable to list data-source connections</h1>
         </EuiTitle>
       </EuiPageHeader>
-      <EuiButton title="Switch to Local Cluster" onClick={() => defaultToLocalCluster()}>
-        Switch to Local Cluster
-      </EuiButton>
+      <EuiPageBody>
+        <EuiText>
+          <h4>
+            It seems like you do not have access to list all data-source connections.
+            <br />
+            Likely cause is that aggregation view setting
+            `opensearch_security.multitenancy.enable_aggregation_view` is enabled.
+            <br />
+            Please contact your administrator to grant you access to global tenant to be able to
+            view the data-sources.
+          </h4>
+        </EuiText>
+      </EuiPageBody>
     </>
   );
 });

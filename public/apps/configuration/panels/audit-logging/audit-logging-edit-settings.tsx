@@ -250,17 +250,7 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
   }
 
   if (dataSourceEnabled && dataSource === undefined) {
-    return (
-      <>
-        <SecurityPluginTopNavMenu
-          {...props}
-          dataSourcePickerReadOnly={false}
-          setDataSource={setDataSource}
-          selectedDataSource={dataSource}
-        />
-        <UnknownDataSourcePage {...props} setDataSource={setDataSource} />
-      </>
-    );
+    return <UnknownDataSourcePage {...props} />;
   }
 
   return (

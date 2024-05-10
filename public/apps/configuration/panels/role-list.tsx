@@ -257,18 +257,7 @@ export function RoleList(props: AppDependencies) {
   if (dataSourceEnabled && dataSource === undefined) {
     return (
       <>
-        <SecurityPluginTopNavMenu
-          {...props}
-          dataSourcePickerReadOnly={false}
-          setDataSource={setDataSource}
-          selectedDataSource={dataSource}
-        />
-        <UnknownDataSourcePage
-          {...props}
-          dataSourcePickerReadOnly={false}
-          setDataSource={setDataSource}
-          selectedDataSource={dataSource}
-        />
+        <UnknownDataSourcePage {...props} />
       </>
     );
   }

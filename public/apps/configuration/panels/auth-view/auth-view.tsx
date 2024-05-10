@@ -53,6 +53,13 @@ export function AuthView(props: AppDependencies) {
   }, [props.coreStart.http, dataSource]);
 
   if (isEmpty(authentication)) {
+    if (dataSourceEnabled && dataSource === undefined) {
+      return (
+        <>
+          <UnknownDataSourcePage {...props} />
+        </>
+      );
+    }
     return (
       <>
         <SecurityPluginTopNavMenu
@@ -67,17 +74,7 @@ export function AuthView(props: AppDependencies) {
   }
 
   if (dataSourceEnabled && dataSource === undefined) {
-    return (
-      <>
-        <SecurityPluginTopNavMenu
-          {...props}
-          dataSourcePickerReadOnly={false}
-          setDataSource={setDataSource}
-          selectedDataSource={dataSource}
-        />
-        <UnknownDataSourcePage {...props} setDataSource={setDataSource} />
-      </>
-    );
+    return <UnknownDataSourcePage {...props} />;
   }
   return (
     <>
