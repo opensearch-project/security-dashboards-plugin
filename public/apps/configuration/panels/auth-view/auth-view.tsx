@@ -53,7 +53,17 @@ export function AuthView(props: AppDependencies) {
   }, [props.coreStart.http, dataSource]);
 
   if (isEmpty(authentication)) {
-    return <InstructionView config={props.config} />;
+    return (
+      <>
+        <SecurityPluginTopNavMenu
+          {...props}
+          dataSourcePickerReadOnly={false}
+          setDataSource={setDataSource}
+          selectedDataSource={dataSource}
+        />
+        <InstructionView config={props.config} />
+      </>
+    );
   }
 
   if (dataSourceEnabled && dataSource === undefined) {

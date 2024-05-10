@@ -17,15 +17,21 @@ const { runServer } = require('saml-idp');
 
 const { generate } = require('selfsigned');
 
+const minimist = require('minimist');
+
 const pems = generate(null, {
   keySize: 2048,
   clientCertificateCN: '/C=US/ST=California/L=San Francisco/O=JankyCo/CN=Test Identity Provider',
   days: 7300,
 });
 
+const argv = minimist(process.argv.slice(2), {
+  default: { basePath: '' },
+});
+
 // Create certificate pair on the fly and pass it to runServer
 runServer({
-  acsUrl: 'http://localhost:5601/_opendistro/_security/saml/acs',
+  acsUrl: `http://localhost:5601${argv.basePath}/_opendistro/_security/saml/acs`,
   audience: 'https://localhost:9200',
   cert: pems.cert,
   key: pems.private.toString().replace(/\r\n/, '\n'),

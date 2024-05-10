@@ -11,6 +11,10 @@ inputs:
   yarn_command:
     description: 'The yarn command to start running cypress tests'
     required: true
+  osd_base_path:
+    description: 'The base path for OpenSearch Dashboards'
+    required: false
+    default: ''
 
 runs:
   using: "composite"
@@ -56,14 +60,22 @@ runs:
       if: ${{ runner.os == 'Linux' }}
       run: |
         cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
-        yarn runIdp
+        if [ -z "${{ inputs.osd_base_path }}" ]; then
+          yarn runIdp &
+        else
+          yarn runIdp --basePath ${{ inputs.osd_base_path }} &
+        fi
       shell: bash
 
     - name: Run OpenSearch Dashboards with provided configuration
       if: ${{ runner.os == 'Linux' }}
       run: |
         cd ./OpenSearch-Dashboards
-        nohup yarn start --no-base-path --no-watch --csp.warnLegacyBrowsers=false | tee dashboard.log &
+        if [ -z "${{ inputs.osd_base_path }}" ]; then
+          nohup yarn start --no-base-path --no-watch --csp.warnLegacyBrowsers=false | tee dashboard.log &
+        else
+          nohup yarn start --no-watch --csp.warnLegacyBrowsers=false | tee dashboard.log &
+        fi
       shell: bash
 
     # Check if OSD is ready with a max timeout of 600 seconds
