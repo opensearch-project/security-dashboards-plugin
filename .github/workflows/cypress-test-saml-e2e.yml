@@ -17,6 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest ]
+        basePath: [ "", "/osd" ]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -61,7 +62,7 @@ jobs:
                         metadata_url: http://localhost:7000/metadata
                       sp:
                         entity_id: https://localhost:9200
-                      kibana_url: http://localhost:5601
+                      kibana_url: http://localhost:5601${{ matrix.basePath }}
                       exchange_key: 6aff3042-1327-4f3d-82f0-40a157ac4464
                   authentication_backend:
                     type: noop
@@ -82,14 +83,30 @@ jobs:
           opensearch_security.multitenancy.tenants.preferred: ["Private", "Global"]
           opensearch_security.readonly_mode.roles: ["kibana_read_only"]
           opensearch_security.cookie.secure: false
-          server.xsrf.allowlist: ["/_plugins/_security/api/authtoken", "/_opendistro/_security/api/authtoken", "/_opendistro/_security/saml/acs", "/_opendistro/_security/saml/acs/idpinitiated", "/_opendistro/_security/saml/logout"]
+          server.xsrf.allowlist: ["/_opendistro/_security/saml/acs", "/_opendistro/_security/saml/acs/idpinitiated", "/_opendistro/_security/saml/logout"]
           opensearch_security.auth.type: ["saml"]
           opensearch_security.auth.multiple_auth_enabled: true
           opensearch_security.auth.anonymous_auth_enabled: false
           home.disableWelcomeScreen: true
           EOT
 
+      - name: Run OSD with basePath
+        if: ${{ matrix.basePath != '' }}
+        run: |
+          echo "server.basePath: \"${{ matrix.basePath }}\"" >> opensearch_dashboards_saml.yml
+          echo "server.rewriteBasePath: true" >> opensearch_dashboards_saml.yml
+
+      - name: Run Cypress Tests with basePath
+        if: ${{ matrix.basePath != '' }}
+        uses: ./.github/actions/run-cypress-tests
+        with:
+          security_config_file: config_saml.yml
+          dashboards_config_file: opensearch_dashboards_saml.yml
+          yarn_command: 'yarn cypress:run --browser chrome --headless --spec "test/cypress/e2e/saml/*.js" --env basePath=${{ matrix.basePath }}'
+          osd_base_path: ${{ matrix.basePath }}
+
       - name: Run Cypress Tests
+        if: ${{ matrix.basePath == '' }}
         uses: ./.github/actions/run-cypress-tests
         with:
           security_config_file: config_saml.yml
