@@ -84,7 +84,7 @@ export function extractNextUrlFromWindowLocation(): string {
   const urlParams = new URLSearchParams(window.location.search);
   let nextUrl = urlParams.get('nextUrl');
   if (!nextUrl || nextUrl.toLowerCase().includes('//')) {
-    nextUrl = encodeURIComponent('/');
+    return '';
   } else {
     nextUrl = encodeURIComponent(nextUrl);
     const hash = window.location.hash || '';

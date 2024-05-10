@@ -21,6 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest ]
+        basePath: [ "", "/osd" ]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -62,7 +63,7 @@ jobs:
           chmod +x kcadm.sh
           echo "Creating client"
           ./kcadm.sh config credentials --server http://localhost:8080/auth --realm master --user admin --password admin
-          CID=$(./kcadm.sh create clients -r master -s clientId=opensearch -s secret="${{ env.TEST_KEYCLOAK_CLIENT_SECRET }}" -s 'attributes."access.token.lifespan"=60' -s 'redirectUris=["http://localhost:5603/auth/openid/login", "http://localhost:5601", "http://localhost:5601/auth/openid/login"]' -i)
+          CID=$(./kcadm.sh create clients -r master -s clientId=opensearch -s secret="${{ env.TEST_KEYCLOAK_CLIENT_SECRET }}" -s 'attributes."access.token.lifespan"=60' -s 'redirectUris=["http://localhost:5603${{ matrix.basePath }}/auth/openid/login", "http://localhost:5601${{ matrix.basePath }}", "http://localhost:5601${{ matrix.basePath }}/auth/openid/login"]' -i)
           ./kcadm.sh get clients/$CID/installation/providers/keycloak-oidc-keycloak-json > tmp
           echo "Getting client secret for dashboards configuration purpose"
           CLIENT_SECRET=$(grep -o '"secret" : "[^"]*' tmp | grep -o '[^"]*$')
@@ -129,13 +130,28 @@ jobs:
           opensearch_security.openid.connect_url: "http://127.0.0.1:8080/auth/realms/master/.well-known/openid-configuration"
           opensearch_security.openid.client_id: "opensearch"
           opensearch_security.openid.client_secret: "${{ env.TEST_KEYCLOAK_CLIENT_SECRET }}"
-          opensearch_security.auth.type: ["openid"]
-          opensearch_security.auth.multiple_auth_enabled: true
-          opensearch_security.ui.openid.login.buttonname: "OIDC"
+          opensearch_security.openid.base_redirect_url: http://localhost:5601${{ matrix.basePath }}
+          opensearch_security.auth.type: "openid"
           home.disableWelcomeScreen: true
           EOT
 
+      - name: Run OSD with basePath
+        if: ${{ matrix.basePath != '' }}
+        run: |
+          echo "server.basePath: \"${{ matrix.basePath }}\"" >> opensearch_dashboards_openid.yml
+          echo "server.rewriteBasePath: true" >> opensearch_dashboards_openid.yml
+
+      - name: Run Cypress Tests with basePath
+        if: ${{ matrix.basePath != '' }}
+        uses: ./.github/actions/run-cypress-tests
+        with:
+          security_config_file: config_openid.yml
+          dashboards_config_file: opensearch_dashboards_openid.yml
+          yarn_command: 'yarn cypress:run --browser chrome --headless --spec "test/cypress/e2e/oidc/*.js" --env basePath=${{ matrix.basePath }}'
+          osd_base_path: ${{ matrix.basePath }}
+
       - name: Run Cypress Tests
+        if: ${{ matrix.basePath == '' }}
         uses: ./.github/actions/run-cypress-tests
         with:
           security_config_file: config_openid.yml
