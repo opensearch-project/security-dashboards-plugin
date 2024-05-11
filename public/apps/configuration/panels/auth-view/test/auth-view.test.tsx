@@ -30,6 +30,8 @@ describe('Auth view', () => {
     http: 1,
   };
 
+  const mockDepsStart = {};
+
   const setState = jest.fn();
 
   beforeEach(() => {
@@ -56,7 +58,13 @@ describe('Auth view', () => {
 
     mockAuthViewUtils.getSecurityConfig = jest.fn().mockReturnValue(config);
 
-    shallow(<AuthView coreStart={mockCoreStart as any} navigation={{} as any} />);
+    shallow(
+      <AuthView
+        coreStart={mockCoreStart as any}
+        depsStart={mockDepsStart as any}
+        navigation={{} as any}
+      />
+    );
 
     process.nextTick(() => {
       expect(mockAuthViewUtils.getSecurityConfig).toHaveBeenCalledTimes(1);
@@ -75,7 +83,13 @@ describe('Auth view', () => {
 
     jest.spyOn(console, 'log').mockImplementationOnce(() => {});
 
-    shallow(<AuthView coreStart={mockCoreStart as any} navigation={{} as any} />);
+    shallow(
+      <AuthView
+        coreStart={mockCoreStart as any}
+        depsStart={mockDepsStart as any}
+        navigation={{} as any}
+      />
+    );
 
     process.nextTick(() => {
       expect(mockAuthViewUtils.getSecurityConfig).toHaveBeenCalledTimes(1);

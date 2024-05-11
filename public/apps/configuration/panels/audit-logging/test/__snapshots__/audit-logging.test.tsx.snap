@@ -248,6 +248,7 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
       }
     }
     dataSourcePickerReadOnly={false}
+    depsStart={Object {}}
     navigation={Object {}}
     selectedDataSource={
       Object {

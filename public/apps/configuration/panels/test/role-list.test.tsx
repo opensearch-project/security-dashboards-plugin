@@ -50,6 +50,8 @@ describe('Role list', () => {
     http: 1,
   };
 
+  const mockDepsStart = {};
+
   beforeEach(() => {
     jest.spyOn(React, 'useState').mockImplementation((initialValue) => [initialValue, setState]);
   });
@@ -72,6 +74,7 @@ describe('Role list', () => {
     const component = shallow(
       <RoleList
         coreStart={mockCoreStart as any}
+        depsStart={mockDepsStart as any}
         navigation={{} as any}
         params={{} as any}
         config={{} as any}
@@ -92,6 +95,7 @@ describe('Role list', () => {
     shallow(
       <RoleList
         coreStart={{} as any}
+        depsStart={mockDepsStart as any}
         navigation={{} as any}
         params={{} as any}
         config={{} as any}
@@ -125,6 +129,7 @@ describe('Role list', () => {
     shallow(
       <RoleList
         coreStart={mockCoreStart as any}
+        depsStart={mockDepsStart as any}
         navigation={{} as any}
         params={{} as any}
         config={{} as any}
@@ -144,6 +149,7 @@ describe('Role list', () => {
     shallow(
       <RoleList
         coreStart={mockCoreStart as any}
+        depsStart={mockDepsStart as any}
         navigation={{} as any}
         params={{} as any}
         config={{} as any}
@@ -167,6 +173,7 @@ describe('Role list', () => {
     shallow(
       <RoleList
         coreStart={mockCoreStart as any}
+        depsStart={mockDepsStart as any}
         navigation={{} as any}
         params={{} as any}
         config={{} as any}
@@ -194,6 +201,7 @@ describe('Role list', () => {
       component = shallow(
         <RoleList
           coreStart={mockCoreStart as any}
+          depsStart={mockDepsStart as any}
           navigation={{} as any}
           params={{} as any}
           config={{} as any}
@@ -221,6 +229,7 @@ describe('Role list', () => {
       const wrapper = shallow(
         <RoleList
           coreStart={mockCoreStart as any}
+          depsStart={mockDepsStart as any}
           navigation={{} as any}
           params={{} as any}
           config={{} as any}
@@ -240,6 +249,7 @@ describe('Role list', () => {
       const wrapper = shallow(
         <RoleList
           coreStart={mockCoreStart as any}
+          depsStart={mockDepsStart as any}
           navigation={{} as any}
           params={{} as any}
           config={{} as any}

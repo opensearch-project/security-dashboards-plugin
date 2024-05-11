@@ -39,6 +39,8 @@ describe('Audit logs', () => {
     http: 1,
   };
 
+  const mockDepsStart = {};
+
   beforeEach(() => {
     jest.spyOn(React, 'useState').mockImplementation((initialValue) => [initialValue, setState]);
     jest.spyOn(React, 'useEffect').mockImplementationOnce((f) => f());
@@ -54,7 +56,11 @@ describe('Audit logs', () => {
     mockAuditLoggingUtils.getAuditLogging = jest.fn().mockReturnValue(mockAuditLoggingData);
 
     const component = shallow(
-      <AuditLogging coreStart={mockCoreStart as any} navigation={{} as any} />
+      <AuditLogging
+        coreStart={mockCoreStart as any}
+        depsStart={mockDepsStart as any}
+        navigation={{} as any}
+      />
     );
 
     const switchFound = component.find(EuiSwitch);
@@ -72,7 +78,13 @@ describe('Audit logs', () => {
 
     mockAuditLoggingUtils.getAuditLogging = jest.fn().mockReturnValue(mockAuditLoggingData);
 
-    shallow(<AuditLogging coreStart={mockCoreStart as any} navigation={{} as any} />);
+    shallow(
+      <AuditLogging
+        coreStart={mockCoreStart as any}
+        depsStart={mockDepsStart as any}
+        navigation={{} as any}
+      />
+    );
 
     process.nextTick(() => {
       expect(mockAuditLoggingUtils.getAuditLogging).toHaveBeenCalledTimes(1);
@@ -90,7 +102,13 @@ describe('Audit logs', () => {
       throw Error();
     });
 
-    shallow(<AuditLogging coreStart={mockCoreStart as any} navigation={{} as any} />);
+    shallow(
+      <AuditLogging
+        coreStart={mockCoreStart as any}
+        depsStart={mockDepsStart as any}
+        navigation={{} as any}
+      />
+    );
 
     process.nextTick(() => {
       expect(mockAuditLoggingUtils.getAuditLogging).toHaveBeenCalledTimes(1);
@@ -116,7 +134,11 @@ describe('Audit logs', () => {
 
   it('audit logging switch change', () => {
     const component = shallow(
-      <AuditLogging coreStart={mockCoreStart as any} navigation={{} as any} />
+      <AuditLogging
+        coreStart={mockCoreStart as any}
+        depsStart={mockDepsStart as any}
+        navigation={{} as any}
+      />
     );
     component.find('[data-test-subj="audit-logging-enabled-switch"]').simulate('change');
     expect(mockAuditLoggingUtils.updateAuditLogging).toHaveBeenCalledTimes(1);
@@ -130,7 +152,11 @@ describe('Audit logs', () => {
       throw Error();
     });
     const component = shallow(
-      <AuditLogging coreStart={mockCoreStart as any} navigation={{} as any} />
+      <AuditLogging
+        coreStart={mockCoreStart as any}
+        depsStart={mockDepsStart as any}
+        navigation={{} as any}
+      />
     );
     component.find('[data-test-subj="audit-logging-enabled-switch"]').simulate('change');
 
@@ -142,7 +168,11 @@ describe('Audit logs', () => {
     const auditLoggingSettings = { enabled: true };
     jest.spyOn(React, 'useState').mockImplementation(() => [auditLoggingSettings, setState]);
     const component = shallow(
-      <AuditLogging coreStart={mockCoreStart as any} navigation={{} as any} />
+      <AuditLogging
+        coreStart={mockCoreStart as any}
+        depsStart={mockDepsStart as any}
+        navigation={{} as any}
+      />
     );
     expect(component).toMatchSnapshot();
   });
@@ -151,7 +181,11 @@ describe('Audit logs', () => {
     const auditLoggingSettings = { enabled: true };
     jest.spyOn(React, 'useState').mockImplementation(() => [auditLoggingSettings, setState]);
     const component = shallow(
-      <AuditLogging coreStart={mockCoreStart as any} navigation={{} as any} />
+      <AuditLogging
+        coreStart={mockCoreStart as any}
+        depsStart={mockDepsStart as any}
+        navigation={{} as any}
+      />
     );
     component.find('[data-test-subj="general-settings-configure"]').simulate('click');
     expect(window.location.hash).toBe(
@@ -163,7 +197,11 @@ describe('Audit logs', () => {
     const auditLoggingSettings = { enabled: true };
     jest.spyOn(React, 'useState').mockImplementation(() => [auditLoggingSettings, setState]);
     const component = shallow(
-      <AuditLogging coreStart={mockCoreStart as any} navigation={{} as any} />
+      <AuditLogging
+        coreStart={mockCoreStart as any}
+        depsStart={mockDepsStart as any}
+        navigation={{} as any}
+      />
     );
     component.find('[data-test-subj="compliance-settings-configure"]').simulate('click');
     expect(window.location.hash).toBe(
