@@ -14,7 +14,7 @@
  */
 
 import React from 'react';
-import { EuiPageHeader, EuiTitle, EuiText, EuiPageBody } from '@opensearch-project/oui';
+import { EuiPageHeader, EuiTitle, EuiText, EuiPageBody } from '@elastic/eui';
 import { AppDependencies } from '../types';
 
 export type UnknownDataSourceProps = AppDependencies;
