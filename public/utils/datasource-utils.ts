@@ -31,7 +31,6 @@ export function getDataSourceFromUrl(): DataSourceOption {
   try {
     return JSON.parse(dataSourceParam);
   } catch (e) {
-    console.error('Failed to parse dataSourceParam:', dataSourceParam);
     return JSON.parse('{}'); // Return an empty object or some default value if parsing fails
   }
 }
