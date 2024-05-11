@@ -91,6 +91,7 @@ describe('User list', () => {
     const mockCoreStart = {
       http: 1,
     };
+    const mockDepsStart = {};
     const setState = jest.fn();
     jest.spyOn(React, 'useState').mockImplementation((initValue) => [initValue, setState]);
 
@@ -98,6 +99,7 @@ describe('User list', () => {
       const component = shallow(
         <UserList
           coreStart={mockCoreStart as any}
+          depsStart={mockDepsStart as any}
           navigation={{} as any}
           params={{} as any}
           config={{} as any}
@@ -112,6 +114,7 @@ describe('User list', () => {
       shallow(
         <UserList
           coreStart={mockCoreStart as any}
+          depsStart={mockDepsStart as any}
           navigation={{} as any}
           params={{} as any}
           config={{} as any}
@@ -132,6 +135,7 @@ describe('User list', () => {
       shallow(
         <UserList
           coreStart={mockCoreStart as any}
+          depsStart={mockDepsStart as any}
           navigation={{} as any}
           params={{} as any}
           config={{} as any}
@@ -146,6 +150,7 @@ describe('User list', () => {
       shallow(
         <UserList
           coreStart={mockCoreStart as any}
+          depsStart={mockDepsStart as any}
           navigation={{} as any}
           params={{} as any}
           config={{} as any}
@@ -171,6 +176,7 @@ describe('User list', () => {
       shallow(
         <UserList
           coreStart={mockCoreStart as any}
+          depsStart={mockDepsStart as any}
           navigation={{} as any}
           params={{} as any}
           config={{} as any}
@@ -195,6 +201,7 @@ describe('User list', () => {
         },
       },
     };
+    const mockDepsStart = {};
     let component;
     const mockUserListingData: InternalUsersListing = {
       username: 'user_1',
@@ -206,6 +213,7 @@ describe('User list', () => {
       component = shallow(
         <UserList
           coreStart={mockCoreStart as any}
+          depsStart={mockDepsStart as any}
           navigation={{} as any}
           params={{} as any}
           config={{} as any}
