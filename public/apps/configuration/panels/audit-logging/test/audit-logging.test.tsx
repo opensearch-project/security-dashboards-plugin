@@ -208,4 +208,20 @@ describe('Audit logs', () => {
       buildHashUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT
     );
   });
+
+  it('Render unable to access dataSource when enabled and inaccessible', () => {
+    const depsStart = {
+      dataSource: {
+        dataSourceEnabled: true,
+      },
+    };
+    const component = shallow(
+      <AuditLogging
+        coreStart={mockCoreStart as any}
+        depsStart={depsStart as any}
+        navigation={{} as any}
+      />
+    );
+    expect(component).toMatchSnapshot();
+  });
 });

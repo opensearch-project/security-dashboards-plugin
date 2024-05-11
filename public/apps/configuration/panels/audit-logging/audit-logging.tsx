@@ -137,8 +137,10 @@ export function renderComplianceSettings(config: AuditLoggingSettings) {
 
 export function AuditLogging(props: AuditLoggingProps) {
   const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
+  console.log(props.depsStart);
   const [configuration, setConfiguration] = React.useState<AuditLoggingSettings>({});
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
+  console.log(dataSource);
 
   const onSwitchChange = async () => {
     try {

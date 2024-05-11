@@ -136,4 +136,25 @@ describe('Role edit', () => {
       done();
     });
   });
+
+  it('Render unable to access dataSource when enabled and inaccessible', () => {
+    const depsStart = {
+      dataSource: {
+        dataSourceEnabled: true,
+      },
+    };
+    const buildBreadcrumbs = jest.fn();
+    const component = shallow(
+      <RoleEdit
+        action={'' as any}
+        sourceRoleName={sampleSourceRole}
+        buildBreadcrumbs={buildBreadcrumbs}
+        coreStart={mockCoreStart as any}
+        depsStart={depsStart as any}
+        params={{} as any}
+        config={{} as any}
+      />
+    );
+    expect(component).toMatchSnapshot();
+  });
 });

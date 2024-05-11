@@ -182,4 +182,21 @@ describe('Get started (landing page)', () => {
       expect(ToastUtils.createSuccessToast).toHaveBeenCalledTimes(1);
     });
   });
+
+  it('Render unable to access dataSource when enabled and inaccessible', () => {
+    const depsStart = {
+      dataSource: {
+        dataSourceEnabled: true,
+      },
+    };
+    const component = shallow(
+      <GetStarted
+        depsStart={depsStart as any}
+        coreStart={mockCoreStart as any}
+        params={{} as any}
+        config={config as any}
+      />
+    );
+    expect(component).toMatchSnapshot();
+  });
 });

@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Auth view Render unable to access dataSource when enabled and inaccessible 1`] = `
+<Fragment>
+  <Memo()
+    coreStart={
+      Object {
+        "http": 1,
+      }
+    }
+    dataSourcePickerReadOnly={false}
+    depsStart={
+      Object {
+        "dataSource": Object {
+          "dataSourceEnabled": true,
+        },
+      }
+    }
+    navigation={Object {}}
+    selectedDataSource={
+      Object {
+        "id": "test",
+      }
+    }
+    setDataSource={[MockFunction]}
+  />
+  <InstructionView />
+</Fragment>
+`;
+
+exports[`Auth view Render unable to access dataSource when enabled and inaccessible: Empty Authentication 1`] = `
+<Fragment>
+  <Memo()
+    coreStart={
+      Object {
+        "http": 1,
+      }
+    }
+    dataSourcePickerReadOnly={false}
+    depsStart={
+      Object {
+        "dataSource": Object {
+          "dataSourceEnabled": true,
+        },
+      }
+    }
+    navigation={Object {}}
+    selectedDataSource={
+      Object {
+        "id": "test",
+      }
+    }
+    setDataSource={[MockFunction]}
+  />
+  <InstructionView />
+</Fragment>
+`;

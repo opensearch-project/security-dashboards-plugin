@@ -1,0 +1,146 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Internal user edit Render unable to access dataSource when enabled and inaccessible 1`] = `
+<Fragment>
+  <Memo()
+    action=""
+    buildBreadcrumbs={
+      [MockFunction] {
+        "calls": Array [
+          Array [
+            undefined,
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      }
+    }
+    config={Object {}}
+    coreStart={
+      Object {
+        "http": 1,
+      }
+    }
+    dataSourcePickerReadOnly={true}
+    depsStart={
+      Object {
+        "dataSource": Object {
+          "dataSourceEnabled": true,
+        },
+      }
+    }
+    params={Object {}}
+    selectedDataSource={
+      Object {
+        "id": "test",
+      }
+    }
+    setDataSource={[MockFunction]}
+    sourceUserName="user1"
+  />
+  <EuiSpacer />
+  <EuiPageHeader>
+    <EuiFlexGroup
+      direction="column"
+      gutterSize="xs"
+    >
+      <EuiFlexItem>
+        <EuiTitle
+          size="l"
+        >
+          <h1 />
+        </EuiTitle>
+      </EuiFlexItem>
+      <EuiFlexItem>
+        <EuiText
+          color="subdued"
+          size="xs"
+        >
+          The security plugin includes an internal user database. Use this database in place of, or in addition to, an external authentication system such as LDAP or Active Directory.
+           
+          <ExternalLink
+            href="https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/"
+          />
+        </EuiText>
+      </EuiFlexItem>
+    </EuiFlexGroup>
+  </EuiPageHeader>
+  <PanelWithHeader
+    headerText="Credentials"
+  >
+    <EuiForm>
+      <NameRow
+        action=""
+        headerSubText="Specify a descriptive and unique user name. You cannot edit the name once the user is created."
+        headerText="Username"
+        resourceName=""
+        resourceType="user"
+        setIsFormValid={[Function]}
+        setNameState={[Function]}
+      />
+      <PasswordEditPanel
+        coreStart={
+          Object {
+            "http": 1,
+          }
+        }
+        updateIsInvalid={[MockFunction]}
+        updatePassword={[Function]}
+      />
+    </EuiForm>
+  </PanelWithHeader>
+  <EuiSpacer
+    size="m"
+  />
+  <BackendRolePanel
+    setState={[Function]}
+    state={Array []}
+  />
+  <EuiSpacer
+    size="m"
+  />
+  <AttributePanel
+    setState={[Function]}
+    state={Array []}
+  />
+  <EuiSpacer
+    size="m"
+  />
+  <EuiFlexGroup
+    justifyContent="flexEnd"
+  >
+    <EuiFlexItem
+      grow={false}
+    >
+      <EuiButton
+        onClick={[Function]}
+      >
+        Cancel
+      </EuiButton>
+    </EuiFlexItem>
+    <EuiFlexItem
+      grow={false}
+    >
+      <EuiButton
+        data-test-subj="submit-save-user"
+        disabled={false}
+        fill={true}
+        id="submit"
+        onClick={[Function]}
+      >
+        Create
+      </EuiButton>
+    </EuiFlexItem>
+  </EuiFlexGroup>
+  <EuiGlobalToastList
+    dismissToast={[MockFunction]}
+    side="right"
+    toastLifeTimeMs={10000}
+    toasts={Array []}
+  />
+</Fragment>
+`;

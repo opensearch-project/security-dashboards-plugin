@@ -265,4 +265,22 @@ describe('Role list', () => {
       expect(result).toMatchSnapshot();
     });
   });
+
+  it('Render unable to access dataSource when enabled and inaccessible', () => {
+    const depsStart = {
+      dataSource: {
+        dataSourceEnabled: true,
+      },
+    };
+    const component = shallow(
+      <RoleList
+        coreStart={mockCoreStart as any}
+        depsStart={depsStart as any}
+        navigation={{} as any}
+        params={{} as any}
+        config={{} as any}
+      />
+    );
+    expect(component).toMatchSnapshot();
+  });
 });

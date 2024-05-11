@@ -1,0 +1,276 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Permission list page  Render unable to access dataSource when enabled and inaccessible 1`] = `
+<Fragment>
+  <Memo()
+    config={Object {}}
+    coreStart={Object {}}
+    dataSourcePickerReadOnly={false}
+    depsStart={
+      Object {
+        "dataSource": Object {
+          "dataSourceEnabled": true,
+        },
+      }
+    }
+    params={Object {}}
+    selectedDataSource={
+      Object {
+        "id": "test",
+      }
+    }
+    setDataSource={[MockFunction]}
+  />
+  <EuiPageHeader>
+    <EuiTitle
+      size="l"
+    >
+      <h1>
+        Permissions
+      </h1>
+    </EuiTitle>
+  </EuiPageHeader>
+  <EuiPageContent>
+    <EuiPageContentHeader>
+      <EuiPageContentHeaderSection>
+        <EuiTitle
+          size="s"
+        >
+          <h3>
+            Permissions
+            <span
+              className="panel-header-count"
+            >
+               
+              (
+              0
+              )
+            </span>
+          </h3>
+        </EuiTitle>
+        <EuiText
+          color="subdued"
+          size="xs"
+        >
+          Permissions are individual actions, such as cluster:admin/snapshot/restore, which lets you restore snapshots. Action groups are reusable collections of permissions, such as MANAGE_SNAPSHOTS, which lets you view, take, delete, and restore snapshots. You can often meet your security needs using the default action groups, but you might find it convenient to create your own. 
+          <ExternalLink
+            href="https://opensearch.org/docs/latest/security-plugin/access-control/default-action-groups/"
+          />
+        </EuiText>
+      </EuiPageContentHeaderSection>
+      <EuiPageContentHeaderSection>
+        <EuiFlexGroup>
+          <EuiFlexItem>
+            <EuiButtonEmpty
+              disabled={false}
+              id="edit"
+              key="edit"
+              onClick={[Function]}
+            >
+              Edit
+            </EuiButtonEmpty>
+            <EuiButtonEmpty
+              disabled={false}
+              id="duplicate"
+              key="duplicate"
+              onClick={[Function]}
+            >
+              Duplicate
+            </EuiButtonEmpty>
+            <EuiButtonEmpty
+              color="danger"
+              disabled={false}
+              key="delete"
+              onClick={[MockFunction]}
+            >
+              Delete
+            </EuiButtonEmpty>
+          </EuiFlexItem>
+          <EuiFlexItem>
+            <EuiButtonEmpty
+              key="create-from-blank"
+              onClick={[Function]}
+            >
+              Create from blank
+            </EuiButtonEmpty>
+            <EuiButtonEmpty
+              disabled={false}
+              id="create-from-selection"
+              key="create-from-selection"
+              onClick={[Function]}
+            >
+              Create from selection
+            </EuiButtonEmpty>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      </EuiPageContentHeaderSection>
+    </EuiPageContentHeader>
+    <EuiPageBody>
+      <EuiInMemoryTable
+        columns={
+          Array [
+            Object {
+              "field": "name",
+              "name": "Name",
+              "sortable": true,
+            },
+            Object {
+              "field": "type",
+              "name": "Type",
+              "sortable": true,
+            },
+            Object {
+              "field": "hasClusterPermission",
+              "name": "Cluster permission",
+              "render": [Function],
+            },
+            Object {
+              "field": "hasIndexPermission",
+              "name": "Index permission",
+              "render": [Function],
+            },
+            Object {
+              "field": "reserved",
+              "name": "Customization",
+              "render": [Function],
+            },
+            Object {
+              "align": "right",
+              "isExpander": true,
+              "render": [Function],
+              "width": "40px",
+            },
+          ]
+        }
+        error=""
+        isExpandable={true}
+        itemId="name"
+        itemIdToExpandedRowMap={Object {}}
+        items={Array []}
+        loading={false}
+        message="No items found"
+        pagination={true}
+        responsive={true}
+        search={
+          Object {
+            "box": Object {
+              "placeholder": "Search for action group name or permission name",
+            },
+            "filters": Array [
+              Object {
+                "field": "type",
+                "multiSelect": false,
+                "name": "All types",
+                "options": Array [
+                  Object {
+                    "value": "Action group",
+                  },
+                  Object {
+                    "value": "Single permission",
+                  },
+                ],
+                "type": "field_value_selection",
+              },
+              Object {
+                "name": "All permissions",
+                "options": Array [
+                  Object {
+                    "field": "hasClusterPermission",
+                    "name": "Cluster permissions",
+                    "value": true,
+                  },
+                  Object {
+                    "field": "hasIndexPermission",
+                    "name": "Index permissions",
+                    "value": true,
+                  },
+                ],
+                "type": "field_value_selection",
+              },
+              Object {
+                "field": "reserved",
+                "multiSelect": false,
+                "name": "Customization",
+                "options": Array [
+                  Object {
+                    "value": true,
+                    "view": <EuiFlexGroup
+                      alignItems="center"
+                      gutterSize="xs"
+                    >
+                      <EuiFlexItem
+                        grow={false}
+                      >
+                        <EuiIcon
+                          type="lock"
+                        />
+                      </EuiFlexItem>
+                      <EuiFlexItem
+                        grow={false}
+                      >
+                        <EuiText
+                          className="table-items"
+                          data-test-subj="filter-reserved"
+                        >
+                          Reserved
+                        </EuiText>
+                      </EuiFlexItem>
+                    </EuiFlexGroup>,
+                  },
+                  Object {
+                    "value": false,
+                    "view": <EuiFlexGroup
+                      alignItems="center"
+                      gutterSize="xs"
+                    >
+                      <EuiFlexItem
+                        grow={false}
+                      >
+                        <EuiIcon
+                          type="pencil"
+                        />
+                      </EuiFlexItem>
+                      <EuiFlexItem
+                        grow={false}
+                      >
+                        <EuiText
+                          className="table-items"
+                          data-test-subj="filter-custom"
+                        >
+                          Custom
+                        </EuiText>
+                      </EuiFlexItem>
+                    </EuiFlexGroup>,
+                  },
+                ],
+                "type": "field_value_selection",
+              },
+            ],
+            "onChange": [Function],
+          }
+        }
+        selection={
+          Object {
+            "onSelectionChange": [MockFunction],
+          }
+        }
+        sorting={
+          Object {
+            "sort": Object {
+              "direction": "asc",
+              "field": "type",
+            },
+          }
+        }
+        tableLayout="auto"
+      />
+    </EuiPageBody>
+  </EuiPageContent>
+  <EuiGlobalToastList
+    dismissToast={[MockFunction]}
+    side="right"
+    toastLifeTimeMs={10000}
+    toasts={Array []}
+  />
+</Fragment>
+`;

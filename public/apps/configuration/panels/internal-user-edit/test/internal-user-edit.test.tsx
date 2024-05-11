@@ -148,4 +148,24 @@ describe('Internal user edit', () => {
     expect(createErrorToast).toBeCalled();
     expect(updateUser).toBeCalledTimes(0);
   });
+
+  it('Render unable to access dataSource when enabled and inaccessible', () => {
+    const depsStart = {
+      dataSource: {
+        dataSourceEnabled: true,
+      },
+    };
+    const component = shallow(
+      <InternalUserEdit
+        depsStart={depsStart as any}
+        action={'' as any}
+        sourceUserName={sampleUsername}
+        buildBreadcrumbs={buildBreadcrumbs}
+        coreStart={mockCoreStart as any}
+        params={{} as any}
+        config={{} as any}
+      />
+    );
+    expect(component).toMatchSnapshot();
+  });
 });

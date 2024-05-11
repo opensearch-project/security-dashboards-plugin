@@ -299,4 +299,24 @@ describe('Role view', () => {
     component.find('[data-test-subj="delete"]').simulate('click');
     expect(createUnknownErrorToast).toBeCalled();
   });
+
+  it('Render unable to access dataSource when enabled and inaccessible', () => {
+    const depsStart = {
+      dataSource: {
+        dataSourceEnabled: true,
+      },
+    };
+    const component = shallow(
+      <RoleView
+        roleName={sampleRole}
+        prevAction=""
+        buildBreadcrumbs={buildBreadcrumbs}
+        coreStart={mockCoreStart as any}
+        depsStart={depsStart as any}
+        params={{} as any}
+        config={{} as any}
+      />
+    );
+    expect(component).toMatchSnapshot();
+  });
 });

@@ -172,4 +172,20 @@ describe('Audit logs edit', () => {
     expect(mockAuditLoggingUtils.updateAuditLogging).toBeCalled();
     expect(window.location.hash).toBe(buildHashUrl(ResourceType.auditLogging));
   });
+
+  it('Render unable to access dataSource when enabled and inaccessible', () => {
+    const depsStart = {
+      dataSource: {
+        dataSourceEnabled: true,
+      },
+    };
+    const component = shallow(
+      <AuditLoggingEditSettings
+        coreStart={mockCoreStart as any}
+        depsStart={depsStart as any}
+        navigation={{} as any}
+      />
+    );
+    expect(component).toMatchSnapshot();
+  });
 });
