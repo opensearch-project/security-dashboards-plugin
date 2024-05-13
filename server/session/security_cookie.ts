@@ -59,7 +59,7 @@ export function getSecurityCookieOptions(
       // TODO: with setting redirect attributes to support OIDC and SAML,
       //       we need to do additional cookie validation in AuthenticationHandlers.
       // if SAML fields present
-      if (sessionStorage.saml && sessionStorage.saml.requestId && sessionStorage.saml.nextUrl) {
+      if (sessionStorage.saml && sessionStorage.saml.requestId) {
         return { isValid: true, path: '/' };
       }
 
