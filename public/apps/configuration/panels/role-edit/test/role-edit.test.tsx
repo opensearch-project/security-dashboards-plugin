@@ -44,6 +44,13 @@ jest.mock('react', () => ({
 }));
 
 describe('Role edit', () => {
+  afterEach(() => {
+    React.useContext.mockRestore();
+    React.useContext.mockReturnValue({
+      dataSource: { id: 'test' },
+      setDataSource: jest.fn(),
+    });
+  });
   const sampleSourceRole = 'role';
   const mockCoreStart = {
     http: 1,
@@ -138,6 +145,10 @@ describe('Role edit', () => {
   });
 
   it('Render unable to access dataSource when enabled and inaccessible', () => {
+    React.useContext.mockImplementation(() => ({
+      dataSource: undefined,
+      setDataSource: jest.fn(),
+    }));
     const depsStart = {
       dataSource: {
         dataSourceEnabled: true,

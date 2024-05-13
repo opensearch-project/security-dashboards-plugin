@@ -39,6 +39,14 @@ describe('Auth view', () => {
     jest.spyOn(React, 'useEffect').mockImplementationOnce((f) => f());
   });
 
+  afterEach(() => {
+    React.useContext.mockRestore();
+    React.useContext.mockReturnValue({
+      dataSource: { id: 'test' },
+      setDataSource: jest.fn(),
+    });
+  });
+
   it('valid data', (done) => {
     const config = {
       authc: {
@@ -101,6 +109,10 @@ describe('Auth view', () => {
   });
 
   it('Render unable to access dataSource when enabled and inaccessible', () => {
+    React.useContext.mockImplementation(() => ({
+      dataSource: undefined,
+      setDataSource: jest.fn(),
+    }));
     const depsStart = {
       dataSource: {
         dataSourceEnabled: true,
@@ -117,6 +129,11 @@ describe('Auth view', () => {
   });
 
   it('Render unable to access dataSource when enabled and inaccessible: Empty Authentication', () => {
+    React.useContext.mockImplementation(() => ({
+      dataSource: undefined,
+      setDataSource: jest.fn(),
+    }));
+
     mockAuthViewUtils.getSecurityConfig = jest.fn().mockImplementationOnce(() => {
       throw Error();
     });

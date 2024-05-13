@@ -1,113 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Audit logs Render unable to access dataSource when enabled and inaccessible 1`] = `
-<div
-  className="panel-restrict-width"
->
-  <Memo()
-    coreStart={
-      Object {
-        "http": 1,
-      }
-    }
-    dataSourcePickerReadOnly={false}
-    depsStart={
-      Object {
-        "dataSource": Object {
-          "dataSourceEnabled": true,
-        },
-      }
-    }
-    navigation={Object {}}
-    selectedDataSource={
-      Object {
-        "id": "test",
-      }
-    }
-    setDataSource={[MockFunction]}
-  />
-  <EuiPanel>
-    <EuiTitle>
-      <h3>
-        Audit logging
-      </h3>
-    </EuiTitle>
-    <EuiHorizontalRule
-      margin="m"
-    />
-    <EuiForm>
-      <EuiDescribedFormGroup
-        className="described-form-group"
-        title={
-          <h3>
-            Storage location
-          </h3>
-        }
-      >
-        <EuiFormRow
-          className="form-row"
-          describedByIds={Array []}
-          display="row"
-          fullWidth={false}
-          hasChildLabel={true}
-          hasEmptyLabelSpace={false}
-          labelType="label"
-        >
-          <EuiText
-            color="subdued"
-            grow={false}
-          >
-            <FormattedMessage
-              defaultMessage="Configure the output location and storage types in {opensearchCode}. The default storage location is {internalOpenSearchCode}, which stores the logs in an index on this cluster."
-              id="audit.logs.storageInstruction"
-              values={
-                Object {
-                  "internalOpenSearchCode": <EuiCode>
-                    internal_opensearch
-                  </EuiCode>,
-                  "opensearchCode": <EuiCode>
-                    opensearch.yml
-                  </EuiCode>,
-                }
-              }
-            />
-             
-            <ExternalLink
-              href="https://opensearch.org/docs/latest/security-plugin/audit-logs/storage-types/"
-            />
-          </EuiText>
-        </EuiFormRow>
-      </EuiDescribedFormGroup>
-      <EuiDescribedFormGroup
-        className="described-form-group"
-        title={
-          <h3>
-            Enable audit logging
-          </h3>
-        }
-      >
-        <EuiFormRow
-          describedByIds={Array []}
-          display="row"
-          fullWidth={false}
-          hasChildLabel={true}
-          hasEmptyLabelSpace={false}
-          labelType="label"
-        >
-          <EuiSwitch
-            checked={false}
-            data-test-subj="audit-logging-enabled-switch"
-            label="Disabled"
-            name="auditLoggingEnabledSwitch"
-            onChange={[Function]}
-          />
-        </EuiFormRow>
-      </EuiDescribedFormGroup>
-    </EuiForm>
-  </EuiPanel>
-</div>
-`;
-
 exports[`Audit logs render compliance settings 1`] = `
 <Fragment>
   <ViewSettingGroup
@@ -752,4 +644,22 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
     <EuiSpacer />
   </EuiPanel>
 </div>
+`;
+
+exports[`Audit logs Render unable to access dataSource when enabled and inaccessible 1`] = `
+<Memo()
+  coreStart={
+    Object {
+      "http": 1,
+    }
+  }
+  depsStart={
+    Object {
+      "dataSource": Object {
+        "dataSourceEnabled": true,
+      },
+    }
+  }
+  navigation={Object {}}
+/>
 `;

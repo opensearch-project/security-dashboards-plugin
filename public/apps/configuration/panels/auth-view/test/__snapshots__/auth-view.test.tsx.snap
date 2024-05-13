@@ -8,7 +8,6 @@ exports[`Auth view Render unable to access dataSource when enabled and inaccessi
         "http": 1,
       }
     }
-    dataSourcePickerReadOnly={false}
     depsStart={
       Object {
         "dataSource": Object {
@@ -17,14 +16,7 @@ exports[`Auth view Render unable to access dataSource when enabled and inaccessi
       }
     }
     navigation={Object {}}
-    selectedDataSource={
-      Object {
-        "id": "test",
-      }
-    }
-    setDataSource={[MockFunction]}
   />
-  <InstructionView />
 </Fragment>
 `;
 
@@ -36,7 +28,6 @@ exports[`Auth view Render unable to access dataSource when enabled and inaccessi
         "http": 1,
       }
     }
-    dataSourcePickerReadOnly={false}
     depsStart={
       Object {
         "dataSource": Object {
@@ -45,13 +36,6 @@ exports[`Auth view Render unable to access dataSource when enabled and inaccessi
       }
     }
     navigation={Object {}}
-    selectedDataSource={
-      Object {
-        "id": "test",
-      }
-    }
-    setDataSource={[MockFunction]}
   />
-  <InstructionView />
 </Fragment>
 `;

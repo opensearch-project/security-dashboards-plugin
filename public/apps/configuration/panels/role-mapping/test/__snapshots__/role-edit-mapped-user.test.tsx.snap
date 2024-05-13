@@ -1,112 +1,22 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Role mapping edit Render unable to access dataSource when enabled and inaccessible 1`] = `
-<Fragment>
-  <Memo()
-    buildBreadcrumbs={
-      [MockFunction] {
-        "calls": Array [
-          Array [
-            "role",
-            "Map user",
-          ],
-        ],
-        "results": Array [
-          Object {
-            "type": "return",
-            "value": undefined,
-          },
-        ],
-      }
+<Memo()
+  buildBreadcrumbs={[MockFunction]}
+  config={Object {}}
+  coreStart={
+    Object {
+      "http": 1,
     }
-    config={Object {}}
-    coreStart={
-      Object {
-        "http": 1,
-      }
+  }
+  depsStart={
+    Object {
+      "dataSource": Object {
+        "dataSourceEnabled": true,
+      },
     }
-    dataSourcePickerReadOnly={true}
-    depsStart={
-      Object {
-        "dataSource": Object {
-          "dataSourceEnabled": true,
-        },
-      }
-    }
-    params={Object {}}
-    roleName="role"
-    selectedDataSource={
-      Object {
-        "id": "test",
-      }
-    }
-    setDataSource={[MockFunction]}
-  />
-  <EuiPageHeader>
-    <EuiText
-      color="subdued"
-      size="xs"
-    >
-      <EuiTitle
-        size="m"
-      >
-        <h1>
-          Map user
-        </h1>
-      </EuiTitle>
-      Map users to this role to inherit role permissions. Two types of users are supported: user, and backend role. 
-      <ExternalLink
-        href="https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/#map-users-to-roles"
-      />
-    </EuiText>
-  </EuiPageHeader>
-  <EuiSpacer
-    size="m"
-  />
-  <InternalUsersPanel
-    optionUniverse={Array []}
-    setState={[MockFunction]}
-    state={Array []}
-  />
-  <EuiSpacer
-    size="m"
-  />
-  <ExternalIdentitiesPanel
-    externalIdentities={Array []}
-    setExternalIdentities={[MockFunction]}
-  />
-  <EuiSpacer
-    size="m"
-  />
-  <EuiFlexGroup
-    justifyContent="flexEnd"
-  >
-    <EuiFlexItem
-      grow={false}
-    >
-      <EuiButton
-        onClick={[Function]}
-      >
-        Cancel
-      </EuiButton>
-    </EuiFlexItem>
-    <EuiFlexItem
-      grow={false}
-    >
-      <EuiButton
-        fill={true}
-        id="map"
-        onClick={[Function]}
-      >
-        Map
-      </EuiButton>
-    </EuiFlexItem>
-  </EuiFlexGroup>
-  <EuiGlobalToastList
-    dismissToast={[Function]}
-    side="right"
-    toastLifeTimeMs={10000}
-    toasts={Array []}
-  />
-</Fragment>
+  }
+  params={Object {}}
+  roleName="role"
+/>
 `;

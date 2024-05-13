@@ -64,12 +64,11 @@ export const SecurityPluginTopNavMenu = React.memo(
     ) : null;
   },
   (prevProps, newProps) => {
-    if (prevProps.selectedDataSource && newProps.selectedDataSource) {
-      return (
-        prevProps.selectedDataSource.id === newProps.selectedDataSource.id &&
-        prevProps.dataSourcePickerReadOnly === newProps.dataSourcePickerReadOnly
-      );
-    }
-    return false;
+    return (
+      prevProps.selectedDataSource &&
+      newProps.selectedDataSource &&
+      prevProps.selectedDataSource.id === newProps.selectedDataSource.id &&
+      prevProps.dataSourcePickerReadOnly === newProps.dataSourcePickerReadOnly
+    );
   }
 );

@@ -47,6 +47,14 @@ describe('Internal user edit', () => {
   const useState = jest.spyOn(React, 'useState');
   const setState = jest.fn();
 
+  afterEach(() => {
+    React.useContext.mockRestore();
+    React.useContext.mockReturnValue({
+      dataSource: { id: 'test' },
+      setDataSource: jest.fn(),
+    });
+  });
+
   it('basic rendering', () => {
     const action = 'create';
 
@@ -150,6 +158,10 @@ describe('Internal user edit', () => {
   });
 
   it('Render unable to access dataSource when enabled and inaccessible', () => {
+    React.useContext.mockImplementation(() => ({
+      dataSource: undefined,
+      setDataSource: jest.fn(),
+    }));
     const depsStart = {
       dataSource: {
         dataSourceEnabled: true,

@@ -55,6 +55,13 @@ describe('Role list', () => {
   beforeEach(() => {
     jest.spyOn(React, 'useState').mockImplementation((initialValue) => [initialValue, setState]);
   });
+  afterEach(() => {
+    React.useContext.mockRestore();
+    React.useContext.mockReturnValue({
+      dataSource: { id: 'test' },
+      setDataSource: jest.fn(),
+    });
+  });
 
   it('Render empty', () => {
     const mockRoleListingData = [
@@ -267,6 +274,10 @@ describe('Role list', () => {
   });
 
   it('Render unable to access dataSource when enabled and inaccessible', () => {
+    React.useContext.mockImplementation(() => ({
+      dataSource: undefined,
+      setDataSource: jest.fn(),
+    }));
     const depsStart = {
       dataSource: {
         dataSourceEnabled: true,

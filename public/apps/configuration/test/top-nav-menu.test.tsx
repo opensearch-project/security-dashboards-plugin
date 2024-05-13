@@ -76,4 +76,26 @@ describe('SecurityPluginTopNavMenu', () => {
     expect(dataSourceMenuMock).not.toBeCalled();
     expect(wrapper.html()).toBe('');
   });
+
+  it('renders null when dataSource is enabled but selectedDataSource is undefined', () => {
+    const securityPluginStartDepsMock = {
+      dataSource: {
+        dataSourceEnabled: true,
+      },
+    };
+
+    const wrapper = render(
+      <SecurityPluginTopNavMenu
+        coreStart={coreStartMock}
+        depsStart={securityPluginStartDepsMock}
+        dataSourcePickerReadOnly={false}
+        dataSourceManagement={dataSourceManagementMock}
+        selectedDataSource={() => undefined}
+        params={{}}
+      />
+    );
+
+    expect(dataSourceMenuMock).toBeCalled();
+    expect(wrapper.html()).not.toBe('');
+  });
 });

@@ -48,6 +48,13 @@ import { Action } from '../../types';
 import { ResourceType } from '../../../../../common';
 
 describe('User list', () => {
+  afterEach(() => {
+    React.useContext.mockRestore();
+    React.useContext.mockReturnValue({
+      dataSource: { id: 'test' },
+      setDataSource: jest.fn(),
+    });
+  });
   describe('dictView', () => {
     it('- empty', () => {
       const result = dictView({});
@@ -237,6 +244,10 @@ describe('User list', () => {
   });
 
   it('Render unable to access dataSource when enabled and inaccessible', () => {
+    React.useContext.mockImplementation(() => ({
+      dataSource: undefined,
+      setDataSource: jest.fn(),
+    }));
     const depsStart = {
       dataSource: {
         dataSourceEnabled: true,

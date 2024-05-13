@@ -39,6 +39,14 @@ describe('Audit logs edit', () => {
     jest.spyOn(React, 'useState').mockImplementation((initialValue) => [initialValue, setState]);
   });
 
+  afterEach(() => {
+    React.useContext.mockRestore();
+    React.useContext.mockReturnValue({
+      dataSource: { id: 'test' },
+      setDataSource: jest.fn(),
+    });
+  });
+
   it('Render edit general settings', (done) => {
     jest.spyOn(React, 'useEffect').mockImplementationOnce((f) => f());
 
@@ -174,6 +182,10 @@ describe('Audit logs edit', () => {
   });
 
   it('Render unable to access dataSource when enabled and inaccessible', () => {
+    React.useContext.mockImplementation(() => ({
+      dataSource: undefined,
+      setDataSource: jest.fn(),
+    }));
     const depsStart = {
       dataSource: {
         dataSourceEnabled: true,

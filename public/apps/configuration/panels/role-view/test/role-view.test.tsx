@@ -92,6 +92,13 @@ describe('Role view', () => {
     useEffect.mockImplementationOnce((f) => f());
     useState.mockImplementation((initialValue) => [initialValue, setState]);
   });
+  afterEach(() => {
+    React.useContext.mockRestore();
+    React.useContext.mockReturnValue({
+      dataSource: { id: 'test' },
+      setDataSource: jest.fn(),
+    });
+  });
 
   it('basic rendering when permission tab is selected', () => {
     const component = shallow(
@@ -238,11 +245,11 @@ describe('Role view', () => {
     });
   });
 
-  it('should capture error by console.log if error occurred while deleting role mapping', (done) => {
+  it('should capture error by console.error if error occurred while deleting role mapping', (done) => {
     (updateRoleMapping as jest.Mock).mockImplementationOnce(() => {
       throw new Error();
     });
-    const spy = jest.spyOn(console, 'log').mockImplementationOnce(() => {});
+    const spy = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
     shallow(
       <RoleView
         roleName={sampleRole}
@@ -301,6 +308,11 @@ describe('Role view', () => {
   });
 
   it('Render unable to access dataSource when enabled and inaccessible', () => {
+    React.useContext.mockImplementation(() => ({
+      dataSource: undefined,
+      setDataSource: jest.fn(),
+    }));
+
     const depsStart = {
       dataSource: {
         dataSourceEnabled: true,

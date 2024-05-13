@@ -140,7 +140,7 @@ export function RoleView(props: RoleViewProps) {
         setRoleTenantPermission(transformRoleTenantPermissions(roleData.tenant_permissions));
       } catch (e) {
         addToast(createUnknownErrorToast('fetchRoleMappingData', 'load data'));
-        console.log(e);
+        console.error(e);
         setErrorFlag(true);
       } finally {
         setLoading(false);
@@ -169,7 +169,7 @@ export function RoleView(props: RoleViewProps) {
       setMappedUsers(difference(mappedUsers, selection));
       setSelection([]);
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   };
 
@@ -272,7 +272,7 @@ export function RoleView(props: RoleViewProps) {
             coreStart={props.coreStart}
             loading={loading}
             isReserved={isReserved}
-            dataSourceId={dataSource.id}
+            dataSourceId={dataSource && dataSource.id}
           />
         </>
       ),
@@ -395,7 +395,6 @@ export function RoleView(props: RoleViewProps) {
   if (dataSourceEnabled && dataSource === undefined) {
     return <UnknownDataSourcePage {...props} />;
   }
-
   return (
     <>
       <SecurityPluginTopNavMenu

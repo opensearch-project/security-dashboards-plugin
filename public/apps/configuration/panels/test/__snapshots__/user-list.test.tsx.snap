@@ -1,186 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`User list Render unable to access dataSource when enabled and inaccessible 1`] = `
-<Fragment>
-  <Memo()
-    config={Object {}}
-    coreStart={
-      Object {
-        "http": Object {
-          "basePath": Object {
-            "serverBasePath": "",
-          },
+<Memo()
+  config={Object {}}
+  coreStart={
+    Object {
+      "http": Object {
+        "basePath": Object {
+          "serverBasePath": "",
         },
-      }
+      },
     }
-    dataSourcePickerReadOnly={false}
-    depsStart={
-      Object {
-        "dataSource": Object {
-          "dataSourceEnabled": true,
-        },
-      }
+  }
+  depsStart={
+    Object {
+      "dataSource": Object {
+        "dataSourceEnabled": true,
+      },
     }
-    navigation={Object {}}
-    params={Object {}}
-    selectedDataSource={
-      Object {
-        "id": "test",
-      }
-    }
-    setDataSource={[MockFunction]}
-  />
-  <EuiPageHeader>
-    <EuiTitle
-      size="l"
-    >
-      <h1>
-        Internal users
-      </h1>
-    </EuiTitle>
-  </EuiPageHeader>
-  <EuiPageContent>
-    <EuiPageContentHeader>
-      <EuiPageContentHeaderSection>
-        <EuiTitle
-          size="s"
-        >
-          <h3>
-            Internal users
-            <span
-              className="panel-header-count"
-            >
-               
-              (
-              1
-              )
-            </span>
-          </h3>
-        </EuiTitle>
-        <EuiText
-          color="subdued"
-          size="xs"
-        >
-          The Security plugin includes an internal user database. Use this database in place of, or in addition to, an external authentication system such as LDAP server or Active Directory. You can map an user account to a role from
-           
-          <EuiLink
-            href="#/roles"
-          >
-            Roles
-          </EuiLink>
-          . First, click into the detail page of the role. Then, under “Mapped users”, click “Manage mapping” 
-          <ExternalLink
-            href="https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/#map-users-to-roles"
-          />
-        </EuiText>
-      </EuiPageContentHeaderSection>
-      <EuiPageContentHeaderSection>
-        <EuiFlexGroup>
-          <EuiFlexItem>
-            <EuiButtonEmpty
-              data-test-subj="edit"
-              disabled={false}
-              key="edit"
-              onClick={[Function]}
-            >
-              Edit
-            </EuiButtonEmpty>
-            <EuiButtonEmpty
-              data-test-subj="duplicate"
-              disabled={false}
-              key="duplicate"
-              onClick={[Function]}
-            >
-              Duplicate
-            </EuiButtonEmpty>
-            <EuiButtonEmpty
-              disabled={false}
-              href="/api/v1/configuration/internalusers/user_1"
-              key="export"
-              target="_blank"
-            >
-              Export JSON
-            </EuiButtonEmpty>
-            <EuiButtonEmpty
-              color="danger"
-              disabled={false}
-              key="delete"
-              onClick={[MockFunction]}
-            >
-              Delete
-            </EuiButtonEmpty>
-          </EuiFlexItem>
-          <EuiFlexItem>
-            <EuiButton
-              data-test-subj="create-user"
-              fill={true}
-              href="#/users/create"
-            >
-              Create user account
-            </EuiButton>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-      </EuiPageContentHeaderSection>
-    </EuiPageContentHeader>
-    <EuiPageBody>
-      <EuiInMemoryTable
-        columns={
-          Array [
-            Object {
-              "field": "username",
-              "name": "Username",
-              "render": [Function],
-              "sortable": true,
-            },
-            Object {
-              "field": "backend_roles",
-              "name": "Backend roles",
-              "render": [Function],
-            },
-            Object {
-              "field": "attributes",
-              "name": "Attributes",
-              "render": [Function],
-              "truncateText": true,
-            },
-          ]
-        }
-        error="Load data failed, please check console log for more detail."
-        itemId="username"
-        items={
-          Array [
-            Object {
-              "attributes": Object {
-                "key": "value",
-              },
-              "backend_roles": Array [
-                "backend_role1",
-              ],
-              "username": "user_1",
-            },
-          ]
-        }
-        loading={false}
-        message={false}
-        pagination={true}
-        responsive={true}
-        search={
-          Object {
-            "box": Object {
-              "placeholder": "Search internal users",
-            },
-            "onChange": [Function],
-          }
-        }
-        selection={
-          Object {
-            "onSelectionChange": [MockFunction],
-          }
-        }
-        sorting={true}
-        tableLayout="auto"
-      />
-    </EuiPageBody>
-  </EuiPageContent>
-</Fragment>
+  }
+  navigation={Object {}}
+  params={Object {}}
+/>
 `;

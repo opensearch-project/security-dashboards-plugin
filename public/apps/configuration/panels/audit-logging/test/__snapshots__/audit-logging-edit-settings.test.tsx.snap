@@ -1,91 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Audit logs edit Render unable to access dataSource when enabled and inaccessible 1`] = `
-<div
-  className="panel-restrict-width"
->
-  <Memo()
-    coreStart={
-      Object {
-        "http": 1,
-      }
+<Memo()
+  coreStart={
+    Object {
+      "http": 1,
     }
-    dataSourcePickerReadOnly={true}
-    depsStart={
-      Object {
-        "dataSource": Object {
-          "dataSourceEnabled": true,
-        },
-      }
+  }
+  depsStart={
+    Object {
+      "dataSource": Object {
+        "dataSourceEnabled": true,
+      },
     }
-    navigation={Object {}}
-    selectedDataSource={
-      Object {
-        "id": "test",
-      }
-    }
-    setDataSource={[MockFunction]}
-  />
-  <EuiPageHeader>
-    <EuiTitle
-      size="l"
-    >
-      <h1>
-        Compliance settings
-      </h1>
-    </EuiTitle>
-  </EuiPageHeader>
-  <EuiPanel>
-    <EditSettingGroup
-      config={Object {}}
-      handleChange={[Function]}
-      settingGroup={
-        Object {
-          "settings": Array [
-            Object {
-              "description": "Enable or disable compliance logging.",
-              "path": "compliance.enabled",
-              "title": "Compliance logging",
-              "type": "bool",
-            },
-          ],
-          "title": "Compliance mode",
-        }
-      }
-    />
-  </EuiPanel>
-  <EuiSpacer />
-  <EuiFlexGroup
-    justifyContent="flexEnd"
-  >
-    <EuiFlexItem
-      grow={false}
-    >
-      <EuiButton
-        data-test-subj="cancel"
-        onClick={[Function]}
-      >
-        Cancel
-      </EuiButton>
-    </EuiFlexItem>
-    <EuiFlexItem
-      grow={false}
-    >
-      <EuiButton
-        data-test-subj="save"
-        fill={true}
-        isDisabled={false}
-        onClick={[Function]}
-      >
-        Save
-      </EuiButton>
-    </EuiFlexItem>
-  </EuiFlexGroup>
-  <EuiGlobalToastList
-    dismissToast={[Function]}
-    side="right"
-    toastLifeTimeMs={10000}
-    toasts={Array []}
-  />
-</div>
+  }
+  navigation={Object {}}
+/>
 `;

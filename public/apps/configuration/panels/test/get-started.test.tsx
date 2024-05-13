@@ -44,6 +44,13 @@ describe('Get started (landing page)', () => {
       backend_configurable: true,
     },
   };
+  afterEach(() => {
+    React.useContext.mockRestore();
+    React.useContext.mockReturnValue({
+      dataSource: { id: 'test' },
+      setDataSource: jest.fn(),
+    });
+  });
 
   it('renders when backend configuration is enabled', () => {
     const component = shallow(
@@ -184,6 +191,10 @@ describe('Get started (landing page)', () => {
   });
 
   it('Render unable to access dataSource when enabled and inaccessible', () => {
+    React.useContext.mockImplementation(() => ({
+      dataSource: undefined,
+      setDataSource: jest.fn(),
+    }));
     const depsStart = {
       dataSource: {
         dataSourceEnabled: true,
