@@ -17,6 +17,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { AppRouter } from '../app-router';
 import { getDataSourceFromUrl } from '../../../utils/datasource-utils';
+import { render } from '@testing-library/react';
 
 jest.mock('../../../utils/datasource-utils', () => ({
   getDataSourceFromUrl: jest.fn(),
@@ -33,23 +34,28 @@ describe('SecurityPluginTopNavMenu', () => {
     },
   };
 
-  const dataSourceMenuMock = jest.fn(() => <div>Mock DataSourceMenu</div>);
-
-  const dataSourceManagementMock = {
-    ui: {
-      DataSourceMenu: dataSourceMenuMock,
+  const securityPluginConfigMock = {
+    multitenancy: {
+      enabled: true,
     },
+    ui: {},
+  };
+
+  const securityPluginConfigMockMultitenancyDisabled = {
+    multitenancy: {
+      enabled: false,
+    },
+    ui: {},
   };
 
   it('renders DataSourceMenu when dataSource is enabled', () => {
-    const securityPluginStartDepsMock = {
-      dataSource: {
-        dataSourceEnabled: true,
-      },
-    };
-
     const wrapper = shallow(
-      <AppRouter coreStart={coreStartMock} depsStart={{}} params={{ appBasePath: '' }} />
+      <AppRouter
+        coreStart={coreStartMock}
+        depsStart={{}}
+        params={{ appBasePath: '' }}
+        config={securityPluginConfigMock}
+      />
     );
 
     expect(wrapper).toMatchSnapshot();
@@ -67,6 +73,7 @@ describe('SecurityPluginTopNavMenu', () => {
         coreStart={coreStartMock}
         depsStart={securityPluginStartDepsMock}
         params={{ appBasePath: '' }}
+        config={securityPluginConfigMock}
       />
     );
 
@@ -85,9 +92,55 @@ describe('SecurityPluginTopNavMenu', () => {
         coreStart={coreStartMock}
         depsStart={securityPluginStartDepsMock}
         params={{ appBasePath: '' }}
+        config={securityPluginConfigMock}
       />
     );
 
     expect(getDataSourceFromUrl).toHaveBeenCalled();
+  });
+
+  it('Tenant tab does not show up when ', () => {
+    const securityPluginStartDepsMock = {
+      dataSource: {
+        dataSourceEnabled: true,
+      },
+    };
+
+    shallow(
+      <AppRouter
+        coreStart={coreStartMock}
+        depsStart={securityPluginStartDepsMock}
+        params={{ appBasePath: '' }}
+        config={securityPluginConfigMock}
+      />
+    );
+
+    expect(getDataSourceFromUrl).toHaveBeenCalled();
+  });
+
+  it('renders Tenant tab when multitenancy enabled', () => {
+    const { container } = render(
+      <AppRouter
+        coreStart={coreStartMock}
+        depsStart={{}}
+        params={{ appBasePath: '' }}
+        config={securityPluginConfigMock}
+      />
+    );
+
+    expect(container.querySelector('[title="Tenants"]')).not.toBeNull();
+  });
+
+  it('does not render Tenant tab when multitenancy disabled', () => {
+    const { container } = render(
+      <AppRouter
+        coreStart={coreStartMock}
+        depsStart={{}}
+        params={{ appBasePath: '' }}
+        config={securityPluginConfigMockMultitenancyDisabled}
+      />
+    );
+
+    expect(container.querySelector('[title="Tenants"]')).toBeNull();
   });
 });

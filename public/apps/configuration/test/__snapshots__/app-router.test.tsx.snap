@@ -57,10 +57,6 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
                   "href": "/auditLogging",
                   "name": "Audit logs",
                 },
-                Object {
-                  "href": "/tenantsConfigureTab",
-                  "name": "",
-                },
               ]
             }
           />
@@ -106,10 +102,6 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
                 Object {
                   "href": "/auditLogging",
                   "name": "Audit logs",
-                },
-                Object {
-                  "href": "/tenantsConfigureTab",
-                  "name": "",
                 },
               ]
             }
@@ -157,10 +149,6 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
                   "href": "/auditLogging",
                   "name": "Audit logs",
                 },
-                Object {
-                  "href": "/tenantsConfigureTab",
-                  "name": "",
-                },
               ]
             }
           />
@@ -206,10 +194,6 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
                 Object {
                   "href": "/auditLogging",
                   "name": "Audit logs",
-                },
-                Object {
-                  "href": "/tenantsConfigureTab",
-                  "name": "",
                 },
               ]
             }
@@ -257,10 +241,6 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
                   "href": "/auditLogging",
                   "name": "Audit logs",
                 },
-                Object {
-                  "href": "/tenantsConfigureTab",
-                  "name": "",
-                },
               ]
             }
           />
@@ -306,10 +286,6 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
                 Object {
                   "href": "/auditLogging",
                   "name": "Audit logs",
-                },
-                Object {
-                  "href": "/tenantsConfigureTab",
-                  "name": "",
                 },
               ]
             }
@@ -357,10 +333,6 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
                   "href": "/auditLogging",
                   "name": "Audit logs",
                 },
-                Object {
-                  "href": "/tenantsConfigureTab",
-                  "name": "",
-                },
               ]
             }
           />
@@ -406,60 +378,6 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
                 Object {
                   "href": "/auditLogging",
                   "name": "Audit logs",
-                },
-                Object {
-                  "href": "/tenantsConfigureTab",
-                  "name": "",
-                },
-              ]
-            }
-          />
-        </EuiPageSideBar>
-      </Route>
-      <Route
-        exact={true}
-        key="/tenantsConfigureTab"
-        path="/tenantsConfigureTab"
-      >
-        <EuiPageSideBar>
-          <NavPanel
-            items={
-              Array [
-                Object {
-                  "href": "/getstarted",
-                  "name": "Get Started",
-                },
-                Object {
-                  "href": "/auth",
-                  "name": "Authentication",
-                },
-                Object {
-                  "href": "/roles",
-                  "name": "Roles",
-                },
-                Object {
-                  "href": "/users",
-                  "name": "Internal users",
-                },
-                Object {
-                  "href": "/serviceAccounts",
-                  "name": "Service Accounts",
-                },
-                Object {
-                  "href": "/permissions",
-                  "name": "Permissions",
-                },
-                Object {
-                  "href": "/tenants",
-                  "name": "Tenants",
-                },
-                Object {
-                  "href": "/auditLogging",
-                  "name": "Audit logs",
-                },
-                Object {
-                  "href": "/tenantsConfigureTab",
-                  "name": "",
                 },
               ]
             }
@@ -507,10 +425,6 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
                   "href": "/auditLogging",
                   "name": "Audit logs",
                 },
-                Object {
-                  "href": "/tenantsConfigureTab",
-                  "name": "",
-                },
               ]
             }
           />
@@ -556,10 +470,6 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
                 Object {
                   "href": "/auditLogging",
                   "name": "Audit logs",
-                },
-                Object {
-                  "href": "/tenantsConfigureTab",
-                  "name": "",
                 },
               ]
             }
@@ -618,10 +528,6 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
           />
           <Route
             path="/tenants"
-            render={[Function]}
-          />
-          <Route
-            path="/tenantsConfigureTab"
             render={[Function]}
           />
           <Route
