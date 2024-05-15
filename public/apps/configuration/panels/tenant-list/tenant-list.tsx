@@ -31,6 +31,8 @@ import { ExternalLink } from '../../utils/display-utils';
 import { DocLinks } from '../../constants';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
 import { TenantInstructionView } from './tenant-instruction-view';
+import { LocalCluster } from '../../app-router';
+import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 
 interface TenantListProps extends AppDependencies {
   tabID: string;
@@ -133,6 +135,12 @@ export function TenantList(props: TenantListProps) {
 
   return (
     <>
+      <SecurityPluginTopNavMenu
+        {...props}
+        dataSourcePickerReadOnly={true}
+        setDataSource={() => {}}
+        selectedDataSource={LocalCluster}
+      />
       <EuiPageHeader>
         <EuiTitle size="l">
           <h1>Dashboards multi-tenancy</h1>
