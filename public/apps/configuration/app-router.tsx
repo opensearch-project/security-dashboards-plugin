@@ -70,14 +70,6 @@ const ROUTE_MAP: { [key: string]: RouteItem } = {
     name: 'Tenants',
     href: buildUrl(ResourceType.tenants),
   },
-  [ResourceType.tenantsManageTab]: {
-    name: 'TenantsManageTab',
-    href: buildUrl(ResourceType.tenantsManageTab),
-  },
-  [ResourceType.tenantsConfigureTab]: {
-    name: '',
-    href: buildUrl(ResourceType.tenantsConfigureTab),
-  },
   [ResourceType.auth]: {
     name: 'Authentication',
     href: buildUrl(ResourceType.auth),
@@ -88,22 +80,26 @@ const ROUTE_MAP: { [key: string]: RouteItem } = {
   },
 };
 
-const ROUTE_LIST = [
-  ROUTE_MAP.getStarted,
-  ROUTE_MAP[ResourceType.auth],
-  ROUTE_MAP[ResourceType.roles],
-  ROUTE_MAP[ResourceType.users],
-  ROUTE_MAP[ResourceType.serviceAccounts],
-  ROUTE_MAP[ResourceType.permissions],
-  ROUTE_MAP[ResourceType.tenants],
-  ROUTE_MAP[ResourceType.auditLogging],
-  ROUTE_MAP[ResourceType.tenantsConfigureTab],
-];
+const getRouteList = (multitenancyEnabled: boolean) => {
+  return [
+    ROUTE_MAP.getStarted,
+    ROUTE_MAP[ResourceType.auth],
+    ROUTE_MAP[ResourceType.roles],
+    ROUTE_MAP[ResourceType.users],
+    ROUTE_MAP[ResourceType.serviceAccounts],
+    ROUTE_MAP[ResourceType.permissions],
+    ...(multitenancyEnabled ? [ROUTE_MAP[ResourceType.tenants]] : []),
+    ROUTE_MAP[ResourceType.auditLogging],
+  ];
+};
 
-const allNavPanelUrls = ROUTE_LIST.map((route) => route.href).concat([
-  buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT,
-  buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT,
-]);
+const allNavPanelUrls = (multitenancyEnabled: boolean) =>
+  getRouteList(multitenancyEnabled)
+    .map((route) => route.href)
+    .concat([
+      buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT,
+      buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT,
+    ]);
 
 export function getBreadcrumbs(
   resourceType?: ResourceType,
@@ -155,21 +151,37 @@ export const LocalCluster = { label: 'Local cluster', id: '' };
 export const DataSourceContext = createContext<DataSourceContextType | null>(null);
 
 export function AppRouter(props: AppDependencies) {
+  const multitenancyEnabled = props.config.multitenancy.enabled;
   const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const setGlobalBreadcrumbs = flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs);
   const dataSourceFromUrl = dataSourceEnabled ? getDataSourceFromUrl() : LocalCluster;
 
   const [dataSource, setDataSource] = useState<DataSourceOption>(dataSourceFromUrl);
 
+  function getTenancyRoutes() {
+    if (multitenancyEnabled) {
+      return (
+        <Route
+          path={ROUTE_MAP.tenants.href}
+          render={() => {
+            setGlobalBreadcrumbs(ResourceType.tenants);
+            return <TenantList tabID={'Manage'} {...props} />;
+          }}
+        />
+      );
+    }
+    return null;
+  }
+
   return (
     <DataSourceContext.Provider value={{ dataSource, setDataSource }}>
       <Router basename={props.params.appBasePath}>
         <EuiPage>
-          {allNavPanelUrls.map((route) => (
+          {allNavPanelUrls(multitenancyEnabled).map((route) => (
             // Create different routes to update the 'selected' nav item .
             <Route key={route} path={route} exact>
               <EuiPageSideBar>
-                <NavPanel items={ROUTE_LIST} />
+                <NavPanel items={getRouteList(multitenancyEnabled)} />
               </EuiPageSideBar>
             </Route>
           ))}
@@ -267,20 +279,7 @@ export function AppRouter(props: AppDependencies) {
                   return <PermissionList {...props} />;
                 }}
               />
-              <Route
-                path={ROUTE_MAP.tenants.href}
-                render={() => {
-                  setGlobalBreadcrumbs(ResourceType.tenants);
-                  return <TenantList tabID={'Manage'} {...props} />;
-                }}
-              />
-              <Route
-                path={ROUTE_MAP.tenantsConfigureTab.href}
-                render={() => {
-                  setGlobalBreadcrumbs(ResourceType.tenants);
-                  return <TenantList tabID={'Configure'} {...props} />;
-                }}
-              />
+              {getTenancyRoutes()}
               <Route
                 path={ROUTE_MAP.getStarted.href}
                 render={() => {

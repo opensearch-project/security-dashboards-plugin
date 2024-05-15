@@ -30,7 +30,6 @@ import { AppDependencies } from '../../../types';
 import { ExternalLink } from '../../utils/display-utils';
 import { DocLinks } from '../../constants';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
-import { TenantInstructionView } from './tenant-instruction-view';
 import { LocalCluster } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 
@@ -128,10 +127,6 @@ export function TenantList(props: TenantListProps) {
       </EuiTab>
     ));
   };
-
-  if (!props.config.multitenancy.enabled) {
-    return <TenantInstructionView />;
-  }
 
   return (
     <>
