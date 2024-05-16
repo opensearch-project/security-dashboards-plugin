@@ -59,7 +59,7 @@ export function TenantList(props: TenantListProps) {
       <EuiCallOut title="Tenancy is disabled" color="warning" iconType="iInCircle">
         <p>
           Tenancy is currently disabled and users don&apos;t have access to this feature. To create,
-          edit tenants you must enabled tenanc throught he configure tenancy page.
+          edit tenants you must enabled tenancy through the configure tenancy page.
         </p>
         <EuiButton
           id="switchToConfigure"
