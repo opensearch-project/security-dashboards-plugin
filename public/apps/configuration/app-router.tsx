@@ -70,6 +70,10 @@ const ROUTE_MAP: { [key: string]: RouteItem } = {
     name: 'Tenants',
     href: buildUrl(ResourceType.tenants),
   },
+  [ResourceType.tenantsConfigureTab]: {
+    name: '',
+    href: buildUrl(ResourceType.tenantsConfigureTab),
+  },
   [ResourceType.auth]: {
     name: 'Authentication',
     href: buildUrl(ResourceType.auth),
@@ -90,10 +94,11 @@ const getRouteList = (multitenancyEnabled: boolean) => {
     ROUTE_MAP[ResourceType.permissions],
     ...(multitenancyEnabled ? [ROUTE_MAP[ResourceType.tenants]] : []),
     ROUTE_MAP[ResourceType.auditLogging],
+    ...(multitenancyEnabled ? [ROUTE_MAP[ResourceType.tenantsConfigureTab]] : []),
   ];
 };
 
-const allNavPanelUrls = (multitenancyEnabled: boolean) =>
+export const allNavPanelUrls = (multitenancyEnabled: boolean) =>
   getRouteList(multitenancyEnabled)
     .map((route) => route.href)
     .concat([
@@ -161,13 +166,22 @@ export function AppRouter(props: AppDependencies) {
   function getTenancyRoutes() {
     if (multitenancyEnabled) {
       return (
-        <Route
-          path={ROUTE_MAP.tenants.href}
-          render={() => {
-            setGlobalBreadcrumbs(ResourceType.tenants);
-            return <TenantList tabID={'Manage'} {...props} />;
-          }}
-        />
+        <>
+          <Route
+            path={ROUTE_MAP.tenants.href}
+            render={() => {
+              setGlobalBreadcrumbs(ResourceType.tenants);
+              return <TenantList tabID={'Manage'} {...props} />;
+            }}
+          />
+          <Route
+            path={ROUTE_MAP.tenantsConfigureTab.href}
+            render={() => {
+              setGlobalBreadcrumbs(ResourceType.tenants);
+              return <TenantList tabID={'Configure'} {...props} />;
+            }}
+          />
+        </>
       );
     }
     return null;
@@ -279,7 +293,6 @@ export function AppRouter(props: AppDependencies) {
                   return <PermissionList {...props} />;
                 }}
               />
-              {getTenancyRoutes()}
               <Route
                 path={ROUTE_MAP.getStarted.href}
                 render={() => {
@@ -287,6 +300,7 @@ export function AppRouter(props: AppDependencies) {
                   return <GetStarted {...props} />;
                 }}
               />
+              {getTenancyRoutes()}
               <Redirect exact from="/" to={LANDING_PAGE_URL} />
             </Switch>
           </EuiPageBody>

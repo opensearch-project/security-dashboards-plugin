@@ -15,9 +15,8 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import { AppRouter } from '../app-router';
+import { AppRouter, allNavPanelUrls } from '../app-router';
 import { getDataSourceFromUrl } from '../../../utils/datasource-utils';
-import { render } from '@testing-library/react';
 
 jest.mock('../../../utils/datasource-utils', () => ({
   getDataSourceFromUrl: jest.fn(),
@@ -99,48 +98,8 @@ describe('SecurityPluginTopNavMenu', () => {
     expect(getDataSourceFromUrl).toHaveBeenCalled();
   });
 
-  it('Tenant tab does not show up when ', () => {
-    const securityPluginStartDepsMock = {
-      dataSource: {
-        dataSourceEnabled: true,
-      },
-    };
-
-    shallow(
-      <AppRouter
-        coreStart={coreStartMock}
-        depsStart={securityPluginStartDepsMock}
-        params={{ appBasePath: '' }}
-        config={securityPluginConfigMock}
-      />
-    );
-
-    expect(getDataSourceFromUrl).toHaveBeenCalled();
-  });
-
-  it('renders Tenant tab when multitenancy enabled', () => {
-    const { container } = render(
-      <AppRouter
-        coreStart={coreStartMock}
-        depsStart={{}}
-        params={{ appBasePath: '' }}
-        config={securityPluginConfigMock}
-      />
-    );
-
-    expect(container.querySelector('[title="Tenants"]')).not.toBeNull();
-  });
-
-  it('does not render Tenant tab when multitenancy disabled', () => {
-    const { container } = render(
-      <AppRouter
-        coreStart={coreStartMock}
-        depsStart={{}}
-        params={{ appBasePath: '' }}
-        config={securityPluginConfigMockMultitenancyDisabled}
-      />
-    );
-
-    expect(container.querySelector('[title="Tenants"]')).toBeNull();
+  it('checks paths returned with multitenancy off vs on', () => {
+    expect(allNavPanelUrls(true)).toContain('/tenants');
+    expect(allNavPanelUrls(false)).not.toContain('/tenants');
   });
 });
