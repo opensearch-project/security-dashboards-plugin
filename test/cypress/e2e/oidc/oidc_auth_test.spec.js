@@ -18,6 +18,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+const basePath = Cypress.env('basePath') || '';
+
 describe('Log in via OIDC', () => {
   afterEach(() => {
     cy.clearCookies();
@@ -37,7 +39,7 @@ describe('Log in via OIDC', () => {
   };
 
   it('Login to app/opensearch_dashboards_overview#/ when OIDC is enabled', () => {
-    cy.visit('http://localhost:5601/app/opensearch_dashboards_overview', {
+    cy.visit(`http://localhost:5601${basePath}/app/opensearch_dashboards_overview`, {
       failOnStatusCode: false,
     });
 
@@ -52,24 +54,22 @@ describe('Log in via OIDC', () => {
   });
 
   it('Login to app/dev_tools#/console when OIDC is enabled', () => {
-    cy.visit('http://localhost:5601/app/opensearch_dashboards_overview', {
+    cy.visit(`http://localhost:5601${basePath}/app/dev_tools#/console`, {
       failOnStatusCode: false,
     });
 
     kcLogin();
 
+    cy.getCookie('security_authentication').should('exist');
+
     localStorage.setItem('opendistro::security::tenant::saved', '""');
     localStorage.setItem('home:newThemeModal:show', 'false');
 
-    cy.visit('http://localhost:5601/app/dev_tools#/console');
-
     cy.get('a[data-test-subj="breadcrumb first last"]').contains('Dev Tools').should('be.visible');
-
-    cy.getCookie('security_authentication').should('exist');
   });
 
   it('Login to Dashboard with Hash', () => {
-    const urlWithHash = `http://localhost:5601/app/security-dashboards-plugin#/getstarted`;
+    const urlWithHash = `http://localhost:5601${basePath}/app/security-dashboards-plugin#/getstarted`;
 
     cy.visit(urlWithHash, {
       failOnStatusCode: false,
@@ -92,7 +92,7 @@ describe('Log in via OIDC', () => {
   });
 
   it('Tenancy persisted after logout in OIDC', () => {
-    cy.visit('http://localhost:5601/app/opensearch_dashboards_overview#/', {
+    cy.visit(`http://localhost:5601${basePath}/app/opensearch_dashboards_overview#/`, {
       failOnStatusCode: false,
     });
 
@@ -115,7 +115,11 @@ describe('Log in via OIDC', () => {
 
     cy.get('button[id="user-icon-btn"]').click();
 
+    cy.intercept('GET', `${basePath}/auth/openid/logout`).as('openidLogout');
+
     cy.get('button[data-test-subj^="log-out-"]').click();
+
+    cy.wait('@openidLogout').then(() => {});
 
     kcLogin();
 
