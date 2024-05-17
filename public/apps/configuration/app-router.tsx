@@ -94,7 +94,6 @@ const getRouteList = (multitenancyEnabled: boolean) => {
     ROUTE_MAP[ResourceType.permissions],
     ...(multitenancyEnabled ? [ROUTE_MAP[ResourceType.tenants]] : []),
     ROUTE_MAP[ResourceType.auditLogging],
-    ...(multitenancyEnabled ? [ROUTE_MAP[ResourceType.tenantsConfigureTab]] : []),
   ];
 };
 
@@ -104,6 +103,7 @@ export const allNavPanelUrls = (multitenancyEnabled: boolean) =>
     .concat([
       buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT,
       buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT,
+      ...(multitenancyEnabled ? [buildUrl(ResourceType.tenantsConfigureTab)] : []),
     ]);
 
 export function getBreadcrumbs(
