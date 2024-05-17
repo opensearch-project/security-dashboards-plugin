@@ -27,7 +27,7 @@ import {
 } from '../../../src/core/server';
 
 import { SecurityPluginSetup, SecurityPluginStart } from './types';
-import { defineRoutes, defineSecurityConfigurationRoutes } from './routes';
+import { defineRoutes, defineCommonRoutes, defineSecurityConfigurationRoutes } from './routes';
 import { SecurityPluginConfigType } from '.';
 import opensearchSecurityConfigurationPlugin from './backend/opensearch_security_configuration_plugin';
 import opensearchSecurityPlugin from './backend/opensearch_security_plugin';
@@ -148,6 +148,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     }
 
     // Register server side APIs
+    defineCommonRoutes(router, dataSourceEnabled);
     defineRoutes(router, dataSourceEnabled);
     if (config.configuration.admin_pages_enabled) {
       defineSecurityConfigurationRoutes(router, dataSourceEnabled);
