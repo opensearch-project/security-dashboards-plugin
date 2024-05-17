@@ -63,6 +63,7 @@ async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
 }
 
 const DEFAULT_READONLY_ROLES = ['kibana_read_only'];
+const DEFAULT_ADMIN_PAGES_ENABLED = true;
 const APP_ID_HOME = 'home';
 const APP_ID_DASHBOARDS = 'dashboards';
 // OpenSearchDashboards app is for legacy url migration
@@ -86,8 +87,6 @@ export class SecurityPlugin
     core: CoreSetup,
     deps: SecurityPluginSetupDependencies
   ): Promise<SecurityPluginSetup> {
-    const apiPermission = await hasApiPermission(core);
-
     const config = this.initializerContext.config.get<ClientConfigType>();
 
     const accountInfo = (await fetchAccountInfoSafe(core.http))?.data;
@@ -96,43 +95,53 @@ export class SecurityPlugin
       (config.readonly_mode?.roles || DEFAULT_READONLY_ROLES).includes(role)
     );
 
-    if (apiPermission) {
-      core.application.register({
-        id: PLUGIN_NAME,
-        title: 'Security',
-        order: 9050,
-        mount: async (params: AppMountParameters) => {
-          const { renderApp } = await import('./apps/configuration/configuration-app');
-          const [coreStart, depsStart] = await core.getStartServices();
+    const adminPagesEnabled =
+      config.configuration?.admin_pages_enabled !== undefined
+        ? config.configuration?.admin_pages_enabled
+        : DEFAULT_ADMIN_PAGES_ENABLED;
 
-          // merge OpenSearchDashboards yml configuration
-          includeClusterPermissions(config.clusterPermissions.include);
-          includeIndexPermissions(config.indexPermissions.include);
-
-          excludeFromDisabledTransportCategories(config.disabledTransportCategories.exclude);
-          excludeFromDisabledRestCategories(config.disabledRestCategories.exclude);
-
-          return renderApp(
-            coreStart,
-            depsStart as SecurityPluginStartDependencies,
-            params,
-            config,
-            deps.dataSourceManagement
-          );
-        },
-        category: DEFAULT_APP_CATEGORIES.management,
-      });
-
-      if (deps.managementOverview) {
-        deps.managementOverview.register({
+    let apiPermission: boolean | undefined;
+    if (adminPagesEnabled) {
+      apiPermission = await hasApiPermission(core);
+      console.log('apiPermission: ' + apiPermission);
+      if (apiPermission) {
+        core.application.register({
           id: PLUGIN_NAME,
           title: 'Security',
           order: 9050,
-          description: i18n.translate('security.securityDescription', {
-            defaultMessage:
-              'Configure how users access data in OpenSearch with authentication, access control and audit logging.',
-          }),
+          mount: async (params: AppMountParameters) => {
+            const { renderApp } = await import('./apps/configuration/configuration-app');
+            const [coreStart, depsStart] = await core.getStartServices();
+
+            // merge OpenSearchDashboards yml configuration
+            includeClusterPermissions(config.clusterPermissions.include);
+            includeIndexPermissions(config.indexPermissions.include);
+
+            excludeFromDisabledTransportCategories(config.disabledTransportCategories.exclude);
+            excludeFromDisabledRestCategories(config.disabledRestCategories.exclude);
+
+            return renderApp(
+              coreStart,
+              depsStart as SecurityPluginStartDependencies,
+              params,
+              config,
+              deps.dataSourceManagement
+            );
+          },
+          category: DEFAULT_APP_CATEGORIES.management,
         });
+
+        if (deps.managementOverview) {
+          deps.managementOverview.register({
+            id: PLUGIN_NAME,
+            title: 'Security',
+            order: 9050,
+            description: i18n.translate('security.securityDescription', {
+              defaultMessage:
+                'Configure how users access data in OpenSearch with authentication, access control and audit logging.',
+            }),
+          });
+        }
       }
     }
 
@@ -163,7 +172,11 @@ export class SecurityPlugin
 
     core.application.registerAppUpdater(
       new BehaviorSubject<AppUpdater>((app) => {
-        if (!apiPermission && isReadonly && !APP_LIST_FOR_READONLY_ROLE.includes(app.id)) {
+        let shouldDisableForReadOnly = isReadonly && !APP_LIST_FOR_READONLY_ROLE.includes(app.id);
+        if (apiPermission !== undefined) {
+          shouldDisableForReadOnly = !apiPermission && shouldDisableForReadOnly;
+        }
+        if (shouldDisableForReadOnly) {
           return {
             status: AppStatus.inaccessible,
           };

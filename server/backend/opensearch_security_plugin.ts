@@ -21,6 +21,59 @@ export default function (Client: any, config: any, components: any) {
     Client.prototype.opensearch_security = components.clientAction.namespaceFactory();
   }
 
+  Client.prototype.opensearch_security.prototype.restapiinfo = ca({
+    url: {
+      fmt: '/_plugins/_security/api/permissionsinfo',
+    },
+  });
+
+  /**
+   * Updates a resource.
+   * Resource identification is expected to computed from headers. Eg: auth headers.
+   *
+   * Sample response:
+   * {
+   *   "status": "OK",
+   *   "message": "Username updated."
+   * }
+   */
+  Client.prototype.opensearch_security.prototype.saveResourceWithoutId = ca({
+    method: 'PUT',
+    needBody: true,
+    url: {
+      fmt: '/_plugins/_security/api/<%=resourceName%>',
+      req: {
+        resourceName: {
+          type: 'string',
+          required: true,
+        },
+      },
+    },
+  });
+
+  /**
+   * Returns a Security resource configuration.
+   *
+   * Sample response:
+   *
+   * {
+   *   "user": {
+   *     "hash": "#123123"
+   *   }
+   * }
+   */
+  Client.prototype.opensearch_security.prototype.listResource = ca({
+    url: {
+      fmt: '/_plugins/_security/api/<%=resourceName%>',
+      req: {
+        resourceName: {
+          type: 'string',
+          required: true,
+        },
+      },
+    },
+  });
+
   /**
    * Gets auth info.
    */
@@ -48,7 +101,7 @@ export default function (Client: any, config: any, components: any) {
    *   "opensearch_dashboards_server_user": "kibanaserver"
    * }
    */
-  Client.prototype.opensearch_security.prototype.multitenancyinfo = ca({
+  Client.prototype.opensearch_security.prototype.xx = ca({
     url: {
       fmt: '/_plugins/_security/dashboardsinfo',
     },

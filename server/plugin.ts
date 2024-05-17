@@ -27,7 +27,7 @@ import {
 } from '../../../src/core/server';
 
 import { SecurityPluginSetup, SecurityPluginStart } from './types';
-import { defineRoutes } from './routes';
+import { defineRoutes, defineSecurityConfigurationRoutes } from './routes';
 import { SecurityPluginConfigType } from '.';
 import opensearchSecurityConfigurationPlugin from './backend/opensearch_security_configuration_plugin';
 import opensearchSecurityPlugin from './backend/opensearch_security_plugin';
@@ -97,10 +97,18 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
 
     const router = core.http.createRouter();
 
+    const plugins = [opensearchSecurityPlugin];
+    console.log(
+      'config.configuration.admin_pages_enabled: ' + config.configuration.admin_pages_enabled
+    );
+    if (config.configuration.admin_pages_enabled) {
+      plugins.push(opensearchSecurityConfigurationPlugin);
+    }
+
     const esClient: ILegacyClusterClient = core.opensearch.legacy.createClient(
       'opendistro_security',
       {
-        plugins: [opensearchSecurityConfigurationPlugin, opensearchSecurityPlugin],
+        plugins,
       }
     );
     if (dataSourceEnabled) {
@@ -144,6 +152,9 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
 
     // Register server side APIs
     defineRoutes(router, dataSourceEnabled);
+    if (config.configuration.admin_pages_enabled) {
+      defineSecurityConfigurationRoutes(router, dataSourceEnabled);
+    }
     defineAuthTypeRoutes(router, config);
 
     // set up multi-tenant routes

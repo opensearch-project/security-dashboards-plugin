@@ -112,6 +112,10 @@ export interface ClientConfigType {
     anonymous_auth_enabled: boolean;
     logout_url: string;
   };
+  configuration: {
+    enabled: boolean;
+    admin_pages_enabled: boolean;
+  };
   clusterPermissions: {
     include: string[];
   };
