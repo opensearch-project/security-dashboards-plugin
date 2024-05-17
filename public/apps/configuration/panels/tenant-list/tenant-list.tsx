@@ -45,9 +45,8 @@ export function TenantList(props: TenantListProps) {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        await setIsMultiTenancyEnabled(
-          (await getDashboardsInfo(props.coreStart.http)).multitenancy_enabled
-        );
+        const dashboardsInfo = await getDashboardsInfo(props.coreStart.http);
+        setIsMultiTenancyEnabled(dashboardsInfo?.multitenancy_enabled || false);
       } catch (e) {
         console.log(e);
       }

@@ -50,6 +50,8 @@ import {
 } from '../../utils/toast-utils';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
 import { LOCAL_CLUSTER_ID } from '../../../../../common';
+import { AccessErrorComponent } from '../../../access-error-component';
+import { LocalCluster } from '../../app-router';
 
 export function ConfigureTab1(props: AppDependencies) {
   const [isMultiTenancyEnabled, setIsMultiTenancyEnabled] = useState(false);
@@ -76,6 +78,7 @@ export function ConfigureTab1(props: AppDependencies) {
 
   const [toasts, addToast, removeToast] = useToastState();
   const [selectedComboBoxOptions, setSelectedComboBoxOptions] = useState();
+  const [errorFlag, setErrorFlag] = React.useState(false);
 
   const discardChangesFunction = async () => {
     await setUpdatedConfiguration(originalConfiguration);
@@ -195,9 +198,11 @@ export function ConfigureTab1(props: AppDependencies) {
         const rawTenantData = await fetchTenants(props.coreStart.http, LOCAL_CLUSTER_ID);
         const processedTenantData = transformTenantData(rawTenantData);
         setTenantData(processedTenantData);
+        setErrorFlag(false);
       } catch (e) {
         // TODO: switch to better error display.
         console.error(e);
+        setErrorFlag(true);
       }
     };
     fetchData();
@@ -306,6 +311,16 @@ export function ConfigureTab1(props: AppDependencies) {
       The private tenant is disabled. Select another default tenant.
     </EuiText>
   );
+
+  if (errorFlag) {
+    return (
+      <AccessErrorComponent
+        dataSourceLabel={LocalCluster.label}
+        message="You do not have permissions to configure tenancy"
+      />
+    );
+  }
+
   return (
     <>
       <EuiPageHeader />

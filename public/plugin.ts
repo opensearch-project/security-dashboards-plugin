@@ -87,7 +87,7 @@ export class SecurityPlugin
     deps: SecurityPluginSetupDependencies
   ): Promise<SecurityPluginSetup> {
     const apiPermission = await hasApiPermission(core);
-    const mdsEnabled = true;
+    const mdsEnabled = !!deps.dataSource?.dataSourceEnabled;
 
     const config = this.initializerContext.config.get<ClientConfigType>();
 

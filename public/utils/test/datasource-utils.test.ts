@@ -69,7 +69,7 @@ describe('Tests datasource utils', () => {
       'http://localhost:5601/app/security-dashboards-plugin?dataSource=%7B%22id%22%3A%22%22%2C%22label%22%3A%22Local+cluster%22%7D#/auth'
     );
   });
-  
+
   it('Tests getting the datasource from the url with undefined dataSource', () => {
     const mockSearchUndefinedDataSource = '?dataSource=undefined';
     Object.defineProperty(window, 'location', {

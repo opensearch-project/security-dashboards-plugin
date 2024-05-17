@@ -72,6 +72,7 @@ import { LocalCluster, getBreadcrumbs } from '../../app-router';
 import { buildUrl } from '../../utils/url-builder';
 import { CrossPageToast } from '../../cross-page-toast';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
+import { AccessErrorComponent } from '../../../access-error-component';
 
 export function ManageTab(props: AppDependencies) {
   const setGlobalBreadcrumbs = flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs);
@@ -108,6 +109,7 @@ export function ManageTab(props: AppDependencies) {
       setIsMultiTenancyEnabled(tenancyConfig.multitenancy_enabled);
       setIsPrivateTenantEnabled(tenancyConfig.private_tenant_enabled);
       setDashboardsDefaultTenant(tenancyConfig.default_tenant);
+      setErrorFlag(false);
     } catch (e) {
       console.log(e);
       setErrorFlag(true);
@@ -484,6 +486,14 @@ export function ManageTab(props: AppDependencies) {
     );
   };
 
+  if (errorFlag) {
+    return (
+      <AccessErrorComponent
+        dataSourceLabel={LocalCluster.label}
+        message="You do not have permissions to manage tenants"
+      />
+    );
+  }
   /* eslint-disable */
   return (
     <>

@@ -63,6 +63,9 @@ export function AuthView(props: AppDependencies) {
           setDataSource={setDataSource}
           selectedDataSource={dataSource}
         />
+        <EuiTitle size="l">
+          <h1>Authentication and authorization</h1>
+        </EuiTitle>
         {errorFlag ? (
           <AccessErrorComponent dataSourceLabel={dataSource && dataSource.label} />
         ) : (
@@ -80,32 +83,25 @@ export function AuthView(props: AppDependencies) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
+      <EuiPageHeader>
+        <EuiTitle size="l">
+          <h1>Authentication and authorization</h1>
+        </EuiTitle>
+        {!errorFlag && props.config.ui.backend_configurable && (
+          <ExternalLinkButton
+            href={DocLinks.BackendConfigurationDoc}
+            text="Manage via config.yml"
+          />
+        )}
+      </EuiPageHeader>
       {errorFlag ? (
-        <>
-          <EuiPageHeader>
-            <EuiTitle size="l">
-              <h1>Authentication and authorization</h1>
-            </EuiTitle>
-          </EuiPageHeader>
-          <AccessErrorComponent dataSourceLabel={dataSource && dataSource.label} />
-        </>
+        <AccessErrorComponent dataSourceLabel={dataSource && dataSource.label} />
       ) : (
         <>
-          <EuiPageHeader>
-            <EuiTitle size="l">
-              <h1>Authentication and authorization</h1>
-            </EuiTitle>
-            {props.config.ui.backend_configurable && (
-              <ExternalLinkButton
-                href={DocLinks.BackendConfigurationDoc}
-                text="Manage via config.yml"
-              />
-            )}
-          </EuiPageHeader>
-          /* @ts-ignore */
+          {/* @ts-ignore */}
           <AuthenticationSequencePanel authc={authentication} loading={loading} />
           <EuiSpacer size="m" />
-          /* @ts-ignore */
+          {/* @ts-ignore */}
           <AuthorizationPanel authz={authorization} loading={loading} config={props.config} />
         </>
       )}
