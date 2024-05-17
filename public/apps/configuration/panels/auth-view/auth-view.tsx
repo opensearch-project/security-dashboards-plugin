@@ -53,8 +53,6 @@ export function AuthView(props: AppDependencies) {
   }, [props.coreStart.http, dataSource]);
 
   if (isEmpty(authentication)) {
-    console.log(dataSource);
-    console.log(dataSourceEnabled);
     if (dataSourceEnabled && dataSource === undefined) {
       return (
         <>
