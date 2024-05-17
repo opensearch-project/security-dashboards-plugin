@@ -25,12 +25,14 @@ import { getSecurityConfig } from '../../utils/auth-view-utils';
 import { InstructionView } from './instruction-view';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
+import { AccessErrorComponent } from '../../../access-error-component';
 
 export function AuthView(props: AppDependencies) {
   const [authentication, setAuthentication] = React.useState([]);
   const [authorization, setAuthorization] = React.useState([]);
   const [loading, setLoading] = useState(false);
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
+  const [errorFlag, setErrorFlag] = React.useState(false);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -40,8 +42,10 @@ export function AuthView(props: AppDependencies) {
 
         setAuthentication(config.authc);
         setAuthorization(config.authz);
+        setErrorFlag(false);
       } catch (e) {
         console.log(e);
+        setErrorFlag(true);
       } finally {
         setLoading(false);
       }
@@ -59,7 +63,11 @@ export function AuthView(props: AppDependencies) {
           setDataSource={setDataSource}
           selectedDataSource={dataSource}
         />
-        <InstructionView config={props.config} />
+        {errorFlag ? (
+          <AccessErrorComponent dataSourceLabel={dataSource && dataSource.label} />
+        ) : (
+          <InstructionView config={props.config} />
+        )}
       </>
     );
   }
@@ -72,22 +80,35 @@ export function AuthView(props: AppDependencies) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      <EuiPageHeader>
-        <EuiTitle size="l">
-          <h1>Authentication and authorization</h1>
-        </EuiTitle>
-        {props.config.ui.backend_configurable && (
-          <ExternalLinkButton
-            href={DocLinks.BackendConfigurationDoc}
-            text="Manage via config.yml"
-          />
-        )}
-      </EuiPageHeader>
-      {/* @ts-ignore */}
-      <AuthenticationSequencePanel authc={authentication} loading={loading} />
-      <EuiSpacer size="m" />
-      {/* @ts-ignore */}
-      <AuthorizationPanel authz={authorization} loading={loading} config={props.config} />
+      {errorFlag ? (
+        <>
+          <EuiPageHeader>
+            <EuiTitle size="l">
+              <h1>Authentication and authorization</h1>
+            </EuiTitle>
+          </EuiPageHeader>
+          <AccessErrorComponent dataSourceLabel={dataSource && dataSource.label} />
+        </>
+      ) : (
+        <>
+          <EuiPageHeader>
+            <EuiTitle size="l">
+              <h1>Authentication and authorization</h1>
+            </EuiTitle>
+            {props.config.ui.backend_configurable && (
+              <ExternalLinkButton
+                href={DocLinks.BackendConfigurationDoc}
+                text="Manage via config.yml"
+              />
+            )}
+          </EuiPageHeader>
+          /* @ts-ignore */
+          <AuthenticationSequencePanel authc={authentication} loading={loading} />
+          <EuiSpacer size="m" />
+          /* @ts-ignore */
+          <AuthorizationPanel authz={authorization} loading={loading} config={props.config} />
+        </>
+      )}
     </>
   );
 }

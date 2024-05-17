@@ -87,6 +87,7 @@ export class SecurityPlugin
     deps: SecurityPluginSetupDependencies
   ): Promise<SecurityPluginSetup> {
     const apiPermission = await hasApiPermission(core);
+    const mdsEnabled = true;
 
     const config = this.initializerContext.config.get<ClientConfigType>();
 
@@ -96,7 +97,7 @@ export class SecurityPlugin
       (config.readonly_mode?.roles || DEFAULT_READONLY_ROLES).includes(role)
     );
 
-    if (apiPermission) {
+    if (mdsEnabled || apiPermission) {
       core.application.register({
         id: PLUGIN_NAME,
         title: 'Security',

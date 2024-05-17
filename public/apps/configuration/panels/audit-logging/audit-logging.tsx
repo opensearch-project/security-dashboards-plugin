@@ -45,6 +45,7 @@ import { ViewSettingGroup } from './view-setting-group';
 import { DocLinks } from '../../constants';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
+import { AccessErrorComponent } from '../../../access-error-component';
 
 interface AuditLoggingProps extends AppDependencies {
   fromType: string;
@@ -137,6 +138,7 @@ export function renderComplianceSettings(config: AuditLoggingSettings) {
 export function AuditLogging(props: AuditLoggingProps) {
   const [configuration, setConfiguration] = React.useState<AuditLoggingSettings>({});
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
+  const [errorFlag, setErrorFlag] = React.useState(false);
 
   const onSwitchChange = async () => {
     try {
@@ -156,9 +158,11 @@ export function AuditLogging(props: AuditLoggingProps) {
       try {
         const auditLogging = await getAuditLogging(props.coreStart.http, dataSource.id);
         setConfiguration(auditLogging);
+        setErrorFlag(false);
       } catch (e) {
         // TODO: switch to better error handling.
         console.log(e);
+        setErrorFlag(true);
       }
     };
 
@@ -237,7 +241,11 @@ export function AuditLogging(props: AuditLoggingProps) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      {content}
+      {errorFlag ? (
+        <AccessErrorComponent dataSourceLabel={dataSource && dataSource.label} />
+      ) : (
+        content
+      )}
     </div>
   );
 }
