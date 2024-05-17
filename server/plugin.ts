@@ -98,9 +98,6 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     const router = core.http.createRouter();
 
     const plugins = [opensearchSecurityPlugin];
-    console.log(
-      'config.configuration.admin_pages_enabled: ' + config.configuration.admin_pages_enabled
-    );
     if (config.configuration.admin_pages_enabled) {
       plugins.push(opensearchSecurityConfigurationPlugin);
     }

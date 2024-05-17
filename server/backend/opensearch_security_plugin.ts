@@ -101,7 +101,7 @@ export default function (Client: any, config: any, components: any) {
    *   "opensearch_dashboards_server_user": "kibanaserver"
    * }
    */
-  Client.prototype.opensearch_security.prototype.xx = ca({
+  Client.prototype.opensearch_security.prototype.multitenancyinfo = ca({
     url: {
       fmt: '/_plugins/_security/dashboardsinfo',
     },
