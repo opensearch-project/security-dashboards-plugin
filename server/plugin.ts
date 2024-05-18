@@ -109,7 +109,9 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
       }
     );
     if (dataSourceEnabled) {
-      dataSource.registerCustomApiSchema(opensearchSecurityConfigurationPlugin);
+      if (config.configuration.admin_pages_enabled) {
+        dataSource.registerCustomApiSchema(opensearchSecurityConfigurationPlugin);
+      }
       dataSource.registerCustomApiSchema(opensearchSecurityPlugin);
     }
 
