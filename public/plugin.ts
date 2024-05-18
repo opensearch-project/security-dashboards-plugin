@@ -89,12 +89,6 @@ export class SecurityPlugin
   ): Promise<SecurityPluginSetup> {
     const config = this.initializerContext.config.get<ClientConfigType>();
 
-    const accountInfo = (await fetchAccountInfoSafe(core.http))?.data;
-    const multitenancyEnabled = (await getDashboardsInfoSafe(core.http))?.multitenancy_enabled;
-    const isReadonly = accountInfo?.roles.some((role) =>
-      (config.readonly_mode?.roles || DEFAULT_READONLY_ROLES).includes(role)
-    );
-
     const adminPagesEnabled =
       config.configuration?.admin_pages_enabled !== undefined
         ? config.configuration?.admin_pages_enabled
@@ -103,7 +97,6 @@ export class SecurityPlugin
     let apiPermission: boolean | undefined;
     if (adminPagesEnabled) {
       apiPermission = await hasApiPermission(core);
-      console.log('apiPermission: ' + apiPermission);
       if (apiPermission) {
         core.application.register({
           id: PLUGIN_NAME,
@@ -156,6 +149,12 @@ export class SecurityPlugin
         },
       });
     }
+
+    const accountInfo = (await fetchAccountInfoSafe(core.http))?.data;
+    const multitenancyEnabled = (await getDashboardsInfoSafe(core.http))?.multitenancy_enabled;
+    const isReadonly = accountInfo?.roles.some((role) =>
+      (config.readonly_mode?.roles || DEFAULT_READONLY_ROLES).includes(role)
+    );
 
     core.application.register({
       id: APP_ID_LOGIN,
