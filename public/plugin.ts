@@ -143,6 +143,18 @@ export class SecurityPlugin
           });
         }
       }
+
+      core.application.register({
+        id: APP_ID_CUSTOMERROR,
+        title: 'Security',
+        chromeless: true,
+        appRoute: CUSTOM_ERROR_PAGE_URI,
+        mount: async (params: AppMountParameters) => {
+          const { renderPage } = await import('./apps/customerror/custom-error');
+          const [coreStart] = await core.getStartServices();
+          return renderPage(coreStart, params, config);
+        },
+      });
     }
 
     core.application.register({
@@ -155,18 +167,6 @@ export class SecurityPlugin
         // @ts-ignore depsStart not used.
         const [coreStart, depsStart] = await core.getStartServices();
         return renderApp(coreStart, params, config);
-      },
-    });
-
-    core.application.register({
-      id: APP_ID_CUSTOMERROR,
-      title: 'Security',
-      chromeless: true,
-      appRoute: CUSTOM_ERROR_PAGE_URI,
-      mount: async (params: AppMountParameters) => {
-        const { renderPage } = await import('./apps/customerror/custom-error');
-        const [coreStart] = await core.getStartServices();
-        return renderPage(coreStart, params, config);
       },
     });
 
