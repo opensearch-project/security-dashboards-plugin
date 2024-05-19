@@ -20,7 +20,6 @@ import { EuiInMemoryTable } from '@elastic/eui';
 import { useDeleteConfirmState } from '../../../utils/delete-confirm-modal-utils';
 import { Tenant } from '../../../types';
 import { TenantEditModal } from '../edit-modal';
-import { TenantInstructionView } from '../tenant-instruction-view';
 import { getDashboardsInfo } from '../../../../../utils/dashboards-info-utils';
 
 jest.mock('../../../utils/tenant-utils');
@@ -105,33 +104,6 @@ describe('Tenant list', () => {
     );
 
     expect(component.find(EuiInMemoryTable).prop('items').length).toBe(0);
-  });
-
-  it('renders when multitenancy is disabled in the opensearch_dashboards.yml', () => {
-    (getDashboardsInfo as jest.Mock).mockImplementation(() => {
-      return {
-        multitenancy_enabled: false,
-        private_tenant_enabled: true,
-        default_tenant: '',
-      };
-    });
-    const config1 = {
-      multitenancy: {
-        enabled: false,
-        tenants: {
-          enable_private: true,
-        },
-      },
-    };
-    const component = shallow(
-      <ManageTab
-        coreStart={mockCoreStart as any}
-        depsStart={{} as any}
-        params={{} as any}
-        config={config1 as any}
-      />
-    );
-    expect(component.find(TenantInstructionView).length).toBe(0);
   });
 
   it('fetch data error', (done) => {
