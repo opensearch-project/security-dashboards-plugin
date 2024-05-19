@@ -30,7 +30,6 @@ import { AppDependencies } from '../../../types';
 import { ExternalLink } from '../../utils/display-utils';
 import { DocLinks } from '../../constants';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
-import { TenantInstructionView } from './tenant-instruction-view';
 import { LocalCluster } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 
@@ -59,8 +58,8 @@ export function TenantList(props: TenantListProps) {
     <>
       <EuiCallOut title="Tenancy is disabled" color="warning" iconType="iInCircle">
         <p>
-          Tenancy is currently disabled and users don&apos;t have access to this feature. To create,
-          edit tenants you must enabled tenanc throught he configure tenancy page.
+          Tenancy is currently disabled and users don&apos;t have access to this feature. Enable
+          tenancy through the configure tenancy page.
         </p>
         <EuiButton
           id="switchToConfigure"
@@ -128,10 +127,6 @@ export function TenantList(props: TenantListProps) {
       </EuiTab>
     ));
   };
-
-  if (!props.config.multitenancy.enabled) {
-    return <TenantInstructionView />;
-  }
 
   return (
     <>
