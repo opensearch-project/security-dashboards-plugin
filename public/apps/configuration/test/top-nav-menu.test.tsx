@@ -39,11 +39,17 @@ describe('SecurityPluginTopNavMenu', () => {
         dataSourceEnabled: true,
       },
     };
+    const securityPluginConfigMock = {
+      multitenancy: {
+        enabled: false,
+      },
+    };
 
     const wrapper = render(
       <SecurityPluginTopNavMenu
         coreStart={coreStartMock}
         depsStart={securityPluginStartDepsMock}
+        config={securityPluginConfigMock}
         dataSourcePickerReadOnly={false}
         dataSourceManagement={dataSourceManagementMock}
         selectedDataSource={{}}
