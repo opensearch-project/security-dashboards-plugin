@@ -168,60 +168,6 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
                   "name": "Internal users",
                 },
                 Object {
-                  "href": "/serviceAccounts",
-                  "name": "Service Accounts",
-                },
-                Object {
-                  "href": "/permissions",
-                  "name": "Permissions",
-                },
-                Object {
-                  "href": "/tenants",
-                  "name": "Tenants",
-                },
-                Object {
-                  "href": "/auditLogging",
-                  "name": "Audit logs",
-                },
-                Object {
-                  "href": "/tenantsConfigureTab",
-                  "name": "",
-                },
-              ]
-            }
-          />
-        </EuiPageSideBar>
-      </Route>
-      <Route
-        exact={true}
-        key="/serviceAccounts"
-        path="/serviceAccounts"
-      >
-        <EuiPageSideBar>
-          <NavPanel
-            items={
-              Array [
-                Object {
-                  "href": "/getstarted",
-                  "name": "Get Started",
-                },
-                Object {
-                  "href": "/auth",
-                  "name": "Authentication",
-                },
-                Object {
-                  "href": "/roles",
-                  "name": "Roles",
-                },
-                Object {
-                  "href": "/users",
-                  "name": "Internal users",
-                },
-                Object {
-                  "href": "/serviceAccounts",
-                  "name": "Service Accounts",
-                },
-                Object {
                   "href": "/permissions",
                   "name": "Permissions",
                 },
