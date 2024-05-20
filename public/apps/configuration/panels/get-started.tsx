@@ -280,39 +280,41 @@ export function GetStarted(props: AppDependencies) {
 
         <EuiSpacer size="l" />
 
-        <EuiPanel paddingSize="l">
-          <EuiTitle size="s">
-            <h3>Optional: Multi-tenancy</h3>
-          </EuiTitle>
-          <EuiText size="s" color="subdued">
-            <p>
-              By default tenancy is activated in Dashboards. Tenants in OpenSearch Dashboards are
-              spaces for saving index patterns, visualizations, dashboards, and other OpenSearch
-              Dashboards objects.
-            </p>
-            <EuiFlexGroup gutterSize="s">
-              <EuiFlexItem grow={false}>
-                <EuiButton
-                  fill
-                  onClick={() => {
-                    window.location.href = buildHashUrl(ResourceType.tenants);
-                  }}
-                >
-                  Manage Multi-tenancy
-                </EuiButton>
-              </EuiFlexItem>
-              <EuiFlexItem grow={false}>
-                <EuiButton
-                  onClick={() => {
-                    window.location.href = buildHashUrl(ResourceType.tenantsConfigureTab);
-                  }}
-                >
-                  Configure Multi-tenancy
-                </EuiButton>
-              </EuiFlexItem>
-            </EuiFlexGroup>
-          </EuiText>
-        </EuiPanel>
+        {props.config.multitenancy.enabled ? (
+          <EuiPanel paddingSize="l">
+            <EuiTitle size="s">
+              <h3>Optional: Multi-tenancy</h3>
+            </EuiTitle>
+            <EuiText size="s" color="subdued">
+              <p>
+                By default tenancy is activated in Dashboards. Tenants in OpenSearch Dashboards are
+                spaces for saving index patterns, visualizations, dashboards, and other OpenSearch
+                Dashboards objects.
+              </p>
+              <EuiFlexGroup gutterSize="s">
+                <EuiFlexItem grow={false}>
+                  <EuiButton
+                    fill
+                    onClick={() => {
+                      window.location.href = buildHashUrl(ResourceType.tenants);
+                    }}
+                  >
+                    Manage Multi-tenancy
+                  </EuiButton>
+                </EuiFlexItem>
+                <EuiFlexItem grow={false}>
+                  <EuiButton
+                    onClick={() => {
+                      window.location.href = buildHashUrl(ResourceType.tenantsConfigureTab);
+                    }}
+                  >
+                    Configure Multi-tenancy
+                  </EuiButton>
+                </EuiFlexItem>
+              </EuiFlexGroup>
+            </EuiText>
+          </EuiPanel>
+        ) : null}
       </div>
       <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={10000} dismissToast={removeToast} />
     </>

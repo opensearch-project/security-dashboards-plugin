@@ -15,7 +15,7 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import { AppRouter } from '../app-router';
+import { AppRouter, allNavPanelUrls } from '../app-router';
 import { getDataSourceFromUrl } from '../../../utils/datasource-utils';
 
 jest.mock('../../../utils/datasource-utils', () => ({
@@ -33,23 +33,28 @@ describe('SecurityPluginTopNavMenu', () => {
     },
   };
 
-  const dataSourceMenuMock = jest.fn(() => <div>Mock DataSourceMenu</div>);
-
-  const dataSourceManagementMock = {
-    ui: {
-      DataSourceMenu: dataSourceMenuMock,
+  const securityPluginConfigMock = {
+    multitenancy: {
+      enabled: true,
     },
+    ui: {},
+  };
+
+  const securityPluginConfigMockMultitenancyDisabled = {
+    multitenancy: {
+      enabled: false,
+    },
+    ui: {},
   };
 
   it('renders DataSourceMenu when dataSource is enabled', () => {
-    const securityPluginStartDepsMock = {
-      dataSource: {
-        dataSourceEnabled: true,
-      },
-    };
-
     const wrapper = shallow(
-      <AppRouter coreStart={coreStartMock} depsStart={{}} params={{ appBasePath: '' }} />
+      <AppRouter
+        coreStart={coreStartMock}
+        depsStart={{}}
+        params={{ appBasePath: '' }}
+        config={securityPluginConfigMock}
+      />
     );
 
     expect(wrapper).toMatchSnapshot();
@@ -67,6 +72,7 @@ describe('SecurityPluginTopNavMenu', () => {
         coreStart={coreStartMock}
         depsStart={securityPluginStartDepsMock}
         params={{ appBasePath: '' }}
+        config={securityPluginConfigMock}
       />
     );
 
@@ -85,9 +91,15 @@ describe('SecurityPluginTopNavMenu', () => {
         coreStart={coreStartMock}
         depsStart={securityPluginStartDepsMock}
         params={{ appBasePath: '' }}
+        config={securityPluginConfigMock}
       />
     );
 
     expect(getDataSourceFromUrl).toHaveBeenCalled();
+  });
+
+  it('checks paths returned with multitenancy off vs on', () => {
+    expect(allNavPanelUrls(true)).toContain('/tenants');
+    expect(allNavPanelUrls(false)).not.toContain('/tenants');
   });
 });
