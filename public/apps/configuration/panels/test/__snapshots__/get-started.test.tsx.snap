@@ -8,6 +8,9 @@ exports[`Get started (landing page) renders when backend configuration is disabl
     <Memo()
       config={
         Object {
+          "multitenancy": Object {
+            "enabled": true,
+          },
           "ui": Object {
             "backend_configurable": false,
           },
@@ -284,6 +287,9 @@ exports[`Get started (landing page) renders when backend configuration is enable
     <Memo()
       config={
         Object {
+          "multitenancy": Object {
+            "enabled": true,
+          },
           "ui": Object {
             "backend_configurable": true,
           },
