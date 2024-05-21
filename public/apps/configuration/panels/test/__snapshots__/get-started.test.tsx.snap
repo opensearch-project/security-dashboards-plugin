@@ -4,6 +4,9 @@ exports[`Get started (landing page) Render unable to access dataSource when enab
 <Memo()
   config={
     Object {
+      "multitenancy": Object {
+        "enabled": true,
+      },
       "ui": Object {
         "backend_configurable": true,
       },
