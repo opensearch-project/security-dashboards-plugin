@@ -33,7 +33,14 @@ describe('Auth view', () => {
   const setState = jest.fn();
 
   beforeEach(() => {
-    jest.spyOn(React, 'useState').mockImplementation((initialValue) => [initialValue, setState]);
+    // jest.spyOn(React, 'useState').mockImplementation((initialValue) => [initialValue, setState]);
+    jest.spyOn(React, 'useState').mockRestore();
+    jest
+      .spyOn(React, 'useState')
+      .mockImplementationOnce(() => [[], setState])
+      .mockImplementationOnce(() => [[], setState])
+      .mockImplementationOnce(() => [false, jest.fn()])
+      .mockImplementationOnce(() => [false, jest.fn()]);
     jest.spyOn(React, 'useEffect').mockImplementationOnce((f) => f());
   });
 

@@ -202,7 +202,15 @@ describe('User list', () => {
       backend_roles: ['backend_role1'],
     };
     beforeEach(() => {
-      jest.spyOn(React, 'useState').mockImplementation(() => [[mockUserListingData], jest.fn()]);
+      jest.spyOn(React, 'useState').mockRestore();
+      jest
+        .spyOn(React, 'useState')
+        .mockImplementationOnce(() => [[mockUserListingData], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [[mockUserListingData], jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()]);
       component = shallow(
         <UserList
           coreStart={mockCoreStart as any}

@@ -75,7 +75,12 @@ describe('Tenant list', () => {
   };
 
   beforeEach(() => {
-    jest.spyOn(React, 'useState').mockImplementation((initialValue) => [initialValue, setState]);
+    // jest.spyOn(React, 'useState').mockImplementation((initialValue) => [initialValue, setState]);
+    jest.spyOn(React, 'useState').mockRestore();
+    jest
+      .spyOn(React, 'useState')
+      .mockImplementationOnce(() => [false, jest.fn()])
+      .mockImplementationOnce(() => ['', jest.fn()]);
   });
 
   it('Render empty', () => {
@@ -332,7 +337,23 @@ describe('Tenant list', () => {
     };
 
     beforeEach(() => {
-      jest.spyOn(React, 'useState').mockImplementation(() => [[sampleCustomTenant1], jest.fn()]);
+      // jest.spyOn(React, 'useState').mockImplementation(() => [[sampleCustomTenant1], jest.fn()]);
+      jest.spyOn(React, 'useState').mockRestore();
+      jest
+        .spyOn(React, 'useState')
+        .mockImplementationOnce(() => [[sampleCustomTenant1], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [[sampleCustomTenant1], jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()]);
+
       component = shallow(
         <ManageTab
           coreStart={mockCoreStart as any}

@@ -91,6 +91,7 @@ export function ManageTab(props: AppDependencies) {
   const [isMultiTenancyEnabled, setIsMultiTenancyEnabled] = useState(false);
   const [isPrivateTenantEnabled, setIsPrivateTenantEnabled] = useState(false);
   const [dashboardsDefaultTenant, setDashboardsDefaultTenant] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
 
   const { http } = props.coreStart;
@@ -164,8 +165,6 @@ export function ManageTab(props: AppDependencies) {
       closeActionsMenu();
     }
   };
-
-  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const closeModal = () => setIsModalVisible(false);
   const showModal = () => setIsModalVisible(true);

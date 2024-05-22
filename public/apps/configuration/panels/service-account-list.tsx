@@ -165,13 +165,6 @@ export function ServiceAccountList(props: AppDependencies) {
 
   const [actionsMenu, closeActionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);
 
-  console.log('lofu,, ' + userData);
-  // let userDataLength = 0;
-  // try {
-  //   userDataLength = Query.execute(query || '', userData).length;
-  // } catch (e) {
-  //   // do nothing
-  // }
   return (
     <>
       <SecurityPluginTopNavMenu

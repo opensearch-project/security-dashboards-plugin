@@ -140,7 +140,7 @@ describe('Service Account list', () => {
       },
     };
     let component;
-    const mockUserListingData: InternalUsersListing = {
+    const mockSAListData: InternalUsersListing = {
       username: 'user_1',
       attributes: { service: 'true' },
       backend_roles: ['backend_role1'],
@@ -149,8 +149,8 @@ describe('Service Account list', () => {
       jest.spyOn(React, 'useState').mockRestore();
       jest
         .spyOn(React, 'useState')
-        .mockImplementationOnce(() => [[mockUserListingData], jest.fn()])
-        .mockImplementationOnce(() => [[mockUserListingData], jest.fn()])
+        .mockImplementationOnce(() => [[mockSAListData], jest.fn()])
+        .mockImplementationOnce(() => [[mockSAListData], jest.fn()])
         .mockImplementationOnce(() => [false, jest.fn()])
         .mockImplementationOnce(() => ['', jest.fn()])
         .mockImplementationOnce(() => [false, jest.fn()])
@@ -168,14 +168,14 @@ describe('Service Account list', () => {
     it('Edit click', () => {
       component.find('[data-test-subj="edit"]').simulate('click');
       expect(window.location.hash).toBe(
-        buildHashUrl(ResourceType.users, Action.edit, mockUserListingData.username)
+        buildHashUrl(ResourceType.users, Action.edit, mockSAListData.username)
       );
     });
 
     it('Duplicate click', () => {
       component.find('[data-test-subj="duplicate"]').simulate('click');
       expect(window.location.hash).toBe(
-        buildHashUrl(ResourceType.users, Action.duplicate, mockUserListingData.username)
+        buildHashUrl(ResourceType.users, Action.duplicate, mockSAListData.username)
       );
     });
   });

@@ -190,7 +190,13 @@ describe('Role list', () => {
       backendRoles: [],
     };
     beforeEach(() => {
-      jest.spyOn(React, 'useState').mockImplementation(() => [[mockRoleListingData], jest.fn()]);
+      jest.spyOn(React, 'useState').mockRestore();
+      jest
+        .spyOn(React, 'useState')
+        .mockImplementationOnce(() => [[mockRoleListingData], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [[mockRoleListingData], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()]);
       component = shallow(
         <RoleList
           coreStart={mockCoreStart as any}
@@ -217,6 +223,15 @@ describe('Role list', () => {
   });
 
   describe('Render columns', () => {
+    beforeEach(() => {
+      jest.spyOn(React, 'useState').mockRestore();
+      jest
+        .spyOn(React, 'useState')
+        .mockImplementationOnce(() => [[], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [[], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()]);
+    });
     it('render role name column', () => {
       const wrapper = shallow(
         <RoleList
