@@ -25,73 +25,72 @@ import {
 import { API_PREFIX, CONFIGURATION_API_PREFIX, isValidResourceName } from '../../common';
 import { ResourceType } from '../../common';
 
-const internalUserSchema = schema.object({
-  description: schema.maybe(schema.string()),
-  password: schema.maybe(schema.string()),
-  backend_roles: schema.arrayOf(schema.string(), { defaultValue: [] }),
-  attributes: schema.any({ defaultValue: {} }),
-});
-
-const actionGroupSchema = schema.object({
-  description: schema.maybe(schema.string()),
-  allowed_actions: schema.arrayOf(schema.string()),
-  // type field is not supported in legacy implementation, comment it out for now.
-  // type: schema.oneOf([
-  //   schema.literal('cluster'),
-  //   schema.literal('index'),
-  //   schema.literal('opensearch_dashboards'),
-  // ]),
-});
-
-const roleMappingSchema = schema.object({
-  description: schema.maybe(schema.string()),
-  backend_roles: schema.arrayOf(schema.string(), { defaultValue: [] }),
-  hosts: schema.arrayOf(schema.string(), { defaultValue: [] }),
-  users: schema.arrayOf(schema.string(), { defaultValue: [] }),
-});
-
-const roleSchema = schema.object({
-  description: schema.maybe(schema.string()),
-  cluster_permissions: schema.arrayOf(schema.string(), { defaultValue: [] }),
-  tenant_permissions: schema.arrayOf(schema.any(), { defaultValue: [] }),
-  index_permissions: schema.arrayOf(schema.any(), { defaultValue: [] }),
-});
-
-const tenantSchema = schema.object({
-  description: schema.string(),
-});
-
-const accountSchema = schema.object({
-  password: schema.string(),
-  current_password: schema.string(),
-});
-
-const schemaMap: any = {
-  internalusers: internalUserSchema,
-  actiongroups: actionGroupSchema,
-  rolesmapping: roleMappingSchema,
-  roles: roleSchema,
-  tenants: tenantSchema,
-  account: accountSchema,
-};
-
-function validateRequestBody(resourceName: string, requestBody: any): any {
-  const inputSchema = schemaMap[resourceName];
-  if (!inputSchema) {
-    throw new Error(`Unknown resource ${resourceName}`);
-  }
-  inputSchema.validate(requestBody); // throws error if validation fail
-}
-
-function validateEntityId(resourceName: string) {
-  if (!isValidResourceName(resourceName)) {
-    return 'Invalid entity name or id.';
-  }
-}
-
 // TODO: consider to extract entity CRUD operations and put it into a client class
-// Common routes are needed either if admin pages or disabled or session management is disabled
-export function defineCommonRoutes(router: IRouter, dataSourceEnabled: boolean) {
+export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
+  const internalUserSchema = schema.object({
+    description: schema.maybe(schema.string()),
+    password: schema.maybe(schema.string()),
+    backend_roles: schema.arrayOf(schema.string(), { defaultValue: [] }),
+    attributes: schema.any({ defaultValue: {} }),
+  });
+
+  const actionGroupSchema = schema.object({
+    description: schema.maybe(schema.string()),
+    allowed_actions: schema.arrayOf(schema.string()),
+    // type field is not supported in legacy implementation, comment it out for now.
+    // type: schema.oneOf([
+    //   schema.literal('cluster'),
+    //   schema.literal('index'),
+    //   schema.literal('opensearch_dashboards'),
+    // ]),
+  });
+
+  const roleMappingSchema = schema.object({
+    description: schema.maybe(schema.string()),
+    backend_roles: schema.arrayOf(schema.string(), { defaultValue: [] }),
+    hosts: schema.arrayOf(schema.string(), { defaultValue: [] }),
+    users: schema.arrayOf(schema.string(), { defaultValue: [] }),
+  });
+
+  const roleSchema = schema.object({
+    description: schema.maybe(schema.string()),
+    cluster_permissions: schema.arrayOf(schema.string(), { defaultValue: [] }),
+    tenant_permissions: schema.arrayOf(schema.any(), { defaultValue: [] }),
+    index_permissions: schema.arrayOf(schema.any(), { defaultValue: [] }),
+  });
+
+  const tenantSchema = schema.object({
+    description: schema.string(),
+  });
+
+  const accountSchema = schema.object({
+    password: schema.string(),
+    current_password: schema.string(),
+  });
+
+  const schemaMap: any = {
+    internalusers: internalUserSchema,
+    actiongroups: actionGroupSchema,
+    rolesmapping: roleMappingSchema,
+    roles: roleSchema,
+    tenants: tenantSchema,
+    account: accountSchema,
+  };
+
+  function validateRequestBody(resourceName: string, requestBody: any): any {
+    const inputSchema = schemaMap[resourceName];
+    if (!inputSchema) {
+      throw new Error(`Unknown resource ${resourceName}`);
+    }
+    inputSchema.validate(requestBody); // throws error if validation fail
+  }
+
+  function validateEntityId(resourceName: string) {
+    if (!isValidResourceName(resourceName)) {
+      return 'Invalid entity name or id.';
+    }
+  }
+
   /**
    * Lists resources by resource name.
    *
@@ -394,6 +393,51 @@ export function defineCommonRoutes(router: IRouter, dataSourceEnabled: boolean) 
   );
 
   /**
+   * Deletes an entity by id.
+   */
+  router.delete(
+    {
+      path: `${API_PREFIX}/${CONFIGURATION_API_PREFIX}/{resourceName}/{id}`,
+      validate: {
+        params: schema.object({
+          resourceName: schema.string(),
+          id: schema.string({
+            minLength: 1,
+          }),
+        }),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
+      },
+    },
+    async (
+      context,
+      request,
+      response
+    ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
+      try {
+        const esResp = await wrapRouteWithDataSource(
+          dataSourceEnabled,
+          context,
+          request,
+          'opensearch_security.deleteResource',
+          {
+            resourceName: request.params.resourceName,
+            id: request.params.id,
+          }
+        );
+        return response.ok({
+          body: {
+            message: esResp.message,
+          },
+        });
+      } catch (error) {
+        return errorResponse(response, error);
+      }
+    }
+  );
+
+  /**
    * Update object with out Id. Resource identification is expected to computed from headers. Eg: auth headers
    *
    * Request sample:
@@ -447,9 +491,59 @@ export function defineCommonRoutes(router: IRouter, dataSourceEnabled: boolean) 
       }
     }
   );
-}
 
-export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
+  /**
+   * Update entity by Id.
+   */
+  router.post(
+    {
+      path: `${API_PREFIX}/${CONFIGURATION_API_PREFIX}/{resourceName}/{id}`,
+      validate: {
+        params: schema.object({
+          resourceName: schema.string(),
+          id: schema.string({
+            validate: validateEntityId,
+          }),
+        }),
+        body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
+      },
+    },
+    async (
+      context,
+      request,
+      response
+    ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
+      try {
+        validateRequestBody(request.params.resourceName, request.body);
+      } catch (error) {
+        return response.badRequest({ body: error });
+      }
+      try {
+        const esResp = await wrapRouteWithDataSource(
+          dataSourceEnabled,
+          context,
+          request,
+          'opensearch_security.saveResource',
+          {
+            resourceName: request.params.resourceName,
+            id: request.params.id,
+            body: request.body,
+          }
+        );
+        return response.ok({
+          body: {
+            message: esResp.message,
+          },
+        });
+      } catch (error) {
+        return errorResponse(response, error);
+      }
+    }
+  );
+
   /**
    * Gets authentication info of the user.
    *
@@ -515,136 +609,6 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
 
         return response.ok({
           body: esResp,
-        });
-      } catch (error) {
-        return errorResponse(response, error);
-      }
-    }
-  );
-
-  /**
-   * Gets permission info of current user.
-   *
-   * Sample response:
-   * {
-   *   "user": "User [name=admin, roles=[], requestedTenant=__user__]",
-   *   "user_name": "admin",
-   *   "has_api_access": true,
-   *   "disabled_endpoints": {}
-   * }
-   */
-  router.get(
-    {
-      path: `${API_PREFIX}/restapiinfo`,
-      validate: false,
-    },
-    async (context, request, response) => {
-      const client = context.security_plugin.esClient.asScoped(request);
-      try {
-        const esResponse = await client.callAsCurrentUser('opensearch_security.restapiinfo');
-        return response.ok({
-          body: esResponse,
-        });
-      } catch (error) {
-        return response.badRequest({
-          body: error,
-        });
-      }
-    }
-  );
-}
-
-export function defineSecurityConfigurationRoutes(router: IRouter, dataSourceEnabled: boolean) {
-  /**
-   * Deletes an entity by id.
-   */
-  router.delete(
-    {
-      path: `${API_PREFIX}/${CONFIGURATION_API_PREFIX}/{resourceName}/{id}`,
-      validate: {
-        params: schema.object({
-          resourceName: schema.string(),
-          id: schema.string({
-            minLength: 1,
-          }),
-        }),
-        query: schema.object({
-          dataSourceId: schema.maybe(schema.string()),
-        }),
-      },
-    },
-    async (
-      context,
-      request,
-      response
-    ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
-      try {
-        const esResp = await wrapRouteWithDataSource(
-          dataSourceEnabled,
-          context,
-          request,
-          'opensearch_security.deleteResource',
-          {
-            resourceName: request.params.resourceName,
-            id: request.params.id,
-          }
-        );
-        return response.ok({
-          body: {
-            message: esResp.message,
-          },
-        });
-      } catch (error) {
-        return errorResponse(response, error);
-      }
-    }
-  );
-
-  /**
-   * Update entity by Id.
-   */
-  router.post(
-    {
-      path: `${API_PREFIX}/${CONFIGURATION_API_PREFIX}/{resourceName}/{id}`,
-      validate: {
-        params: schema.object({
-          resourceName: schema.string(),
-          id: schema.string({
-            validate: validateEntityId,
-          }),
-        }),
-        body: schema.any(),
-        query: schema.object({
-          dataSourceId: schema.maybe(schema.string()),
-        }),
-      },
-    },
-    async (
-      context,
-      request,
-      response
-    ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
-      try {
-        validateRequestBody(request.params.resourceName, request.body);
-      } catch (error) {
-        return response.badRequest({ body: error });
-      }
-      try {
-        const esResp = await wrapRouteWithDataSource(
-          dataSourceEnabled,
-          context,
-          request,
-          'opensearch_security.saveResource',
-          {
-            resourceName: request.params.resourceName,
-            id: request.params.id,
-            body: request.body,
-          }
-        );
-        return response.ok({
-          body: {
-            message: esResp.message,
-          },
         });
       } catch (error) {
         return errorResponse(response, error);
@@ -857,6 +821,37 @@ export function defineSecurityConfigurationRoutes(router: IRouter, dataSourceEna
         });
       } catch (error) {
         return errorResponse(response, error);
+      }
+    }
+  );
+
+  /**
+   * Gets permission info of current user.
+   *
+   * Sample response:
+   * {
+   *   "user": "User [name=admin, roles=[], requestedTenant=__user__]",
+   *   "user_name": "admin",
+   *   "has_api_access": true,
+   *   "disabled_endpoints": {}
+   * }
+   */
+  router.get(
+    {
+      path: `${API_PREFIX}/restapiinfo`,
+      validate: false,
+    },
+    async (context, request, response) => {
+      const client = context.security_plugin.esClient.asScoped(request);
+      try {
+        const esResponse = await client.callAsCurrentUser('opensearch_security.restapiinfo');
+        return response.ok({
+          body: esResponse,
+        });
+      } catch (error) {
+        return response.badRequest({
+          body: error,
+        });
       }
     }
   );

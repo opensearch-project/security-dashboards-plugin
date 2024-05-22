@@ -27,7 +27,7 @@ import {
 } from '../../../src/core/server';
 
 import { SecurityPluginSetup, SecurityPluginStart } from './types';
-import { defineRoutes, defineCommonRoutes, defineSecurityConfigurationRoutes } from './routes';
+import { defineRoutes } from './routes';
 import { SecurityPluginConfigType } from '.';
 import opensearchSecurityConfigurationPlugin from './backend/opensearch_security_configuration_plugin';
 import opensearchSecurityPlugin from './backend/opensearch_security_plugin';
@@ -97,21 +97,14 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
 
     const router = core.http.createRouter();
 
-    const plugins = [opensearchSecurityPlugin];
-    if (config.configuration.admin_pages_enabled) {
-      plugins.push(opensearchSecurityConfigurationPlugin);
-    }
-
     const esClient: ILegacyClusterClient = core.opensearch.legacy.createClient(
       'opendistro_security',
       {
-        plugins,
+        plugins: [opensearchSecurityConfigurationPlugin, opensearchSecurityPlugin],
       }
     );
     if (dataSourceEnabled) {
-      if (config.configuration.admin_pages_enabled) {
-        dataSource.registerCustomApiSchema(opensearchSecurityConfigurationPlugin);
-      }
+      dataSource.registerCustomApiSchema(opensearchSecurityConfigurationPlugin);
       dataSource.registerCustomApiSchema(opensearchSecurityPlugin);
     }
 
@@ -150,11 +143,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     }
 
     // Register server side APIs
-    defineCommonRoutes(router, dataSourceEnabled);
     defineRoutes(router, dataSourceEnabled);
-    if (config.configuration.admin_pages_enabled) {
-      defineSecurityConfigurationRoutes(router, dataSourceEnabled);
-    }
     defineAuthTypeRoutes(router, config);
 
     // set up multi-tenant routes
