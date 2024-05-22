@@ -35,7 +35,7 @@ import { buildHashUrl } from '../../utils/url-builder';
 import { Action } from '../../types';
 import { ResourceType } from '../../../../../common';
 
-describe('User list', () => {
+describe('Service Account list', () => {
   describe('dictView', () => {
     it('- empty', () => {
       const result = dictView({});
@@ -131,7 +131,7 @@ describe('User list', () => {
     });
   });
 
-  describe('Action menu click', () => {
+  describe('Action menu Component', () => {
     const mockCoreStart = {
       http: {
         basePath: {
@@ -146,7 +146,15 @@ describe('User list', () => {
       backend_roles: ['backend_role1'],
     };
     beforeEach(() => {
-      jest.spyOn(React, 'useState').mockImplementation(() => [[mockUserListingData], jest.fn()]);
+      jest.spyOn(React, 'useState').mockRestore();
+      jest
+        .spyOn(React, 'useState')
+        .mockImplementationOnce(() => [[mockUserListingData], jest.fn()])
+        .mockImplementationOnce(() => [[mockUserListingData], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()]);
       component = shallow(
         <ServiceAccountList
           coreStart={mockCoreStart as any}

@@ -95,8 +95,8 @@ export function getColumns(currentUsername: string) {
 
 export function ServiceAccountList(props: AppDependencies) {
   const [userData, setUserData] = React.useState<InternalUsersListing[]>([]);
-  const [errorFlag, setErrorFlag] = React.useState(false);
   const [selection, setSelection] = React.useState<InternalUsersListing[]>([]);
+  const [errorFlag, setErrorFlag] = React.useState<boolean>(false);
   const [currentUsername, setCurrentUsername] = useState('');
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState<Query | null>(null);
@@ -112,6 +112,7 @@ export function ServiceAccountList(props: AppDependencies) {
         );
         setCurrentUsername((await getAuthInfo(props.coreStart.http)).user_name);
         setUserData(await userDataPromise);
+        setErrorFlag(false);
       } catch (e) {
         console.log(e);
         setErrorFlag(true);
@@ -164,6 +165,13 @@ export function ServiceAccountList(props: AppDependencies) {
 
   const [actionsMenu, closeActionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);
 
+  console.log('lofu,, ' + userData);
+  // let userDataLength = 0;
+  // try {
+  //   userDataLength = Query.execute(query || '', userData).length;
+  // } catch (e) {
+  //   // do nothing
+  // }
   return (
     <>
       <SecurityPluginTopNavMenu
