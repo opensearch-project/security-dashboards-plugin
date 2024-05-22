@@ -40,7 +40,12 @@ describe('Audit logs', () => {
   };
 
   beforeEach(() => {
-    jest.spyOn(React, 'useState').mockImplementation((initialValue) => [initialValue, setState]);
+    // jest.spyOn(React, 'useState').mockImplementation((initialValue) => [initialValue, setState]);
+    jest.spyOn(React, 'useState').mockRestore();
+    jest
+      .spyOn(React, 'useState')
+      .mockImplementationOnce(() => [[], setState])
+      .mockImplementationOnce(() => [false, jest.fn()]);
     jest.spyOn(React, 'useEffect').mockImplementationOnce((f) => f());
   });
 
@@ -140,7 +145,11 @@ describe('Audit logs', () => {
 
   it('render when AuditLoggingSettings.enabled is true', () => {
     const auditLoggingSettings = { enabled: true };
-    jest.spyOn(React, 'useState').mockImplementation(() => [auditLoggingSettings, setState]);
+    jest.spyOn(React, 'useState').mockRestore();
+    jest
+      .spyOn(React, 'useState')
+      .mockImplementationOnce(() => [auditLoggingSettings, setState])
+      .mockImplementationOnce(() => [false, jest.fn()]);
     const component = shallow(
       <AuditLogging coreStart={mockCoreStart as any} navigation={{} as any} />
     );
@@ -149,7 +158,11 @@ describe('Audit logs', () => {
 
   it('Click Configure button of general setting section', () => {
     const auditLoggingSettings = { enabled: true };
-    jest.spyOn(React, 'useState').mockImplementation(() => [auditLoggingSettings, setState]);
+    jest.spyOn(React, 'useState').mockRestore();
+    jest
+      .spyOn(React, 'useState')
+      .mockImplementationOnce(() => [auditLoggingSettings, setState])
+      .mockImplementationOnce(() => [false, jest.fn()]);
     const component = shallow(
       <AuditLogging coreStart={mockCoreStart as any} navigation={{} as any} />
     );
@@ -161,7 +174,11 @@ describe('Audit logs', () => {
 
   it('Click Configure button of Compliance settings section', () => {
     const auditLoggingSettings = { enabled: true };
-    jest.spyOn(React, 'useState').mockImplementation(() => [auditLoggingSettings, setState]);
+    jest.spyOn(React, 'useState').mockRestore();
+    jest
+      .spyOn(React, 'useState')
+      .mockImplementationOnce(() => [auditLoggingSettings, setState])
+      .mockImplementationOnce(() => [false, jest.fn()]);
     const component = shallow(
       <AuditLogging coreStart={mockCoreStart as any} navigation={{} as any} />
     );
