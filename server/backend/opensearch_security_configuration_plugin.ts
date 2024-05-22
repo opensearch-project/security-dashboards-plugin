@@ -21,12 +21,41 @@ export default function (Client: any, config: any, components: any) {
     Client.prototype.opensearch_security = components.clientAction.namespaceFactory();
   }
 
+  Client.prototype.opensearch_security.prototype.restapiinfo = ca({
+    url: {
+      fmt: '/_plugins/_security/api/permissionsinfo',
+    },
+  });
+
   /**
    * list all field mappings for all indices.
    */
   Client.prototype.opensearch_security.prototype.indices = ca({
     url: {
       fmt: '/_all/_mapping/field/*',
+    },
+  });
+
+  /**
+   * Returns a Security resource configuration.
+   *
+   * Sample response:
+   *
+   * {
+   *   "user": {
+   *     "hash": "#123123"
+   *   }
+   * }
+   */
+  Client.prototype.opensearch_security.prototype.listResource = ca({
+    url: {
+      fmt: '/_plugins/_security/api/<%=resourceName%>',
+      req: {
+        resourceName: {
+          type: 'string',
+          required: true,
+        },
+      },
     },
   });
 
@@ -65,6 +94,30 @@ export default function (Client: any, config: any, components: any) {
           required: true,
         },
         id: {
+          type: 'string',
+          required: true,
+        },
+      },
+    },
+  });
+
+  /**
+   * Updates a resource.
+   * Resource identification is expected to computed from headers. Eg: auth headers.
+   *
+   * Sample response:
+   * {
+   *   "status": "OK",
+   *   "message": "Username updated."
+   * }
+   */
+  Client.prototype.opensearch_security.prototype.saveResourceWithoutId = ca({
+    method: 'PUT',
+    needBody: true,
+    url: {
+      fmt: '/_plugins/_security/api/<%=resourceName%>',
+      req: {
+        resourceName: {
           type: 'string',
           required: true,
         },
