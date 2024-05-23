@@ -30,6 +30,7 @@ import {
 } from '@elastic/eui';
 import React, { useContext } from 'react';
 import { FormattedMessage } from '@osd/i18n/react';
+import { DataSourceOption } from 'src/plugins/data_source_management/public';
 import { AppDependencies } from '../../../types';
 import { ResourceType } from '../../../../../common';
 import { getAuditLogging, updateAuditLogging } from '../../utils/audit-logging-utils';
@@ -90,6 +91,18 @@ function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: bool
           </EuiFormRow>
         </EuiDescribedFormGroup>
       </EuiForm>
+    </EuiPanel>
+  );
+}
+
+function renderAccessErrorPanel(dataSource: DataSourceOption) {
+  return (
+    <EuiPanel>
+      <EuiTitle>
+        <h3>Audit logging</h3>
+      </EuiTitle>
+      <EuiHorizontalRule margin="m" />
+      <AccessErrorComponent dataSourceLabel={dataSource && dataSource.label} />
     </EuiPanel>
   );
 }
@@ -167,13 +180,15 @@ export function AuditLogging(props: AuditLoggingProps) {
     };
 
     fetchData();
-  }, [props.coreStart.http, props.fromType, dataSource.id]);
+  }, [props.coreStart.http, props.fromType, dataSource]);
 
   const statusPanel = renderStatusPanel(onSwitchChange, configuration.enabled || false);
 
   let content;
 
-  if (!configuration.enabled) {
+  if (errorFlag) {
+    content = renderAccessErrorPanel(dataSource);
+  } else if (!configuration.enabled) {
     content = statusPanel;
   } else {
     content = (
@@ -241,11 +256,7 @@ export function AuditLogging(props: AuditLoggingProps) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      {errorFlag ? (
-        <AccessErrorComponent dataSourceLabel={dataSource && dataSource.label} />
-      ) : (
-        content
-      )}
+      {content}
     </div>
   );
 }

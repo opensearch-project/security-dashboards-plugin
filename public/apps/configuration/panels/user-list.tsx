@@ -129,7 +129,7 @@ export function UserList(props: AppDependencies) {
     };
 
     fetchData();
-  }, [props.coreStart.http, dataSource.id]);
+  }, [props.coreStart.http, dataSource]);
 
   const handleDelete = async () => {
     const usersToDelete: string[] = selection.map((r) => r.username);

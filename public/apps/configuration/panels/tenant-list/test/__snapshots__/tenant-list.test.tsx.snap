@@ -138,7 +138,7 @@ exports[`Tenant list Action menu click Duplicate click 1`] = `
             },
           ]
         }
-        error="Load data failed, please check console log for more detail."
+        error=""
         itemId="tenant"
         items={
           Array [
@@ -326,7 +326,7 @@ exports[`Tenant list Action menu click Edit click 1`] = `
             },
           ]
         }
-        error="Load data failed, please check console log for more detail."
+        error=""
         itemId="tenant"
         items={
           Array [

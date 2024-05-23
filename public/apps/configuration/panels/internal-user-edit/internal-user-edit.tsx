@@ -98,7 +98,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
 
       fetchData();
     }
-  }, [addToast, props.action, props.coreStart.http, props.sourceUserName, dataSource.id]);
+  }, [addToast, props.action, props.coreStart.http, props.sourceUserName, dataSource]);
 
   const updateUserHandler = async () => {
     try {

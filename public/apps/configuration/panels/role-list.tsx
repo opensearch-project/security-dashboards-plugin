@@ -120,7 +120,6 @@ export function RoleList(props: AppDependencies) {
         setRoleData(processedData);
         setErrorFlag(false);
       } catch (e) {
-        console.log(e);
         setErrorFlag(true);
       } finally {
         setLoading(false);
@@ -128,7 +127,7 @@ export function RoleList(props: AppDependencies) {
     };
 
     fetchData();
-  }, [props.coreStart.http, dataSource.id]);
+  }, [props.coreStart.http, dataSource]);
 
   const handleDelete = async () => {
     const rolesToDelete: string[] = selection.map((r) => r.roleName);

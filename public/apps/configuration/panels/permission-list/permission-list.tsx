@@ -217,11 +217,11 @@ export function PermissionList(props: AppDependencies) {
     } finally {
       setLoading(false);
     }
-  }, [props.coreStart.http, dataSource.id]);
+  }, [props.coreStart.http, dataSource]);
 
   React.useEffect(() => {
     fetchData();
-  }, [props.coreStart.http, fetchData, dataSource.id]);
+  }, [props.coreStart.http, fetchData, dataSource]);
 
   const handleDelete = async () => {
     const groupsToDelete: string[] = selection.map((r) => r.name);

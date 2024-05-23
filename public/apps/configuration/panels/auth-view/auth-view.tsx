@@ -52,7 +52,7 @@ export function AuthView(props: AppDependencies) {
     };
 
     fetchData();
-  }, [props.coreStart.http, dataSource.id]);
+  }, [props.coreStart.http, dataSource]);
 
   if (isEmpty(authentication)) {
     return (
