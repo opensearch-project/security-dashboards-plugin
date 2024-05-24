@@ -108,6 +108,7 @@ export function RoleList(props: AppDependencies) {
   const [errorFlag, setErrorFlag] = React.useState(false);
   const [selection, setSelection] = React.useState<RoleListing[]>([]);
   const [loading, setLoading] = useState(false);
+  const [accessErrorFlag, setAccessErrorFlag] = React.useState(false);
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
 
   React.useEffect(() => {
@@ -119,7 +120,12 @@ export function RoleList(props: AppDependencies) {
         const processedData = transformRoleData(rawRoleData, rawRoleMappingData);
         setRoleData(processedData);
         setErrorFlag(false);
+        setAccessErrorFlag(false);
       } catch (e) {
+        console.log(e);
+        if (e.response && e.response.status === 403) {
+          setAccessErrorFlag(true);
+        }
         setErrorFlag(true);
       } finally {
         setLoading(false);
@@ -265,8 +271,8 @@ export function RoleList(props: AppDependencies) {
           <h1>Roles</h1>
         </EuiTitle>
       </EuiPageHeader>
-      {errorFlag ? (
-        <AccessErrorComponent dataSourceLabel={dataSource && dataSource.label} />
+      {accessErrorFlag ? (
+        <AccessErrorComponent loading={loading} dataSourceLabel={dataSource && dataSource.label} />
       ) : (
         <EuiPageContent>
           <EuiPageContentHeader id="role-table-container">

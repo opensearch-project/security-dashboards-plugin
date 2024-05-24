@@ -13,17 +13,25 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiPageContent } from '@elastic/eui';
+import { EuiLoadingContent, EuiPageContent } from '@elastic/eui';
 import React from 'react';
 
 interface AccessErrorComponentProps {
+  loading?: boolean;
   dataSourceLabel?: string;
   message?: string;
 }
 
 export const AccessErrorComponent: React.FC<AccessErrorComponentProps> = (props) => {
-  const { dataSourceLabel, message = 'You do not have permissions to view this data' } = props;
-  return (
+  const {
+    loading = false,
+    dataSourceLabel,
+    message = 'You do not have permissions to view this data',
+  } = props;
+
+  return loading ? (
+    <EuiLoadingContent />
+  ) : (
     <EuiPageContent>
       {message}
       {dataSourceLabel ? ` for ${props.dataSourceLabel}.` : '.'}

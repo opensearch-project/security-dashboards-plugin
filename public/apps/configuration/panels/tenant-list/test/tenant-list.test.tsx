@@ -272,6 +272,7 @@ describe('Tenant list', () => {
         .spyOn(React, 'useState')
         .mockImplementationOnce(() => [[sampleReservedTenant], jest.fn()])
         .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
         .mockImplementationOnce(() => [[sampleReservedTenant], jest.fn()])
         .mockImplementationOnce(() => ['', jest.fn()])
         .mockImplementationOnce(() => ['', jest.fn()])
@@ -299,6 +300,7 @@ describe('Tenant list', () => {
       jest
         .spyOn(React, 'useState')
         .mockImplementationOnce(() => [[sampleReservedTenant, sampleCustomTenant1], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
         .mockImplementationOnce(() => [false, jest.fn()])
         .mockImplementationOnce(() => [[sampleReservedTenant, sampleReservedTenant], jest.fn()])
         .mockImplementationOnce(() => ['', jest.fn()])
@@ -331,6 +333,7 @@ describe('Tenant list', () => {
       jest
         .spyOn(React, 'useState')
         .mockImplementationOnce(() => [[sampleCustomTenant1, sampleCustomTenant2], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
         .mockImplementationOnce(() => [false, jest.fn()])
         .mockImplementationOnce(() => [[sampleCustomTenant1, sampleCustomTenant2], jest.fn()])
         .mockImplementationOnce(() => ['', jest.fn()])
@@ -375,6 +378,7 @@ describe('Tenant list', () => {
         .spyOn(React, 'useState')
         .mockImplementationOnce(() => [[sampleCustomTenant1], jest.fn()])
         .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
         .mockImplementationOnce(() => [[sampleCustomTenant1], jest.fn()])
         .mockImplementationOnce(() => ['', jest.fn()])
         .mockImplementationOnce(() => ['', jest.fn()])
@@ -407,6 +411,7 @@ describe('Tenant list', () => {
         .spyOn(React, 'useState')
         .mockImplementationOnce(() => [[sampleCustomTenant1], jest.fn()])
         .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
         .mockImplementationOnce(() => [[sampleCustomTenant1], jest.fn()])
         .mockImplementationOnce(() => ['', jest.fn()])
         .mockImplementationOnce(() => ['', jest.fn()])
@@ -426,6 +431,7 @@ describe('Tenant list', () => {
       jest
         .spyOn(React, 'useState')
         .mockImplementationOnce(() => [[sampleCustomTenant1], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
         .mockImplementationOnce(() => [false, jest.fn()])
         .mockImplementationOnce(() => [[sampleCustomTenant1], jest.fn()])
         .mockImplementationOnce(() => ['', jest.fn()])

@@ -207,6 +207,7 @@ describe('User list', () => {
         .spyOn(React, 'useState')
         .mockImplementationOnce(() => [[mockUserListingData], jest.fn()])
         .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
         .mockImplementationOnce(() => [[mockUserListingData], jest.fn()])
         .mockImplementationOnce(() => ['', jest.fn()])
         .mockImplementationOnce(() => [false, jest.fn()])

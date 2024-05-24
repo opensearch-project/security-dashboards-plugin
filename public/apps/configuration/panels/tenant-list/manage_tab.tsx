@@ -78,6 +78,7 @@ export function ManageTab(props: AppDependencies) {
   const setGlobalBreadcrumbs = flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs);
   const [tenantData, setTenantData] = React.useState<Tenant[]>([]);
   const [errorFlag, setErrorFlag] = React.useState(false);
+  const [accessErrorFlag, setAccessErrorFlag] = React.useState(false);
   const [selection, setSelection] = React.useState<Tenant[]>([]);
   const [currentTenant, setCurrentTenant] = useState('');
   const [currentUsername, setCurrentUsername] = useState('');
@@ -113,6 +114,9 @@ export function ManageTab(props: AppDependencies) {
       setErrorFlag(false);
     } catch (e) {
       console.log(e);
+      if (e.response && e.response.status === 403) {
+        setAccessErrorFlag(true);
+      }
       setErrorFlag(true);
     } finally {
       setLoading(false);
@@ -485,7 +489,7 @@ export function ManageTab(props: AppDependencies) {
     );
   };
 
-  if (errorFlag) {
+  if (accessErrorFlag) {
     return (
       <AccessErrorComponent
         dataSourceLabel={LocalCluster.label}

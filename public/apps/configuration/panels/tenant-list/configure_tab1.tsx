@@ -78,7 +78,7 @@ export function ConfigureTab1(props: AppDependencies) {
 
   const [toasts, addToast, removeToast] = useToastState();
   const [selectedComboBoxOptions, setSelectedComboBoxOptions] = useState();
-  const [errorFlag, setErrorFlag] = React.useState(false);
+  const [accessErrorFlag, setAccessErrorFlag] = React.useState(false);
 
   const discardChangesFunction = async () => {
     await setUpdatedConfiguration(originalConfiguration);
@@ -198,11 +198,13 @@ export function ConfigureTab1(props: AppDependencies) {
         const rawTenantData = await fetchTenants(props.coreStart.http, LOCAL_CLUSTER_ID);
         const processedTenantData = transformTenantData(rawTenantData);
         setTenantData(processedTenantData);
-        setErrorFlag(false);
+        setAccessErrorFlag(false);
       } catch (e) {
         // TODO: switch to better error display.
         console.error(e);
-        setErrorFlag(true);
+        if (e.response && e.response.status === 403) {
+          setAccessErrorFlag(true);
+        }
       }
     };
     fetchData();
@@ -312,7 +314,7 @@ export function ConfigureTab1(props: AppDependencies) {
     </EuiText>
   );
 
-  if (errorFlag) {
+  if (accessErrorFlag) {
     return (
       <AccessErrorComponent
         dataSourceLabel={LocalCluster.label}

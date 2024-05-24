@@ -97,6 +97,7 @@ export function ServiceAccountList(props: AppDependencies) {
   const [userData, setUserData] = React.useState<InternalUsersListing[]>([]);
   const [selection, setSelection] = React.useState<InternalUsersListing[]>([]);
   const [errorFlag, setErrorFlag] = React.useState<boolean>(false);
+  const [accessErrorFlag, setAccessErrorFlag] = React.useState(false);
   const [currentUsername, setCurrentUsername] = useState('');
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState<Query | null>(null);
@@ -113,8 +114,12 @@ export function ServiceAccountList(props: AppDependencies) {
         setCurrentUsername((await getAuthInfo(props.coreStart.http)).user_name);
         setUserData(await userDataPromise);
         setErrorFlag(false);
+        setAccessErrorFlag(false);
       } catch (e) {
         console.log(e);
+        if (e.response && e.response.status === 403) {
+          setAccessErrorFlag(true);
+        }
         setErrorFlag(true);
       } finally {
         setLoading(false);
@@ -178,8 +183,8 @@ export function ServiceAccountList(props: AppDependencies) {
           <h1>Service accounts</h1>
         </EuiTitle>
       </EuiPageHeader>
-      {errorFlag ? (
-        <AccessErrorComponent dataSourceLabel={LocalCluster.label} />
+      {accessErrorFlag ? (
+        <AccessErrorComponent loading={loading} dataSourceLabel={LocalCluster.label} />
       ) : (
         <EuiPageContent>
           <EuiPageContentHeader>

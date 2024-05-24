@@ -95,14 +95,14 @@ function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: bool
   );
 }
 
-function renderAccessErrorPanel(dataSource: DataSourceOption) {
+function renderAccessErrorPanel(loading: boolean, dataSource: DataSourceOption) {
   return (
     <EuiPanel>
       <EuiTitle>
         <h3>Audit logging</h3>
       </EuiTitle>
       <EuiHorizontalRule margin="m" />
-      <AccessErrorComponent dataSourceLabel={dataSource && dataSource.label} />
+      <AccessErrorComponent loading={loading} dataSourceLabel={dataSource && dataSource.label} />
     </EuiPanel>
   );
 }
@@ -151,7 +151,8 @@ export function renderComplianceSettings(config: AuditLoggingSettings) {
 export function AuditLogging(props: AuditLoggingProps) {
   const [configuration, setConfiguration] = React.useState<AuditLoggingSettings>({});
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
-  const [errorFlag, setErrorFlag] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [accessErrorFlag, setAccessErrorFlag] = React.useState(false);
 
   const onSwitchChange = async () => {
     try {
@@ -169,13 +170,18 @@ export function AuditLogging(props: AuditLoggingProps) {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const auditLogging = await getAuditLogging(props.coreStart.http, dataSource.id);
         setConfiguration(auditLogging);
-        setErrorFlag(false);
+        setAccessErrorFlag(false);
       } catch (e) {
         // TODO: switch to better error handling.
         console.log(e);
-        setErrorFlag(true);
+        if (e.response && e.response.status === 403) {
+          setAccessErrorFlag(true);
+        }
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -186,8 +192,8 @@ export function AuditLogging(props: AuditLoggingProps) {
 
   let content;
 
-  if (errorFlag) {
-    content = renderAccessErrorPanel(dataSource);
+  if (accessErrorFlag) {
+    content = renderAccessErrorPanel(loading, dataSource);
   } else if (!configuration.enabled) {
     content = statusPanel;
   } else {

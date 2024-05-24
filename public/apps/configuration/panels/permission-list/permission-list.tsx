@@ -189,6 +189,7 @@ export function PermissionList(props: AppDependencies) {
   const [permissionList, setPermissionList] = useState<PermissionListingItem[]>([]);
   const [actionGroupDict, setActionGroupDict] = useState<DataObject<ActionGroupItem>>({});
   const [errorFlag, setErrorFlag] = useState<boolean>(false);
+  const [accessErrorFlag, setAccessErrorFlag] = useState<boolean>(false);
   const [selection, setSelection] = React.useState<PermissionListingItem[]>([]);
   const [itemIdToExpandedRowMap, setItemIdToExpandedRowMap] = useState<ExpandedRowMapInterface>({});
 
@@ -211,8 +212,12 @@ export function PermissionList(props: AppDependencies) {
       setActionGroupDict(actionGroups);
       setPermissionList(await mergeAllPermissions(actionGroups));
       setErrorFlag(false);
+      setAccessErrorFlag(false);
     } catch (e) {
       console.log(e);
+      if (e.response && e.response.status === 403) {
+        setAccessErrorFlag(true);
+      }
       setErrorFlag(true);
     } finally {
       setLoading(false);
@@ -362,8 +367,8 @@ export function PermissionList(props: AppDependencies) {
           <h1>Permissions</h1>
         </EuiTitle>
       </EuiPageHeader>
-      {errorFlag ? (
-        <AccessErrorComponent dataSourceLabel={dataSource && dataSource.label} />
+      {accessErrorFlag ? (
+        <AccessErrorComponent loading={loading} dataSourceLabel={dataSource && dataSource.label} />
       ) : (
         <EuiPageContent>
           <EuiPageContentHeader>

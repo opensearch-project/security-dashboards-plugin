@@ -33,6 +33,7 @@ export function AuthView(props: AppDependencies) {
   const [loading, setLoading] = useState(false);
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
   const [errorFlag, setErrorFlag] = React.useState(false);
+  const [accessErrorFlag, setAccessErrorFlag] = React.useState(false);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -43,8 +44,12 @@ export function AuthView(props: AppDependencies) {
         setAuthentication(config.authc);
         setAuthorization(config.authz);
         setErrorFlag(false);
+        setAccessErrorFlag(false);
       } catch (e) {
         console.log(e);
+        if (e.response && e.response.status === 403) {
+          setAccessErrorFlag(true);
+        }
         setErrorFlag(true);
       } finally {
         setLoading(false);
@@ -63,11 +68,16 @@ export function AuthView(props: AppDependencies) {
           setDataSource={setDataSource}
           selectedDataSource={dataSource}
         />
-        <EuiTitle size="l">
-          <h1>Authentication and authorization</h1>
-        </EuiTitle>
-        {errorFlag ? (
-          <AccessErrorComponent dataSourceLabel={dataSource && dataSource.label} />
+        {accessErrorFlag ? (
+          <EuiTitle size="l">
+            <h1>Authentication and authorization</h1>
+          </EuiTitle>
+        ) : null}
+        {accessErrorFlag ? (
+          <AccessErrorComponent
+            loading={loading}
+            dataSourceLabel={dataSource && dataSource.label}
+          />
         ) : (
           <InstructionView config={props.config} />
         )}
@@ -94,8 +104,8 @@ export function AuthView(props: AppDependencies) {
           />
         )}
       </EuiPageHeader>
-      {errorFlag ? (
-        <AccessErrorComponent dataSourceLabel={dataSource && dataSource.label} />
+      {accessErrorFlag ? (
+        <AccessErrorComponent loading={loading} dataSourceLabel={dataSource && dataSource.label} />
       ) : (
         <>
           {/* @ts-ignore */}
