@@ -270,4 +270,30 @@ describe('Role list', () => {
       expect(result).toMatchSnapshot();
     });
   });
+
+  describe('AccessError component', () => {
+    let component;
+    beforeEach(() => {
+      jest.spyOn(React, 'useState').mockRestore();
+      jest
+        .spyOn(React, 'useState')
+        .mockImplementationOnce(() => [[], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [[], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [true, jest.fn()]);
+      component = shallow(
+        <RoleList
+          coreStart={mockCoreStart as any}
+          navigation={{} as any}
+          params={{} as any}
+          config={{} as any}
+        />
+      );
+    });
+
+    it('should load access error component', () => {
+      expect(component).toMatchSnapshot();
+    });
+  });
 });

@@ -179,4 +179,35 @@ describe('Service Account list', () => {
       );
     });
   });
+
+  describe('AccessError component', () => {
+    let component;
+    const mockCoreStart = {
+      http: 1,
+    };
+    beforeEach(() => {
+      jest.spyOn(React, 'useState').mockRestore();
+      jest
+        .spyOn(React, 'useState')
+        .mockImplementationOnce(() => [[], jest.fn()])
+        .mockImplementationOnce(() => [[], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [true, jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()]);
+    });
+
+    it('should load access error component', () => {
+      component = shallow(
+        <ServiceAccountList
+          coreStart={mockCoreStart as any}
+          navigation={{} as any}
+          params={{} as any}
+          config={{} as any}
+        />
+      );
+      expect(component).toMatchSnapshot();
+    });
+  });
 });

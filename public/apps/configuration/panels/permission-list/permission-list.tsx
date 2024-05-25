@@ -32,6 +32,7 @@ import {
   RIGHT_ALIGNMENT,
   EuiButtonEmpty,
   Query,
+  EuiLoadingContent,
 } from '@elastic/eui';
 import { difference } from 'lodash';
 import React, {
@@ -63,7 +64,7 @@ import { generateResourceName } from '../../utils/resource-utils';
 import { DocLinks } from '../../constants';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { DataSourceContext } from '../../app-router';
-import { AccessErrorComponent } from '../../../access-error-component';
+import { AccessErrorComponent } from '../../access-error-component';
 
 export function renderBooleanToCheckMark(value: boolean): React.ReactNode {
   return value ? <EuiIcon type="check" /> : '';
@@ -367,7 +368,9 @@ export function PermissionList(props: AppDependencies) {
           <h1>Permissions</h1>
         </EuiTitle>
       </EuiPageHeader>
-      {accessErrorFlag ? (
+      {loading ? (
+        <EuiLoadingContent />
+      ) : accessErrorFlag ? (
         <AccessErrorComponent loading={loading} dataSourceLabel={dataSource && dataSource.label} />
       ) : (
         <EuiPageContent>

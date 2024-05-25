@@ -30,6 +30,7 @@ import {
   EuiButtonEmpty,
   EuiSearchBarProps,
   Query,
+  EuiLoadingContent,
 } from '@elastic/eui';
 import { difference } from 'lodash';
 import { AppDependencies } from '../../types';
@@ -56,7 +57,7 @@ import { useContextMenuState } from '../utils/context-menu';
 import { DocLinks } from '../constants';
 import { DataSourceContext } from '../app-router';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
-import { AccessErrorComponent } from '../../access-error-component';
+import { AccessErrorComponent } from '../access-error-component';
 
 const columns: Array<EuiBasicTableColumn<RoleListing>> = [
   {
@@ -271,7 +272,9 @@ export function RoleList(props: AppDependencies) {
           <h1>Roles</h1>
         </EuiTitle>
       </EuiPageHeader>
-      {accessErrorFlag ? (
+      {loading ? (
+        <EuiLoadingContent />
+      ) : accessErrorFlag ? (
         <AccessErrorComponent loading={loading} dataSourceLabel={dataSource && dataSource.label} />
       ) : (
         <EuiPageContent>

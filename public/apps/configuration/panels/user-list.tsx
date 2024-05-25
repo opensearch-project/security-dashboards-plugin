@@ -21,6 +21,7 @@ import {
   EuiFlexItem,
   EuiInMemoryTable,
   EuiLink,
+  EuiLoadingContent,
   EuiPageBody,
   EuiPageContent,
   EuiPageContentHeader,
@@ -50,7 +51,7 @@ import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { buildHashUrl } from '../utils/url-builder';
 import { DataSourceContext } from '../app-router';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
-import { AccessErrorComponent } from '../../access-error-component';
+import { AccessErrorComponent } from '../access-error-component';
 
 export function dictView(items: Dictionary<string>) {
   if (isEmpty(items)) {
@@ -219,7 +220,9 @@ export function UserList(props: AppDependencies) {
           <h1>Internal users</h1>
         </EuiTitle>
       </EuiPageHeader>
-      {accessErrorFlag ? (
+      {loading ? (
+        <EuiLoadingContent />
+      ) : accessErrorFlag ? (
         <AccessErrorComponent loading={loading} dataSourceLabel={dataSource && dataSource.label} />
       ) : (
         <EuiPageContent>

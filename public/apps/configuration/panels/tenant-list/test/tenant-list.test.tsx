@@ -21,6 +21,7 @@ import { useDeleteConfirmState } from '../../../utils/delete-confirm-modal-utils
 import { Tenant } from '../../../types';
 import { TenantEditModal } from '../edit-modal';
 import { getDashboardsInfo } from '../../../../../utils/dashboards-info-utils';
+import { ConfigureTab1 } from '../configure_tab1';
 
 jest.mock('../../../utils/tenant-utils');
 jest.mock('../../../../../utils/auth-info-utils');
@@ -455,6 +456,52 @@ describe('Tenant list', () => {
     it('Create visualizations click', () => {
       component.find('#createVisualizations').simulate('click');
       expect(mockTenantUtils.selectTenant).toHaveBeenCalled();
+    });
+  });
+
+  describe('AccessError component', () => {
+    let component;
+    beforeEach(() => {
+      jest.spyOn(React, 'useState').mockRestore();
+      jest
+        .spyOn(React, 'useState')
+        .mockImplementationOnce(() => [[], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [true, jest.fn()])
+        .mockImplementationOnce(() => [[], jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()]);
+    });
+
+    it('should load access error component: manage tab', () => {
+      component = shallow(
+        <ManageTab
+          coreStart={mockCoreStart as any}
+          depsStart={{} as any}
+          params={{} as any}
+          config={config as any}
+        />
+      );
+      expect(component).toMatchSnapshot();
+    });
+
+    it('should load access error component: configure tab', () => {
+      component = shallow(
+        <ConfigureTab1
+          coreStart={mockCoreStart as any}
+          depsStart={{} as any}
+          params={{} as any}
+          config={config as any}
+        />
+      );
+      expect(component).toMatchSnapshot();
     });
   });
 });

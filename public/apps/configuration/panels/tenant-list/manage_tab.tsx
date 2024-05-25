@@ -34,6 +34,7 @@ import {
   EuiIcon,
   EuiConfirmModal,
   EuiCallOut,
+  EuiLoadingContent,
 } from '@elastic/eui';
 import React, { ReactNode, useState, useCallback } from 'react';
 import { difference } from 'lodash';
@@ -72,7 +73,7 @@ import { LocalCluster, getBreadcrumbs } from '../../app-router';
 import { buildUrl } from '../../utils/url-builder';
 import { CrossPageToast } from '../../cross-page-toast';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
-import { AccessErrorComponent } from '../../../access-error-component';
+import { AccessErrorComponent } from '../../access-error-component';
 
 export function ManageTab(props: AppDependencies) {
   const setGlobalBreadcrumbs = flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs);
@@ -489,6 +490,9 @@ export function ManageTab(props: AppDependencies) {
     );
   };
 
+  if (loading) {
+    return <EuiLoadingContent />;
+  }
   if (accessErrorFlag) {
     return (
       <AccessErrorComponent

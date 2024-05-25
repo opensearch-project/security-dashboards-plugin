@@ -20,6 +20,7 @@ import {
   EuiFlexItem,
   EuiInMemoryTable,
   EuiLink,
+  EuiLoadingContent,
   EuiPageBody,
   EuiPageContent,
   EuiPageContentHeader,
@@ -44,7 +45,7 @@ import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { buildHashUrl } from '../utils/url-builder';
 import { LocalCluster } from '../app-router';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
-import { AccessErrorComponent } from '../../access-error-component';
+import { AccessErrorComponent } from '../access-error-component';
 
 export function dictView(items: Dictionary<string>) {
   if (isEmpty(items)) {
@@ -183,7 +184,9 @@ export function ServiceAccountList(props: AppDependencies) {
           <h1>Service accounts</h1>
         </EuiTitle>
       </EuiPageHeader>
-      {accessErrorFlag ? (
+      {loading ? (
+        <EuiLoadingContent />
+      ) : accessErrorFlag ? (
         <AccessErrorComponent loading={loading} dataSourceLabel={LocalCluster.label} />
       ) : (
         <EuiPageContent>

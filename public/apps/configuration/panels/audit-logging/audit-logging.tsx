@@ -22,6 +22,8 @@ import {
   EuiForm,
   EuiFormRow,
   EuiHorizontalRule,
+  EuiLoadingContent,
+  EuiPageHeader,
   EuiPanel,
   EuiSpacer,
   EuiSwitch,
@@ -46,7 +48,7 @@ import { ViewSettingGroup } from './view-setting-group';
 import { DocLinks } from '../../constants';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
-import { AccessErrorComponent } from '../../../access-error-component';
+import { AccessErrorComponent } from '../../access-error-component';
 
 interface AuditLoggingProps extends AppDependencies {
   fromType: string;
@@ -55,10 +57,6 @@ interface AuditLoggingProps extends AppDependencies {
 function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: boolean) {
   return (
     <EuiPanel>
-      <EuiTitle>
-        <h3>Audit logging</h3>
-      </EuiTitle>
-      <EuiHorizontalRule margin="m" />
       <EuiForm>
         <EuiDescribedFormGroup title={<h3>Storage location</h3>} className="described-form-group">
           <EuiFormRow className="form-row">
@@ -97,13 +95,11 @@ function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: bool
 
 function renderAccessErrorPanel(loading: boolean, dataSource: DataSourceOption) {
   return (
-    <EuiPanel>
-      <EuiTitle>
-        <h3>Audit logging</h3>
-      </EuiTitle>
-      <EuiHorizontalRule margin="m" />
-      <AccessErrorComponent loading={loading} dataSourceLabel={dataSource && dataSource.label} />
-    </EuiPanel>
+    <AccessErrorComponent
+      loading={loading}
+      dataSourceLabel={dataSource && dataSource.label}
+      message="You do not have permissions to configure audit logging settings"
+    />
   );
 }
 
@@ -201,7 +197,6 @@ export function AuditLogging(props: AuditLoggingProps) {
       <>
         {statusPanel}
         <EuiSpacer />
-
         <EuiPanel data-test-subj="general-settings">
           <EuiFlexGroup>
             <EuiFlexItem>
@@ -262,7 +257,13 @@ export function AuditLogging(props: AuditLoggingProps) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      {content}
+      <EuiPageHeader>
+        <EuiTitle size="l">
+          <h1>Audit Logging</h1>
+        </EuiTitle>
+      </EuiPageHeader>
+      <EuiSpacer />
+      {loading ? <EuiLoadingContent /> : content}
     </div>
   );
 }

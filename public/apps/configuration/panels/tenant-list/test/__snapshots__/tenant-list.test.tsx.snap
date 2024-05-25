@@ -1,5 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Tenant list AccessError component should load access error component: configure tab 1`] = `
+<AccessErrorComponent
+  dataSourceLabel="Local cluster"
+  message="You do not have permissions to configure tenancy"
+/>
+`;
+
+exports[`Tenant list AccessError component should load access error component: manage tab 1`] = `
+<AccessErrorComponent
+  dataSourceLabel="Local cluster"
+  message="You do not have permissions to manage tenants"
+/>
+`;
+
 exports[`Tenant list Action menu click Duplicate click 1`] = `
 <Fragment>
   <EuiPageHeader />

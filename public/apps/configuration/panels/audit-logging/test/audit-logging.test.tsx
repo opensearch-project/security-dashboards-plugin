@@ -187,4 +187,17 @@ describe('Audit logs', () => {
       buildHashUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT
     );
   });
+
+  it('should load access error component', () => {
+    const auditLoggingSettings = { enabled: true };
+    jest
+      .spyOn(React, 'useState')
+      .mockImplementationOnce(() => [auditLoggingSettings, setState])
+      .mockImplementationOnce(() => [false, jest.fn()])
+      .mockImplementationOnce(() => [true, jest.fn()]);
+    const component = shallow(
+      <AuditLogging coreStart={mockCoreStart as any} navigation={{} as any} />
+    );
+    expect(component).toMatchSnapshot();
+  });
 });
