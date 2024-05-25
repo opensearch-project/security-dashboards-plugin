@@ -29,12 +29,7 @@ export const AccessErrorComponent: React.FC<AccessErrorComponentProps> = (props)
     message = 'You do not have permissions to view this data',
   } = props;
 
-  return loading ? (
-    <EuiLoadingContent />
-  ) : (
-    <EuiPageContent>
-      {message}
-      {dataSourceLabel ? ` for ${props.dataSourceLabel}.` : '.'}
-    </EuiPageContent>
-  );
+  const displayMessage = message + (dataSourceLabel ? ` for ${props.dataSourceLabel}.` : '.');
+
+  return loading ? <EuiLoadingContent /> : <EuiPageContent>{displayMessage}</EuiPageContent>;
 };
