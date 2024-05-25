@@ -125,7 +125,8 @@ export function UserList(props: AppDependencies) {
         setAccessErrorFlag(false);
       } catch (e) {
         console.log(e);
-        if (e.response && e.response.status === 403) {
+        // requests with existing credentials but insufficient permissions result in 403, remote data-source requests with non-existing credentials result in 400
+        if (e.response && [400, 403].includes(e.response.status)) {
           setAccessErrorFlag(true);
         }
         setErrorFlag(true);

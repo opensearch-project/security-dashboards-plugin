@@ -207,7 +207,8 @@ export function ConfigureTab1(props: AppDependencies) {
       } catch (e) {
         // TODO: switch to better error display.
         console.error(e);
-        if (e.response && e.response.status === 403) {
+        // requests with existing credentials but insufficient permissions result in 403, remote data-source requests with non-existing credentials result in 400
+        if (e.response && [400, 403].includes(e.response.status)) {
           setAccessErrorFlag(true);
         }
       } finally {
