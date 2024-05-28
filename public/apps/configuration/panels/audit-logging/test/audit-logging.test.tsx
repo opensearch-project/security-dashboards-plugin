@@ -40,7 +40,6 @@ describe('Audit logs', () => {
   };
 
   beforeEach(() => {
-    // jest.spyOn(React, 'useState').mockImplementation((initialValue) => [initialValue, setState]);
     jest.spyOn(React, 'useState').mockRestore();
     jest
       .spyOn(React, 'useState')
@@ -190,6 +189,9 @@ describe('Audit logs', () => {
 
   it('should load access error component', () => {
     const auditLoggingSettings = { enabled: true };
+    mockAuditLoggingUtils.getAuditLogging = jest
+      .fn()
+      .mockRejectedValue({ response: { status: 403 } });
     jest
       .spyOn(React, 'useState')
       .mockImplementationOnce(() => [auditLoggingSettings, setState])

@@ -20,7 +20,9 @@ import { EMPTY_FIELD_VALUE } from '../../ui-constants';
 import { getUserList, InternalUsersListing } from '../../utils/internal-user-list-utils';
 import { dictView, getColumns, ServiceAccountList } from '../service-account-list';
 
-jest.mock('../../utils/internal-user-list-utils');
+jest.mock('../../utils/internal-user-list-utils', () => ({
+  getUserList: jest.fn(),
+}));
 jest.mock('../../../../utils/auth-info-utils', () => ({
   getAuthInfo: jest.fn().mockReturnValue({ user_name: 'user' }),
 }));
@@ -186,6 +188,7 @@ describe('Service Account list', () => {
       http: 1,
     };
     beforeEach(() => {
+      getUserList.mockRejectedValue({ response: { status: 403 } });
       jest.spyOn(React, 'useState').mockRestore();
       jest
         .spyOn(React, 'useState')
