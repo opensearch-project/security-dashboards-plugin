@@ -183,7 +183,7 @@ export function GetStarted(props: AppDependencies) {
           selectedDataSource={dataSource}
         />
         <EuiPageHeader>
-          <EuiTitle size="l">
+          <EuiTitle size="l" data-test-subj="get-started">
             <h1>Get started</h1>
           </EuiTitle>
           <ExternalLinkButton text="Open in new window" href={buildHashUrl()} />
