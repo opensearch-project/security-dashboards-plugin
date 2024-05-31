@@ -25,6 +25,7 @@ import {
   EuiForm,
   EuiFormRow,
   EuiHorizontalRule,
+  EuiFieldPassword,
 } from '@elastic/eui';
 import { CoreStart } from '../../../../../src/core/public';
 import { ClientConfigType } from '../../types';
@@ -202,12 +203,11 @@ export function LoginPage(props: LoginPageDeps) {
           );
           formBody.push(
             <EuiFormRow isInvalid={passwordValidationFailed}>
-              <EuiFieldText
+              <EuiFieldPassword
                 data-test-subj="password"
                 aria-label="password_input"
                 placeholder="Password"
-                prepend={<EuiIcon type="lock" />}
-                type="password"
+                type="dual"
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}
                 isInvalid={usernameValidationFailed}

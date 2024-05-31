@@ -64,18 +64,16 @@ exports[`Login page renders renders with config value for multiauth 1`] = `
       isInvalid={false}
       labelType="label"
     >
-      <EuiFieldText
+      <EuiFieldPassword
         aria-label="password_input"
+        compressed={false}
         data-test-subj="password"
+        fullWidth={false}
         isInvalid={false}
+        isLoading={false}
         onChange={[Function]}
         placeholder="Password"
-        prepend={
-          <EuiIcon
-            type="lock"
-          />
-        }
-        type="password"
+        type="dual"
         value=""
       />
     </EuiFormRow>
@@ -217,18 +215,16 @@ exports[`Login page renders renders with config value for multiauth with anonymo
       isInvalid={false}
       labelType="label"
     >
-      <EuiFieldText
+      <EuiFieldPassword
         aria-label="password_input"
+        compressed={false}
         data-test-subj="password"
+        fullWidth={false}
         isInvalid={false}
+        isLoading={false}
         onChange={[Function]}
         placeholder="Password"
-        prepend={
-          <EuiIcon
-            type="lock"
-          />
-        }
-        type="password"
+        type="dual"
         value=""
       />
     </EuiFormRow>
@@ -388,18 +384,16 @@ exports[`Login page renders renders with config value with anonymous auth enable
       isInvalid={false}
       labelType="label"
     >
-      <EuiFieldText
+      <EuiFieldPassword
         aria-label="password_input"
+        compressed={false}
         data-test-subj="password"
+        fullWidth={false}
         isInvalid={false}
+        isLoading={false}
         onChange={[Function]}
         placeholder="Password"
-        prepend={
-          <EuiIcon
-            type="lock"
-          />
-        }
-        type="password"
+        type="dual"
         value=""
       />
     </EuiFormRow>
@@ -509,18 +503,16 @@ exports[`Login page renders renders with config value with anonymous auth enable
       isInvalid={false}
       labelType="label"
     >
-      <EuiFieldText
+      <EuiFieldPassword
         aria-label="password_input"
+        compressed={false}
         data-test-subj="password"
+        fullWidth={false}
         isInvalid={false}
+        isLoading={false}
         onChange={[Function]}
         placeholder="Password"
-        prepend={
-          <EuiIcon
-            type="lock"
-          />
-        }
-        type="password"
+        type="dual"
         value=""
       />
     </EuiFormRow>
@@ -630,18 +622,16 @@ exports[`Login page renders renders with config value: string 1`] = `
       isInvalid={false}
       labelType="label"
     >
-      <EuiFieldText
+      <EuiFieldPassword
         aria-label="password_input"
+        compressed={false}
         data-test-subj="password"
+        fullWidth={false}
         isInvalid={false}
+        isLoading={false}
         onChange={[Function]}
         placeholder="Password"
-        prepend={
-          <EuiIcon
-            type="lock"
-          />
-        }
-        type="password"
+        type="dual"
         value=""
       />
     </EuiFormRow>
@@ -733,18 +723,16 @@ exports[`Login page renders renders with config value: string array 1`] = `
       isInvalid={false}
       labelType="label"
     >
-      <EuiFieldText
+      <EuiFieldPassword
         aria-label="password_input"
+        compressed={false}
         data-test-subj="password"
+        fullWidth={false}
         isInvalid={false}
+        isLoading={false}
         onChange={[Function]}
         placeholder="Password"
-        prepend={
-          <EuiIcon
-            type="lock"
-          />
-        }
-        type="password"
+        type="dual"
         value=""
       />
     </EuiFormRow>
@@ -836,18 +824,16 @@ exports[`Login page renders renders with default value: string 1`] = `
       isInvalid={false}
       labelType="label"
     >
-      <EuiFieldText
+      <EuiFieldPassword
         aria-label="password_input"
+        compressed={false}
         data-test-subj="password"
+        fullWidth={false}
         isInvalid={false}
+        isLoading={false}
         onChange={[Function]}
         placeholder="Password"
-        prepend={
-          <EuiIcon
-            type="lock"
-          />
-        }
-        type="password"
+        type="dual"
         value=""
       />
     </EuiFormRow>
@@ -939,18 +925,16 @@ exports[`Login page renders renders with default value: string array 1`] = `
       isInvalid={false}
       labelType="label"
     >
-      <EuiFieldText
+      <EuiFieldPassword
         aria-label="password_input"
+        compressed={false}
         data-test-subj="password"
+        fullWidth={false}
         isInvalid={false}
+        isLoading={false}
         onChange={[Function]}
         placeholder="Password"
-        prepend={
-          <EuiIcon
-            type="lock"
-          />
-        }
-        type="password"
+        type="dual"
         value=""
       />
     </EuiFormRow>
