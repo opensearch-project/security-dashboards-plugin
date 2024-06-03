@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`User list AccessError component should load access error component 1`] = `
+<Fragment>
+  <Memo()
+    config={Object {}}
+    coreStart={
+      Object {
+        "http": Object {
+          "basePath": Object {
+            "serverBasePath": "",
+          },
+        },
+      }
+    }
+    dataSourcePickerReadOnly={false}
+    navigation={Object {}}
+    params={Object {}}
+    selectedDataSource={
+      Object {
+        "id": "test",
+      }
+    }
+    setDataSource={[MockFunction]}
+  />
+  <EuiPageHeader>
+    <EuiTitle
+      size="l"
+    >
+      <h1>
+        Internal users
+      </h1>
+    </EuiTitle>
+  </EuiPageHeader>
+  <AccessErrorComponent
+    loading={false}
+  />
+</Fragment>
+`;

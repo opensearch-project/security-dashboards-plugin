@@ -20,7 +20,9 @@ import { EMPTY_FIELD_VALUE } from '../../ui-constants';
 import { getUserList, InternalUsersListing } from '../../utils/internal-user-list-utils';
 import { dictView, getColumns, ServiceAccountList } from '../service-account-list';
 
-jest.mock('../../utils/internal-user-list-utils');
+jest.mock('../../utils/internal-user-list-utils', () => ({
+  getUserList: jest.fn(),
+}));
 jest.mock('../../../../utils/auth-info-utils', () => ({
   getAuthInfo: jest.fn().mockReturnValue({ user_name: 'user' }),
 }));
@@ -35,7 +37,7 @@ import { buildHashUrl } from '../../utils/url-builder';
 import { Action } from '../../types';
 import { ResourceType } from '../../../../../common';
 
-describe('User list', () => {
+describe('Service Account list', () => {
   describe('dictView', () => {
     it('- empty', () => {
       const result = dictView({});
@@ -131,7 +133,7 @@ describe('User list', () => {
     });
   });
 
-  describe('Action menu click', () => {
+  describe('Action menu Component', () => {
     const mockCoreStart = {
       http: {
         basePath: {
@@ -140,13 +142,21 @@ describe('User list', () => {
       },
     };
     let component;
-    const mockUserListingData: InternalUsersListing = {
+    const mockSAListData: InternalUsersListing = {
       username: 'user_1',
       attributes: { service: 'true' },
       backend_roles: ['backend_role1'],
     };
     beforeEach(() => {
-      jest.spyOn(React, 'useState').mockImplementation(() => [[mockUserListingData], jest.fn()]);
+      jest.spyOn(React, 'useState').mockRestore();
+      jest
+        .spyOn(React, 'useState')
+        .mockImplementationOnce(() => [[mockSAListData], jest.fn()])
+        .mockImplementationOnce(() => [[mockSAListData], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()]);
       component = shallow(
         <ServiceAccountList
           coreStart={mockCoreStart as any}
@@ -160,15 +170,47 @@ describe('User list', () => {
     it('Edit click', () => {
       component.find('[data-test-subj="edit"]').simulate('click');
       expect(window.location.hash).toBe(
-        buildHashUrl(ResourceType.users, Action.edit, mockUserListingData.username)
+        buildHashUrl(ResourceType.users, Action.edit, mockSAListData.username)
       );
     });
 
     it('Duplicate click', () => {
       component.find('[data-test-subj="duplicate"]').simulate('click');
       expect(window.location.hash).toBe(
-        buildHashUrl(ResourceType.users, Action.duplicate, mockUserListingData.username)
+        buildHashUrl(ResourceType.users, Action.duplicate, mockSAListData.username)
       );
+    });
+  });
+
+  describe('AccessError component', () => {
+    let component;
+    const mockCoreStart = {
+      http: 1,
+    };
+    beforeEach(() => {
+      getUserList.mockRejectedValue({ response: { status: 403 } });
+      jest.spyOn(React, 'useState').mockRestore();
+      jest
+        .spyOn(React, 'useState')
+        .mockImplementationOnce(() => [[], jest.fn()])
+        .mockImplementationOnce(() => [[], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [true, jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()]);
+    });
+
+    it('should load access error component', () => {
+      component = shallow(
+        <ServiceAccountList
+          coreStart={mockCoreStart as any}
+          navigation={{} as any}
+          params={{} as any}
+          config={{} as any}
+        />
+      );
+      expect(component).toMatchSnapshot();
     });
   });
 });
