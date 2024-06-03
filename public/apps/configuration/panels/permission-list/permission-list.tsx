@@ -32,6 +32,7 @@ import {
   RIGHT_ALIGNMENT,
   EuiButtonEmpty,
   Query,
+  EuiLoadingContent,
 } from '@elastic/eui';
 import { difference } from 'lodash';
 import React, {
@@ -63,6 +64,7 @@ import { generateResourceName } from '../../utils/resource-utils';
 import { DocLinks } from '../../constants';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { DataSourceContext } from '../../app-router';
+import { AccessErrorComponent } from '../../access-error-component';
 
 export function renderBooleanToCheckMark(value: boolean): React.ReactNode {
   return value ? <EuiIcon type="check" /> : '';
@@ -188,6 +190,7 @@ export function PermissionList(props: AppDependencies) {
   const [permissionList, setPermissionList] = useState<PermissionListingItem[]>([]);
   const [actionGroupDict, setActionGroupDict] = useState<DataObject<ActionGroupItem>>({});
   const [errorFlag, setErrorFlag] = useState<boolean>(false);
+  const [accessErrorFlag, setAccessErrorFlag] = useState<boolean>(false);
   const [selection, setSelection] = React.useState<PermissionListingItem[]>([]);
   const [itemIdToExpandedRowMap, setItemIdToExpandedRowMap] = useState<ExpandedRowMapInterface>({});
 
@@ -210,17 +213,22 @@ export function PermissionList(props: AppDependencies) {
       setActionGroupDict(actionGroups);
       setPermissionList(await mergeAllPermissions(actionGroups));
       setErrorFlag(false);
+      setAccessErrorFlag(false);
     } catch (e) {
       console.log(e);
+      // requests with existing credentials but insufficient permissions result in 403, remote data-source requests with non-existing credentials result in 400
+      if (e.response && [400, 403].includes(e.response.status)) {
+        setAccessErrorFlag(true);
+      }
       setErrorFlag(true);
     } finally {
       setLoading(false);
     }
-  }, [props.coreStart.http, dataSource.id]);
+  }, [props.coreStart.http, dataSource]);
 
   React.useEffect(() => {
     fetchData();
-  }, [props.coreStart.http, fetchData, dataSource.id]);
+  }, [props.coreStart.http, fetchData, dataSource]);
 
   const handleDelete = async () => {
     const groupsToDelete: string[] = selection.map((r) => r.name);
@@ -361,57 +369,68 @@ export function PermissionList(props: AppDependencies) {
           <h1>Permissions</h1>
         </EuiTitle>
       </EuiPageHeader>
-      <EuiPageContent>
-        <EuiPageContentHeader>
-          <EuiPageContentHeaderSection>
-            <EuiTitle size="s">
-              <h3>
-                Permissions
-                <span className="panel-header-count">
-                  {' '}
-                  ({Query.execute(query || '', permissionList).length})
-                </span>
-              </h3>
-            </EuiTitle>
-            <EuiText size="xs" color="subdued">
-              Permissions are individual actions, such as cluster:admin/snapshot/restore, which lets
-              you restore snapshots. Action groups are reusable collections of permissions, such as
-              MANAGE_SNAPSHOTS, which lets you view, take, delete, and restore snapshots. You can
-              often meet your security needs using the default action groups, but you might find it
-              convenient to create your own. <ExternalLink href={DocLinks.PermissionsDoc} />
-            </EuiText>
-          </EuiPageContentHeaderSection>
-          <EuiPageContentHeaderSection>
-            <EuiFlexGroup>
-              <EuiFlexItem>{actionsMenu}</EuiFlexItem>
-              <EuiFlexItem>{createActionGroupMenu}</EuiFlexItem>
-            </EuiFlexGroup>
-          </EuiPageContentHeaderSection>
-        </EuiPageContentHeader>
-        <EuiPageBody>
-          <EuiInMemoryTable
-            tableLayout={'auto'}
-            loading={permissionList === [] && !errorFlag}
-            columns={getColumns(itemIdToExpandedRowMap, actionGroupDict, setItemIdToExpandedRowMap)}
-            items={permissionList}
-            itemId={'name'}
-            pagination
-            search={{
-              ...SEARCH_OPTIONS,
-              onChange: (arg) => {
-                setQuery(arg.query);
-                return true;
-              },
-            }}
-            selection={{ onSelectionChange: setSelection }}
-            sorting={{ sort: { field: 'type', direction: 'asc' } }}
-            error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
-            isExpandable={true}
-            itemIdToExpandedRowMap={itemIdToExpandedRowMap}
-            message={showTableStatusMessage(loading, permissionList)}
-          />
-        </EuiPageBody>
-      </EuiPageContent>
+      {loading ? (
+        <EuiLoadingContent />
+      ) : accessErrorFlag ? (
+        <AccessErrorComponent loading={loading} dataSourceLabel={dataSource && dataSource.label} />
+      ) : (
+        <EuiPageContent>
+          <EuiPageContentHeader>
+            <EuiPageContentHeaderSection>
+              <EuiTitle size="s">
+                <h3>
+                  Permissions
+                  <span className="panel-header-count">
+                    {' '}
+                    ({Query.execute(query || '', permissionList).length})
+                  </span>
+                </h3>
+              </EuiTitle>
+              <EuiText size="xs" color="subdued">
+                Permissions are individual actions, such as cluster:admin/snapshot/restore, which
+                lets you restore snapshots. Action groups are reusable collections of permissions,
+                such as MANAGE_SNAPSHOTS, which lets you view, take, delete, and restore snapshots.
+                You can often meet your security needs using the default action groups, but you
+                might find it convenient to create your own.{' '}
+                <ExternalLink href={DocLinks.PermissionsDoc} />
+              </EuiText>
+            </EuiPageContentHeaderSection>
+            <EuiPageContentHeaderSection>
+              <EuiFlexGroup>
+                <EuiFlexItem>{actionsMenu}</EuiFlexItem>
+                <EuiFlexItem>{createActionGroupMenu}</EuiFlexItem>
+              </EuiFlexGroup>
+            </EuiPageContentHeaderSection>
+          </EuiPageContentHeader>
+          <EuiPageBody>
+            <EuiInMemoryTable
+              tableLayout={'auto'}
+              loading={permissionList === [] && !errorFlag}
+              columns={getColumns(
+                itemIdToExpandedRowMap,
+                actionGroupDict,
+                setItemIdToExpandedRowMap
+              )}
+              items={permissionList}
+              itemId={'name'}
+              pagination
+              search={{
+                ...SEARCH_OPTIONS,
+                onChange: (arg) => {
+                  setQuery(arg.query);
+                  return true;
+                },
+              }}
+              selection={{ onSelectionChange: setSelection }}
+              sorting={{ sort: { field: 'type', direction: 'asc' } }}
+              error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
+              isExpandable={true}
+              itemIdToExpandedRowMap={itemIdToExpandedRowMap}
+              message={showTableStatusMessage(loading, permissionList)}
+            />
+          </EuiPageBody>
+        </EuiPageContent>
+      )}
       {editModal}
       {deleteConfirmModal}
       <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={10000} dismissToast={removeToast} />

@@ -29,31 +29,37 @@ describe('Auth view', () => {
   const mockCoreStart = {
     http: 1,
   };
+  const config = {
+    authc: {
+      basic_internal_auth_domain: {
+        authentication_backend: {
+          type: 'intern',
+          config: {},
+        },
+      },
+    },
+    authz: {
+      ldap: {
+        http_enabled: true,
+      },
+    },
+  };
 
   const setState = jest.fn();
 
   beforeEach(() => {
-    jest.spyOn(React, 'useState').mockImplementation((initialValue) => [initialValue, setState]);
+    jest.spyOn(React, 'useState').mockRestore();
+    jest
+      .spyOn(React, 'useState')
+      .mockImplementationOnce(() => [[], setState])
+      .mockImplementationOnce(() => [[], setState])
+      .mockImplementationOnce(() => [false, jest.fn()])
+      .mockImplementationOnce(() => [false, jest.fn()])
+      .mockImplementationOnce(() => [false, jest.fn()]);
     jest.spyOn(React, 'useEffect').mockImplementationOnce((f) => f());
   });
 
   it('valid data', (done) => {
-    const config = {
-      authc: {
-        basic_internal_auth_domain: {
-          authentication_backend: {
-            type: 'intern',
-            config: {},
-          },
-        },
-      },
-      authz: {
-        ldap: {
-          http_enabled: true,
-        },
-      },
-    };
-
     mockAuthViewUtils.getSecurityConfig = jest.fn().mockReturnValue(config);
 
     shallow(<AuthView coreStart={mockCoreStart as any} navigation={{} as any} />);
@@ -84,5 +90,21 @@ describe('Auth view', () => {
 
       done();
     });
+  });
+
+  it('should load access error component', async () => {
+    jest.spyOn(React, 'useState').mockRestore();
+    jest
+      .spyOn(React, 'useState')
+      .mockImplementationOnce(() => [[], setState])
+      .mockImplementationOnce(() => [[], setState])
+      .mockImplementationOnce(() => [false, jest.fn()])
+      .mockImplementationOnce(() => [false, jest.fn()])
+      .mockImplementationOnce(() => [true, jest.fn()]);
+    mockAuthViewUtils.getSecurityConfig = jest
+      .fn()
+      .mockRejectedValue({ response: { status: 403 } });
+    const component = shallow(<AuthView coreStart={mockCoreStart as any} navigation={{} as any} />);
+    expect(component).toMatchSnapshot();
   });
 });

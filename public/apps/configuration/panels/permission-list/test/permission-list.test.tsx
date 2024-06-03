@@ -230,4 +230,27 @@ describe('Permission list page ', () => {
       expect(component.find('#duplicate').prop('disabled')).toBe(false);
     });
   });
+
+  describe('AccessError component', () => {
+    const mockCoreStart = {
+      http: 1,
+    };
+    let component;
+    beforeEach(() => {
+      fetchActionGroups.mockRejectedValueOnce({ response: { status: 403 } });
+      jest.spyOn(React, 'useEffect').mockImplementationOnce((f) => f());
+      component = shallow(
+        <PermissionList
+          coreStart={mockCoreStart as any}
+          depsStart={{} as any}
+          params={{} as any}
+          config={{} as any}
+        />
+      );
+    });
+
+    it('should load access error component', () => {
+      expect(component).toMatchSnapshot();
+    });
+  });
 });

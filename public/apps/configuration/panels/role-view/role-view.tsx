@@ -147,7 +147,7 @@ export function RoleView(props: RoleViewProps) {
     };
 
     fetchData();
-  }, [addToast, props.coreStart.http, props.roleName, props.prevAction, dataSource.id]);
+  }, [addToast, props.coreStart.http, props.roleName, props.prevAction, dataSource]);
 
   const handleRoleMappingDelete = async () => {
     try {

@@ -32,6 +32,7 @@ import {
   EuiBottomBar,
   EuiComboBox,
   EuiIcon,
+  EuiLoadingContent,
 } from '@elastic/eui';
 import React, { ReactNode, useState } from 'react';
 import { SaveChangesModalGenerator } from './save_changes_modal';
@@ -50,6 +51,8 @@ import {
 } from '../../utils/toast-utils';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
 import { LOCAL_CLUSTER_ID } from '../../../../../common';
+import { AccessErrorComponent } from '../../access-error-component';
+import { LocalCluster } from '../../app-router';
 
 export function ConfigureTab1(props: AppDependencies) {
   const [isMultiTenancyEnabled, setIsMultiTenancyEnabled] = useState(false);
@@ -76,6 +79,8 @@ export function ConfigureTab1(props: AppDependencies) {
 
   const [toasts, addToast, removeToast] = useToastState();
   const [selectedComboBoxOptions, setSelectedComboBoxOptions] = useState();
+  const [accessErrorFlag, setAccessErrorFlag] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const discardChangesFunction = async () => {
     await setUpdatedConfiguration(originalConfiguration);
@@ -176,28 +181,38 @@ export function ConfigureTab1(props: AppDependencies) {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
+        const dashboardsInfo = await getDashboardsInfo(props.coreStart.http);
+        const {
+          multitenancy_enabled: multitenancyEnabled = false,
+          private_tenant_enabled: privateTenantEnabled = false,
+          default_tenant: defaultTenant = '',
+        } = dashboardsInfo;
         await setOriginalConfiguration({
-          multitenancy_enabled: (await getDashboardsInfo(props.coreStart.http))
-            .multitenancy_enabled,
-          private_tenant_enabled: (await getDashboardsInfo(props.coreStart.http))
-            .private_tenant_enabled,
-          default_tenant: (await getDashboardsInfo(props.coreStart.http)).default_tenant,
+          multitenancy_enabled: multitenancyEnabled,
+          private_tenant_enabled: privateTenantEnabled,
+          default_tenant: defaultTenant,
         });
 
         await setUpdatedConfiguration({
-          multitenancy_enabled: (await getDashboardsInfo(props.coreStart.http))
-            .multitenancy_enabled,
-          private_tenant_enabled: (await getDashboardsInfo(props.coreStart.http))
-            .private_tenant_enabled,
-          default_tenant: (await getDashboardsInfo(props.coreStart.http)).default_tenant,
+          multitenancy_enabled: multitenancyEnabled,
+          private_tenant_enabled: privateTenantEnabled,
+          default_tenant: defaultTenant,
         });
 
         const rawTenantData = await fetchTenants(props.coreStart.http, LOCAL_CLUSTER_ID);
         const processedTenantData = transformTenantData(rawTenantData);
         setTenantData(processedTenantData);
+        setAccessErrorFlag(false);
       } catch (e) {
         // TODO: switch to better error display.
         console.error(e);
+        // requests with existing credentials but insufficient permissions result in 403, remote data-source requests with non-existing credentials result in 400
+        if (e.response && [400, 403].includes(e.response.status)) {
+          setAccessErrorFlag(true);
+        }
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
@@ -306,6 +321,19 @@ export function ConfigureTab1(props: AppDependencies) {
       The private tenant is disabled. Select another default tenant.
     </EuiText>
   );
+
+  if (loading) {
+    return <EuiLoadingContent />;
+  }
+  if (accessErrorFlag) {
+    return (
+      <AccessErrorComponent
+        dataSourceLabel={LocalCluster.label}
+        message="You do not have permissions to configure tenancy"
+      />
+    );
+  }
+
   return (
     <>
       <EuiPageHeader />
