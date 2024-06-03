@@ -116,7 +116,7 @@ exports[`Role list AccessError component should load access error component 1`] 
             },
             Object {
               "field": "indexPermissions",
-              "name": "Index",
+              "name": "Index permissions",
               "render": [Function],
               "truncateText": true,
             },
