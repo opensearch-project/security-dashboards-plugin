@@ -21,6 +21,7 @@ import {
   EuiFlexItem,
   EuiInMemoryTable,
   EuiLink,
+  EuiLoadingContent,
   EuiPageBody,
   EuiPageContent,
   EuiPageContentHeader,
@@ -50,6 +51,7 @@ import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { buildHashUrl } from '../utils/url-builder';
 import { DataSourceContext } from '../app-router';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
+import { AccessErrorComponent } from '../access-error-component';
 
 export function dictView(items: Dictionary<string>) {
   if (isEmpty(items)) {
@@ -101,6 +103,7 @@ export function getColumns(currentUsername: string) {
 export function UserList(props: AppDependencies) {
   const [userData, setUserData] = React.useState<InternalUsersListing[]>([]);
   const [errorFlag, setErrorFlag] = React.useState(false);
+  const [accessErrorFlag, setAccessErrorFlag] = React.useState(false);
   const [selection, setSelection] = React.useState<InternalUsersListing[]>([]);
   const [currentUsername, setCurrentUsername] = useState('');
   const [loading, setLoading] = useState(false);
@@ -119,8 +122,13 @@ export function UserList(props: AppDependencies) {
         setCurrentUsername((await getAuthInfo(props.coreStart.http)).user_name);
         setUserData(await userDataPromise);
         setErrorFlag(false);
+        setAccessErrorFlag(false);
       } catch (e) {
         console.log(e);
+        // requests with existing credentials but insufficient permissions result in 403, remote data-source requests with non-existing credentials result in 400
+        if (e.response && [400, 403].includes(e.response.status)) {
+          setAccessErrorFlag(true);
+        }
         setErrorFlag(true);
       } finally {
         setLoading(false);
@@ -128,7 +136,7 @@ export function UserList(props: AppDependencies) {
     };
 
     fetchData();
-  }, [props.coreStart.http, dataSource.id]);
+  }, [props.coreStart.http, dataSource]);
 
   const handleDelete = async () => {
     const usersToDelete: string[] = selection.map((r) => r.username);
@@ -213,67 +221,73 @@ export function UserList(props: AppDependencies) {
           <h1>Internal users</h1>
         </EuiTitle>
       </EuiPageHeader>
-      <EuiPageContent>
-        <EuiPageContentHeader>
-          <EuiPageContentHeaderSection>
-            <EuiTitle size="s">
-              <h3>
-                Internal users
-                <span className="panel-header-count">
-                  {' '}
-                  ({Query.execute(query || '', userData).length})
-                </span>
-              </h3>
-            </EuiTitle>
-            <EuiText size="xs" color="subdued">
-              The Security plugin includes an internal user database. Use this database in place of,
-              or in addition to, an external authentication system such as LDAP server or Active
-              Directory. You can map an user account to a role from{' '}
-              <EuiLink href={buildHashUrl(ResourceType.roles)}>Roles</EuiLink>
-              . First, click into the detail page of the role. Then, under “Mapped users”, click
-              “Manage mapping” <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
-            </EuiText>
-          </EuiPageContentHeaderSection>
-          <EuiPageContentHeaderSection>
-            <EuiFlexGroup>
-              <EuiFlexItem>{actionsMenu}</EuiFlexItem>
-              <EuiFlexItem>
-                <EuiButton
-                  fill
-                  href={buildHashUrl(ResourceType.users, Action.create)}
-                  data-test-subj="create-user"
-                >
-                  Create user account
-                </EuiButton>
-              </EuiFlexItem>
-            </EuiFlexGroup>
-          </EuiPageContentHeaderSection>
-        </EuiPageContentHeader>
-        <EuiPageBody>
-          <EuiInMemoryTable
-            tableLayout={'auto'}
-            loading={userData === [] && !errorFlag}
-            columns={getColumns(currentUsername)}
-            // @ts-ignore
-            items={userData}
-            itemId={'username'}
-            pagination
-            search={{
-              box: { placeholder: 'Search internal users' },
-              onChange: (arg) => {
-                setQuery(arg.query);
-                return true;
-              },
-            }}
-            // @ts-ignore
-            selection={{ onSelectionChange: setSelection }}
-            sorting
-            error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
-            message={showTableStatusMessage(loading, userData)}
-          />
-        </EuiPageBody>
-        {deleteConfirmModal}
-      </EuiPageContent>
+      {loading ? (
+        <EuiLoadingContent />
+      ) : accessErrorFlag ? (
+        <AccessErrorComponent loading={loading} dataSourceLabel={dataSource && dataSource.label} />
+      ) : (
+        <EuiPageContent>
+          <EuiPageContentHeader>
+            <EuiPageContentHeaderSection>
+              <EuiTitle size="s">
+                <h3>
+                  Internal users
+                  <span className="panel-header-count">
+                    {' '}
+                    ({Query.execute(query || '', userData).length})
+                  </span>
+                </h3>
+              </EuiTitle>
+              <EuiText size="xs" color="subdued">
+                The Security plugin includes an internal user database. Use this database in place
+                of, or in addition to, an external authentication system such as LDAP server or
+                Active Directory. You can map an user account to a role from{' '}
+                <EuiLink href={buildHashUrl(ResourceType.roles)}>Roles</EuiLink>
+                . First, click into the detail page of the role. Then, under “Mapped users”, click
+                “Manage mapping” <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
+              </EuiText>
+            </EuiPageContentHeaderSection>
+            <EuiPageContentHeaderSection>
+              <EuiFlexGroup>
+                <EuiFlexItem>{actionsMenu}</EuiFlexItem>
+                <EuiFlexItem>
+                  <EuiButton
+                    fill
+                    href={buildHashUrl(ResourceType.users, Action.create)}
+                    data-test-subj="create-user"
+                  >
+                    Create user account
+                  </EuiButton>
+                </EuiFlexItem>
+              </EuiFlexGroup>
+            </EuiPageContentHeaderSection>
+          </EuiPageContentHeader>
+          <EuiPageBody>
+            <EuiInMemoryTable
+              tableLayout={'auto'}
+              loading={userData === [] && !errorFlag}
+              columns={getColumns(currentUsername)}
+              // @ts-ignore
+              items={userData}
+              itemId={'username'}
+              pagination
+              search={{
+                box: { placeholder: 'Search internal users' },
+                onChange: (arg) => {
+                  setQuery(arg.query);
+                  return true;
+                },
+              }}
+              // @ts-ignore
+              selection={{ onSelectionChange: setSelection }}
+              sorting
+              error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
+              message={showTableStatusMessage(loading, userData)}
+            />
+          </EuiPageBody>
+          {deleteConfirmModal}
+        </EuiPageContent>
+      )}
     </>
   );
 }

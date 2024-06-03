@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Permission list page  AccessError component should load access error component 1`] = `
+<Fragment>
+  <Memo()
+    config={Object {}}
+    coreStart={
+      Object {
+        "http": 1,
+      }
+    }
+    dataSourcePickerReadOnly={false}
+    depsStart={Object {}}
+    params={Object {}}
+    selectedDataSource={
+      Object {
+        "id": "test",
+      }
+    }
+    setDataSource={[MockFunction]}
+  />
+  <EuiPageHeader>
+    <EuiTitle
+      size="l"
+    >
+      <h1>
+        Permissions
+      </h1>
+    </EuiTitle>
+  </EuiPageHeader>
+  <AccessErrorComponent
+    loading={false}
+  />
+  <EuiGlobalToastList
+    dismissToast={[MockFunction]}
+    side="right"
+    toastLifeTimeMs={10000}
+    toasts={Array []}
+  />
+</Fragment>
+`;

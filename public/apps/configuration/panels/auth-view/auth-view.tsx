@@ -13,8 +13,8 @@
  *   permissions and limitations under the License.
  */
 
-import React, { useContext, useState } from 'react';
-import { EuiPageHeader, EuiSpacer, EuiTitle } from '@elastic/eui';
+import React, { useContext } from 'react';
+import { EuiLoadingContent, EuiPageHeader, EuiSpacer, EuiTitle } from '@elastic/eui';
 import { isEmpty } from 'lodash';
 import { AuthenticationSequencePanel } from './authentication-sequence-panel';
 import { AuthorizationPanel } from './authorization-panel';
@@ -25,12 +25,15 @@ import { getSecurityConfig } from '../../utils/auth-view-utils';
 import { InstructionView } from './instruction-view';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
+import { AccessErrorComponent } from '../../access-error-component';
 
 export function AuthView(props: AppDependencies) {
   const [authentication, setAuthentication] = React.useState([]);
   const [authorization, setAuthorization] = React.useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = React.useState(false);
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
+  const [errorFlag, setErrorFlag] = React.useState(false);
+  const [accessErrorFlag, setAccessErrorFlag] = React.useState(false);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -40,17 +43,24 @@ export function AuthView(props: AppDependencies) {
 
         setAuthentication(config.authc);
         setAuthorization(config.authz);
+        setErrorFlag(false);
+        setAccessErrorFlag(false);
       } catch (e) {
         console.log(e);
+        // requests with existing credentials but insufficient permissions result in 403, remote data-source requests with non-existing credentials result in 400
+        if (e.response && [400, 403].includes(e.response.status)) {
+          setAccessErrorFlag(true);
+        }
+        setErrorFlag(true);
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [props.coreStart.http, dataSource.id]);
+  }, [props.coreStart.http, dataSource]);
 
-  if (isEmpty(authentication)) {
+  if (isEmpty(authentication) && !loading) {
     return (
       <>
         <SecurityPluginTopNavMenu
@@ -59,7 +69,19 @@ export function AuthView(props: AppDependencies) {
           setDataSource={setDataSource}
           selectedDataSource={dataSource}
         />
-        <InstructionView config={props.config} />
+        {accessErrorFlag ? (
+          <EuiTitle size="l">
+            <h1>Authentication and authorization</h1>
+          </EuiTitle>
+        ) : null}
+        {accessErrorFlag ? (
+          <AccessErrorComponent
+            loading={loading}
+            dataSourceLabel={dataSource && dataSource.label}
+          />
+        ) : (
+          <InstructionView config={props.config} />
+        )}
       </>
     );
   }
@@ -76,18 +98,26 @@ export function AuthView(props: AppDependencies) {
         <EuiTitle size="l">
           <h1>Authentication and authorization</h1>
         </EuiTitle>
-        {props.config.ui.backend_configurable && (
+        {!loading && !errorFlag && props.config.ui.backend_configurable && (
           <ExternalLinkButton
             href={DocLinks.BackendConfigurationDoc}
             text="Manage via config.yml"
           />
         )}
       </EuiPageHeader>
-      {/* @ts-ignore */}
-      <AuthenticationSequencePanel authc={authentication} loading={loading} />
-      <EuiSpacer size="m" />
-      {/* @ts-ignore */}
-      <AuthorizationPanel authz={authorization} loading={loading} config={props.config} />
+      {loading ? (
+        <EuiLoadingContent />
+      ) : accessErrorFlag ? (
+        <AccessErrorComponent loading={loading} dataSourceLabel={dataSource && dataSource.label} />
+      ) : (
+        <>
+          {/* @ts-ignore */}
+          <AuthenticationSequencePanel authc={authentication} loading={loading} />
+          <EuiSpacer size="m" />
+          {/* @ts-ignore */}
+          <AuthorizationPanel authz={authorization} loading={loading} config={props.config} />
+        </>
+      )}
     </>
   );
 }

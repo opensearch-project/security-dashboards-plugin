@@ -163,30 +163,6 @@ export function AppRouter(props: AppDependencies) {
 
   const [dataSource, setDataSource] = useState<DataSourceOption>(dataSourceFromUrl);
 
-  function getTenancyRoutes() {
-    if (multitenancyEnabled) {
-      return (
-        <>
-          <Route
-            path={ROUTE_MAP.tenants.href}
-            render={() => {
-              setGlobalBreadcrumbs(ResourceType.tenants);
-              return <TenantList tabID={'Manage'} {...props} />;
-            }}
-          />
-          <Route
-            path={ROUTE_MAP.tenantsConfigureTab.href}
-            render={() => {
-              setGlobalBreadcrumbs(ResourceType.tenants);
-              return <TenantList tabID={'Configure'} {...props} />;
-            }}
-          />
-        </>
-      );
-    }
-    return null;
-  }
-
   return (
     <DataSourceContext.Provider value={{ dataSource, setDataSource }}>
       <Router basename={props.params.appBasePath}>
@@ -300,7 +276,24 @@ export function AppRouter(props: AppDependencies) {
                   return <GetStarted {...props} />;
                 }}
               />
-              {getTenancyRoutes()}
+              {multitenancyEnabled && (
+                <Route
+                  path={ROUTE_MAP.tenants.href}
+                  render={() => {
+                    setGlobalBreadcrumbs(ResourceType.tenants);
+                    return <TenantList tabID={'Manage'} {...props} />;
+                  }}
+                />
+              )}
+              {multitenancyEnabled && (
+                <Route
+                  path={ROUTE_MAP.tenantsConfigureTab.href}
+                  render={() => {
+                    setGlobalBreadcrumbs(ResourceType.tenants);
+                    return <TenantList tabID={'Configure'} {...props} />;
+                  }}
+                />
+              )}
               <Redirect exact from="/" to={LANDING_PAGE_URL} />
             </Switch>
           </EuiPageBody>
