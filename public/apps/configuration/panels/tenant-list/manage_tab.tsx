@@ -34,6 +34,7 @@ import {
   EuiIcon,
   EuiConfirmModal,
   EuiCallOut,
+  EuiLoadingContent,
 } from '@elastic/eui';
 import React, { ReactNode, useState, useCallback } from 'react';
 import { difference } from 'lodash';
@@ -72,11 +73,13 @@ import { LocalCluster, getBreadcrumbs } from '../../app-router';
 import { buildUrl } from '../../utils/url-builder';
 import { CrossPageToast } from '../../cross-page-toast';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
+import { AccessErrorComponent } from '../../access-error-component';
 
 export function ManageTab(props: AppDependencies) {
   const setGlobalBreadcrumbs = flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs);
   const [tenantData, setTenantData] = React.useState<Tenant[]>([]);
   const [errorFlag, setErrorFlag] = React.useState(false);
+  const [accessErrorFlag, setAccessErrorFlag] = React.useState(false);
   const [selection, setSelection] = React.useState<Tenant[]>([]);
   const [currentTenant, setCurrentTenant] = useState('');
   const [currentUsername, setCurrentUsername] = useState('');
@@ -90,6 +93,7 @@ export function ManageTab(props: AppDependencies) {
   const [isMultiTenancyEnabled, setIsMultiTenancyEnabled] = useState(false);
   const [isPrivateTenantEnabled, setIsPrivateTenantEnabled] = useState(false);
   const [dashboardsDefaultTenant, setDashboardsDefaultTenant] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
 
   const { http } = props.coreStart;
@@ -108,8 +112,13 @@ export function ManageTab(props: AppDependencies) {
       setIsMultiTenancyEnabled(tenancyConfig.multitenancy_enabled);
       setIsPrivateTenantEnabled(tenancyConfig.private_tenant_enabled);
       setDashboardsDefaultTenant(tenancyConfig.default_tenant);
+      setErrorFlag(false);
     } catch (e) {
       console.log(e);
+      // requests with existing credentials but insufficient permissions result in 403, remote data-source requests with non-existing credentials result in 400
+      if (e.response && [400, 403].includes(e.response.status)) {
+        setAccessErrorFlag(true);
+      }
       setErrorFlag(true);
     } finally {
       setLoading(false);
@@ -162,8 +171,6 @@ export function ManageTab(props: AppDependencies) {
       closeActionsMenu();
     }
   };
-
-  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const closeModal = () => setIsModalVisible(false);
   const showModal = () => setIsModalVisible(true);
@@ -484,6 +491,17 @@ export function ManageTab(props: AppDependencies) {
     );
   };
 
+  if (loading) {
+    return <EuiLoadingContent />;
+  }
+  if (accessErrorFlag) {
+    return (
+      <AccessErrorComponent
+        dataSourceLabel={LocalCluster.label}
+        message="You do not have permissions to manage tenants"
+      />
+    );
+  }
   /* eslint-disable */
   return (
     <>

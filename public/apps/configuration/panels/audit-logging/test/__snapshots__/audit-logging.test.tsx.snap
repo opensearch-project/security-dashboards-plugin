@@ -256,15 +256,17 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
     }
     setDataSource={[MockFunction]}
   />
-  <EuiPanel>
-    <EuiTitle>
-      <h3>
-        Audit logging
-      </h3>
+  <EuiPageHeader>
+    <EuiTitle
+      size="l"
+    >
+      <h1>
+        Audit Logging
+      </h1>
     </EuiTitle>
-    <EuiHorizontalRule
-      margin="m"
-    />
+  </EuiPageHeader>
+  <EuiSpacer />
+  <EuiPanel>
     <EuiForm>
       <EuiDescribedFormGroup
         className="described-form-group"
@@ -642,5 +644,41 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
     />
     <EuiSpacer />
   </EuiPanel>
+</div>
+`;
+
+exports[`Audit logs should load access error component 1`] = `
+<div
+  className="panel-restrict-width"
+>
+  <Memo()
+    coreStart={
+      Object {
+        "http": 1,
+      }
+    }
+    dataSourcePickerReadOnly={false}
+    navigation={Object {}}
+    selectedDataSource={
+      Object {
+        "id": "test",
+      }
+    }
+    setDataSource={[MockFunction]}
+  />
+  <EuiPageHeader>
+    <EuiTitle
+      size="l"
+    >
+      <h1>
+        Audit Logging
+      </h1>
+    </EuiTitle>
+  </EuiPageHeader>
+  <EuiSpacer />
+  <AccessErrorComponent
+    loading={false}
+    message="You do not have permissions to configure audit logging settings"
+  />
 </div>
 `;

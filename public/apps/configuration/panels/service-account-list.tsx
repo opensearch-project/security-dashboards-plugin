@@ -15,7 +15,6 @@
 
 import {
   EuiBadge,
-  EuiButton,
   EuiButtonEmpty,
   EuiFlexGroup,
   EuiFlexItem,
@@ -31,25 +30,20 @@ import {
   EuiTitle,
   Query,
 } from '@elastic/eui';
-import { Dictionary, difference, isEmpty, map } from 'lodash';
-import React, { useContext, useState } from 'react';
+import { Dictionary, isEmpty, map } from 'lodash';
+import React, { useState } from 'react';
 import { getAuthInfo } from '../../../utils/auth-info-utils';
 import { AppDependencies } from '../../types';
-import { API_ENDPOINT_INTERNALUSERS, DocLinks } from '../constants';
+import { API_ENDPOINT_SERVICEACCOUNTS, DocLinks } from '../constants';
 import { Action } from '../types';
-import { ResourceType } from '../../../../common';
+import { LOCAL_CLUSTER_ID, ResourceType } from '../../../../common';
 import { EMPTY_FIELD_VALUE } from '../ui-constants';
 import { useContextMenuState } from '../utils/context-menu';
-import { useDeleteConfirmState } from '../utils/delete-confirm-modal-utils';
 import { ExternalLink, tableItemsUIProps, truncatedListView } from '../utils/display-utils';
-import {
-  getUserList,
-  InternalUsersListing,
-  requestDeleteUsers,
-} from '../utils/internal-user-list-utils';
+import { getUserList, InternalUsersListing } from '../utils/internal-user-list-utils';
 import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { buildHashUrl } from '../utils/url-builder';
-import { DataSourceContext } from '../app-router';
+import { LocalCluster } from '../app-router';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
 import { AccessErrorComponent } from '../access-error-component';
 
@@ -100,15 +94,14 @@ export function getColumns(currentUsername: string) {
   ];
 }
 
-export function UserList(props: AppDependencies) {
+export function ServiceAccountList(props: AppDependencies) {
   const [userData, setUserData] = React.useState<InternalUsersListing[]>([]);
-  const [errorFlag, setErrorFlag] = React.useState(false);
-  const [accessErrorFlag, setAccessErrorFlag] = React.useState(false);
   const [selection, setSelection] = React.useState<InternalUsersListing[]>([]);
+  const [errorFlag, setErrorFlag] = React.useState<boolean>(false);
+  const [accessErrorFlag, setAccessErrorFlag] = React.useState(false);
   const [currentUsername, setCurrentUsername] = useState('');
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState<Query | null>(null);
-  const { dataSource, setDataSource } = useContext(DataSourceContext)!;
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -116,8 +109,8 @@ export function UserList(props: AppDependencies) {
         setLoading(true);
         const userDataPromise = getUserList(
           props.coreStart.http,
-          ResourceType.users,
-          dataSource.id
+          ResourceType.serviceAccounts,
+          LOCAL_CLUSTER_ID
         );
         setCurrentUsername((await getAuthInfo(props.coreStart.http)).user_name);
         setUserData(await userDataPromise);
@@ -136,28 +129,7 @@ export function UserList(props: AppDependencies) {
     };
 
     fetchData();
-  }, [props.coreStart.http, dataSource]);
-
-  const handleDelete = async () => {
-    const usersToDelete: string[] = selection.map((r) => r.username);
-    try {
-      await requestDeleteUsers(props.coreStart.http, usersToDelete, dataSource.id);
-      // Refresh from server (calling fetchData) does not work here, the server still return the users
-      // that had been just deleted, probably because ES takes some time to sync to all nodes.
-      // So here remove the selected users from local memory directly.
-      setUserData(difference(userData, selection));
-      setSelection([]);
-    } catch (e) {
-      console.log(e);
-    } finally {
-      closeActionsMenu();
-    }
-  };
-
-  const [showDeleteConfirmModal, deleteConfirmModal] = useDeleteConfirmState(
-    handleDelete,
-    'user(s)'
-  );
+  }, [props.coreStart.http]);
 
   const actionsMenuItems = [
     <EuiButtonEmpty
@@ -189,20 +161,12 @@ export function UserList(props: AppDependencies) {
       disabled={selection.length !== 1}
       href={
         selection.length === 1
-          ? `${props.coreStart.http.basePath.serverBasePath}${API_ENDPOINT_INTERNALUSERS}/${selection[0].username}`
+          ? `${props.coreStart.http.basePath.serverBasePath}${API_ENDPOINT_SERVICEACCOUNTS}/${selection[0].username}`
           : ''
       }
       target="_blank"
     >
       Export JSON
-    </EuiButtonEmpty>,
-    <EuiButtonEmpty
-      key="delete"
-      color="danger"
-      onClick={showDeleteConfirmModal}
-      disabled={selection.length === 0 || selection.some((e) => e.username === currentUsername)}
-    >
-      Delete
     </EuiButtonEmpty>,
   ];
 
@@ -212,53 +176,43 @@ export function UserList(props: AppDependencies) {
     <>
       <SecurityPluginTopNavMenu
         {...props}
-        dataSourcePickerReadOnly={false}
-        setDataSource={setDataSource}
-        selectedDataSource={dataSource}
+        dataSourcePickerReadOnly={true}
+        setDataSource={() => {}}
+        selectedDataSource={LocalCluster}
       />
       <EuiPageHeader>
         <EuiTitle size="l">
-          <h1>Internal users</h1>
+          <h1>Service accounts</h1>
         </EuiTitle>
       </EuiPageHeader>
       {loading ? (
         <EuiLoadingContent />
       ) : accessErrorFlag ? (
-        <AccessErrorComponent loading={loading} dataSourceLabel={dataSource && dataSource.label} />
+        <AccessErrorComponent loading={loading} dataSourceLabel={LocalCluster.label} />
       ) : (
         <EuiPageContent>
           <EuiPageContentHeader>
             <EuiPageContentHeaderSection>
               <EuiTitle size="s">
                 <h3>
-                  Internal users
+                  Service accounts
                   <span className="panel-header-count">
                     {' '}
                     ({Query.execute(query || '', userData).length})
                   </span>
                 </h3>
               </EuiTitle>
-              <EuiText size="xs" color="subdued">
-                The Security plugin includes an internal user database. Use this database in place
-                of, or in addition to, an external authentication system such as LDAP server or
-                Active Directory. You can map an user account to a role from{' '}
+              <EuiText size="s" color="subdued">
+                Here you have a list of special accounts that represent services like extensions,
+                plugins or other third party applications. You can map an account to a role from
                 <EuiLink href={buildHashUrl(ResourceType.roles)}>Roles</EuiLink>
-                . First, click into the detail page of the role. Then, under “Mapped users”, click
-                “Manage mapping” <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
+                “Manage mapping”
+                <ExternalLink href={DocLinks.BackendConfigurationAuthenticationDoc} />
               </EuiText>
             </EuiPageContentHeaderSection>
             <EuiPageContentHeaderSection>
               <EuiFlexGroup>
                 <EuiFlexItem>{actionsMenu}</EuiFlexItem>
-                <EuiFlexItem>
-                  <EuiButton
-                    fill
-                    href={buildHashUrl(ResourceType.users, Action.create)}
-                    data-test-subj="create-user"
-                  >
-                    Create user account
-                  </EuiButton>
-                </EuiFlexItem>
               </EuiFlexGroup>
             </EuiPageContentHeaderSection>
           </EuiPageContentHeader>
@@ -272,7 +226,7 @@ export function UserList(props: AppDependencies) {
               itemId={'username'}
               pagination
               search={{
-                box: { placeholder: 'Search internal users' },
+                box: { placeholder: 'Search service accounts' },
                 onChange: (arg) => {
                   setQuery(arg.query);
                   return true;
@@ -281,11 +235,12 @@ export function UserList(props: AppDependencies) {
               // @ts-ignore
               selection={{ onSelectionChange: setSelection }}
               sorting
-              error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
+              error={
+                errorFlag ? 'Load data failed, please check the console log for more details.' : ''
+              }
               message={showTableStatusMessage(loading, userData)}
             />
           </EuiPageBody>
-          {deleteConfirmModal}
         </EuiPageContent>
       )}
     </>

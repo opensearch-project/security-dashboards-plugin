@@ -17,29 +17,19 @@ import { EuiBadge, EuiText, EuiInMemoryTable } from '@elastic/eui';
 import { shallow } from 'enzyme';
 import React from 'react';
 import { EMPTY_FIELD_VALUE } from '../../ui-constants';
-import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
-import {
-  getUserList,
-  InternalUsersListing,
-  requestDeleteUsers,
-} from '../../utils/internal-user-list-utils';
-import { dictView, getColumns, UserList } from '../user-list';
+import { getUserList, InternalUsersListing } from '../../utils/internal-user-list-utils';
+import { dictView, getColumns, ServiceAccountList } from '../service-account-list';
 
-jest.mock('../../utils/internal-user-list-utils');
+jest.mock('../../utils/internal-user-list-utils', () => ({
+  getUserList: jest.fn(),
+}));
 jest.mock('../../../../utils/auth-info-utils', () => ({
   getAuthInfo: jest.fn().mockReturnValue({ user_name: 'user' }),
-}));
-jest.mock('../../utils/delete-confirm-modal-utils', () => ({
-  useDeleteConfirmState: jest.fn().mockReturnValue([jest.fn(), '']),
 }));
 jest.mock('../../utils/context-menu', () => ({
   useContextMenuState: jest
     .fn()
     .mockImplementation((buttonText, buttonProps, children) => [children, jest.fn()]),
-}));
-jest.mock('react', () => ({
-  ...jest.requireActual('react'),
-  useContext: jest.fn().mockReturnValue({ dataSource: { id: 'test' }, setDataSource: jest.fn() }), // Mock the useContext hook to return dummy datasource and setdatasource function
 }));
 
 import { getAuthInfo } from '../../../../utils/auth-info-utils';
@@ -47,7 +37,7 @@ import { buildHashUrl } from '../../utils/url-builder';
 import { Action } from '../../types';
 import { ResourceType } from '../../../../../common';
 
-describe('User list', () => {
+describe('Service Account list', () => {
   describe('dictView', () => {
     it('- empty', () => {
       const result = dictView({});
@@ -87,7 +77,7 @@ describe('User list', () => {
     });
   });
 
-  describe('UserList', () => {
+  describe('ServiceAccountList', () => {
     const mockCoreStart = {
       http: 1,
     };
@@ -96,7 +86,7 @@ describe('User list', () => {
 
     it('render empty', () => {
       const component = shallow(
-        <UserList
+        <ServiceAccountList
           coreStart={mockCoreStart as any}
           navigation={{} as any}
           params={{} as any}
@@ -110,7 +100,7 @@ describe('User list', () => {
     it('fetch data', () => {
       jest.spyOn(React, 'useEffect').mockImplementationOnce((f) => f());
       shallow(
-        <UserList
+        <ServiceAccountList
           coreStart={mockCoreStart as any}
           navigation={{} as any}
           params={{} as any}
@@ -130,7 +120,7 @@ describe('User list', () => {
       // Hide the error message
       jest.spyOn(console, 'log').mockImplementationOnce(() => {});
       shallow(
-        <UserList
+        <ServiceAccountList
           coreStart={mockCoreStart as any}
           navigation={{} as any}
           params={{} as any}
@@ -141,53 +131,9 @@ describe('User list', () => {
       // Expect error flag set to true
       expect(setState).toBeCalledWith(true);
     });
-
-    it('delete user', (done) => {
-      shallow(
-        <UserList
-          coreStart={mockCoreStart as any}
-          navigation={{} as any}
-          params={{} as any}
-          config={{} as any}
-        />
-      );
-      const deleteFunc = useDeleteConfirmState.mock.calls[0][0];
-
-      deleteFunc();
-
-      process.nextTick(() => {
-        expect(requestDeleteUsers).toBeCalled();
-        done();
-      });
-    });
-
-    it('delete user error', (done) => {
-      requestDeleteUsers.mockImplementationOnce(() => {
-        throw new Error();
-      });
-      // Hide the error message
-      const loggingFunc = jest.fn();
-      jest.spyOn(console, 'log').mockImplementationOnce(loggingFunc);
-      shallow(
-        <UserList
-          coreStart={mockCoreStart as any}
-          navigation={{} as any}
-          params={{} as any}
-          config={{} as any}
-        />
-      );
-      const deleteFunc = useDeleteConfirmState.mock.calls[0][0];
-
-      deleteFunc();
-
-      process.nextTick(() => {
-        expect(loggingFunc).toBeCalled();
-        done();
-      });
-    });
   });
 
-  describe('Action menu click', () => {
+  describe('Action menu Component', () => {
     const mockCoreStart = {
       http: {
         basePath: {
@@ -196,24 +142,23 @@ describe('User list', () => {
       },
     };
     let component;
-    const mockUserListingData: InternalUsersListing = {
+    const mockSAListData: InternalUsersListing = {
       username: 'user_1',
-      attributes: { key: 'value' },
+      attributes: { service: 'true' },
       backend_roles: ['backend_role1'],
     };
     beforeEach(() => {
       jest.spyOn(React, 'useState').mockRestore();
       jest
         .spyOn(React, 'useState')
-        .mockImplementationOnce(() => [[mockUserListingData], jest.fn()])
+        .mockImplementationOnce(() => [[mockSAListData], jest.fn()])
+        .mockImplementationOnce(() => [[mockSAListData], jest.fn()])
         .mockImplementationOnce(() => [false, jest.fn()])
-        .mockImplementationOnce(() => [false, jest.fn()])
-        .mockImplementationOnce(() => [[mockUserListingData], jest.fn()])
         .mockImplementationOnce(() => ['', jest.fn()])
         .mockImplementationOnce(() => [false, jest.fn()])
         .mockImplementationOnce(() => [null, jest.fn()]);
       component = shallow(
-        <UserList
+        <ServiceAccountList
           coreStart={mockCoreStart as any}
           navigation={{} as any}
           params={{} as any}
@@ -225,49 +170,46 @@ describe('User list', () => {
     it('Edit click', () => {
       component.find('[data-test-subj="edit"]').simulate('click');
       expect(window.location.hash).toBe(
-        buildHashUrl(ResourceType.users, Action.edit, mockUserListingData.username)
+        buildHashUrl(ResourceType.users, Action.edit, mockSAListData.username)
       );
     });
 
     it('Duplicate click', () => {
       component.find('[data-test-subj="duplicate"]').simulate('click');
       expect(window.location.hash).toBe(
-        buildHashUrl(ResourceType.users, Action.duplicate, mockUserListingData.username)
+        buildHashUrl(ResourceType.users, Action.duplicate, mockSAListData.username)
       );
     });
   });
 
   describe('AccessError component', () => {
-    const mockCoreStart = {
-      http: {
-        basePath: {
-          serverBasePath: '',
-        },
-      },
-    };
     let component;
+    const mockCoreStart = {
+      http: 1,
+    };
     beforeEach(() => {
+      getUserList.mockRejectedValue({ response: { status: 403 } });
       jest.spyOn(React, 'useState').mockRestore();
       jest
         .spyOn(React, 'useState')
         .mockImplementationOnce(() => [[], jest.fn()])
-        .mockImplementationOnce(() => [false, jest.fn()])
-        .mockImplementationOnce(() => [[true], jest.fn()])
         .mockImplementationOnce(() => [[], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [true, jest.fn()])
         .mockImplementationOnce(() => ['', jest.fn()])
         .mockImplementationOnce(() => [false, jest.fn()])
         .mockImplementationOnce(() => [null, jest.fn()]);
+    });
+
+    it('should load access error component', () => {
       component = shallow(
-        <UserList
+        <ServiceAccountList
           coreStart={mockCoreStart as any}
           navigation={{} as any}
           params={{} as any}
           config={{} as any}
         />
       );
-    });
-
-    it('should load access error component', () => {
       expect(component).toMatchSnapshot();
     });
   });
