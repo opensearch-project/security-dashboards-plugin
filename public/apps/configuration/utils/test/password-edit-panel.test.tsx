@@ -90,6 +90,7 @@ describe('Password edit panel', () => {
         updateIsInvalid={updateIsInvalid}
       />
     );
+    expect(component).toMatchSnapshot();
     const event = {
       target: { value: 'dummy' },
     } as React.ChangeEvent<HTMLInputElement>;
