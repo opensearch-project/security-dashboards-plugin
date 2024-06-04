@@ -20,6 +20,7 @@ import {
   EuiFlexItem,
   EuiInMemoryTable,
   EuiLink,
+  EuiLoadingContent,
   EuiPageBody,
   EuiPageContent,
   EuiPageContentHeader,
@@ -44,6 +45,7 @@ import { showTableStatusMessage } from '../utils/loading-spinner-utils';
 import { buildHashUrl } from '../utils/url-builder';
 import { LocalCluster } from '../app-router';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
+import { AccessErrorComponent } from '../access-error-component';
 
 export function dictView(items: Dictionary<string>) {
   if (isEmpty(items)) {
@@ -94,8 +96,9 @@ export function getColumns(currentUsername: string) {
 
 export function ServiceAccountList(props: AppDependencies) {
   const [userData, setUserData] = React.useState<InternalUsersListing[]>([]);
-  const [errorFlag, setErrorFlag] = React.useState(false);
   const [selection, setSelection] = React.useState<InternalUsersListing[]>([]);
+  const [errorFlag, setErrorFlag] = React.useState<boolean>(false);
+  const [accessErrorFlag, setAccessErrorFlag] = React.useState(false);
   const [currentUsername, setCurrentUsername] = useState('');
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState<Query | null>(null);
@@ -111,8 +114,14 @@ export function ServiceAccountList(props: AppDependencies) {
         );
         setCurrentUsername((await getAuthInfo(props.coreStart.http)).user_name);
         setUserData(await userDataPromise);
+        setErrorFlag(false);
+        setAccessErrorFlag(false);
       } catch (e) {
         console.log(e);
+        // requests with existing credentials but insufficient permissions result in 403, remote data-source requests with non-existing credentials result in 400
+        if (e.response && [400, 403].includes(e.response.status)) {
+          setAccessErrorFlag(true);
+        }
         setErrorFlag(true);
       } finally {
         setLoading(false);
@@ -176,58 +185,64 @@ export function ServiceAccountList(props: AppDependencies) {
           <h1>Service accounts</h1>
         </EuiTitle>
       </EuiPageHeader>
-      <EuiPageContent>
-        <EuiPageContentHeader>
-          <EuiPageContentHeaderSection>
-            <EuiTitle size="s">
-              <h3>
-                Service accounts
-                <span className="panel-header-count">
-                  {' '}
-                  ({Query.execute(query || '', userData).length})
-                </span>
-              </h3>
-            </EuiTitle>
-            <EuiText size="s" color="subdued">
-              Here you have a list of special accounts that represent services like extensions,
-              plugins or other third party applications. You can map an account to a role from
-              <EuiLink href={buildHashUrl(ResourceType.roles)}>Roles</EuiLink>
-              “Manage mapping”
-              <ExternalLink href={DocLinks.BackendConfigurationAuthenticationDoc} />
-            </EuiText>
-          </EuiPageContentHeaderSection>
-          <EuiPageContentHeaderSection>
-            <EuiFlexGroup>
-              <EuiFlexItem>{actionsMenu}</EuiFlexItem>
-            </EuiFlexGroup>
-          </EuiPageContentHeaderSection>
-        </EuiPageContentHeader>
-        <EuiPageBody>
-          <EuiInMemoryTable
-            tableLayout={'auto'}
-            loading={userData === [] && !errorFlag}
-            columns={getColumns(currentUsername)}
-            // @ts-ignore
-            items={userData}
-            itemId={'username'}
-            pagination
-            search={{
-              box: { placeholder: 'Search service accounts' },
-              onChange: (arg) => {
-                setQuery(arg.query);
-                return true;
-              },
-            }}
-            // @ts-ignore
-            selection={{ onSelectionChange: setSelection }}
-            sorting
-            error={
-              errorFlag ? 'Load data failed, please check the console log for more details.' : ''
-            }
-            message={showTableStatusMessage(loading, userData)}
-          />
-        </EuiPageBody>
-      </EuiPageContent>
+      {loading ? (
+        <EuiLoadingContent />
+      ) : accessErrorFlag ? (
+        <AccessErrorComponent loading={loading} dataSourceLabel={LocalCluster.label} />
+      ) : (
+        <EuiPageContent>
+          <EuiPageContentHeader>
+            <EuiPageContentHeaderSection>
+              <EuiTitle size="s">
+                <h3>
+                  Service accounts
+                  <span className="panel-header-count">
+                    {' '}
+                    ({Query.execute(query || '', userData).length})
+                  </span>
+                </h3>
+              </EuiTitle>
+              <EuiText size="s" color="subdued">
+                Here you have a list of special accounts that represent services like extensions,
+                plugins or other third party applications. You can map an account to a role from
+                <EuiLink href={buildHashUrl(ResourceType.roles)}>Roles</EuiLink>
+                “Manage mapping”
+                <ExternalLink href={DocLinks.BackendConfigurationAuthenticationDoc} />
+              </EuiText>
+            </EuiPageContentHeaderSection>
+            <EuiPageContentHeaderSection>
+              <EuiFlexGroup>
+                <EuiFlexItem>{actionsMenu}</EuiFlexItem>
+              </EuiFlexGroup>
+            </EuiPageContentHeaderSection>
+          </EuiPageContentHeader>
+          <EuiPageBody>
+            <EuiInMemoryTable
+              tableLayout={'auto'}
+              loading={userData === [] && !errorFlag}
+              columns={getColumns(currentUsername)}
+              // @ts-ignore
+              items={userData}
+              itemId={'username'}
+              pagination
+              search={{
+                box: { placeholder: 'Search service accounts' },
+                onChange: (arg) => {
+                  setQuery(arg.query);
+                  return true;
+                },
+              }}
+              // @ts-ignore
+              selection={{ onSelectionChange: setSelection }}
+              sorting
+              error={
+                errorFlag ? 'Load data failed, please check the console log for more details.' : ''
+              }
+              message={showTableStatusMessage(loading, userData)}
+            />
+          </EuiPageBody>
+        </EuiPageContent>
+      )}
     </>
   );
 }

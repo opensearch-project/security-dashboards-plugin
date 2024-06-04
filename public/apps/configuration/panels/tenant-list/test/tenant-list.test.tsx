@@ -21,6 +21,7 @@ import { useDeleteConfirmState } from '../../../utils/delete-confirm-modal-utils
 import { Tenant } from '../../../types';
 import { TenantEditModal } from '../edit-modal';
 import { getDashboardsInfo } from '../../../../../utils/dashboards-info-utils';
+import { ConfigureTab1 } from '../configure_tab1';
 
 jest.mock('../../../utils/tenant-utils');
 jest.mock('../../../../../utils/auth-info-utils');
@@ -267,7 +268,22 @@ describe('Tenant list', () => {
     };
 
     it('edit and delete should be disabled when selected tenant is reserved', () => {
-      jest.spyOn(React, 'useState').mockImplementation(() => [[sampleReservedTenant], jest.fn()]);
+      jest.spyOn(React, 'useState').mockRestore();
+      jest
+        .spyOn(React, 'useState')
+        .mockImplementationOnce(() => [[sampleReservedTenant], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [[sampleReservedTenant], jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()]);
       const component = shallow(
         <ManageTab
           coreStart={mockCoreStart as any}
@@ -281,9 +297,22 @@ describe('Tenant list', () => {
     });
 
     it('All menues should be disabled when there is multiple tenant selected including reserved tenant', () => {
+      jest.spyOn(React, 'useState').mockRestore();
       jest
         .spyOn(React, 'useState')
-        .mockImplementation(() => [[sampleReservedTenant, sampleCustomTenant1], jest.fn()]);
+        .mockImplementationOnce(() => [[sampleReservedTenant, sampleCustomTenant1], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [[sampleReservedTenant, sampleReservedTenant], jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()]);
       const component = shallow(
         <ManageTab
           coreStart={mockCoreStart as any}
@@ -300,10 +329,23 @@ describe('Tenant list', () => {
       expect(component.find('#delete').prop('disabled')).toBe(true);
     });
 
-    it('All menues should be disabled except delete when there is multiple custom tenant selected', () => {
+    it('All menus should be disabled except delete when there is multiple custom tenant selected', () => {
+      jest.spyOn(React, 'useState').mockRestore();
       jest
         .spyOn(React, 'useState')
-        .mockImplementation(() => [[sampleCustomTenant1, sampleCustomTenant2], jest.fn()]);
+        .mockImplementationOnce(() => [[sampleCustomTenant1, sampleCustomTenant2], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [[sampleCustomTenant1, sampleCustomTenant2], jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()]);
       const component = shallow(
         <ManageTab
           coreStart={mockCoreStart as any}
@@ -332,7 +374,23 @@ describe('Tenant list', () => {
     };
 
     beforeEach(() => {
-      jest.spyOn(React, 'useState').mockImplementation(() => [[sampleCustomTenant1], jest.fn()]);
+      jest.spyOn(React, 'useState').mockRestore();
+      jest
+        .spyOn(React, 'useState')
+        .mockImplementationOnce(() => [[sampleCustomTenant1], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [[sampleCustomTenant1], jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()]);
+
       component = shallow(
         <ManageTab
           coreStart={mockCoreStart as any}
@@ -349,11 +407,43 @@ describe('Tenant list', () => {
     });
 
     it('Edit click', () => {
+      jest.spyOn(React, 'useState').mockRestore();
+      jest
+        .spyOn(React, 'useState')
+        .mockImplementationOnce(() => [[sampleCustomTenant1], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [[sampleCustomTenant1], jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()]);
       component.find('#edit').simulate('click');
       expect(component).toMatchSnapshot();
     });
 
     it('Duplicate click', () => {
+      jest.spyOn(React, 'useState').mockRestore();
+      jest
+        .spyOn(React, 'useState')
+        .mockImplementationOnce(() => [[sampleCustomTenant1], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [[sampleCustomTenant1], jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()]);
       component.find('#duplicate').simulate('click');
       expect(component).toMatchSnapshot();
     });
@@ -366,6 +456,52 @@ describe('Tenant list', () => {
     it('Create visualizations click', () => {
       component.find('#createVisualizations').simulate('click');
       expect(mockTenantUtils.selectTenant).toHaveBeenCalled();
+    });
+  });
+
+  describe('AccessError component', () => {
+    let component;
+    beforeEach(() => {
+      jest.spyOn(React, 'useState').mockRestore();
+      jest
+        .spyOn(React, 'useState')
+        .mockImplementationOnce(() => [[], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [true, jest.fn()])
+        .mockImplementationOnce(() => [[], jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()]);
+    });
+
+    it('should load access error component: manage tab', () => {
+      component = shallow(
+        <ManageTab
+          coreStart={mockCoreStart as any}
+          depsStart={{} as any}
+          params={{} as any}
+          config={config as any}
+        />
+      );
+      expect(component).toMatchSnapshot();
+    });
+
+    it('should load access error component: configure tab', () => {
+      component = shallow(
+        <ConfigureTab1
+          coreStart={mockCoreStart as any}
+          depsStart={{} as any}
+          params={{} as any}
+          config={config as any}
+        />
+      );
+      expect(component).toMatchSnapshot();
     });
   });
 });

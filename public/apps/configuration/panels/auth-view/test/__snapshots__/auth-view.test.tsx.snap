@@ -39,3 +39,39 @@ exports[`Auth view Render unable to access dataSource when enabled and inaccessi
   />
 </Fragment>
 `;
+
+exports[`Auth view should load access error component 1`] = `
+<Fragment>
+  <Memo()
+    coreStart={
+      Object {
+        "http": 1,
+      }
+    }
+    dataSourcePickerReadOnly={false}
+    depsStart={
+      Object {
+        "dataSource": Object {
+          "dataSourceEnabled": true,
+        },
+      }
+    }
+    selectedDataSource={
+      Object {
+        "id": "test",
+      }
+    }
+    setDataSource={[MockFunction]}
+  />
+  <EuiTitle
+    size="l"
+  >
+    <h1>
+      Authentication and authorization
+    </h1>
+  </EuiTitle>
+  <AccessErrorComponent
+    loading={false}
+  />
+</Fragment>
+`;

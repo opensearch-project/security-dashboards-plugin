@@ -1,5 +1,45 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Role list AccessError component should load access error component 1`] = `
+<Fragment>
+  <Memo()
+    config={Object {}}
+    coreStart={
+      Object {
+        "http": 1,
+      }
+    }
+    dataSourcePickerReadOnly={false}
+    depsStart={
+      Object {
+        "dataSource": Object {
+          "dataSourceEnabled": true,
+        },
+      }
+    }
+    params={Object {}}
+    selectedDataSource={
+      Object {
+        "id": "test",
+      }
+    }
+    setDataSource={[MockFunction]}
+  />
+  <EuiPageHeader>
+    <EuiTitle
+      size="l"
+    >
+      <h1>
+        Roles
+      </h1>
+    </EuiTitle>
+  </EuiPageHeader>
+  <AccessErrorComponent
+    loading={false}
+  />
+</Fragment>
+`;
+
 exports[`Role list Render columns render Customization column 1`] = `
 <EuiFlexGroup
   alignItems="center"

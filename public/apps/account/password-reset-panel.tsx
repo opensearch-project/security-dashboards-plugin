@@ -123,6 +123,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
                 setIsCurrentPasswordInvalid(false);
               }}
               isInvalid={isCurrentPasswordInvalid}
+              type="dual"
             />
           </FormRow>
           <EuiSpacer />
@@ -141,6 +142,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
                     setIsNewPasswordInvalid(false);
                     setIsRepeatNewPasswordInvalid(repeatNewPassword !== newPassword);
                   }}
+                  type="dual"
                   isInvalid={isNewPasswordInvalid}
                 />
               </FormRow>
@@ -162,6 +164,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
                 setRepeatNewPassword(value);
                 setIsRepeatNewPasswordInvalid(value !== newPassword);
               }}
+              type="dual"
             />
           </FormRow>
 

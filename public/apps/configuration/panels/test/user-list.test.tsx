@@ -216,7 +216,16 @@ describe('User list', () => {
       backend_roles: ['backend_role1'],
     };
     beforeEach(() => {
-      jest.spyOn(React, 'useState').mockImplementation(() => [[mockUserListingData], jest.fn()]);
+      jest.spyOn(React, 'useState').mockRestore();
+      jest
+        .spyOn(React, 'useState')
+        .mockImplementationOnce(() => [[mockUserListingData], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [[mockUserListingData], jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()]);
       component = shallow(
         <UserList
           coreStart={mockCoreStart as any}
@@ -270,5 +279,45 @@ describe('User list', () => {
       />
     );
     expect(component).toMatchSnapshot();
+  });
+
+  describe('AccessError component', () => {
+    const mockCoreStart = {
+      http: {
+        basePath: {
+          serverBasePath: '',
+        },
+      },
+    };
+    const depsStart = {
+      dataSource: {
+        dataSourceEnabled: true,
+      },
+    };
+    let component;
+    beforeEach(() => {
+      jest.spyOn(React, 'useState').mockRestore();
+      jest
+        .spyOn(React, 'useState')
+        .mockImplementationOnce(() => [[], jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [[true], jest.fn()])
+        .mockImplementationOnce(() => [[], jest.fn()])
+        .mockImplementationOnce(() => ['', jest.fn()])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [null, jest.fn()]);
+      component = shallow(
+        <UserList
+          coreStart={mockCoreStart as any}
+          depsStart={depsStart as any}
+          params={{} as any}
+          config={{} as any}
+        />
+      );
+    });
+
+    it('should load access error component', () => {
+      expect(component).toMatchSnapshot();
+    });
   });
 });

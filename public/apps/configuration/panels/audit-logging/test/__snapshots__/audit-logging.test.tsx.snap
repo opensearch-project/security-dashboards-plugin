@@ -1,5 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Audit logs Render unable to access dataSource when enabled and inaccessible 1`] = `
+<Memo()
+  coreStart={
+    Object {
+      "http": 1,
+    }
+  }
+  depsStart={
+    Object {
+      "dataSource": Object {
+        "dataSourceEnabled": true,
+      },
+    }
+  }
+  navigation={Object {}}
+/>
+`;
+
 exports[`Audit logs render compliance settings 1`] = `
 <Fragment>
   <ViewSettingGroup
@@ -257,15 +275,17 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
     }
     setDataSource={[MockFunction]}
   />
-  <EuiPanel>
-    <EuiTitle>
-      <h3>
-        Audit logging
-      </h3>
+  <EuiPageHeader>
+    <EuiTitle
+      size="l"
+    >
+      <h1>
+        Audit Logging
+      </h1>
     </EuiTitle>
-    <EuiHorizontalRule
-      margin="m"
-    />
+  </EuiPageHeader>
+  <EuiSpacer />
+  <EuiPanel>
     <EuiForm>
       <EuiDescribedFormGroup
         className="described-form-group"
@@ -646,20 +666,44 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
 </div>
 `;
 
-exports[`Audit logs Render unable to access dataSource when enabled and inaccessible 1`] = `
-<Memo()
-  coreStart={
-    Object {
-      "http": 1,
+exports[`Audit logs should load access error component 1`] = `
+<div
+  className="panel-restrict-width"
+>
+  <Memo()
+    coreStart={
+      Object {
+        "http": 1,
+      }
     }
-  }
-  depsStart={
-    Object {
-      "dataSource": Object {
-        "dataSourceEnabled": true,
-      },
+    dataSourcePickerReadOnly={false}
+    depsStart={
+      Object {
+        "dataSource": Object {
+          "dataSourceEnabled": true,
+        },
+      }
     }
-  }
-  navigation={Object {}}
-/>
+    selectedDataSource={
+      Object {
+        "id": "test",
+      }
+    }
+    setDataSource={[MockFunction]}
+  />
+  <EuiPageHeader>
+    <EuiTitle
+      size="l"
+    >
+      <h1>
+        Audit Logging
+      </h1>
+    </EuiTitle>
+  </EuiPageHeader>
+  <EuiSpacer />
+  <AccessErrorComponent
+    loading={false}
+    message="You do not have permissions to configure audit logging settings"
+  />
+</div>
 `;
