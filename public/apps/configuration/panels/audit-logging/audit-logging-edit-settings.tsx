@@ -76,7 +76,7 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
     };
 
     fetchConfig();
-  }, [props.coreStart.http, dataSource.id]);
+  }, [props.coreStart.http, dataSource]);
 
   const renderSaveAndCancel = () => {
     return (

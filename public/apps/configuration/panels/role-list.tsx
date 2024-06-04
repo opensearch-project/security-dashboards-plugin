@@ -30,6 +30,7 @@ import {
   EuiButtonEmpty,
   EuiSearchBarProps,
   Query,
+  EuiLoadingContent,
 } from '@elastic/eui';
 import { difference } from 'lodash';
 import { AppDependencies } from '../../types';
@@ -56,6 +57,7 @@ import { useContextMenuState } from '../utils/context-menu';
 import { DocLinks } from '../constants';
 import { DataSourceContext } from '../app-router';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
+import { AccessErrorComponent } from '../access-error-component';
 
 const columns: Array<EuiBasicTableColumn<RoleListing>> = [
   {
@@ -107,6 +109,7 @@ export function RoleList(props: AppDependencies) {
   const [errorFlag, setErrorFlag] = React.useState(false);
   const [selection, setSelection] = React.useState<RoleListing[]>([]);
   const [loading, setLoading] = useState(false);
+  const [accessErrorFlag, setAccessErrorFlag] = React.useState(false);
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
 
   React.useEffect(() => {
@@ -118,8 +121,13 @@ export function RoleList(props: AppDependencies) {
         const processedData = transformRoleData(rawRoleData, rawRoleMappingData);
         setRoleData(processedData);
         setErrorFlag(false);
+        setAccessErrorFlag(false);
       } catch (e) {
         console.log(e);
+        // requests with existing credentials but insufficient permissions result in 403, remote data-source requests with non-existing credentials result in 400
+        if (e.response && [400, 403].includes(e.response.status)) {
+          setAccessErrorFlag(true);
+        }
         setErrorFlag(true);
       } finally {
         setLoading(false);
@@ -127,7 +135,7 @@ export function RoleList(props: AppDependencies) {
     };
 
     fetchData();
-  }, [props.coreStart.http, dataSource.id]);
+  }, [props.coreStart.http, dataSource]);
 
   const handleDelete = async () => {
     const rolesToDelete: string[] = selection.map((r) => r.roleName);
@@ -265,58 +273,64 @@ export function RoleList(props: AppDependencies) {
           <h1>Roles</h1>
         </EuiTitle>
       </EuiPageHeader>
-      <EuiPageContent>
-        <EuiPageContentHeader id="role-table-container">
-          <EuiPageContentHeaderSection>
-            <EuiTitle size="s">
-              <h3>
-                Roles
-                <span className="panel-header-count">
-                  {' '}
-                  ({Query.execute(query || '', roleData).length})
-                </span>
-              </h3>
-            </EuiTitle>
-            <EuiText size="xs" color="subdued">
-              Roles are the core way of controlling access to your cluster. Roles contain any
-              combination of cluster-wide permission, index-specific permissions, document- and
-              field-level security, and tenants. Then you map users to these roles so that users
-              gain those permissions. <ExternalLink href={DocLinks.UsersAndRolesDoc} />
-            </EuiText>
-          </EuiPageContentHeaderSection>
-          <EuiPageContentHeaderSection>
-            <EuiFlexGroup>
-              <EuiFlexItem>{actionsMenu}</EuiFlexItem>
-              <EuiFlexItem>
-                <EuiButton
-                  fill
-                  href={buildHashUrl(ResourceType.roles, Action.create)}
-                  data-test-subj="create-role"
-                >
-                  Create role
-                </EuiButton>
-              </EuiFlexItem>
-            </EuiFlexGroup>
-          </EuiPageContentHeaderSection>
-        </EuiPageContentHeader>
-        <EuiPageBody>
-          <EuiInMemoryTable
-            data-test-subj="role-list"
-            tableLayout={'auto'}
-            loading={roleData === [] && !errorFlag}
-            columns={columns}
-            items={roleData}
-            itemId={'roleName'}
-            pagination={true}
-            selection={{ onSelectionChange: setSelection }}
-            sorting={true}
-            search={searchOptions}
-            error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
-            message={showTableStatusMessage(loading, roleData)}
-          />
-        </EuiPageBody>
-        {deleteConfirmModal}
-      </EuiPageContent>
+      {loading ? (
+        <EuiLoadingContent />
+      ) : accessErrorFlag ? (
+        <AccessErrorComponent loading={loading} dataSourceLabel={dataSource && dataSource.label} />
+      ) : (
+        <EuiPageContent>
+          <EuiPageContentHeader id="role-table-container">
+            <EuiPageContentHeaderSection>
+              <EuiTitle size="s">
+                <h3>
+                  Roles
+                  <span className="panel-header-count">
+                    {' '}
+                    ({Query.execute(query || '', roleData).length})
+                  </span>
+                </h3>
+              </EuiTitle>
+              <EuiText size="xs" color="subdued">
+                Roles are the core way of controlling access to your cluster. Roles contain any
+                combination of cluster-wide permission, index-specific permissions, document- and
+                field-level security, and tenants. Then you map users to these roles so that users
+                gain those permissions. <ExternalLink href={DocLinks.UsersAndRolesDoc} />
+              </EuiText>
+            </EuiPageContentHeaderSection>
+            <EuiPageContentHeaderSection>
+              <EuiFlexGroup>
+                <EuiFlexItem>{actionsMenu}</EuiFlexItem>
+                <EuiFlexItem>
+                  <EuiButton
+                    fill
+                    href={buildHashUrl(ResourceType.roles, Action.create)}
+                    data-test-subj="create-role"
+                  >
+                    Create role
+                  </EuiButton>
+                </EuiFlexItem>
+              </EuiFlexGroup>
+            </EuiPageContentHeaderSection>
+          </EuiPageContentHeader>
+          <EuiPageBody>
+            <EuiInMemoryTable
+              data-test-subj="role-list"
+              tableLayout={'auto'}
+              loading={roleData === [] && !errorFlag}
+              columns={columns}
+              items={roleData}
+              itemId={'roleName'}
+              pagination={true}
+              selection={{ onSelectionChange: setSelection }}
+              sorting={true}
+              search={searchOptions}
+              error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
+              message={showTableStatusMessage(loading, roleData)}
+            />
+          </EuiPageBody>
+          {deleteConfirmModal}
+        </EuiPageContent>
+      )}
     </>
   );
 }
