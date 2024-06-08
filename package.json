@@ -49,6 +49,8 @@
   "resolutions": {
     "selenium-webdriver": "4.10.0",
     "glob-parent": "^5.1.2",
-    "debug": "^4.3.4"
+    "debug": "^4.3.4",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2"
   }
 }
