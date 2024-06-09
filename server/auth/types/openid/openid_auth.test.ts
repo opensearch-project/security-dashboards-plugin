@@ -37,6 +37,12 @@ interface Logger {
   fatal(message: string): void;
 }
 
+const mockClient = { post: jest.fn() };
+
+jest.mock('@hapi/wreck', () => ({
+  defaults: jest.fn(() => mockClient),
+}));
+
 describe('test OpenId authHeaderValue', () => {
   let router: IRouter;
   let core: CoreSetup;
@@ -208,7 +214,7 @@ describe('test OpenId authHeaderValue', () => {
     expect(wreckHttpsOptions.passphrase).toBeUndefined();
   });
 
-  test('Ensure expiryTime is being used to test validity of cookie', async () => {
+  test('Ensure accessToken expiryTime is being used to test validity of cookie', async () => {
     const realDateNow = Date.now.bind(global.Date);
     const dateNowStub = jest.fn(() => 0);
     global.Date.now = dateNowStub;
@@ -229,12 +235,66 @@ describe('test OpenId authHeaderValue', () => {
     const testCookie: SecuritySessionCookie = {
       credentials: {
         authHeaderValue: 'Bearer eyToken',
-        expiry_time: -1,
+        expiryTime: 200,
       },
-      expiryTime: 2000,
+      expiryTime: 10000,
       username: 'admin',
       authType: 'openid',
     };
+
+    expect(await openIdAuthentication.isValidCookie(testCookie, {})).toBe(true);
+    global.Date.now = realDateNow;
+  });
+
+  test('Ensure refreshToken workflow is called if current time is after access token expiry, but before session expiry', async () => {
+    const realDateNow = Date.now.bind(global.Date);
+    const dateNowStub = jest.fn(() => 300);
+    global.Date.now = dateNowStub;
+    const oidcConfig: unknown = {
+      openid: {
+        header: 'authorization',
+        scope: [],
+        extra_storage: {
+          cookie_prefix: 'testcookie',
+          additional_cookies: 0,
+        },
+      },
+    };
+
+    const openIdAuthentication = new OpenIdAuthentication(
+      oidcConfig as SecurityPluginConfigType,
+      sessionStorageFactory,
+      router,
+      esClient,
+      core,
+      logger
+    );
+    const testCookie: SecuritySessionCookie = {
+      credentials: {
+        authHeaderValue: 'Bearer eyToken',
+        expiryTime: 200,
+        refresh_token: 'refreshToken',
+      },
+      expiryTime: 10000,
+      username: 'admin',
+      authType: 'openid',
+    };
+
+    const mockRequestPayload = JSON.stringify({
+      grant_type: 'refresh_token',
+      client_id: 'clientId',
+      client_secret: 'clientSecret',
+      refresh_token: 'refreshToken',
+    });
+    const mockResponsePayload = JSON.stringify({
+      id_token: '.eyJleHAiOiIwLjUifQ.', // Translates to {"exp":"0.5"}
+      access_token: 'accessToken',
+      refresh_token: 'refreshToken',
+    });
+    mockClient.post.mockResolvedValue({
+      res: { statusCode: 200 },
+      payload: mockResponsePayload,
+    });
 
     expect(await openIdAuthentication.isValidCookie(testCookie, {})).toBe(true);
     global.Date.now = realDateNow;

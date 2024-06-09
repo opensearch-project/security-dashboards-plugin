@@ -272,7 +272,7 @@ export class OpenIdAuthentication extends AuthenticationType {
       return false;
     }
 
-    if (cookie.expiryTime > Date.now()) {
+    if (cookie.credentials.expiryTime > Date.now()) {
       return true;
     }
 
@@ -296,8 +296,8 @@ export class OpenIdAuthentication extends AuthenticationType {
           cookie.credentials = {
             authHeaderValueExtra: true,
             refresh_token: refreshTokenResponse.refreshToken,
+            expiryTime: getExpirationDate(refreshTokenResponse),
           };
-          cookie.expiryTime = getExpirationDate(refreshTokenResponse);
 
           setExtraAuthStorage(
             request,
