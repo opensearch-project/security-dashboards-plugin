@@ -298,6 +298,7 @@ describe('test OpenId authHeaderValue', () => {
     });
 
     expect(await openIdAuthentication.isValidCookie(testCookie, {})).toBe(true);
+    expect(mockClient.post).toBeCalledTimes(1);
     global.Date.now = realDateNow;
   });
 
