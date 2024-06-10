@@ -121,7 +121,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
   };
   const customTenantOptions = tenants
     .filter((tenant) => {
-      return tenant !== GLOBAL_TENANT_KEY_NAME && tenant !== username;
+      return tenant !== GLOBAL_TENANT_KEY_NAME;
     })
     .sort()
     .map((option: string) => ({
