@@ -114,7 +114,7 @@ export function RoleEdit(props: RoleEditDeps) {
 
       fetchData();
     }
-  }, [addToast, props.action, props.coreStart.http, props.sourceRoleName, dataSource.id]);
+  }, [addToast, props.action, props.coreStart.http, props.sourceRoleName, dataSource]);
 
   const [actionGroups, setActionGroups] = useState<Array<[string, ActionGroupItem]>>([]);
   React.useEffect(() => {
@@ -129,7 +129,7 @@ export function RoleEdit(props: RoleEditDeps) {
     };
 
     fetchActionGroupNames();
-  }, [addToast, props.coreStart.http, dataSource.id]);
+  }, [addToast, props.coreStart.http, dataSource]);
 
   const [tenantNames, setTenantNames] = React.useState<string[]>([]);
   React.useEffect(() => {
@@ -143,7 +143,7 @@ export function RoleEdit(props: RoleEditDeps) {
     };
 
     fetchTenantNames();
-  }, [addToast, props.coreStart.http, dataSource.id]);
+  }, [addToast, props.coreStart.http, dataSource]);
 
   const updateRoleHandler = async () => {
     try {

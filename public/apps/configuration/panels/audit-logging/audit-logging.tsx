@@ -22,6 +22,8 @@ import {
   EuiForm,
   EuiFormRow,
   EuiHorizontalRule,
+  EuiLoadingContent,
+  EuiPageHeader,
   EuiPanel,
   EuiSpacer,
   EuiSwitch,
@@ -30,6 +32,7 @@ import {
 } from '@elastic/eui';
 import React, { useContext } from 'react';
 import { FormattedMessage } from '@osd/i18n/react';
+import { DataSourceOption } from 'src/plugins/data_source_management/public';
 import { AppDependencies } from '../../../types';
 import { ResourceType } from '../../../../../common';
 import { getAuditLogging, updateAuditLogging } from '../../utils/audit-logging-utils';
@@ -45,6 +48,7 @@ import { ViewSettingGroup } from './view-setting-group';
 import { DocLinks } from '../../constants';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
+import { AccessErrorComponent } from '../../access-error-component';
 
 interface AuditLoggingProps extends AppDependencies {
   fromType: string;
@@ -53,10 +57,6 @@ interface AuditLoggingProps extends AppDependencies {
 function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: boolean) {
   return (
     <EuiPanel>
-      <EuiTitle>
-        <h3>Audit logging</h3>
-      </EuiTitle>
-      <EuiHorizontalRule margin="m" />
       <EuiForm>
         <EuiDescribedFormGroup title={<h3>Storage location</h3>} className="described-form-group">
           <EuiFormRow className="form-row">
@@ -90,6 +90,16 @@ function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: bool
         </EuiDescribedFormGroup>
       </EuiForm>
     </EuiPanel>
+  );
+}
+
+function renderAccessErrorPanel(loading: boolean, dataSource: DataSourceOption) {
+  return (
+    <AccessErrorComponent
+      loading={loading}
+      dataSourceLabel={dataSource && dataSource.label}
+      message="You do not have permissions to configure audit logging settings"
+    />
   );
 }
 
@@ -137,6 +147,8 @@ export function renderComplianceSettings(config: AuditLoggingSettings) {
 export function AuditLogging(props: AuditLoggingProps) {
   const [configuration, setConfiguration] = React.useState<AuditLoggingSettings>({});
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
+  const [loading, setLoading] = React.useState(false);
+  const [accessErrorFlag, setAccessErrorFlag] = React.useState(false);
 
   const onSwitchChange = async () => {
     try {
@@ -154,29 +166,38 @@ export function AuditLogging(props: AuditLoggingProps) {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const auditLogging = await getAuditLogging(props.coreStart.http, dataSource.id);
         setConfiguration(auditLogging);
+        setAccessErrorFlag(false);
       } catch (e) {
         // TODO: switch to better error handling.
         console.log(e);
+        // requests with existing credentials but insufficient permissions result in 403, remote data-source requests with non-existing credentials result in 400
+        if (e.response && [400, 403].includes(e.response.status)) {
+          setAccessErrorFlag(true);
+        }
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
-  }, [props.coreStart.http, props.fromType, dataSource.id]);
+  }, [props.coreStart.http, props.fromType, dataSource]);
 
   const statusPanel = renderStatusPanel(onSwitchChange, configuration.enabled || false);
 
   let content;
 
-  if (!configuration.enabled) {
+  if (accessErrorFlag) {
+    content = renderAccessErrorPanel(loading, dataSource);
+  } else if (!configuration.enabled) {
     content = statusPanel;
   } else {
     content = (
       <>
         {statusPanel}
         <EuiSpacer />
-
         <EuiPanel data-test-subj="general-settings">
           <EuiFlexGroup>
             <EuiFlexItem>
@@ -237,7 +258,13 @@ export function AuditLogging(props: AuditLoggingProps) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      {content}
+      <EuiPageHeader>
+        <EuiTitle size="l">
+          <h1>Audit Logging</h1>
+        </EuiTitle>
+      </EuiPageHeader>
+      <EuiSpacer />
+      {loading ? <EuiLoadingContent /> : content}
     </div>
   );
 }
