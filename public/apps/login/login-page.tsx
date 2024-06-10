@@ -17,7 +17,6 @@ import React, { useState } from 'react';
 import {
   EuiText,
   EuiFieldText,
-  EuiIcon,
   EuiSpacer,
   EuiButton,
   EuiImage,
@@ -194,7 +193,7 @@ export function LoginPage(props: LoginPageDeps) {
                 data-test-subj="user-name"
                 aria-label="username_input"
                 placeholder="Username"
-                prepend={<EuiIcon type="user" />}
+                icon="user"
                 onChange={(e) => setUsername(e.target.value)}
                 value={username}
                 isInvalid={usernameValidationFailed}
