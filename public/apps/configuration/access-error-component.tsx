@@ -13,13 +13,23 @@
  *   permissions and limitations under the License.
  */
 
-import { shallow } from 'enzyme';
+import { EuiLoadingContent, EuiPageContent } from '@elastic/eui';
 import React from 'react';
-import { TenantInstructionView } from '../tenant-instruction-view';
 
-describe('Tenant instruction view', () => {
-  it('renders', () => {
-    const component = shallow(<TenantInstructionView />);
-    expect(component).toMatchSnapshot();
-  });
-});
+interface AccessErrorComponentProps {
+  loading?: boolean;
+  dataSourceLabel?: string;
+  message?: string;
+}
+
+export const AccessErrorComponent: React.FC<AccessErrorComponentProps> = (props) => {
+  const {
+    loading = false,
+    dataSourceLabel,
+    message = 'You do not have permissions to view this data',
+  } = props;
+
+  const displayMessage = message + (dataSourceLabel ? ` for ${props.dataSourceLabel}.` : '.');
+
+  return loading ? <EuiLoadingContent /> : <EuiPageContent>{displayMessage}</EuiPageContent>;
+};

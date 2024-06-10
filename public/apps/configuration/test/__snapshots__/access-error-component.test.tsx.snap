@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AccessErrorComponent should display custom message prefix once loading is complete 1`] = `
+<EuiPageContent>
+  Custom message prefix for Test-cluster.
+</EuiPageContent>
+`;
+
+exports[`AccessErrorComponent should display default message prefix once loading is complete 1`] = `
+<EuiPageContent>
+  You do not have permissions to view this data for Test-cluster.
+</EuiPageContent>
+`;
+
+exports[`AccessErrorComponent should render loading when loading the content 1`] = `<EuiLoadingContent />`;

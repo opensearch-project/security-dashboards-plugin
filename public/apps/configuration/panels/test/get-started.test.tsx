@@ -43,6 +43,9 @@ describe('Get started (landing page)', () => {
     ui: {
       backend_configurable: true,
     },
+    multitenancy: {
+      enabled: true,
+    },
   };
 
   it('renders when backend configuration is enabled', () => {
@@ -61,6 +64,9 @@ describe('Get started (landing page)', () => {
     const config1 = {
       ui: {
         backend_configurable: false,
+      },
+      multitenancy: {
+        enabled: true,
       },
     };
     const component = shallow(
