@@ -302,9 +302,15 @@ describe('test OpenId authHeaderValue', () => {
   });
 
   test('getKeepAliveExpiry', () => {
+    const realDateNow = Date.now.bind(global.Date);
+    const dateNowStub = jest.fn(() => 300);
+    global.Date.now = dateNowStub;
     const oidcConfig: unknown = {
       openid: {
         scope: [],
+      },
+      session: {
+        ttl: 3600,
       },
     };
 
@@ -323,6 +329,7 @@ describe('test OpenId authHeaderValue', () => {
       expiryTime: 1000,
     };
 
-    expect(openIdAuthentication.getKeepAliveExpiry(testCookie, {})).toBe(1000);
+    expect(openIdAuthentication.getKeepAliveExpiry(testCookie, {})).toBe(3900);
+    global.Date.now = realDateNow;
   });
 });
