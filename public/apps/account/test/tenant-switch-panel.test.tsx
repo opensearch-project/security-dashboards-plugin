@@ -156,6 +156,7 @@ describe('Account menu -tenant switch panel', () => {
         data: {
           tenants: {
             ['tenant1']: true,
+            ['user1']: true,
           },
           user_name: 'user1',
           roles: ['role1', 'role2'],
