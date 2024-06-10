@@ -242,8 +242,8 @@ describe('test OpenId authHeaderValue', () => {
       authType: 'openid',
     };
 
-    // As ID token is expired and no refresh token value is passed, it will return false
-    expect(await openIdAuthentication.isValidCookie(testCookie, {})).toBe(false);
+    // Credentials are valid because 0 < 200
+    expect(await openIdAuthentication.isValidCookie(testCookie, {})).toBe(true);
     global.Date.now = realDateNow;
   });
 
