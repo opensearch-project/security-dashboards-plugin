@@ -74,6 +74,9 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
             Object {
               "label": "tenant1",
             },
+            Object {
+              "label": "user1",
+            },
           ]
         }
         placeholder="Select a custom tenant"
@@ -188,6 +191,9 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
           Array [
             Object {
               "label": "tenant1",
+            },
+            Object {
+              "label": "user1",
             },
           ]
         }
@@ -304,6 +310,9 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
             Object {
               "label": "tenant1",
             },
+            Object {
+              "label": "user1",
+            },
           ]
         }
         placeholder="Select a custom tenant"
@@ -419,6 +428,9 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
             Object {
               "label": "tenant1",
             },
+            Object {
+              "label": "user1",
+            },
           ]
         }
         placeholder="Select a custom tenant"
@@ -533,6 +545,9 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
           Array [
             Object {
               "label": "tenant1",
+            },
+            Object {
+              "label": "user1",
             },
           ]
         }
