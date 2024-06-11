@@ -15,6 +15,4 @@ Compatible with OpenSearch and OpenSearch Dashboards version 2.15.0
 
 ### Maintenance
 * Updating security reachout email ([#1948](https://github.com/opensearch-project/security-dashboards-plugin/pull/1948))
-* Adds 1.3.17.0 release notes ([#1975](https://github.com/opensearch-project/security-dashboards-plugin/pull/1975))
-* Increment version to 2.15.0.0 ([#1982](https://github.com/opensearch-project/security-dashboards-plugin/pull/1982))
 * Bump ejs and express versions to address CVEs ([#1988](https://github.com/opensearch-project/security-dashboards-plugin/pull/1988))
