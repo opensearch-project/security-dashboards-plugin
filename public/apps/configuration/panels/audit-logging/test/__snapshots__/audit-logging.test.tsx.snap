@@ -260,9 +260,9 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
     <EuiTitle
       size="l"
     >
-      <h1>
-        Audit Logging
-      </h1>
+      <h3>
+        Audit logging
+      </h3>
     </EuiTitle>
   </EuiPageHeader>
   <EuiSpacer />
@@ -670,9 +670,9 @@ exports[`Audit logs should load access error component 1`] = `
     <EuiTitle
       size="l"
     >
-      <h1>
-        Audit Logging
-      </h1>
+      <h3>
+        Audit logging
+      </h3>
     </EuiTitle>
   </EuiPageHeader>
   <EuiSpacer />
