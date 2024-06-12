@@ -256,7 +256,7 @@ export function UserList(props: AppDependencies) {
                     href={buildHashUrl(ResourceType.users, Action.create)}
                     data-test-subj="create-user"
                   >
-                    Create user account
+                    Create internal user
                   </EuiButton>
                 </EuiFlexItem>
               </EuiFlexGroup>
