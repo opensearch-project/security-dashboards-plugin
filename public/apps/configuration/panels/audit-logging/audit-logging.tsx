@@ -260,7 +260,7 @@ export function AuditLogging(props: AuditLoggingProps) {
       />
       <EuiPageHeader>
         <EuiTitle size="l">
-          <h1>Audit Logging</h1>
+          <h3>Audit logging</h3>
         </EuiTitle>
       </EuiPageHeader>
       <EuiSpacer />

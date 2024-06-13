@@ -44,14 +44,10 @@ exports[`Login page renders renders with config value for multiauth 1`] = `
       <EuiFieldText
         aria-label="username_input"
         data-test-subj="user-name"
+        icon="user"
         isInvalid={false}
         onChange={[Function]}
         placeholder="Username"
-        prepend={
-          <EuiIcon
-            type="user"
-          />
-        }
         value=""
       />
     </EuiFormRow>
@@ -195,14 +191,10 @@ exports[`Login page renders renders with config value for multiauth with anonymo
       <EuiFieldText
         aria-label="username_input"
         data-test-subj="user-name"
+        icon="user"
         isInvalid={false}
         onChange={[Function]}
         placeholder="Username"
-        prepend={
-          <EuiIcon
-            type="user"
-          />
-        }
         value=""
       />
     </EuiFormRow>
@@ -364,14 +356,10 @@ exports[`Login page renders renders with config value with anonymous auth enable
       <EuiFieldText
         aria-label="username_input"
         data-test-subj="user-name"
+        icon="user"
         isInvalid={false}
         onChange={[Function]}
         placeholder="Username"
-        prepend={
-          <EuiIcon
-            type="user"
-          />
-        }
         value=""
       />
     </EuiFormRow>
@@ -483,14 +471,10 @@ exports[`Login page renders renders with config value with anonymous auth enable
       <EuiFieldText
         aria-label="username_input"
         data-test-subj="user-name"
+        icon="user"
         isInvalid={false}
         onChange={[Function]}
         placeholder="Username"
-        prepend={
-          <EuiIcon
-            type="user"
-          />
-        }
         value=""
       />
     </EuiFormRow>
@@ -602,14 +586,10 @@ exports[`Login page renders renders with config value: string 1`] = `
       <EuiFieldText
         aria-label="username_input"
         data-test-subj="user-name"
+        icon="user"
         isInvalid={false}
         onChange={[Function]}
         placeholder="Username"
-        prepend={
-          <EuiIcon
-            type="user"
-          />
-        }
         value=""
       />
     </EuiFormRow>
@@ -703,14 +683,10 @@ exports[`Login page renders renders with config value: string array 1`] = `
       <EuiFieldText
         aria-label="username_input"
         data-test-subj="user-name"
+        icon="user"
         isInvalid={false}
         onChange={[Function]}
         placeholder="Username"
-        prepend={
-          <EuiIcon
-            type="user"
-          />
-        }
         value=""
       />
     </EuiFormRow>
@@ -804,14 +780,10 @@ exports[`Login page renders renders with default value: string 1`] = `
       <EuiFieldText
         aria-label="username_input"
         data-test-subj="user-name"
+        icon="user"
         isInvalid={false}
         onChange={[Function]}
         placeholder="Username"
-        prepend={
-          <EuiIcon
-            type="user"
-          />
-        }
         value=""
       />
     </EuiFormRow>
@@ -905,14 +877,10 @@ exports[`Login page renders renders with default value: string array 1`] = `
       <EuiFieldText
         aria-label="username_input"
         data-test-subj="user-name"
+        icon="user"
         isInvalid={false}
         onChange={[Function]}
         placeholder="Username"
-        prepend={
-          <EuiIcon
-            type="user"
-          />
-        }
         value=""
       />
     </EuiFormRow>
