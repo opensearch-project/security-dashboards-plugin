@@ -19,11 +19,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Set up JDK
-      uses: actions/setup-java@v1
-      with:
-        java-version: 21
-
     - name: Set env
       run: |
         opensearch_version=$(node -p "require('./package.json').opensearchDashboards.version")
