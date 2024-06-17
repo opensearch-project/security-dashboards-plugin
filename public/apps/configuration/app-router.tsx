@@ -159,7 +159,7 @@ export function AppRouter(props: AppDependencies) {
 
   return (
     <DataSourceContext.Provider value={{ dataSource, setDataSource }}>
-      <Router basename={props.params.appBasePath}>
+      <Router>
         <EuiPage>
           {allNavPanelUrls(multitenancyEnabled).map((route) => (
             // Create different routes to update the 'selected' nav item .
