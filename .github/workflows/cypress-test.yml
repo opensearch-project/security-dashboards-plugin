@@ -22,11 +22,6 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:       
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-
       - name: Checkout Branch
         uses: actions/checkout@v3
 
@@ -47,12 +42,13 @@ jobs:
           download-location: ${{ env.PLUGIN_NAME }}
 
       - name: Run Opensearch with security
-        uses: derek-ho/start-opensearch@v2
+        uses: derek-ho/start-opensearch@v5
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: "file:$(pwd)/${{ env.PLUGIN_NAME }}.zip"
           security-enabled: true
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
+          jdk-version: 21
 
       # Configure the Dashboard
       - name: Configure OpenSearch Dashboards for cypress
