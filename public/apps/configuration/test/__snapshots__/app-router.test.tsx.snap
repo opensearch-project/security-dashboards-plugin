@@ -12,9 +12,7 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
     }
   }
 >
-  <HashRouter
-    basename=""
-  >
+  <HashRouter>
     <EuiPage>
       <Route
         exact={true}
