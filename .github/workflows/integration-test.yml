@@ -59,7 +59,7 @@ jobs:
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
           security_config_file: ${{ inputs.security_config_file }}
           port: 9202
-          jdk-version: 17
+          jdk-version: 11
 
       - name: Check OpenSearch remote is running
         run: |
@@ -73,7 +73,7 @@ jobs:
           plugins: "file:$(pwd)/${{ env.PLUGIN_NAME }}.zip"
           security-enabled: true
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
-          jdk-version: 17
+          jdk-version: 11
 
       # https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
       - name: Remove unnecessary files Linux
