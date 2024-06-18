@@ -66,7 +66,7 @@ jobs:
         shell: bash
 
       - name: Run Opensearch with security
-        uses: derek-ho/start-opensearch@v4
+        uses: derek-ho/start-opensearch@v3
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: "file:$(pwd)/${{ env.PLUGIN_NAME }}.zip"
