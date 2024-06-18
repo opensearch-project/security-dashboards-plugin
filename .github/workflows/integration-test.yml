@@ -20,11 +20,6 @@ jobs:
     steps:
       - name: Checkout Branch
         uses: actions/checkout@v3
-        
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
 
       - name: Set env
         run: |
@@ -51,7 +46,7 @@ jobs:
           plugin-version: ${{ env.PLUGIN_VERSION }}
       
       - name: Run Opensearch with A Single Plugin Remote Cluster
-        uses: derek-ho/start-opensearch@test
+        uses: derek-ho/start-opensearch@v5
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: "file:$(pwd)/opensearch-security-${{ env.OPENSEARCH_VERSION }}.zip"
@@ -59,6 +54,7 @@ jobs:
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
           security_config_file: ${{ inputs.security_config_file }}
           port: 9202
+          jdk-version: 21
 
       - name: Check OpenSearch remote is running
         run: |
@@ -66,12 +62,14 @@ jobs:
         shell: bash
 
       - name: Run Opensearch with security
-        uses: derek-ho/start-opensearch@test
+        uses: derek-ho/start-opensearch@v5
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: "file:$(pwd)/${{ env.PLUGIN_NAME }}.zip"
           security-enabled: true
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
+          port: 9200
+          jdk-version: 21
 
       # https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
       - name: Remove unnecessary files Linux
