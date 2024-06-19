@@ -67,7 +67,7 @@ jobs:
           download-location: ${{env.PLUGIN_NAME}}
       
       - name: Run Opensearch with A Single Plugin
-        uses: derek-ho/start-opensearch@v4
+        uses: derek-ho/start-opensearch@v6
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: "file:$(pwd)/opensearch-security.zip"
@@ -75,6 +75,7 @@ jobs:
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
           security_config_file: config_custom.yml
           port: 9202
+          jdk-version: 21
 
       - name: Check OpenSearch is running
           # Verify that the server is operational

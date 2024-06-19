@@ -19,11 +19,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Set up JDK
-      uses: actions/setup-java@v1
-      with:
-        java-version: 11
-
     - name: Set env
       run: |
         opensearch_version=$(node -p "require('./package.json').opensearchDashboards.version")
@@ -41,13 +36,14 @@ runs:
         download-location: ${{ env.PLUGIN_NAME }}
     
     - name: Run Opensearch with A Single Plugin
-      uses: derek-ho/start-opensearch@v2
+      uses: derek-ho/start-opensearch@v6
       with:
         opensearch-version: ${{ env.OPENSEARCH_VERSION }}
         plugins: "file:$(pwd)/opensearch-security.zip"
         security-enabled: true
         admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
         security_config_file: ${{ inputs.security_config_file }}
+        jdk-version: 21
 
     # OSD bootstrap
     - name: Run Dashboard with Security Dashboards Plugin
