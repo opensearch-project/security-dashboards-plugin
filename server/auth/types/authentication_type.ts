@@ -73,10 +73,8 @@ export interface OpenSearchDashboardsAuthState {
 }
 
 export abstract class AuthenticationType implements IAuthenticationType {
-  protected static readonly ROUTES_TO_IGNORE: string[] = [
-    '/api/core/capabilities', // FIXME: need to figure out how to bypass this API call
-    '/app/login',
-  ];
+  protected static readonly ROUTES_TO_IGNORE: string[] = ['/app/login'];
+  protected static readonly ROUTES_AUTH_OPTIONAL: string[] = ['/api/core/capabilities'];
 
   protected static readonly REST_API_CALL_HEADER = 'osd-xsrf';
 
@@ -151,6 +149,11 @@ export abstract class AuthenticationType implements IAuthenticationType {
         // is enabled.
         if (request.url.pathname && request.url.pathname.startsWith('/bundles/')) {
           return toolkit.notHandled();
+        }
+
+        // Before users login, skip auth capabilities request.
+        if (this.authOptional(request)) {
+          return toolkit.authenticated();
         }
 
         // send to auth workflow
@@ -231,6 +234,18 @@ export abstract class AuthenticationType implements IAuthenticationType {
     // allow requests to routes that doesn't require authentication
     if (this.config.auth.unauthenticated_routes.indexOf(pathname!) > -1) {
       // TODO: use opensearch-dashboards server user
+      return true;
+    }
+    return false;
+  }
+
+  authOptional(request: OpenSearchDashboardsRequest): boolean {
+    const pathname = request.url.pathname;
+    if (!pathname) {
+      return false;
+    }
+    // allow requests to ignored routes
+    if (AuthenticationType.ROUTES_AUTH_OPTIONAL.includes(pathname!)) {
       return true;
     }
     return false;
