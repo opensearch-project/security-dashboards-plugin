@@ -111,6 +111,7 @@ describe('test validateNextUrl', () => {
   // test cases from https://pentester.land/cheatsheets/2018/11/02/open-redirect-cheatsheet.html
   test('test list', () => {
     const urlList = [
+      '/\t/example.com/',
       '<>//Ⓛ𝐨𝗰�𝕝ⅆ𝓸ⓜₐℹⓃ｡Ｐⓦ',
       '//;@Ⓛ𝐨𝗰�𝕝ⅆ𝓸ⓜₐℹⓃ｡Ｐⓦ',
       '/////Ⓛ𝐨𝗰�𝕝ⅆ𝓸ⓜₐℹⓃ｡Ｐⓦ/',
@@ -625,7 +626,7 @@ describe('test validateNextUrl', () => {
       '//XY>.7d8T\\205pZM@whitelisted.com@google.com/',
       '//XY>.7d8T\\205pZM@whitelisted.com+@google.com/',
     ];
-    for (const url in urlList) {
+    for (const url of urlList) {
       if (url) {
         expect(validateNextUrl(url)).toEqual(INVALID_NEXT_URL_PARAMETER_MESSAGE);
       }

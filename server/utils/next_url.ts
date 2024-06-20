@@ -56,12 +56,12 @@ export const INVALID_NEXT_URL_PARAMETER_MESSAGE = 'Invalid nextUrl parameter.';
  */
 export const validateNextUrl = (url: string | undefined): string | void => {
   if (url) {
-    const path = url.split('?')[0];
+    let path = url.split('?')[0];
+    path = path.split('#')[0];
     if (
       !path.startsWith('/') ||
       path.startsWith('//') ||
-      path.includes('\\') ||
-      path.includes('@')
+      (path.length > 2 && !/^\/[\/a-zA-Z-_]+$/.test(path))
     ) {
       return INVALID_NEXT_URL_PARAMETER_MESSAGE;
     }

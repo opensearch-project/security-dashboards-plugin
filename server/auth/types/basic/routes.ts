@@ -31,6 +31,7 @@ import {
 import { resolveTenant } from '../../../multitenancy/tenant_resolver';
 import { encodeUriQuery } from '../../../../../../src/plugins/opensearch_dashboards_utils/common/url/encode_uri_query';
 import { AuthType } from '../../../../common';
+import { validateNextUrl } from '../../../utils/next_url';
 
 export class BasicAuthRoutes {
   constructor(
@@ -47,7 +48,15 @@ export class BasicAuthRoutes {
     this.coreSetup.http.resources.register(
       {
         path: LOGIN_PAGE_URI,
-        validate: false,
+        validate: {
+          query: schema.object({
+            nextUrl: schema.maybe(
+              schema.string({
+                validate: validateNextUrl,
+              })
+            ),
+          }),
+        },
         options: {
           authRequired: false,
         },
