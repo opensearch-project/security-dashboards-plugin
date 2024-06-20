@@ -151,7 +151,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
           return toolkit.notHandled();
         }
 
-        // Before users login, skip auth capabilities request.
+        // allow optional authentication
         if (this.authOptional(request)) {
           return toolkit.authenticated();
         }
@@ -244,7 +244,6 @@ export abstract class AuthenticationType implements IAuthenticationType {
     if (!pathname) {
       return false;
     }
-    // allow requests to ignored routes
     if (AuthenticationType.ROUTES_AUTH_OPTIONAL.includes(pathname!)) {
       return true;
     }

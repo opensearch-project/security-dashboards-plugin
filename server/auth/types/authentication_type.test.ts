@@ -134,7 +134,7 @@ describe('test capabilities request authinfo', () => {
     asScoped: jest.fn().mockImplementation(() => {
       return {
         callAsCurrentUser: jest.fn().mockImplementation(() => {
-          return { username: 'capabolities-username' };
+          return { username: 'capabilities-username' };
         }),
       };
     }),
@@ -162,6 +162,6 @@ describe('test capabilities request authinfo', () => {
       authenticated: jest.fn((value) => value),
     };
     const result = await dummyAuthType.authHandler(request, response, toolkit);
-    expect(result.state.authInfo.username).toEqual('capabolities-username');
+    expect(result.state.authInfo.username).toEqual('capabilities-username');
   });
 });
