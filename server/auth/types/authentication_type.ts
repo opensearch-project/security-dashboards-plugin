@@ -244,10 +244,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
     if (!pathname) {
       return false;
     }
-    if (AuthenticationType.ROUTES_AUTH_OPTIONAL.includes(pathname!)) {
-      return true;
-    }
-    return false;
+    return AuthenticationType.ROUTES_AUTH_OPTIONAL.includes(pathname!);
   }
 
   async resolveTenant(
