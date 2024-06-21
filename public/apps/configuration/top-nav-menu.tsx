@@ -59,7 +59,7 @@ export const SecurityPluginTopNavMenu = React.memo(
               : undefined,
           onSelectedDataSources: wrapSetDataSourceWithUpdateUrl,
           fullWidth: true,
-          dataSourceFilter: (ds) => ds.attributes.auth.credentials?.service !== 'aoss'
+          dataSourceFilter: (ds) => ds.attributes.auth.credentials?.service !== 'aoss',
         }}
       />
     ) : null;
