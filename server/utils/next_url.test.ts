@@ -625,6 +625,13 @@ describe('test validateNextUrl', () => {
       '//XY>.7d8T\\205pZM@whitelisted.com+@Ⓛ𝐨𝗰�𝕝ⅆ𝓸ⓜₐℹⓃ｡Ｐⓦ/',
       '//XY>.7d8T\\205pZM@whitelisted.com@google.com/',
       '//XY>.7d8T\\205pZM@whitelisted.com+@google.com/',
+      'javascript://sub.domain.com/%0Aalert(1)',
+      'javascript://%250Aalert(1)',
+      'javascript://%250Aalert(1)//?1',
+      'javascript://%250A1?alert(1):0',
+      '%09Jav%09ascript:alert(document.domain)',
+      'javascript://%250Alert(document.location=document.cookie)',
+      '\\j\\av\\a\\s\\cr\\i\\pt\\:\\a\\l\\ert\\(1\\)',
     ];
     for (const url of urlList) {
       if (url) {
