@@ -45,10 +45,10 @@ export const INVALID_NEXT_URL_PARAMETER_MESSAGE = 'Invalid nextUrl parameter.';
 /**
  * We require the nextUrl parameter to be an relative url.
  *
- * Here we leverage the normalizeUrl function. If the library can parse the url
- * parameter, which means it is an absolute url, then we reject it. Otherwise, the
- * library cannot parse the url, which means it is not an absolute url, we let to
- * go through.
+ * Here we validate the nextUrl parameter by checking if it meets the following criteria:
+ *   - nextUrl is the basePath /
+ *   - If nextUrl is longer than 2 chars then the second character must be alphabetical or underscore
+ *   - The following characters must be alphanumeric, dash or underscore
  * Note: url has been decoded by OpenSearchDashboards.
  *
  * @param url url string.
