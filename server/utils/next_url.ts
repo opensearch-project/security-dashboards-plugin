@@ -59,8 +59,7 @@ export const validateNextUrl = (url: string | undefined): string | void => {
     const path = url.split(/\?|#/)[0];
     if (
       !path.startsWith('/') ||
-      path.startsWith('//') ||
-      (path.length > 2 && !/^\/[a-zA-Z_][\/a-zA-Z0-9-_]+$/.test(path))
+      (path.length >= 2 && !/^\/[a-zA-Z_][\/a-zA-Z0-9-_]+$/.test(path))
     ) {
       return INVALID_NEXT_URL_PARAMETER_MESSAGE;
     }
