@@ -72,7 +72,7 @@ export function getNextPath(serverBasePath: string) {
   ) {
     url.searchParams.append('security_tenant', savedTenant);
   }
-  return url.pathname + url.search + url.hash;
+  return url.origin + url.pathname + url.search + url.hash;
 }
 
 function redirect(serverBasePath: string) {
