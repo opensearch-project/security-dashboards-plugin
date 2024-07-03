@@ -45,7 +45,7 @@ import { getDataSourceFromUrl } from '../../utils/datasource-utils';
 
 const LANDING_PAGE_URL = '/getstarted';
 
-const ROUTE_MAP: { [key: string]: RouteItem } = {
+export const ROUTE_MAP: { [key: string]: RouteItem } = {
   getStarted: {
     name: 'Get Started',
     href: LANDING_PAGE_URL,
@@ -156,6 +156,7 @@ export const LocalCluster = { label: 'Local cluster', id: '' };
 export const DataSourceContext = createContext<DataSourceContextType | null>(null);
 
 export function AppRouter(props: AppDependencies) {
+  console.log(props.redirect)
   const multitenancyEnabled = props.config.multitenancy.enabled;
   const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const setGlobalBreadcrumbs = flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs);
@@ -167,7 +168,7 @@ export function AppRouter(props: AppDependencies) {
     <DataSourceContext.Provider value={{ dataSource, setDataSource }}>
       <Router>
         <EuiPage>
-          {allNavPanelUrls(multitenancyEnabled).map((route) => (
+          {!props.coreStart.chrome.navGroup.getNavGroupEnabled() && allNavPanelUrls(multitenancyEnabled).map((route) => (
             // Create different routes to update the 'selected' nav item .
             <Route key={route} path={route} exact>
               <EuiPageSideBar>
@@ -294,7 +295,7 @@ export function AppRouter(props: AppDependencies) {
                   }}
                 />
               )}
-              <Redirect exact from="/" to={LANDING_PAGE_URL} />
+              <Redirect exact from="/" to={props.redirect} />
             </Switch>
           </EuiPageBody>
           <CrossPageToast />

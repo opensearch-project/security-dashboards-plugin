@@ -24,6 +24,7 @@ export interface AppDependencies {
   config: ClientConfigType;
   dashboardsInfo: DashboardsInfo;
   dataSourceManagement: DataSourceManagementPluginSetup;
+  redirect?: string;
 }
 
 export interface BreadcrumbsPageDependencies extends AppDependencies {
