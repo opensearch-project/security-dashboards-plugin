@@ -156,7 +156,7 @@ export const LocalCluster = { label: 'Local cluster', id: '' };
 export const DataSourceContext = createContext<DataSourceContextType | null>(null);
 
 export function AppRouter(props: AppDependencies) {
-  console.log(props.redirect)
+  console.log(props.redirect);
   const multitenancyEnabled = props.config.multitenancy.enabled;
   const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const setGlobalBreadcrumbs = flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs);
@@ -168,14 +168,15 @@ export function AppRouter(props: AppDependencies) {
     <DataSourceContext.Provider value={{ dataSource, setDataSource }}>
       <Router>
         <EuiPage>
-          {!props.coreStart.chrome.navGroup.getNavGroupEnabled() && allNavPanelUrls(multitenancyEnabled).map((route) => (
-            // Create different routes to update the 'selected' nav item .
-            <Route key={route} path={route} exact>
-              <EuiPageSideBar>
-                <NavPanel items={getRouteList(multitenancyEnabled)} />
-              </EuiPageSideBar>
-            </Route>
-          ))}
+          {!props.coreStart.chrome.navGroup.getNavGroupEnabled() &&
+            allNavPanelUrls(multitenancyEnabled).map((route) => (
+              // Create different routes to update the 'selected' nav item .
+              <Route key={route} path={route} exact>
+                <EuiPageSideBar>
+                  <NavPanel items={getRouteList(multitenancyEnabled)} />
+                </EuiPageSideBar>
+              </Route>
+            ))}
           <EuiPageBody>
             <Switch>
               <Route
