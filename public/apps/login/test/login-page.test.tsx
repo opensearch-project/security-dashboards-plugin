@@ -103,7 +103,7 @@ describe('test redirect', () => {
     window.location = new URL('http://localhost:5601/app/login?nextUrl=%2Fapp%2Fdashboards') as any;
     setSavedTenant(null);
     const nextPath = getNextPath('');
-    expect(nextPath).toEqual('http://localhost:5601/app/dashboards');
+    expect(nextPath).toEqual('/app/dashboards');
     window.location = originalLocation;
   });
 
@@ -113,7 +113,7 @@ describe('test redirect', () => {
     window.location = new URL('http://localhost:5601/app/login?nextUrl=%2Fapp%2Fdashboards');
     setSavedTenant('custom');
     const nextPath = getNextPath('');
-    expect(nextPath).toEqual('http://localhost:5601/app/dashboards?security_tenant=custom');
+    expect(nextPath).toEqual('/app/dashboards?security_tenant=custom');
     setSavedTenant(null);
     window.location = originalLocation;
   });
@@ -127,7 +127,7 @@ describe('test redirect', () => {
     setSavedTenant('custom');
     const nextPath = getNextPath('');
     expect(nextPath).toEqual(
-      "http://localhost:5601/app/dashboards?param1=value1&security_tenant=custom#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(filters:!(),refreshInterval:(pause:!f,value:900000),time:(from:now-24h,to:now))&_a=(description:'Analyze%20mock%20flight%20data%20for%20OpenSearch-Air,%20Logstash%20Airways,%20OpenSearch%20Dashboards%20Airlines%20and%20BeatsWest',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'%5BFlights%5D%20Global%20Flight%20Dashboard',viewMode:view)"
+      "/app/dashboards?param1=value1&security_tenant=custom#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(filters:!(),refreshInterval:(pause:!f,value:900000),time:(from:now-24h,to:now))&_a=(description:'Analyze%20mock%20flight%20data%20for%20OpenSearch-Air,%20Logstash%20Airways,%20OpenSearch%20Dashboards%20Airlines%20and%20BeatsWest',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'%5BFlights%5D%20Global%20Flight%20Dashboard',viewMode:view)"
     );
     setSavedTenant(null);
     window.location = originalLocation;
