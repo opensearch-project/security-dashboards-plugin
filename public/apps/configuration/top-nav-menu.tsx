@@ -17,7 +17,10 @@ import React from 'react';
 import { DataSourceSelectableConfig } from 'src/plugins/data_source_management/public';
 import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
 import { AppDependencies } from '../types';
-import { setDataSourceInUrl, setDataSource as setDataSourceInSubscription } from '../../utils/datasource-utils';
+import {
+  setDataSourceInUrl,
+  setDataSource as setDataSourceInSubscription,
+} from '../../utils/datasource-utils';
 
 export interface TopNavMenuProps extends AppDependencies {
   dataSourcePickerReadOnly: boolean;

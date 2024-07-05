@@ -53,7 +53,11 @@ import { addTenantToShareURL } from './services/shared-link';
 import { interceptError } from './utils/logout-utils';
 import { tenantColumn, getNamespacesToRegister } from './apps/configuration/utils/tenant-utils';
 import { getDashboardsInfoSafe } from './utils/dashboards-info-utils';
-import { dataSource$, getDataSourceEnabledUrl, getDataSourceFromUrl, setDataSourceInUrl } from './utils/datasource-utils';
+import {
+  dataSource$,
+  getDataSourceEnabledUrl,
+  getDataSourceFromUrl,
+} from './utils/datasource-utils';
 
 async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
   try {
@@ -94,9 +98,9 @@ export class SecurityPlugin
   private updateDefaultRouteOfSecurityApplications: AppUpdater = () => {
     const url = getDataSourceEnabledUrl(getDataSourceFromUrl());
     return {
-      defaultPath: `?${url.searchParams.toString()}`
+      defaultPath: `?${url.searchParams.toString()}`,
     };
-  }
+  };
 
   private appStateUpdater = new BehaviorSubject(this.updateDefaultRouteOfSecurityApplications);
 

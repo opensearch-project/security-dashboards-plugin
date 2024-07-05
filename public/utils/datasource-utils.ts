@@ -48,7 +48,9 @@ export function setDataSourceInUrl(dataSource: DataSourceOption) {
 
 export const LocalCluster = { label: 'Local cluster', id: '' };
 
-export const dataSource$ = new BehaviorSubject<DataSourceOption>(getDataSourceFromUrl() || LocalCluster);
+export const dataSource$ = new BehaviorSubject<DataSourceOption>(
+  getDataSourceFromUrl() || LocalCluster
+);
 
 export function setDataSource(dataSource: DataSourceOption) {
   dataSource$.next(dataSource);
