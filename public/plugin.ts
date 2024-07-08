@@ -53,6 +53,11 @@ import { addTenantToShareURL } from './services/shared-link';
 import { interceptError } from './utils/logout-utils';
 import { tenantColumn, getNamespacesToRegister } from './apps/configuration/utils/tenant-utils';
 import { getDashboardsInfoSafe } from './utils/dashboards-info-utils';
+import {
+  dataSource$,
+  getDataSourceEnabledUrl,
+  getDataSourceFromUrl,
+} from './utils/datasource-utils';
 
 async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
   try {
@@ -89,6 +94,15 @@ export class SecurityPlugin
     > {
   // @ts-ignore : initializerContext not used
   constructor(private readonly initializerContext: PluginInitializerContext) {}
+
+  private updateDefaultRouteOfSecurityApplications: AppUpdater = () => {
+    const url = getDataSourceEnabledUrl(getDataSourceFromUrl());
+    return {
+      defaultPath: `?${url.searchParams.toString()}`,
+    };
+  };
+
+  private appStateUpdater = new BehaviorSubject(this.updateDefaultRouteOfSecurityApplications);
 
   public async setup(
     core: CoreSetup,
@@ -161,6 +175,7 @@ export class SecurityPlugin
           title: 'Get Started',
           order: 8040,
           workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+          updater$: this.appStateUpdater,
           mount: async (params: AppMountParameters) => {
             return mountWrapper(params, '/getstarted');
           },
@@ -170,6 +185,7 @@ export class SecurityPlugin
           title: 'Authentication',
           order: 8040,
           workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+          updater$: this.appStateUpdater,
           mount: async (params: AppMountParameters) => {
             return mountWrapper(params, '/auth');
           },
@@ -179,6 +195,7 @@ export class SecurityPlugin
           title: 'Roles',
           order: 8040,
           workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+          updater$: this.appStateUpdater,
           mount: async (params: AppMountParameters) => {
             return mountWrapper(params, '/roles');
           },
@@ -188,6 +205,7 @@ export class SecurityPlugin
           title: 'Internal users',
           order: 8040,
           workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+          updater$: this.appStateUpdater,
           mount: async (params: AppMountParameters) => {
             return mountWrapper(params, '/users');
           },
@@ -197,6 +215,7 @@ export class SecurityPlugin
           title: 'Permissions',
           order: 8040,
           workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+          updater$: this.appStateUpdater,
           mount: async (params: AppMountParameters) => {
             return mountWrapper(params, '/permissions');
           },
@@ -206,6 +225,7 @@ export class SecurityPlugin
           title: 'Tenants',
           order: 8040,
           workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+          updater$: this.appStateUpdater,
           mount: async (params: AppMountParameters) => {
             return mountWrapper(params, '/tenants');
           },
@@ -215,6 +235,7 @@ export class SecurityPlugin
           title: 'Audit logs',
           order: 8040,
           workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+          updater$: this.appStateUpdater,
           mount: async (params: AppMountParameters) => {
             return mountWrapper(params, '/auditLogging');
           },
@@ -263,6 +284,12 @@ export class SecurityPlugin
           }),
         });
       }
+
+      dataSource$.subscribe((dataSourceOption) => {
+        if (dataSourceOption) {
+          this.appStateUpdater.next(this.updateDefaultRouteOfSecurityApplications);
+        }
+      });
     }
 
     core.application.register({

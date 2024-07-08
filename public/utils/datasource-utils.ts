@@ -13,6 +13,7 @@
  *   permissions and limitations under the License.
  */
 
+import { BehaviorSubject } from 'rxjs';
 import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
 
 const DATASOURCEURLKEY = 'dataSource';
@@ -35,8 +36,22 @@ export function getDataSourceFromUrl(): DataSourceOption {
   }
 }
 
-export function setDataSourceInUrl(dataSource: DataSourceOption) {
+export function getDataSourceEnabledUrl(dataSource: DataSourceOption) {
   const url = new URL(window.location.href);
   url.searchParams.set(DATASOURCEURLKEY, JSON.stringify(dataSource));
-  window.history.replaceState({}, '', url.toString());
+  return url;
+}
+
+export function setDataSourceInUrl(dataSource: DataSourceOption) {
+  window.history.replaceState({}, '', getDataSourceEnabledUrl(dataSource).toString());
+}
+
+export const LocalCluster = { label: 'Local cluster', id: '' };
+
+export const dataSource$ = new BehaviorSubject<DataSourceOption>(
+  getDataSourceFromUrl() || LocalCluster
+);
+
+export function setDataSource(dataSource: DataSourceOption) {
+  dataSource$.next(dataSource);
 }

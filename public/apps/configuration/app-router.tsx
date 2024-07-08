@@ -41,7 +41,7 @@ import { Action, RouteItem, SubAction } from './types';
 import { ResourceType } from '../../../common';
 import { buildHashUrl, buildUrl } from './utils/url-builder';
 import { CrossPageToast } from './cross-page-toast';
-import { getDataSourceFromUrl } from '../../utils/datasource-utils';
+import { getDataSourceFromUrl, LocalCluster } from '../../utils/datasource-utils';
 
 const LANDING_PAGE_URL = '/getstarted';
 
@@ -150,8 +150,6 @@ export interface DataSourceContextType {
   dataSource: DataSourceOption;
   setDataSource: React.Dispatch<React.SetStateAction<DataSourceOption>>;
 }
-
-export const LocalCluster = { label: 'Local cluster', id: '' };
 
 export const DataSourceContext = createContext<DataSourceContextType | null>(null);
 
