@@ -69,43 +69,48 @@ describe('test composeNextUrlQueryParam', () => {
 describe('test validateNextUrl', () => {
   test('accept relative url', () => {
     const url = '/relative/path';
-    expect(validateNextUrl(url)).toEqual(undefined);
+    expect(validateNextUrl(url, '')).toEqual(undefined);
   });
 
   test('accept relative url with # and query', () => {
     const url = '/relative/path#hash?a=b';
-    expect(validateNextUrl(url)).toEqual(undefined);
+    expect(validateNextUrl(url, undefined)).toEqual(undefined);
   });
 
   test('reject url not start with /', () => {
     const url = 'exmaple.com/relative/path';
-    expect(validateNextUrl(url)).toEqual(INVALID_NEXT_URL_PARAMETER_MESSAGE);
+    expect(validateNextUrl(url, '')).toEqual(INVALID_NEXT_URL_PARAMETER_MESSAGE);
   });
 
   test('reject absolute url', () => {
     const url = 'https://exmaple.com/relative/path';
-    expect(validateNextUrl(url)).toEqual(INVALID_NEXT_URL_PARAMETER_MESSAGE);
+    expect(validateNextUrl(url, '')).toEqual(INVALID_NEXT_URL_PARAMETER_MESSAGE);
   });
 
   test('reject url starts with //', () => {
     const url = '//exmaple.com/relative/path';
-    expect(validateNextUrl(url)).toEqual(INVALID_NEXT_URL_PARAMETER_MESSAGE);
+    expect(validateNextUrl(url, '')).toEqual(INVALID_NEXT_URL_PARAMETER_MESSAGE);
   });
 
   test('accpet url has @ in query parameters', () => {
     const url = '/test/path?key=a@b&k2=v';
-    expect(validateNextUrl(url)).toEqual(undefined);
+    expect(validateNextUrl(url, '')).toEqual(undefined);
   });
 
   test('allow slash', () => {
     const url = '/';
-    expect(validateNextUrl(url)).toEqual(undefined);
+    expect(validateNextUrl(url, '')).toEqual(undefined);
   });
 
   test('allow dashboard url', () => {
     const url =
       '/_plugin/opensearch-dashboards/app/opensearch-dashboards#dashbard/dashboard-id?_g=(param=a&p=b)';
-    expect(validateNextUrl(url)).toEqual(undefined);
+    expect(validateNextUrl(url, '')).toEqual(undefined);
+  });
+
+  test('allow basePath with numbers', () => {
+    const url = '/123/app/dashboards';
+    expect(validateNextUrl(url, '/123')).toEqual(undefined);
   });
 
   // test cases from https://pentester.land/cheatsheets/2018/11/02/open-redirect-cheatsheet.html
@@ -635,7 +640,7 @@ describe('test validateNextUrl', () => {
     ];
     for (const url of urlList) {
       if (url) {
-        expect(validateNextUrl(url)).toEqual(INVALID_NEXT_URL_PARAMETER_MESSAGE);
+        expect(validateNextUrl(url, '')).toEqual(INVALID_NEXT_URL_PARAMETER_MESSAGE);
       }
     }
   });
