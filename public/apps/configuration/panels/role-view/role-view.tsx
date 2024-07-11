@@ -302,7 +302,10 @@ export function RoleView(props: RoleViewProps) {
               <EuiPageContentHeaderSection>
                 <EuiFlexGroup>
                   <EuiFlexItem>
-                    <EuiSmallButton onClick={showDeleteConfirmModal} disabled={selection.length === 0}>
+                    <EuiSmallButton
+                      onClick={showDeleteConfirmModal}
+                      disabled={selection.length === 0}
+                    >
                       Delete mapping
                     </EuiSmallButton>
                   </EuiFlexItem>

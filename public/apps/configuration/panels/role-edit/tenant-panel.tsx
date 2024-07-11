@@ -13,7 +13,13 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiSmallButton, EuiComboBox, EuiFlexGroup, EuiFlexItem, EuiSuperSelect } from '@elastic/eui';
+import {
+  EuiSmallButton,
+  EuiComboBox,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiSuperSelect,
+} from '@elastic/eui';
 import React, { Dispatch, Fragment, SetStateAction, useEffect } from 'react';
 import { isEmpty } from 'lodash';
 import { RoleTenantPermission, TenantPermissionType, ComboBoxOptions } from '../../types';
