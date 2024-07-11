@@ -20,7 +20,7 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiHorizontalRule,
-  EuiSuperSelect,
+  EuiCompressedSuperSelect,
   EuiTextArea,
 } from '@elastic/eui';
 import React, { Dispatch, Fragment, SetStateAction, useEffect } from 'react';
@@ -204,7 +204,7 @@ export function FieldLevelSecurityRow(props: {
     >
       <EuiFlexGroup>
         <EuiFlexItem grow={1}>
-          <EuiSuperSelect
+          <EuiCompressedSuperSelect
             valueOfSelected={props.method}
             options={[
               { inputDisplay: 'Include', value: 'include' },

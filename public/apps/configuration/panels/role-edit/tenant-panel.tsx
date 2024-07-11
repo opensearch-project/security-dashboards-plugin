@@ -18,7 +18,7 @@ import {
   EuiComboBox,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiSuperSelect,
+  EuiCompressedSuperSelect,
 } from '@elastic/eui';
 import React, { Dispatch, Fragment, SetStateAction, useEffect } from 'react';
 import { isEmpty } from 'lodash';
@@ -101,7 +101,7 @@ function generateTenantPermissionPanels(
             />
           </EuiFlexItem>
           <EuiFlexItem style={{ maxWidth: '170px' }}>
-            <EuiSuperSelect
+            <EuiCompressedSuperSelect
               valueOfSelected={tenantPermission.permissionType}
               onChange={onValueChangeHandler('permissionType')}
               options={[
