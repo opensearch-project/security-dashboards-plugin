@@ -15,7 +15,7 @@
 
 import {
   EuiSmallButton,
-  EuiButtonEmpty,
+  EuiSmallButtonEmpty,
   EuiModal,
   EuiModalBody,
   EuiModalFooter,
@@ -87,7 +87,7 @@ export function PermissionEditModal(props: PermissionEditModalDeps) {
         </EuiModalBody>
 
         <EuiModalFooter>
-          <EuiButtonEmpty onClick={props.handleClose}>Cancel</EuiButtonEmpty>
+          <EuiSmallButtonEmpty onClick={props.handleClose}>Cancel</EuiSmallButtonEmpty>
 
           <EuiSmallButton
             id="submit"

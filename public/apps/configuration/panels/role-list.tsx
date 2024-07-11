@@ -27,7 +27,7 @@ import {
   EuiPageBody,
   EuiInMemoryTable,
   EuiBasicTableColumn,
-  EuiButtonEmpty,
+  EuiSmallButtonEmpty,
   EuiSearchBarProps,
   Query,
   EuiLoadingContent,
@@ -159,7 +159,7 @@ export function RoleList(props: AppDependencies) {
   );
 
   const actionsMenuItems = [
-    <EuiButtonEmpty
+    <EuiSmallButtonEmpty
       data-test-subj="edit"
       key="edit"
       onClick={() => {
@@ -168,9 +168,9 @@ export function RoleList(props: AppDependencies) {
       disabled={selection.length !== 1 || selection[0].reserved}
     >
       Edit
-    </EuiButtonEmpty>,
+    </EuiSmallButtonEmpty>,
     // TODO: Change duplication to a popup window
-    <EuiButtonEmpty
+    <EuiSmallButtonEmpty
       data-test-subj="duplicate"
       key="duplicate"
       onClick={() => {
@@ -183,15 +183,15 @@ export function RoleList(props: AppDependencies) {
       disabled={selection.length !== 1}
     >
       Duplicate
-    </EuiButtonEmpty>,
-    <EuiButtonEmpty
+    </EuiSmallButtonEmpty>,
+    <EuiSmallButtonEmpty
       key="delete"
       color="danger"
       onClick={showDeleteConfirmModal}
       disabled={selection.length === 0 || selection.some((e) => e.reserved)}
     >
       Delete
-    </EuiButtonEmpty>,
+    </EuiSmallButtonEmpty>,
   ];
 
   const [actionsMenu, closeActionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);

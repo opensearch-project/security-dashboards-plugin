@@ -16,7 +16,7 @@
 import React from 'react';
 import {
   EuiSmallButton,
-  EuiButtonEmpty,
+  EuiSmallButtonEmpty,
   EuiCallOut,
   EuiFieldPassword,
   EuiFlexGroup,
@@ -177,9 +177,9 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
           )}
         </EuiModalBody>
         <EuiModalFooter>
-          <EuiButtonEmpty data-test-subj="cancel" onClick={props.handleClose}>
+          <EuiSmallButtonEmpty data-test-subj="cancel" onClick={props.handleClose}>
             Cancel
-          </EuiButtonEmpty>
+          </EuiSmallButtonEmpty>
 
           <EuiSmallButton
             data-test-subj="reset"

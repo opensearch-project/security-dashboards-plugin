@@ -15,7 +15,7 @@
 
 import {
   EuiSmallButton,
-  EuiButtonEmpty,
+  EuiSmallButtonEmpty,
   EuiModal,
   EuiModalBody,
   EuiModalFooter,
@@ -91,7 +91,7 @@ export function TenantEditModal(props: TenantEditModalDeps) {
         </EuiModalBody>
         <EuiHorizontalRule margin="xs" />
         <EuiModalFooter>
-          <EuiButtonEmpty onClick={props.handleClose}>Cancel</EuiButtonEmpty>
+          <EuiSmallButtonEmpty onClick={props.handleClose}>Cancel</EuiSmallButtonEmpty>
 
           <EuiSmallButton
             id="submit"

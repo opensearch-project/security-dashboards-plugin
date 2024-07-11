@@ -32,7 +32,7 @@ import {
   EuiCallOut,
   EuiGlobalToastList,
   EuiHorizontalRule,
-  EuiButtonEmpty,
+  EuiSmallButtonEmpty,
 } from '@elastic/eui';
 import { difference } from 'lodash';
 import { BreadcrumbsPageDependencies } from '../../../types';
@@ -353,10 +353,10 @@ export function RoleView(props: RoleViewProps) {
 
   let pageActions;
   const actionsMenuItems: React.ReactElement[] = [
-    <EuiButtonEmpty key="duplicate" href={duplicateRoleLink}>
+    <EuiSmallButtonEmpty key="duplicate" href={duplicateRoleLink}>
       duplicate
-    </EuiButtonEmpty>,
-    <EuiButtonEmpty
+    </EuiSmallButtonEmpty>,
+    <EuiSmallButtonEmpty
       data-test-subj="delete"
       key="delete"
       color="danger"
@@ -375,7 +375,7 @@ export function RoleView(props: RoleViewProps) {
       }}
     >
       delete
-    </EuiButtonEmpty>,
+    </EuiSmallButtonEmpty>,
   ];
   const [actionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);
 

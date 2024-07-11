@@ -15,7 +15,7 @@
 
 import {
   EuiSmallButton,
-  EuiButtonEmpty,
+  EuiSmallButtonEmpty,
   EuiCallOut,
   EuiComboBox,
   EuiComboBoxOptionOption,
@@ -304,7 +304,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
           <EuiSpacer />
         </EuiModalBody>
         <EuiModalFooter>
-          <EuiButtonEmpty onClick={props.handleClose}>Cancel</EuiButtonEmpty>
+          <EuiSmallButtonEmpty onClick={props.handleClose}>Cancel</EuiSmallButtonEmpty>
 
           <EuiSmallButton
             data-test-subj="confirm"

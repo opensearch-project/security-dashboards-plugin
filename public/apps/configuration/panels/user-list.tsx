@@ -16,7 +16,7 @@
 import {
   EuiBadge,
   EuiSmallButton,
-  EuiButtonEmpty,
+  EuiSmallButtonEmpty,
   EuiFlexGroup,
   EuiFlexItem,
   EuiInMemoryTable,
@@ -156,7 +156,7 @@ export function UserList(props: AppDependencies) {
   );
 
   const actionsMenuItems = [
-    <EuiButtonEmpty
+    <EuiSmallButtonEmpty
       data-test-subj="edit"
       key="edit"
       onClick={() => {
@@ -165,8 +165,8 @@ export function UserList(props: AppDependencies) {
       disabled={selection.length !== 1}
     >
       Edit
-    </EuiButtonEmpty>,
-    <EuiButtonEmpty
+    </EuiSmallButtonEmpty>,
+    <EuiSmallButtonEmpty
       data-test-subj="duplicate"
       key="duplicate"
       onClick={() => {
@@ -179,8 +179,8 @@ export function UserList(props: AppDependencies) {
       disabled={selection.length !== 1}
     >
       Duplicate
-    </EuiButtonEmpty>,
-    <EuiButtonEmpty
+    </EuiSmallButtonEmpty>,
+    <EuiSmallButtonEmpty
       key="export"
       disabled={selection.length !== 1}
       href={
@@ -191,15 +191,15 @@ export function UserList(props: AppDependencies) {
       target="_blank"
     >
       Export JSON
-    </EuiButtonEmpty>,
-    <EuiButtonEmpty
+    </EuiSmallButtonEmpty>,
+    <EuiSmallButtonEmpty
       key="delete"
       color="danger"
       onClick={showDeleteConfirmModal}
       disabled={selection.length === 0 || selection.some((e) => e.username === currentUsername)}
     >
       Delete
-    </EuiButtonEmpty>,
+    </EuiSmallButtonEmpty>,
   ];
 
   const [actionsMenu, closeActionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);
