@@ -23,7 +23,7 @@ import {
   EuiModalHeaderTitle,
   EuiOverlayMask,
   EuiForm,
-  EuiTextArea,
+  EuiCompressedTextArea,
   EuiHorizontalRule,
 } from '@elastic/eui';
 import React, { useState } from 'react';
@@ -79,7 +79,7 @@ export function TenantEditModal(props: TenantEditModalDeps) {
               headerSubText="Describe the purpose of the tenant."
               optional
             >
-              <EuiTextArea
+              <EuiCompressedTextArea
                 data-test-subj="tenant-description"
                 fullWidth
                 placeholder="Describe the tenant"

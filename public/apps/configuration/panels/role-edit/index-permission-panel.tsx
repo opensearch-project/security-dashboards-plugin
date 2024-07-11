@@ -21,7 +21,7 @@ import {
   EuiFlexItem,
   EuiHorizontalRule,
   EuiCompressedSuperSelect,
-  EuiTextArea,
+  EuiCompressedTextArea,
 } from '@elastic/eui';
 import React, { Dispatch, Fragment, SetStateAction, useEffect } from 'react';
 import { isEmpty } from 'lodash';
@@ -180,7 +180,7 @@ export function DocLevelSecurityRow(props: {
       helpLink={DocLinks.DocumentLevelSecurityDoc}
       optional
     >
-      <EuiTextArea
+      <EuiCompressedTextArea
         placeholder={FIELD_LEVEL_SECURITY_PLACEHOLDER}
         value={props.value}
         onChange={props.onChangeHandler}
