@@ -23,7 +23,7 @@ import {
   EuiModalBody,
   EuiModalFooter,
   EuiOverlayMask,
-  EuiRadioGroup,
+  EuiCompressedRadioGroup,
   EuiSpacer,
   EuiText,
   EuiTitle,
@@ -247,7 +247,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
   if (isMultiTenancyEnabled) {
     content = (
       <>
-        <EuiRadioGroup
+        <EuiCompressedRadioGroup
           data-test-subj="tenant-switch-radios"
           options={tenantSwitchRadios}
           idSelected={tenantSwitchRadioIdSelected}
