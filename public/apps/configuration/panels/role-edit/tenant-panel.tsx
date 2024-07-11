@@ -15,7 +15,7 @@
 
 import {
   EuiSmallButton,
-  EuiComboBox,
+  EuiCompressedComboBox,
   EuiFlexGroup,
   EuiFlexItem,
   EuiCompressedSuperSelect,
@@ -91,7 +91,7 @@ function generateTenantPermissionPanels(
       <Fragment key={`tenant-permission-${arrayIndex}`}>
         <EuiFlexGroup>
           <EuiFlexItem style={{ maxWidth: '400px' }}>
-            <EuiComboBox
+            <EuiCompressedComboBox
               placeholder="Search tenant name or add a tenant pattern"
               selectedOptions={tenantPermission.tenantPatterns}
               onChange={onValueChangeHandler('tenantPatterns')}

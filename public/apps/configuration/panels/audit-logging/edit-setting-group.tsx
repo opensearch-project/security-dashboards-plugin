@@ -16,7 +16,7 @@
 import React, { Fragment } from 'react';
 import {
   EuiCodeBlock,
-  EuiComboBox,
+  EuiCompressedComboBox,
   EuiDescribedFormGroup,
   EuiCompressedFormRow,
   EuiSpacer,
@@ -77,7 +77,7 @@ export function EditSettingGroup(props: {
       val = val || [];
 
       return (
-        <EuiComboBox
+        <EuiCompressedComboBox
           placeholder={setting.title}
           options={setting.options.map(stringToComboBoxOption)}
           // @ts-ignore
@@ -91,7 +91,7 @@ export function EditSettingGroup(props: {
       val = val || [];
 
       return (
-        <EuiComboBox
+        <EuiCompressedComboBox
           noSuggestions
           placeholder={setting.title}
           // @ts-ignore

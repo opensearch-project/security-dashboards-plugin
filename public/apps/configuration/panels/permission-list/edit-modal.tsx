@@ -23,7 +23,7 @@ import {
   EuiModalHeaderTitle,
   EuiOverlayMask,
   EuiForm,
-  EuiComboBox,
+  EuiCompressedComboBox,
 } from '@elastic/eui';
 import React, { useState } from 'react';
 import { ComboBoxOptions, Action } from '../../types';
@@ -76,7 +76,7 @@ export function PermissionEditModal(props: PermissionEditModalDeps) {
               setIsFormValid={setIsFormValid}
             />
             <FormRow headerText="Permissions">
-              <EuiComboBox
+              <EuiCompressedComboBox
                 options={props.optionUniverse}
                 selectedOptions={allowedActions}
                 onCreateOption={appendOptionToComboBoxHandler(setAllowedActions, [])}

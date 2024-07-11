@@ -30,7 +30,7 @@ import {
   EuiCompressedCheckbox,
   EuiCallOut,
   EuiBottomBar,
-  EuiComboBox,
+  EuiCompressedComboBox,
   EuiIcon,
   EuiLoadingContent,
 } from '@elastic/eui';
@@ -453,7 +453,7 @@ export function ConfigureTab1(props: AppDependencies) {
             >
               <EuiFlexGroup>
                 <EuiFlexItem>
-                  <EuiComboBox
+                  <EuiCompressedComboBox
                     placeholder={updatedConfiguration.default_tenant}
                     options={comboBoxOptions}
                     selectedOptions={selectedComboBoxOptions}

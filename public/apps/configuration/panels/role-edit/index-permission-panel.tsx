@@ -16,7 +16,7 @@
 import {
   EuiAccordion,
   EuiSmallButton,
-  EuiComboBox,
+  EuiCompressedComboBox,
   EuiFlexGroup,
   EuiFlexItem,
   EuiHorizontalRule,
@@ -121,7 +121,7 @@ export function IndexPatternRow(props: {
   return (
     <FormRow headerText="Index" helpText="Specify index pattern using *">
       <EuiFlexItem className={LIMIT_WIDTH_INPUT_CLASS}>
-        <EuiComboBox
+        <EuiCompressedComboBox
           noSuggestions
           placeholder="Search for index name or type in index pattern"
           selectedOptions={props.value}
@@ -149,7 +149,7 @@ export function IndexPermissionRow(props: {
     >
       <EuiFlexGroup>
         <EuiFlexItem className={LIMIT_WIDTH_INPUT_CLASS}>
-          <EuiComboBox
+          <EuiCompressedComboBox
             placeholder="Search for action group name or permission name"
             options={props.permisionOptionsSet}
             selectedOptions={props.value}
@@ -214,7 +214,7 @@ export function FieldLevelSecurityRow(props: {
           />
         </EuiFlexItem>
         <EuiFlexItem grow={9}>
-          <EuiComboBox
+          <EuiCompressedComboBox
             noSuggestions
             placeholder="Type in field name"
             selectedOptions={props.fields}
@@ -238,7 +238,7 @@ export function AnonymizationRow(props: {
       headerSubText="Masks any sensitive fields with a random value to protect your data security."
       optional
     >
-      <EuiComboBox
+      <EuiCompressedComboBox
         noSuggestions
         placeholder="Type in field name"
         selectedOptions={props.value}
