@@ -16,7 +16,7 @@
 import React, { useState } from 'react';
 import {
   EuiText,
-  EuiFieldText,
+  EuiCompressedFieldText,
   EuiSpacer,
   EuiButton,
   EuiImage,
@@ -24,7 +24,7 @@ import {
   EuiForm,
   EuiCompressedFormRow,
   EuiHorizontalRule,
-  EuiFieldPassword,
+  EuiCompressedFieldPassword,
 } from '@elastic/eui';
 import { CoreStart } from '../../../../../src/core/public';
 import { ClientConfigType } from '../../types';
@@ -189,7 +189,7 @@ export function LoginPage(props: LoginPageDeps) {
         case AuthType.BASIC: {
           formBody.push(
             <EuiCompressedFormRow>
-              <EuiFieldText
+              <EuiCompressedFieldText
                 data-test-subj="user-name"
                 aria-label="username_input"
                 placeholder="Username"
@@ -202,7 +202,7 @@ export function LoginPage(props: LoginPageDeps) {
           );
           formBody.push(
             <EuiCompressedFormRow isInvalid={passwordValidationFailed}>
-              <EuiFieldPassword
+              <EuiCompressedFieldPassword
                 data-test-subj="password"
                 aria-label="password_input"
                 placeholder="Password"

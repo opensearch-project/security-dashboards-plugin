@@ -15,7 +15,7 @@
 
 import {
   EuiSmallButton,
-  EuiFieldText,
+  EuiCompressedFieldText,
   EuiFlexGroup,
   EuiFlexItem,
   EuiSpacer,
@@ -48,7 +48,7 @@ function generateBackendRolesPanels(
               error={roleEmptyErrorMessage}
               isInvalid={arrayIndex === emptyRoleIndex && !isEmpty(roleEmptyErrorMessage)}
             >
-              <EuiFieldText
+              <EuiCompressedFieldText
                 isInvalid={arrayIndex === emptyRoleIndex && !isEmpty(roleEmptyErrorMessage)}
                 id={`backend-role-${arrayIndex}`}
                 value={backendRole}

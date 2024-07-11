@@ -17,7 +17,7 @@ import React, { Dispatch, SetStateAction, Fragment } from 'react';
 import {
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFieldText,
+  EuiCompressedFieldText,
   EuiSmallButton,
   EuiCompressedFormRow,
   EuiSpacer,
@@ -72,7 +72,7 @@ export function ExternalIdentitiesPanel(props: {
         <EuiFlexGroup>
           <EuiFlexItem style={{ maxWidth: '400px' }}>
             <FormRow headerText={arrayIndex === 0 ? 'Backend roles' : ''}>
-              <EuiFieldText
+              <EuiCompressedFieldText
                 id={`externalIdentity-${arrayIndex}`}
                 value={externalIdentity.externalIdentity}
                 onChange={(e) => onValueChangeHandler('externalIdentity')(e.target.value)}

@@ -15,7 +15,7 @@
 
 import {
   EuiSmallButton,
-  EuiFieldText,
+  EuiCompressedFieldText,
   EuiFlexGroup,
   EuiFlexItem,
   EuiSpacer,
@@ -68,7 +68,7 @@ function generateAttributesPanels(
         <EuiFlexGroup>
           <EuiFlexItem grow={false}>
             <FormRow headerText={arrayIndex === 0 ? 'Variable name' : ''}>
-              <EuiFieldText
+              <EuiCompressedFieldText
                 id={`attribute-${arrayIndex}`}
                 value={userAttribute.key}
                 onChange={(e) => onValueChangeHandler('key')(e.target.value)}
@@ -78,7 +78,7 @@ function generateAttributesPanels(
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <FormRow headerText={arrayIndex === 0 ? 'Value' : ''}>
-              <EuiFieldText
+              <EuiCompressedFieldText
                 id={`value-${arrayIndex}`}
                 value={userAttribute.value}
                 onChange={(e) => onValueChangeHandler('value')(e.target.value)}

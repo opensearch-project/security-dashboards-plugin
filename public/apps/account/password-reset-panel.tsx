@@ -18,7 +18,7 @@ import {
   EuiSmallButton,
   EuiSmallButtonEmpty,
   EuiCallOut,
-  EuiFieldPassword,
+  EuiCompressedFieldPassword,
   EuiFlexGroup,
   EuiFlexItem,
   EuiCompressedFormRow,
@@ -116,7 +116,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
             isInvalid={isCurrentPasswordInvalid}
             error={currentPasswordError}
           >
-            <EuiFieldPassword
+            <EuiCompressedFieldPassword
               data-test-subj="current-password"
               onChange={function (e: React.ChangeEvent<HTMLInputElement>) {
                 setCurrentPassword(e.target.value);
@@ -135,7 +135,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
                 helpText={passwordHelpText}
                 isInvalid={isNewPasswordInvalid}
               >
-                <EuiFieldPassword
+                <EuiCompressedFieldPassword
                   data-test-subj="new-password"
                   onChange={function (e: React.ChangeEvent<HTMLInputElement>) {
                     setNewPassword(e.target.value);
@@ -156,7 +156,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
             headerText="Re-enter new password"
             helpText="The password must be identical to what you entered above."
           >
-            <EuiFieldPassword
+            <EuiCompressedFieldPassword
               data-test-subj="reenter-new-password"
               isInvalid={isRepeatNewPasswordInvalid}
               onChange={function (e: React.ChangeEvent<HTMLInputElement>) {
