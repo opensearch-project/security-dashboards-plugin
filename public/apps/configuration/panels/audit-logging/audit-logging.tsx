@@ -26,7 +26,7 @@ import {
   EuiPageHeader,
   EuiPanel,
   EuiSpacer,
-  EuiSwitch,
+  EuiCompressedSwitch,
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
@@ -79,7 +79,7 @@ function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: bool
           className="described-form-group"
         >
           <EuiCompressedFormRow>
-            <EuiSwitch
+            <EuiCompressedSwitch
               data-test-subj="audit-logging-enabled-switch"
               name="auditLoggingEnabledSwitch"
               label={displayBoolean(auditLoggingEnabled)}

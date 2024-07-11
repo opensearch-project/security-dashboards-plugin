@@ -20,7 +20,7 @@ import {
   EuiDescribedFormGroup,
   EuiCompressedFormRow,
   EuiSpacer,
-  EuiSwitch,
+  EuiCompressedSwitch,
   EuiTitle,
 } from '@elastic/eui';
 import { get, isEmpty } from 'lodash';
@@ -63,7 +63,7 @@ export function EditSettingGroup(props: {
       val = val || false;
 
       return (
-        <EuiSwitch
+        <EuiCompressedSwitch
           // @ts-ignore
           label={displayBoolean(val)}
           // @ts-ignore
