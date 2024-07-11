@@ -18,7 +18,7 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiFieldText,
-  EuiButton,
+  EuiSmallButton,
   EuiFormRow,
   EuiSpacer,
 } from '@elastic/eui';
@@ -82,13 +82,13 @@ export function ExternalIdentitiesPanel(props: {
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <EuiFormRow hasEmptyLabelSpace={arrayIndex === 0 ? true : false}>
-              <EuiButton
+              <EuiSmallButton
                 id={`remove-${arrayIndex}`}
                 color="danger"
                 onClick={() => removeElementFromArray(setExternalIdentities, [], arrayIndex)}
               >
                 Remove
-              </EuiButton>
+              </EuiSmallButton>
             </EuiFormRow>
           </EuiFlexItem>
         </EuiFlexGroup>
@@ -104,14 +104,14 @@ export function ExternalIdentitiesPanel(props: {
     >
       {panel}
       <EuiSpacer />
-      <EuiButton
+      <EuiSmallButton
         id="add-row"
         onClick={() => {
           appendElementToArray(setExternalIdentities, [], getEmptyExternalIdentity());
         }}
       >
         Add another backend role
-      </EuiButton>
+      </EuiSmallButton>
     </PanelWithHeader>
   );
 }

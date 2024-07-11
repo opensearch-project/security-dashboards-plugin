@@ -15,7 +15,7 @@
 
 import {
   EuiBadge,
-  EuiButton,
+  EuiSmallButton,
   EuiButtonEmpty,
   EuiFlexGroup,
   EuiFlexItem,
@@ -237,13 +237,13 @@ export function ManageTab(props: AppDependencies) {
           Tenancy is currently disabled and users don&apos;t have access to this feature. To create,
           edit tenants you must enabled tenanc throught he configure tenancy page.
         </p>
-        <EuiButton
+        <EuiSmallButton
           id="switchToConfigure"
           color="warning"
           onClick={() => renderConfigurePage().then()}
         >
           Configure tenancy
-        </EuiButton>
+        </EuiSmallButton>
       </EuiCallOut>
     );
   }
@@ -529,13 +529,13 @@ export function ManageTab(props: AppDependencies) {
             <EuiFlexGroup>
               <EuiFlexItem>{actionsMenu}</EuiFlexItem>
               <EuiFlexItem>
-                <EuiButton
+                <EuiSmallButton
                   id="createTenant"
                   fill
                   onClick={() => showEditModal('', Action.create, '')}
                 >
                   Create tenant
-                </EuiButton>
+                </EuiSmallButton>
               </EuiFlexItem>
             </EuiFlexGroup>
           </EuiPageContentHeaderSection>

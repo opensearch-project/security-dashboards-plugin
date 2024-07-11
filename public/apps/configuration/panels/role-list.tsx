@@ -23,7 +23,7 @@ import {
   EuiPageContentHeader,
   EuiPageContentHeaderSection,
   EuiFlexItem,
-  EuiButton,
+  EuiSmallButton,
   EuiPageBody,
   EuiInMemoryTable,
   EuiBasicTableColumn,
@@ -301,13 +301,13 @@ export function RoleList(props: AppDependencies) {
               <EuiFlexGroup>
                 <EuiFlexItem>{actionsMenu}</EuiFlexItem>
                 <EuiFlexItem>
-                  <EuiButton
+                  <EuiSmallButton
                     fill
                     href={buildHashUrl(ResourceType.roles, Action.create)}
                     data-test-subj="create-role"
                   >
                     Create role
-                  </EuiButton>
+                  </EuiSmallButton>
                 </EuiFlexItem>
               </EuiFlexGroup>
             </EuiPageContentHeaderSection>

@@ -14,7 +14,7 @@
  */
 
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiCode,
   EuiDescribedFormGroup,
   EuiFlexGroup,
@@ -206,7 +206,7 @@ export function AuditLogging(props: AuditLoggingProps) {
               </EuiTitle>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiButton
+              <EuiSmallButton
                 data-test-subj="general-settings-configure"
                 onClick={() => {
                   window.location.href =
@@ -214,7 +214,7 @@ export function AuditLogging(props: AuditLoggingProps) {
                 }}
               >
                 Configure
-              </EuiButton>
+              </EuiSmallButton>
             </EuiFlexItem>
           </EuiFlexGroup>
           <EuiHorizontalRule margin="m" />
@@ -231,7 +231,7 @@ export function AuditLogging(props: AuditLoggingProps) {
               </EuiTitle>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiButton
+              <EuiSmallButton
                 data-test-subj="compliance-settings-configure"
                 onClick={() => {
                   window.location.href =
@@ -239,7 +239,7 @@ export function AuditLogging(props: AuditLoggingProps) {
                 }}
               >
                 Configure
-              </EuiButton>
+              </EuiSmallButton>
             </EuiFlexItem>
           </EuiFlexGroup>
 

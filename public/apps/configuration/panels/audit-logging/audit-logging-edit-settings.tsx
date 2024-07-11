@@ -15,7 +15,7 @@
 
 import React, { useContext } from 'react';
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiFlexGroup,
   EuiFlexItem,
   EuiGlobalToastList,
@@ -83,17 +83,17 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
       <>
         <EuiFlexGroup justifyContent="flexEnd">
           <EuiFlexItem grow={false}>
-            <EuiButton
+            <EuiSmallButton
               data-test-subj="cancel"
               onClick={() => {
                 window.location.href = buildHashUrl(ResourceType.auditLogging);
               }}
             >
               Cancel
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton
+            <EuiSmallButton
               data-test-subj="save"
               fill
               isDisabled={invalidSettings.length !== 0}
@@ -102,7 +102,7 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
               }}
             >
               Save
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       </>

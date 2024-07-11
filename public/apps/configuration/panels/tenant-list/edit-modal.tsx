@@ -14,7 +14,7 @@
  */
 
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiButtonEmpty,
   EuiModal,
   EuiModalBody,
@@ -93,7 +93,7 @@ export function TenantEditModal(props: TenantEditModalDeps) {
         <EuiModalFooter>
           <EuiButtonEmpty onClick={props.handleClose}>Cancel</EuiButtonEmpty>
 
-          <EuiButton
+          <EuiSmallButton
             id="submit"
             onClick={async () => {
               await props.handleSave(tenantName, tenantDescription);
@@ -102,7 +102,7 @@ export function TenantEditModal(props: TenantEditModalDeps) {
             disabled={!isFormValid}
           >
             {props.action === Action.create ? 'Create' : 'Save'}
-          </EuiButton>
+          </EuiSmallButton>
         </EuiModalFooter>
       </EuiModal>
     </EuiOverlayMask>

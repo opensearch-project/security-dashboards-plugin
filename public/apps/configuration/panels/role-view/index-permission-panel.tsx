@@ -22,7 +22,7 @@ import {
   EuiText,
   EuiFlexGroup,
   EuiEmptyPrompt,
-  EuiButton,
+  EuiSmallButton,
 } from '@elastic/eui';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import {
@@ -188,7 +188,7 @@ export function IndexPermissionPanel(props: IndexPermissionPanelProps) {
       title={<h3>No index permission</h3>}
       titleSize="s"
       actions={
-        <EuiButton
+        <EuiSmallButton
           data-test-subj="addIndexPermission"
           disabled={props.isReserved}
           onClick={() => {
@@ -196,7 +196,7 @@ export function IndexPermissionPanel(props: IndexPermissionPanelProps) {
           }}
         >
           Add index permission
-        </EuiButton>
+        </EuiSmallButton>
       }
     />
   );

@@ -15,7 +15,7 @@
 
 import React, { useState, useContext } from 'react';
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiPageContentHeader,
   EuiPageContentHeaderSection,
   EuiSpacer,
@@ -195,7 +195,7 @@ export function RoleView(props: RoleViewProps) {
             />
           </EuiFlexItem>
           <EuiFlexItem>
-            <EuiButton
+            <EuiSmallButton
               data-test-subj="map-users"
               fill
               onClick={() => {
@@ -208,7 +208,7 @@ export function RoleView(props: RoleViewProps) {
               }}
             >
               Map users
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       }
@@ -302,12 +302,12 @@ export function RoleView(props: RoleViewProps) {
               <EuiPageContentHeaderSection>
                 <EuiFlexGroup>
                   <EuiFlexItem>
-                    <EuiButton onClick={showDeleteConfirmModal} disabled={selection.length === 0}>
+                    <EuiSmallButton onClick={showDeleteConfirmModal} disabled={selection.length === 0}>
                       Delete mapping
-                    </EuiButton>
+                    </EuiSmallButton>
                   </EuiFlexItem>
                   <EuiFlexItem>
-                    <EuiButton
+                    <EuiSmallButton
                       data-test-subj="manage-mapping"
                       onClick={() => {
                         window.location.href = buildHashUrl(
@@ -319,7 +319,7 @@ export function RoleView(props: RoleViewProps) {
                       }}
                     >
                       Manage mapping
-                    </EuiButton>
+                    </EuiSmallButton>
                   </EuiFlexItem>
                 </EuiFlexGroup>
               </EuiPageContentHeaderSection>
@@ -377,15 +377,15 @@ export function RoleView(props: RoleViewProps) {
   const [actionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);
 
   if (isReserved) {
-    pageActions = <EuiButton href={duplicateRoleLink}>Duplicate role</EuiButton>;
+    pageActions = <EuiSmallButton href={duplicateRoleLink}>Duplicate role</EuiSmallButton>;
   } else {
     pageActions = (
       <EuiFlexGroup gutterSize="s">
         <EuiFlexItem>{actionsMenu}</EuiFlexItem>
         <EuiFlexItem>
-          <EuiButton href={buildHashUrl(ResourceType.roles, Action.edit, props.roleName)}>
+          <EuiSmallButton href={buildHashUrl(ResourceType.roles, Action.edit, props.roleName)}>
             Edit role
-          </EuiButton>
+          </EuiSmallButton>
         </EuiFlexItem>
       </EuiFlexGroup>
     );

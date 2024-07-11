@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiButton, EuiComboBox, EuiFlexGroup, EuiFlexItem, EuiSuperSelect } from '@elastic/eui';
+import { EuiSmallButton, EuiComboBox, EuiFlexGroup, EuiFlexItem, EuiSuperSelect } from '@elastic/eui';
 import React, { Dispatch, Fragment, SetStateAction, useEffect } from 'react';
 import { isEmpty } from 'lodash';
 import { RoleTenantPermission, TenantPermissionType, ComboBoxOptions } from '../../types';
@@ -108,12 +108,12 @@ function generateTenantPermissionPanels(
             />
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton
+            <EuiSmallButton
               color="danger"
               onClick={() => removeElementFromArray(setPermissions, [], arrayIndex)}
             >
               Remove
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       </Fragment>
@@ -145,13 +145,13 @@ export function TenantPanel(props: {
         {generateTenantPermissionPanels(state, optionUniverse, setState)}
       </FormRow>
 
-      <EuiButton
+      <EuiSmallButton
         onClick={() => {
           appendElementToArray(setState, [], getEmptyTenantPermission());
         }}
       >
         Add another tenant permission
-      </EuiButton>
+      </EuiSmallButton>
     </PanelWithHeader>
   );
 }

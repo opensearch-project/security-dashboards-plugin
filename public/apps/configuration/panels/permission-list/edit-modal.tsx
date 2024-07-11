@@ -14,7 +14,7 @@
  */
 
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiButtonEmpty,
   EuiModal,
   EuiModalBody,
@@ -89,7 +89,7 @@ export function PermissionEditModal(props: PermissionEditModalDeps) {
         <EuiModalFooter>
           <EuiButtonEmpty onClick={props.handleClose}>Cancel</EuiButtonEmpty>
 
-          <EuiButton
+          <EuiSmallButton
             id="submit"
             onClick={async () => {
               await props.handleSave(groupName, allowedActions.map(comboBoxOptionToString));
@@ -98,7 +98,7 @@ export function PermissionEditModal(props: PermissionEditModalDeps) {
             disabled={!isFormValid}
           >
             {props.action === Action.create ? 'Create' : 'Save'}
-          </EuiButton>
+          </EuiSmallButton>
         </EuiModalFooter>
       </EuiModal>
     </EuiOverlayMask>

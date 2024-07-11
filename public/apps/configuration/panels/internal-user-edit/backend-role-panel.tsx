@@ -14,7 +14,7 @@
  */
 
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiFieldText,
   EuiFlexGroup,
   EuiFlexItem,
@@ -62,13 +62,13 @@ function generateBackendRolesPanels(
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <EuiFormRow hasEmptyLabelSpace={arrayIndex === 0 ? true : false}>
-              <EuiButton
+              <EuiSmallButton
                 id={`backend-role-delete-${arrayIndex}`}
                 color="danger"
                 onClick={() => removeElementFromArray(setBackendRoles, [], arrayIndex)}
               >
                 Remove
-              </EuiButton>
+              </EuiSmallButton>
             </EuiFormRow>
           </EuiFlexItem>
         </EuiFlexGroup>
@@ -105,7 +105,7 @@ export function BackendRolePanel(props: {
         setRoleEmptyErrorMessage
       )}
       <EuiSpacer />
-      <EuiButton
+      <EuiSmallButton
         id="backend-role-add-row"
         onClick={() => {
           if (state.indexOf('') !== -1) {
@@ -118,7 +118,7 @@ export function BackendRolePanel(props: {
         }}
       >
         Add another backend role
-      </EuiButton>
+      </EuiSmallButton>
     </PanelWithHeader>
   );
 }

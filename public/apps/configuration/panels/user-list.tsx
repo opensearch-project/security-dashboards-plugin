@@ -15,7 +15,7 @@
 
 import {
   EuiBadge,
-  EuiButton,
+  EuiSmallButton,
   EuiButtonEmpty,
   EuiFlexGroup,
   EuiFlexItem,
@@ -247,13 +247,13 @@ export function UserList(props: AppDependencies) {
               <EuiFlexGroup>
                 <EuiFlexItem>{actionsMenu}</EuiFlexItem>
                 <EuiFlexItem>
-                  <EuiButton
+                  <EuiSmallButton
                     fill
                     href={buildHashUrl(ResourceType.users, Action.create)}
                     data-test-subj="create-user"
                   >
                     Create internal user
-                  </EuiButton>
+                  </EuiSmallButton>
                 </EuiFlexItem>
               </EuiFlexGroup>
             </EuiPageContentHeaderSection>

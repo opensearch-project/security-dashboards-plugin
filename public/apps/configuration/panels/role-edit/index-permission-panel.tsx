@@ -15,7 +15,7 @@
 
 import {
   EuiAccordion,
-  EuiButton,
+  EuiSmallButton,
   EuiComboBox,
   EuiFlexGroup,
   EuiFlexItem,
@@ -271,12 +271,12 @@ export function generateIndexPermissionPanels(
             'Add index permission'
           }
           extraAction={
-            <EuiButton
+            <EuiSmallButton
               color="danger"
               onClick={() => removeElementFromArray(setRoleIndexPermission, [], arrayIndex)}
             >
               Remove
-            </EuiButton>
+            </EuiSmallButton>
           }
         >
           <IndexPatternRow
@@ -332,13 +332,13 @@ export function IndexPermissionPanel(props: {
       helpLink={DocLinks.IndexPermissionsDoc}
     >
       {generateIndexPermissionPanels(state, optionUniverse, setState)}
-      <EuiButton
+      <EuiSmallButton
         onClick={() => {
           appendElementToArray(setState, [], getEmptyIndexPermission());
         }}
       >
         Add another index permission
-      </EuiButton>
+      </EuiSmallButton>
     </PanelWithHeader>
   );
 }

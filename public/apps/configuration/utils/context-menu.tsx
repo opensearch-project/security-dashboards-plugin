@@ -17,7 +17,7 @@ import {
   EuiButtonProps,
   EuiPopover,
   EuiContextMenuPanel,
-  EuiButton,
+  EuiSmallButton,
   EuiFlexGroup,
   EuiFlexItem,
 } from '@elastic/eui';
@@ -33,7 +33,7 @@ export function useContextMenuState(
   const closeContextMenu = () => setContextMenuOpen(false);
 
   const button = (
-    <EuiButton
+    <EuiSmallButton
       iconType="arrowDown"
       iconSide="right"
       onClick={() => {
@@ -42,7 +42,7 @@ export function useContextMenuState(
       {...buttonProps}
     >
       {buttonText}
-    </EuiButton>
+    </EuiSmallButton>
   );
 
   const items = [

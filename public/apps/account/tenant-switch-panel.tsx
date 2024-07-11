@@ -14,7 +14,7 @@
  */
 
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiButtonEmpty,
   EuiCallOut,
   EuiComboBox,
@@ -306,14 +306,14 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
         <EuiModalFooter>
           <EuiButtonEmpty onClick={props.handleClose}>Cancel</EuiButtonEmpty>
 
-          <EuiButton
+          <EuiSmallButton
             data-test-subj="confirm"
             fill={isMultiTenancyEnabled && !invalidCustomTenant}
             disabled={!isMultiTenancyEnabled || invalidCustomTenant}
             onClick={handleTenantConfirmation}
           >
             Confirm
-          </EuiButton>
+          </EuiSmallButton>
         </EuiModalFooter>
       </EuiModal>
     </EuiOverlayMask>
