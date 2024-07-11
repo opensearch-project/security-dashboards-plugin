@@ -20,7 +20,7 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiForm,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiHorizontalRule,
   EuiLoadingContent,
   EuiPageHeader,
@@ -59,7 +59,7 @@ function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: bool
     <EuiPanel>
       <EuiForm>
         <EuiDescribedFormGroup title={<h3>Storage location</h3>} className="described-form-group">
-          <EuiFormRow className="form-row">
+          <EuiCompressedFormRow className="form-row">
             <EuiText color="subdued" grow={false}>
               <FormattedMessage
                 id="audit.logs.storageInstruction"
@@ -71,14 +71,14 @@ function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: bool
               />{' '}
               <ExternalLink href={DocLinks.AuditLogsStorageDoc} />
             </EuiText>
-          </EuiFormRow>
+          </EuiCompressedFormRow>
         </EuiDescribedFormGroup>
 
         <EuiDescribedFormGroup
           title={<h3>Enable audit logging</h3>}
           className="described-form-group"
         >
-          <EuiFormRow>
+          <EuiCompressedFormRow>
             <EuiSwitch
               data-test-subj="audit-logging-enabled-switch"
               name="auditLoggingEnabledSwitch"
@@ -86,7 +86,7 @@ function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: bool
               checked={auditLoggingEnabled}
               onChange={onSwitchChange}
             />
-          </EuiFormRow>
+          </EuiCompressedFormRow>
         </EuiDescribedFormGroup>
       </EuiForm>
     </EuiPanel>

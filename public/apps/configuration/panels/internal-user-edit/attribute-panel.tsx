@@ -19,7 +19,7 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiSpacer,
-  EuiFormRow,
+  EuiCompressedFormRow,
 } from '@elastic/eui';
 import { map, isEmpty } from 'lodash';
 import React, { Dispatch, Fragment, SetStateAction } from 'react';
@@ -87,7 +87,7 @@ function generateAttributesPanels(
             </FormRow>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiFormRow hasEmptyLabelSpace={arrayIndex === 0 ? true : false}>
+            <EuiCompressedFormRow hasEmptyLabelSpace={arrayIndex === 0 ? true : false}>
               <EuiSmallButton
                 id={`delete-${arrayIndex}`}
                 color="danger"
@@ -95,7 +95,7 @@ function generateAttributesPanels(
               >
                 Remove
               </EuiSmallButton>
-            </EuiFormRow>
+            </EuiCompressedFormRow>
           </EuiFlexItem>
         </EuiFlexGroup>
       </Fragment>

@@ -19,7 +19,7 @@ import {
   EuiFlexItem,
   EuiFieldText,
   EuiSmallButton,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiSpacer,
 } from '@elastic/eui';
 import { isEmpty, map } from 'lodash';
@@ -81,7 +81,7 @@ export function ExternalIdentitiesPanel(props: {
             </FormRow>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiFormRow hasEmptyLabelSpace={arrayIndex === 0 ? true : false}>
+            <EuiCompressedFormRow hasEmptyLabelSpace={arrayIndex === 0 ? true : false}>
               <EuiSmallButton
                 id={`remove-${arrayIndex}`}
                 color="danger"
@@ -89,7 +89,7 @@ export function ExternalIdentitiesPanel(props: {
               >
                 Remove
               </EuiSmallButton>
-            </EuiFormRow>
+            </EuiCompressedFormRow>
           </EuiFlexItem>
         </EuiFlexGroup>
       </Fragment>

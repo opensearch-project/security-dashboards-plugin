@@ -22,7 +22,7 @@ import {
   EuiImage,
   EuiListGroup,
   EuiForm,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiHorizontalRule,
   EuiFieldPassword,
 } from '@elastic/eui';
@@ -149,7 +149,7 @@ export function LoginPage(props: LoginPageDeps) {
     const buttonId = `${authType}_login_button`;
     const loginEndPointWithPath = `${props.http.basePath.serverBasePath}${loginEndPoint}`;
     return (
-      <EuiFormRow>
+      <EuiCompressedFormRow>
         <EuiButton
           data-test-subj="submit"
           aria-label={buttonId}
@@ -161,7 +161,7 @@ export function LoginPage(props: LoginPageDeps) {
         >
           {buttonConfig.buttonname}
         </EuiButton>
-      </EuiFormRow>
+      </EuiCompressedFormRow>
     );
   };
 
@@ -188,7 +188,7 @@ export function LoginPage(props: LoginPageDeps) {
       switch (authOpts[i].toLowerCase()) {
         case AuthType.BASIC: {
           formBody.push(
-            <EuiFormRow>
+            <EuiCompressedFormRow>
               <EuiFieldText
                 data-test-subj="user-name"
                 aria-label="username_input"
@@ -198,10 +198,10 @@ export function LoginPage(props: LoginPageDeps) {
                 value={username}
                 isInvalid={usernameValidationFailed}
               />
-            </EuiFormRow>
+            </EuiCompressedFormRow>
           );
           formBody.push(
-            <EuiFormRow isInvalid={passwordValidationFailed}>
+            <EuiCompressedFormRow isInvalid={passwordValidationFailed}>
               <EuiFieldPassword
                 data-test-subj="password"
                 aria-label="password_input"
@@ -211,11 +211,11 @@ export function LoginPage(props: LoginPageDeps) {
                 value={password}
                 isInvalid={usernameValidationFailed}
               />
-            </EuiFormRow>
+            </EuiCompressedFormRow>
           );
           const buttonId = `${AuthType.BASIC}_login_button`;
           formBody.push(
-            <EuiFormRow>
+            <EuiCompressedFormRow>
               <EuiButton
                 data-test-subj="submit"
                 aria-label={buttonId}
@@ -227,7 +227,7 @@ export function LoginPage(props: LoginPageDeps) {
               >
                 Log in
               </EuiButton>
-            </EuiFormRow>
+            </EuiCompressedFormRow>
           );
 
           if (props.config.auth.anonymous_auth_enabled) {

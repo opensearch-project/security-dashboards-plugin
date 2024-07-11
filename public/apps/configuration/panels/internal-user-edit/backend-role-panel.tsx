@@ -19,7 +19,7 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiSpacer,
-  EuiFormRow,
+  EuiCompressedFormRow,
 } from '@elastic/eui';
 import { isEmpty } from 'lodash';
 import React, { Dispatch, Fragment, SetStateAction, useState } from 'react';
@@ -43,7 +43,7 @@ function generateBackendRolesPanels(
       <Fragment key={`backend-role-${arrayIndex}`}>
         <EuiFlexGroup>
           <EuiFlexItem className={LIMIT_WIDTH_INPUT_CLASS}>
-            <EuiFormRow
+            <EuiCompressedFormRow
               label={arrayIndex === 0 ? 'Backend role' : ''}
               error={roleEmptyErrorMessage}
               isInvalid={arrayIndex === emptyRoleIndex && !isEmpty(roleEmptyErrorMessage)}
@@ -58,10 +58,10 @@ function generateBackendRolesPanels(
                 }}
                 placeholder="Type in backend role"
               />
-            </EuiFormRow>
+            </EuiCompressedFormRow>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiFormRow hasEmptyLabelSpace={arrayIndex === 0 ? true : false}>
+            <EuiCompressedFormRow hasEmptyLabelSpace={arrayIndex === 0 ? true : false}>
               <EuiSmallButton
                 id={`backend-role-delete-${arrayIndex}`}
                 color="danger"
@@ -69,7 +69,7 @@ function generateBackendRolesPanels(
               >
                 Remove
               </EuiSmallButton>
-            </EuiFormRow>
+            </EuiCompressedFormRow>
           </EuiFlexItem>
         </EuiFlexGroup>
       </Fragment>

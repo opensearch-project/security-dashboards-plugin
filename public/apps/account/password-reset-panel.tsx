@@ -21,7 +21,7 @@ import {
   EuiFieldPassword,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiModal,
   EuiModalBody,
   EuiModalFooter,
@@ -146,9 +146,9 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
                   isInvalid={isNewPasswordInvalid}
                 />
               </FormRow>
-              <EuiFormRow>
+              <EuiCompressedFormRow>
                 <PasswordStrengthBar password={newPassword} />
-              </EuiFormRow>
+              </EuiCompressedFormRow>
             </EuiFlexItem>
           </EuiFlexGroup>
 
