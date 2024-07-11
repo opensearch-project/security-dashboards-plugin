@@ -18,7 +18,7 @@ import {
   EuiInMemoryTable,
   EuiBasicTableColumn,
   RIGHT_ALIGNMENT,
-  EuiButtonIcon,
+  EuiSmallButtonIcon,
   EuiText,
   EuiFlexGroup,
   EuiEmptyPrompt,
@@ -66,7 +66,7 @@ export function renderRowExpanstionArrow(
   setItemIdToExpandedRowMap: Dispatch<SetStateAction<ExpandedRowMapInterface>>
 ) {
   return (item: RoleIndexPermissionView) => (
-    <EuiButtonIcon
+    <EuiSmallButtonIcon
       onClick={() => toggleRowDetails(item, actionGroupDict, setItemIdToExpandedRowMap)}
       aria-label={itemIdToExpandedRowMap[item.id] ? 'Collapse' : 'Expand'}
       iconType={itemIdToExpandedRowMap[item.id] ? 'arrowUp' : 'arrowDown'}

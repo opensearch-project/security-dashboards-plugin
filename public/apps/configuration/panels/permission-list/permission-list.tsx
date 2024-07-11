@@ -15,7 +15,7 @@
 
 import {
   EuiBasicTableColumn,
-  EuiButtonIcon,
+  EuiSmallButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
   EuiGlobalToastList,
@@ -95,7 +95,7 @@ export function renderRowExpansionArrow(
 ) {
   return (item: PermissionListingItem) =>
     item.type === 'Action group' && (
-      <EuiButtonIcon
+      <EuiSmallButtonIcon
         onClick={() => toggleRowDetails(item, actionGroupDict, setItemIdToExpandedRowMap)}
         aria-label={itemIdToExpandedRowMap[item.name] ? 'Collapse' : 'Expand'}
         iconType={itemIdToExpandedRowMap[item.name] ? 'arrowUp' : 'arrowDown'}
