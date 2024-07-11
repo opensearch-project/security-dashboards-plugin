@@ -15,7 +15,12 @@
 
 import React from 'react';
 import { CoreStart } from 'opensearch-dashboards/public';
-import { EuiCompressedFieldPassword, EuiFlexGroup, EuiFlexItem, EuiCompressedFormRow } from '@elastic/eui';
+import {
+  EuiCompressedFieldPassword,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiCompressedFormRow,
+} from '@elastic/eui';
 import { FormRow } from './form-row';
 import { PASSWORD_INSTRUCTION } from '../../apps-constants';
 import { getDashboardsInfo } from '../../../utils/dashboards-info-utils';
