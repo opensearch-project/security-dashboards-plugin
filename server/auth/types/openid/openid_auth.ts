@@ -174,27 +174,23 @@ export class OpenIdAuthentication extends AuthenticationType {
       };
     }
     this.logger.info(getObjectProperties(this.wreckHttpsOption, 'WreckHttpsOptions'));
+
+    // Use proxy agent to allow usage of e.g. http_proxy environment variable
+    const httpAgent = new ProxyAgent();
+    const httpsAllowUnauthorizedAgent = new ProxyAgent({
+      rejectUnauthorized: false,
+    });
+    let httpsAgent = new ProxyAgent();
     if (Object.keys(this.wreckHttpsOption).length > 0) {
-      return wreck.defaults({
-        agents: {
-          http: new ProxyAgent(),
-          https: new ProxyAgent(this.wreckHttpsOption),
-          httpsAllowUnauthorized: new ProxyAgent({
-            rejectUnauthorized: false,
-          }),
-        },
-      });
-    } else {
-      return wreck.defaults({
-        agents: {
-          http: new ProxyAgent(),
-          https: new ProxyAgent(),
-          httpsAllowUnauthorized: new ProxyAgent({
-            rejectUnauthorized: false,
-          }),
-        },
-      });
+      httpsAgent = new ProxyAgent(this.wreckHttpsOption);
     }
+    return wreck.defaults({
+      agents: {
+        http: httpAgent,
+        https: httpsAgent,
+        httpsAllowUnauthorized: httpsAllowUnauthorizedAgent,
+      },
+    });
   }
 
   getWreckHttpsOptions(): WreckHttpsOptions {
