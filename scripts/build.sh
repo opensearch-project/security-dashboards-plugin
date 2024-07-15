@@ -11,7 +11,7 @@ set -ex
 
 # vars / libs
 SCRIPT_DIR=`dirname $(realpath $0)`
-. $SCRIPT_DIR/../../../lib/shell/file_management.sh
+. $SCRIPT_DIR/../../../../lib/shell/file_management.sh
 PLUGIN_NAME=$(basename "$PWD")
 PLUGIN_PATH=`realpath ../OpenSearch-Dashboards/plugins/$PLUGIN_NAME`
 
