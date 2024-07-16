@@ -10,8 +10,6 @@
 set -ex
 
 # vars / libs
-SCRIPT_DIR=`dirname $(realpath $0)`
-. $SCRIPT_DIR/../../../lib/shell/file_management.sh
 PLUGIN_NAME=$(basename "$PWD")
 PLUGIN_PATH=`realpath ../OpenSearch-Dashboards/plugins/$PLUGIN_NAME`
 
@@ -30,7 +28,7 @@ function usage() {
 
 
 function cleanup_all() {
-    File_Delete $PLUGIN_PATH
+    rm -rf -- $PLUGIN_PATH
 }
 
 trap cleanup_all TERM INT EXIT
