@@ -2257,6 +2257,11 @@ glob-parent@^3.1.0, glob-parent@^5.1.2, glob-parent@~5.1.2:
   dependencies:
     is-glob "^4.0.1"
 
+glob-to-regexp@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/glob-to-regexp/-/glob-to-regexp-0.4.1.tgz#c75297087c851b9a578bd217dd59a92f59fe546e"
+  integrity sha512-lkX1HJXwyMcprw/5YUZc2s7DrpAiHB21/V+E1rHUrVNokkvB6bqMzT0VfV6/86ZNabt1k14YOIaT7nDvOX3Iiw==
+
 glob@^7.1.3, glob@^7.1.4, glob@^7.1.6, glob@^7.2.3:
   version "7.2.3"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.2.3.tgz#b8df0fb802bbfa8e89bd1d938b4e16578ed44f2b"
@@ -4956,10 +4961,10 @@ webpack-sources@^1.4.0, webpack-sources@^1.4.1:
     source-list-map "^2.0.0"
     source-map "~0.6.1"
 
-"webpack@npm:@amoo-miki/webpack@4.46.0-rc.2":
-  version "4.46.0-rc.2"
-  resolved "https://registry.yarnpkg.com/@amoo-miki/webpack/-/webpack-4.46.0-rc.2.tgz#36824597c14557a7bb0a8e13203e30275e7b02bd"
-  integrity sha512-Y/ZqxTHOoDF1kz3SR63Y9SZGTDUpZNNFrisTRHofWhP8QvNX3LMN+TCmEP56UfLaiLVKMcaiFjx8kFb2TgyBaQ==
+"webpack@npm:@amoo-miki/webpack@4.46.0-xxhash.1":
+  version "4.46.0-xxhash.1"
+  resolved "https://registry.yarnpkg.com/@amoo-miki/webpack/-/webpack-4.46.0-xxhash.1.tgz#e8fdb0399d36715e558ad35e3ff70fd1d4ea47a7"
+  integrity sha512-gPwQMqfrE9326g+rZoU4BPOfcYvEcAR0XxfpV9AGUcRwl2oHoqEwq7nxSWchilpGV1i9XI7mCa8u8k4ePz6ziA==
   dependencies:
     "@node-rs/xxhash" "^1.3.0"
     "@webassemblyjs/ast" "1.9.0"
@@ -4972,11 +4977,11 @@ webpack-sources@^1.4.0, webpack-sources@^1.4.1:
     chrome-trace-event "^1.0.2"
     enhanced-resolve "^4.5.0"
     eslint-scope "^4.0.3"
+    glob-to-regexp "^0.4.1"
     json-parse-better-errors "^1.0.2"
     loader-runner "^2.4.0"
     loader-utils "^2.0.4"
     memory-fs "^0.4.1"
-    micromatch "^3.1.10"
     mkdirp "^0.5.3"
     neo-async "^2.6.1"
     node-libs-browser "^2.2.1"
