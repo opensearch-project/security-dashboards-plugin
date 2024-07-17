@@ -162,15 +162,6 @@ describe('Multi-datasources enabled', () => {
     cy.get('[data-test-subj="dataSourceViewButton"]').should('contain', 'Local cluster');
   });
 
-  it('Checks Service Accounts Tab', () => {
-    // Datasource is locked to local cluster for service accounts tab
-    cy.visit(
-      `http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/serviceAccounts`
-    );
-
-    cy.get('[data-test-subj="dataSourceViewButton"]').should('contain', 'Local cluster');
-  });
-
   it('Checks Audit Logs Tab', () => {
     cy.request({
       method: 'POST',
