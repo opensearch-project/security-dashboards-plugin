@@ -58,11 +58,6 @@ export async function getUserList(
   return transformUserData(rawData.data);
 }
 
-export async function fetchUserNameList(
-  http: HttpStart,
-  dataSourceId: string
-): Promise<string[]> {
+export async function fetchUserNameList(http: HttpStart, dataSourceId: string): Promise<string[]> {
   return Object.keys((await getUserListRaw(http, dataSourceId)).data);
 }
-
-

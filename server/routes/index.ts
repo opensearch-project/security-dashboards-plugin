@@ -253,14 +253,14 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
       const client = context.security_plugin.esClient.asScoped(request);
       let esResp;
       try {
-          esResp = await wrapRouteWithDataSource(
-            dataSourceEnabled,
-            context,
-            request,
-            'opensearch_security.listResource',
-            { resourceName: request.params.resourceName }
-          );
-        
+        esResp = await wrapRouteWithDataSource(
+          dataSourceEnabled,
+          context,
+          request,
+          'opensearch_security.listResource',
+          { resourceName: request.params.resourceName }
+        );
+
         return response.ok({
           body: {
             total: Object.keys(esResp).length,
