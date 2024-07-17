@@ -84,6 +84,11 @@ jobs:
           yarn cypress:run-with-security-and-aggregation-view --browser chrome --spec "cypress/integration/plugins/security-dashboards-plugin/aggregation_view.js"
           yarn cypress:run-with-security --browser chrome --spec "cypress/integration/plugins/security-dashboards-plugin/multi_tenancy.js"
           yarn cypress:run-with-security --browser chrome --spec "cypress/integration/plugins/security-dashboards-plugin/default_tenant.js"
+
+      - name: Configure and Run OpenSearch Dashboards with Cypress Test Cases Release Tests
+        run: |
+          cd ./OpenSearch-Dashboards
+          cd opensearch-dashboards-functional-test
           yarn cypress:run-with-security --browser chrome --spec "cypress/integration/plugins/security/audit_log_spec.js"
           yarn cypress:run-with-security --browser chrome --spec "cypress/integration/plugins/security/auth_spec.js"
           yarn cypress:run-with-security --browser chrome --spec "cypress/integration/plugins/security/get_started_spec.js"
