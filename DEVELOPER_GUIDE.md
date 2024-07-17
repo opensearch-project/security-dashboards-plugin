@@ -94,11 +94,11 @@ From the base directory, run `yarn start`. This should start dashboard UI succes
 
 ## Testing
 
-The security-dashboards-plugin project uses Jest for unit tests and Cypress for end to end tests. To run unit tests run `yarn test:jest_ui`. To run Cypress tests that live in this repo either use `yarn cypress:run` or `yarn cypress:open`. To run the Cypress tests that live in the [OpenSearch Dashboards Functional Test]( https://github.com/opensearch-project/opensearch-dashboards-functional-test) project first make sure you have OpenSearch and OpenSearch Dashboards running with the Security Plugin and that you can log in to it using a web browser. Then clone [OpenSearch Dashboards Functional Test]( https://github.com/opensearch-project/opensearch-dashboards-functional-test)  in your local machine and follow the instructions in its DEVELOPER_GUIDE.md
+The security-dashboards-plugin project uses Jest for unit and integration tests and Cypress for end to end tests. To run frontend unit tests run `yarn test:jest_ui`. To run Cypress tests that live in this repo either use `yarn cypress:run` or `yarn cypress:open`. To run the Cypress tests that live in the [OpenSearch Dashboards Functional Test]( https://github.com/opensearch-project/opensearch-dashboards-functional-test) project first make sure you have OpenSearch and OpenSearch Dashboards running with the Security Plugin and that you can log in to it using a web browser. Then clone [OpenSearch Dashboards Functional Test]( https://github.com/opensearch-project/opensearch-dashboards-functional-test)  in your local machine and follow the instructions in its DEVELOPER_GUIDE.md
 
 ### Integration Tests 
 
-The integration tests take advantage of [npm "pre" scripts](https://docs.npmjs.com/cli/v9/using-npm/scripts) to run a node based SAML IdP for integration tests related to SAML authentication. This will run a background process that listens on port 7000. 
+The integration tests take advantage of [npm "pre" scripts](https://docs.npmjs.com/cli/v9/using-npm/scripts) to run a node based SAML IdP for integration tests related to SAML authentication. This will run a background process that listens on port 7000. Then run `yarn test:jest_server`. 
 
 ## Submitting Changes
 
