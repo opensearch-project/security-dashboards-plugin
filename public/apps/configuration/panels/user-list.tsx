@@ -116,7 +116,6 @@ export function UserList(props: AppDependencies) {
         setLoading(true);
         const userDataPromise = getUserList(
           props.coreStart.http,
-          ResourceType.users,
           dataSource.id
         );
         setCurrentUsername((await getAuthInfo(props.coreStart.http)).user_name);
@@ -241,7 +240,7 @@ export function UserList(props: AppDependencies) {
               <EuiText size="xs" color="subdued">
                 The Security plugin includes an internal user database. Use this database in place
                 of, or in addition to, an external authentication system such as LDAP server or
-                Active Directory. You can map an user account to a role from{' '}
+                Active Directory. You can map an internal user to a role from{' '}
                 <EuiLink href={buildHashUrl(ResourceType.roles)}>Roles</EuiLink>
                 . First, click into the detail page of the role. Then, under “Mapped users”, click
                 “Manage mapping” <ExternalLink href={DocLinks.MapUsersToRolesDoc} />

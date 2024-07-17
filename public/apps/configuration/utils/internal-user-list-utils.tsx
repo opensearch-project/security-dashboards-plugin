@@ -15,14 +15,9 @@
 
 import { map } from 'lodash';
 import { HttpStart } from '../../../../../../src/core/public';
-import {
-  API_ENDPOINT_INTERNALACCOUNTS,
-  API_ENDPOINT_INTERNALUSERS,
-  API_ENDPOINT_SERVICEACCOUNTS,
-} from '../constants';
-import { DataObject, InternalUser, ObjectsMessage } from '../types';
-import { ResourceType } from '../../../../common';
 import { createRequestContextWithDataSourceId } from './request-utils';
+import { API_ENDPOINT_INTERNALUSERS } from '../constants';
+import { DataObject, InternalUser, ObjectsMessage } from '../types';
 import { getResourceUrl } from './resource-utils';
 
 export interface InternalUsersListing extends InternalUser {
@@ -48,32 +43,26 @@ export async function requestDeleteUsers(http: HttpStart, users: string[], dataS
 
 export async function getUserListRaw(
   http: HttpStart,
-  userType: string,
   dataSourceId: string
 ): Promise<ObjectsMessage<InternalUser>> {
-  let ENDPOINT = API_ENDPOINT_INTERNALACCOUNTS;
-  if (userType === ResourceType.serviceAccounts) {
-    ENDPOINT = API_ENDPOINT_SERVICEACCOUNTS;
-  }
-
   return await createRequestContextWithDataSourceId(dataSourceId).httpGet<
     ObjectsMessage<InternalUser>
-  >({ http, url: ENDPOINT });
+  >({ http, url: API_ENDPOINT_INTERNALUSERS });
 }
 
 export async function getUserList(
   http: HttpStart,
-  userType: string,
   dataSourceId: string
 ): Promise<InternalUsersListing[]> {
-  const rawData = await getUserListRaw(http, userType, dataSourceId);
+  const rawData = await getUserListRaw(http, dataSourceId);
   return transformUserData(rawData.data);
 }
 
 export async function fetchUserNameList(
   http: HttpStart,
-  userType: string,
   dataSourceId: string
 ): Promise<string[]> {
-  return Object.keys((await getUserListRaw(http, userType, dataSourceId)).data);
+  return Object.keys((await getUserListRaw(http, dataSourceId)).data);
 }
+
+
