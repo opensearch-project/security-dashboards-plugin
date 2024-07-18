@@ -133,7 +133,9 @@ export class SecurityPlugin
         title: 'Security',
         order: 9050,
         workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
-        navLinkStatus: core.chrome.navGroup.getNavGroupEnabled() ? AppNavLinkStatus.hidden : AppNavLinkStatus.visible,
+        navLinkStatus: core.chrome.navGroup.getNavGroupEnabled()
+          ? AppNavLinkStatus.hidden
+          : AppNavLinkStatus.visible,
         mount: async (params: AppMountParameters) => {
           const { renderApp } = await import('./apps/configuration/configuration-app');
           const [coreStart, depsStart] = await core.getStartServices();
