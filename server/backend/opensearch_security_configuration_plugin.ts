@@ -59,17 +59,6 @@ export default function (Client: any, config: any, components: any) {
     },
   });
 
-  Client.prototype.opensearch_security.prototype.listInternalAccounts = ca({
-    url: {
-      fmt: '/_plugins/_security/api/internalusers?filterBy=internal',
-    },
-  });
-  Client.prototype.opensearch_security.prototype.listServiceAccounts = ca({
-    url: {
-      fmt: '/_plugins/_security/api/internalusers?filterBy=service',
-    },
-  });
-
   /**
    * Creates a Security resource instance.
    *
