@@ -70,7 +70,6 @@ export enum AuthType {
 export enum ResourceType {
   roles = 'roles',
   users = 'users',
-  serviceAccounts = 'serviceAccounts',
   permissions = 'permissions',
   tenants = 'tenants',
   tenantsManageTab = 'tenantsManageTab',
