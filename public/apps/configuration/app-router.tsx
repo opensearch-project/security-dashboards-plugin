@@ -156,7 +156,6 @@ export const LocalCluster = { label: 'Local cluster', id: '' };
 export const DataSourceContext = createContext<DataSourceContextType | null>(null);
 
 export function AppRouter(props: AppDependencies) {
-  console.log(props.redirect);
   const multitenancyEnabled = props.config.multitenancy.enabled;
   const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const setGlobalBreadcrumbs = flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs);
