@@ -30,7 +30,7 @@ import { AppDependencies } from '../../../types';
 import { ExternalLink } from '../../utils/display-utils';
 import { DocLinks } from '../../constants';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
-import { LocalCluster } from '../../app-router';
+import { LocalCluster } from '../../../../utils/datasource-utils';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 
 interface TenantListProps extends AppDependencies {
