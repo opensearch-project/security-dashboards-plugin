@@ -64,6 +64,9 @@ describe('Tenant list', () => {
       setBreadcrumbs() {
         return 1;
       },
+      navGroup: {
+        getNavGroupEnabled: jest.fn().mockReturnValue(false),
+      },
     },
   };
   const config = {

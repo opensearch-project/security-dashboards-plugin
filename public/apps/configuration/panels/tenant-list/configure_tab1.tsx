@@ -52,7 +52,7 @@ import {
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
 import { LOCAL_CLUSTER_ID } from '../../../../../common';
 import { AccessErrorComponent } from '../../access-error-component';
-import { LocalCluster } from '../../app-router';
+import { LocalCluster } from '../../../../utils/datasource-utils';
 
 export function ConfigureTab1(props: AppDependencies) {
   const [isMultiTenancyEnabled, setIsMultiTenancyEnabled] = useState(false);
