@@ -495,7 +495,6 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
           <Redirect
             exact={true}
             from="/"
-            to="/getstarted"
           />
         </Switch>
       </EuiPageBody>

@@ -40,11 +40,11 @@ import { Action, RouteItem, SubAction } from './types';
 import { ResourceType } from '../../../common';
 import { buildHashUrl, buildUrl } from './utils/url-builder';
 import { CrossPageToast } from './cross-page-toast';
-import { getDataSourceFromUrl } from '../../utils/datasource-utils';
+import { getDataSourceFromUrl, LocalCluster } from '../../utils/datasource-utils';
 
 const LANDING_PAGE_URL = '/getstarted';
 
-const ROUTE_MAP: { [key: string]: RouteItem } = {
+export const ROUTE_MAP: { [key: string]: RouteItem } = {
   getStarted: {
     name: 'Get Started',
     href: LANDING_PAGE_URL,
@@ -145,8 +145,6 @@ export interface DataSourceContextType {
   setDataSource: React.Dispatch<React.SetStateAction<DataSourceOption>>;
 }
 
-export const LocalCluster = { label: 'Local cluster', id: '' };
-
 export const DataSourceContext = createContext<DataSourceContextType | null>(null);
 
 export function AppRouter(props: AppDependencies) {
@@ -161,14 +159,15 @@ export function AppRouter(props: AppDependencies) {
     <DataSourceContext.Provider value={{ dataSource, setDataSource }}>
       <Router>
         <EuiPage>
-          {allNavPanelUrls(multitenancyEnabled).map((route) => (
-            // Create different routes to update the 'selected' nav item .
-            <Route key={route} path={route} exact>
-              <EuiPageSideBar>
-                <NavPanel items={getRouteList(multitenancyEnabled)} />
-              </EuiPageSideBar>
-            </Route>
-          ))}
+          {!props.coreStart.chrome.navGroup.getNavGroupEnabled() &&
+            allNavPanelUrls(multitenancyEnabled).map((route) => (
+              // Create different routes to update the 'selected' nav item .
+              <Route key={route} path={route} exact>
+                <EuiPageSideBar>
+                  <NavPanel items={getRouteList(multitenancyEnabled)} />
+                </EuiPageSideBar>
+              </Route>
+            ))}
           <EuiPageBody>
             <Switch>
               <Route
@@ -281,7 +280,7 @@ export function AppRouter(props: AppDependencies) {
                   }}
                 />
               )}
-              <Redirect exact from="/" to={LANDING_PAGE_URL} />
+              <Redirect exact from="/" to={props.redirect} />
             </Switch>
           </EuiPageBody>
           <CrossPageToast />

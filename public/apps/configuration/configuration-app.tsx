@@ -28,6 +28,7 @@ export function renderApp(
   depsStart: SecurityPluginStartDependencies,
   params: AppMountParameters,
   config: ClientConfigType,
+  redirect: string,
   dataSourceManagement?: DataSourceManagementPluginSetup
 ) {
   const deps = {
@@ -36,6 +37,7 @@ export function renderApp(
     params,
     config,
     dataSourceManagement,
+    redirect,
   };
   ReactDOM.render(
     <I18nProvider>
