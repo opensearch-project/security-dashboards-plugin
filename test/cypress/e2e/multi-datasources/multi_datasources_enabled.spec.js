@@ -24,6 +24,7 @@ const createDataSource = () => {
       attributes: {
         title: Cypress.env('externalDataSourceLabel'),
         endpoint: Cypress.env('externalDataSourceEndpoint'),
+        installedPlugins: ['opensearch-security'],
         auth: {
           type: 'username_password',
           credentials: {
