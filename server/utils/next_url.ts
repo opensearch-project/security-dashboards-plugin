@@ -46,7 +46,7 @@ export const INVALID_NEXT_URL_PARAMETER_MESSAGE = 'Invalid nextUrl parameter.';
  * We require the nextUrl parameter to be an relative url.
  *
  * Here we validate the nextUrl parameter by checking if it meets the following criteria:
- *   - nextUrl is the basePath /
+ *   - nextUrl starts with the basePath (/ if no serverBasePath is set)
  *   - If nextUrl is longer than 2 chars then the second character must be alphabetical or underscore
  *   - The following characters must be alphanumeric, dash or underscore
  * Note: url has been decoded by OpenSearchDashboards.
