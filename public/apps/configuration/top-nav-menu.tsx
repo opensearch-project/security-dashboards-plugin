@@ -20,6 +20,7 @@ import { AppDependencies } from '../types';
 import {
   setDataSourceInUrl,
   setDataSource as setDataSourceInSubscription,
+  isDataSourceCompatible,
 } from '../../utils/datasource-utils';
 
 export interface TopNavMenuProps extends AppDependencies {
@@ -63,6 +64,7 @@ export const SecurityPluginTopNavMenu = React.memo(
               : undefined,
           onSelectedDataSources: wrapSetDataSourceWithUpdateUrl,
           fullWidth: true,
+          dataSourceFilter: isDataSourceCompatible,
         }}
       />
     ) : null;

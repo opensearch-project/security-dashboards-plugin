@@ -13,7 +13,12 @@
  *   permissions and limitations under the License.
  */
 
-import { getClusterInfo, getDataSourceFromUrl, setDataSourceInUrl } from '../datasource-utils';
+import {
+  getClusterInfo,
+  getDataSourceFromUrl,
+  setDataSourceInUrl,
+  isDataSourceCompatible,
+} from '../datasource-utils';
 
 describe('Tests datasource utils', () => {
   it('Tests the GetClusterDescription helper function', () => {
@@ -77,5 +82,131 @@ describe('Tests datasource utils', () => {
       writable: true,
     });
     expect(getDataSourceFromUrl()).toEqual({});
+  });
+
+  describe('isDataSourceCompatible', () => {
+    it('should return true for compatible data sources', () => {
+      expect(
+        isDataSourceCompatible({
+          attributes: {
+            installedPlugins: ['opensearch-security'],
+            dataSourceVersion: '2.9.0',
+            title: '',
+            endpoint: '',
+            auth: {
+              type: '',
+              credentials: undefined,
+            },
+          },
+          id: '',
+          type: '',
+          references: [],
+        })
+      ).toBe(true);
+      expect(
+        isDataSourceCompatible({
+          attributes: {
+            installedPlugins: ['opensearch-security'],
+            dataSourceVersion: '2.11.0',
+            title: '',
+            endpoint: '',
+            auth: {
+              type: '',
+              credentials: undefined,
+            },
+          },
+          id: '',
+          type: '',
+          references: [],
+        })
+      ).toBe(true);
+      expect(
+        isDataSourceCompatible({
+          attributes: {
+            installedPlugins: ['opensearch-security'],
+            dataSourceVersion: '2.13.0',
+            title: '',
+            endpoint: '',
+            auth: {
+              type: '',
+              credentials: undefined,
+            },
+          },
+          id: '',
+          type: '',
+          references: [],
+        })
+      ).toBe(true);
+    });
+
+    it('should return false for un-compatible data sources', () => {
+      expect(
+        isDataSourceCompatible({
+          attributes: {
+            installedPlugins: [],
+            dataSourceVersion: '2.13.0',
+            title: '',
+            endpoint: '',
+            auth: {
+              type: '',
+              credentials: undefined,
+            },
+          },
+          id: '',
+          type: '',
+          references: [],
+        })
+      ).toBe(false);
+      expect(
+        isDataSourceCompatible({
+          attributes: {
+            installedPlugins: ['opensearch-ml'],
+            dataSourceVersion: '2.13.0',
+            title: '',
+            endpoint: '',
+            auth: {
+              type: '',
+              credentials: undefined,
+            },
+          },
+          id: '',
+          type: '',
+          references: [],
+        })
+      ).toBe(false);
+      expect(
+        isDataSourceCompatible({
+          attributes: {
+            title: '',
+            endpoint: '',
+            dataSourceVersion: '',
+            auth: {
+              type: '',
+              credentials: undefined,
+            },
+          },
+          id: '',
+          type: '',
+          references: [],
+        })
+      ).toBe(false);
+      expect(
+        isDataSourceCompatible({
+          attributes: {
+            installedPlugins: ['opensearch-security'],
+            dataSourceVersion: '1.0.0-beta1',
+            title: '',
+            endpoint: '',
+            auth: {
+              type: '',
+              credentials: undefined,
+            },
+          },
+          id: '',
+          type: '',
+          references: [],
+        })
+      ).toBe(false);
+    });
   });
 });
