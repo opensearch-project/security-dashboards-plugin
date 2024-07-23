@@ -91,9 +91,7 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
   React.useEffect(() => {
     const fetchInternalUserNames = async () => {
       try {
-        setUserNames(
-          await fetchUserNameList(props.coreStart.http, ResourceType.users, dataSource.id)
-        );
+        setUserNames(await fetchUserNameList(props.coreStart.http, dataSource.id));
       } catch (e) {
         addToast(createUnknownErrorToast('fetchInternalUserNames', 'load data'));
         console.error(e);

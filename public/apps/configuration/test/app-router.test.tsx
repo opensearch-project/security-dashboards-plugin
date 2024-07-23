@@ -20,6 +20,7 @@ import { getDataSourceFromUrl } from '../../../utils/datasource-utils';
 
 jest.mock('../../../utils/datasource-utils', () => ({
   getDataSourceFromUrl: jest.fn(),
+  LocalCluster: { id: '', label: 'Local cluster' },
 }));
 
 describe('SecurityPluginTopNavMenu', () => {
@@ -30,6 +31,9 @@ describe('SecurityPluginTopNavMenu', () => {
     notifications: jest.fn(),
     chrome: {
       setBreadcrumbs: jest.fn(),
+      navGroup: {
+        getNavGroupEnabled: jest.fn().mockReturnValue(false),
+      },
     },
   };
 

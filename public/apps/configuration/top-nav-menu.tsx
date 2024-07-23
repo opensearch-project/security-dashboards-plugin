@@ -17,7 +17,10 @@ import React from 'react';
 import { DataSourceSelectableConfig } from 'src/plugins/data_source_management/public';
 import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
 import { AppDependencies } from '../types';
-import { setDataSourceInUrl } from '../../utils/datasource-utils';
+import {
+  setDataSourceInUrl,
+  setDataSource as setDataSourceInSubscription,
+} from '../../utils/datasource-utils';
 
 export interface TopNavMenuProps extends AppDependencies {
   dataSourcePickerReadOnly: boolean;
@@ -44,6 +47,7 @@ export const SecurityPluginTopNavMenu = React.memo(
     const wrapSetDataSourceWithUpdateUrl = (dataSources: DataSourceOption[]) => {
       setDataSourceInUrl(dataSources[0]);
       setDataSource(dataSources[0]);
+      setDataSourceInSubscription(dataSources[0]);
     };
 
     return dataSourceEnabled ? (

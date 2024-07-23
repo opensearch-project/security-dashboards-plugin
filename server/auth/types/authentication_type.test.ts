@@ -111,3 +111,57 @@ describe('test tenant header', () => {
     expect(result.requestHeaders.securitytenant).toEqual('dummy_tenant');
   });
 });
+
+describe('test capabilities request authinfo', () => {
+  const config = {
+    auth: {
+      unauthenticated_routes: [] as string[],
+    },
+    session: {
+      keepalive: false,
+    },
+  } as SecurityPluginConfigType;
+  const sessionStorageFactory = {
+    asScoped: jest.fn(() => {
+      return {
+        clear: jest.fn(),
+        get: jest.fn().mockResolvedValue({}),
+      };
+    }),
+  };
+  const router = jest.fn();
+  const esClient = {
+    asScoped: jest.fn().mockImplementation(() => {
+      return {
+        callAsCurrentUser: jest.fn().mockImplementation(() => {
+          return { username: 'capabilities-username' };
+        }),
+      };
+    }),
+  };
+  const coreSetup = jest.fn();
+  const logger = {
+    error: jest.fn(),
+  };
+
+  const dummyAuthType = new DummyAuthType(
+    config,
+    sessionStorageFactory,
+    router,
+    esClient,
+    coreSetup,
+    logger
+  );
+
+  it(`Capabilities API includes authinfo`, async () => {
+    const request = httpServerMock.createOpenSearchDashboardsRequest({
+      path: '/api/core/capabilities',
+    });
+    const response = jest.fn();
+    const toolkit = {
+      authenticated: jest.fn((value) => value),
+    };
+    const result = await dummyAuthType.authHandler(request, response, toolkit);
+    expect(result.state.authInfo.username).toEqual('capabilities-username');
+  });
+});
