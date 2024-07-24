@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v2
 
       - id: install-dashboards
-        uses: derek-ho/setup-opensearch-dashboards@v1
+        uses: derek-ho/setup-opensearch-dashboards@v3
         with:
            plugin_name: security-dashboards-plugin
 
