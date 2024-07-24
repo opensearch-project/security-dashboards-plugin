@@ -17,5 +17,7 @@
   "server": true,
   "ui": true,
   "supportedOSDataSourceVersions": ">=1.0.0",
-  "requiredOSDataSourcePlugins": ["opensearch-security"]
+  "requiredOSDataSourcePlugins": [
+    "opensearch-security"
+  ]
 }
