@@ -60,7 +60,7 @@ import {
   getDataSourceFromUrl,
 } from './utils/datasource-utils';
 
-async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
+export async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
   try {
     const permissions = await core.http.get(API_ENDPOINT_PERMISSIONS_INFO);
     return permissions.has_api_access || false;
