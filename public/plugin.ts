@@ -224,16 +224,18 @@ export class SecurityPlugin
             return mountWrapper(params, '/permissions');
           },
         });
-        core.application.register({
-          id: `security-dashboards-plugin_tenants`,
-          title: 'Tenants',
-          order: 8040,
-          workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
-          updater$: this.appStateUpdater,
-          mount: async (params: AppMountParameters) => {
-            return mountWrapper(params, '/tenants');
-          },
-        });
+        if (config.multitenancy.enabled) {
+          core.application.register({
+            id: `security-dashboards-plugin_tenants`,
+            title: 'Tenants',
+            order: 8040,
+            workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+            updater$: this.appStateUpdater,
+            mount: async (params: AppMountParameters) => {
+              return mountWrapper(params, '/tenants');
+            },
+          });
+        }
         core.application.register({
           id: `security-dashboards-plugin_auditlog`,
           title: 'Audit logs',
