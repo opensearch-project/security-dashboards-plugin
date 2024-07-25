@@ -30,7 +30,19 @@ import {
   PluginInitializerContext,
   WorkspaceAvailability,
 } from '../../../src/core/public';
-import { APP_ID_LOGIN, CUSTOM_ERROR_PAGE_URI, LOGIN_PAGE_URI, PLUGIN_NAME } from '../common';
+import {
+  APP_ID_LOGIN,
+  CUSTOM_ERROR_PAGE_URI,
+  LOGIN_PAGE_URI,
+  PLUGIN_AUDITLOG_APP_ID,
+  PLUGIN_AUTH_APP_ID,
+  PLUGIN_GET_STARTED_APP_ID,
+  PLUGIN_NAME,
+  PLUGIN_PERMISSIONS_APP_ID,
+  PLUGIN_ROLES_APP_ID,
+  PLUGIN_TENANTS_APP_ID,
+  PLUGIN_USERS_APP_ID,
+} from '../common';
 import { APP_ID_CUSTOMERROR } from '../common';
 import { setupTopNavButton } from './apps/account/account-app';
 import { fetchAccountInfoSafe } from './apps/account/utils';
@@ -175,7 +187,7 @@ export class SecurityPlugin
 
       if (core.chrome.navGroup.getNavGroupEnabled()) {
         core.application.register({
-          id: `security-dashboards-plugin_getstarted`,
+          id: PLUGIN_GET_STARTED_APP_ID,
           title: 'Get Started',
           order: 8040,
           workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
@@ -185,7 +197,7 @@ export class SecurityPlugin
           },
         });
         core.application.register({
-          id: `security-dashboards-plugin_auth`,
+          id: PLUGIN_AUTH_APP_ID,
           title: 'Authentication',
           order: 8040,
           workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
@@ -195,7 +207,7 @@ export class SecurityPlugin
           },
         });
         core.application.register({
-          id: `security-dashboards-plugin_roles`,
+          id: PLUGIN_ROLES_APP_ID,
           title: 'Roles',
           order: 8040,
           workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
@@ -205,7 +217,7 @@ export class SecurityPlugin
           },
         });
         core.application.register({
-          id: `security-dashboards-plugin_users`,
+          id: PLUGIN_USERS_APP_ID,
           title: 'Internal users',
           order: 8040,
           workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
@@ -215,7 +227,7 @@ export class SecurityPlugin
           },
         });
         core.application.register({
-          id: `security-dashboards-plugin_permissions`,
+          id: PLUGIN_PERMISSIONS_APP_ID,
           title: 'Permissions',
           order: 8040,
           workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
@@ -226,7 +238,7 @@ export class SecurityPlugin
         });
         if (config.multitenancy.enabled) {
           core.application.register({
-            id: `security-dashboards-plugin_tenants`,
+            id: PLUGIN_TENANTS_APP_ID,
             title: 'Tenants',
             order: 8040,
             workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
@@ -237,7 +249,7 @@ export class SecurityPlugin
           });
         }
         core.application.register({
-          id: `security-dashboards-plugin_auditlog`,
+          id: PLUGIN_AUDITLOG_APP_ID,
           title: 'Audit logs',
           order: 8040,
           workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
@@ -250,31 +262,31 @@ export class SecurityPlugin
 
       core.chrome.navGroup.addNavLinksToGroup(DEFAULT_NAV_GROUPS.dataAdministration, [
         {
-          id: `security-dashboards-plugin_getstarted`,
+          id: PLUGIN_GET_STARTED_APP_ID,
           category: dataAccessUsersCategory,
         },
         {
-          id: `security-dashboards-plugin_auth`,
+          id: PLUGIN_AUTH_APP_ID,
           category: dataAccessUsersCategory,
         },
         {
-          id: `security-dashboards-plugin_roles`,
+          id: PLUGIN_ROLES_APP_ID,
           category: dataAccessUsersCategory,
         },
         {
-          id: `security-dashboards-plugin_users`,
+          id: PLUGIN_USERS_APP_ID,
           category: dataAccessUsersCategory,
         },
         {
-          id: `security-dashboards-plugin_permissions`,
+          id: PLUGIN_PERMISSIONS_APP_ID,
           category: dataAccessUsersCategory,
         },
         {
-          id: `security-dashboards-plugin_tenants`,
+          id: PLUGIN_TENANTS_APP_ID,
           category: dataAccessUsersCategory,
         },
         {
-          id: `security-dashboards-plugin_auditlog`,
+          id: PLUGIN_AUDITLOG_APP_ID,
           category: dataAccessUsersCategory,
         },
       ]);

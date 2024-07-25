@@ -46,6 +46,15 @@
 import { coreMock } from '../../../../src/core/public/mocks';
 import { SecurityPlugin } from '../plugin.ts';
 import * as pluginModule from '../plugin'; // Import the entire module to mock specific functions
+import {
+  PLUGIN_AUDITLOG_APP_ID,
+  PLUGIN_AUTH_APP_ID,
+  PLUGIN_GET_STARTED_APP_ID,
+  PLUGIN_PERMISSIONS_APP_ID,
+  PLUGIN_ROLES_APP_ID,
+  PLUGIN_TENANTS_APP_ID,
+  PLUGIN_USERS_APP_ID,
+} from '../../common/index.ts';
 
 // Mock the hasApiPermission function
 jest.mock('../plugin', () => {
@@ -106,13 +115,13 @@ describe('SecurityPlugin', () => {
     // Assert that the register function was not called for specific applications
     const registeredApps = registerSpy.mock.calls.map((call) => call[0].id);
     const expectedApps = [
-      'security-dashboards-plugin_getstarted',
-      'security-dashboards-plugin_auth',
-      'security-dashboards-plugin_roles',
-      'security-dashboards-plugin_users',
-      'security-dashboards-plugin_permissions',
-      'security-dashboards-plugin_tenants',
-      'security-dashboards-plugin_auditlog',
+      PLUGIN_GET_STARTED_APP_ID,
+      PLUGIN_AUTH_APP_ID,
+      PLUGIN_ROLES_APP_ID,
+      PLUGIN_USERS_APP_ID,
+      PLUGIN_PERMISSIONS_APP_ID,
+      PLUGIN_TENANTS_APP_ID,
+      PLUGIN_AUDITLOG_APP_ID,
     ];
 
     expectedApps.forEach((app) => {
@@ -141,13 +150,13 @@ describe('SecurityPlugin', () => {
     // Assert that the register function was called for specific applications
     const registeredApps = registerSpy.mock.calls.map((call) => call[0].id);
     const expectedApps = [
-      'security-dashboards-plugin_getstarted',
-      'security-dashboards-plugin_auth',
-      'security-dashboards-plugin_roles',
-      'security-dashboards-plugin_users',
-      'security-dashboards-plugin_permissions',
-      'security-dashboards-plugin_tenants',
-      'security-dashboards-plugin_auditlog',
+      PLUGIN_GET_STARTED_APP_ID,
+      PLUGIN_AUTH_APP_ID,
+      PLUGIN_ROLES_APP_ID,
+      PLUGIN_USERS_APP_ID,
+      PLUGIN_PERMISSIONS_APP_ID,
+      PLUGIN_TENANTS_APP_ID,
+      PLUGIN_AUDITLOG_APP_ID,
     ];
 
     expectedApps.forEach((app) => {
@@ -190,10 +199,10 @@ describe('SecurityPlugin', () => {
 
     // Assert that the register function was not called for tenancy app
     const registeredApps = registerSpy.mock.calls.map((call) => call[0].id);
-    const expectedApps = ['security-dashboards-plugin_tenants'];
 
-    expectedApps.forEach((app) => {
-      expect(registeredApps).not.toContain(app);
-    });
+    expect(registeredApps).not.toContain(PLUGIN_TENANTS_APP_ID);
+
+    // Assert that other apps are registered because the feature flag is on
+    expect(registeredApps).toContain(PLUGIN_GET_STARTED_APP_ID);
   });
 });
