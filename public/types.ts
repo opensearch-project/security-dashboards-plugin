@@ -19,10 +19,7 @@ import {
   SavedObjectsManagementPluginStart,
 } from '../../../src/plugins/saved_objects_management/public';
 import { ManagementOverViewPluginSetup } from '../../../src/plugins/management_overview/public';
-import {
-  DataSourcePluginSetup,
-  DataSourcePluginStart,
-} from '../../../src/plugins/data_source/public/types';
+import { DataSourcePluginStart } from '../../../src/plugins/data_source/public/types';
 import { DataSourceManagementPluginSetup } from '../../../src/plugins/data_source_management/public';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -34,7 +31,6 @@ export interface SecurityPluginSetupDependencies {
   savedObjectsManagement: SavedObjectsManagementPluginSetup;
   managementOverview?: ManagementOverViewPluginSetup;
   dataSourceManagement?: DataSourceManagementPluginSetup;
-  dataSource?: DataSourcePluginSetup;
 }
 
 export interface Cluster {
