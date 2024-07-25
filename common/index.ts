@@ -15,6 +15,13 @@
 
 export const PLUGIN_ID = 'opensearchDashboardsSecurity';
 export const PLUGIN_NAME = 'security-dashboards-plugin';
+export const PLUGIN_GET_STARTED_APP_ID = `${PLUGIN_NAME}_getstarted`;
+export const PLUGIN_AUTH_APP_ID = `${PLUGIN_NAME}_auth`;
+export const PLUGIN_ROLES_APP_ID = `${PLUGIN_NAME}_roles`;
+export const PLUGIN_USERS_APP_ID = `${PLUGIN_NAME}_users`;
+export const PLUGIN_PERMISSIONS_APP_ID = `${PLUGIN_NAME}_permissions`;
+export const PLUGIN_TENANTS_APP_ID = `${PLUGIN_NAME}_tenants`;
+export const PLUGIN_AUDITLOG_APP_ID = `${PLUGIN_NAME}_auditlog`;
 
 export const APP_ID_LOGIN = 'login';
 export const APP_ID_CUSTOMERROR = 'customerror';
