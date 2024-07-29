@@ -41,6 +41,7 @@ import {
   getExtraAuthStorageValue,
   ExtraAuthStorageOptions,
 } from '../../../session/cookie_splitter';
+import { getRedirectUrl } from '../../../../../../src/core/server/http';
 
 export class SamlAuthentication extends AuthenticationType {
   public static readonly AUTH_HEADER_NAME = 'authorization';
@@ -59,9 +60,11 @@ export class SamlAuthentication extends AuthenticationType {
   }
 
   private generateNextUrl(request: OpenSearchDashboardsRequest): string {
-    let path =
-      this.coreSetup.http.basePath.serverBasePath +
-      (request.url.pathname || '/app/opensearch-dashboards');
+    let path = getRedirectUrl({
+      request,
+      basePath: this.coreSetup.http.basePath.serverBasePath,
+      nextUrl: request.url.pathname || '/app/opensearch-dashboards'
+    });
     if (request.url.search) {
       path += request.url.search;
     }
