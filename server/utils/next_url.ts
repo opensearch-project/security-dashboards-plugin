@@ -29,11 +29,13 @@ export function composeNextUrlQueryParam(
     const nextUrl = parsedUrl?.path;
 
     if (!!nextUrl && nextUrl !== '/') {
-      return `nextUrl=${encodeUriQuery(getRedirectUrl({
-        request,
-        basePath,
-        nextUrl,
-      }))}`;
+      return `nextUrl=${encodeUriQuery(
+        getRedirectUrl({
+          request,
+          basePath,
+          nextUrl,
+        })
+      )}`;
     }
   } catch (error) {
     /* Ignore errors from parsing */
