@@ -131,7 +131,7 @@ export class OpenIdAuthentication extends AuthenticationType {
     const path = getRedirectUrl({
       request,
       basePath: this.coreSetup.http.basePath.serverBasePath,
-      nextUrl: request.url.pathname || '/app/opensearch-dashboards'
+      nextUrl: request.url.pathname || '/app/opensearch-dashboards',
     });
     return escape(path);
   }
