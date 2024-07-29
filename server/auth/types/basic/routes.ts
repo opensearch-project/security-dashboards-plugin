@@ -25,6 +25,7 @@ import { SecurityClient } from '../../../backend/opensearch_security_client';
 import { API_AUTH_LOGIN, API_AUTH_LOGOUT, LOGIN_PAGE_URI } from '../../../../common';
 import { resolveTenant } from '../../../multitenancy/tenant_resolver';
 import { ParsedUrlQueryParams } from '../../../utils/next_url';
+import { validateNextUrl } from '../../../utils/next_url';
 
 export class BasicAuthRoutes {
   constructor(
@@ -41,7 +42,17 @@ export class BasicAuthRoutes {
     this.coreSetup.http.resources.register(
       {
         path: LOGIN_PAGE_URI,
-        validate: false,
+        validate: {
+          query: schema.object({
+            nextUrl: schema.maybe(
+              schema.string({
+                validate: (nexturl) => {
+                  return validateNextUrl(nexturl, this.coreSetup.http.basePath.serverBasePath);
+                },
+              })
+            ),
+          }),
+        },
         options: {
           authRequired: false,
         },
