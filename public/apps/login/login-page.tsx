@@ -237,7 +237,10 @@ export function LoginPage(props: LoginPageDeps) {
             );
           }
 
-          if (authOpts.length > 1 && (!authOpts.includes(AuthType.PROXY) || authOpts.length !== 2)) {
+          if (
+            authOpts.length > 1 &&
+            (!authOpts.includes(AuthType.PROXY) || authOpts.length !== 2)
+          ) {
             formBody.push(<EuiSpacer size="xs" />);
             formBody.push(<EuiHorizontalRule size="full" margin="xl" />);
             formBody.push(<EuiSpacer size="xs" />);
