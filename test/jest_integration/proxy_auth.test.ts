@@ -66,6 +66,8 @@ describe('start OpenSearch Dashboards server', () => {
         dev: true,
       }
     );
+    await root.setup();
+    await root.start();
   });
 
   afterAll(async () => {
