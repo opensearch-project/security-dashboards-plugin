@@ -24,11 +24,13 @@ import {
   PROXY_USER,
   PROXY_ROLE,
   PROXY_ADMIN_ROLE,
-  AUTHORIZATION_HEADER_NAME,
+  AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS,
 } from '../constant';
+import wreck from '@hapi/wreck';
 
 describe('start OpenSearch Dashboards server', () => {
   let root: Root;
+  let config;
 
   beforeAll(async () => {
     root = osdTestServer.createRootWithSettings(
@@ -68,6 +70,55 @@ describe('start OpenSearch Dashboards server', () => {
     );
     await root.setup();
     await root.start();
+
+
+    const getConfigResponse = await wreck.get(
+      'https://localhost:9200/_plugins/_security/api/securityconfig',
+      {
+        rejectUnauthorized: false,
+        headers: {
+          authorization: ADMIN_CREDENTIALS,
+        },
+      }
+    );
+    const responseBody = (getConfigResponse.payload as Buffer).toString();
+    config = JSON.parse(responseBody).config;
+    const proxyConfig = {
+      http_enabled: true,
+      transport_enabled: true,
+      order: 0,
+      http_authenticator: {
+        challenge: false,
+        type: 'proxy',
+        config: {
+          user_header: 'x-proxy-user',
+          roles_header: 'x-proxy-roles',
+        },
+      },
+      authentication_backend: {
+        type: 'noop',
+        config: {},
+      },
+    };
+    try {
+      config.dynamic!.authc!.proxy_auth_domain = proxyConfig;
+      config.dynamic!.authc!.basic_internal_auth_domain.http_authenticator.challenge = false;
+      config.dynamic!.http!.anonymous_auth_enabled = false;
+      config.dynamic!.http!.xff!.enabled = true;
+      config.dynamic!.http!.xff!.internalProxies = '.*';
+      config.dynamic!.http!.xff!.remoteIpHeader = 'x-forwarded-for';
+      await wreck.put('https://localhost:9200/_plugins/_security/api/securityconfig/config', {
+        payload: config,
+        rejectUnauthorized: false,
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: ADMIN_CREDENTIALS,
+        },
+      });
+    } catch (error) {
+      console.log('Got an error while updating security config!!', error.stack);
+      fail(error);
+    }
   });
 
   afterAll(async () => {
