@@ -29,7 +29,12 @@ import { AuthType, LOGIN_PAGE_URI } from '../../../../common';
 import { composeNextUrlQueryParam } from '../../../utils/next_url';
 import { MultiAuthRoutes } from './routes';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
-import { BasicAuthentication, OpenIdAuthentication, ProxyAuthentication, SamlAuthentication } from '../../types';
+import {
+  BasicAuthentication,
+  OpenIdAuthentication,
+  ProxyAuthentication,
+  SamlAuthentication,
+} from '../../types';
 
 export class MultipleAuthentication extends AuthenticationType {
   private authTypes: string | string[];

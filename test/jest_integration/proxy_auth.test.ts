@@ -24,6 +24,7 @@ import {
   PROXY_USER,
   PROXY_ROLE,
   PROXY_ADMIN_ROLE,
+  AUTHORIZATION_HEADER_NAME,
 } from '../constant';
 
 describe('start OpenSearch Dashboards server', () => {
@@ -74,27 +75,30 @@ describe('start OpenSearch Dashboards server', () => {
 
   it('can access home page with proxy header', async () => {
     const response = await osdTestServer.request
-      .get(root, 'app/home#/')
+      .get(root, '/api/status')
+      .unset(AUTHORIZATION_HEADER_NAME)
       .set(PROXY_USER, ADMIN_USER)
       .set(PROXY_ROLE, PROXY_ADMIN_ROLE);
     expect(response.status).toEqual(200);
   });
 
   it('cannot access home page without proxy header', async () => {
-    const response = await osdTestServer.request.get(root, 'app/home#/');
+    const response = await osdTestServer.request.get(root, '/api/status');
     expect(response.status).toEqual(401);
   });
 
   it('cannot access home page with partial proxy header', async () => {
     const response = await osdTestServer.request
-      .get(root, 'app/home#/')
+      .get(root, '/api/status')
+      .unset(AUTHORIZATION_HEADER_NAME)
       .set(PROXY_USER, ADMIN_USER);
     expect(response.status).toEqual(401);
   });
 
   it('cannot access home page with partial proxy header2', async () => {
     const response = await osdTestServer.request
-      .get(root, 'app/home#/')
+      .get(root, '/api/status')
+      .unset(AUTHORIZATION_HEADER_NAME)
       .set(PROXY_ROLE, PROXY_ADMIN_ROLE);
     expect(response.status).toEqual(401);
   });

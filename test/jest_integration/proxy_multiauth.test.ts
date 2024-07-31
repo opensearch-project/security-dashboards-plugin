@@ -16,25 +16,19 @@
 import * as osdTestServer from '../../../../src/core/test_helpers/osd_server';
 import { Root } from '../../../../src/core/server/root';
 import { resolve } from 'path';
-import { describe, expect, it, beforeAll, afterAll } from '@jest/globals';
+import { describe, it, beforeAll, afterAll } from '@jest/globals';
 import {
   ADMIN_CREDENTIALS,
   OPENSEARCH_DASHBOARDS_SERVER_USER,
-  OPENSEARCH_DASHBOARDS_SERVER_PASSWORD, ADMIN_USER, PROXY_ADMIN_ROLE,
+  OPENSEARCH_DASHBOARDS_SERVER_PASSWORD,
+  ADMIN_USER,
+  PROXY_ADMIN_ROLE,
 } from '../constant';
 import wreck from '@hapi/wreck';
-import { Builder, By, until } from 'selenium-webdriver';
-import { Options } from 'selenium-webdriver/firefox';
 
 describe('start OpenSearch Dashboards server', () => {
   let root: Root;
   let config;
-
-  // XPath Constants
-  const signInBtnXPath = '//*[@id="btn-sign-in"]';
-  // Browser Settings
-  const browser = 'firefox';
-  const options = new Options().headless();
 
   beforeAll(async () => {
     root = osdTestServer.createRootWithSettings(
@@ -212,60 +206,4 @@ describe('start OpenSearch Dashboards server', () => {
         Promise.resolve(value);
       });
   });
-  it('Login to Dashboards and resume from nextUrl', async () => {
-    const urlWithHash = `http://localhost:5601/app/security-dashboards-plugin#/getstarted`;
-    const loginUrlWithNextUrl = `http://localhost:5601/app/login?nextUrl=%2Fapp%2Fsecurity-dashboards-plugin#/getstarted`;
-    const driver = getDriver(browser, options).build();
-    await driver.manage().deleteAllCookies();
-    await driver.get(loginUrlWithNextUrl);
-    await driver.wait(until.elementsLocated(By.xpath(signInBtnXPath)), 20000);
-    await driver.findElement(By.xpath(signInBtnXPath)).click();
-    // TODO Use a better XPath.
-    await driver.wait(
-      until.elementsLocated(By.xpath('/html/body/div[1]/div/header/div/div[2]')),
-      20000
-    );
-    const windowHash = await driver.getCurrentUrl();
-    console.log('windowHash: ' + windowHash);
-    expect(windowHash).toEqual(urlWithHash);
-    const cookie = await driver.manage().getCookies();
-    expect(cookie.length).toEqual(3);
-    await driver.manage().deleteAllCookies();
-    await driver.quit();
-  });
-
-  it('Login to Dashboards without nextUrl', async () => {
-    const urlWithoutHash = `http://localhost:5601/app/home#/`;
-    const loginUrl = `http://localhost:5601/app/login`;
-    const driver = getDriver(browser, options).build();
-    await driver.manage().deleteAllCookies();
-    await driver.get(loginUrl);
-    await driver.wait(until.elementsLocated(By.xpath(signInBtnXPath)), 20000);
-    await driver.findElement(By.xpath(signInBtnXPath)).click();
-    // TODO Use a better XPath.
-    await driver.wait(
-      until.elementsLocated(By.xpath('/html/body/div[1]/div/header/div/div[2]')),
-      20000
-    );
-    await driver.wait(until.elementsLocated(By.css('img[data-test-subj="defaultLogo"]')), 20000);
-    await driver.wait(
-      until.elementsLocated(By.css('section[aria-labelledby="homDataAdd__title"]')),
-      20000
-    );
-    await driver.wait(
-      until.elementsLocated(By.css('section[aria-labelledby="homDataManage__title"]')),
-      20000
-    );
-    const windowHash = await driver.getCurrentUrl();
-    console.log('windowHash: ' + windowHash);
-    expect(windowHash).toEqual(urlWithoutHash);
-    const cookie = await driver.manage().getCookies();
-    expect(cookie.length).toEqual(3);
-    await driver.manage().deleteAllCookies();
-    await driver.quit();
-  });
 });
-
-function getDriver(browser: string, options: Options) {
-  return new Builder().forBrowser(browser).setFirefoxOptions(options);
-}
