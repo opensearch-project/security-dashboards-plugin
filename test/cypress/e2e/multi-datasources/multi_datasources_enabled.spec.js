@@ -24,6 +24,8 @@ const createDataSource = () => {
       attributes: {
         title: Cypress.env('externalDataSourceLabel'),
         endpoint: Cypress.env('externalDataSourceEndpoint'),
+        installedPlugins: ['opensearch-security'],
+        dataSourceVersion: '2.15.0',
         auth: {
           type: 'username_password',
           credentials: {
@@ -159,15 +161,6 @@ describe('Multi-datasources enabled', () => {
     cy.visit(`http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/tenants`);
 
     cy.contains('h1', 'Dashboards multi-tenancy');
-    cy.get('[data-test-subj="dataSourceViewButton"]').should('contain', 'Local cluster');
-  });
-
-  it('Checks Service Accounts Tab', () => {
-    // Datasource is locked to local cluster for service accounts tab
-    cy.visit(
-      `http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/serviceAccounts`
-    );
-
     cy.get('[data-test-subj="dataSourceViewButton"]').should('contain', 'Local cluster');
   });
 
