@@ -24,7 +24,8 @@ import {
   PROXY_USER,
   PROXY_ROLE,
   PROXY_ADMIN_ROLE,
-  AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS,
+  AUTHORIZATION_HEADER_NAME,
+  ADMIN_CREDENTIALS,
 } from '../constant';
 import wreck from '@hapi/wreck';
 
@@ -70,7 +71,6 @@ describe('start OpenSearch Dashboards server', () => {
     );
     await root.setup();
     await root.start();
-
 
     const getConfigResponse = await wreck.get(
       'https://localhost:9200/_plugins/_security/api/securityconfig',
