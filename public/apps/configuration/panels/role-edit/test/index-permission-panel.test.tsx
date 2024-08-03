@@ -29,7 +29,12 @@ import {
   AnonymizationRow,
 } from '../index-permission-panel';
 import { RoleIndexPermissionStateClass } from '../types';
-import { EuiComboBox, EuiSuperSelect, EuiButton, EuiTextArea } from '@elastic/eui';
+import {
+  EuiCompressedComboBox,
+  EuiCompressedSuperSelect,
+  EuiSmallButton,
+  EuiCompressedTextArea,
+} from '@elastic/eui';
 
 jest.mock('../../../utils/array-state-utils');
 // eslint-disable-next-line
@@ -123,7 +128,7 @@ describe('Role edit - index permission panel', () => {
 
     const component = shallow(<IndexPatternRow {...{ value, onChangeHandler, onCreateHandler }} />);
 
-    expect(component.find(EuiComboBox).first().prop('selectedOptions')).toBe(value);
+    expect(component.find(EuiCompressedComboBox).first().prop('selectedOptions')).toBe(value);
   });
 
   it('IndexPermissionRow', () => {
@@ -135,7 +140,7 @@ describe('Role edit - index permission panel', () => {
       <IndexPermissionRow {...{ value, onChangeHandler, permisionOptionsSet }} />
     );
 
-    expect(component.find(EuiComboBox).first().prop('selectedOptions')).toBe(value);
+    expect(component.find(EuiCompressedComboBox).first().prop('selectedOptions')).toBe(value);
   });
 
   it('DocLevelSecurityRow', () => {
@@ -144,7 +149,7 @@ describe('Role edit - index permission panel', () => {
 
     const component = shallow(<DocLevelSecurityRow {...{ value, onChangeHandler }} />);
 
-    expect(component.find(EuiTextArea).first().prop('value')).toBe(value);
+    expect(component.find(EuiCompressedTextArea).first().prop('value')).toBe(value);
   });
 
   it('FieldLevelSecurityRow', () => {
@@ -160,8 +165,8 @@ describe('Role edit - index permission panel', () => {
       />
     );
 
-    expect(component.find(EuiSuperSelect).first().prop('valueOfSelected')).toBe(method);
-    expect(component.find(EuiComboBox).first().prop('selectedOptions')).toBe(fields);
+    expect(component.find(EuiCompressedSuperSelect).first().prop('valueOfSelected')).toBe(method);
+    expect(component.find(EuiCompressedComboBox).first().prop('selectedOptions')).toBe(fields);
   });
 
   it('AnonymizationRow', () => {
@@ -173,7 +178,7 @@ describe('Role edit - index permission panel', () => {
       <AnonymizationRow {...{ value, onChangeHandler, onCreateHandler }} />
     );
 
-    expect(component.find(EuiComboBox).first().prop('selectedOptions')).toBe(value);
+    expect(component.find(EuiCompressedComboBox).first().prop('selectedOptions')).toBe(value);
   });
 
   describe('IndexPermissionPanel', () => {
@@ -230,7 +235,7 @@ describe('Role edit - index permission panel', () => {
       const optionUniverse = [allowedAction1, allowedAction2].map(stringToComboBoxOption);
 
       const component = shallow(<IndexPermissionPanel {...{ state, optionUniverse, setState }} />);
-      component.find(EuiButton).last().simulate('click');
+      component.find(EuiSmallButton).last().simulate('click');
 
       expect(arrayStateUtils.appendElementToArray).toHaveBeenCalledTimes(1);
     });

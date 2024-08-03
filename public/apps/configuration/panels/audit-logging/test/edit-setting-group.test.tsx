@@ -18,7 +18,7 @@ import React from 'react';
 import { EditSettingGroup } from '../edit-setting-group';
 import { CONFIG, SettingContent, SettingGroup } from '../constants';
 import { AuditLoggingSettings, ComplianceSettings, GeneralSettings } from '../types';
-import { EuiComboBox, EuiSwitch } from '@elastic/eui';
+import { EuiCompressedComboBox, EuiCompressedSwitch } from '@elastic/eui';
 import { stringToComboBoxOption } from '../../../utils/combo-box-utils';
 import { JsonCodeEditor } from '../code-editor';
 import { displayObject } from '../../../utils/display-utils';
@@ -82,15 +82,15 @@ describe('Edit setting', () => {
       />
     );
 
-    expect(component.find(EuiSwitch).prop('checked')).toBeTruthy();
+    expect(component.find(EuiCompressedSwitch).prop('checked')).toBeTruthy();
 
-    expect(component.find(EuiComboBox).length).toEqual(2);
+    expect(component.find(EuiCompressedComboBox).length).toEqual(2);
 
-    expect(component.find(EuiComboBox).at(0).prop('selectedOptions')).toEqual(
+    expect(component.find(EuiCompressedComboBox).at(0).prop('selectedOptions')).toEqual(
       audit.disabled_rest_categories?.map(stringToComboBoxOption)
     );
 
-    expect(component.find(EuiComboBox).at(1).prop('selectedOptions')).toEqual(
+    expect(component.find(EuiCompressedComboBox).at(1).prop('selectedOptions')).toEqual(
       compliance.read_ignore_users?.map(stringToComboBoxOption)
     );
 
