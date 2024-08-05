@@ -150,6 +150,18 @@ export function AuditLogging(props: AuditLoggingProps) {
   const [loading, setLoading] = React.useState(false);
   const [accessErrorFlag, setAccessErrorFlag] = React.useState(false);
 
+  const getHeader = () => {
+    if (props.coreStart.chrome.navGroup.getNavGroupEnabled()) {
+      return <></>;
+    } else {
+      return (
+        <EuiTitle size="l">
+          <h3>Audit logging</h3>
+        </EuiTitle>
+      );
+    }
+  };
+
   const onSwitchChange = async () => {
     try {
       const updatedConfiguration = { ...configuration };
@@ -258,11 +270,7 @@ export function AuditLogging(props: AuditLoggingProps) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      <EuiPageHeader>
-        <EuiTitle size="l">
-          <h3>Audit logging</h3>
-        </EuiTitle>
-      </EuiPageHeader>
+      <EuiPageHeader>{getHeader()}</EuiPageHeader>
       <EuiSpacer />
       {loading ? <EuiLoadingContent /> : content}
     </div>

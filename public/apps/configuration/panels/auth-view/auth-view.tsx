@@ -35,6 +35,18 @@ export function AuthView(props: AppDependencies) {
   const [errorFlag, setErrorFlag] = React.useState(false);
   const [accessErrorFlag, setAccessErrorFlag] = React.useState(false);
 
+  const getHeader = () => {
+    if (props.coreStart.chrome.navGroup.getNavGroupEnabled()) {
+      return <></>;
+    } else {
+      return (
+        <EuiTitle size="l">
+          <h1>Authentication and authorization</h1>
+        </EuiTitle>
+      );
+    }
+  };
+
   React.useEffect(() => {
     const fetchData = async () => {
       try {
@@ -69,11 +81,7 @@ export function AuthView(props: AppDependencies) {
           setDataSource={setDataSource}
           selectedDataSource={dataSource}
         />
-        {accessErrorFlag ? (
-          <EuiTitle size="l">
-            <h1>Authentication and authorization</h1>
-          </EuiTitle>
-        ) : null}
+        {accessErrorFlag ? getHeader() : null}
         {accessErrorFlag ? (
           <AccessErrorComponent
             loading={loading}
@@ -95,9 +103,7 @@ export function AuthView(props: AppDependencies) {
         selectedDataSource={dataSource}
       />
       <EuiPageHeader>
-        <EuiTitle size="l">
-          <h1>Authentication and authorization</h1>
-        </EuiTitle>
+        {getHeader()}
         {!loading && !errorFlag && props.config.ui.backend_configurable && (
           <ExternalLinkButton
             href={DocLinks.BackendConfigurationDoc}
