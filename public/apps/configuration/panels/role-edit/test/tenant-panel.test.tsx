@@ -23,7 +23,7 @@ import {
 } from '../tenant-panel';
 import { shallow } from 'enzyme';
 import React from 'react';
-import { EuiComboBox, EuiButton, EuiSuperSelect } from '@elastic/eui';
+import { EuiCompressedComboBox, EuiSmallButton, EuiCompressedSuperSelect } from '@elastic/eui';
 import { render } from '@testing-library/react';
 
 jest.mock('../../../utils/array-state-utils');
@@ -103,12 +103,12 @@ describe('Role edit - tenant panel', () => {
         <TenantPanel state={state} optionUniverse={optionUniverse} setState={setState} />
       );
 
-      const comboBoxArray = component.find(EuiComboBox);
+      const comboBoxArray = component.find(EuiCompressedComboBox);
       expect(comboBoxArray.length).toEqual(2);
       expect(comboBoxArray.at(0).prop('selectedOptions')).toBe(state[0].tenantPatterns);
       expect(comboBoxArray.at(1).prop('selectedOptions')).toBe(state[1].tenantPatterns);
 
-      const superSelectArray = component.find(EuiSuperSelect);
+      const superSelectArray = component.find(EuiCompressedSuperSelect);
       expect(superSelectArray.at(0).prop('valueOfSelected')).toBe(state[0].permissionType);
       expect(superSelectArray.at(1).prop('valueOfSelected')).toBe(state[1].permissionType);
     });
@@ -118,7 +118,7 @@ describe('Role edit - tenant panel', () => {
         <TenantPanel state={[]} optionUniverse={optionUniverse} setState={setState} />
       );
 
-      const addRowButton = component.find(EuiButton).last();
+      const addRowButton = component.find(EuiSmallButton).last();
       addRowButton.simulate('click');
       expect(arrayStateUtils.appendElementToArray).toHaveBeenCalledTimes(1);
     });
@@ -135,7 +135,7 @@ describe('Role edit - tenant panel', () => {
         <TenantPanel state={state} optionUniverse={optionUniverse} setState={setState} />
       );
 
-      const removeRowButton = component.find(EuiButton).first();
+      const removeRowButton = component.find(EuiSmallButton).first();
       removeRowButton.simulate('click');
       expect(arrayStateUtils.removeElementFromArray).toHaveBeenCalledTimes(1);
     });

@@ -21,7 +21,7 @@ import {
   toggleRowDetails,
   renderRowExpansionArrow,
 } from '../permission-list';
-import { EuiInMemoryTable, EuiButtonIcon } from '@elastic/eui';
+import { EuiInMemoryTable, EuiSmallButtonIcon } from '@elastic/eui';
 import {
   requestDeleteActionGroups,
   fetchActionGroups,
@@ -82,7 +82,7 @@ describe('Permission list page ', () => {
       const Wrapper = () => <>{renderFunc(sampleActionGroup)}</>;
       const component = shallow(<Wrapper />);
 
-      expect(component.find(EuiButtonIcon).prop('iconType')).toBe('arrowDown');
+      expect(component.find(EuiSmallButtonIcon).prop('iconType')).toBe('arrowDown');
     });
 
     it('should render up arrow when expanded', () => {
@@ -94,7 +94,7 @@ describe('Permission list page ', () => {
       const Wrapper = () => <>{renderFunc(sampleActionGroup)}</>;
       const component = shallow(<Wrapper />);
 
-      expect(component.find(EuiButtonIcon).prop('iconType')).toBe('arrowUp');
+      expect(component.find(EuiSmallButtonIcon).prop('iconType')).toBe('arrowUp');
     });
   });
 

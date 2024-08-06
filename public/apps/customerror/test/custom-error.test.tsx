@@ -17,7 +17,7 @@ import React from 'react';
 import { CustomErrorPage } from '../custom-error';
 import { cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { EuiButton } from '../custom-error';
+import { EuiSmallButton } from '../custom-error';
 import { logout } from '../../account/utils';
 
 afterEach(() => {
@@ -29,9 +29,9 @@ describe('Custom error page test', () => {
 
   beforeEach(() => {
     component = shallow(
-      <EuiButton fill onClick={logout} data-test-subj="error-logout-button" fullWidth>
+      <EuiSmallButton fill onClick={logout} data-test-subj="error-logout-button" fullWidth>
         Logout
-      </EuiButton>
+      </EuiSmallButton>
     );
   });
 

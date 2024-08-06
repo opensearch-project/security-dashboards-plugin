@@ -14,7 +14,7 @@
  */
 
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiFlexGroup,
   EuiFlexItem,
   EuiForm,
@@ -198,16 +198,16 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
       <EuiSpacer size="m" />
       <EuiFlexGroup justifyContent="flexEnd">
         <EuiFlexItem grow={false}>
-          <EuiButton
+          <EuiSmallButton
             onClick={() => {
               window.location.href = buildHashUrl(ResourceType.users);
             }}
           >
             Cancel
-          </EuiButton>
+          </EuiSmallButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton
+          <EuiSmallButton
             id="submit"
             fill
             onClick={updateUserHandler}
@@ -215,7 +215,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
             data-test-subj="submit-save-user"
           >
             {props.action === 'edit' ? 'Save changes' : 'Create'}
-          </EuiButton>
+          </EuiSmallButton>
         </EuiFlexItem>
       </EuiFlexGroup>
       <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={10000} dismissToast={removeToast} />

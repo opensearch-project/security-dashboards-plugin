@@ -15,13 +15,13 @@
 
 import {
   EuiAccordion,
-  EuiButton,
-  EuiComboBox,
+  EuiSmallButton,
+  EuiCompressedComboBox,
   EuiFlexGroup,
   EuiFlexItem,
   EuiHorizontalRule,
-  EuiSuperSelect,
-  EuiTextArea,
+  EuiCompressedSuperSelect,
+  EuiCompressedTextArea,
 } from '@elastic/eui';
 import React, { Dispatch, Fragment, SetStateAction, useEffect } from 'react';
 import { isEmpty } from 'lodash';
@@ -121,7 +121,7 @@ export function IndexPatternRow(props: {
   return (
     <FormRow headerText="Index" helpText="Specify index pattern using *">
       <EuiFlexItem className={LIMIT_WIDTH_INPUT_CLASS}>
-        <EuiComboBox
+        <EuiCompressedComboBox
           noSuggestions
           placeholder="Search for index name or type in index pattern"
           selectedOptions={props.value}
@@ -149,7 +149,7 @@ export function IndexPermissionRow(props: {
     >
       <EuiFlexGroup>
         <EuiFlexItem className={LIMIT_WIDTH_INPUT_CLASS}>
-          <EuiComboBox
+          <EuiCompressedComboBox
             placeholder="Search for action group name or permission name"
             options={props.permisionOptionsSet}
             selectedOptions={props.value}
@@ -180,7 +180,7 @@ export function DocLevelSecurityRow(props: {
       helpLink={DocLinks.DocumentLevelSecurityDoc}
       optional
     >
-      <EuiTextArea
+      <EuiCompressedTextArea
         placeholder={FIELD_LEVEL_SECURITY_PLACEHOLDER}
         value={props.value}
         onChange={props.onChangeHandler}
@@ -204,7 +204,7 @@ export function FieldLevelSecurityRow(props: {
     >
       <EuiFlexGroup>
         <EuiFlexItem grow={1}>
-          <EuiSuperSelect
+          <EuiCompressedSuperSelect
             valueOfSelected={props.method}
             options={[
               { inputDisplay: 'Include', value: 'include' },
@@ -214,7 +214,7 @@ export function FieldLevelSecurityRow(props: {
           />
         </EuiFlexItem>
         <EuiFlexItem grow={9}>
-          <EuiComboBox
+          <EuiCompressedComboBox
             noSuggestions
             placeholder="Type in field name"
             selectedOptions={props.fields}
@@ -238,7 +238,7 @@ export function AnonymizationRow(props: {
       headerSubText="Masks any sensitive fields with a random value to protect your data security."
       optional
     >
-      <EuiComboBox
+      <EuiCompressedComboBox
         noSuggestions
         placeholder="Type in field name"
         selectedOptions={props.value}
@@ -271,12 +271,12 @@ export function generateIndexPermissionPanels(
             'Add index permission'
           }
           extraAction={
-            <EuiButton
+            <EuiSmallButton
               color="danger"
               onClick={() => removeElementFromArray(setRoleIndexPermission, [], arrayIndex)}
             >
               Remove
-            </EuiButton>
+            </EuiSmallButton>
           }
         >
           <IndexPatternRow
@@ -332,13 +332,13 @@ export function IndexPermissionPanel(props: {
       helpLink={DocLinks.IndexPermissionsDoc}
     >
       {generateIndexPermissionPanels(state, optionUniverse, setState)}
-      <EuiButton
+      <EuiSmallButton
         onClick={() => {
           appendElementToArray(setState, [], getEmptyIndexPermission());
         }}
       >
         Add another index permission
-      </EuiButton>
+      </EuiSmallButton>
     </PanelWithHeader>
   );
 }

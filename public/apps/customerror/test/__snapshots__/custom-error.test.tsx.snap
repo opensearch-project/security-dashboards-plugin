@@ -27,13 +27,13 @@ exports[`Custom error page test renders and clicks the button on the error page 
   <EuiSpacer
     size="s"
   />
-  <EuiButton
+  <EuiSmallButton
     data-test-subj="error-logout-button"
     fill={true}
     fullWidth={true}
     onClick={[Function]}
   >
     Logout
-  </EuiButton>
+  </EuiSmallButton>
 </EuiListGroup>
 `;

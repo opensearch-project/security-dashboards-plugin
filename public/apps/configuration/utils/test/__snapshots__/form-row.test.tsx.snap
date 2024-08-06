@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Form row renders 1`] = `
-<EuiFormRow
+<EuiCompressedFormRow
   describedByIds={Array []}
-  display="row"
+  display="rowCompressed"
   error={
     Array [
       "error1",
@@ -46,5 +46,5 @@ exports[`Form row renders 1`] = `
   <div>
     Test
   </div>
-</EuiFormRow>
+</EuiCompressedFormRow>
 `;

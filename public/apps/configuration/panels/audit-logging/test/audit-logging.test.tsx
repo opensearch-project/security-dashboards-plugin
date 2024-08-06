@@ -16,7 +16,7 @@
 import { shallow } from 'enzyme';
 import { AuditLogging, renderComplianceSettings, renderGeneralSettings } from '../audit-logging';
 import React from 'react';
-import { EuiSwitch } from '@elastic/eui';
+import { EuiCompressedSwitch } from '@elastic/eui';
 import { buildHashUrl } from '../../../utils/url-builder';
 import { ResourceType } from '../../../../../../common';
 import {
@@ -61,7 +61,7 @@ describe('Audit logs', () => {
       <AuditLogging coreStart={mockCoreStart as any} navigation={{} as any} />
     );
 
-    const switchFound = component.find(EuiSwitch);
+    const switchFound = component.find(EuiCompressedSwitch);
 
     expect(switchFound.prop('checked')).toBeFalsy();
     expect(switchFound.prop('label')).toBe('Disabled');

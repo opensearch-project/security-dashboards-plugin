@@ -14,12 +14,12 @@
  */
 
 import {
-  EuiButton,
-  EuiFieldText,
+  EuiSmallButton,
+  EuiCompressedFieldText,
   EuiFlexGroup,
   EuiFlexItem,
   EuiSpacer,
-  EuiFormRow,
+  EuiCompressedFormRow,
 } from '@elastic/eui';
 import { isEmpty } from 'lodash';
 import React, { Dispatch, Fragment, SetStateAction, useState } from 'react';
@@ -43,12 +43,12 @@ function generateBackendRolesPanels(
       <Fragment key={`backend-role-${arrayIndex}`}>
         <EuiFlexGroup>
           <EuiFlexItem className={LIMIT_WIDTH_INPUT_CLASS}>
-            <EuiFormRow
+            <EuiCompressedFormRow
               label={arrayIndex === 0 ? 'Backend role' : ''}
               error={roleEmptyErrorMessage}
               isInvalid={arrayIndex === emptyRoleIndex && !isEmpty(roleEmptyErrorMessage)}
             >
-              <EuiFieldText
+              <EuiCompressedFieldText
                 isInvalid={arrayIndex === emptyRoleIndex && !isEmpty(roleEmptyErrorMessage)}
                 id={`backend-role-${arrayIndex}`}
                 value={backendRole}
@@ -58,18 +58,18 @@ function generateBackendRolesPanels(
                 }}
                 placeholder="Type in backend role"
               />
-            </EuiFormRow>
+            </EuiCompressedFormRow>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiFormRow hasEmptyLabelSpace={arrayIndex === 0 ? true : false}>
-              <EuiButton
+            <EuiCompressedFormRow hasEmptyLabelSpace={arrayIndex === 0 ? true : false}>
+              <EuiSmallButton
                 id={`backend-role-delete-${arrayIndex}`}
                 color="danger"
                 onClick={() => removeElementFromArray(setBackendRoles, [], arrayIndex)}
               >
                 Remove
-              </EuiButton>
-            </EuiFormRow>
+              </EuiSmallButton>
+            </EuiCompressedFormRow>
           </EuiFlexItem>
         </EuiFlexGroup>
       </Fragment>
@@ -105,7 +105,7 @@ export function BackendRolePanel(props: {
         setRoleEmptyErrorMessage
       )}
       <EuiSpacer />
-      <EuiButton
+      <EuiSmallButton
         id="backend-role-add-row"
         onClick={() => {
           if (state.indexOf('') !== -1) {
@@ -118,7 +118,7 @@ export function BackendRolePanel(props: {
         }}
       >
         Add another backend role
-      </EuiButton>
+      </EuiSmallButton>
     </PanelWithHeader>
   );
 }
