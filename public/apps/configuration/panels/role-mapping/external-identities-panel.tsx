@@ -17,9 +17,9 @@ import React, { Dispatch, SetStateAction, Fragment } from 'react';
 import {
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFieldText,
-  EuiButton,
-  EuiFormRow,
+  EuiCompressedFieldText,
+  EuiSmallButton,
+  EuiCompressedFormRow,
   EuiSpacer,
 } from '@elastic/eui';
 import { isEmpty, map } from 'lodash';
@@ -72,7 +72,7 @@ export function ExternalIdentitiesPanel(props: {
         <EuiFlexGroup>
           <EuiFlexItem style={{ maxWidth: '400px' }}>
             <FormRow headerText={arrayIndex === 0 ? 'Backend roles' : ''}>
-              <EuiFieldText
+              <EuiCompressedFieldText
                 id={`externalIdentity-${arrayIndex}`}
                 value={externalIdentity.externalIdentity}
                 onChange={(e) => onValueChangeHandler('externalIdentity')(e.target.value)}
@@ -81,15 +81,15 @@ export function ExternalIdentitiesPanel(props: {
             </FormRow>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiFormRow hasEmptyLabelSpace={arrayIndex === 0 ? true : false}>
-              <EuiButton
+            <EuiCompressedFormRow hasEmptyLabelSpace={arrayIndex === 0 ? true : false}>
+              <EuiSmallButton
                 id={`remove-${arrayIndex}`}
                 color="danger"
                 onClick={() => removeElementFromArray(setExternalIdentities, [], arrayIndex)}
               >
                 Remove
-              </EuiButton>
-            </EuiFormRow>
+              </EuiSmallButton>
+            </EuiCompressedFormRow>
           </EuiFlexItem>
         </EuiFlexGroup>
       </Fragment>
@@ -104,14 +104,14 @@ export function ExternalIdentitiesPanel(props: {
     >
       {panel}
       <EuiSpacer />
-      <EuiButton
+      <EuiSmallButton
         id="add-row"
         onClick={() => {
           appendElementToArray(setExternalIdentities, [], getEmptyExternalIdentity());
         }}
       >
         Add another backend role
-      </EuiButton>
+      </EuiSmallButton>
     </PanelWithHeader>
   );
 }

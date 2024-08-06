@@ -20,7 +20,7 @@ import {
   EuiText,
   EuiIcon,
   EuiFlexGroup,
-  EuiButton,
+  EuiSmallButton,
   EuiButtonProps,
   EuiToolTip,
   EuiLink,
@@ -134,9 +134,9 @@ export const displayHeaderWithTooltip = (columnHeader: string, tooltipText: stri
 export function ExternalLinkButton(props: { text: string; href: string } & EuiButtonProps) {
   const { text, ...buttonProps } = props;
   return (
-    <EuiButton iconType="popout" iconSide="right" target="_blank" {...buttonProps}>
+    <EuiSmallButton iconType="popout" iconSide="right" target="_blank" {...buttonProps}>
       {props.text}
-    </EuiButton>
+    </EuiSmallButton>
   );
 }
 

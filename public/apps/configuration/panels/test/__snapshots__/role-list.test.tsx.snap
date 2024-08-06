@@ -61,39 +61,39 @@ exports[`Role list AccessError component should load access error component 1`] 
       <EuiPageContentHeaderSection>
         <EuiFlexGroup>
           <EuiFlexItem>
-            <EuiButtonEmpty
+            <EuiSmallButtonEmpty
               data-test-subj="edit"
               disabled={true}
               key="edit"
               onClick={[Function]}
             >
               Edit
-            </EuiButtonEmpty>
-            <EuiButtonEmpty
+            </EuiSmallButtonEmpty>
+            <EuiSmallButtonEmpty
               data-test-subj="duplicate"
               disabled={true}
               key="duplicate"
               onClick={[Function]}
             >
               Duplicate
-            </EuiButtonEmpty>
-            <EuiButtonEmpty
+            </EuiSmallButtonEmpty>
+            <EuiSmallButtonEmpty
               color="danger"
               disabled={true}
               key="delete"
               onClick={[MockFunction]}
             >
               Delete
-            </EuiButtonEmpty>
+            </EuiSmallButtonEmpty>
           </EuiFlexItem>
           <EuiFlexItem>
-            <EuiButton
+            <EuiSmallButton
               data-test-subj="create-role"
               fill={true}
               href="#/roles/create"
             >
               Create role
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiPageContentHeaderSection>

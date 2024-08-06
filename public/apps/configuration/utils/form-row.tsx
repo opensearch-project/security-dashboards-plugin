@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiFormRow, EuiText } from '@elastic/eui';
+import { EuiCompressedFormRow, EuiText } from '@elastic/eui';
 import React from 'react';
 import { ExternalLink } from './display-utils';
 import { FormRowDeps } from '../types';
@@ -26,7 +26,7 @@ export interface FormRowWithChildComponentDeps extends FormRowDeps {
 
 export function FormRow(props: FormRowWithChildComponentDeps) {
   return (
-    <EuiFormRow
+    <EuiCompressedFormRow
       fullWidth
       label={
         <>
@@ -50,6 +50,6 @@ export function FormRow(props: FormRowWithChildComponentDeps) {
       error={props.error}
     >
       {props.children}
-    </EuiFormRow>
+    </EuiCompressedFormRow>
   );
 }

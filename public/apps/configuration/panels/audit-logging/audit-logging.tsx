@@ -14,19 +14,19 @@
  */
 
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiCode,
   EuiDescribedFormGroup,
   EuiFlexGroup,
   EuiFlexItem,
   EuiForm,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiHorizontalRule,
   EuiLoadingContent,
   EuiPageHeader,
   EuiPanel,
   EuiSpacer,
-  EuiSwitch,
+  EuiCompressedSwitch,
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
@@ -59,7 +59,7 @@ function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: bool
     <EuiPanel>
       <EuiForm>
         <EuiDescribedFormGroup title={<h3>Storage location</h3>} className="described-form-group">
-          <EuiFormRow className="form-row">
+          <EuiCompressedFormRow className="form-row">
             <EuiText color="subdued" grow={false}>
               <FormattedMessage
                 id="audit.logs.storageInstruction"
@@ -71,22 +71,22 @@ function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: bool
               />{' '}
               <ExternalLink href={DocLinks.AuditLogsStorageDoc} />
             </EuiText>
-          </EuiFormRow>
+          </EuiCompressedFormRow>
         </EuiDescribedFormGroup>
 
         <EuiDescribedFormGroup
           title={<h3>Enable audit logging</h3>}
           className="described-form-group"
         >
-          <EuiFormRow>
-            <EuiSwitch
+          <EuiCompressedFormRow>
+            <EuiCompressedSwitch
               data-test-subj="audit-logging-enabled-switch"
               name="auditLoggingEnabledSwitch"
               label={displayBoolean(auditLoggingEnabled)}
               checked={auditLoggingEnabled}
               onChange={onSwitchChange}
             />
-          </EuiFormRow>
+          </EuiCompressedFormRow>
         </EuiDescribedFormGroup>
       </EuiForm>
     </EuiPanel>
@@ -206,7 +206,7 @@ export function AuditLogging(props: AuditLoggingProps) {
               </EuiTitle>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiButton
+              <EuiSmallButton
                 data-test-subj="general-settings-configure"
                 onClick={() => {
                   window.location.href =
@@ -214,7 +214,7 @@ export function AuditLogging(props: AuditLoggingProps) {
                 }}
               >
                 Configure
-              </EuiButton>
+              </EuiSmallButton>
             </EuiFlexItem>
           </EuiFlexGroup>
           <EuiHorizontalRule margin="m" />
@@ -231,7 +231,7 @@ export function AuditLogging(props: AuditLoggingProps) {
               </EuiTitle>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiButton
+              <EuiSmallButton
                 data-test-subj="compliance-settings-configure"
                 onClick={() => {
                   window.location.href =
@@ -239,7 +239,7 @@ export function AuditLogging(props: AuditLoggingProps) {
                 }}
               >
                 Configure
-              </EuiButton>
+              </EuiSmallButton>
             </EuiFlexItem>
           </EuiFlexGroup>
 

@@ -15,7 +15,7 @@
 
 import {
   EuiBasicTableColumn,
-  EuiButtonIcon,
+  EuiSmallButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
   EuiGlobalToastList,
@@ -30,7 +30,7 @@ import {
   EuiText,
   EuiTitle,
   RIGHT_ALIGNMENT,
-  EuiButtonEmpty,
+  EuiSmallButtonEmpty,
   Query,
   EuiLoadingContent,
 } from '@elastic/eui';
@@ -95,7 +95,7 @@ export function renderRowExpansionArrow(
 ) {
   return (item: PermissionListingItem) =>
     item.type === 'Action group' && (
-      <EuiButtonIcon
+      <EuiSmallButtonIcon
         onClick={() => toggleRowDetails(item, actionGroupDict, setItemIdToExpandedRowMap)}
         aria-label={itemIdToExpandedRowMap[item.name] ? 'Collapse' : 'Expand'}
         iconType={itemIdToExpandedRowMap[item.name] ? 'arrowUp' : 'arrowDown'}
@@ -249,15 +249,15 @@ export function PermissionList(props: AppDependencies) {
   );
 
   const actionsMenuItems = [
-    <EuiButtonEmpty
+    <EuiSmallButtonEmpty
       id="edit"
       key="edit"
       onClick={() => showEditModal(selection[0].name, Action.edit, selection[0].allowedActions)}
       disabled={selection.length !== 1 || selection[0].reserved}
     >
       Edit
-    </EuiButtonEmpty>,
-    <EuiButtonEmpty
+    </EuiSmallButtonEmpty>,
+    <EuiSmallButtonEmpty
       id="duplicate"
       key="duplicate"
       onClick={() =>
@@ -270,15 +270,15 @@ export function PermissionList(props: AppDependencies) {
       disabled={selection.length !== 1 || selection[0].type !== 'Action group'}
     >
       Duplicate
-    </EuiButtonEmpty>,
-    <EuiButtonEmpty
+    </EuiSmallButtonEmpty>,
+    <EuiSmallButtonEmpty
       key="delete"
       color="danger"
       onClick={showDeleteConfirmModal}
       disabled={selection.length === 0 || selection.some((group) => group.reserved)}
     >
       Delete
-    </EuiButtonEmpty>,
+    </EuiSmallButtonEmpty>,
   ];
 
   const [actionsMenu, closeActionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);
@@ -331,10 +331,13 @@ export function PermissionList(props: AppDependencies) {
   };
 
   const createActionGroupMenuItems = [
-    <EuiButtonEmpty key="create-from-blank" onClick={() => showEditModal('', Action.create, [])}>
+    <EuiSmallButtonEmpty
+      key="create-from-blank"
+      onClick={() => showEditModal('', Action.create, [])}
+    >
       Create from blank
-    </EuiButtonEmpty>,
-    <EuiButtonEmpty
+    </EuiSmallButtonEmpty>,
+    <EuiSmallButtonEmpty
       key="create-from-selection"
       id="create-from-selection"
       onClick={() =>
@@ -347,7 +350,7 @@ export function PermissionList(props: AppDependencies) {
       disabled={selection.length === 0}
     >
       Create from selection
-    </EuiButtonEmpty>,
+    </EuiSmallButtonEmpty>,
   ];
 
   const [createActionGroupMenu] = useContextMenuState(

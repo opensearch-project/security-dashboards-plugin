@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiComboBox } from '@elastic/eui';
+import { EuiCompressedComboBox } from '@elastic/eui';
 import { shallow } from 'enzyme';
 import React from 'react';
 import { ComboBoxOptions } from '../../../types';
@@ -34,7 +34,7 @@ describe('Role edit - cluster permission panel', () => {
       <ClusterPermissionPanel state={state} optionUniverse={optionUniverse} setState={setState} />
     );
 
-    const comboBox = component.find(EuiComboBox).first();
+    const comboBox = component.find(EuiCompressedComboBox).first();
     expect(comboBox.prop('selectedOptions')).toBe(state);
     expect(comboBox.prop('options')).toBe(optionUniverse);
     expect(comboBox.prop('onChange')).toBe(setState);

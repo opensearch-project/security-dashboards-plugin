@@ -14,7 +14,7 @@
  */
 
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiCode,
   EuiFlexGroup,
   EuiFlexItem,
@@ -64,14 +64,14 @@ const addBackendStep = {
           />
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton
+          <EuiSmallButton
             data-test-subj="review-authentication-and-authorization"
             onClick={() => {
               window.location.href = buildHashUrl(ResourceType.auth);
             }}
           >
             Review authentication and authorization
-          </EuiButton>
+          </EuiSmallButton>
         </EuiFlexItem>
       </EuiFlexGroup>
 
@@ -95,7 +95,7 @@ const setOfSteps = [
 
         <EuiFlexGroup gutterSize="s">
           <EuiFlexItem grow={false}>
-            <EuiButton
+            <EuiSmallButton
               data-test-subj="explore-existing-roles"
               fill
               onClick={() => {
@@ -103,17 +103,17 @@ const setOfSteps = [
               }}
             >
               Explore existing roles
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton
+            <EuiSmallButton
               data-test-subj="create-new-role"
               onClick={() => {
                 window.location.href = buildHashUrl(ResourceType.roles, Action.create);
               }}
             >
               Create new role
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
         </EuiFlexGroup>
 
@@ -135,7 +135,7 @@ const setOfSteps = [
 
         <EuiFlexGroup gutterSize="s">
           <EuiFlexItem grow={false}>
-            <EuiButton
+            <EuiSmallButton
               data-test-subj="map-users-to-role"
               fill
               onClick={() => {
@@ -143,17 +143,17 @@ const setOfSteps = [
               }}
             >
               Map users to a role
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton
+            <EuiSmallButton
               data-test-subj="create-internal-user"
               onClick={() => {
                 window.location.href = buildHashUrl(ResourceType.users, Action.create);
               }}
             >
               Create internal user
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       </>
@@ -219,7 +219,7 @@ export function GetStarted(props: AppDependencies) {
               />{' '}
               <ExternalLink href={DocLinks.AuditLogsDoc} />
             </p>
-            <EuiButton
+            <EuiSmallButton
               data-test-subj="review-audit-log-configuration"
               fill
               onClick={() => {
@@ -227,7 +227,7 @@ export function GetStarted(props: AppDependencies) {
               }}
             >
               Review Audit Log Configuration
-            </EuiButton>
+            </EuiSmallButton>
           </EuiText>
         </EuiPanel>
 
@@ -242,7 +242,7 @@ export function GetStarted(props: AppDependencies) {
               By default, the security plugin caches authenticated users, along with their roles and
               permissions. This option will purge cached users, roles and permissions.
             </p>
-            <EuiButton
+            <EuiSmallButton
               iconType="refresh"
               fill
               data-test-subj="purge-cache"
@@ -270,7 +270,7 @@ export function GetStarted(props: AppDependencies) {
               }}
             >
               Purge cache
-            </EuiButton>
+            </EuiSmallButton>
           </EuiText>
         </EuiPanel>
 
@@ -289,23 +289,23 @@ export function GetStarted(props: AppDependencies) {
               </p>
               <EuiFlexGroup gutterSize="s">
                 <EuiFlexItem grow={false}>
-                  <EuiButton
+                  <EuiSmallButton
                     fill
                     onClick={() => {
                       window.location.href = buildHashUrl(ResourceType.tenants);
                     }}
                   >
                     Manage Multi-tenancy
-                  </EuiButton>
+                  </EuiSmallButton>
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>
-                  <EuiButton
+                  <EuiSmallButton
                     onClick={() => {
                       window.location.href = buildHashUrl(ResourceType.tenantsConfigureTab);
                     }}
                   >
                     Configure Multi-tenancy
-                  </EuiButton>
+                  </EuiSmallButton>
                 </EuiFlexItem>
               </EuiFlexGroup>
             </EuiText>
