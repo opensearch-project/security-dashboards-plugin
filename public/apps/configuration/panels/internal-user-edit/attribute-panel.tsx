@@ -14,12 +14,12 @@
  */
 
 import {
-  EuiButton,
-  EuiFieldText,
+  EuiSmallButton,
+  EuiCompressedFieldText,
   EuiFlexGroup,
   EuiFlexItem,
   EuiSpacer,
-  EuiFormRow,
+  EuiCompressedFormRow,
 } from '@elastic/eui';
 import { map, isEmpty } from 'lodash';
 import React, { Dispatch, Fragment, SetStateAction } from 'react';
@@ -68,7 +68,7 @@ function generateAttributesPanels(
         <EuiFlexGroup>
           <EuiFlexItem grow={false}>
             <FormRow headerText={arrayIndex === 0 ? 'Variable name' : ''}>
-              <EuiFieldText
+              <EuiCompressedFieldText
                 id={`attribute-${arrayIndex}`}
                 value={userAttribute.key}
                 onChange={(e) => onValueChangeHandler('key')(e.target.value)}
@@ -78,7 +78,7 @@ function generateAttributesPanels(
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <FormRow headerText={arrayIndex === 0 ? 'Value' : ''}>
-              <EuiFieldText
+              <EuiCompressedFieldText
                 id={`value-${arrayIndex}`}
                 value={userAttribute.value}
                 onChange={(e) => onValueChangeHandler('value')(e.target.value)}
@@ -87,15 +87,15 @@ function generateAttributesPanels(
             </FormRow>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiFormRow hasEmptyLabelSpace={arrayIndex === 0 ? true : false}>
-              <EuiButton
+            <EuiCompressedFormRow hasEmptyLabelSpace={arrayIndex === 0 ? true : false}>
+              <EuiSmallButton
                 id={`delete-${arrayIndex}`}
                 color="danger"
                 onClick={() => removeElementFromArray(setAttributes, [], arrayIndex)}
               >
                 Remove
-              </EuiButton>
-            </EuiFormRow>
+              </EuiSmallButton>
+            </EuiCompressedFormRow>
           </EuiFlexItem>
         </EuiFlexGroup>
       </Fragment>
@@ -116,22 +116,22 @@ export function AttributePanel(props: {
   return (
     <PanelWithHeader
       headerText="Attributes"
-      headerSubText="Attributes can be used to further describe the user, and, more importantly they can be used as 
-      variables in the Document Level Security query in the index permission of a role. This makes it possible to 
+      headerSubText="Attributes can be used to further describe the user, and, more importantly they can be used as
+      variables in the Document Level Security query in the index permission of a role. This makes it possible to
       write dynamic DLS queries based on a user's attributes."
       helpLink={DocLinks.AttributeBasedSecurityDoc}
       optional
     >
       {generateAttributesPanels(state, setState)}
       <EuiSpacer />
-      <EuiButton
+      <EuiSmallButton
         id="add-row"
         onClick={() => {
           appendElementToArray(setState, [], getEmptyAttribute());
         }}
       >
         Add another attribute
-      </EuiButton>
+      </EuiSmallButton>
     </PanelWithHeader>
   );
 }

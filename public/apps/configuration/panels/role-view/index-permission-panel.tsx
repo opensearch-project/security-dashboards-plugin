@@ -18,11 +18,11 @@ import {
   EuiInMemoryTable,
   EuiBasicTableColumn,
   RIGHT_ALIGNMENT,
-  EuiButtonIcon,
+  EuiSmallButtonIcon,
   EuiText,
   EuiFlexGroup,
   EuiEmptyPrompt,
-  EuiButton,
+  EuiSmallButton,
 } from '@elastic/eui';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import {
@@ -66,7 +66,7 @@ export function renderRowExpanstionArrow(
   setItemIdToExpandedRowMap: Dispatch<SetStateAction<ExpandedRowMapInterface>>
 ) {
   return (item: RoleIndexPermissionView) => (
-    <EuiButtonIcon
+    <EuiSmallButtonIcon
       onClick={() => toggleRowDetails(item, actionGroupDict, setItemIdToExpandedRowMap)}
       aria-label={itemIdToExpandedRowMap[item.id] ? 'Collapse' : 'Expand'}
       iconType={itemIdToExpandedRowMap[item.id] ? 'arrowUp' : 'arrowDown'}
@@ -188,7 +188,7 @@ export function IndexPermissionPanel(props: IndexPermissionPanelProps) {
       title={<h3>No index permission</h3>}
       titleSize="s"
       actions={
-        <EuiButton
+        <EuiSmallButton
           data-test-subj="addIndexPermission"
           disabled={props.isReserved}
           onClick={() => {
@@ -196,7 +196,7 @@ export function IndexPermissionPanel(props: IndexPermissionPanelProps) {
           }}
         >
           Add index permission
-        </EuiButton>
+        </EuiSmallButton>
       }
     />
   );

@@ -16,11 +16,11 @@
 import React, { Fragment } from 'react';
 import {
   EuiCodeBlock,
-  EuiComboBox,
+  EuiCompressedComboBox,
   EuiDescribedFormGroup,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiSpacer,
-  EuiSwitch,
+  EuiCompressedSwitch,
   EuiTitle,
 } from '@elastic/eui';
 import { get, isEmpty } from 'lodash';
@@ -63,7 +63,7 @@ export function EditSettingGroup(props: {
       val = val || false;
 
       return (
-        <EuiSwitch
+        <EuiCompressedSwitch
           // @ts-ignore
           label={displayBoolean(val)}
           // @ts-ignore
@@ -77,7 +77,7 @@ export function EditSettingGroup(props: {
       val = val || [];
 
       return (
-        <EuiComboBox
+        <EuiCompressedComboBox
           placeholder={setting.title}
           options={setting.options.map(stringToComboBoxOption)}
           // @ts-ignore
@@ -91,7 +91,7 @@ export function EditSettingGroup(props: {
       val = val || [];
 
       return (
-        <EuiComboBox
+        <EuiCompressedComboBox
           noSuggestions
           placeholder={setting.title}
           // @ts-ignore
@@ -168,10 +168,10 @@ export function EditSettingGroup(props: {
               fullWidth
             >
               {/* @ts-ignore*/}
-              <EuiFormRow label={displayLabel(setting.path)}>
+              <EuiCompressedFormRow label={displayLabel(setting.path)}>
                 {/* @ts-ignore*/}
                 {renderField(props.config, setting, props.handleChange, props.handleInvalid)}
-              </EuiFormRow>
+              </EuiCompressedFormRow>
             </EuiDescribedFormGroup>
           </Fragment>
         );

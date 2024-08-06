@@ -21,7 +21,7 @@ import {
   EuiGlobalToastList,
   EuiBasicTableColumn,
   EuiEmptyPrompt,
-  EuiButton,
+  EuiSmallButton,
 } from '@elastic/eui';
 import { CoreStart } from 'opensearch-dashboards/public';
 import { getCurrentUser } from '../../../../utils/auth-info-utils';
@@ -171,7 +171,7 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
       title={<h3>No tenant permission</h3>}
       titleSize="s"
       actions={
-        <EuiButton
+        <EuiSmallButton
           data-test-subj="addTenantPermission"
           disabled={props.isReserved}
           onClick={() => {
@@ -179,7 +179,7 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
           }}
         >
           Add tenant permission
-        </EuiButton>
+        </EuiSmallButton>
       }
     />
   );
