@@ -132,6 +132,8 @@ describe('start OpenSearch Dashboards server', () => {
       .unset(AUTHORIZATION_HEADER_NAME)
       .set(PROXY_USER, ADMIN_USER)
       .set(PROXY_ROLE, PROXY_ADMIN_ROLE);
+    console.log('root is ' + root);
+    console.log('response is ' + response.toString());
     expect(response.status).toEqual(200);
   });
 
