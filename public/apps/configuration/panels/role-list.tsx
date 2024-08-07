@@ -58,7 +58,7 @@ import { DocLinks } from '../constants';
 import { DataSourceContext } from '../app-router';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
 import { AccessErrorComponent } from '../access-error-component';
-import { HeaderTitle, HeaderDescription, HeaderButtonOrLink } from '../header/header-components';
+import { PageHeader } from '../header/header-components';
 
 const columns: Array<EuiBasicTableColumn<RoleListing>> = [
   {
@@ -302,34 +302,19 @@ export function RoleList(props: AppDependencies) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      {useUpdatedUX ? (
-        <>
-          <HeaderTitle
-            navigation={props.depsStart.navigation}
-            pageHeader="Roles"
-            shouldDisplayCount={true}
-            count={roleLen}
-            application={props.coreStart.application}
-          />
-          <HeaderDescription
-            navigation={props.depsStart.navigation}
-            description=""
-            application={props.coreStart.application}
-            controls={descriptionData}
-          />
-          <HeaderButtonOrLink
-            navigation={props.depsStart.navigation}
-            controls={buttonData}
-            application={props.coreStart.application}
-          />
-        </>
-      ) : (
-        <EuiPageHeader>
-          <EuiTitle size="l">
-            <h1>Roles</h1>
-          </EuiTitle>
-        </EuiPageHeader>
-      )}
+      <PageHeader
+        navigation={props.depsStart.navigation}
+        coreStart={props.coreStart}
+        descriptionControls={descriptionData}
+        controlControls={buttonData}
+        fallBackComponent={
+          <EuiPageHeader>
+            <EuiTitle size="l">
+              <h1>Roles</h1>
+            </EuiTitle>
+          </EuiPageHeader>
+        }
+      />
       {loading ? (
         <EuiLoadingContent />
       ) : accessErrorFlag ? (

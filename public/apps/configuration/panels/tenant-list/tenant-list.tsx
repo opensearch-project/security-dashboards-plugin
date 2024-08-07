@@ -128,7 +128,6 @@ export function TenantList(props: TenantListProps) {
     ));
   };
 
-  const useUpdatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
   const descriptionData = [
     {
       renderComponent: (

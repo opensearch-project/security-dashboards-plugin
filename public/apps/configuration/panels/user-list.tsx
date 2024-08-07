@@ -52,7 +52,7 @@ import { buildHashUrl } from '../utils/url-builder';
 import { DataSourceContext } from '../app-router';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
 import { AccessErrorComponent } from '../access-error-component';
-import { HeaderButtonOrLink, HeaderTitle, HeaderDescription } from '../header/header-components';
+import { PageHeader } from '../header/header-components';
 
 export function dictView(items: Dictionary<string>) {
   if (isEmpty(items)) {
@@ -244,34 +244,19 @@ export function UserList(props: AppDependencies) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      {useUpdatedUX ? (
-        <>
-          <HeaderTitle
-            navigation={props.depsStart.navigation}
-            pageHeader="Internal Users"
-            shouldDisplayCount={true}
-            count={userLen}
-            application={props.coreStart.application}
-          />
-          <HeaderDescription
-            navigation={props.depsStart.navigation}
-            description=""
-            application={props.coreStart.application}
-            controls={descriptionData}
-          />
-          <HeaderButtonOrLink
-            navigation={props.depsStart.navigation}
-            controls={buttonData}
-            application={props.coreStart.application}
-          />
-        </>
-      ) : (
-        <EuiPageHeader>
-          <EuiTitle size="l">
-            <h1>Internal users</h1>
-          </EuiTitle>
-        </EuiPageHeader>
-      )}
+      <PageHeader
+        navigation={props.depsStart.navigation}
+        coreStart={props.coreStart}
+        descriptionControls={descriptionData}
+        controlControls={buttonData}
+        fallBackComponent={
+          <EuiPageHeader>
+            <EuiTitle size="l">
+              <h1>Internal users</h1>
+            </EuiTitle>
+          </EuiPageHeader>
+        }
+      />
       {loading ? (
         <EuiLoadingContent />
       ) : accessErrorFlag ? (

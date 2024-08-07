@@ -26,7 +26,7 @@ import { InstructionView } from './instruction-view';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { AccessErrorComponent } from '../../access-error-component';
-import { HeaderButtonOrLink, HeaderTitle } from '../../header/header-components';
+import { PageHeader } from '../../header/header-components';
 
 export function AuthView(props: AppDependencies) {
   const [authentication, setAuthentication] = React.useState([]);
@@ -61,8 +61,6 @@ export function AuthView(props: AppDependencies) {
     fetchData();
   }, [props.coreStart.http, dataSource]);
 
-  const useUpdatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
-
   const buttonData = [
     {
       label: 'Manage via config.yml',
@@ -84,36 +82,22 @@ export function AuthView(props: AppDependencies) {
           setDataSource={setDataSource}
           selectedDataSource={dataSource}
         />
-        {useUpdatedUX ? (
-          <>
-            <HeaderTitle
-              navigation={props.depsStart.navigation}
-              pageHeader="Authentication and authorization"
-              application={props.coreStart.application}
-            />
-            {accessErrorFlag ? (
-              <AccessErrorComponent
-                loading={loading}
-                dataSourceLabel={dataSource && dataSource.label}
-              />
-            ) : (
-              <InstructionView config={props.config} />
-            )}
-          </>
-        ) : (
-          <>
+        <PageHeader
+          navigation={props.depsStart.navigation}
+          coreStart={props.coreStart}
+          fallBackComponent={
             <EuiTitle size="l">
               <h1>Authentication and authorization</h1>
             </EuiTitle>
-            {accessErrorFlag ? (
-              <AccessErrorComponent
-                loading={loading}
-                dataSourceLabel={dataSource && dataSource.label}
-              />
-            ) : (
-              <InstructionView config={props.config} />
-            )}
-          </>
+          }
+        />
+        {accessErrorFlag ? (
+          <AccessErrorComponent
+            loading={loading}
+            dataSourceLabel={dataSource && dataSource.label}
+          />
+        ) : (
+          <InstructionView config={props.config} />
         )}
       </>
     );
@@ -127,32 +111,24 @@ export function AuthView(props: AppDependencies) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      {useUpdatedUX ? (
-        <>
-          <HeaderTitle
-            navigation={props.depsStart.navigation}
-            pageHeader="Authentication and authorization"
-            application={props.coreStart.application}
-          />
-          <HeaderButtonOrLink
-            navigation={props.depsStart.navigation}
-            controls={buttonData}
-            application={props.coreStart.application}
-          />
-        </>
-      ) : (
-        <EuiPageHeader>
-          <EuiTitle size="l">
-            <h1>Authentication and authorization</h1>
-          </EuiTitle>
-          {!loading && !errorFlag && props.config.ui.backend_configurable && (
-            <ExternalLinkButton
-              href={DocLinks.BackendConfigurationDoc}
-              text="Manage via config.yml"
-            />
-          )}
-        </EuiPageHeader>
-      )}
+      <PageHeader
+        navigation={props.depsStart.navigation}
+        coreStart={props.coreStart}
+        controlControls={buttonData}
+        fallBackComponent={
+          <EuiPageHeader>
+            <EuiTitle size="l">
+              <h1>Authentication and authorization</h1>
+            </EuiTitle>
+            {!loading && !errorFlag && props.config.ui.backend_configurable && (
+              <ExternalLinkButton
+                href={DocLinks.BackendConfigurationDoc}
+                text="Manage via config.yml"
+              />
+            )}
+          </EuiPageHeader>
+        }
+      />
       {loading ? (
         <EuiLoadingContent />
       ) : accessErrorFlag ? (

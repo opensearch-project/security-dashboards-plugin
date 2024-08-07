@@ -72,7 +72,7 @@ import { setCrossPageToast } from '../../utils/storage-utils';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { getClusterInfo } from '../../../../utils/datasource-utils';
-import { HeaderTitle, HeaderButtonOrLink } from '../../header/header-components';
+import { PageHeader } from '../../header/header-components';
 
 interface RoleViewProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -456,34 +456,26 @@ export function RoleView(props: RoleViewProps) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      {useUpdatedUX ? (
-        <>
-          <HeaderTitle
-            navigation={props.depsStart.navigation}
-            pageHeader={props.roleName}
-            application={props.coreStart.application}
-          />
-          <HeaderButtonOrLink
-            navigation={props.depsStart.navigation}
-            controls={roleView}
-            application={props.coreStart.application}
-          />
-        </>
-      ) : (
-        <>
-          {props.buildBreadcrumbs(props.roleName)}
+      <PageHeader
+        navigation={props.depsStart.navigation}
+        coreStart={props.coreStart}
+        controlControls={roleView}
+        fallBackComponent={
+          <>
+            {props.buildBreadcrumbs(props.roleName)}
 
-          <EuiPageContentHeader>
-            <EuiPageContentHeaderSection>
-              <EuiTitle size="l">
-                <h1>{props.roleName}</h1>
-              </EuiTitle>
-            </EuiPageContentHeaderSection>
+            <EuiPageContentHeader>
+              <EuiPageContentHeaderSection>
+                <EuiTitle size="l">
+                  <h1>{props.roleName}</h1>
+                </EuiTitle>
+              </EuiPageContentHeaderSection>
 
-            <EuiPageContentHeaderSection>{pageActions}</EuiPageContentHeaderSection>
-          </EuiPageContentHeader>
-        </>
-      )}
+              <EuiPageContentHeaderSection>{pageActions}</EuiPageContentHeaderSection>
+            </EuiPageContentHeader>
+          </>
+        }
+      />
       <EuiTabbedContent
         tabs={tabs}
         initialSelectedTab={

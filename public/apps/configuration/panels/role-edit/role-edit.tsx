@@ -59,7 +59,7 @@ import { generateResourceName } from '../../utils/resource-utils';
 import { NameRow } from '../../utils/name-row';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
-import { HeaderDescription, HeaderTitle } from '../../header/header-components';
+import { PageHeader } from '../../header/header-components';
 
 interface RoleEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -259,38 +259,29 @@ export function RoleEdit(props: RoleEditDeps) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      {useUpdatedUX ? (
-        <>
-          <HeaderTitle
-            navigation={props.depsStart.navigation}
-            pageHeader={TITLE_TEXT_DICT[props.action]}
-            application={props.coreStart.application}
-          />
-          <HeaderDescription
-            navigation={props.depsStart.navigation}
-            description=""
-            application={props.coreStart.application}
-            controls={descriptionData}
-          />
-        </>
-      ) : (
-        <>
-          {' '}
-          {props.buildBreadcrumbs(TITLE_TEXT_DICT[props.action])}
-          <EuiPageHeader>
-            <EuiText size="xs" color="subdued" className="panel-header-subtext">
-              <EuiTitle size="m">
-                <h1>{TITLE_TEXT_DICT[props.action]}</h1>
-              </EuiTitle>
-              Roles are the core way of controlling access to your cluster. Roles contain any
-              combination of cluster-wide permission, index-specific permissions, document- and
-              field-level security, and tenants. Once you&apos;ve created the role, you can map
-              users to the roles so that users gain those permissions.{' '}
-              <ExternalLink href={DocLinks.UsersAndRolesDoc} />
-            </EuiText>
-          </EuiPageHeader>
-        </>
-      )}
+      <PageHeader
+        fallBackComponent={
+          <>
+            {' '}
+            {props.buildBreadcrumbs(TITLE_TEXT_DICT[props.action])}
+            <EuiPageHeader>
+              <EuiText size="xs" color="subdued" className="panel-header-subtext">
+                <EuiTitle size="m">
+                  <h1>{TITLE_TEXT_DICT[props.action]}</h1>
+                </EuiTitle>
+                Roles are the core way of controlling access to your cluster. Roles contain any
+                combination of cluster-wide permission, index-specific permissions, document- and
+                field-level security, and tenants. Once you&apos;ve created the role, you can map
+                users to the roles so that users gain those permissions.{' '}
+                <ExternalLink href={DocLinks.UsersAndRolesDoc} />
+              </EuiText>
+            </EuiPageHeader>
+          </>
+        }
+        navigation={props.depsStart.navigation}
+        coreStart={props.coreStart}
+        descriptionControls={descriptionData}
+      />
       <PanelWithHeader headerText="Name">
         <EuiForm>
           <NameRow
