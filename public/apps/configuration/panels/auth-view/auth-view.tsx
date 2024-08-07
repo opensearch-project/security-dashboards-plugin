@@ -26,6 +26,7 @@ import { InstructionView } from './instruction-view';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { AccessErrorComponent } from '../../access-error-component';
+import { HeaderButtonOrLink, HeaderTitle } from '../../header/header-components';
 
 export function AuthView(props: AppDependencies) {
   const [authentication, setAuthentication] = React.useState([]);
@@ -60,6 +61,21 @@ export function AuthView(props: AppDependencies) {
     fetchData();
   }, [props.coreStart.http, dataSource]);
 
+
+  const updatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
+
+  const buttonData = [
+    {
+      label: 'Manage via config.yml',
+      isLoading: false,
+      href: DocLinks.BackendConfigurationDoc,
+      iconType: 'popout',
+      iconSide: 'right',
+      type: 'button',
+      // target: "_blank"
+    },
+  ];
+
   if (isEmpty(authentication) && !loading) {
     return (
       <>
@@ -69,18 +85,34 @@ export function AuthView(props: AppDependencies) {
           setDataSource={setDataSource}
           selectedDataSource={dataSource}
         />
-        {accessErrorFlag ? (
-          <EuiTitle size="l">
-            <h1>Authentication and authorization</h1>
-          </EuiTitle>
-        ) : null}
-        {accessErrorFlag ? (
-          <AccessErrorComponent
-            loading={loading}
-            dataSourceLabel={dataSource && dataSource.label}
-          />
+        { updatedUX ? (
+          <>
+            <HeaderTitle
+              navigation={props.depsStart.navigation}
+              pageHeader="Authentication and authorization"
+              application={props.coreStart.application}
+            />
+            { accessErrorFlag ? (
+              <AccessErrorComponent
+                loading={loading}
+                dataSourceLabel={dataSource && dataSource.label}
+              />
+            ) : (
+              <InstructionView config={props.config} />
+            )}
+            
+          </>
         ) : (
-          <InstructionView config={props.config} />
+          <>
+            <EuiTitle size="l">
+              <h1>Authentication and authorization</h1>
+            </EuiTitle>
+            { accessErrorFlag ? <AccessErrorComponent
+                loading={loading}
+                dataSourceLabel={dataSource && dataSource.label}
+              /> : <InstructionView config={props.config}/>
+              }
+          </>
         )}
       </>
     );
@@ -94,17 +126,31 @@ export function AuthView(props: AppDependencies) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      <EuiPageHeader>
-        <EuiTitle size="l">
-          <h1>Authentication and authorization</h1>
-        </EuiTitle>
-        {!loading && !errorFlag && props.config.ui.backend_configurable && (
-          <ExternalLinkButton
-            href={DocLinks.BackendConfigurationDoc}
-            text="Manage via config.yml"
-          />
-        )}
-      </EuiPageHeader>
+      {updatedUX ? (
+          <>
+            <HeaderTitle
+              navigation={props.depsStart.navigation}
+              pageHeader="Authentication and authorization"
+              application={props.coreStart.application}
+            />
+            <HeaderButtonOrLink
+              navigation={props.depsStart.navigation}
+              controls={buttonData}
+              application={props.coreStart.application}
+            />
+          </>
+        ) : (
+        <EuiPageHeader>
+          <EuiTitle size="l">
+            <h1>Authentication and authorization</h1>
+          </EuiTitle>
+          {!loading && !errorFlag && props.config.ui.backend_configurable && (
+            <ExternalLinkButton
+              href={DocLinks.BackendConfigurationDoc}
+              text="Manage via config.yml"
+            />
+          )}
+      </EuiPageHeader>)}
       {loading ? (
         <EuiLoadingContent />
       ) : accessErrorFlag ? (

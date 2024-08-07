@@ -22,9 +22,9 @@ import { DocLinks } from '../../constants';
 export function InstructionView(props: { config: ClientConfigType }) {
   return (
     <>
-      <EuiTitle size="l">
+      {/* <EuiTitle size="l">
         <h1>Authentication and authorization</h1>
-      </EuiTitle>
+      </EuiTitle> */}
 
       <EuiSpacer size="xxl" />
 
