@@ -141,34 +141,53 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   it('can access home page with proxy header', async () => {
-    const response = await osdTestServer.request
-      .get(root, '/api/status')
-      .unset(AUTHORIZATION_HEADER_NAME)
-      .set(PROXY_USER, ADMIN_USER)
-      .set(PROXY_ROLE, PROXY_ADMIN_ROLE);
-    console.log('root is ' + root);
-    console.log('response is ' + response.toString());
-    expect(response.status).toEqual(200);
+    const response = await wreck.get(
+      'https://localhost:9200/_plugins/_security/api/securityconfig',
+      {
+        rejectUnauthorized: false,
+        headers: {
+          PROXY_USER: ADMIN_USER,
+          PROXY_ROLE: PROXY_ADMIN_ROLE,
+        },
+      }
+    );
+    expect(response.res.statusCode).toEqual(200);
   });
 
   it('cannot access home page without proxy header', async () => {
-    const response = await osdTestServer.request.get(root, '/api/status');
-    expect(response.status).toEqual(401);
+    const response = await wreck.get(
+      'https://localhost:9200/_plugins/_security/api/securityconfig',
+      {
+        rejectUnauthorized: false,
+        headers: {},
+      }
+    );
+    expect(response.res.statusCode).toEqual(401);
   });
 
   it('cannot access home page with partial proxy header', async () => {
-    const response = await osdTestServer.request
-      .get(root, '/api/status')
-      .unset(AUTHORIZATION_HEADER_NAME)
-      .set(PROXY_USER, ADMIN_USER);
-    expect(response.status).toEqual(401);
+    const response = await wreck.get(
+      'https://localhost:9200/_plugins/_security/api/securityconfig',
+      {
+        rejectUnauthorized: false,
+        headers: {
+          PROXY_USER: ADMIN_USER,
+        },
+      }
+    );
+    expect(response.res.statusCode).toEqual(401);
   });
 
   it('cannot access home page with partial proxy header2', async () => {
-    const response = await osdTestServer.request
-      .get(root, '/api/status')
-      .unset(AUTHORIZATION_HEADER_NAME)
-      .set(PROXY_ROLE, PROXY_ADMIN_ROLE);
-    expect(response.status).toEqual(401);
+    const response = await wreck.get(
+      'https://localhost:9200/_plugins/_security/api/securityconfig',
+      {
+        rejectUnauthorized: false,
+        headers: {
+          PROXY_ROLE: PROXY_ADMIN_ROLE,
+        },
+      }
+    );
+    expect(response.res.statusCode).toEqual(401);
   });
 });
