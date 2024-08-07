@@ -20,7 +20,7 @@ import { TopNavControlData } from 'src/plugins/navigation/public/top_nav_menu/to
 export interface HeaderProps {
   navigation: NavigationPublicPluginStart;
   coreStart: CoreStart;
-  fallBackComponent: JSX.Element
+  fallBackComponent: JSX.Element;
 }
 
 export interface ControlProps {

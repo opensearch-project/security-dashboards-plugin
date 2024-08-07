@@ -74,21 +74,21 @@ export const PageHeader = (props: HeaderProps & DescriptionProps & ControlProps)
   if (useNewUx) {
     return (
       <>
-      {props.descriptionControls ? <HeaderControl
-        setMountPoint={props.coreStart.application.setAppDescriptionControls}
-        controls={props.descriptionControls}
-      /> : null}
-      {props.controlControls ? <HeaderControl
-        setMountPoint={props.coreStart.application.setAppRightControls}
-        controls={props.controlControls}
-      /> : null}
+        {props.descriptionControls ? (
+          <HeaderControl
+            setMountPoint={props.coreStart.application.setAppDescriptionControls}
+            controls={props.descriptionControls}
+          />
+        ) : null}
+        {props.controlControls ? (
+          <HeaderControl
+            setMountPoint={props.coreStart.application.setAppRightControls}
+            controls={props.controlControls}
+          />
+        ) : null}
       </>
     );
-
   } else {
     return props.fallBackComponent;
   }
-
-  
-
-}
+};

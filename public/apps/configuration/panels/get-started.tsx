@@ -39,7 +39,7 @@ import { createSuccessToast, createUnknownErrorToast, useToastState } from '../u
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
 import { DataSourceContext } from '../app-router';
 import { getClusterInfo } from '../../../utils/datasource-utils';
-import { HeaderButtonOrLink, HeaderTitle, PageHeader } from '../header/header-components';
+import { PageHeader } from '../header/header-components';
 
 const addBackendStep = {
   title: 'Add backends',
@@ -195,15 +195,17 @@ export function GetStarted(props: AppDependencies) {
           selectedDataSource={dataSource}
         />
         <PageHeader
-        navigation={props.depsStart.navigation}
-        coreStart={props.coreStart}
-        controlControls={buttonData}
-        fallBackComponent={<EuiPageHeader>
-          <EuiTitle size="l">
-            <h1>Get started</h1>
-          </EuiTitle>
-          <ExternalLinkButton text="Open in new window" href={buildHashUrl()} />
-        </EuiPageHeader>}
+          navigation={props.depsStart.navigation}
+          coreStart={props.coreStart}
+          controlControls={buttonData}
+          fallBackComponent={
+            <EuiPageHeader>
+              <EuiTitle size="l">
+                <h1>Get started</h1>
+              </EuiTitle>
+              <ExternalLinkButton text="Open in new window" href={buildHashUrl()} />
+            </EuiPageHeader>
+          }
         />
         <EuiPanel paddingSize="l">
           <EuiText size="s" color="subdued">
