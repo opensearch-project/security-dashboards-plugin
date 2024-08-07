@@ -38,6 +38,7 @@ import { setCrossPageToast } from '../../utils/storage-utils';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { DataSourceContext } from '../../app-router';
 import { getClusterInfo } from '../../../../utils/datasource-utils';
+import { PageHeader } from '../../header/header-components';
 
 interface AuditLoggingEditSettingProps extends AppDependencies {
   setting: 'general' | 'compliance';
@@ -155,11 +156,17 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
   const renderComplianceSetting = () => {
     return (
       <>
-        <EuiPageHeader>
-          <EuiTitle size="l">
-            <h1>Compliance settings</h1>
-          </EuiTitle>
-        </EuiPageHeader>
+        <PageHeader
+          navigation={props.depsStart.navigation}
+          coreStart={props.coreStart}
+          fallBackComponent={
+            <EuiPageHeader>
+              <EuiTitle size="l">
+                <h1>Compliance settings</h1>
+              </EuiTitle>
+            </EuiPageHeader>
+          }
+        />
 
         <EuiPanel>
           <EditSettingGroup
@@ -207,11 +214,17 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
   const renderGeneralSettings = () => {
     return (
       <>
-        <EuiPageHeader>
-          <EuiTitle size="l">
-            <h1>General settings</h1>
-          </EuiTitle>
-        </EuiPageHeader>
+        <PageHeader
+          navigation={props.depsStart.navigation}
+          coreStart={props.coreStart}
+          fallBackComponent={
+            <EuiPageHeader>
+              <EuiTitle size="l">
+                <h1>General settings</h1>
+              </EuiTitle>
+            </EuiPageHeader>
+          }
+        />
 
         <EuiPanel>
           <EditSettingGroup

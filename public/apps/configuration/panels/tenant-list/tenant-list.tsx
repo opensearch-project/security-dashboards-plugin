@@ -32,7 +32,7 @@ import { DocLinks } from '../../constants';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
 import { LocalCluster } from '../../../../utils/datasource-utils';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
-import { HeaderTitle, HeaderDescription } from '../../header/header-components';
+import { PageHeader } from '../../header/header-components';
 
 interface TenantListProps extends AppDependencies {
   tabID: string;
@@ -152,36 +152,27 @@ export function TenantList(props: TenantListProps) {
         setDataSource={() => {}}
         selectedDataSource={LocalCluster}
       />
-      {useUpdatedUX ? (
-        <>
-          <HeaderTitle
-            navigation={props.depsStart.navigation}
-            pageHeader="Dashboards multi-tenancy"
-            application={props.coreStart.application}
-          />
-          <HeaderDescription
-            navigation={props.depsStart.navigation}
-            description=""
-            application={props.coreStart.application}
-            controls={descriptionData}
-          />
-        </>
-      ) : (
-        <>
-          <EuiPageHeader>
-            <EuiTitle size="l">
-              <h1>Dashboards multi-tenancy</h1>
-            </EuiTitle>
-          </EuiPageHeader>
-          <EuiText size="s" color="subdued" grow={true} textAlign={'left'}>
-            Tenants in OpenSearch Dashboards are spaces for saving index patterns, visualizations,
-            dashboards, and other OpenSearch Dashboards objects. Tenants are useful for safely
-            sharing your work with other OpenSearch Dashboards users. You can control which roles
-            have access to a tenant and whether those roles have read or write access.{' '}
-            <ExternalLink href={DocLinks.MultiTenancyDoc} />
-          </EuiText>
-        </>
-      )}
+      <PageHeader
+        navigation={props.depsStart.navigation}
+        coreStart={props.coreStart}
+        descriptionControls={descriptionData}
+        fallBackComponent={
+          <>
+            <EuiPageHeader>
+              <EuiTitle size="l">
+                <h1>Dashboards multi-tenancy</h1>
+              </EuiTitle>
+            </EuiPageHeader>
+            <EuiText size="s" color="subdued" grow={true} textAlign={'left'}>
+              Tenants in OpenSearch Dashboards are spaces for saving index patterns, visualizations,
+              dashboards, and other OpenSearch Dashboards objects. Tenants are useful for safely
+              sharing your work with other OpenSearch Dashboards users. You can control which roles
+              have access to a tenant and whether those roles have read or write access.{' '}
+              <ExternalLink href={DocLinks.MultiTenancyDoc} />
+            </EuiText>
+          </>
+        }
+      />
 
       <EuiTabs>{renderTabs()}</EuiTabs>
       {!isMultiTenancyEnabled && selectedTabId === 'Manage' && tenancyDisabledWarning}
