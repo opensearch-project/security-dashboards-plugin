@@ -15,13 +15,13 @@
 
 import React from 'react';
 import {
-  EuiButton,
-  EuiButtonEmpty,
+  EuiSmallButton,
+  EuiSmallButtonEmpty,
   EuiCallOut,
-  EuiFieldPassword,
+  EuiCompressedFieldPassword,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiModal,
   EuiModalBody,
   EuiModalFooter,
@@ -116,7 +116,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
             isInvalid={isCurrentPasswordInvalid}
             error={currentPasswordError}
           >
-            <EuiFieldPassword
+            <EuiCompressedFieldPassword
               data-test-subj="current-password"
               onChange={function (e: React.ChangeEvent<HTMLInputElement>) {
                 setCurrentPassword(e.target.value);
@@ -135,7 +135,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
                 helpText={passwordHelpText}
                 isInvalid={isNewPasswordInvalid}
               >
-                <EuiFieldPassword
+                <EuiCompressedFieldPassword
                   data-test-subj="new-password"
                   onChange={function (e: React.ChangeEvent<HTMLInputElement>) {
                     setNewPassword(e.target.value);
@@ -146,9 +146,9 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
                   isInvalid={isNewPasswordInvalid}
                 />
               </FormRow>
-              <EuiFormRow>
+              <EuiCompressedFormRow>
                 <PasswordStrengthBar password={newPassword} />
-              </EuiFormRow>
+              </EuiCompressedFormRow>
             </EuiFlexItem>
           </EuiFlexGroup>
 
@@ -156,7 +156,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
             headerText="Re-enter new password"
             helpText="The password must be identical to what you entered above."
           >
-            <EuiFieldPassword
+            <EuiCompressedFieldPassword
               data-test-subj="reenter-new-password"
               isInvalid={isRepeatNewPasswordInvalid}
               onChange={function (e: React.ChangeEvent<HTMLInputElement>) {
@@ -177,18 +177,18 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
           )}
         </EuiModalBody>
         <EuiModalFooter>
-          <EuiButtonEmpty data-test-subj="cancel" onClick={props.handleClose}>
+          <EuiSmallButtonEmpty data-test-subj="cancel" onClick={props.handleClose}>
             Cancel
-          </EuiButtonEmpty>
+          </EuiSmallButtonEmpty>
 
-          <EuiButton
+          <EuiSmallButton
             data-test-subj="reset"
             fill
             disabled={isRepeatNewPasswordInvalid}
             onClick={handleReset}
           >
             Reset
-          </EuiButton>
+          </EuiSmallButton>
         </EuiModalFooter>
       </EuiModal>
     </EuiOverlayMask>

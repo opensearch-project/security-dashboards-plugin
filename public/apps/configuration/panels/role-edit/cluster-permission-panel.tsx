@@ -14,7 +14,7 @@
  */
 
 import React, { Dispatch, SetStateAction } from 'react';
-import { EuiForm, EuiFlexGroup, EuiFlexItem, EuiComboBox } from '@elastic/eui';
+import { EuiForm, EuiFlexGroup, EuiFlexItem, EuiCompressedComboBox } from '@elastic/eui';
 import { ComboBoxOptions } from '../../types';
 import { ResourceType } from '../../../../../common';
 import { PanelWithHeader } from '../../utils/panel-with-header';
@@ -45,7 +45,7 @@ export function ClusterPermissionPanel(props: {
         >
           <EuiFlexGroup>
             <EuiFlexItem className={LIMIT_WIDTH_INPUT_CLASS}>
-              <EuiComboBox
+              <EuiCompressedComboBox
                 placeholder="Search for action group name or permission name"
                 options={optionUniverse}
                 selectedOptions={state}

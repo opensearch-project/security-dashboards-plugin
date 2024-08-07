@@ -14,7 +14,7 @@
  */
 
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiFlexGroup,
   EuiFlexItem,
   EuiForm,
@@ -288,23 +288,23 @@ export function RoleEdit(props: RoleEditDeps) {
       <EuiSpacer size="m" />
       <EuiFlexGroup justifyContent="flexEnd">
         <EuiFlexItem grow={false}>
-          <EuiButton
+          <EuiSmallButton
             onClick={() => {
               window.location.href = buildHashUrl(ResourceType.roles);
             }}
           >
             Cancel
-          </EuiButton>
+          </EuiSmallButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton
+          <EuiSmallButton
             fill
             onClick={updateRoleHandler}
             disabled={!isFormValid}
             data-test-subj="create-or-update-role"
           >
             {props.action === 'edit' ? 'Update' : 'Create'}
-          </EuiButton>
+          </EuiSmallButton>
         </EuiFlexItem>
       </EuiFlexGroup>
       <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={10000} dismissToast={removeToast} />

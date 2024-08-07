@@ -14,8 +14,8 @@
  */
 
 import {
-  EuiButton,
-  EuiButtonEmpty,
+  EuiSmallButton,
+  EuiSmallButtonEmpty,
   EuiModal,
   EuiModalBody,
   EuiModalFooter,
@@ -23,7 +23,7 @@ import {
   EuiModalHeaderTitle,
   EuiOverlayMask,
   EuiForm,
-  EuiComboBox,
+  EuiCompressedComboBox,
 } from '@elastic/eui';
 import React, { useState } from 'react';
 import { ComboBoxOptions, Action } from '../../types';
@@ -76,7 +76,7 @@ export function PermissionEditModal(props: PermissionEditModalDeps) {
               setIsFormValid={setIsFormValid}
             />
             <FormRow headerText="Permissions">
-              <EuiComboBox
+              <EuiCompressedComboBox
                 options={props.optionUniverse}
                 selectedOptions={allowedActions}
                 onCreateOption={appendOptionToComboBoxHandler(setAllowedActions, [])}
@@ -87,9 +87,9 @@ export function PermissionEditModal(props: PermissionEditModalDeps) {
         </EuiModalBody>
 
         <EuiModalFooter>
-          <EuiButtonEmpty onClick={props.handleClose}>Cancel</EuiButtonEmpty>
+          <EuiSmallButtonEmpty onClick={props.handleClose}>Cancel</EuiSmallButtonEmpty>
 
-          <EuiButton
+          <EuiSmallButton
             id="submit"
             onClick={async () => {
               await props.handleSave(groupName, allowedActions.map(comboBoxOptionToString));
@@ -98,7 +98,7 @@ export function PermissionEditModal(props: PermissionEditModalDeps) {
             disabled={!isFormValid}
           >
             {props.action === Action.create ? 'Create' : 'Save'}
-          </EuiButton>
+          </EuiSmallButton>
         </EuiModalFooter>
       </EuiModal>
     </EuiOverlayMask>

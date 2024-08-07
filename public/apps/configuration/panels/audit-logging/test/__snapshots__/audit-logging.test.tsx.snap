@@ -276,10 +276,10 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
           </h3>
         }
       >
-        <EuiFormRow
+        <EuiCompressedFormRow
           className="form-row"
           describedByIds={Array []}
-          display="row"
+          display="rowCompressed"
           fullWidth={false}
           hasChildLabel={true}
           hasEmptyLabelSpace={false}
@@ -308,7 +308,7 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
               href="https://opensearch.org/docs/latest/security-plugin/audit-logs/storage-types/"
             />
           </EuiText>
-        </EuiFormRow>
+        </EuiCompressedFormRow>
       </EuiDescribedFormGroup>
       <EuiDescribedFormGroup
         className="described-form-group"
@@ -318,22 +318,22 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
           </h3>
         }
       >
-        <EuiFormRow
+        <EuiCompressedFormRow
           describedByIds={Array []}
-          display="row"
+          display="rowCompressed"
           fullWidth={false}
           hasChildLabel={true}
           hasEmptyLabelSpace={false}
           labelType="label"
         >
-          <EuiSwitch
+          <EuiCompressedSwitch
             checked={true}
             data-test-subj="audit-logging-enabled-switch"
             label="Enabled"
             name="auditLoggingEnabledSwitch"
             onChange={[Function]}
           />
-        </EuiFormRow>
+        </EuiCompressedFormRow>
       </EuiDescribedFormGroup>
     </EuiForm>
   </EuiPanel>
@@ -352,12 +352,12 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
       <EuiFlexItem
         grow={false}
       >
-        <EuiButton
+        <EuiSmallButton
           data-test-subj="general-settings-configure"
           onClick={[Function]}
         >
           Configure
-        </EuiButton>
+        </EuiSmallButton>
       </EuiFlexItem>
     </EuiFlexGroup>
     <EuiHorizontalRule
@@ -503,12 +503,12 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
       <EuiFlexItem
         grow={false}
       >
-        <EuiButton
+        <EuiSmallButton
           data-test-subj="compliance-settings-configure"
           onClick={[Function]}
         >
           Configure
-        </EuiButton>
+        </EuiSmallButton>
       </EuiFlexItem>
     </EuiFlexGroup>
     <EuiHorizontalRule

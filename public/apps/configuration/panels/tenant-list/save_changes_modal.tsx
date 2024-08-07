@@ -16,7 +16,7 @@
 import {
   EuiPageContentHeader,
   EuiHorizontalRule,
-  EuiCheckbox,
+  EuiCompressedCheckbox,
   EuiConfirmModal,
 } from '@elastic/eui';
 import React from 'react';
@@ -92,7 +92,7 @@ export function SaveChangesModalGenerator(props: SaveChangesModalDeps) {
         'global tenant.';
     }
     tenancyChangeCheckbox = (
-      <EuiCheckbox
+      <EuiCompressedCheckbox
         id={'tenancyChangeCheckbox'}
         label={tenancyChangeMessage}
         checked={tenancyChecked}
@@ -117,7 +117,7 @@ export function SaveChangesModalGenerator(props: SaveChangesModalDeps) {
         'other OpenSearch Dashboards saved in their private tenant.';
     }
     privateTenancyChangeCheckbox = (
-      <EuiCheckbox
+      <EuiCompressedCheckbox
         id={'privateTenancyChangeCheckbox'}
         label={privateTenancyChangeMessage}
         checked={privateTenancyChecked}
@@ -138,7 +138,7 @@ export function SaveChangesModalGenerator(props: SaveChangesModalDeps) {
       'if they have the appropriate permissions. If users don’t have permissions to a custom ' +
       'tenant they will load into the global tenant.';
     defaultTenantChangeCheckbox = (
-      <EuiCheckbox
+      <EuiCompressedCheckbox
         id={'defaultTenantChangeCheckbox'}
         label={defaultTenantChangeMessage}
         checked={defaultTenantChecked}
