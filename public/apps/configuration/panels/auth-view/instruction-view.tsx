@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiCode, EuiSpacer, EuiText, EuiTitle } from '@elastic/eui';
+import { EuiCode, EuiSpacer, EuiText } from '@elastic/eui';
 import React from 'react';
 import { ClientConfigType } from '../../../../types';
 import { ExternalLinkButton } from '../../utils/display-utils';
@@ -22,10 +22,6 @@ import { DocLinks } from '../../constants';
 export function InstructionView(props: { config: ClientConfigType }) {
   return (
     <>
-      {/* <EuiTitle size="l">
-        <h1>Authentication and authorization</h1>
-      </EuiTitle> */}
-
       <EuiSpacer size="xxl" />
 
       <EuiText textAlign="center">

@@ -49,6 +49,7 @@ import { constructErrorMessageAndLog } from '../../../error-utils';
 import { BackendRolePanel } from './backend-role-panel';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
+import { HeaderTitle, HeaderDescription } from '../../header/header-components';
 
 interface InternalUserEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -147,6 +148,20 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
     }
   };
 
+  const updatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
+
+  const descriptionData = [
+    {
+      renderComponent: (
+        <EuiText size="xs" color="subdued">
+          The security plugin includes an internal user database. Use this database in place of, or
+          in addition to, an external <br /> authentication system such as LDAP or Active Directory.{' '}
+          <ExternalLink href={DocLinks.UsersAndRolesDoc} />
+        </EuiText>
+      ),
+    },
+  ];
+
   return (
     <>
       <SecurityPluginTopNavMenu
@@ -155,24 +170,42 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      {props.buildBreadcrumbs(TITLE_TEXT_DICT[props.action])}
-      <EuiSpacer />
-      <EuiPageHeader>
-        <EuiFlexGroup direction="column" gutterSize="xs">
-          <EuiFlexItem>
-            <EuiTitle size="l">
-              <h1>{TITLE_TEXT_DICT[props.action]}</h1>
-            </EuiTitle>
-          </EuiFlexItem>
-          <EuiFlexItem>
-            <EuiText size="xs" color="subdued">
-              The security plugin includes an internal user database. Use this database in place of,
-              or in addition to, an external authentication system such as LDAP or Active Directory.{' '}
-              <ExternalLink href={DocLinks.UsersAndRolesDoc} />
-            </EuiText>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-      </EuiPageHeader>
+      {updatedUX ? (
+        <>
+          <HeaderTitle
+            navigation={props.depsStart.navigation}
+            pageHeader={TITLE_TEXT_DICT[props.action]}
+            application={props.coreStart.application}
+          />
+          <HeaderDescription
+            navigation={props.depsStart.navigation}
+            description=""
+            application={props.coreStart.application}
+            controls={descriptionData}
+          />
+        </>
+      ) : (
+        <>
+          {props.buildBreadcrumbs(TITLE_TEXT_DICT[props.action])}
+          <EuiSpacer />
+          <EuiPageHeader>
+            <EuiFlexGroup direction="column" gutterSize="xs">
+              <EuiFlexItem>
+                <EuiTitle size="l">
+                  <h1>{TITLE_TEXT_DICT[props.action]}</h1>
+                </EuiTitle>
+              </EuiFlexItem>
+              <EuiFlexItem>
+                <EuiText size="xs" color="subdued">
+                  The security plugin includes an internal user database. Use this database in place
+                  of, or in addition to, an external authentication system such as LDAP or Active
+                  Directory. <ExternalLink href={DocLinks.UsersAndRolesDoc} />
+                </EuiText>
+              </EuiFlexItem>
+            </EuiFlexGroup>
+          </EuiPageHeader>
+        </>
+      )}
       <PanelWithHeader headerText="Credentials">
         <EuiForm>
           <NameRow

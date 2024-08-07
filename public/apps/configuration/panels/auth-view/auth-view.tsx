@@ -61,7 +61,6 @@ export function AuthView(props: AppDependencies) {
     fetchData();
   }, [props.coreStart.http, dataSource]);
 
-
   const updatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
 
   const buttonData = [
@@ -85,14 +84,14 @@ export function AuthView(props: AppDependencies) {
           setDataSource={setDataSource}
           selectedDataSource={dataSource}
         />
-        { updatedUX ? (
+        {updatedUX ? (
           <>
             <HeaderTitle
               navigation={props.depsStart.navigation}
               pageHeader="Authentication and authorization"
               application={props.coreStart.application}
             />
-            { accessErrorFlag ? (
+            {accessErrorFlag ? (
               <AccessErrorComponent
                 loading={loading}
                 dataSourceLabel={dataSource && dataSource.label}
@@ -100,18 +99,20 @@ export function AuthView(props: AppDependencies) {
             ) : (
               <InstructionView config={props.config} />
             )}
-            
           </>
         ) : (
           <>
             <EuiTitle size="l">
               <h1>Authentication and authorization</h1>
             </EuiTitle>
-            { accessErrorFlag ? <AccessErrorComponent
+            {accessErrorFlag ? (
+              <AccessErrorComponent
                 loading={loading}
                 dataSourceLabel={dataSource && dataSource.label}
-              /> : <InstructionView config={props.config}/>
-              }
+              />
+            ) : (
+              <InstructionView config={props.config} />
+            )}
           </>
         )}
       </>
@@ -127,19 +128,19 @@ export function AuthView(props: AppDependencies) {
         selectedDataSource={dataSource}
       />
       {updatedUX ? (
-          <>
-            <HeaderTitle
-              navigation={props.depsStart.navigation}
-              pageHeader="Authentication and authorization"
-              application={props.coreStart.application}
-            />
-            <HeaderButtonOrLink
-              navigation={props.depsStart.navigation}
-              controls={buttonData}
-              application={props.coreStart.application}
-            />
-          </>
-        ) : (
+        <>
+          <HeaderTitle
+            navigation={props.depsStart.navigation}
+            pageHeader="Authentication and authorization"
+            application={props.coreStart.application}
+          />
+          <HeaderButtonOrLink
+            navigation={props.depsStart.navigation}
+            controls={buttonData}
+            application={props.coreStart.application}
+          />
+        </>
+      ) : (
         <EuiPageHeader>
           <EuiTitle size="l">
             <h1>Authentication and authorization</h1>
@@ -150,7 +151,8 @@ export function AuthView(props: AppDependencies) {
               text="Manage via config.yml"
             />
           )}
-      </EuiPageHeader>)}
+        </EuiPageHeader>
+      )}
       {loading ? (
         <EuiLoadingContent />
       ) : accessErrorFlag ? (

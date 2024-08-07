@@ -33,7 +33,6 @@ import {
 } from '@elastic/eui';
 import { Dictionary, difference, isEmpty, map } from 'lodash';
 import React, { useContext, useState } from 'react';
-import { TopNavControlData } from 'src/plugins/navigation/public/top_nav_menu/top_nav_control_data';
 import { getAuthInfo } from '../../../utils/auth-info-utils';
 import { AppDependencies } from '../../types';
 import { API_ENDPOINT_INTERNALUSERS, DocLinks } from '../constants';
@@ -220,7 +219,7 @@ export function UserList(props: AppDependencies) {
       // target: "_blank"
     },
   ];
-  const descriptionData: TopNavControlData[] = [
+  const descriptionData = [
     {
       isLoading: loading,
       renderComponent: (
