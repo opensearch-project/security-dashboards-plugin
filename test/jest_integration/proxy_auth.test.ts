@@ -35,12 +35,16 @@ describe('start OpenSearch Dashboards server', () => {
   beforeAll(async () => {
     root = osdTestServer.createRootWithSettings(
       {
+        server: {
+          xsrf: {
+            disableProtection: true,
+          },
+        },
         plugins: {
           scanDirs: [resolve(__dirname, '../..')],
         },
         opensearch: {
           hosts: ['https://localhost:9200'],
-          xsrf: { disableProtection: true },
           ignoreVersionMismatch: true,
           ssl: { verificationMode: 'none' },
           username: OPENSEARCH_DASHBOARDS_SERVER_USER,
