@@ -101,6 +101,7 @@ describe('start OpenSearch Dashboards server', () => {
       },
     };
     try {
+      console.log('Updating security config');
       config.dynamic!.authc!.proxy_auth_domain = proxyConfig;
       config.dynamic!.authc!.basic_internal_auth_domain.http_authenticator.challenge = false;
       config.dynamic!.http!.anonymous_auth_enabled = false;
@@ -115,6 +116,20 @@ describe('start OpenSearch Dashboards server', () => {
           authorization: ADMIN_CREDENTIALS,
         },
       });
+
+      // Fetch and print the updated config
+      const updatedConfigResponse = await wreck.get(
+        'https://localhost:9200/_plugins/_security/api/securityconfig',
+        {
+          rejectUnauthorized: false,
+          headers: {
+            authorization: ADMIN_CREDENTIALS,
+          },
+        }
+      );
+      const updatedConfigBody = (updatedConfigResponse.payload as Buffer).toString();
+      console.log('Updated config body is: ' + updatedConfigBody);
+
     } catch (error) {
       console.log('Got an error while updating security config!!', error.stack);
       fail(error);
