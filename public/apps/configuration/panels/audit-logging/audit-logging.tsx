@@ -49,6 +49,7 @@ import { DocLinks } from '../../constants';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { AccessErrorComponent } from '../../access-error-component';
+import { HeaderTitle } from '../../header/header-components';
 
 interface AuditLoggingProps extends AppDependencies {
   fromType: string;
@@ -249,6 +250,7 @@ export function AuditLogging(props: AuditLoggingProps) {
       </>
     );
   }
+  const updatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
 
   return (
     <div className="panel-restrict-width">
@@ -258,11 +260,19 @@ export function AuditLogging(props: AuditLoggingProps) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      <EuiPageHeader>
-        <EuiTitle size="l">
-          <h3>Audit logging</h3>
-        </EuiTitle>
-      </EuiPageHeader>
+      {updatedUX ? (
+        <HeaderTitle
+          navigation={props.depsStart.navigation}
+          pageHeader="Audit Logs"
+          application={props.coreStart.application}
+        />
+      ) : (
+        <EuiPageHeader>
+          <EuiTitle size="l">
+            <h3>Audit logging</h3>
+          </EuiTitle>
+        </EuiPageHeader>
+      )}
       <EuiSpacer />
       {loading ? <EuiLoadingContent /> : content}
     </div>
