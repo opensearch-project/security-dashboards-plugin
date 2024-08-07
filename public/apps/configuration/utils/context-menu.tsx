@@ -27,15 +27,16 @@ import React from 'react';
 export function useContextMenuState(
   buttonText: string,
   buttonProps: EuiButtonProps,
-  children: React.ReactElement[]
+  children: React.ReactElement[],
+  updatedUX?: boolean
 ): [React.ReactElement, () => void] {
   const [isContextMenuOpen, setContextMenuOpen] = useState<boolean>(false);
   const closeContextMenu = () => setContextMenuOpen(false);
 
   const button = (
     <EuiSmallButton
-      iconType="arrowDown"
-      iconSide="right"
+      iconType={updatedUX ? 'plus' : 'arrowDown'}
+      iconSide={updatedUX ? 'left' : 'right'}
       onClick={() => {
         setContextMenuOpen(true);
       }}

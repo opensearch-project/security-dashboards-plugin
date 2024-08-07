@@ -65,6 +65,7 @@ import { DocLinks } from '../../constants';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { DataSourceContext } from '../../app-router';
 import { AccessErrorComponent } from '../../access-error-component';
+import { HeaderTitle, HeaderDescription, HeaderButtonOrLink } from '../../header/header-components';
 
 export function renderBooleanToCheckMark(value: boolean): React.ReactNode {
   return value ? <EuiIcon type="check" /> : '';
@@ -353,11 +354,40 @@ export function PermissionList(props: AppDependencies) {
     </EuiSmallButtonEmpty>,
   ];
 
+  const updatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
+
   const [createActionGroupMenu] = useContextMenuState(
     'Create action group',
     { fill: true },
-    createActionGroupMenuItems
+    createActionGroupMenuItems,
+    updatedUX
   );
+
+  const buttonData = [
+    {
+      isLoading: loading,
+      renderComponent: <EuiFlexItem>{createActionGroupMenu}</EuiFlexItem>,
+    },
+  ];
+
+  const descriptionData = [
+    {
+      isLoading: loading,
+      renderComponent: (
+        <EuiText size="xs" color="subdued">
+          Permissions are individual actions, such as cluster:admin/snapshot/restore, which lets you
+          restore snapshots. Action groups <br />
+          are reusable collections of permissions, such as MANAGE_SNAPSHOTS, which lets you view,
+          take, delete, and restore <br />
+          snapshots. You can often meet your security needs using the default action groups, but you
+          might find it convenient to create <br />
+          your own. <ExternalLink href={DocLinks.PermissionsDoc} />
+        </EuiText>
+      ),
+    },
+  ];
+
+  const permissionLen = Query.execute(query || '', permissionList).length;
 
   return (
     <>
@@ -367,44 +397,69 @@ export function PermissionList(props: AppDependencies) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      <EuiPageHeader>
-        <EuiTitle size="l">
-          <h1>Permissions</h1>
-        </EuiTitle>
-      </EuiPageHeader>
+      {updatedUX ? (
+        <>
+          <HeaderTitle
+            navigation={props.depsStart.navigation}
+            pageHeader="Permissions"
+            shouldDisplayCount={true}
+            count={permissionLen}
+            application={props.coreStart.application}
+          />
+          <HeaderDescription
+            navigation={props.depsStart.navigation}
+            description=""
+            application={props.coreStart.application}
+            controls={descriptionData}
+          />
+          <HeaderButtonOrLink
+            navigation={props.depsStart.navigation}
+            controls={buttonData}
+            application={props.coreStart.application}
+          />
+        </>
+      ) : (
+        <EuiPageHeader>
+          <EuiTitle size="l">
+            <h1>Permissions</h1>
+          </EuiTitle>
+        </EuiPageHeader>
+      )}
       {loading ? (
         <EuiLoadingContent />
       ) : accessErrorFlag ? (
         <AccessErrorComponent loading={loading} dataSourceLabel={dataSource && dataSource.label} />
       ) : (
         <EuiPageContent>
-          <EuiPageContentHeader>
-            <EuiPageContentHeaderSection>
-              <EuiTitle size="s">
-                <h3>
-                  Permissions
-                  <span className="panel-header-count">
-                    {' '}
-                    ({Query.execute(query || '', permissionList).length})
-                  </span>
-                </h3>
-              </EuiTitle>
-              <EuiText size="xs" color="subdued">
-                Permissions are individual actions, such as cluster:admin/snapshot/restore, which
-                lets you restore snapshots. Action groups are reusable collections of permissions,
-                such as MANAGE_SNAPSHOTS, which lets you view, take, delete, and restore snapshots.
-                You can often meet your security needs using the default action groups, but you
-                might find it convenient to create your own.{' '}
-                <ExternalLink href={DocLinks.PermissionsDoc} />
-              </EuiText>
-            </EuiPageContentHeaderSection>
-            <EuiPageContentHeaderSection>
-              <EuiFlexGroup>
-                <EuiFlexItem>{actionsMenu}</EuiFlexItem>
-                <EuiFlexItem>{createActionGroupMenu}</EuiFlexItem>
-              </EuiFlexGroup>
-            </EuiPageContentHeaderSection>
-          </EuiPageContentHeader>
+          {updatedUX ? null : (
+            <EuiPageContentHeader>
+              <EuiPageContentHeaderSection>
+                <EuiTitle size="s">
+                  <h3>
+                    Permissions
+                    <span className="panel-header-count">
+                      {' '}
+                      ({Query.execute(query || '', permissionList).length})
+                    </span>
+                  </h3>
+                </EuiTitle>
+                <EuiText size="xs" color="subdued">
+                  Permissions are individual actions, such as cluster:admin/snapshot/restore, which
+                  lets you restore snapshots. Action groups are reusable collections of permissions,
+                  such as MANAGE_SNAPSHOTS, which lets you view, take, delete, and restore
+                  snapshots. You can often meet your security needs using the default action groups,
+                  but you might find it convenient to create your own.{' '}
+                  <ExternalLink href={DocLinks.PermissionsDoc} />
+                </EuiText>
+              </EuiPageContentHeaderSection>
+              <EuiPageContentHeaderSection>
+                <EuiFlexGroup>
+                  <EuiFlexItem>{actionsMenu}</EuiFlexItem>
+                  <EuiFlexItem>{createActionGroupMenu}</EuiFlexItem>
+                </EuiFlexGroup>
+              </EuiPageContentHeaderSection>
+            </EuiPageContentHeader>
+          )}
           <EuiPageBody>
             <EuiInMemoryTable
               tableLayout={'auto'}
@@ -423,6 +478,7 @@ export function PermissionList(props: AppDependencies) {
                   setQuery(arg.query);
                   return true;
                 },
+                toolsRight: updatedUX ? [<EuiFlexItem>{actionsMenu}</EuiFlexItem>] : undefined,
               }}
               selection={{ onSelectionChange: setSelection }}
               sorting={{ sort: { field: 'type', direction: 'asc' } }}
