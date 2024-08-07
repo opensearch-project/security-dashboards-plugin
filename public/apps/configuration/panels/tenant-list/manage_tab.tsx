@@ -75,6 +75,7 @@ import { buildUrl } from '../../utils/url-builder';
 import { CrossPageToast } from '../../cross-page-toast';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
 import { AccessErrorComponent } from '../../access-error-component';
+import { HeaderButtonOrLink } from '../../header/header-components';
 
 export function ManageTab(props: AppDependencies) {
   const setGlobalBreadcrumbs = flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs);
@@ -503,6 +504,20 @@ export function ManageTab(props: AppDependencies) {
       />
     );
   }
+  const updatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
+  const createTenantButton = [
+    {
+      id: 'createTenant',
+      label: 'Creat tenant',
+      iconType: 'plus',
+      iconSide: 'left',
+      isLoading: false,
+      run: () => showEditModal('', Action.create, ''),
+      type: 'button',
+      fill: true,
+      // target: "_blank"
+    },
+  ];
   /* eslint-disable */
   return (
     <>
@@ -528,6 +543,13 @@ export function ManageTab(props: AppDependencies) {
           <EuiPageContentHeaderSection>
             <EuiFlexGroup>
               <EuiFlexItem>{actionsMenu}</EuiFlexItem>
+              { updatedUX ? 
+                <HeaderButtonOrLink
+                  navigation={props.depsStart.navigation}
+                  controls={createTenantButton}
+                  application={props.coreStart.application}
+                />
+              : 
               <EuiFlexItem>
                 <EuiSmallButton
                   id="createTenant"
@@ -536,7 +558,7 @@ export function ManageTab(props: AppDependencies) {
                 >
                   Create tenant
                 </EuiSmallButton>
-              </EuiFlexItem>
+              </EuiFlexItem>}
             </EuiFlexGroup>
           </EuiPageContentHeaderSection>
         </EuiPageContentHeader>
