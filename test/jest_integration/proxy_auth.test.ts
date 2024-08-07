@@ -21,6 +21,8 @@ import {
   OPENSEARCH_DASHBOARDS_SERVER_USER,
   OPENSEARCH_DASHBOARDS_SERVER_PASSWORD,
   ADMIN_USER,
+  PROXY_USER,
+  PROXY_ROLE,
   PROXY_ADMIN_ROLE,
   ADMIN_CREDENTIALS,
 } from '../constant';
@@ -138,53 +140,73 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   it('can access home page with proxy header', async () => {
-    const response = await wreck.get(
-      'https://localhost:9200/_plugins/_security/api/securityconfig',
-      {
-        rejectUnauthorized: false,
-        headers: {
-          PROXY_USER: ADMIN_USER,
-          PROXY_ROLE: PROXY_ADMIN_ROLE,
-        },
-      }
-    );
-    expect(response.res.statusCode).toEqual(200);
+    try {
+      const response = await wreck.get(
+        'https://localhost:9200/_plugins/_security/api/securityconfig',
+        {
+          rejectUnauthorized: false,
+          headers: {
+            [PROXY_USER]: ADMIN_USER,
+            [PROXY_ROLE]: PROXY_ADMIN_ROLE,
+          },
+        }
+      );
+      expect(response.res.statusCode).toEqual(200);
+    } catch (error) {
+      console.error('Request failed:', error);
+      throw error;
+    }
   });
 
   it('cannot access home page without proxy header', async () => {
-    const response = await wreck.get(
-      'https://localhost:9200/_plugins/_security/api/securityconfig',
-      {
-        rejectUnauthorized: false,
-        headers: {},
-      }
-    );
-    expect(response.res.statusCode).toEqual(401);
+    try {
+      const response = await wreck.get(
+        'https://localhost:9200/_plugins/_security/api/securityconfig',
+        {
+          rejectUnauthorized: false,
+          headers: {},
+        }
+      );
+      expect(response.res.statusCode).toEqual(401);
+    } catch (error) {
+      console.error('Request failed:', error);
+      throw error;
+    }
   });
 
   it('cannot access home page with partial proxy header', async () => {
-    const response = await wreck.get(
-      'https://localhost:9200/_plugins/_security/api/securityconfig',
-      {
-        rejectUnauthorized: false,
-        headers: {
-          PROXY_USER: ADMIN_USER,
-        },
-      }
-    );
-    expect(response.res.statusCode).toEqual(401);
+    try {
+      const response = await wreck.get(
+        'https://localhost:9200/_plugins/_security/api/securityconfig',
+        {
+          rejectUnauthorized: false,
+          headers: {
+            [PROXY_USER]: ADMIN_USER,
+          },
+        }
+      );
+      expect(response.res.statusCode).toEqual(401);
+    } catch (error) {
+      console.error('Request failed:', error);
+      throw error;
+    }
   });
 
   it('cannot access home page with partial proxy header2', async () => {
-    const response = await wreck.get(
-      'https://localhost:9200/_plugins/_security/api/securityconfig',
-      {
-        rejectUnauthorized: false,
-        headers: {
-          PROXY_ROLE: PROXY_ADMIN_ROLE,
-        },
-      }
-    );
-    expect(response.res.statusCode).toEqual(401);
+    try {
+      const response = await wreck.get(
+        'https://localhost:9200/_plugins/_security/api/securityconfig',
+        {
+          rejectUnauthorized: false,
+          headers: {
+            [PROXY_ROLE]: PROXY_ADMIN_ROLE,
+          },
+        }
+      );
+      expect(response.res.statusCode).toEqual(401);
+    } catch (error) {
+      console.error('Request failed:', error);
+      throw error;
+    }
   });
 });
