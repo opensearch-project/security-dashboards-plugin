@@ -129,7 +129,6 @@ describe('start OpenSearch Dashboards server', () => {
       );
       const updatedConfigBody = (updatedConfigResponse.payload as Buffer).toString();
       console.log('Updated config body is: ' + updatedConfigBody);
-
     } catch (error) {
       console.log('Got an error while updating security config!!', error.stack);
       fail(error);
