@@ -38,7 +38,7 @@ export function useContextMenuState(
       iconType={updatedUX ? 'plus' : 'arrowDown'}
       iconSide={updatedUX ? 'left' : 'right'}
       onClick={() => {
-        setContextMenuOpen(true);
+        setContextMenuOpen(!isContextMenuOpen);
       }}
       {...buttonProps}
     >

@@ -58,6 +58,7 @@ import { DocLinks } from '../constants';
 import { DataSourceContext } from '../app-router';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
 import { AccessErrorComponent } from '../access-error-component';
+import { HeaderTitle, HeaderDescription, HeaderButtonOrLink } from '../header/header-components';
 
 const columns: Array<EuiBasicTableColumn<RoleListing>> = [
   {
@@ -198,6 +199,9 @@ export function RoleList(props: AppDependencies) {
 
   const [searchOptions, setSearchOptions] = useState<EuiSearchBarProps>({});
   const [query, setQuery] = useState<Query | null>(null);
+
+  const updatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
+
   useEffect(() => {
     setSearchOptions({
       onChange: (arg) => {
@@ -260,6 +264,37 @@ export function RoleList(props: AppDependencies) {
     });
   }, [roleData]);
 
+  const buttonData = [
+    {
+      label: 'Create role',
+      isLoading: false,
+      href: buildHashUrl(ResourceType.roles, Action.create),
+      fill: true,
+      iconType: 'plus',
+      iconSide: 'left',
+      type: 'button',
+      testId: 'create-role',
+      // target: "_blank"
+    },
+  ];
+  const descriptionData = [
+    {
+      isLoading: loading,
+      renderComponent: (
+        <EuiText size="xs" color="subdued">
+          Roles are the core way of controlling access to your cluster. Roles contain any
+          combination of cluster-wide permission, index-
+          <br />
+          specific permissions, document- and field-level security, and tenants. Then you map users
+          to these roles so that users <br />
+          gain those permissions. <ExternalLink href={DocLinks.UsersAndRolesDoc} />
+        </EuiText>
+      ),
+    },
+  ];
+
+  const roleLen = Query.execute(query || '', roleData).length;
+
   return (
     <>
       <SecurityPluginTopNavMenu
@@ -268,50 +303,75 @@ export function RoleList(props: AppDependencies) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      <EuiPageHeader>
-        <EuiTitle size="l">
-          <h1>Roles</h1>
-        </EuiTitle>
-      </EuiPageHeader>
+      {updatedUX ? (
+        <>
+          <HeaderTitle
+            navigation={props.depsStart.navigation}
+            pageHeader="Roles"
+            shouldDisplayCount={true}
+            count={roleLen}
+            application={props.coreStart.application}
+          />
+          <HeaderDescription
+            navigation={props.depsStart.navigation}
+            description=""
+            application={props.coreStart.application}
+            controls={descriptionData}
+          />
+          <HeaderButtonOrLink
+            navigation={props.depsStart.navigation}
+            controls={buttonData}
+            application={props.coreStart.application}
+          />
+        </>
+      ) : (
+        <EuiPageHeader>
+          <EuiTitle size="l">
+            <h1>Roles</h1>
+          </EuiTitle>
+        </EuiPageHeader>
+      )}
       {loading ? (
         <EuiLoadingContent />
       ) : accessErrorFlag ? (
         <AccessErrorComponent loading={loading} dataSourceLabel={dataSource && dataSource.label} />
       ) : (
         <EuiPageContent>
-          <EuiPageContentHeader id="role-table-container">
-            <EuiPageContentHeaderSection>
-              <EuiTitle size="s">
-                <h3>
-                  Roles
-                  <span className="panel-header-count">
-                    {' '}
-                    ({Query.execute(query || '', roleData).length})
-                  </span>
-                </h3>
-              </EuiTitle>
-              <EuiText size="xs" color="subdued">
-                Roles are the core way of controlling access to your cluster. Roles contain any
-                combination of cluster-wide permission, index-specific permissions, document- and
-                field-level security, and tenants. Then you map users to these roles so that users
-                gain those permissions. <ExternalLink href={DocLinks.UsersAndRolesDoc} />
-              </EuiText>
-            </EuiPageContentHeaderSection>
-            <EuiPageContentHeaderSection>
-              <EuiFlexGroup>
-                <EuiFlexItem>{actionsMenu}</EuiFlexItem>
-                <EuiFlexItem>
-                  <EuiSmallButton
-                    fill
-                    href={buildHashUrl(ResourceType.roles, Action.create)}
-                    data-test-subj="create-role"
-                  >
-                    Create role
-                  </EuiSmallButton>
-                </EuiFlexItem>
-              </EuiFlexGroup>
-            </EuiPageContentHeaderSection>
-          </EuiPageContentHeader>
+          {updatedUX ? null : (
+            <EuiPageContentHeader id="role-table-container">
+              <EuiPageContentHeaderSection>
+                <EuiTitle size="s">
+                  <h3>
+                    Roles
+                    <span className="panel-header-count">
+                      {' '}
+                      ({Query.execute(query || '', roleData).length})
+                    </span>
+                  </h3>
+                </EuiTitle>
+                <EuiText size="xs" color="subdued">
+                  Roles are the core way of controlling access to your cluster. Roles contain any
+                  combination of cluster-wide permission, index-specific permissions, document- and
+                  field-level security, and tenants. Then you map users to these roles so that users
+                  gain those permissions. <ExternalLink href={DocLinks.UsersAndRolesDoc} />
+                </EuiText>
+              </EuiPageContentHeaderSection>
+              <EuiPageContentHeaderSection>
+                <EuiFlexGroup>
+                  <EuiFlexItem>{actionsMenu}</EuiFlexItem>
+                  <EuiFlexItem>
+                    <EuiSmallButton
+                      fill
+                      href={buildHashUrl(ResourceType.roles, Action.create)}
+                      data-test-subj="create-role"
+                    >
+                      Create role
+                    </EuiSmallButton>
+                  </EuiFlexItem>
+                </EuiFlexGroup>
+              </EuiPageContentHeaderSection>
+            </EuiPageContentHeader>
+          )}
           <EuiPageBody>
             <EuiInMemoryTable
               data-test-subj="role-list"
@@ -323,7 +383,10 @@ export function RoleList(props: AppDependencies) {
               pagination={true}
               selection={{ onSelectionChange: setSelection }}
               sorting={true}
-              search={searchOptions}
+              search={{
+                ...searchOptions,
+                toolsRight: updatedUX ? [<EuiFlexItem>{actionsMenu}</EuiFlexItem>] : undefined,
+              }}
               error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
               message={showTableStatusMessage(loading, roleData)}
             />
