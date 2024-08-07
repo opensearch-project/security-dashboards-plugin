@@ -33,6 +33,7 @@ import {
 } from '@elastic/eui';
 import { Dictionary, difference, isEmpty, map } from 'lodash';
 import React, { useContext, useState } from 'react';
+import { TopNavControlData } from 'src/plugins/navigation/public/top_nav_menu/top_nav_control_data';
 import { getAuthInfo } from '../../../utils/auth-info-utils';
 import { AppDependencies } from '../../types';
 import { API_ENDPOINT_INTERNALUSERS, DocLinks } from '../constants';
@@ -52,6 +53,7 @@ import { buildHashUrl } from '../utils/url-builder';
 import { DataSourceContext } from '../app-router';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
 import { AccessErrorComponent } from '../access-error-component';
+import { HeaderButtonOrLink, HeaderTitle, HeaderDescription } from '../header/header-components';
 
 export function dictView(items: Dictionary<string>) {
   if (isEmpty(items)) {
@@ -204,6 +206,37 @@ export function UserList(props: AppDependencies) {
 
   const [actionsMenu, closeActionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);
 
+  const updatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
+  const buttonData = [
+    {
+      label: 'Create internal user',
+      isLoading: false,
+      href: buildHashUrl(ResourceType.users, Action.create),
+      fill: true,
+      iconType: 'plus',
+      iconSide: 'left',
+      type: 'button',
+      testId: 'create-user',
+      // target: "_blank"
+    },
+  ];
+  const descriptionData: TopNavControlData[] = [
+    {
+      isLoading: loading,
+      renderComponent: (
+        <EuiText size="xs" color="subdued">
+          The Security plugin includes an internal user database. Use this database in place of, or
+          in addition to, an external <br /> authentication system such as LDAP server or Active
+          Directory. You can map an internal user to a role from{' '}
+          <EuiLink href={buildHashUrl(ResourceType.roles)}>Roles</EuiLink>
+          . First, click <br /> into the detail page of the role. Then, under “Mapped users”, click
+          “Manage mapping” <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
+        </EuiText>
+      ),
+    },
+  ];
+
+  const userLen = Query.execute(query || '', userData).length;
   return (
     <>
       <SecurityPluginTopNavMenu
@@ -212,52 +245,77 @@ export function UserList(props: AppDependencies) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      <EuiPageHeader>
-        <EuiTitle size="l">
-          <h1>Internal users</h1>
-        </EuiTitle>
-      </EuiPageHeader>
+      {updatedUX ? (
+        <>
+          <HeaderTitle
+            navigation={props.depsStart.navigation}
+            pageHeader="Internal Users"
+            shouldDisplayCount={true}
+            count={userLen}
+            application={props.coreStart.application}
+          />
+          <HeaderDescription
+            navigation={props.depsStart.navigation}
+            description=""
+            application={props.coreStart.application}
+            controls={descriptionData}
+          />
+          <HeaderButtonOrLink
+            navigation={props.depsStart.navigation}
+            controls={buttonData}
+            application={props.coreStart.application}
+          />
+        </>
+      ) : (
+        <EuiPageHeader>
+          <EuiTitle size="l">
+            <h1>Internal users</h1>
+          </EuiTitle>
+        </EuiPageHeader>
+      )}
       {loading ? (
         <EuiLoadingContent />
       ) : accessErrorFlag ? (
         <AccessErrorComponent loading={loading} dataSourceLabel={dataSource && dataSource.label} />
       ) : (
         <EuiPageContent>
-          <EuiPageContentHeader>
-            <EuiPageContentHeaderSection>
-              <EuiTitle size="s">
-                <h3>
-                  Internal users
-                  <span className="panel-header-count">
-                    {' '}
-                    ({Query.execute(query || '', userData).length})
-                  </span>
-                </h3>
-              </EuiTitle>
-              <EuiText size="xs" color="subdued">
-                The Security plugin includes an internal user database. Use this database in place
-                of, or in addition to, an external authentication system such as LDAP server or
-                Active Directory. You can map an internal user to a role from{' '}
-                <EuiLink href={buildHashUrl(ResourceType.roles)}>Roles</EuiLink>
-                . First, click into the detail page of the role. Then, under “Mapped users”, click
-                “Manage mapping” <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
-              </EuiText>
-            </EuiPageContentHeaderSection>
-            <EuiPageContentHeaderSection>
-              <EuiFlexGroup>
-                <EuiFlexItem>{actionsMenu}</EuiFlexItem>
-                <EuiFlexItem>
-                  <EuiSmallButton
-                    fill
-                    href={buildHashUrl(ResourceType.users, Action.create)}
-                    data-test-subj="create-user"
-                  >
-                    Create internal user
-                  </EuiSmallButton>
-                </EuiFlexItem>
-              </EuiFlexGroup>
-            </EuiPageContentHeaderSection>
-          </EuiPageContentHeader>
+          {updatedUX ? null : (
+            <EuiPageContentHeader>
+              <EuiPageContentHeaderSection>
+                <EuiTitle size="s">
+                  <h3>
+                    Internal users
+                    <span className="panel-header-count">
+                      {' '}
+                      ({Query.execute(query || '', userData).length})
+                    </span>
+                  </h3>
+                </EuiTitle>
+                <EuiText size="xs" color="subdued">
+                  The Security plugin includes an internal user database. Use this database in place
+                  of, or in addition to, an external authentication system such as LDAP server or
+                  Active Directory. You can map an internal user to a role from{' '}
+                  <EuiLink href={buildHashUrl(ResourceType.roles)}>Roles</EuiLink>
+                  . First, click into the detail page of the role. Then, under “Mapped users”, click
+                  “Manage mapping” <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
+                </EuiText>
+              </EuiPageContentHeaderSection>
+              <EuiPageContentHeaderSection>
+                <EuiFlexGroup>
+                  <EuiFlexItem>{actionsMenu}</EuiFlexItem>
+                  <EuiFlexItem>
+                    <EuiSmallButton
+                      fill
+                      href={buildHashUrl(ResourceType.users, Action.create)}
+                      data-test-subj="create-user"
+                    >
+                      Create internal user
+                    </EuiSmallButton>
+                  </EuiFlexItem>
+                </EuiFlexGroup>
+              </EuiPageContentHeaderSection>
+            </EuiPageContentHeader>
+          )}
           <EuiPageBody>
             <EuiInMemoryTable
               tableLayout={'auto'}
@@ -273,6 +331,7 @@ export function UserList(props: AppDependencies) {
                   setQuery(arg.query);
                   return true;
                 },
+                toolsRight: updatedUX ? [<EuiFlexItem>{actionsMenu}</EuiFlexItem>] : undefined,
               }}
               // @ts-ignore
               selection={{ onSelectionChange: setSelection }}
