@@ -14,8 +14,8 @@
  */
 
 import {
-  EuiButton,
-  EuiButtonEmpty,
+  EuiSmallButton,
+  EuiSmallButtonEmpty,
   EuiModal,
   EuiModalBody,
   EuiModalFooter,
@@ -23,7 +23,7 @@ import {
   EuiModalHeaderTitle,
   EuiOverlayMask,
   EuiForm,
-  EuiTextArea,
+  EuiCompressedTextArea,
   EuiHorizontalRule,
 } from '@elastic/eui';
 import React, { useState } from 'react';
@@ -79,7 +79,7 @@ export function TenantEditModal(props: TenantEditModalDeps) {
               headerSubText="Describe the purpose of the tenant."
               optional
             >
-              <EuiTextArea
+              <EuiCompressedTextArea
                 data-test-subj="tenant-description"
                 fullWidth
                 placeholder="Describe the tenant"
@@ -91,9 +91,9 @@ export function TenantEditModal(props: TenantEditModalDeps) {
         </EuiModalBody>
         <EuiHorizontalRule margin="xs" />
         <EuiModalFooter>
-          <EuiButtonEmpty onClick={props.handleClose}>Cancel</EuiButtonEmpty>
+          <EuiSmallButtonEmpty onClick={props.handleClose}>Cancel</EuiSmallButtonEmpty>
 
-          <EuiButton
+          <EuiSmallButton
             id="submit"
             onClick={async () => {
               await props.handleSave(tenantName, tenantDescription);
@@ -102,7 +102,7 @@ export function TenantEditModal(props: TenantEditModalDeps) {
             disabled={!isFormValid}
           >
             {props.action === Action.create ? 'Create' : 'Save'}
-          </EuiButton>
+          </EuiSmallButton>
         </EuiModalFooter>
       </EuiModal>
     </EuiOverlayMask>

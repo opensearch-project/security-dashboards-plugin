@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiFieldText, EuiFlexGroup } from '@elastic/eui';
+import { EuiCompressedFieldText, EuiFlexGroup } from '@elastic/eui';
 import { shallow } from 'enzyme';
 import React from 'react';
 import {
@@ -66,10 +66,10 @@ describe('User editing - attribute panel', () => {
       const component = shallow(<AttributePanel state={sampleState} setState={setState} />);
 
       expect(component.find(EuiFlexGroup).length).toBe(2);
-      expect(component.find(EuiFieldText).at(0).prop('value')).toBe(attr1);
-      expect(component.find(EuiFieldText).at(1).prop('value')).toBe(value1);
-      expect(component.find(EuiFieldText).at(2).prop('value')).toBe(attr2);
-      expect(component.find(EuiFieldText).at(3).prop('value')).toBe(value2);
+      expect(component.find(EuiCompressedFieldText).at(0).prop('value')).toBe(attr1);
+      expect(component.find(EuiCompressedFieldText).at(1).prop('value')).toBe(value1);
+      expect(component.find(EuiCompressedFieldText).at(2).prop('value')).toBe(attr2);
+      expect(component.find(EuiCompressedFieldText).at(3).prop('value')).toBe(value2);
     });
 
     it('add row', () => {

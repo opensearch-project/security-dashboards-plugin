@@ -27,10 +27,10 @@ import {
   EuiHorizontalRule,
   EuiDescribedFormGroup,
   EuiSpacer,
-  EuiCheckbox,
+  EuiCompressedCheckbox,
   EuiCallOut,
   EuiBottomBar,
-  EuiComboBox,
+  EuiCompressedComboBox,
   EuiIcon,
   EuiLoadingContent,
 } from '@elastic/eui';
@@ -373,7 +373,7 @@ export function ConfigureTab1(props: AppDependencies) {
               }
               className="described-form-group1"
             >
-              <EuiCheckbox
+              <EuiCompressedCheckbox
                 id="EnableMultitenancyCheckBox"
                 label={'Enabled'}
                 checked={updatedConfiguration.multitenancy_enabled}
@@ -419,7 +419,7 @@ export function ConfigureTab1(props: AppDependencies) {
               }
               className="described-form-group3"
             >
-              <EuiCheckbox
+              <EuiCompressedCheckbox
                 id="EnablePrivateTenantCheckBox"
                 label={'Enable'}
                 checked={updatedConfiguration.private_tenant_enabled}
@@ -453,7 +453,7 @@ export function ConfigureTab1(props: AppDependencies) {
             >
               <EuiFlexGroup>
                 <EuiFlexItem>
-                  <EuiComboBox
+                  <EuiCompressedComboBox
                     placeholder={updatedConfiguration.default_tenant}
                     options={comboBoxOptions}
                     selectedOptions={selectedComboBoxOptions}

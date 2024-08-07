@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiButton } from '@elastic/eui';
+import { EuiSmallButton } from '@elastic/eui';
 import { shallow } from 'enzyme';
 import React from 'react';
 import { updateRole } from '../../../utils/role-detail-utils';
@@ -118,7 +118,7 @@ describe('Role edit', () => {
       />
     );
     // click update
-    component.find(EuiButton).last().simulate('click');
+    component.find(EuiSmallButton).last().simulate('click');
 
     expect(updateRole).toBeCalledWith(
       mockCoreStart.http,

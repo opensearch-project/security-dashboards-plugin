@@ -21,7 +21,7 @@ import {
 import { shallow } from 'enzyme';
 import { ExternalIdentityStateClass } from '../types';
 import React from 'react';
-import { EuiFieldText, EuiFlexGroup } from '@elastic/eui';
+import { EuiCompressedFieldText, EuiFlexGroup } from '@elastic/eui';
 import {
   appendElementToArray,
   removeElementFromArray,
@@ -91,8 +91,8 @@ describe('Role mapping - external identities panel', () => {
       );
 
       expect(component.find(EuiFlexGroup).length).toBe(2);
-      expect(component.find(EuiFieldText).at(0).prop('value')).toBe(externalIdentity1);
-      expect(component.find(EuiFieldText).at(1).prop('value')).toBe(externalIdentity2);
+      expect(component.find(EuiCompressedFieldText).at(0).prop('value')).toBe(externalIdentity1);
+      expect(component.find(EuiCompressedFieldText).at(1).prop('value')).toBe(externalIdentity2);
     });
 
     it('add row', () => {

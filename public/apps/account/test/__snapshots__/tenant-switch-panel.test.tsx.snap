@@ -21,7 +21,7 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
         Tenants are useful for safely sharing your work with other OpenSearch Dashboards users. You can switch your tenant anytime by clicking the user avatar on top right.
       </EuiText>
       <EuiSpacer />
-      <EuiRadioGroup
+      <EuiCompressedRadioGroup
         data-test-subj="tenant-switch-radios"
         name="tenantSwitchRadios"
         onChange={[Function]}
@@ -63,9 +63,9 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
           ]
         }
       />
-      <EuiComboBox
+      <EuiCompressedComboBox
         async={false}
-        compressed={false}
+        compressed={true}
         fullWidth={false}
         isClearable={true}
         onChange={[Function]}
@@ -94,19 +94,19 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
       <EuiSpacer />
     </EuiModalBody>
     <EuiModalFooter>
-      <EuiButtonEmpty
+      <EuiSmallButtonEmpty
         onClick={[MockFunction]}
       >
         Cancel
-      </EuiButtonEmpty>
-      <EuiButton
+      </EuiSmallButtonEmpty>
+      <EuiSmallButton
         data-test-subj="confirm"
         disabled={false}
         fill={true}
         onClick={[Function]}
       >
         Confirm
-      </EuiButton>
+      </EuiSmallButton>
     </EuiModalFooter>
   </EuiModal>
 </EuiOverlayMask>
@@ -133,7 +133,7 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
         Tenants are useful for safely sharing your work with other OpenSearch Dashboards users. You can switch your tenant anytime by clicking the user avatar on top right.
       </EuiText>
       <EuiSpacer />
-      <EuiRadioGroup
+      <EuiCompressedRadioGroup
         data-test-subj="tenant-switch-radios"
         name="tenantSwitchRadios"
         onChange={[Function]}
@@ -178,9 +178,9 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
           ]
         }
       />
-      <EuiComboBox
+      <EuiCompressedComboBox
         async={false}
-        compressed={false}
+        compressed={true}
         fullWidth={false}
         isClearable={true}
         onChange={[Function]}
@@ -209,19 +209,19 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
       <EuiSpacer />
     </EuiModalBody>
     <EuiModalFooter>
-      <EuiButtonEmpty
+      <EuiSmallButtonEmpty
         onClick={[MockFunction]}
       >
         Cancel
-      </EuiButtonEmpty>
-      <EuiButton
+      </EuiSmallButtonEmpty>
+      <EuiSmallButton
         data-test-subj="confirm"
         disabled={false}
         fill={true}
         onClick={[Function]}
       >
         Confirm
-      </EuiButton>
+      </EuiSmallButton>
     </EuiModalFooter>
   </EuiModal>
 </EuiOverlayMask>
@@ -248,7 +248,7 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
         Tenants are useful for safely sharing your work with other OpenSearch Dashboards users. You can switch your tenant anytime by clicking the user avatar on top right.
       </EuiText>
       <EuiSpacer />
-      <EuiRadioGroup
+      <EuiCompressedRadioGroup
         data-test-subj="tenant-switch-radios"
         name="tenantSwitchRadios"
         onChange={[Function]}
@@ -293,9 +293,9 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
           ]
         }
       />
-      <EuiComboBox
+      <EuiCompressedComboBox
         async={false}
-        compressed={false}
+        compressed={true}
         fullWidth={false}
         isClearable={true}
         onChange={[Function]}
@@ -324,19 +324,19 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
       <EuiSpacer />
     </EuiModalBody>
     <EuiModalFooter>
-      <EuiButtonEmpty
+      <EuiSmallButtonEmpty
         onClick={[MockFunction]}
       >
         Cancel
-      </EuiButtonEmpty>
-      <EuiButton
+      </EuiSmallButtonEmpty>
+      <EuiSmallButton
         data-test-subj="confirm"
         disabled={false}
         fill={true}
         onClick={[Function]}
       >
         Confirm
-      </EuiButton>
+      </EuiSmallButton>
     </EuiModalFooter>
   </EuiModal>
 </EuiOverlayMask>
@@ -363,7 +363,7 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
         Tenants are useful for safely sharing your work with other OpenSearch Dashboards users. You can switch your tenant anytime by clicking the user avatar on top right.
       </EuiText>
       <EuiSpacer />
-      <EuiRadioGroup
+      <EuiCompressedRadioGroup
         data-test-subj="tenant-switch-radios"
         name="tenantSwitchRadios"
         onChange={[Function]}
@@ -408,9 +408,9 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
           ]
         }
       />
-      <EuiComboBox
+      <EuiCompressedComboBox
         async={false}
-        compressed={false}
+        compressed={true}
         fullWidth={false}
         isClearable={true}
         onChange={[Function]}
@@ -439,19 +439,19 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
       <EuiSpacer />
     </EuiModalBody>
     <EuiModalFooter>
-      <EuiButtonEmpty
+      <EuiSmallButtonEmpty
         onClick={[MockFunction]}
       >
         Cancel
-      </EuiButtonEmpty>
-      <EuiButton
+      </EuiSmallButtonEmpty>
+      <EuiSmallButton
         data-test-subj="confirm"
         disabled={false}
         fill={true}
         onClick={[Function]}
       >
         Confirm
-      </EuiButton>
+      </EuiSmallButton>
     </EuiModalFooter>
   </EuiModal>
 </EuiOverlayMask>
@@ -478,7 +478,7 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
         Tenants are useful for safely sharing your work with other OpenSearch Dashboards users. You can switch your tenant anytime by clicking the user avatar on top right.
       </EuiText>
       <EuiSpacer />
-      <EuiRadioGroup
+      <EuiCompressedRadioGroup
         data-test-subj="tenant-switch-radios"
         name="tenantSwitchRadios"
         onChange={[Function]}
@@ -523,9 +523,9 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
           ]
         }
       />
-      <EuiComboBox
+      <EuiCompressedComboBox
         async={false}
-        compressed={false}
+        compressed={true}
         fullWidth={false}
         isClearable={true}
         onChange={[Function]}
@@ -554,19 +554,19 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
       <EuiSpacer />
     </EuiModalBody>
     <EuiModalFooter>
-      <EuiButtonEmpty
+      <EuiSmallButtonEmpty
         onClick={[MockFunction]}
       >
         Cancel
-      </EuiButtonEmpty>
-      <EuiButton
+      </EuiSmallButtonEmpty>
+      <EuiSmallButton
         data-test-subj="confirm"
         disabled={false}
         fill={true}
         onClick={[Function]}
       >
         Confirm
-      </EuiButton>
+      </EuiSmallButton>
     </EuiModalFooter>
   </EuiModal>
 </EuiOverlayMask>

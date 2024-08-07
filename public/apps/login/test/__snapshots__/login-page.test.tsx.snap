@@ -33,15 +33,15 @@ exports[`Login page renders renders with config value for multiauth 1`] = `
   <EuiForm
     component="form"
   >
-    <EuiFormRow
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
       labelType="label"
     >
-      <EuiFieldText
+      <EuiCompressedFieldText
         aria-label="username_input"
         data-test-subj="user-name"
         icon="user"
@@ -50,32 +50,29 @@ exports[`Login page renders renders with config value for multiauth 1`] = `
         placeholder="Username"
         value=""
       />
-    </EuiFormRow>
-    <EuiFormRow
+    </EuiCompressedFormRow>
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
       isInvalid={false}
       labelType="label"
     >
-      <EuiFieldPassword
+      <EuiCompressedFieldPassword
         aria-label="password_input"
-        compressed={false}
         data-test-subj="password"
-        fullWidth={false}
         isInvalid={false}
-        isLoading={false}
         onChange={[Function]}
         placeholder="Password"
         type="dual"
         value=""
       />
-    </EuiFormRow>
-    <EuiFormRow
+    </EuiCompressedFormRow>
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
@@ -92,7 +89,7 @@ exports[`Login page renders renders with config value for multiauth 1`] = `
       >
         Log in
       </EuiButton>
-    </EuiFormRow>
+    </EuiCompressedFormRow>
     <EuiSpacer
       size="xs"
     />
@@ -103,9 +100,9 @@ exports[`Login page renders renders with config value for multiauth 1`] = `
     <EuiSpacer
       size="xs"
     />
-    <EuiFormRow
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
@@ -122,10 +119,10 @@ exports[`Login page renders renders with config value for multiauth 1`] = `
       >
         Button1
       </EuiButton>
-    </EuiFormRow>
-    <EuiFormRow
+    </EuiCompressedFormRow>
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
@@ -142,7 +139,7 @@ exports[`Login page renders renders with config value for multiauth 1`] = `
       >
         Button2
       </EuiButton>
-    </EuiFormRow>
+    </EuiCompressedFormRow>
   </EuiForm>
 </EuiListGroup>
 `;
@@ -180,15 +177,15 @@ exports[`Login page renders renders with config value for multiauth with anonymo
   <EuiForm
     component="form"
   >
-    <EuiFormRow
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
       labelType="label"
     >
-      <EuiFieldText
+      <EuiCompressedFieldText
         aria-label="username_input"
         data-test-subj="user-name"
         icon="user"
@@ -197,32 +194,29 @@ exports[`Login page renders renders with config value for multiauth with anonymo
         placeholder="Username"
         value=""
       />
-    </EuiFormRow>
-    <EuiFormRow
+    </EuiCompressedFormRow>
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
       isInvalid={false}
       labelType="label"
     >
-      <EuiFieldPassword
+      <EuiCompressedFieldPassword
         aria-label="password_input"
-        compressed={false}
         data-test-subj="password"
-        fullWidth={false}
         isInvalid={false}
-        isLoading={false}
         onChange={[Function]}
         placeholder="Password"
         type="dual"
         value=""
       />
-    </EuiFormRow>
-    <EuiFormRow
+    </EuiCompressedFormRow>
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
@@ -239,10 +233,10 @@ exports[`Login page renders renders with config value for multiauth with anonymo
       >
         Log in
       </EuiButton>
-    </EuiFormRow>
-    <EuiFormRow
+    </EuiCompressedFormRow>
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
@@ -257,7 +251,7 @@ exports[`Login page renders renders with config value for multiauth with anonymo
         size="s"
         type="prime"
       />
-    </EuiFormRow>
+    </EuiCompressedFormRow>
     <EuiSpacer
       size="xs"
     />
@@ -268,9 +262,9 @@ exports[`Login page renders renders with config value for multiauth with anonymo
     <EuiSpacer
       size="xs"
     />
-    <EuiFormRow
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
@@ -287,10 +281,10 @@ exports[`Login page renders renders with config value for multiauth with anonymo
       >
         Button1
       </EuiButton>
-    </EuiFormRow>
-    <EuiFormRow
+    </EuiCompressedFormRow>
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
@@ -307,7 +301,7 @@ exports[`Login page renders renders with config value for multiauth with anonymo
       >
         Button2
       </EuiButton>
-    </EuiFormRow>
+    </EuiCompressedFormRow>
   </EuiForm>
 </EuiListGroup>
 `;
@@ -345,15 +339,15 @@ exports[`Login page renders renders with config value with anonymous auth enable
   <EuiForm
     component="form"
   >
-    <EuiFormRow
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
       labelType="label"
     >
-      <EuiFieldText
+      <EuiCompressedFieldText
         aria-label="username_input"
         data-test-subj="user-name"
         icon="user"
@@ -362,32 +356,29 @@ exports[`Login page renders renders with config value with anonymous auth enable
         placeholder="Username"
         value=""
       />
-    </EuiFormRow>
-    <EuiFormRow
+    </EuiCompressedFormRow>
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
       isInvalid={false}
       labelType="label"
     >
-      <EuiFieldPassword
+      <EuiCompressedFieldPassword
         aria-label="password_input"
-        compressed={false}
         data-test-subj="password"
-        fullWidth={false}
         isInvalid={false}
-        isLoading={false}
         onChange={[Function]}
         placeholder="Password"
         type="dual"
         value=""
       />
-    </EuiFormRow>
-    <EuiFormRow
+    </EuiCompressedFormRow>
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
@@ -404,10 +395,10 @@ exports[`Login page renders renders with config value with anonymous auth enable
       >
         Log in
       </EuiButton>
-    </EuiFormRow>
-    <EuiFormRow
+    </EuiCompressedFormRow>
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
@@ -422,7 +413,7 @@ exports[`Login page renders renders with config value with anonymous auth enable
         size="s"
         type="prime"
       />
-    </EuiFormRow>
+    </EuiCompressedFormRow>
   </EuiForm>
 </EuiListGroup>
 `;
@@ -460,15 +451,15 @@ exports[`Login page renders renders with config value with anonymous auth enable
   <EuiForm
     component="form"
   >
-    <EuiFormRow
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
       labelType="label"
     >
-      <EuiFieldText
+      <EuiCompressedFieldText
         aria-label="username_input"
         data-test-subj="user-name"
         icon="user"
@@ -477,32 +468,29 @@ exports[`Login page renders renders with config value with anonymous auth enable
         placeholder="Username"
         value=""
       />
-    </EuiFormRow>
-    <EuiFormRow
+    </EuiCompressedFormRow>
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
       isInvalid={false}
       labelType="label"
     >
-      <EuiFieldPassword
+      <EuiCompressedFieldPassword
         aria-label="password_input"
-        compressed={false}
         data-test-subj="password"
-        fullWidth={false}
         isInvalid={false}
-        isLoading={false}
         onChange={[Function]}
         placeholder="Password"
         type="dual"
         value=""
       />
-    </EuiFormRow>
-    <EuiFormRow
+    </EuiCompressedFormRow>
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
@@ -519,10 +507,10 @@ exports[`Login page renders renders with config value with anonymous auth enable
       >
         Log in
       </EuiButton>
-    </EuiFormRow>
-    <EuiFormRow
+    </EuiCompressedFormRow>
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
@@ -537,7 +525,7 @@ exports[`Login page renders renders with config value with anonymous auth enable
         size="s"
         type="prime"
       />
-    </EuiFormRow>
+    </EuiCompressedFormRow>
   </EuiForm>
 </EuiListGroup>
 `;
@@ -575,15 +563,15 @@ exports[`Login page renders renders with config value: string 1`] = `
   <EuiForm
     component="form"
   >
-    <EuiFormRow
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
       labelType="label"
     >
-      <EuiFieldText
+      <EuiCompressedFieldText
         aria-label="username_input"
         data-test-subj="user-name"
         icon="user"
@@ -592,32 +580,29 @@ exports[`Login page renders renders with config value: string 1`] = `
         placeholder="Username"
         value=""
       />
-    </EuiFormRow>
-    <EuiFormRow
+    </EuiCompressedFormRow>
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
       isInvalid={false}
       labelType="label"
     >
-      <EuiFieldPassword
+      <EuiCompressedFieldPassword
         aria-label="password_input"
-        compressed={false}
         data-test-subj="password"
-        fullWidth={false}
         isInvalid={false}
-        isLoading={false}
         onChange={[Function]}
         placeholder="Password"
         type="dual"
         value=""
       />
-    </EuiFormRow>
-    <EuiFormRow
+    </EuiCompressedFormRow>
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
@@ -634,7 +619,7 @@ exports[`Login page renders renders with config value: string 1`] = `
       >
         Log in
       </EuiButton>
-    </EuiFormRow>
+    </EuiCompressedFormRow>
   </EuiForm>
 </EuiListGroup>
 `;
@@ -672,15 +657,15 @@ exports[`Login page renders renders with config value: string array 1`] = `
   <EuiForm
     component="form"
   >
-    <EuiFormRow
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
       labelType="label"
     >
-      <EuiFieldText
+      <EuiCompressedFieldText
         aria-label="username_input"
         data-test-subj="user-name"
         icon="user"
@@ -689,32 +674,29 @@ exports[`Login page renders renders with config value: string array 1`] = `
         placeholder="Username"
         value=""
       />
-    </EuiFormRow>
-    <EuiFormRow
+    </EuiCompressedFormRow>
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
       isInvalid={false}
       labelType="label"
     >
-      <EuiFieldPassword
+      <EuiCompressedFieldPassword
         aria-label="password_input"
-        compressed={false}
         data-test-subj="password"
-        fullWidth={false}
         isInvalid={false}
-        isLoading={false}
         onChange={[Function]}
         placeholder="Password"
         type="dual"
         value=""
       />
-    </EuiFormRow>
-    <EuiFormRow
+    </EuiCompressedFormRow>
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
@@ -731,7 +713,7 @@ exports[`Login page renders renders with config value: string array 1`] = `
       >
         Log in
       </EuiButton>
-    </EuiFormRow>
+    </EuiCompressedFormRow>
   </EuiForm>
 </EuiListGroup>
 `;
@@ -769,15 +751,15 @@ exports[`Login page renders renders with default value: string 1`] = `
   <EuiForm
     component="form"
   >
-    <EuiFormRow
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
       labelType="label"
     >
-      <EuiFieldText
+      <EuiCompressedFieldText
         aria-label="username_input"
         data-test-subj="user-name"
         icon="user"
@@ -786,32 +768,29 @@ exports[`Login page renders renders with default value: string 1`] = `
         placeholder="Username"
         value=""
       />
-    </EuiFormRow>
-    <EuiFormRow
+    </EuiCompressedFormRow>
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
       isInvalid={false}
       labelType="label"
     >
-      <EuiFieldPassword
+      <EuiCompressedFieldPassword
         aria-label="password_input"
-        compressed={false}
         data-test-subj="password"
-        fullWidth={false}
         isInvalid={false}
-        isLoading={false}
         onChange={[Function]}
         placeholder="Password"
         type="dual"
         value=""
       />
-    </EuiFormRow>
-    <EuiFormRow
+    </EuiCompressedFormRow>
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
@@ -828,7 +807,7 @@ exports[`Login page renders renders with default value: string 1`] = `
       >
         Log in
       </EuiButton>
-    </EuiFormRow>
+    </EuiCompressedFormRow>
   </EuiForm>
 </EuiListGroup>
 `;
@@ -866,15 +845,15 @@ exports[`Login page renders renders with default value: string array 1`] = `
   <EuiForm
     component="form"
   >
-    <EuiFormRow
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
       labelType="label"
     >
-      <EuiFieldText
+      <EuiCompressedFieldText
         aria-label="username_input"
         data-test-subj="user-name"
         icon="user"
@@ -883,32 +862,29 @@ exports[`Login page renders renders with default value: string array 1`] = `
         placeholder="Username"
         value=""
       />
-    </EuiFormRow>
-    <EuiFormRow
+    </EuiCompressedFormRow>
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
       isInvalid={false}
       labelType="label"
     >
-      <EuiFieldPassword
+      <EuiCompressedFieldPassword
         aria-label="password_input"
-        compressed={false}
         data-test-subj="password"
-        fullWidth={false}
         isInvalid={false}
-        isLoading={false}
         onChange={[Function]}
         placeholder="Password"
         type="dual"
         value=""
       />
-    </EuiFormRow>
-    <EuiFormRow
+    </EuiCompressedFormRow>
+    <EuiCompressedFormRow
       describedByIds={Array []}
-      display="row"
+      display="rowCompressed"
       fullWidth={false}
       hasChildLabel={true}
       hasEmptyLabelSpace={false}
@@ -925,7 +901,7 @@ exports[`Login page renders renders with default value: string array 1`] = `
       >
         Log in
       </EuiButton>
-    </EuiFormRow>
+    </EuiCompressedFormRow>
   </EuiForm>
 </EuiListGroup>
 `;

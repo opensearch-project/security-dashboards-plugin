@@ -45,55 +45,55 @@ exports[`Tenant list Action menu click Duplicate click 1`] = `
       <EuiPageContentHeaderSection>
         <EuiFlexGroup>
           <EuiFlexItem>
-            <EuiButtonEmpty
+            <EuiSmallButtonEmpty
               disabled={false}
               id="switchTenant"
               key="switchTenant"
               onClick={[Function]}
             >
               Switch to selected tenant
-            </EuiButtonEmpty>
-            <EuiButtonEmpty
+            </EuiSmallButtonEmpty>
+            <EuiSmallButtonEmpty
               disabled={false}
               id="edit"
               key="edit"
               onClick={[Function]}
             >
               Edit
-            </EuiButtonEmpty>
-            <EuiButtonEmpty
+            </EuiSmallButtonEmpty>
+            <EuiSmallButtonEmpty
               disabled={false}
               id="duplicate"
               key="duplicate"
               onClick={[Function]}
             >
               Duplicate
-            </EuiButtonEmpty>
-            <EuiButtonEmpty
+            </EuiSmallButtonEmpty>
+            <EuiSmallButtonEmpty
               disabled={false}
               id="createDashboard"
               key="createDashboard"
               onClick={[Function]}
             >
               Create dashboard
-            </EuiButtonEmpty>
-            <EuiButtonEmpty
+            </EuiSmallButtonEmpty>
+            <EuiSmallButtonEmpty
               disabled={false}
               id="createVisualizations"
               key="createVisualizations"
               onClick={[Function]}
             >
               Create visualizations
-            </EuiButtonEmpty>
-            <EuiButtonEmpty
+            </EuiSmallButtonEmpty>
+            <EuiSmallButtonEmpty
               disabled={true}
               id="set as Global Default"
               key="Set as Global Default key"
               onClick={[Function]}
             >
               Set as Default Tenant
-            </EuiButtonEmpty>
-            <EuiButtonEmpty
+            </EuiSmallButtonEmpty>
+            <EuiSmallButtonEmpty
               color="danger"
               disabled={false}
               id="delete"
@@ -101,16 +101,16 @@ exports[`Tenant list Action menu click Duplicate click 1`] = `
               onClick={[MockFunction]}
             >
               Delete
-            </EuiButtonEmpty>
+            </EuiSmallButtonEmpty>
           </EuiFlexItem>
           <EuiFlexItem>
-            <EuiButton
+            <EuiSmallButton
               fill={true}
               id="createTenant"
               onClick={[Function]}
             >
               Create tenant
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiPageContentHeaderSection>
@@ -233,55 +233,55 @@ exports[`Tenant list Action menu click Edit click 1`] = `
       <EuiPageContentHeaderSection>
         <EuiFlexGroup>
           <EuiFlexItem>
-            <EuiButtonEmpty
+            <EuiSmallButtonEmpty
               disabled={false}
               id="switchTenant"
               key="switchTenant"
               onClick={[Function]}
             >
               Switch to selected tenant
-            </EuiButtonEmpty>
-            <EuiButtonEmpty
+            </EuiSmallButtonEmpty>
+            <EuiSmallButtonEmpty
               disabled={false}
               id="edit"
               key="edit"
               onClick={[Function]}
             >
               Edit
-            </EuiButtonEmpty>
-            <EuiButtonEmpty
+            </EuiSmallButtonEmpty>
+            <EuiSmallButtonEmpty
               disabled={false}
               id="duplicate"
               key="duplicate"
               onClick={[Function]}
             >
               Duplicate
-            </EuiButtonEmpty>
-            <EuiButtonEmpty
+            </EuiSmallButtonEmpty>
+            <EuiSmallButtonEmpty
               disabled={false}
               id="createDashboard"
               key="createDashboard"
               onClick={[Function]}
             >
               Create dashboard
-            </EuiButtonEmpty>
-            <EuiButtonEmpty
+            </EuiSmallButtonEmpty>
+            <EuiSmallButtonEmpty
               disabled={false}
               id="createVisualizations"
               key="createVisualizations"
               onClick={[Function]}
             >
               Create visualizations
-            </EuiButtonEmpty>
-            <EuiButtonEmpty
+            </EuiSmallButtonEmpty>
+            <EuiSmallButtonEmpty
               disabled={true}
               id="set as Global Default"
               key="Set as Global Default key"
               onClick={[Function]}
             >
               Set as Default Tenant
-            </EuiButtonEmpty>
-            <EuiButtonEmpty
+            </EuiSmallButtonEmpty>
+            <EuiSmallButtonEmpty
               color="danger"
               disabled={false}
               id="delete"
@@ -289,16 +289,16 @@ exports[`Tenant list Action menu click Edit click 1`] = `
               onClick={[MockFunction]}
             >
               Delete
-            </EuiButtonEmpty>
+            </EuiSmallButtonEmpty>
           </EuiFlexItem>
           <EuiFlexItem>
-            <EuiButton
+            <EuiSmallButton
               fill={true}
               id="createTenant"
               onClick={[Function]}
             >
               Create tenant
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiPageContentHeaderSection>

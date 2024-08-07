@@ -24,7 +24,7 @@ import {
   IndexPermissionPanel,
   renderDocumentLevelSecurity,
 } from '../index-permission-panel';
-import { EuiButtonIcon, EuiEmptyPrompt, EuiInMemoryTable } from '@elastic/eui';
+import { EuiSmallButtonIcon, EuiEmptyPrompt, EuiInMemoryTable } from '@elastic/eui';
 import { buildHashUrl } from '../../../utils/url-builder';
 
 describe('Role view - index permission panel', () => {
@@ -51,7 +51,7 @@ describe('Role view - index permission panel', () => {
       const Wrapper = () => <>{renderFunc(sampleRoleIndexPermission)}</>;
       const component = shallow(<Wrapper />);
 
-      expect(component.find(EuiButtonIcon).prop('iconType')).toBe('arrowDown');
+      expect(component.find(EuiSmallButtonIcon).prop('iconType')).toBe('arrowDown');
     });
 
     it('should render up arrow when expanded', () => {
@@ -63,7 +63,7 @@ describe('Role view - index permission panel', () => {
       const Wrapper = () => <>{renderFunc(sampleRoleIndexPermission)}</>;
       const component = shallow(<Wrapper />);
 
-      expect(component.find(EuiButtonIcon).prop('iconType')).toBe('arrowUp');
+      expect(component.find(EuiSmallButtonIcon).prop('iconType')).toBe('arrowUp');
     });
 
     it('renders when arrow expanded', () => {
@@ -74,7 +74,7 @@ describe('Role view - index permission panel', () => {
       );
       const Wrapper = () => <>{renderFunc(sampleRoleIndexPermission)}</>;
       const component = shallow(<Wrapper />);
-      component.find(EuiButtonIcon).simulate('click');
+      component.find(EuiSmallButtonIcon).simulate('click');
       expect(component).toMatchSnapshot();
     });
   });

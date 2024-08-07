@@ -16,7 +16,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { ClusterPermissionPanel } from '../cluster-permission-panel';
-import { EuiButton, EuiEmptyPrompt, EuiLoadingSpinner } from '@elastic/eui';
+import { EuiSmallButton, EuiEmptyPrompt, EuiLoadingSpinner } from '@elastic/eui';
 import { PermissionTree } from '../../permission-tree';
 import { Action } from '../../../types';
 import { ResourceType } from '../../../../../../common';
@@ -63,7 +63,7 @@ describe('Role view - cluster permission panel', () => {
       />
     );
     const prompt = wrapper.find(EuiEmptyPrompt).dive();
-    expect(prompt.find(EuiButton)).toHaveLength(1);
+    expect(prompt.find(EuiSmallButton)).toHaveLength(1);
     const button = prompt.find('[data-test-subj="addClusterPermission"]');
     expect(button.prop('disabled')).toBe(true);
   });

@@ -13,7 +13,13 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiButton, EuiComboBox, EuiFlexGroup, EuiFlexItem, EuiSuperSelect } from '@elastic/eui';
+import {
+  EuiSmallButton,
+  EuiCompressedComboBox,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiCompressedSuperSelect,
+} from '@elastic/eui';
 import React, { Dispatch, Fragment, SetStateAction, useEffect } from 'react';
 import { isEmpty } from 'lodash';
 import { RoleTenantPermission, TenantPermissionType, ComboBoxOptions } from '../../types';
@@ -85,7 +91,7 @@ function generateTenantPermissionPanels(
       <Fragment key={`tenant-permission-${arrayIndex}`}>
         <EuiFlexGroup>
           <EuiFlexItem style={{ maxWidth: '400px' }}>
-            <EuiComboBox
+            <EuiCompressedComboBox
               placeholder="Search tenant name or add a tenant pattern"
               selectedOptions={tenantPermission.tenantPatterns}
               onChange={onValueChangeHandler('tenantPatterns')}
@@ -95,7 +101,7 @@ function generateTenantPermissionPanels(
             />
           </EuiFlexItem>
           <EuiFlexItem style={{ maxWidth: '170px' }}>
-            <EuiSuperSelect
+            <EuiCompressedSuperSelect
               valueOfSelected={tenantPermission.permissionType}
               onChange={onValueChangeHandler('permissionType')}
               options={[
@@ -108,12 +114,12 @@ function generateTenantPermissionPanels(
             />
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton
+            <EuiSmallButton
               color="danger"
               onClick={() => removeElementFromArray(setPermissions, [], arrayIndex)}
             >
               Remove
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       </Fragment>
@@ -145,13 +151,13 @@ export function TenantPanel(props: {
         {generateTenantPermissionPanels(state, optionUniverse, setState)}
       </FormRow>
 
-      <EuiButton
+      <EuiSmallButton
         onClick={() => {
           appendElementToArray(setState, [], getEmptyTenantPermission());
         }}
       >
         Add another tenant permission
-      </EuiButton>
+      </EuiSmallButton>
     </PanelWithHeader>
   );
 }

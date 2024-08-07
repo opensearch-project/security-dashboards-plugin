@@ -14,7 +14,7 @@
  */
 
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiFlexGroup,
   EuiFlexItem,
   EuiPageHeader,
@@ -174,18 +174,18 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
       <EuiSpacer size="m" />
       <EuiFlexGroup justifyContent="flexEnd">
         <EuiFlexItem grow={false}>
-          <EuiButton
+          <EuiSmallButton
             onClick={() => {
               window.location.href = buildHashUrl(ResourceType.roles, Action.view, props.roleName);
             }}
           >
             Cancel
-          </EuiButton>
+          </EuiSmallButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton id="map" fill onClick={updateRoleMappingHandler}>
+          <EuiSmallButton id="map" fill onClick={updateRoleMappingHandler}>
             Map
-          </EuiButton>
+          </EuiSmallButton>
         </EuiFlexItem>
       </EuiFlexGroup>
       <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={10000} dismissToast={removeToast} />

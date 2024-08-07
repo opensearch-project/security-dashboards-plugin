@@ -60,7 +60,7 @@ exports[`Display utils Render External Link 1`] = `
 `;
 
 exports[`Display utils Render External Link Button 1`] = `
-<EuiButton
+<EuiSmallButton
   fill={true}
   href="http://localhost:5601"
   iconSide="right"
@@ -69,7 +69,7 @@ exports[`Display utils Render External Link Button 1`] = `
   target="_blank"
 >
   Test
-</EuiButton>
+</EuiSmallButton>
 `;
 
 exports[`Display utils Render expression when expression is non-empty 1`] = `
