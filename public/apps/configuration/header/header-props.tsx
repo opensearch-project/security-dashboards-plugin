@@ -25,7 +25,6 @@ export interface HeaderProps {
 
 export interface ControlProps {
   controlControls?: TopNavControlData[];
-  // mount: (menuMount: MountPoint | undefined) => void;
 }
 
 export interface DescriptionProps {

@@ -82,6 +82,9 @@ describe('Role view', () => {
   const sampleRole = 'role';
   const mockCoreStart = {
     http: 1,
+    uiSettings: {
+      get: jest.fn().mockReturnValue(false),
+    },
   };
   const buildBreadcrumbs = jest.fn();
 
