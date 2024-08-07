@@ -200,8 +200,6 @@ export function RoleList(props: AppDependencies) {
   const [searchOptions, setSearchOptions] = useState<EuiSearchBarProps>({});
   const [query, setQuery] = useState<Query | null>(null);
 
-  const updatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
-
   useEffect(() => {
     setSearchOptions({
       onChange: (arg) => {
@@ -264,6 +262,7 @@ export function RoleList(props: AppDependencies) {
     });
   }, [roleData]);
 
+  const useUpdatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
   const buttonData = [
     {
       label: 'Create role',
@@ -303,7 +302,7 @@ export function RoleList(props: AppDependencies) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      {updatedUX ? (
+      {useUpdatedUX ? (
         <>
           <HeaderTitle
             navigation={props.depsStart.navigation}
@@ -337,16 +336,13 @@ export function RoleList(props: AppDependencies) {
         <AccessErrorComponent loading={loading} dataSourceLabel={dataSource && dataSource.label} />
       ) : (
         <EuiPageContent>
-          {updatedUX ? null : (
+          {useUpdatedUX ? null : (
             <EuiPageContentHeader id="role-table-container">
               <EuiPageContentHeaderSection>
                 <EuiTitle size="s">
                   <h3>
                     Roles
-                    <span className="panel-header-count">
-                      {' '}
-                      ({Query.execute(query || '', roleData).length})
-                    </span>
+                    <span className="panel-header-count"> ({roleLen})</span>
                   </h3>
                 </EuiTitle>
                 <EuiText size="xs" color="subdued">
@@ -385,7 +381,7 @@ export function RoleList(props: AppDependencies) {
               sorting={true}
               search={{
                 ...searchOptions,
-                toolsRight: updatedUX ? [<EuiFlexItem>{actionsMenu}</EuiFlexItem>] : undefined,
+                toolsRight: useUpdatedUX ? [<EuiFlexItem>{actionsMenu}</EuiFlexItem>] : undefined,
               }}
               error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
               message={showTableStatusMessage(loading, roleData)}

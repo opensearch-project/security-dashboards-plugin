@@ -166,7 +166,7 @@ export function GetStarted(props: AppDependencies) {
   const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
 
-  const updatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
+  const useUpdatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
 
   let steps;
   if (props.config.ui.backend_configurable) {
@@ -196,7 +196,7 @@ export function GetStarted(props: AppDependencies) {
           setDataSource={setDataSource}
           selectedDataSource={dataSource}
         />
-        {updatedUX ? (
+        {useUpdatedUX ? (
           <>
             <HeaderTitle
               navigation={props.depsStart.navigation}

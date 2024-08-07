@@ -354,13 +354,13 @@ export function PermissionList(props: AppDependencies) {
     </EuiSmallButtonEmpty>,
   ];
 
-  const updatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
+  const useUpdatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
 
   const [createActionGroupMenu] = useContextMenuState(
     'Create action group',
     { fill: true },
     createActionGroupMenuItems,
-    updatedUX
+    useUpdatedUX
   );
 
   const buttonData = [
@@ -397,7 +397,7 @@ export function PermissionList(props: AppDependencies) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      {updatedUX ? (
+      {useUpdatedUX ? (
         <>
           <HeaderTitle
             navigation={props.depsStart.navigation}
@@ -431,7 +431,7 @@ export function PermissionList(props: AppDependencies) {
         <AccessErrorComponent loading={loading} dataSourceLabel={dataSource && dataSource.label} />
       ) : (
         <EuiPageContent>
-          {updatedUX ? null : (
+          {useUpdatedUX ? null : (
             <EuiPageContentHeader>
               <EuiPageContentHeaderSection>
                 <EuiTitle size="s">
@@ -478,7 +478,7 @@ export function PermissionList(props: AppDependencies) {
                   setQuery(arg.query);
                   return true;
                 },
-                toolsRight: updatedUX ? [<EuiFlexItem>{actionsMenu}</EuiFlexItem>] : undefined,
+                toolsRight: useUpdatedUX ? [<EuiFlexItem>{actionsMenu}</EuiFlexItem>] : undefined,
               }}
               selection={{ onSelectionChange: setSelection }}
               sorting={{ sort: { field: 'type', direction: 'asc' } }}

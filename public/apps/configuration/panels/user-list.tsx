@@ -205,7 +205,7 @@ export function UserList(props: AppDependencies) {
 
   const [actionsMenu, closeActionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);
 
-  const updatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
+  const useUpdatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
   const buttonData = [
     {
       label: 'Create internal user',
@@ -244,7 +244,7 @@ export function UserList(props: AppDependencies) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      {updatedUX ? (
+      {useUpdatedUX ? (
         <>
           <HeaderTitle
             navigation={props.depsStart.navigation}
@@ -278,16 +278,13 @@ export function UserList(props: AppDependencies) {
         <AccessErrorComponent loading={loading} dataSourceLabel={dataSource && dataSource.label} />
       ) : (
         <EuiPageContent>
-          {updatedUX ? null : (
+          {useUpdatedUX ? null : (
             <EuiPageContentHeader>
               <EuiPageContentHeaderSection>
                 <EuiTitle size="s">
                   <h3>
                     Internal users
-                    <span className="panel-header-count">
-                      {' '}
-                      ({Query.execute(query || '', userData).length})
-                    </span>
+                    <span className="panel-header-count"> ({userLen})</span>
                   </h3>
                 </EuiTitle>
                 <EuiText size="xs" color="subdued">
@@ -330,7 +327,7 @@ export function UserList(props: AppDependencies) {
                   setQuery(arg.query);
                   return true;
                 },
-                toolsRight: updatedUX ? [<EuiFlexItem>{actionsMenu}</EuiFlexItem>] : undefined,
+                toolsRight: useUpdatedUX ? [<EuiFlexItem>{actionsMenu}</EuiFlexItem>] : undefined,
               }}
               // @ts-ignore
               selection={{ onSelectionChange: setSelection }}

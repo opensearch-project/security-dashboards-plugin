@@ -61,7 +61,7 @@ export function AuthView(props: AppDependencies) {
     fetchData();
   }, [props.coreStart.http, dataSource]);
 
-  const updatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
+  const useUpdatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
 
   const buttonData = [
     {
@@ -84,7 +84,7 @@ export function AuthView(props: AppDependencies) {
           setDataSource={setDataSource}
           selectedDataSource={dataSource}
         />
-        {updatedUX ? (
+        {useUpdatedUX ? (
           <>
             <HeaderTitle
               navigation={props.depsStart.navigation}
@@ -127,7 +127,7 @@ export function AuthView(props: AppDependencies) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      {updatedUX ? (
+      {useUpdatedUX ? (
         <>
           <HeaderTitle
             navigation={props.depsStart.navigation}

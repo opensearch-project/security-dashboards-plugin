@@ -379,7 +379,7 @@ export function RoleView(props: RoleViewProps) {
     </EuiSmallButtonEmpty>,
   ];
   const [actionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);
-  const updatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
+  const useUpdatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
 
   if (isReserved) {
     pageActions = <EuiSmallButton href={duplicateRoleLink}>Duplicate role</EuiSmallButton>;
@@ -456,7 +456,7 @@ export function RoleView(props: RoleViewProps) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      {updatedUX ? (
+      {useUpdatedUX ? (
         <>
           <HeaderTitle
             navigation={props.depsStart.navigation}

@@ -504,7 +504,7 @@ export function ManageTab(props: AppDependencies) {
       />
     );
   }
-  const updatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
+  const useUpdatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
   const createTenantButton = [
     {
       id: 'createTenant',
@@ -543,7 +543,7 @@ export function ManageTab(props: AppDependencies) {
           <EuiPageContentHeaderSection>
             <EuiFlexGroup>
               <EuiFlexItem>{actionsMenu}</EuiFlexItem>
-              { updatedUX ? 
+              { useUpdatedUX ? 
                 <HeaderButtonOrLink
                   navigation={props.depsStart.navigation}
                   controls={createTenantButton}

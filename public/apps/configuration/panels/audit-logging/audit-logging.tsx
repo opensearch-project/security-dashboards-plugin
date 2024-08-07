@@ -250,7 +250,7 @@ export function AuditLogging(props: AuditLoggingProps) {
       </>
     );
   }
-  const updatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
+  const useUpdatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
 
   return (
     <div className="panel-restrict-width">
@@ -260,7 +260,7 @@ export function AuditLogging(props: AuditLoggingProps) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      {updatedUX ? (
+      {useUpdatedUX ? (
         <HeaderTitle
           navigation={props.depsStart.navigation}
           pageHeader="Audit Logs"
