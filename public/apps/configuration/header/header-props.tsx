@@ -13,28 +13,21 @@
  *   permissions and limitations under the License.
  */
 
-import { ApplicationStart } from 'opensearch-dashboards/public';
+import { CoreStart } from 'opensearch-dashboards/public';
 import { NavigationPublicPluginStart } from 'src/plugins/navigation/public';
 import { TopNavControlData } from 'src/plugins/navigation/public/top_nav_menu/top_nav_control_data';
 
 export interface HeaderProps {
   navigation: NavigationPublicPluginStart;
-  className?: string;
-  application: ApplicationStart;
+  coreStart: CoreStart;
+  fallBackComponent: JSX.Element
 }
 
-export interface ControlProps extends HeaderProps {
-  controls: TopNavControlData[];
+export interface ControlProps {
+  controlControls?: TopNavControlData[];
   // mount: (menuMount: MountPoint | undefined) => void;
 }
 
-export interface TitleProps extends HeaderProps {
-  pageHeader: string;
-  shouldDisplayCount?: boolean;
-  count?: number;
-}
-
-export interface DescriptionProps extends HeaderProps {
-  description: string;
-  controls: TopNavControlData[];
+export interface DescriptionProps {
+  descriptionControls?: TopNavControlData[];
 }

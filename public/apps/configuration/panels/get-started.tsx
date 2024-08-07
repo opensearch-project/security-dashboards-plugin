@@ -39,7 +39,7 @@ import { createSuccessToast, createUnknownErrorToast, useToastState } from '../u
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
 import { DataSourceContext } from '../app-router';
 import { getClusterInfo } from '../../../utils/datasource-utils';
-import { HeaderButtonOrLink, HeaderTitle } from '../header/header-components';
+import { HeaderButtonOrLink, HeaderTitle, PageHeader } from '../header/header-components';
 
 const addBackendStep = {
   title: 'Add backends',
@@ -166,8 +166,6 @@ export function GetStarted(props: AppDependencies) {
   const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
 
-  const useUpdatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
-
   let steps;
   if (props.config.ui.backend_configurable) {
     steps = [addBackendStep, ...setOfSteps];
@@ -196,28 +194,17 @@ export function GetStarted(props: AppDependencies) {
           setDataSource={setDataSource}
           selectedDataSource={dataSource}
         />
-        {useUpdatedUX ? (
-          <>
-            <HeaderTitle
-              navigation={props.depsStart.navigation}
-              pageHeader="Get started with access control"
-              application={props.coreStart.application}
-            />
-            <HeaderButtonOrLink
-              navigation={props.depsStart.navigation}
-              controls={buttonData}
-              application={props.coreStart.application}
-            />
-          </>
-        ) : (
-          <EuiPageHeader>
-            <EuiTitle size="l">
-              <h1>Get started</h1>
-            </EuiTitle>
-            <ExternalLinkButton text="Open in new window" href={buildHashUrl()} />
-          </EuiPageHeader>
-        )}
-
+        <PageHeader
+        navigation={props.depsStart.navigation}
+        coreStart={props.coreStart}
+        controlControls={buttonData}
+        fallBackComponent={<EuiPageHeader>
+          <EuiTitle size="l">
+            <h1>Get started</h1>
+          </EuiTitle>
+          <ExternalLinkButton text="Open in new window" href={buildHashUrl()} />
+        </EuiPageHeader>}
+        />
         <EuiPanel paddingSize="l">
           <EuiText size="s" color="subdued">
             <p>

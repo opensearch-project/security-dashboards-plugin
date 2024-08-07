@@ -16,7 +16,7 @@
 import React from 'react';
 import { TopNavControlData } from 'src/plugins/navigation/public/top_nav_menu/top_nav_control_data';
 import { EuiTitle } from '@elastic/eui';
-import { ControlProps, DescriptionProps, TitleProps } from './header-props';
+import { ControlProps, DescriptionProps, HeaderProps, TitleProps } from './header-props';
 
 // controlType should be one of: https://github.com/AMoo-Miki/OpenSearch-Dashboards/blob/header-collective/src/plugins/navigation/public/top_nav_menu/top_nav_control_data.tsx#L91
 
@@ -67,3 +67,28 @@ export const HeaderDescription = React.memo((props: DescriptionProps) => {
     />
   );
 });
+
+export const PageHeader = (props: HeaderProps & DescriptionProps & ControlProps) => {
+  const { HeaderControl } = props.navigation.ui; // need to get this from SecurityPluginStartDependencies
+  const useNewUx = props.coreStart.chrome.navGroup.getNavGroupEnabled();
+  if (useNewUx) {
+    return (
+      <>
+      {props.descriptionControls ? <HeaderControl
+        setMountPoint={props.coreStart.application.setAppDescriptionControls}
+        controls={props.descriptionControls}
+      /> : null}
+      {props.controlControls ? <HeaderControl
+        setMountPoint={props.coreStart.application.setAppRightControls}
+        controls={props.controlControls}
+      /> : null}
+      </>
+    );
+
+  } else {
+    return props.fallBackComponent;
+  }
+
+  
+
+}
