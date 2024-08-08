@@ -94,7 +94,7 @@ describe('Role list', () => {
 
     shallow(
       <RoleList
-        coreStart={{} as any}
+        coreStart={mockCoreStart as any}
         depsStart={{ navigation: {} }}
         params={{} as any}
         config={{} as any}
@@ -259,7 +259,6 @@ describe('Role list', () => {
         <RoleList
           coreStart={mockCoreStart as any}
           depsStart={{ navigation: {} }}
-          navigation={{} as any}
           params={{} as any}
           config={{} as any}
         />

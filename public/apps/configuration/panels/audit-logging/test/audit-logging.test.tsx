@@ -37,6 +37,9 @@ describe('Audit logs', () => {
   const setState = jest.fn();
   const mockCoreStart = {
     http: 1,
+    uiSettings: {
+      get: jest.fn().mockReturnValue(false),
+    },
   };
 
   beforeEach(() => {
@@ -96,7 +99,9 @@ describe('Audit logs', () => {
       throw Error();
     });
 
-    shallow(<AuditLogging coreStart={mockCoreStart as any} navigation={{} as any} />);
+    shallow(
+      <AuditLogging coreStart={mockCoreStart as any} depsStart={{ navigation: {} } as any} />
+    );
 
     process.nextTick(() => {
       expect(mockAuditLoggingUtils.getAuditLogging).toHaveBeenCalledTimes(1);
@@ -136,7 +141,7 @@ describe('Audit logs', () => {
       throw Error();
     });
     const component = shallow(
-      <AuditLogging coreStart={mockCoreStart as any} navigation={{} as any} />
+      <AuditLogging coreStart={mockCoreStart as any} depsStart={{ navigation: {} } as any} />
     );
     component.find('[data-test-subj="audit-logging-enabled-switch"]').simulate('change');
 
@@ -181,7 +186,7 @@ describe('Audit logs', () => {
       .mockImplementationOnce(() => [auditLoggingSettings, setState])
       .mockImplementationOnce(() => [false, jest.fn()]);
     const component = shallow(
-      <AuditLogging coreStart={mockCoreStart as any} navigation={{} as any} />
+      <AuditLogging coreStart={mockCoreStart as any} depsStart={{ navigation: {} } as any} />
     );
     component.find('[data-test-subj="compliance-settings-configure"]').simulate('click');
     expect(window.location.hash).toBe(

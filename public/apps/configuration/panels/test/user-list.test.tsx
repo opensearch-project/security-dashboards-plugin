@@ -115,7 +115,7 @@ describe('User list', () => {
       shallow(
         <UserList
           coreStart={mockCoreStart as any}
-          navigation={{} as any}
+          depsStart={{ navigation: {} }}
           params={{} as any}
           config={{} as any}
         />
