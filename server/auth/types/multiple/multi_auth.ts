@@ -29,7 +29,12 @@ import { AuthType, LOGIN_PAGE_URI } from '../../../../common';
 import { composeNextUrlQueryParam } from '../../../utils/next_url';
 import { MultiAuthRoutes } from './routes';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
-import { BasicAuthentication, OpenIdAuthentication, SamlAuthentication } from '../../types';
+import {
+  BasicAuthentication,
+  OpenIdAuthentication,
+  ProxyAuthentication,
+  SamlAuthentication,
+} from '../../types';
 
 export class MultipleAuthentication extends AuthenticationType {
   private authTypes: string | string[];
@@ -93,6 +98,19 @@ export class MultipleAuthentication extends AuthenticationType {
           this.authHandlers.set(AuthType.SAML, SamlAuth);
           break;
         }
+        case AuthType.PROXY: {
+          const ProxyAuth = new ProxyAuthentication(
+            this.config,
+            this.sessionStorageFactory,
+            this.router,
+            this.esClient,
+            this.coreSetup,
+            this.logger
+          );
+          await ProxyAuth.init();
+          this.authHandlers.set(AuthType.PROXY, ProxyAuth);
+          break;
+        }
         default: {
           throw new Error(`Unsupported authentication type: ${this.authTypes[i]}`);
         }
@@ -115,7 +133,7 @@ export class MultipleAuthentication extends AuthenticationType {
   async getAdditionalAuthHeader(
     request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>
   ): Promise<any> {
-    // To Do: refactor this method to improve the effiency to get cookie, get cookie from input parameter
+    // To Do: refactor this method to improve the efficiency to get cookie, get cookie from input parameter
     const cookie = await this.sessionStorageFactory.asScoped(request).get();
     const reqAuthType = cookie?.authType?.toLowerCase();
 

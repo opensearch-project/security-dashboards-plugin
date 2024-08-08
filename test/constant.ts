@@ -21,3 +21,7 @@ export const ADMIN_PASSWORD: string = process.env.ADMIN_PASSWORD || 'admin';
 const ADMIN_USER_PASS: string = `${ADMIN_USER}:${ADMIN_PASSWORD}`;
 export const ADMIN_CREDENTIALS: string = `Basic ${Buffer.from(ADMIN_USER_PASS).toString('base64')}`;
 export const AUTHORIZATION_HEADER_NAME: string = 'Authorization';
+
+export const PROXY_USER: string = 'x-proxy-user';
+export const PROXY_ROLE: string = 'x-proxy-roles';
+export const PROXY_ADMIN_ROLE: string = 'admin';
