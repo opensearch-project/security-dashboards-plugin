@@ -7,10 +7,29 @@ exports[`Role list AccessError component should load access error component 1`] 
     coreStart={
       Object {
         "http": 1,
+        "uiSettings": Object {
+          "get": [MockFunction] {
+            "calls": Array [
+              Array [
+                "home:useNewHomePage",
+              ],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": false,
+              },
+            ],
+          },
+        },
       }
     }
     dataSourcePickerReadOnly={false}
-    navigation={Object {}}
+    depsStart={
+      Object {
+        "navigation": Object {},
+      }
+    }
     params={Object {}}
     selectedDataSource={
       Object {
@@ -19,15 +38,74 @@ exports[`Role list AccessError component should load access error component 1`] 
     }
     setDataSource={[MockFunction]}
   />
-  <EuiPageHeader>
-    <EuiTitle
-      size="l"
-    >
-      <h1>
-        Roles
-      </h1>
-    </EuiTitle>
-  </EuiPageHeader>
+  <PageHeader
+    controlControls={
+      Array [
+        Object {
+          "fill": true,
+          "href": "#/roles/create",
+          "iconSide": "left",
+          "iconType": "plus",
+          "isLoading": false,
+          "label": "Create role",
+          "testId": "create-role",
+          "type": "button",
+        },
+      ]
+    }
+    coreStart={
+      Object {
+        "http": 1,
+        "uiSettings": Object {
+          "get": [MockFunction] {
+            "calls": Array [
+              Array [
+                "home:useNewHomePage",
+              ],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": false,
+              },
+            ],
+          },
+        },
+      }
+    }
+    descriptionControls={
+      Array [
+        Object {
+          "isLoading": false,
+          "renderComponent": <EuiText
+            color="subdued"
+            size="xs"
+          >
+            Roles are the core way of controlling access to your cluster. Roles contain any combination of cluster-wide permission, index-
+            <br />
+            specific permissions, document- and field-level security, and tenants. Then you map users to these roles so that users 
+            <br />
+            gain those permissions. 
+            <mockConstructor
+              href="https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/"
+            />
+          </EuiText>,
+        },
+      ]
+    }
+    fallBackComponent={
+      <EuiPageHeader>
+        <EuiTitle
+          size="l"
+        >
+          <h1>
+            Roles
+          </h1>
+        </EuiTitle>
+      </EuiPageHeader>
+    }
+    navigation={Object {}}
+  />
   <EuiPageContent>
     <EuiPageContentHeader
       id="role-table-container"
@@ -41,8 +119,7 @@ exports[`Role list AccessError component should load access error component 1`] 
             <span
               className="panel-header-count"
             >
-               
-              (
+               (
               0
               )
             </span>
@@ -150,7 +227,11 @@ exports[`Role list AccessError component should load access error component 1`] 
         message="No items found"
         pagination={true}
         responsive={true}
-        search={Object {}}
+        search={
+          Object {
+            "toolsRight": undefined,
+          }
+        }
         selection={
           Object {
             "onSelectionChange": [MockFunction],

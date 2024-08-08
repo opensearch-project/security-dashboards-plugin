@@ -31,19 +31,40 @@ exports[`Get started (landing page) renders when backend configuration is disabl
       }
       setDataSource={[MockFunction]}
     />
-    <EuiPageHeader>
-      <EuiTitle
-        size="l"
-      >
-        <h1>
-          Get started
-        </h1>
-      </EuiTitle>
-      <ExternalLinkButton
-        href="#/"
-        text="Open in new window"
-      />
-    </EuiPageHeader>
+    <PageHeader
+      controlControls={
+        Array [
+          Object {
+            "href": "#/",
+            "iconSide": "right",
+            "iconType": "popout",
+            "isLoading": false,
+            "label": "Open in new window",
+            "type": "button",
+          },
+        ]
+      }
+      coreStart={
+        Object {
+          "http": 1,
+        }
+      }
+      fallBackComponent={
+        <EuiPageHeader>
+          <EuiTitle
+            size="l"
+          >
+            <h1>
+              Get started
+            </h1>
+          </EuiTitle>
+          <ExternalLinkButton
+            href="#/"
+            text="Open in new window"
+          />
+        </EuiPageHeader>
+      }
+    />
     <EuiPanel
       paddingSize="l"
     >
@@ -310,19 +331,40 @@ exports[`Get started (landing page) renders when backend configuration is enable
       }
       setDataSource={[MockFunction]}
     />
-    <EuiPageHeader>
-      <EuiTitle
-        size="l"
-      >
-        <h1>
-          Get started
-        </h1>
-      </EuiTitle>
-      <ExternalLinkButton
-        href="#/"
-        text="Open in new window"
-      />
-    </EuiPageHeader>
+    <PageHeader
+      controlControls={
+        Array [
+          Object {
+            "href": "#/",
+            "iconSide": "right",
+            "iconType": "popout",
+            "isLoading": false,
+            "label": "Open in new window",
+            "type": "button",
+          },
+        ]
+      }
+      coreStart={
+        Object {
+          "http": 1,
+        }
+      }
+      fallBackComponent={
+        <EuiPageHeader>
+          <EuiTitle
+            size="l"
+          >
+            <h1>
+              Get started
+            </h1>
+          </EuiTitle>
+          <ExternalLinkButton
+            href="#/"
+            text="Open in new window"
+          />
+        </EuiPageHeader>
+      }
+    />
     <EuiPanel
       paddingSize="l"
     >

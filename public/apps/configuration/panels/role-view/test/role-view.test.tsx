@@ -269,7 +269,7 @@ describe('Role view', () => {
   });
 
   it('delete role', () => {
-    const component = render(
+    const component = mount(
       <RoleView
         roleName={sampleRole}
         prevAction=""
@@ -280,7 +280,7 @@ describe('Role view', () => {
         config={{} as any}
       />
     );
-    component.find('[data-test-subj="delete"]').simulate('click');
+    component.find('[data-test-subj="delete"]').first().simulate('click');
 
     expect(requestDeleteRoles).toBeCalled();
   });
@@ -289,18 +289,18 @@ describe('Role view', () => {
     (requestDeleteRoles as jest.Mock).mockImplementationOnce(() => {
       throw new Error();
     });
-    const component = shallow(
+    const component = mount(
       <RoleView
         roleName={sampleRole}
         prevAction=""
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        depsStart={{} as any}
+        depsStart={{ navigation: { ui: { HeaderControl: {} } } } as any}
         params={{} as any}
         config={{} as any}
       />
     );
-    component.find('[data-test-subj="delete"]').simulate('click');
+    component.find('[data-test-subj="delete"]').first().simulate('click');
     expect(createUnknownErrorToast).toBeCalled();
   });
 });
