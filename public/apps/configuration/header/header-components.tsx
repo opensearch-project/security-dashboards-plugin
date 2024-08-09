@@ -81,7 +81,6 @@ export const PageHeader = (props: HeaderProps & DescriptionProps & ControlProps)
     props.count
   );
   if (useNewUx) {
-    
     return (
       <>
         {props.descriptionControls ? (

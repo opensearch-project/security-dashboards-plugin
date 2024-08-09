@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiBreadcrumb, EuiPage, EuiPageBody, EuiPageSideBar } from '@elastic/eui';
+import { EuiPage, EuiPageBody, EuiPageSideBar } from '@elastic/eui';
 import { flow, partial } from 'lodash';
 import React, { createContext, useState } from 'react';
 import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
@@ -38,7 +38,7 @@ import { TenantList } from './panels/tenant-list/tenant-list';
 import { UserList } from './panels/user-list';
 import { Action, RouteItem, SubAction } from './types';
 import { ResourceType } from '../../../common';
-import { buildHashUrl, buildUrl } from './utils/url-builder';
+import { buildUrl } from './utils/url-builder';
 import { CrossPageToast } from './cross-page-toast';
 import { getDataSourceFromUrl, LocalCluster } from '../../utils/datasource-utils';
 import { getBreadcrumbs } from './utils/resource-utils';
