@@ -40,6 +40,7 @@ exports[`Get started (landing page) renders when backend configuration is disabl
             "iconType": "popout",
             "isLoading": false,
             "label": "Open in new window",
+            "target": "_blank",
             "type": "button",
           },
         ]
@@ -341,6 +342,7 @@ exports[`Get started (landing page) renders when backend configuration is enable
             "iconType": "popout",
             "isLoading": false,
             "label": "Open in new window",
+            "target": "_blank",
             "type": "button",
           },
         ]
