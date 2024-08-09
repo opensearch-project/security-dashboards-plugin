@@ -14,7 +14,7 @@
  */
 
 import React from 'react';
-import { mount, shallow } from 'enzyme';
+import { mount, render, shallow } from 'enzyme';
 import { RoleView } from '../role-view';
 import { ClusterPermissionPanel } from '../../role-view/cluster-permission-panel';
 import { IndexPermissionPanel } from '../index-permission-panel';
@@ -82,6 +82,13 @@ describe('Role view', () => {
   const sampleRole = 'role';
   const mockCoreStart = {
     http: 1,
+    uiSettings: {
+      get: jest.fn().mockReturnValue(false),
+    },
+    chrome: {
+      navGroup: { getNavGroupEnabled: jest.fn().mockReturnValue(false) },
+      setBreadcrumbs: jest.fn(),
+    },
   };
   const buildBreadcrumbs = jest.fn();
 
@@ -243,13 +250,13 @@ describe('Role view', () => {
       throw new Error();
     });
     const spy = jest.spyOn(console, 'log').mockImplementationOnce(() => {});
-    shallow(
+    render(
       <RoleView
         roleName={sampleRole}
         prevAction=""
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        depsStart={{} as any}
+        depsStart={{ navigation: { ui: { HeaderControl: {} } } } as any}
         params={{} as any}
         config={{} as any}
       />
@@ -265,18 +272,18 @@ describe('Role view', () => {
   });
 
   it('delete role', () => {
-    const component = shallow(
+    const component = mount(
       <RoleView
         roleName={sampleRole}
         prevAction=""
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        depsStart={{} as any}
+        depsStart={{ navigation: { ui: { HeaderControl: {} } } } as any}
         params={{} as any}
         config={{} as any}
       />
     );
-    component.find('[data-test-subj="delete"]').simulate('click');
+    component.find('[data-test-subj="delete"]').first().simulate('click');
 
     expect(requestDeleteRoles).toBeCalled();
   });
@@ -285,18 +292,18 @@ describe('Role view', () => {
     (requestDeleteRoles as jest.Mock).mockImplementationOnce(() => {
       throw new Error();
     });
-    const component = shallow(
+    const component = mount(
       <RoleView
         roleName={sampleRole}
         prevAction=""
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        depsStart={{} as any}
+        depsStart={{ navigation: { ui: { HeaderControl: {} } } } as any}
         params={{} as any}
         config={{} as any}
       />
     );
-    component.find('[data-test-subj="delete"]').simulate('click');
+    component.find('[data-test-subj="delete"]').first().simulate('click');
     expect(createUnknownErrorToast).toBeCalled();
   });
 });

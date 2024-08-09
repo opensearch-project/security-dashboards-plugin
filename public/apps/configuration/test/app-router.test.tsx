@@ -35,6 +35,9 @@ describe('SecurityPluginTopNavMenu', () => {
         getNavGroupEnabled: jest.fn().mockReturnValue(false),
       },
     },
+    uiSettings: {
+      get: jest.fn().mockReturnValue(false),
+    },
   };
 
   const securityPluginConfigMock = {

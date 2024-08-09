@@ -62,7 +62,7 @@ describe('Auth view', () => {
   it('valid data', (done) => {
     mockAuthViewUtils.getSecurityConfig = jest.fn().mockReturnValue(config);
 
-    shallow(<AuthView coreStart={mockCoreStart as any} navigation={{} as any} />);
+    shallow(<AuthView coreStart={mockCoreStart as any} depsStart={{ navigation: {} } as any} />);
 
     process.nextTick(() => {
       expect(mockAuthViewUtils.getSecurityConfig).toHaveBeenCalledTimes(1);
@@ -81,7 +81,7 @@ describe('Auth view', () => {
 
     jest.spyOn(console, 'log').mockImplementationOnce(() => {});
 
-    shallow(<AuthView coreStart={mockCoreStart as any} navigation={{} as any} />);
+    shallow(<AuthView coreStart={mockCoreStart as any} depsStart={{ navigation: {} } as any} />);
 
     process.nextTick(() => {
       expect(mockAuthViewUtils.getSecurityConfig).toHaveBeenCalledTimes(1);
@@ -104,7 +104,9 @@ describe('Auth view', () => {
     mockAuthViewUtils.getSecurityConfig = jest
       .fn()
       .mockRejectedValue({ response: { status: 403 } });
-    const component = shallow(<AuthView coreStart={mockCoreStart as any} navigation={{} as any} />);
+    const component = shallow(
+      <AuthView coreStart={mockCoreStart as any} depsStart={{ navigation: {} } as any} />
+    );
     expect(component).toMatchSnapshot();
   });
 });

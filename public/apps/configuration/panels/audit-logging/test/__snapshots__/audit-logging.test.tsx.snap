@@ -245,10 +245,17 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
     coreStart={
       Object {
         "http": 1,
+        "uiSettings": Object {
+          "get": [MockFunction],
+        },
       }
     }
     dataSourcePickerReadOnly={false}
-    navigation={Object {}}
+    depsStart={
+      Object {
+        "navigation": Object {},
+      }
+    }
     selectedDataSource={
       Object {
         "id": "test",
@@ -256,15 +263,29 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
     }
     setDataSource={[MockFunction]}
   />
-  <EuiPageHeader>
-    <EuiTitle
-      size="l"
-    >
-      <h3>
-        Audit logging
-      </h3>
-    </EuiTitle>
-  </EuiPageHeader>
+  <PageHeader
+    coreStart={
+      Object {
+        "http": 1,
+        "uiSettings": Object {
+          "get": [MockFunction],
+        },
+      }
+    }
+    fallBackComponent={
+      <EuiPageHeader>
+        <EuiTitle
+          size="l"
+        >
+          <h3>
+            Audit logging
+          </h3>
+        </EuiTitle>
+      </EuiPageHeader>
+    }
+    navigation={Object {}}
+    resourceType="auditLogging"
+  />
   <EuiSpacer />
   <EuiPanel>
     <EuiForm>
@@ -655,10 +676,17 @@ exports[`Audit logs should load access error component 1`] = `
     coreStart={
       Object {
         "http": 1,
+        "uiSettings": Object {
+          "get": [MockFunction],
+        },
       }
     }
     dataSourcePickerReadOnly={false}
-    navigation={Object {}}
+    depsStart={
+      Object {
+        "navigation": Object {},
+      }
+    }
     selectedDataSource={
       Object {
         "id": "test",
@@ -666,15 +694,29 @@ exports[`Audit logs should load access error component 1`] = `
     }
     setDataSource={[MockFunction]}
   />
-  <EuiPageHeader>
-    <EuiTitle
-      size="l"
-    >
-      <h3>
-        Audit logging
-      </h3>
-    </EuiTitle>
-  </EuiPageHeader>
+  <PageHeader
+    coreStart={
+      Object {
+        "http": 1,
+        "uiSettings": Object {
+          "get": [MockFunction],
+        },
+      }
+    }
+    fallBackComponent={
+      <EuiPageHeader>
+        <EuiTitle
+          size="l"
+        >
+          <h3>
+            Audit logging
+          </h3>
+        </EuiTitle>
+      </EuiPageHeader>
+    }
+    navigation={Object {}}
+    resourceType="auditLogging"
+  />
   <EuiSpacer />
   <AccessErrorComponent
     loading={false}

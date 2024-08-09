@@ -47,6 +47,9 @@ describe('Role edit', () => {
   const sampleSourceRole = 'role';
   const mockCoreStart = {
     http: 1,
+    uiSettings: {
+      get: jest.fn().mockReturnValue(false),
+    },
   };
 
   const useEffect = jest.spyOn(React, 'useEffect');

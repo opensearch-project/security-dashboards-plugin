@@ -53,6 +53,15 @@ describe('Role edit filtering', () => {
   const sampleSourceRole = 'role';
   const mockCoreStart = {
     http: 1,
+    uiSettings: {
+      get: jest.fn().mockReturnValue(false),
+    },
+    chrome: {
+      navGroup: {
+        getNavGroupEnabled: jest.fn().mockReturnValue(false),
+      },
+      setBreadcrumbs: jest.fn(),
+    },
   };
 
   (fetchActionGroups as jest.Mock).mockResolvedValue({
@@ -100,7 +109,7 @@ describe('Role edit filtering', () => {
         sourceRoleName={sampleSourceRole}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        depsStart={{} as any}
+        depsStart={{ navigation: { ui: {} } } as any}
         params={{} as any}
         config={{} as any}
       />
@@ -156,7 +165,7 @@ describe('Role edit filtering', () => {
         sourceRoleName={sampleSourceRole}
         buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
-        depsStart={{} as any}
+        depsStart={{ navigation: { ui: {} } } as any}
         params={{} as any}
         config={{} as any}
       />
