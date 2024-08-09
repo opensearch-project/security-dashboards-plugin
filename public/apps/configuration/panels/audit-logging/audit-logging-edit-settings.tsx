@@ -166,6 +166,8 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
               </EuiTitle>
             </EuiPageHeader>
           }
+          resourceType={ResourceType.auditLogging}
+          pageTitle="Compliance settings"
         />
 
         <EuiPanel>
@@ -224,6 +226,8 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
               </EuiTitle>
             </EuiPageHeader>
           }
+          resourceType={ResourceType.auditLogging}
+          pageTitle="General settings"
         />
 
         <EuiPanel>

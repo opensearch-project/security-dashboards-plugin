@@ -85,7 +85,10 @@ describe('Role view', () => {
     uiSettings: {
       get: jest.fn().mockReturnValue(false),
     },
-    chrome: { navGroup: { getNavGroupEnabled: jest.fn().mockReturnValue(false) } },
+    chrome: {
+      navGroup: { getNavGroupEnabled: jest.fn().mockReturnValue(false) },
+      setBreadcrumbs: jest.fn(),
+    },
   };
   const buildBreadcrumbs = jest.fn();
 

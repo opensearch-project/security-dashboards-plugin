@@ -27,6 +27,7 @@ import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { AccessErrorComponent } from '../../access-error-component';
 import { PageHeader } from '../../header/header-components';
+import { ResourceType } from '../../../../../common';
 
 export function AuthView(props: AppDependencies) {
   const [authentication, setAuthentication] = React.useState([]);
@@ -128,6 +129,7 @@ export function AuthView(props: AppDependencies) {
             )}
           </EuiPageHeader>
         }
+        resourceType={ResourceType.auth}
       />
       {loading ? (
         <EuiLoadingContent />

@@ -16,7 +16,9 @@
 import React from 'react';
 import { TopNavControlData } from 'src/plugins/navigation/public/top_nav_menu/top_nav_control_data';
 import { EuiTitle } from '@elastic/eui';
+import { flow } from 'lodash';
 import { ControlProps, DescriptionProps, HeaderProps, TitleProps } from './header-props';
+import { getBreadcrumbs } from '../utils/resource-utils';
 
 // controlType should be one of: https://github.com/AMoo-Miki/OpenSearch-Dashboards/blob/header-collective/src/plugins/navigation/public/top_nav_menu/top_nav_control_data.tsx#L91
 
@@ -72,6 +74,12 @@ export const PageHeader = (props: HeaderProps & DescriptionProps & ControlProps)
   const { HeaderControl } = props.navigation.ui; // need to get this from SecurityPluginStartDependencies
   const useNewUx = props.coreStart.chrome.navGroup.getNavGroupEnabled();
   if (useNewUx) {
+    flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs)(
+      !props.coreStart.uiSettings.get('home:useNewHomePage'),
+      props.resourceType,
+      props.pageTitle,
+      props.subAction
+    );
     return (
       <>
         {props.descriptionControls ? (
@@ -89,6 +97,12 @@ export const PageHeader = (props: HeaderProps & DescriptionProps & ControlProps)
       </>
     );
   } else {
+    flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs)(
+      !props.coreStart.uiSettings.get('home:useNewHomePage'),
+      props.resourceType,
+      props.pageTitle,
+      props.subAction
+    );
     return props.fallBackComponent;
   }
 };

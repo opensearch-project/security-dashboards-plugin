@@ -234,8 +234,6 @@ export function RoleEdit(props: RoleEditDeps) {
 
   const tenantOptions = tenantNames.map(stringToComboBoxOption);
 
-  const useUpdatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
-
   const descriptionData = [
     {
       renderComponent: (

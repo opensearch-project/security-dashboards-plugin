@@ -120,6 +120,7 @@ exports[`User list AccessError component should load access error component 1`] 
       </EuiPageHeader>
     }
     navigation={Object {}}
+    resourceType="users"
   />
   <AccessErrorComponent
     loading={false}

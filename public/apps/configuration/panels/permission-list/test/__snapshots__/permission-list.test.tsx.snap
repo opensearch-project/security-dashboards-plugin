@@ -165,6 +165,7 @@ exports[`Permission list page  AccessError component should load access error co
         </EuiTitle>
       </EuiPageHeader>
     }
+    resourceType="permissions"
   />
   <AccessErrorComponent
     loading={false}

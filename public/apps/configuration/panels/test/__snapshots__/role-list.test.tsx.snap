@@ -105,6 +105,7 @@ exports[`Role list AccessError component should load access error component 1`] 
       </EuiPageHeader>
     }
     navigation={Object {}}
+    resourceType="roles"
   />
   <EuiPageContent>
     <EuiPageContentHeader

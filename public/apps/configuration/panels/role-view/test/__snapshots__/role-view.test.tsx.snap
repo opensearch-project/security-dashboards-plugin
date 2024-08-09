@@ -25,6 +25,7 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
           "navGroup": Object {
             "getNavGroupEnabled": [MockFunction],
           },
+          "setBreadcrumbs": [MockFunction],
         },
         "http": 1,
         "uiSettings": Object {
@@ -89,6 +90,7 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
           "navGroup": Object {
             "getNavGroupEnabled": [MockFunction],
           },
+          "setBreadcrumbs": [MockFunction],
         },
         "http": 1,
         "uiSettings": Object {
@@ -190,6 +192,7 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
                   "navGroup": Object {
                     "getNavGroupEnabled": [MockFunction],
                   },
+                  "setBreadcrumbs": [MockFunction],
                 },
                 "http": 1,
                 "uiSettings": Object {
@@ -260,6 +263,7 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
                     "navGroup": Object {
                       "getNavGroupEnabled": [MockFunction],
                     },
+                    "setBreadcrumbs": [MockFunction],
                   },
                   "http": 1,
                   "uiSettings": Object {
@@ -467,6 +471,7 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
           "navGroup": Object {
             "getNavGroupEnabled": [MockFunction],
           },
+          "setBreadcrumbs": [MockFunction],
         },
         "http": 1,
         "uiSettings": Object {
@@ -531,6 +536,7 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
           "navGroup": Object {
             "getNavGroupEnabled": [MockFunction],
           },
+          "setBreadcrumbs": [MockFunction],
         },
         "http": 1,
         "uiSettings": Object {
@@ -773,6 +779,7 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
                     "navGroup": Object {
                       "getNavGroupEnabled": [MockFunction],
                     },
+                    "setBreadcrumbs": [MockFunction],
                   },
                   "http": 1,
                   "uiSettings": Object {

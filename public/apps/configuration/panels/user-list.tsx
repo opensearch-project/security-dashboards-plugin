@@ -256,6 +256,7 @@ export function UserList(props: AppDependencies) {
             </EuiTitle>
           </EuiPageHeader>
         }
+        resourceType={ResourceType.users}
       />
       {loading ? (
         <EuiLoadingContent />

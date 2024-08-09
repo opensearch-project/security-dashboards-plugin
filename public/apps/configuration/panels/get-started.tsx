@@ -206,6 +206,7 @@ export function GetStarted(props: AppDependencies) {
               <ExternalLinkButton text="Open in new window" href={buildHashUrl()} />
             </EuiPageHeader>
           }
+          resourceType={'getStarted'}
         />
         <EuiPanel paddingSize="l">
           <EuiText size="s" color="subdued">

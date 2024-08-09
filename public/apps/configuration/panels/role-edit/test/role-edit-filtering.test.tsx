@@ -60,6 +60,7 @@ describe('Role edit filtering', () => {
       navGroup: {
         getNavGroupEnabled: jest.fn().mockReturnValue(false),
       },
+      setBreadcrumbs: jest.fn(),
     },
   };
 

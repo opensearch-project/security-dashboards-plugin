@@ -33,6 +33,7 @@ import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
 import { LocalCluster } from '../../../../utils/datasource-utils';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { PageHeader } from '../../header/header-components';
+import { ResourceType } from '../../../../../common';
 
 interface TenantListProps extends AppDependencies {
   tabID: string;
@@ -171,6 +172,7 @@ export function TenantList(props: TenantListProps) {
             </EuiText>
           </>
         }
+        resourceType={ResourceType.tenants}
       />
 
       <EuiTabs>{renderTabs()}</EuiTabs>

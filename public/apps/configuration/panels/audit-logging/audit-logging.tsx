@@ -269,6 +269,7 @@ export function AuditLogging(props: AuditLoggingProps) {
             </EuiTitle>
           </EuiPageHeader>
         }
+        resourceType={ResourceType.auditLogging}
       />
       <EuiSpacer />
       {loading ? <EuiLoadingContent /> : content}

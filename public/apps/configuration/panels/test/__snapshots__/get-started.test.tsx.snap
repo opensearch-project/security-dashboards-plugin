@@ -64,6 +64,7 @@ exports[`Get started (landing page) renders when backend configuration is disabl
           />
         </EuiPageHeader>
       }
+      resourceType="getStarted"
     />
     <EuiPanel
       paddingSize="l"
@@ -364,6 +365,7 @@ exports[`Get started (landing page) renders when backend configuration is enable
           />
         </EuiPageHeader>
       }
+      resourceType="getStarted"
     />
     <EuiPanel
       paddingSize="l"

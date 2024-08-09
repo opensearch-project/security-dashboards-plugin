@@ -66,6 +66,7 @@ import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { DataSourceContext } from '../../app-router';
 import { AccessErrorComponent } from '../../access-error-component';
 import { PageHeader } from '../../header/header-components';
+import { ResourceType } from '../../../../../common';
 
 export function renderBooleanToCheckMark(value: boolean): React.ReactNode {
   return value ? <EuiIcon type="check" /> : '';
@@ -409,6 +410,7 @@ export function PermissionList(props: AppDependencies) {
             </EuiTitle>
           </EuiPageHeader>
         }
+        resourceType={ResourceType.permissions}
       />
       {loading ? (
         <EuiLoadingContent />
