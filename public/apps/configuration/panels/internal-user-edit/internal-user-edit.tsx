@@ -174,7 +174,6 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
         descriptionControls={descriptionData}
         fallBackComponent={
           <>
-            {props.buildBreadcrumbs(TITLE_TEXT_DICT[props.action])}
             <EuiSpacer />
             <EuiPageHeader>
               <EuiFlexGroup direction="column" gutterSize="xs">
@@ -194,6 +193,8 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
             </EuiPageHeader>
           </>
         }
+        resourceType={ResourceType.users}
+        subAction={TITLE_TEXT_DICT[props.action]}
       />
       <PanelWithHeader headerText="Credentials">
         <EuiForm>

@@ -261,7 +261,6 @@ export function RoleEdit(props: RoleEditDeps) {
         fallBackComponent={
           <>
             {' '}
-            {props.buildBreadcrumbs(TITLE_TEXT_DICT[props.action])}
             <EuiPageHeader>
               <EuiText size="xs" color="subdued" className="panel-header-subtext">
                 <EuiTitle size="m">
@@ -279,6 +278,8 @@ export function RoleEdit(props: RoleEditDeps) {
         navigation={props.depsStart.navigation}
         coreStart={props.coreStart}
         descriptionControls={descriptionData}
+        resourceType={ResourceType.roles}
+        subAction={TITLE_TEXT_DICT[props.action]}
       />
       <PanelWithHeader headerText="Name">
         <EuiForm>

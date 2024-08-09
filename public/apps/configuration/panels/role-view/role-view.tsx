@@ -462,8 +462,6 @@ export function RoleView(props: RoleViewProps) {
         controlControls={roleView}
         fallBackComponent={
           <>
-            {props.buildBreadcrumbs(props.roleName)}
-
             <EuiPageContentHeader>
               <EuiPageContentHeaderSection>
                 <EuiTitle size="l">
@@ -475,6 +473,8 @@ export function RoleView(props: RoleViewProps) {
             </EuiPageContentHeader>
           </>
         }
+        resourceType={ResourceType.roles}
+        subAction={props.roleName}
       />
       <EuiTabbedContent
         tabs={tabs}

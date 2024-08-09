@@ -58,13 +58,11 @@ describe('Role edit', () => {
 
   it('basic rendering', () => {
     const action = 'create';
-    const buildBreadcrumbs = jest.fn();
 
     const component = shallow(
       <RoleEdit
         action={action}
         sourceRoleName={sampleSourceRole}
-        buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
         depsStart={{} as any}
         params={{} as any}
@@ -72,7 +70,6 @@ describe('Role edit', () => {
       />
     );
 
-    expect(buildBreadcrumbs).toBeCalledTimes(1);
     expect(component.find(ClusterPermissionPanel).length).toBe(1);
     expect(component.find(IndexPermissionPanel).length).toBe(1);
     expect(component.find(TenantPanel).length).toBe(1);
@@ -84,13 +81,11 @@ describe('Role edit', () => {
     useEffect.mockImplementationOnce((f) => f());
     useState.mockImplementation((initialValue) => [initialValue, jest.fn()]);
     const action = 'edit';
-    const buildBreadcrumbs = jest.fn();
 
     const component = shallow(
       <RoleEdit
         action={action}
         sourceRoleName={sampleSourceRole}
-        buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
         depsStart={{} as any}
         params={{} as any}

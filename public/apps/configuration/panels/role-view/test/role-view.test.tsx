@@ -105,7 +105,6 @@ describe('Role view', () => {
       <RoleView
         roleName={sampleRole}
         prevAction=""
-        buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
         depsStart={{} as any}
         params={{} as any}
@@ -113,7 +112,6 @@ describe('Role view', () => {
       />
     );
 
-    expect(buildBreadcrumbs).toBeCalledTimes(1);
     expect(component.find(EuiTabbedContent).length).toBe(1);
 
     const tabs = component.find(EuiTabbedContent).dive();
@@ -128,7 +126,6 @@ describe('Role view', () => {
       <RoleView
         roleName={sampleRole}
         prevAction={SubAction.mapuser}
-        buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
         depsStart={{} as any}
         params={{} as any}

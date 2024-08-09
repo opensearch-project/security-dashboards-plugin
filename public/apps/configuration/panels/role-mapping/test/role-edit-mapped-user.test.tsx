@@ -39,7 +39,6 @@ describe('Role mapping edit', () => {
   const mockCoreStart = {
     http: 1,
   };
-  const buildBreadcrumbs = jest.fn();
 
   const useEffect = jest.spyOn(React, 'useEffect');
   const useState = jest.spyOn(React, 'useState');
@@ -54,7 +53,6 @@ describe('Role mapping edit', () => {
     const component = shallow(
       <RoleEditMappedUser
         roleName={sampleRole}
-        buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
         depsStart={{} as any}
         params={{} as any}
@@ -62,7 +60,6 @@ describe('Role mapping edit', () => {
       />
     );
 
-    expect(buildBreadcrumbs).toBeCalledTimes(1);
     expect(component.find(InternalUsersPanel).length).toBe(1);
     expect(component.find(ExternalIdentitiesPanel).length).toBe(1);
   });
@@ -79,7 +76,6 @@ describe('Role mapping edit', () => {
     shallow(
       <RoleEditMappedUser
         roleName={sampleRole}
-        buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
         depsStart={{} as any}
         params={{} as any}
@@ -100,7 +96,6 @@ describe('Role mapping edit', () => {
     const component = shallow(
       <RoleEditMappedUser
         roleName={sampleRole}
-        buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
         depsStart={{} as any}
         params={{} as any}
@@ -133,7 +128,6 @@ describe('Role mapping edit', () => {
     const component = shallow(
       <RoleEditMappedUser
         roleName={sampleRole}
-        buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
         depsStart={{} as any}
         params={{} as any}
