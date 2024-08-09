@@ -182,7 +182,7 @@ export function GetStarted(props: AppDependencies) {
       iconType: 'popout',
       iconSide: 'right',
       type: 'button',
-      // target: "_blank"
+      target: '_blank',
     },
   ];
   return (

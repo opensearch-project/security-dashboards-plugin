@@ -70,7 +70,7 @@ export function AuthView(props: AppDependencies) {
       iconType: 'popout',
       iconSide: 'right',
       type: 'button',
-      // target: "_blank"
+      target: '_blank',
     },
   ];
 

@@ -216,7 +216,6 @@ export function UserList(props: AppDependencies) {
       iconSide: 'left',
       type: 'button',
       testId: 'create-user',
-      // target: "_blank"
     },
   ];
   const descriptionData = [

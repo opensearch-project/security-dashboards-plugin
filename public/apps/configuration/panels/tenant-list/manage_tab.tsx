@@ -514,7 +514,6 @@ export function ManageTab(props: AppDependencies) {
       run: () => showEditModal('', Action.create, ''),
       type: 'button',
       fill: true,
-      // target: "_blank"
     },
   ];
   /* eslint-disable */

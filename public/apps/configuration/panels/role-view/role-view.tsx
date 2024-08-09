@@ -403,7 +403,6 @@ export function RoleView(props: RoleViewProps) {
       href: buildHashUrl(ResourceType.roles, Action.edit, props.roleName),
       type: 'button',
       fill: true,
-      // target: "_blank"
     },
   ];
   const roleButtons = [
@@ -427,14 +426,12 @@ export function RoleView(props: RoleViewProps) {
       type: 'button', // this should be icon, but icons current do not support a border currently
       testId: 'delete',
       ariaLabel: 'delete',
-      // target: "_blank"
     },
     {
       label: 'Duplicate',
       isLoading: false,
       href: duplicateRoleLink,
       type: 'button',
-      // target: "_blank"
     },
     {
       label: 'Edit role',
@@ -442,7 +439,6 @@ export function RoleView(props: RoleViewProps) {
       href: buildHashUrl(ResourceType.roles, Action.edit, props.roleName),
       fill: true,
       type: 'button',
-      // target: "_blank"
     },
   ];
 

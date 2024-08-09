@@ -273,7 +273,6 @@ export function RoleList(props: AppDependencies) {
       iconSide: 'left',
       type: 'button',
       testId: 'create-role',
-      // target: "_blank"
     },
   ];
   const descriptionData = [
