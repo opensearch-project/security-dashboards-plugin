@@ -73,13 +73,15 @@ export const HeaderDescription = React.memo((props: DescriptionProps) => {
 export const PageHeader = (props: HeaderProps & DescriptionProps & ControlProps) => {
   const { HeaderControl } = props.navigation.ui; // need to get this from SecurityPluginStartDependencies
   const useNewUx = props.coreStart.chrome.navGroup.getNavGroupEnabled();
+  flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs)(
+    !props.coreStart.uiSettings.get('home:useNewHomePage'),
+    props.resourceType,
+    props.pageTitle,
+    props.subAction,
+    props.count
+  );
   if (useNewUx) {
-    flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs)(
-      !props.coreStart.uiSettings.get('home:useNewHomePage'),
-      props.resourceType,
-      props.pageTitle,
-      props.subAction
-    );
+    
     return (
       <>
         {props.descriptionControls ? (
@@ -97,12 +99,6 @@ export const PageHeader = (props: HeaderProps & DescriptionProps & ControlProps)
       </>
     );
   } else {
-    flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs)(
-      !props.coreStart.uiSettings.get('home:useNewHomePage'),
-      props.resourceType,
-      props.pageTitle,
-      props.subAction
-    );
     return props.fallBackComponent;
   }
 };

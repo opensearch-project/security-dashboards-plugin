@@ -132,6 +132,7 @@ exports[`Permission list page  AccessError component should load access error co
         },
       }
     }
+    count={0}
     descriptionControls={
       Array [
         Object {

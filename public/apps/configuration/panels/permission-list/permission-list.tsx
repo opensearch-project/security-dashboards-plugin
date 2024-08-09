@@ -411,6 +411,7 @@ export function PermissionList(props: AppDependencies) {
           </EuiPageHeader>
         }
         resourceType={ResourceType.permissions}
+        count={permissionList.length}
       />
       {loading ? (
         <EuiLoadingContent />

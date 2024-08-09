@@ -14,7 +14,8 @@
  */
 
 import { EuiBreadcrumb } from '@elastic/eui';
-import { ResourceType } from 'plugins/security-dashboards-plugin/common';
+import { ResourceType } from '../../../../common';
+import { i18n } from '@osd/i18n';
 import { buildHashUrl } from './url-builder';
 import { ROUTE_MAP } from '../app-router';
 
@@ -37,7 +38,8 @@ export function getBreadcrumbs(
   includeSecurityBase: boolean,
   resourceType?: ResourceType,
   pageTitle?: string,
-  subAction?: string
+  subAction?: string,
+  count?: number,
 ): EuiBreadcrumb[] {
   const breadcrumbs: EuiBreadcrumb[] = includeSecurityBase
     ? [
@@ -56,7 +58,7 @@ export function getBreadcrumbs(
       });
     } else {
       breadcrumbs.push({
-        text: ROUTE_MAP[resourceType].displayNameWithoutSecurityBase,
+        text: count ? `${ROUTE_MAP[resourceType].displayNameWithoutSecurityBase} (${count})` : ROUTE_MAP[resourceType].displayNameWithoutSecurityBase,
         href: buildHashUrl(resourceType),
       });
     }

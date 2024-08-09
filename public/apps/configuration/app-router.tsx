@@ -41,6 +41,7 @@ import { ResourceType } from '../../../common';
 import { buildHashUrl, buildUrl } from './utils/url-builder';
 import { CrossPageToast } from './cross-page-toast';
 import { getDataSourceFromUrl, LocalCluster } from '../../utils/datasource-utils';
+import { getBreadcrumbs } from './utils/resource-utils';
 
 const LANDING_PAGE_URL = '/getstarted';
 
@@ -106,42 +107,6 @@ export const allNavPanelUrls = (multitenancyEnabled: boolean) =>
       buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT,
       ...(multitenancyEnabled ? [buildUrl(ResourceType.tenantsConfigureTab)] : []),
     ]);
-
-export function getBreadcrumbs(
-  includeSecurityBase: boolean,
-  resourceType?: ResourceType,
-  pageTitle?: string,
-  subAction?: string
-): EuiBreadcrumb[] {
-  const breadcrumbs: EuiBreadcrumb[] = includeSecurityBase
-    ? [
-        {
-          text: 'Security',
-          href: buildHashUrl(),
-        },
-      ]
-    : [];
-
-  if (resourceType) {
-    breadcrumbs.push({
-      text: ROUTE_MAP[resourceType].name,
-      href: buildHashUrl(resourceType),
-    });
-  }
-
-  if (pageTitle) {
-    breadcrumbs.push({
-      text: pageTitle,
-    });
-  }
-
-  if (subAction) {
-    breadcrumbs.push({
-      text: subAction,
-    });
-  }
-  return breadcrumbs;
-}
 
 function decodeParams(params: { [k: string]: string }): any {
   return Object.keys(params).reduce((obj: { [k: string]: string }, key: string) => {
@@ -223,14 +188,12 @@ export function AppRouter(props: AppDependencies) {
               <Route
                 path={ROUTE_MAP.roles.href}
                 render={() => {
-                  // setGlobalBreadcrumbs(includeSecurityBase, ResourceType.roles);
                   return <RoleList {...props} />;
                 }}
               />
               <Route
                 path={ROUTE_MAP.auth.href}
                 render={() => {
-                  //  setGlobalBreadcrumbs(includeSecurityBase, ResourceType.auth);
                   return <AuthView {...props} />;
                 }}
               />
@@ -250,50 +213,36 @@ export function AppRouter(props: AppDependencies) {
               <Route
                 path={ROUTE_MAP.users.href}
                 render={() => {
-                  //    setGlobalBreadcrumbs(includeSecurityBase, ResourceType.users);
                   return <UserList {...props} />;
                 }}
               />
               <Route
                 path={buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT}
                 render={() => {
-                  // setGlobalBreadcrumbs(
-                  //   includeSecurityBase,
-                  //   ResourceType.auditLogging,
-                  //   'General settings'
-                  // );
                   return <AuditLoggingEditSettings setting={'general'} {...props} />;
                 }}
               />
               <Route
                 path={buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT}
                 render={() => {
-                  // setGlobalBreadcrumbs(
-                  //   includeSecurityBase,
-                  //   ResourceType.auditLogging,
-                  //   'Compliance settings'
-                  // );
                   return <AuditLoggingEditSettings setting={'compliance'} {...props} />;
                 }}
               />
               <Route
                 path={ROUTE_MAP.auditLogging.href + '/:fromType?'}
                 render={(match) => {
-                  // setGlobalBreadcrumbs(includeSecurityBase, ResourceType.auditLogging);
                   return <AuditLogging {...{ ...props, ...match.match.params }} />;
                 }}
               />
               <Route
                 path={ROUTE_MAP.permissions.href}
                 render={() => {
-                  // setGlobalBreadcrumbs(includeSecurityBase, ResourceType.permissions);
                   return <PermissionList {...props} />;
                 }}
               />
               <Route
                 path={ROUTE_MAP.getStarted.href}
                 render={() => {
-                  // setGlobalBreadcrumbs(includeSecurityBase);
                   return <GetStarted {...props} />;
                 }}
               />
@@ -301,7 +250,6 @@ export function AppRouter(props: AppDependencies) {
                 <Route
                   path={ROUTE_MAP.tenants.href}
                   render={() => {
-                    // setGlobalBreadcrumbs(includeSecurityBase, ResourceType.tenants);
                     return <TenantList tabID={'Manage'} {...props} />;
                   }}
                 />
@@ -310,7 +258,6 @@ export function AppRouter(props: AppDependencies) {
                 <Route
                   path={ROUTE_MAP.tenantsConfigureTab.href}
                   render={() => {
-                    //  setGlobalBreadcrumbs(includeSecurityBase, ResourceType.tenants);
                     return <TenantList tabID={'Configure'} {...props} />;
                   }}
                 />

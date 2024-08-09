@@ -81,6 +81,7 @@ exports[`User list AccessError component should load access error component 1`] 
         },
       }
     }
+    count={0}
     descriptionControls={
       Array [
         Object {

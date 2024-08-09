@@ -25,6 +25,7 @@ export interface HeaderProps {
   resourceType?: ResourceType;
   pageTitle?: string;
   subAction?: string;
+  count?: number;
 }
 
 export interface ControlProps {

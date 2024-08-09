@@ -315,6 +315,7 @@ export function RoleList(props: AppDependencies) {
           </EuiPageHeader>
         }
         resourceType={ResourceType.roles}
+        count={roleData.length}
       />
       {loading ? (
         <EuiLoadingContent />
