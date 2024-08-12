@@ -34,9 +34,9 @@ export const HeaderButtonOrLink = React.memo((props: ControlProps) => {
 
 export const PageHeader = (props: HeaderProps & DescriptionProps & ControlProps) => {
   const { HeaderControl } = props.navigation.ui; // need to get this from SecurityPluginStartDependencies
-  const useNewUx = props.coreStart.chrome.navGroup.getNavGroupEnabled();
+  const useNewUx = props.coreStart.uiSettings.get('home:useNewHomePage');
   flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs)(
-    !props.coreStart.uiSettings.get('home:useNewHomePage'),
+    !useNewUx,
     props.resourceType,
     props.pageTitle,
     props.subAction,

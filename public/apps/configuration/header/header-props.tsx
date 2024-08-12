@@ -14,9 +14,9 @@
  */
 
 import { CoreStart } from 'opensearch-dashboards/public';
-import { ResourceType } from 'plugins/security-dashboards-plugin/common';
 import { NavigationPublicPluginStart } from 'src/plugins/navigation/public';
 import { TopNavControlData } from 'src/plugins/navigation/public/top_nav_menu/top_nav_control_data';
+import { ResourceType } from '../../../../common';
 
 export interface HeaderProps {
   navigation: NavigationPublicPluginStart;
