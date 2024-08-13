@@ -188,7 +188,7 @@ export class SecurityPlugin
       if (core.chrome.navGroup.getNavGroupEnabled()) {
         core.application.register({
           id: PLUGIN_GET_STARTED_APP_ID,
-          title: 'Get Started',
+          title: 'Get started with access control',
           order: 8040,
           workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
           updater$: this.appStateUpdater,
@@ -198,8 +198,11 @@ export class SecurityPlugin
         });
         core.application.register({
           id: PLUGIN_AUTH_APP_ID,
-          title: 'Authentication',
+          title: 'Authentication and authorization',
           order: 8040,
+          description: i18n.translate('security.authenticationAndAuthorization.description', {
+            defaultMessage: 'Set up authentication and authorization sequences.',
+          }),
           workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
           updater$: this.appStateUpdater,
           mount: async (params: AppMountParameters) => {
@@ -210,6 +213,9 @@ export class SecurityPlugin
           id: PLUGIN_ROLES_APP_ID,
           title: 'Roles',
           order: 8040,
+          description: i18n.translate('security.roles.description', {
+            defaultMessage: 'Create a set of permissions with specific privileges.',
+          }),
           workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
           updater$: this.appStateUpdater,
           mount: async (params: AppMountParameters) => {
@@ -220,6 +226,9 @@ export class SecurityPlugin
           id: PLUGIN_USERS_APP_ID,
           title: 'Internal users',
           order: 8040,
+          description: i18n.translate('security.internalUsers.description', {
+            defaultMessage: 'Define users to control access to your data.',
+          }),
           workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
           updater$: this.appStateUpdater,
           mount: async (params: AppMountParameters) => {
@@ -230,6 +239,9 @@ export class SecurityPlugin
           id: PLUGIN_PERMISSIONS_APP_ID,
           title: 'Permissions',
           order: 8040,
+          description: i18n.translate('security.permissions.description', {
+            defaultMessage: 'Controls access to individual actions and action groups.',
+          }),
           workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
           updater$: this.appStateUpdater,
           mount: async (params: AppMountParameters) => {
@@ -252,6 +264,9 @@ export class SecurityPlugin
           id: PLUGIN_AUDITLOG_APP_ID,
           title: 'Audit logs',
           order: 8040,
+          description: i18n.translate('security.auditLogs.description', {
+            defaultMessage: 'Configure audit logging for system access activities.',
+          }),
           workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
           updater$: this.appStateUpdater,
           mount: async (params: AppMountParameters) => {
@@ -264,30 +279,37 @@ export class SecurityPlugin
         {
           id: PLUGIN_GET_STARTED_APP_ID,
           category: dataAccessUsersCategory,
+          order: 100,
         },
         {
           id: PLUGIN_AUTH_APP_ID,
           category: dataAccessUsersCategory,
+          order: 200,
         },
         {
           id: PLUGIN_ROLES_APP_ID,
           category: dataAccessUsersCategory,
+          order: 500,
         },
         {
           id: PLUGIN_USERS_APP_ID,
           category: dataAccessUsersCategory,
+          order: 300,
         },
         {
           id: PLUGIN_PERMISSIONS_APP_ID,
           category: dataAccessUsersCategory,
+          order: 400,
         },
         {
           id: PLUGIN_TENANTS_APP_ID,
           category: dataAccessUsersCategory,
+          order: 700,
         },
         {
           id: PLUGIN_AUDITLOG_APP_ID,
           category: dataAccessUsersCategory,
+          order: 600,
         },
       ]);
 
