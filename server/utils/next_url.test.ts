@@ -26,7 +26,7 @@ describe('test composeNextUrlQueryParam', () => {
     expect(
       composeNextUrlQueryParam(
         httpServerMock.createOpenSearchDashboardsRequest({
-          path: ''
+          path: '',
         }),
         ''
       )
@@ -37,7 +37,7 @@ describe('test composeNextUrlQueryParam', () => {
     expect(
       composeNextUrlQueryParam(
         httpServerMock.createOpenSearchDashboardsRequest({
-          path: '/alpha/major/foxtrot'
+          path: '/alpha/major/foxtrot',
         }),
         ''
       )
@@ -48,7 +48,7 @@ describe('test composeNextUrlQueryParam', () => {
     expect(
       composeNextUrlQueryParam(
         httpServerMock.createOpenSearchDashboardsRequest({
-          path: ''
+          path: '',
         }),
         'xyz'
       )
@@ -59,7 +59,7 @@ describe('test composeNextUrlQueryParam', () => {
     expect(
       composeNextUrlQueryParam(
         httpServerMock.createOpenSearchDashboardsRequest({
-          path: '/alpha/major/foxtrot'
+          path: '/alpha/major/foxtrot',
         }),
         'xyz'
       )
