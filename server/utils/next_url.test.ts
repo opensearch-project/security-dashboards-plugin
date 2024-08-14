@@ -18,14 +18,16 @@ import {
   validateNextUrl,
   INVALID_NEXT_URL_PARAMETER_MESSAGE,
 } from './next_url';
+import { httpServerMock } from '../../../../src/core/server/mocks';
 
 describe('test composeNextUrlQueryParam', () => {
+  httpServerMock.createOpenSearchDashboardsRequest();
   test('no base, no path', () => {
     expect(
       composeNextUrlQueryParam(
-        {
-          url: 'http://localhost:123',
-        },
+        httpServerMock.createOpenSearchDashboardsRequest({
+          path: ''
+        }),
         ''
       )
     ).toEqual('');
@@ -34,9 +36,9 @@ describe('test composeNextUrlQueryParam', () => {
   test('no base, path', () => {
     expect(
       composeNextUrlQueryParam(
-        {
-          url: 'http://localhost:123/alpha/major/foxtrot',
-        },
+        httpServerMock.createOpenSearchDashboardsRequest({
+          path: '/alpha/major/foxtrot'
+        }),
         ''
       )
     ).toEqual('nextUrl=%2Falpha%2Fmajor%2Ffoxtrot');
@@ -45,9 +47,9 @@ describe('test composeNextUrlQueryParam', () => {
   test('base, no path', () => {
     expect(
       composeNextUrlQueryParam(
-        {
-          url: 'http://localhost:123',
-        },
+        httpServerMock.createOpenSearchDashboardsRequest({
+          path: ''
+        }),
         'xyz'
       )
     ).toEqual('');
@@ -56,9 +58,9 @@ describe('test composeNextUrlQueryParam', () => {
   test('base, path', () => {
     expect(
       composeNextUrlQueryParam(
-        {
-          url: 'http://localhost:123/alpha/major/foxtrot',
-        },
+        httpServerMock.createOpenSearchDashboardsRequest({
+          path: '/alpha/major/foxtrot'
+        }),
         'xyz'
       )
     ).toEqual('nextUrl=xyz%2Falpha%2Fmajor%2Ffoxtrot');
