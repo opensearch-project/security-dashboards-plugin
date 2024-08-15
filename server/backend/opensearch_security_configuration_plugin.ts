@@ -220,4 +220,14 @@ export default function (Client: any, config: any, components: any) {
       fmt: '/_plugins/_security/api/audit/config',
     },
   });
+
+  /**
+   * Gets auth failure listeners.
+   */
+  Client.prototype.opensearch_security.prototype.getAuthFailureListeners = ca({
+    method: 'GET',
+    url: {
+      fmt: '/_plugins/_security/api/authfailurelisteners',
+    },
+  });
 }

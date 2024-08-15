@@ -485,6 +485,10 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
             render={[Function]}
           />
           <Route
+            path="/authFailureListeners"
+            render={[Function]}
+          />
+          <Route
             path="/tenants"
             render={[Function]}
           />

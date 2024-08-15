@@ -83,6 +83,7 @@ export enum ResourceType {
   tenantsConfigureTab = 'tenantsConfigureTab',
   auth = 'auth',
   auditLogging = 'auditLogging',
+  authFailureListeners = 'authFailureListeners',
 }
 
 /**

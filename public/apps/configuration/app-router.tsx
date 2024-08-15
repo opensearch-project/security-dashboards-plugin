@@ -41,6 +41,7 @@ import { ResourceType } from '../../../common';
 import { buildHashUrl, buildUrl } from './utils/url-builder';
 import { CrossPageToast } from './cross-page-toast';
 import { getDataSourceFromUrl, LocalCluster } from '../../utils/datasource-utils';
+import { AuthFailureListeners } from './panels/auth-failure-listeners';
 
 const LANDING_PAGE_URL = '/getstarted';
 
@@ -76,6 +77,10 @@ export const ROUTE_MAP: { [key: string]: RouteItem } = {
   [ResourceType.auditLogging]: {
     name: 'Audit logs',
     href: buildUrl(ResourceType.auditLogging),
+  },
+  [ResourceType.authFailureListeners]: {
+    name: 'Rate limiting',
+    href: buildUrl(ResourceType.authFailureListeners),
   },
 };
 
@@ -260,6 +265,13 @@ export function AppRouter(props: AppDependencies) {
                 render={() => {
                   setGlobalBreadcrumbs();
                   return <GetStarted {...props} />;
+                }}
+              />
+              <Route
+                path={ROUTE_MAP.authFailureListeners.href}
+                render={() => {
+                  setGlobalBreadcrumbs();
+                  return <AuthFailureListeners {...props} />;
                 }}
               />
               {multitenancyEnabled && (

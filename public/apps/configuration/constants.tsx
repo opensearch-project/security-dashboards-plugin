@@ -20,6 +20,7 @@ export const API_ENDPOINT = API_PREFIX + '/configuration';
 export const API_ENDPOINT_ROLES = API_ENDPOINT + '/roles';
 export const API_ENDPOINT_ROLESMAPPING = API_ENDPOINT + '/rolesmapping';
 export const API_ENDPOINT_ACTIONGROUPS = API_ENDPOINT + '/actiongroups';
+export const API_ENDPOINT_AUTHFAILURELISTENERS = API_ENDPOINT + '/authfailurelisteners';
 export const API_ENDPOINT_TENANTS = API_ENDPOINT + '/tenants';
 export const API_ENDPOINT_MULTITENANCY = API_PREFIX + '/multitenancy/tenant';
 export const API_ENDPOINT_TENANCY_CONFIGS = API_ENDPOINT + '/tenancy/config';
