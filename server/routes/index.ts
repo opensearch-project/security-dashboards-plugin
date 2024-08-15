@@ -67,6 +67,16 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
     current_password: schema.string(),
   });
 
+  const authFailureListenersSchema = schema.object({
+    allowed_tries: schema.number(),
+    authentication_backend: schema.string(),
+    block_expiry_seconds: schema.number(),
+    max_blocked_clients: schema.number(),
+    max_tracked_clients: schema.number(),
+    time_window_seconds: schema.number(),
+    type: schema.string(),
+  });
+
   const schemaMap: any = {
     internalusers: internalUserSchema,
     actiongroups: actionGroupSchema,
@@ -74,6 +84,7 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
     roles: roleSchema,
     tenants: tenantSchema,
     account: accountSchema,
+    authfailurelisteners: authFailureListenersSchema,
   };
 
   function validateRequestBody(resourceName: string, requestBody: any): any {
@@ -684,6 +695,52 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
 
         return response.ok({
           body: esResp,
+        });
+      } catch (error) {
+        return response.custom({
+          statusCode: error.statusCode,
+          body: parseEsErrorResponse(error),
+        });
+      }
+    }
+  );
+
+  /**
+   * Gets auth failure listeners。
+   *
+   * Sample payload:
+   * [
+   * { ??? }
+   *
+   * ]
+   */
+  router.get(
+    {
+      path: `${API_PREFIX}/configuration/authfailurelisteners`,
+      validate: {
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
+      },
+    },
+    async (
+      context,
+      request,
+      response
+    ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
+      try {
+        const esResp = await wrapRouteWithDataSource(
+          dataSourceEnabled,
+          context,
+          request,
+          'opensearch_security.getAuthFailureListeners'
+        );
+
+        return response.ok({
+          body: {
+            total: Object.keys(esResp).length,
+            data: esResp,
+          },
         });
       } catch (error) {
         return response.custom({
