@@ -19,6 +19,8 @@ import { fetchAccountInfoSafe } from '../utils';
 import { fetchCurrentAuthType } from '../../../utils/logout-utils';
 import { fetchCurrentTenant } from '../../configuration/utils/tenant-utils';
 import { getDashboardsInfoSafe } from '../../../utils/dashboards-info-utils';
+import { CoreStart } from 'opensearch-dashboards/public';
+import { coreMock } from '../../../../../../src/core/public/mocks';
 
 jest.mock('../../../utils/storage-utils', () => ({
   getShouldShowTenantPopup: jest.fn(),
@@ -44,13 +46,7 @@ jest.mock('../../configuration/utils/tenant-utils', () => ({
 }));
 
 describe('Account app', () => {
-  const mockCoreStart = {
-    chrome: {
-      navControls: {
-        registerRight: jest.fn(),
-      },
-    },
-  };
+  const mockCoreStart: CoreStart = coreMock.createStart();
 
   const mockConfig = {
     multitenancy: {
