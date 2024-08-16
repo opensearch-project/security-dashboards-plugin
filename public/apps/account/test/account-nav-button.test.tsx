@@ -19,6 +19,8 @@ import { AccountNavButton, reloadAfterTenantSwitch } from '../account-nav-button
 import { getShouldShowTenantPopup } from '../../../utils/storage-utils';
 import { getDashboardsInfo } from '../../../utils/dashboards-info-utils';
 import { render, fireEvent } from '@testing-library/react';
+import { coreMock } from '../../../../../../src/core/public/mocks';
+import { CoreStart } from 'opensearch-dashboards/public';
 
 jest.mock('../../../utils/storage-utils', () => ({
   getShouldShowTenantPopup: jest.fn(),
@@ -38,9 +40,7 @@ const mockDashboardsInfo = {
 };
 
 describe('Account navigation button', () => {
-  const mockCoreStart = {
-    http: 1,
-  };
+  const mockCoreStart: CoreStart = coreMock.createStart();
 
   const config = {
     multitenancy: {
@@ -66,6 +66,7 @@ describe('Account navigation button', () => {
     (getDashboardsInfo as jest.Mock).mockImplementation(() => {
       return mockDashboardsInfo;
     });
+
     component = shallow(
       <AccountNavButton
         coreStart={mockCoreStart}
@@ -133,9 +134,7 @@ describe('Account navigation button', () => {
 });
 
 describe('Account navigation button, multitenancy disabled', () => {
-  const mockCoreStart = {
-    http: 1,
-  };
+  const mockCoreStart: CoreStart = coreMock.createStart();
 
   const config = {
     multitenancy: {
@@ -178,9 +177,11 @@ describe('Account navigation button, multitenancy disabled', () => {
 });
 
 describe('Shows tenant info when multitenancy enabled, and hides it if disabled', () => {
+  const mockCoreStart: CoreStart = coreMock.createStart();
+
   test('Renders "switch-tenants" and "tenant-name" when multi-tenancy is enabled', () => {
     const props = {
-      coreStart: {},
+      coreStart: mockCoreStart,
       isInternalUser: true,
       username: 'example_user',
       tenant: 'example_tenant',
@@ -213,7 +214,7 @@ describe('Shows tenant info when multitenancy enabled, and hides it if disabled'
 
   test('Does not render "switch-tenants" and "tenant-name" when multi-tenancy is disabled', () => {
     const props = {
-      coreStart: {},
+      coreStart: mockCoreStart,
       isInternalUser: true,
       username: 'example_user',
       tenant: 'example_tenant',

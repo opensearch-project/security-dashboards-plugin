@@ -3,12 +3,14 @@
 exports[`Account navigation button renders 1`] = `
 <EuiHeaderSectionItemButton
   id="user-icon-btn"
+  size="l"
 >
   <EuiPopover
     anchorPosition="downCenter"
     button={
       <EuiAvatar
         name="user1"
+        size="m"
       />
     }
     closePopover={[Function]}
@@ -111,7 +113,34 @@ exports[`Account navigation button renders 1`] = `
               margin="xs"
             />
           }
-          http={1}
+          http={
+            Object {
+              "addLoadingCountSource": [MockFunction],
+              "anonymousPaths": Object {
+                "isAnonymous": [MockFunction],
+                "register": [MockFunction],
+              },
+              "basePath": BasePath {
+                "basePath": "",
+                "clientBasePath": "",
+                "get": [Function],
+                "getBasePath": [Function],
+                "prepend": [Function],
+                "remove": [Function],
+                "serverBasePath": "",
+              },
+              "delete": [MockFunction],
+              "fetch": [MockFunction],
+              "get": [MockFunction],
+              "getLoadingCount$": [MockFunction],
+              "head": [MockFunction],
+              "intercept": [MockFunction],
+              "options": [MockFunction],
+              "patch": [MockFunction],
+              "post": [MockFunction],
+              "put": [MockFunction],
+            }
+          }
         />
       </div>
     </EuiContextMenuPanel>
