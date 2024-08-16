@@ -46,6 +46,7 @@ import {
   getExtraAuthStorageValue,
   setExtraAuthStorage,
 } from '../../../session/cookie_splitter';
+import { getRedirectUrl } from '../../../../../../src/core/server/http';
 
 export interface OpenIdAuthConfig {
   authorizationEndpoint?: string;
@@ -127,9 +128,11 @@ export class OpenIdAuthentication extends AuthenticationType {
   }
 
   private generateNextUrl(request: OpenSearchDashboardsRequest): string {
-    const path =
-      this.coreSetup.http.basePath.serverBasePath +
-      (request.url.pathname || '/app/opensearch-dashboards');
+    const path = getRedirectUrl({
+      request,
+      basePath: this.coreSetup.http.basePath.serverBasePath,
+      nextUrl: request.url.pathname || '/app/opensearch-dashboards',
+    });
     return escape(path);
   }
 
