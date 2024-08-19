@@ -46,6 +46,7 @@ export enum TenantPermissionType {
 export interface RouteItem {
   name: string;
   href: string;
+  breadCrumbDisplayNameWithoutSecurityBase: string;
 }
 
 export interface DataObject<T> {
