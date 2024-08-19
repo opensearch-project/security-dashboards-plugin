@@ -39,6 +39,7 @@ import { createSuccessToast, createUnknownErrorToast, useToastState } from '../u
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
 import { DataSourceContext } from '../app-router';
 import { getClusterInfo } from '../../../utils/datasource-utils';
+import { PageHeader } from '../header/header-components';
 
 const addBackendStep = {
   title: 'Add backends',
@@ -173,6 +174,17 @@ export function GetStarted(props: AppDependencies) {
   }
   const [toasts, addToast, removeToast] = useToastState();
 
+  const buttonData = [
+    {
+      label: 'Open in new window',
+      isLoading: false,
+      href: buildHashUrl(),
+      iconType: 'popout',
+      iconSide: 'right',
+      type: 'button',
+      target: '_blank',
+    },
+  ];
   return (
     <>
       <div className="panel-restrict-width">
@@ -182,13 +194,20 @@ export function GetStarted(props: AppDependencies) {
           setDataSource={setDataSource}
           selectedDataSource={dataSource}
         />
-        <EuiPageHeader>
-          <EuiTitle size="l">
-            <h1>Get started</h1>
-          </EuiTitle>
-          <ExternalLinkButton text="Open in new window" href={buildHashUrl()} />
-        </EuiPageHeader>
-
+        <PageHeader
+          navigation={props.depsStart.navigation}
+          coreStart={props.coreStart}
+          appRightControls={buttonData}
+          fallBackComponent={
+            <EuiPageHeader>
+              <EuiTitle size="l">
+                <h1>Get started</h1>
+              </EuiTitle>
+              <ExternalLinkButton text="Open in new window" href={buildHashUrl()} />
+            </EuiPageHeader>
+          }
+          resourceType={'getStarted'}
+        />
         <EuiPanel paddingSize="l">
           <EuiText size="s" color="subdued">
             <p>

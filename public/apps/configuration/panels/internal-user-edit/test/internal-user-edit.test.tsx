@@ -54,7 +54,6 @@ describe('Internal user edit', () => {
       <InternalUserEdit
         action={action}
         sourceUserName={sampleUsername}
-        buildBreadcrumbs={buildBreadcrumbs}
         coreStart={mockCoreStart as any}
         depsStart={{} as any}
         params={{} as any}
@@ -62,7 +61,6 @@ describe('Internal user edit', () => {
       />
     );
 
-    expect(buildBreadcrumbs).toBeCalledTimes(1);
     expect(component.find(AttributePanel).length).toBe(1);
   });
 

@@ -72,6 +72,7 @@ import { setCrossPageToast } from '../../utils/storage-utils';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { getClusterInfo } from '../../../../utils/datasource-utils';
+import { PageHeader } from '../../header/header-components';
 
 interface RoleViewProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -378,6 +379,7 @@ export function RoleView(props: RoleViewProps) {
     </EuiSmallButtonEmpty>,
   ];
   const [actionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);
+  const useUpdatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
 
   if (isReserved) {
     pageActions = <EuiSmallButton href={duplicateRoleLink}>Duplicate role</EuiSmallButton>;
@@ -394,6 +396,54 @@ export function RoleView(props: RoleViewProps) {
     );
   }
 
+  const reservedRoleButtons = [
+    {
+      label: 'Duplicate role',
+      isLoading: false,
+      href: buildHashUrl(ResourceType.roles, Action.edit, props.roleName),
+      type: 'button',
+      fill: true,
+    },
+  ];
+  const roleButtons = [
+    {
+      isLoading: false,
+      run: async () => {
+        try {
+          await requestDeleteRoles(props.coreStart.http, [props.roleName], dataSource.id);
+          setCrossPageToast(buildUrl(ResourceType.roles), {
+            id: 'deleteRole',
+            color: 'success',
+            title: `${props.roleName} deleted ${getClusterInfo(dataSourceEnabled, dataSource)}`,
+          });
+          window.location.href = buildHashUrl(ResourceType.roles);
+        } catch (e) {
+          addToast(createUnknownErrorToast('deleteRole', 'delete role'));
+        }
+      },
+      iconType: 'trash',
+      color: 'danger',
+      type: 'button', // this should be icon, but icons current do not support a border currently
+      testId: 'delete',
+      ariaLabel: 'delete',
+    },
+    {
+      label: 'Duplicate',
+      isLoading: false,
+      href: duplicateRoleLink,
+      type: 'button',
+    },
+    {
+      label: 'Edit role',
+      isLoading: false,
+      href: buildHashUrl(ResourceType.roles, Action.edit, props.roleName),
+      fill: true,
+      type: 'button',
+    },
+  ];
+
+  const roleView = isReserved ? reservedRoleButtons : roleButtons;
+
   return (
     <>
       <SecurityPluginTopNavMenu
@@ -402,18 +452,26 @@ export function RoleView(props: RoleViewProps) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      {props.buildBreadcrumbs(props.roleName)}
+      <PageHeader
+        navigation={props.depsStart.navigation}
+        coreStart={props.coreStart}
+        appRightControls={roleView}
+        fallBackComponent={
+          <>
+            <EuiPageContentHeader>
+              <EuiPageContentHeaderSection>
+                <EuiTitle size="l">
+                  <h1>{props.roleName}</h1>
+                </EuiTitle>
+              </EuiPageContentHeaderSection>
 
-      <EuiPageContentHeader>
-        <EuiPageContentHeaderSection>
-          <EuiTitle size="l">
-            <h1>{props.roleName}</h1>
-          </EuiTitle>
-        </EuiPageContentHeaderSection>
-
-        <EuiPageContentHeaderSection>{pageActions}</EuiPageContentHeaderSection>
-      </EuiPageContentHeader>
-
+              <EuiPageContentHeaderSection>{pageActions}</EuiPageContentHeaderSection>
+            </EuiPageContentHeader>
+          </>
+        }
+        resourceType={ResourceType.roles}
+        subAction={props.roleName}
+      />
       <EuiTabbedContent
         tabs={tabs}
         initialSelectedTab={

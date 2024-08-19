@@ -46,6 +46,7 @@ import { ExternalLink } from '../../utils/display-utils';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { DataSourceContext } from '../../app-router';
 import { getClusterInfo } from '../../../../utils/datasource-utils';
+import { PageHeader } from '../../header/header-components';
 
 interface RoleEditMappedUserProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -54,6 +55,17 @@ interface RoleEditMappedUserProps extends BreadcrumbsPageDependencies {
 const TITLE_TEXT_DICT = {
   mapuser: 'Map user',
 };
+
+const descriptionData = [
+  {
+    renderComponent: (
+      <EuiText size="xs" color="subdued">
+        Map users to this role to inherit role permissions. Two types of users are supported: user,
+        and backend role. <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
+      </EuiText>
+    ),
+  },
+];
 
 export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
   const [internalUsers, setInternalUsers] = React.useState<ComboBoxOptions>([]);
@@ -150,16 +162,25 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      {props.buildBreadcrumbs(props.roleName, TITLE_TEXT_DICT[SubAction.mapuser])}
-      <EuiPageHeader>
-        <EuiText size="xs" color="subdued">
-          <EuiTitle size="m">
-            <h1>Map user</h1>
-          </EuiTitle>
-          Map users to this role to inherit role permissions. Two types of users are supported:
-          user, and backend role. <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
-        </EuiText>
-      </EuiPageHeader>
+      <PageHeader
+        navigation={props.depsStart.navigation}
+        coreStart={props.coreStart}
+        fallBackComponent={
+          <EuiPageHeader>
+            <EuiText size="xs" color="subdued">
+              <EuiTitle size="m">
+                <h1>Map user</h1>
+              </EuiTitle>
+              Map users to this role to inherit role permissions. Two types of users are supported:
+              user, and backend role. <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
+            </EuiText>
+          </EuiPageHeader>
+        }
+        resourceType={ResourceType.roles}
+        subAction={TITLE_TEXT_DICT[SubAction.mapuser]}
+        pageTitle={props.roleName}
+        descriptionControls={descriptionData}
+      />
       <EuiSpacer size="m" />
       <InternalUsersPanel
         state={internalUsers}

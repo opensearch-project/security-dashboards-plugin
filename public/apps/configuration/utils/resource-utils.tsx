@@ -13,6 +13,11 @@
  *   permissions and limitations under the License.
  */
 
+import { EuiBreadcrumb } from '@elastic/eui';
+import { ResourceType } from '../../../../common';
+import { buildHashUrl } from './url-builder';
+import { ROUTE_MAP } from '../app-router';
+
 export function generateResourceName(action: string, sourceResourceName: string): string {
   switch (action) {
     case 'edit':
@@ -26,4 +31,50 @@ export function generateResourceName(action: string, sourceResourceName: string)
 
 export function getResourceUrl(endpoint: string, resourceName: string) {
   return endpoint + '/' + encodeURIComponent(resourceName);
+}
+
+export function getBreadcrumbs(
+  includeSecurityBase: boolean,
+  resourceType?: ResourceType,
+  pageTitle?: string,
+  subAction?: string,
+  count?: number
+): EuiBreadcrumb[] {
+  const breadcrumbs: EuiBreadcrumb[] = includeSecurityBase
+    ? [
+        {
+          text: 'Security',
+          href: buildHashUrl(),
+        },
+      ]
+    : [];
+
+  if (resourceType) {
+    if (includeSecurityBase) {
+      breadcrumbs.push({
+        text: ROUTE_MAP[resourceType].name,
+        href: buildHashUrl(resourceType),
+      });
+    } else {
+      breadcrumbs.push({
+        text: count
+          ? `${ROUTE_MAP[resourceType].breadCrumbDisplayNameWithoutSecurityBase} (${count})`
+          : ROUTE_MAP[resourceType].breadCrumbDisplayNameWithoutSecurityBase,
+        href: buildHashUrl(resourceType),
+      });
+    }
+  }
+
+  if (pageTitle) {
+    breadcrumbs.push({
+      text: pageTitle,
+    });
+  }
+
+  if (subAction) {
+    breadcrumbs.push({
+      text: subAction,
+    });
+  }
+  return breadcrumbs;
 }
