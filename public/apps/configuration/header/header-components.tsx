@@ -18,16 +18,13 @@ import { flow } from 'lodash';
 import { ControlProps, DescriptionProps, HeaderProps } from './header-props';
 import { getBreadcrumbs } from '../utils/resource-utils';
 
-// controlType should be one of: https://github.com/AMoo-Miki/OpenSearch-Dashboards/blob/header-collective/src/plugins/navigation/public/top_nav_menu/top_nav_control_data.tsx#L91
-
-export const HeaderButtonOrLink = React.memo((props: ControlProps) => {
+export const HeaderButtonOrLink = React.memo((props: HeaderProps & ControlProps) => {
   const { HeaderControl } = props.navigation.ui;
 
   return (
     <HeaderControl
-      setMountPoint={props.application.setAppRightControls}
-      controls={props.controls}
-      className={props.className}
+      setMountPoint={props.coreStart.application.setAppRightControls}
+      controls={props.appRightControls}
     />
   );
 });
@@ -51,10 +48,10 @@ export const PageHeader = (props: HeaderProps & DescriptionProps & ControlProps)
             controls={props.descriptionControls}
           />
         ) : null}
-        {props.controlControls ? (
+        {props.appRightControls ? (
           <HeaderControl
             setMountPoint={props.coreStart.application.setAppRightControls}
-            controls={props.controlControls}
+            controls={props.appRightControls}
           />
         ) : null}
       </>

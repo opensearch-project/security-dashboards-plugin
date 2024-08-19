@@ -86,6 +86,7 @@ describe('PageHeader', () => {
       5
     );
     expect(wrapper.contains(props.fallBackComponent)).toBe(false);
+    // Verifies that the HeaderControl is called with both controls passed as props
     expect(props.navigation.ui.HeaderControl.mock.calls[0][0].controls).toEqual(['control-1']);
     expect(props.navigation.ui.HeaderControl.mock.calls[1][0].controls).toEqual(['control-2']);
   });

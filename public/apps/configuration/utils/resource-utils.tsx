@@ -58,8 +58,8 @@ export function getBreadcrumbs(
     } else {
       breadcrumbs.push({
         text: count
-          ? `${ROUTE_MAP[resourceType].displayNameWithoutSecurityBase} (${count})`
-          : ROUTE_MAP[resourceType].displayNameWithoutSecurityBase,
+          ? `${ROUTE_MAP[resourceType].breadCrumbDisplayNameWithoutSecurityBase} (${count})`
+          : ROUTE_MAP[resourceType].breadCrumbDisplayNameWithoutSecurityBase,
         href: buildHashUrl(resourceType),
       });
     }

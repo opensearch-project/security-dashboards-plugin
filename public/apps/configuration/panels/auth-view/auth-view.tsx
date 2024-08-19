@@ -115,7 +115,7 @@ export function AuthView(props: AppDependencies) {
       <PageHeader
         navigation={props.depsStart.navigation}
         coreStart={props.coreStart}
-        controlControls={buttonData}
+        appRightControls={buttonData}
         fallBackComponent={
           <EuiPageHeader>
             <EuiTitle size="l">

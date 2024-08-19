@@ -543,9 +543,11 @@ export function ManageTab(props: AppDependencies) {
               <EuiFlexItem>{actionsMenu}</EuiFlexItem>
               { useUpdatedUX ? 
                 <HeaderButtonOrLink
-                  navigation={props.depsStart.navigation}
-                  controls={createTenantButton}
-                  application={props.coreStart.application}
+
+                navigation={props.depsStart.navigation}
+          coreStart={props.coreStart}
+                  appRightControls={createTenantButton}
+  
                 />
               : 
               <EuiFlexItem>

@@ -197,7 +197,7 @@ export function GetStarted(props: AppDependencies) {
         <PageHeader
           navigation={props.depsStart.navigation}
           coreStart={props.coreStart}
-          controlControls={buttonData}
+          appRightControls={buttonData}
           fallBackComponent={
             <EuiPageHeader>
               <EuiTitle size="l">

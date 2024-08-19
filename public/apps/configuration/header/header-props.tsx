@@ -29,7 +29,7 @@ export interface HeaderProps {
 }
 
 export interface ControlProps {
-  controlControls?: TopNavControlData[];
+  appRightControls?: TopNavControlData[];
 }
 
 export interface DescriptionProps {

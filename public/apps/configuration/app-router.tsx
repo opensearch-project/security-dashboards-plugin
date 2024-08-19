@@ -48,27 +48,27 @@ const LANDING_PAGE_URL = '/getstarted';
 export const ROUTE_MAP: { [key: string]: RouteItem } = {
   getStarted: {
     name: 'Get Started',
-    displayNameWithoutSecurityBase: 'Get started with access control',
+    breadCrumbDisplayNameWithoutSecurityBase: 'Get started with access control',
     href: LANDING_PAGE_URL,
   },
   [ResourceType.roles]: {
     name: 'Roles',
-    displayNameWithoutSecurityBase: 'Roles',
+    breadCrumbDisplayNameWithoutSecurityBase: 'Roles',
     href: buildUrl(ResourceType.roles),
   },
   [ResourceType.users]: {
     name: 'Internal users',
-    displayNameWithoutSecurityBase: 'Internal users',
+    breadCrumbDisplayNameWithoutSecurityBase: 'Internal users',
     href: buildUrl(ResourceType.users),
   },
   [ResourceType.permissions]: {
     name: 'Permissions',
-    displayNameWithoutSecurityBase: 'Permissions',
+    breadCrumbDisplayNameWithoutSecurityBase: 'Permissions',
     href: buildUrl(ResourceType.permissions),
   },
   [ResourceType.tenants]: {
     name: 'Tenants',
-    displayNameWithoutSecurityBase: 'Dashboard multi-tenancy',
+    breadCrumbDisplayNameWithoutSecurityBase: 'Dashboard multi-tenancy',
     href: buildUrl(ResourceType.tenants),
   },
   [ResourceType.tenantsConfigureTab]: {
@@ -77,12 +77,12 @@ export const ROUTE_MAP: { [key: string]: RouteItem } = {
   },
   [ResourceType.auth]: {
     name: 'Authentication',
-    displayNameWithoutSecurityBase: 'Authentication and authorization',
+    breadCrumbDisplayNameWithoutSecurityBase: 'Authentication and authorization',
     href: buildUrl(ResourceType.auth),
   },
   [ResourceType.auditLogging]: {
     name: 'Audit logs',
-    displayNameWithoutSecurityBase: 'Audit logs',
+    breadCrumbDisplayNameWithoutSecurityBase: 'Audit logs',
     href: buildUrl(ResourceType.auditLogging),
   },
 };

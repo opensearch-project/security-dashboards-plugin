@@ -247,7 +247,7 @@ export function UserList(props: AppDependencies) {
         navigation={props.depsStart.navigation}
         coreStart={props.coreStart}
         descriptionControls={descriptionData}
-        controlControls={buttonData}
+        appRightControls={buttonData}
         fallBackComponent={
           <EuiPageHeader>
             <EuiTitle size="l">

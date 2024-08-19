@@ -455,7 +455,7 @@ export function RoleView(props: RoleViewProps) {
       <PageHeader
         navigation={props.depsStart.navigation}
         coreStart={props.coreStart}
-        controlControls={roleView}
+        appRightControls={roleView}
         fallBackComponent={
           <>
             <EuiPageContentHeader>
