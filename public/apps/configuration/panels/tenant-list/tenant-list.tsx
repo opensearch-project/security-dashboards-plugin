@@ -20,7 +20,7 @@ import {
   EuiTabs,
   EuiTab,
   EuiCallOut,
-  EuiButton,
+  EuiSmallButton,
 } from '@elastic/eui';
 import { Route } from 'react-router-dom';
 import React, { useState, useMemo } from 'react';
@@ -60,13 +60,13 @@ export function TenantList(props: TenantListProps) {
           Tenancy is currently disabled and users don&apos;t have access to this feature. Enable
           tenancy through the configure tenancy page.
         </p>
-        <EuiButton
+        <EuiSmallButton
           id="switchToConfigure"
           color="warning"
           onClick={() => onSelectedTabChanged('Configure')}
         >
           Configure tenancy
-        </EuiButton>
+        </EuiSmallButton>
       </EuiCallOut>
     </>
   );

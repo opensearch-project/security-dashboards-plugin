@@ -14,7 +14,7 @@
  */
 
 import React from 'react';
-import { EuiFieldText } from '@elastic/eui';
+import { EuiCompressedFieldText } from '@elastic/eui';
 import { FormRow } from './form-row';
 import { resourceNameHelpText, validateResourceName } from './resource-validation-util';
 import { FormRowDeps } from '../types';
@@ -45,7 +45,7 @@ export function NameRow(props: NameRowDeps) {
       isInvalid={errors.length > 0}
       error={errors}
     >
-      <EuiFieldText
+      <EuiCompressedFieldText
         data-test-subj="name-text"
         fullWidth={props.fullWidth}
         value={props.resourceName}

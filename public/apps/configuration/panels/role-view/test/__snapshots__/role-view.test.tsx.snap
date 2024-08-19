@@ -51,27 +51,27 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
         gutterSize="s"
       >
         <EuiFlexItem>
-          <EuiButtonEmpty
+          <EuiSmallButtonEmpty
             href="#/roles/duplicate/role"
             key="duplicate"
           >
             duplicate
-          </EuiButtonEmpty>
-          <EuiButtonEmpty
+          </EuiSmallButtonEmpty>
+          <EuiSmallButtonEmpty
             color="danger"
             data-test-subj="delete"
             key="delete"
             onClick={[Function]}
           >
             delete
-          </EuiButtonEmpty>
+          </EuiSmallButtonEmpty>
         </EuiFlexItem>
         <EuiFlexItem>
-          <EuiButton
+          <EuiSmallButton
             href="#/roles/edit/role"
           >
             Edit role
-          </EuiButton>
+          </EuiSmallButton>
         </EuiFlexItem>
       </EuiFlexGroup>
     </EuiPageContentHeaderSection>
@@ -211,20 +211,20 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
                 <EuiPageContentHeaderSection>
                   <EuiFlexGroup>
                     <EuiFlexItem>
-                      <EuiButton
+                      <EuiSmallButton
                         disabled={true}
                         onClick={[MockFunction]}
                       >
                         Delete mapping
-                      </EuiButton>
+                      </EuiSmallButton>
                     </EuiFlexItem>
                     <EuiFlexItem>
-                      <EuiButton
+                      <EuiSmallButton
                         data-test-subj="manage-mapping"
                         onClick={[Function]}
                       >
                         Manage mapping
-                      </EuiButton>
+                      </EuiSmallButton>
                     </EuiFlexItem>
                   </EuiFlexGroup>
                 </EuiPageContentHeaderSection>
@@ -268,13 +268,13 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
                             />
                           </EuiFlexItem>
                           <EuiFlexItem>
-                            <EuiButton
+                            <EuiSmallButton
                               data-test-subj="map-users"
                               fill={true}
                               onClick={[Function]}
                             >
                               Map users
-                            </EuiButton>
+                            </EuiSmallButton>
                           </EuiFlexItem>
                         </EuiFlexGroup>
                       }
@@ -378,27 +378,27 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
         gutterSize="s"
       >
         <EuiFlexItem>
-          <EuiButtonEmpty
+          <EuiSmallButtonEmpty
             href="#/roles/duplicate/role"
             key="duplicate"
           >
             duplicate
-          </EuiButtonEmpty>
-          <EuiButtonEmpty
+          </EuiSmallButtonEmpty>
+          <EuiSmallButtonEmpty
             color="danger"
             data-test-subj="delete"
             key="delete"
             onClick={[Function]}
           >
             delete
-          </EuiButtonEmpty>
+          </EuiSmallButtonEmpty>
         </EuiFlexItem>
         <EuiFlexItem>
-          <EuiButton
+          <EuiSmallButton
             href="#/roles/edit/role"
           >
             Edit role
-          </EuiButton>
+          </EuiSmallButton>
         </EuiFlexItem>
       </EuiFlexGroup>
     </EuiPageContentHeaderSection>
@@ -441,20 +441,20 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
               <EuiPageContentHeaderSection>
                 <EuiFlexGroup>
                   <EuiFlexItem>
-                    <EuiButton
+                    <EuiSmallButton
                       disabled={true}
                       onClick={[MockFunction]}
                     >
                       Delete mapping
-                    </EuiButton>
+                    </EuiSmallButton>
                   </EuiFlexItem>
                   <EuiFlexItem>
-                    <EuiButton
+                    <EuiSmallButton
                       data-test-subj="manage-mapping"
                       onClick={[Function]}
                     >
                       Manage mapping
-                    </EuiButton>
+                    </EuiSmallButton>
                   </EuiFlexItem>
                 </EuiFlexGroup>
               </EuiPageContentHeaderSection>
@@ -498,13 +498,13 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
                           />
                         </EuiFlexItem>
                         <EuiFlexItem>
-                          <EuiButton
+                          <EuiSmallButton
                             data-test-subj="map-users"
                             fill={true}
                             onClick={[Function]}
                           >
                             Map users
-                          </EuiButton>
+                          </EuiSmallButton>
                         </EuiFlexItem>
                       </EuiFlexGroup>
                     }
@@ -629,20 +629,20 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
                 <EuiPageContentHeaderSection>
                   <EuiFlexGroup>
                     <EuiFlexItem>
-                      <EuiButton
+                      <EuiSmallButton
                         disabled={true}
                         onClick={[MockFunction]}
                       >
                         Delete mapping
-                      </EuiButton>
+                      </EuiSmallButton>
                     </EuiFlexItem>
                     <EuiFlexItem>
-                      <EuiButton
+                      <EuiSmallButton
                         data-test-subj="manage-mapping"
                         onClick={[Function]}
                       >
                         Manage mapping
-                      </EuiButton>
+                      </EuiSmallButton>
                     </EuiFlexItem>
                   </EuiFlexGroup>
                 </EuiPageContentHeaderSection>
@@ -686,13 +686,13 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
                             />
                           </EuiFlexItem>
                           <EuiFlexItem>
-                            <EuiButton
+                            <EuiSmallButton
                               data-test-subj="map-users"
                               fill={true}
                               onClick={[Function]}
                             >
                               Map users
-                            </EuiButton>
+                            </EuiSmallButton>
                           </EuiFlexItem>
                         </EuiFlexGroup>
                       }

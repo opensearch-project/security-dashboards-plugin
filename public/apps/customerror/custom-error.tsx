@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiButton, EuiImage, EuiListGroup, EuiSpacer, EuiText } from '@elastic/eui';
+import { EuiSmallButton, EuiImage, EuiListGroup, EuiSpacer, EuiText } from '@elastic/eui';
 import { AppMountParameters, CoreStart } from 'opensearch-dashboards/public';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -47,14 +47,14 @@ export function CustomErrorPage(props: CustomErrorDeps) {
         {props.subtitle}
       </EuiText>
       <EuiSpacer size="s" />
-      <EuiButton
+      <EuiSmallButton
         fill
         onClick={() => logout(props.http, '')}
         data-test-subj="error-logout-button"
         fullWidth
       >
         Logout
-      </EuiButton>
+      </EuiSmallButton>
     </EuiListGroup>
   );
 }
@@ -81,4 +81,4 @@ export async function renderPage(
   );
   return () => ReactDOM.unmountComponentAtNode(params.element);
 }
-export { EuiButton };
+export { EuiSmallButton };

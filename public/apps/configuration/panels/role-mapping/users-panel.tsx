@@ -14,7 +14,7 @@
  */
 
 import React, { Dispatch, SetStateAction } from 'react';
-import { EuiForm, EuiFlexGroup, EuiFlexItem, EuiComboBox } from '@elastic/eui';
+import { EuiForm, EuiFlexGroup, EuiFlexItem, EuiCompressedComboBox } from '@elastic/eui';
 import { ComboBoxOptions } from '../../types';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { FormRow } from '../../utils/form-row';
@@ -47,7 +47,7 @@ export function InternalUsersPanel(props: {
         >
           <EuiFlexGroup>
             <EuiFlexItem style={{ maxWidth: '400px' }}>
-              <EuiComboBox
+              <EuiCompressedComboBox
                 options={optionUniverse}
                 selectedOptions={state}
                 onChange={setState}
