@@ -90,6 +90,9 @@ describe('User list', () => {
   describe('UserList', () => {
     const mockCoreStart = {
       http: 1,
+      uiSettings: {
+        get: jest.fn().mockReturnValue(false),
+      },
     };
     const setState = jest.fn();
     jest.spyOn(React, 'useState').mockImplementation((initValue) => [initValue, setState]);
@@ -98,7 +101,7 @@ describe('User list', () => {
       const component = shallow(
         <UserList
           coreStart={mockCoreStart as any}
-          navigation={{} as any}
+          depsStart={{ navigation: {} }}
           params={{} as any}
           config={{} as any}
         />
@@ -112,7 +115,7 @@ describe('User list', () => {
       shallow(
         <UserList
           coreStart={mockCoreStart as any}
-          navigation={{} as any}
+          depsStart={{ navigation: {} }}
           params={{} as any}
           config={{} as any}
         />
@@ -132,7 +135,7 @@ describe('User list', () => {
       shallow(
         <UserList
           coreStart={mockCoreStart as any}
-          navigation={{} as any}
+          depsStart={{ navigation: {} }}
           params={{} as any}
           config={{} as any}
         />
@@ -146,7 +149,7 @@ describe('User list', () => {
       shallow(
         <UserList
           coreStart={mockCoreStart as any}
-          navigation={{} as any}
+          depsStart={{ navigation: {} }}
           params={{} as any}
           config={{} as any}
         />
@@ -171,7 +174,7 @@ describe('User list', () => {
       shallow(
         <UserList
           coreStart={mockCoreStart as any}
-          navigation={{} as any}
+          depsStart={{ navigation: {} }}
           params={{} as any}
           config={{} as any}
         />
@@ -194,6 +197,9 @@ describe('User list', () => {
           serverBasePath: '',
         },
       },
+      uiSettings: {
+        get: jest.fn().mockReturnValue(false),
+      },
     };
     let component;
     const mockUserListingData: InternalUsersListing = {
@@ -215,7 +221,7 @@ describe('User list', () => {
       component = shallow(
         <UserList
           coreStart={mockCoreStart as any}
-          navigation={{} as any}
+          depsStart={{ navigation: {} }}
           params={{} as any}
           config={{} as any}
         />
@@ -244,6 +250,9 @@ describe('User list', () => {
           serverBasePath: '',
         },
       },
+      uiSettings: {
+        get: jest.fn().mockReturnValue(false),
+      },
     };
     let component;
     beforeEach(() => {
@@ -260,7 +269,7 @@ describe('User list', () => {
       component = shallow(
         <UserList
           coreStart={mockCoreStart as any}
-          navigation={{} as any}
+          depsStart={{ navigation: {} }}
           params={{} as any}
           config={{} as any}
         />

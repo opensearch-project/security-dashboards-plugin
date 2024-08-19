@@ -100,12 +100,15 @@ describe('Permission list page ', () => {
 
   describe('PermissionList', () => {
     const mockCoreStart = {
+      uiSettings: {
+        get: jest.fn().mockReturnValue(false),
+      },
       http: 1,
     };
     it('render empty', () => {
       const component = shallow(
         <PermissionList
-          coreStart={{} as any}
+          coreStart={mockCoreStart as any}
           depsStart={{} as any}
           params={{} as any}
           config={{} as any}
@@ -141,7 +144,7 @@ describe('Permission list page ', () => {
       jest.spyOn(console, 'log').mockImplementationOnce(() => {});
       shallow(
         <PermissionList
-          coreStart={{} as any}
+          coreStart={mockCoreStart as any}
           depsStart={{} as any}
           params={{} as any}
           config={{} as any}
@@ -182,7 +185,7 @@ describe('Permission list page ', () => {
       });
       const component = shallow(
         <PermissionList
-          coreStart={{} as any}
+          coreStart={mockCoreStart as any}
           depsStart={{} as any}
           params={{} as any}
           config={{} as any}
@@ -219,7 +222,7 @@ describe('Permission list page ', () => {
       jest.spyOn(React, 'useState').mockImplementation(() => [[sampleActionGroup], jest.fn()]);
       const component = shallow(
         <PermissionList
-          coreStart={{} as any}
+          coreStart={mockCoreStart as any}
           depsStart={{} as any}
           params={{} as any}
           config={{} as any}
@@ -234,6 +237,9 @@ describe('Permission list page ', () => {
   describe('AccessError component', () => {
     const mockCoreStart = {
       http: 1,
+      uiSettings: {
+        get: jest.fn().mockReturnValue(false),
+      },
     };
     let component;
     beforeEach(() => {

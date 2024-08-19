@@ -15,7 +15,6 @@
 
 import { shallow } from 'enzyme';
 import { InstructionView } from '../instruction-view';
-import { EuiTitle } from '@elastic/eui';
 import React from 'react';
 import { ExternalLinkButton } from '../../../utils/display-utils';
 
@@ -27,8 +26,6 @@ describe('Instruction view', () => {
       },
     };
     const component = shallow(<InstructionView config={config as any} />);
-
-    expect(component.find(EuiTitle).find('h1').text()).toBe('Authentication and authorization');
     expect(component.find(ExternalLinkButton).prop('text')).toBe('Create config.yml');
   });
 });

@@ -66,15 +66,15 @@ import { PageId } from '../../types';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { useContextMenuState } from '../../utils/context-menu';
-import { generateResourceName } from '../../utils/resource-utils';
+import { generateResourceName, getBreadcrumbs } from '../../utils/resource-utils';
 import { DocLinks } from '../../constants';
 import { TenantList } from './tenant-list';
-import { getBreadcrumbs } from '../../app-router';
 import { LocalCluster } from '../../../../utils/datasource-utils';
 import { buildUrl } from '../../utils/url-builder';
 import { CrossPageToast } from '../../cross-page-toast';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
 import { AccessErrorComponent } from '../../access-error-component';
+import { HeaderButtonOrLink } from '../../header/header-components';
 
 export function ManageTab(props: AppDependencies) {
   const setGlobalBreadcrumbs = flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs);
@@ -503,6 +503,19 @@ export function ManageTab(props: AppDependencies) {
       />
     );
   }
+  const useUpdatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
+  const createTenantButton = [
+    {
+      id: 'createTenant',
+      label: 'Creat tenant',
+      iconType: 'plus',
+      iconSide: 'left',
+      isLoading: false,
+      run: () => showEditModal('', Action.create, ''),
+      type: 'button',
+      fill: true,
+    },
+  ];
   /* eslint-disable */
   return (
     <>
@@ -528,6 +541,15 @@ export function ManageTab(props: AppDependencies) {
           <EuiPageContentHeaderSection>
             <EuiFlexGroup>
               <EuiFlexItem>{actionsMenu}</EuiFlexItem>
+              { useUpdatedUX ? 
+                <HeaderButtonOrLink
+
+                navigation={props.depsStart.navigation}
+          coreStart={props.coreStart}
+                  appRightControls={createTenantButton}
+  
+                />
+              : 
               <EuiFlexItem>
                 <EuiSmallButton
                   id="createTenant"
@@ -536,7 +558,7 @@ export function ManageTab(props: AppDependencies) {
                 >
                   Create tenant
                 </EuiSmallButton>
-              </EuiFlexItem>
+              </EuiFlexItem>}
             </EuiFlexGroup>
           </EuiPageContentHeaderSection>
         </EuiPageContentHeader>

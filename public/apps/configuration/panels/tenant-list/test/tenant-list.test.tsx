@@ -60,12 +60,12 @@ describe('Tenant list', () => {
   const setState = jest.fn();
   const mockCoreStart = {
     http: 1,
+    uiSettings: {
+      get: jest.fn().mockReturnValue(false),
+    },
     chrome: {
       setBreadcrumbs() {
         return 1;
-      },
-      navGroup: {
-        getNavGroupEnabled: jest.fn().mockReturnValue(false),
       },
     },
   };
@@ -101,7 +101,7 @@ describe('Tenant list', () => {
     const component = shallow(
       <ManageTab
         coreStart={mockCoreStart as any}
-        depsStart={{} as any}
+        depsStart={{ navigation: {} } as any}
         params={{} as any}
         config={config as any}
       />
@@ -121,7 +121,7 @@ describe('Tenant list', () => {
     shallow(
       <ManageTab
         coreStart={mockCoreStart as any}
-        depsStart={{} as any}
+        depsStart={{ navigation: {} } as any}
         params={{} as any}
         config={config as any}
       />
@@ -151,7 +151,7 @@ describe('Tenant list', () => {
     shallow(
       <ManageTab
         coreStart={mockCoreStart as any}
-        depsStart={{} as any}
+        depsStart={{ navigation: {} } as any}
         params={{} as any}
         config={config as any}
       />
@@ -171,7 +171,7 @@ describe('Tenant list', () => {
     shallow(
       <ManageTab
         coreStart={mockCoreStart as any}
-        depsStart={{} as any}
+        depsStart={{ navigation: {} } as any}
         params={{} as any}
         config={config as any}
       />
@@ -196,7 +196,7 @@ describe('Tenant list', () => {
     shallow(
       <ManageTab
         coreStart={mockCoreStart as any}
-        depsStart={{} as any}
+        depsStart={{ navigation: {} } as any}
         params={{} as any}
         config={config as any}
       />
@@ -215,7 +215,7 @@ describe('Tenant list', () => {
     const component = shallow(
       <ManageTab
         coreStart={mockCoreStart as any}
-        depsStart={{} as any}
+        depsStart={{ navigation: {} } as any}
         params={{} as any}
         config={config as any}
       />
@@ -237,7 +237,7 @@ describe('Tenant list', () => {
     const component = shallow(
       <ManageTab
         coreStart={mockCoreStart as any}
-        depsStart={{} as any}
+        depsStart={{ navigation: {} } as any}
         params={{} as any}
         config={config as any}
       />
@@ -290,7 +290,7 @@ describe('Tenant list', () => {
       const component = shallow(
         <ManageTab
           coreStart={mockCoreStart as any}
-          depsStart={{} as any}
+          depsStart={{ navigation: {} } as any}
           params={{} as any}
           config={config as any}
         />
@@ -319,7 +319,7 @@ describe('Tenant list', () => {
       const component = shallow(
         <ManageTab
           coreStart={mockCoreStart as any}
-          depsStart={{} as any}
+          depsStart={{ navigation: {} } as any}
           params={{} as any}
           config={config as any}
         />
@@ -352,7 +352,7 @@ describe('Tenant list', () => {
       const component = shallow(
         <ManageTab
           coreStart={mockCoreStart as any}
-          depsStart={{} as any}
+          depsStart={{ navigation: {} } as any}
           params={{} as any}
           config={config as any}
         />
@@ -397,7 +397,7 @@ describe('Tenant list', () => {
       component = shallow(
         <ManageTab
           coreStart={mockCoreStart as any}
-          depsStart={{} as any}
+          depsStart={{ navigation: {} } as any}
           params={{} as any}
           config={config as any}
         />
@@ -487,7 +487,7 @@ describe('Tenant list', () => {
       component = shallow(
         <ManageTab
           coreStart={mockCoreStart as any}
-          depsStart={{} as any}
+          depsStart={{ navigation: {} } as any}
           params={{} as any}
           config={config as any}
         />
@@ -499,7 +499,7 @@ describe('Tenant list', () => {
       component = shallow(
         <ConfigureTab1
           coreStart={mockCoreStart as any}
-          depsStart={{} as any}
+          depsStart={{ navigation: {} } as any}
           params={{} as any}
           config={config as any}
         />
