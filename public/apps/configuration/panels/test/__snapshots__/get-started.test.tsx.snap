@@ -32,7 +32,7 @@ exports[`Get started (landing page) renders when backend configuration is disabl
       setDataSource={[MockFunction]}
     />
     <PageHeader
-      controlControls={
+      appRightControls={
         Array [
           Object {
             "href": "#/",
@@ -334,7 +334,7 @@ exports[`Get started (landing page) renders when backend configuration is enable
       setDataSource={[MockFunction]}
     />
     <PageHeader
-      controlControls={
+      appRightControls={
         Array [
           Object {
             "href": "#/",

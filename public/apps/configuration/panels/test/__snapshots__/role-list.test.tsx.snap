@@ -39,7 +39,7 @@ exports[`Role list AccessError component should load access error component 1`] 
     setDataSource={[MockFunction]}
   />
   <PageHeader
-    controlControls={
+    appRightControls={
       Array [
         Object {
           "fill": true,

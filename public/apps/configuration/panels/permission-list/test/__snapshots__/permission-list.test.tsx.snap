@@ -63,7 +63,7 @@ exports[`Permission list page  AccessError component should load access error co
     setDataSource={[MockFunction]}
   />
   <PageHeader
-    controlControls={
+    appRightControls={
       Array [
         Object {
           "isLoading": false,

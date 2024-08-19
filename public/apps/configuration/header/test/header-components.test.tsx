@@ -53,7 +53,7 @@ describe('PageHeader', () => {
       subAction: 'test-sub-action',
       count: 5,
       descriptionControls: ['control-1'],
-      controlControls: ['control-2'],
+      appRightControls: ['control-2'],
       fallBackComponent: <div>Fallback Component</div>,
     };
   });

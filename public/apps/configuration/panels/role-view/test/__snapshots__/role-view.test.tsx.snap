@@ -43,7 +43,7 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
     setDataSource={[MockFunction]}
   />
   <PageHeader
-    controlControls={
+    appRightControls={
       Array [
         Object {
           "ariaLabel": "delete",
@@ -476,7 +476,7 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
     setDataSource={[MockFunction]}
   />
   <PageHeader
-    controlControls={
+    appRightControls={
       Array [
         Object {
           "ariaLabel": "delete",
