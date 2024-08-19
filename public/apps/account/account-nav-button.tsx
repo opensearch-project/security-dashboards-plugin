@@ -36,6 +36,7 @@ import { LogoutButton } from './log-out-button';
 import { resolveTenantName } from '../configuration/utils/tenant-utils';
 import { getShouldShowTenantPopup, setShouldShowTenantPopup } from '../../utils/storage-utils';
 import { getDashboardsInfo } from '../../utils/dashboards-info-utils';
+import './account-nav-button.scss';
 
 export function AccountNavButton(props: {
   coreStart: CoreStart;
@@ -73,7 +74,7 @@ export function AccountNavButton(props: {
     const fetchData = async () => {
       try {
         setIsMultiTenancyEnabled(
-          (await getDashboardsInfo(props.coreStart.http)).multitenancy_enabled
+          Boolean((await getDashboardsInfo(props.coreStart.http)).multitenancy_enabled)
         );
       } catch (e) {
         // TODO: switch to better error display.
@@ -167,12 +168,31 @@ export function AccountNavButton(props: {
       />
     </div>
   );
-  return (
-    <EuiHeaderSectionItemButton id="user-icon-btn">
+
+  const isPlacedInLeftNav = props.coreStart.uiSettings.get('home:useNewHomePage');
+
+  // ToDo: Add aria-label and tooltip when isPlacedInLeftNav is true
+  const innerElement = isPlacedInLeftNav ? (
+    <EuiButtonEmpty
+      size="xs"
+      flush="both"
+      className="accountNavButton"
+      aria-expanded={isPopoverOpen}
+      aria-haspopup="true"
+    >
+      <EuiAvatar name={username} size="s" />
+    </EuiButtonEmpty>
+  ) : (
+    <EuiAvatar name={username} size="m" />
+  );
+
+  const popover = (
+    <>
       <EuiPopover
         data-test-subj="account-popover"
         id="actionsMenu"
-        button={<EuiAvatar name={username} />}
+        anchorPosition={isPlacedInLeftNav ? 'rightDown' : undefined}
+        button={innerElement}
         isOpen={isPopoverOpen}
         closePopover={() => {
           setPopoverOpen(false);
@@ -185,6 +205,14 @@ export function AccountNavButton(props: {
         <EuiContextMenuPanel>{contextMenuPanel}</EuiContextMenuPanel>
       </EuiPopover>
       {modal}
+    </>
+  );
+
+  return isPlacedInLeftNav ? (
+    popover
+  ) : (
+    <EuiHeaderSectionItemButton id="user-icon-btn" size="l">
+      {popover}
     </EuiHeaderSectionItemButton>
   );
 }
