@@ -60,9 +60,9 @@ export function useContextMenuState(
       button={button}
       isOpen={isContextMenuOpen}
       closePopover={closeContextMenu}
-      panelPaddingSize="s"
+      panelPaddingSize="none"
     >
-      <EuiContextMenuPanel items={items} hasFocus={false} />
+      <EuiContextMenuPanel items={items} hasFocus={false} size="s" />
     </EuiPopover>
   );
 
