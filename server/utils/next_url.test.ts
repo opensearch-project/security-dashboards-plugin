@@ -52,6 +52,11 @@ describe('test validateNextUrl', () => {
     expect(validateNextUrl(url, '')).toEqual(undefined);
   });
 
+  test('allow basePath', () => {
+    const url = '/osd';
+    expect(validateNextUrl(url, '/osd')).toEqual(undefined);
+  });
+
   test('allow dashboard url', () => {
     const url =
       '/_plugin/opensearch-dashboards/app/opensearch-dashboards#dashbard/dashboard-id?_g=(param=a&p=b)';

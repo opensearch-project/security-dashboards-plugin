@@ -58,7 +58,7 @@ export function validateNextUrl(
     }
     const pathMinusBase = path.replace(bp, '');
     if (
-      !pathMinusBase.startsWith('/') ||
+      (pathMinusBase && !pathMinusBase.startsWith('/')) ||
       (pathMinusBase.length >= 2 && !/^\/[a-zA-Z_][\/a-zA-Z0-9-_]+$/.test(pathMinusBase))
     ) {
       return INVALID_NEXT_URL_PARAMETER_MESSAGE;
