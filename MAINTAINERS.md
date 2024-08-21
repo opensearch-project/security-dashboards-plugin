@@ -6,7 +6,6 @@ This document contains a list of maintainers in this repo. See [opensearch-proje
 
 | Maintainer       | GitHub ID                                             | Affiliation |
 | ---------------- | ----------------------------------------------------- | ----------- |
-| Chang Liu        | [cliu123](https://github.com/cliu123)                 | Amazon      |
 | Darshit Chanpura | [DarshitChanpura](https://github.com/DarshitChanpura) | Amazon      |
 | Craig Perkins    | [cwperks](https://github.com/cwperks)                 | Amazon      |
 | Ryan Liang       | [RyanL1997](https://github.com/RyanL1997)             | Amazon      |
@@ -22,3 +21,5 @@ This document contains a list of maintainers in this repo. See [opensearch-proje
 | Tianle Huang  | [tianleh](https://github.com/tianleh)               | Amazon      |
 | Dave Lago     | [davidlago](https://github.com/davidlago)           | Contributor |
 | Peter Nied    | [peternied](https://github.com/peternied)           | Amazon      |
+| Chang Liu        | [cliu123](https://github.com/cliu123)            | Amazon      |
+
