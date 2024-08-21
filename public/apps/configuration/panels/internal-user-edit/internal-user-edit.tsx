@@ -22,7 +22,6 @@ import {
   EuiPageHeader,
   EuiSpacer,
   EuiText,
-  EuiTitle,
 } from '@elastic/eui';
 import React, { useContext, useState } from 'react';
 import { BreadcrumbsPageDependencies } from '../../../types';
@@ -178,12 +177,12 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
             <EuiPageHeader>
               <EuiFlexGroup direction="column" gutterSize="xs">
                 <EuiFlexItem>
-                  <EuiTitle size="l">
+                  <EuiText size="s">
                     <h1>{TITLE_TEXT_DICT[props.action]}</h1>
-                  </EuiTitle>
+                  </EuiText>
                 </EuiFlexItem>
                 <EuiFlexItem>
-                  <EuiText size="xs" color="subdued">
+                  <EuiText size="s" color="subdued">
                     The security plugin includes an internal user database. Use this database in
                     place of, or in addition to, an external authentication system such as LDAP or
                     Active Directory. <ExternalLink href={DocLinks.UsersAndRolesDoc} />

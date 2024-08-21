@@ -200,9 +200,9 @@ export function GetStarted(props: AppDependencies) {
           appRightControls={buttonData}
           fallBackComponent={
             <EuiPageHeader>
-              <EuiTitle size="l">
+              <EuiText size="s">
                 <h1>Get started</h1>
-              </EuiTitle>
+              </EuiText>
               <ExternalLinkButton text="Open in new window" href={buildHashUrl()} />
             </EuiPageHeader>
           }

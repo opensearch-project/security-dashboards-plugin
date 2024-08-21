@@ -460,9 +460,9 @@ export function RoleView(props: RoleViewProps) {
           <>
             <EuiPageContentHeader>
               <EuiPageContentHeaderSection>
-                <EuiTitle size="l">
+                <EuiText size="s">
                   <h1>{props.roleName}</h1>
-                </EuiTitle>
+                </EuiText>
               </EuiPageContentHeaderSection>
 
               <EuiPageContentHeaderSection>{pageActions}</EuiPageContentHeaderSection>
