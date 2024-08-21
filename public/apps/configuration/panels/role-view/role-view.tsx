@@ -479,6 +479,7 @@ export function RoleView(props: RoleViewProps) {
             ? tabs[MAP_USER_TAB_INDEX]
             : tabs[PERMISSIONS_TAB_INDEX]
         }
+        size="s"
       />
 
       <EuiSpacer />
