@@ -91,7 +91,7 @@ describe('Display utils', () => {
 
   it('Render External Link Button', () => {
     const component = shallow(
-      <ExternalLinkButton fill size="s" href="http://localhost:5601" text="Test" />
+      <ExternalLinkButton size="s" href="http://localhost:5601" text="Test" />
     );
     expect(component).toMatchSnapshot();
   });

@@ -20,8 +20,8 @@ import {
   EuiText,
   EuiIcon,
   EuiFlexGroup,
-  EuiSmallButton,
-  EuiButtonProps,
+  EuiSmallButtonEmpty,
+  EuiButtonEmptyProps,
   EuiToolTip,
   EuiLink,
 } from '@elastic/eui';
@@ -131,12 +131,12 @@ export const displayHeaderWithTooltip = (columnHeader: string, tooltipText: stri
   );
 };
 
-export function ExternalLinkButton(props: { text: string; href: string } & EuiButtonProps) {
+export function ExternalLinkButton(props: { text: string; href: string } & EuiButtonEmptyProps) {
   const { text, ...buttonProps } = props;
   return (
-    <EuiSmallButton iconType="popout" iconSide="right" target="_blank" {...buttonProps}>
+    <EuiSmallButtonEmpty iconType="popout" iconSide="right" target="_blank" {...buttonProps}>
       {props.text}
-    </EuiSmallButton>
+    </EuiSmallButtonEmpty>
   );
 }
 

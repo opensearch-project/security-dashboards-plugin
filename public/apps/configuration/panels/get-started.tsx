@@ -58,11 +58,7 @@ const addBackendStep = {
 
       <EuiFlexGroup gutterSize="s" wrap>
         <EuiFlexItem grow={false}>
-          <ExternalLinkButton
-            fill
-            href={DocLinks.BackendConfigurationDoc}
-            text="Create config.yml"
-          />
+          <ExternalLinkButton href={DocLinks.BackendConfigurationDoc} text="Create config.yml" />
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
           <EuiSmallButton
