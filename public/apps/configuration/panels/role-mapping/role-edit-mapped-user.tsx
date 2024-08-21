@@ -58,7 +58,7 @@ const TITLE_TEXT_DICT = {
 const descriptionData = [
   {
     renderComponent: (
-      <EuiText size="xs" color="subdued">
+      <EuiText size="s" color="subdued">
         Map users to this role to inherit role permissions. Two types of users are supported: user,
         and backend role. <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
       </EuiText>

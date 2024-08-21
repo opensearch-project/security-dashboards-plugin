@@ -150,7 +150,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
   const descriptionData = [
     {
       renderComponent: (
-        <EuiText size="xs" color="subdued">
+        <EuiText size="s" color="subdued">
           The security plugin includes an internal user database. Use this database in place of, or
           in addition to, an external <br /> authentication system such as LDAP or Active Directory.{' '}
           <ExternalLink href={DocLinks.UsersAndRolesDoc} />
