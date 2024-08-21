@@ -106,7 +106,7 @@ describe('test validateNextUrl', () => {
 
   test('allow basePath', () => {
     const url = '/osd';
-    expect(validateNextUrl(url, 'osd')).toEqual(undefined);
+    expect(validateNextUrl(url, '/osd')).toEqual(undefined);
   });
 
   test('allow dashboard url', () => {
