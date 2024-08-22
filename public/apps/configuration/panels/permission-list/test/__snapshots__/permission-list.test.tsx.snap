@@ -157,13 +157,13 @@ exports[`Permission list page  AccessError component should load access error co
     }
     fallBackComponent={
       <EuiPageHeader>
-        <EuiTitle
-          size="l"
+        <EuiText
+          size="s"
         >
           <h1>
             Permissions
           </h1>
-        </EuiTitle>
+        </EuiText>
       </EuiPageHeader>
     }
     resourceType="permissions"

@@ -52,13 +52,13 @@ exports[`Get started (landing page) renders when backend configuration is disabl
       }
       fallBackComponent={
         <EuiPageHeader>
-          <EuiTitle
-            size="l"
+          <EuiText
+            size="s"
           >
             <h1>
               Get started
             </h1>
-          </EuiTitle>
+          </EuiText>
           <ExternalLinkButton
             href="#/"
             text="Open in new window"
@@ -108,13 +108,12 @@ exports[`Get started (landing page) renders when backend configuration is disabl
                   <EuiFlexItem
                     grow={false}
                   >
-                    <EuiSmallButton
+                    <EuiSmallButtonEmpty
                       data-test-subj="explore-existing-roles"
-                      fill={true}
                       onClick={[Function]}
                     >
                       Explore existing roles
-                    </EuiSmallButton>
+                    </EuiSmallButtonEmpty>
                   </EuiFlexItem>
                   <EuiFlexItem
                     grow={false}
@@ -154,13 +153,12 @@ exports[`Get started (landing page) renders when backend configuration is disabl
                   <EuiFlexItem
                     grow={false}
                   >
-                    <EuiSmallButton
+                    <EuiSmallButtonEmpty
                       data-test-subj="map-users-to-role"
-                      fill={true}
                       onClick={[Function]}
                     >
                       Map users to a role
-                    </EuiSmallButton>
+                    </EuiSmallButtonEmpty>
                   </EuiFlexItem>
                   <EuiFlexItem
                     grow={false}
@@ -208,13 +206,12 @@ exports[`Get started (landing page) renders when backend configuration is disabl
             href="https://opensearch.org/docs/latest/security-plugin/audit-logs/"
           />
         </p>
-        <EuiSmallButton
+        <EuiSmallButtonEmpty
           data-test-subj="review-audit-log-configuration"
-          fill={true}
           onClick={[Function]}
         >
           Review Audit Log Configuration
-        </EuiSmallButton>
+        </EuiSmallButtonEmpty>
       </EuiText>
     </EuiPanel>
     <EuiSpacer
@@ -239,7 +236,6 @@ exports[`Get started (landing page) renders when backend configuration is disabl
         </p>
         <EuiSmallButton
           data-test-subj="purge-cache"
-          fill={true}
           iconType="refresh"
           onClick={[Function]}
         >
@@ -273,21 +269,20 @@ exports[`Get started (landing page) renders when backend configuration is disabl
           <EuiFlexItem
             grow={false}
           >
-            <EuiSmallButton
-              fill={true}
+            <EuiSmallButtonEmpty
               onClick={[Function]}
             >
               Manage Multi-tenancy
-            </EuiSmallButton>
+            </EuiSmallButtonEmpty>
           </EuiFlexItem>
           <EuiFlexItem
             grow={false}
           >
-            <EuiSmallButton
+            <EuiSmallButtonEmpty
               onClick={[Function]}
             >
               Configure Multi-tenancy
-            </EuiSmallButton>
+            </EuiSmallButtonEmpty>
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiText>
@@ -354,13 +349,13 @@ exports[`Get started (landing page) renders when backend configuration is enable
       }
       fallBackComponent={
         <EuiPageHeader>
-          <EuiTitle
-            size="l"
+          <EuiText
+            size="s"
           >
             <h1>
               Get started
             </h1>
-          </EuiTitle>
+          </EuiText>
           <ExternalLinkButton
             href="#/"
             text="Open in new window"
@@ -434,7 +429,6 @@ exports[`Get started (landing page) renders when backend configuration is enable
                     grow={false}
                   >
                     <ExternalLinkButton
-                      fill={true}
                       href="https://opensearch.org/docs/latest/security-plugin/configuration/configuration/"
                       text="Create config.yml"
                     />
@@ -477,13 +471,12 @@ exports[`Get started (landing page) renders when backend configuration is enable
                   <EuiFlexItem
                     grow={false}
                   >
-                    <EuiSmallButton
+                    <EuiSmallButtonEmpty
                       data-test-subj="explore-existing-roles"
-                      fill={true}
                       onClick={[Function]}
                     >
                       Explore existing roles
-                    </EuiSmallButton>
+                    </EuiSmallButtonEmpty>
                   </EuiFlexItem>
                   <EuiFlexItem
                     grow={false}
@@ -523,13 +516,12 @@ exports[`Get started (landing page) renders when backend configuration is enable
                   <EuiFlexItem
                     grow={false}
                   >
-                    <EuiSmallButton
+                    <EuiSmallButtonEmpty
                       data-test-subj="map-users-to-role"
-                      fill={true}
                       onClick={[Function]}
                     >
                       Map users to a role
-                    </EuiSmallButton>
+                    </EuiSmallButtonEmpty>
                   </EuiFlexItem>
                   <EuiFlexItem
                     grow={false}
@@ -577,13 +569,12 @@ exports[`Get started (landing page) renders when backend configuration is enable
             href="https://opensearch.org/docs/latest/security-plugin/audit-logs/"
           />
         </p>
-        <EuiSmallButton
+        <EuiSmallButtonEmpty
           data-test-subj="review-audit-log-configuration"
-          fill={true}
           onClick={[Function]}
         >
           Review Audit Log Configuration
-        </EuiSmallButton>
+        </EuiSmallButtonEmpty>
       </EuiText>
     </EuiPanel>
     <EuiSpacer
@@ -608,7 +599,6 @@ exports[`Get started (landing page) renders when backend configuration is enable
         </p>
         <EuiSmallButton
           data-test-subj="purge-cache"
-          fill={true}
           iconType="refresh"
           onClick={[Function]}
         >
@@ -642,21 +632,20 @@ exports[`Get started (landing page) renders when backend configuration is enable
           <EuiFlexItem
             grow={false}
           >
-            <EuiSmallButton
-              fill={true}
+            <EuiSmallButtonEmpty
               onClick={[Function]}
             >
               Manage Multi-tenancy
-            </EuiSmallButton>
+            </EuiSmallButtonEmpty>
           </EuiFlexItem>
           <EuiFlexItem
             grow={false}
           >
-            <EuiSmallButton
+            <EuiSmallButtonEmpty
               onClick={[Function]}
             >
               Configure Multi-tenancy
-            </EuiSmallButton>
+            </EuiSmallButtonEmpty>
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiText>

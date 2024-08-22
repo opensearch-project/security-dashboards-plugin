@@ -90,7 +90,7 @@ describe('Log in via SAML', () => {
 
     samlLogin();
 
-    cy.get('h1.euiTitle--large').contains('Get started');
+    cy.get('h1.euiText--small').contains('Get started');
     cy.getCookie('security_authentication').should('exist');
   });
 
