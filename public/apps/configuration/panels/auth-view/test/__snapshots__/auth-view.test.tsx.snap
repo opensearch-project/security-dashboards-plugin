@@ -9,7 +9,11 @@ exports[`Auth view should load access error component 1`] = `
       }
     }
     dataSourcePickerReadOnly={false}
-    navigation={Object {}}
+    depsStart={
+      Object {
+        "navigation": Object {},
+      }
+    }
     selectedDataSource={
       Object {
         "id": "test",
@@ -17,13 +21,23 @@ exports[`Auth view should load access error component 1`] = `
     }
     setDataSource={[MockFunction]}
   />
-  <EuiTitle
-    size="l"
-  >
-    <h1>
-      Authentication and authorization
-    </h1>
-  </EuiTitle>
+  <PageHeader
+    coreStart={
+      Object {
+        "http": 1,
+      }
+    }
+    fallBackComponent={
+      <EuiTitle
+        size="l"
+      >
+        <h1>
+          Authentication and authorization
+        </h1>
+      </EuiTitle>
+    }
+    navigation={Object {}}
+  />
   <AccessErrorComponent
     loading={false}
   />
