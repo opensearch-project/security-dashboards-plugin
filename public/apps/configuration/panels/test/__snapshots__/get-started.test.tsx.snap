@@ -108,12 +108,12 @@ exports[`Get started (landing page) renders when backend configuration is disabl
                   <EuiFlexItem
                     grow={false}
                   >
-                    <EuiSmallButtonEmpty
+                    <EuiSmallButton
                       data-test-subj="explore-existing-roles"
                       onClick={[Function]}
                     >
                       Explore existing roles
-                    </EuiSmallButtonEmpty>
+                    </EuiSmallButton>
                   </EuiFlexItem>
                   <EuiFlexItem
                     grow={false}
@@ -153,12 +153,12 @@ exports[`Get started (landing page) renders when backend configuration is disabl
                   <EuiFlexItem
                     grow={false}
                   >
-                    <EuiSmallButtonEmpty
+                    <EuiSmallButton
                       data-test-subj="map-users-to-role"
                       onClick={[Function]}
                     >
                       Map users to a role
-                    </EuiSmallButtonEmpty>
+                    </EuiSmallButton>
                   </EuiFlexItem>
                   <EuiFlexItem
                     grow={false}
@@ -206,12 +206,12 @@ exports[`Get started (landing page) renders when backend configuration is disabl
             href="https://opensearch.org/docs/latest/security-plugin/audit-logs/"
           />
         </p>
-        <EuiSmallButtonEmpty
+        <EuiSmallButton
           data-test-subj="review-audit-log-configuration"
           onClick={[Function]}
         >
           Review Audit Log Configuration
-        </EuiSmallButtonEmpty>
+        </EuiSmallButton>
       </EuiText>
     </EuiPanel>
     <EuiSpacer
@@ -269,20 +269,20 @@ exports[`Get started (landing page) renders when backend configuration is disabl
           <EuiFlexItem
             grow={false}
           >
-            <EuiSmallButtonEmpty
+            <EuiSmallButton
               onClick={[Function]}
             >
               Manage Multi-tenancy
-            </EuiSmallButtonEmpty>
+            </EuiSmallButton>
           </EuiFlexItem>
           <EuiFlexItem
             grow={false}
           >
-            <EuiSmallButtonEmpty
+            <EuiSmallButton
               onClick={[Function]}
             >
               Configure Multi-tenancy
-            </EuiSmallButtonEmpty>
+            </EuiSmallButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiText>
@@ -429,6 +429,7 @@ exports[`Get started (landing page) renders when backend configuration is enable
                     grow={false}
                   >
                     <ExternalLinkButton
+                      fill={true}
                       href="https://opensearch.org/docs/latest/security-plugin/configuration/configuration/"
                       text="Create config.yml"
                     />
@@ -471,12 +472,12 @@ exports[`Get started (landing page) renders when backend configuration is enable
                   <EuiFlexItem
                     grow={false}
                   >
-                    <EuiSmallButtonEmpty
+                    <EuiSmallButton
                       data-test-subj="explore-existing-roles"
                       onClick={[Function]}
                     >
                       Explore existing roles
-                    </EuiSmallButtonEmpty>
+                    </EuiSmallButton>
                   </EuiFlexItem>
                   <EuiFlexItem
                     grow={false}
@@ -516,12 +517,12 @@ exports[`Get started (landing page) renders when backend configuration is enable
                   <EuiFlexItem
                     grow={false}
                   >
-                    <EuiSmallButtonEmpty
+                    <EuiSmallButton
                       data-test-subj="map-users-to-role"
                       onClick={[Function]}
                     >
                       Map users to a role
-                    </EuiSmallButtonEmpty>
+                    </EuiSmallButton>
                   </EuiFlexItem>
                   <EuiFlexItem
                     grow={false}
@@ -569,12 +570,12 @@ exports[`Get started (landing page) renders when backend configuration is enable
             href="https://opensearch.org/docs/latest/security-plugin/audit-logs/"
           />
         </p>
-        <EuiSmallButtonEmpty
+        <EuiSmallButton
           data-test-subj="review-audit-log-configuration"
           onClick={[Function]}
         >
           Review Audit Log Configuration
-        </EuiSmallButtonEmpty>
+        </EuiSmallButton>
       </EuiText>
     </EuiPanel>
     <EuiSpacer
@@ -632,20 +633,20 @@ exports[`Get started (landing page) renders when backend configuration is enable
           <EuiFlexItem
             grow={false}
           >
-            <EuiSmallButtonEmpty
+            <EuiSmallButton
               onClick={[Function]}
             >
               Manage Multi-tenancy
-            </EuiSmallButtonEmpty>
+            </EuiSmallButton>
           </EuiFlexItem>
           <EuiFlexItem
             grow={false}
           >
-            <EuiSmallButtonEmpty
+            <EuiSmallButton
               onClick={[Function]}
             >
               Configure Multi-tenancy
-            </EuiSmallButtonEmpty>
+            </EuiSmallButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiText>
