@@ -88,7 +88,7 @@ describe('Log in via OIDC', () => {
     localStorage.setItem('opendistro::security::tenant::saved', '""');
     localStorage.setItem('home:newThemeModal:show', 'false');
 
-    cy.get('h1.euiText--small').contains('Get started');
+    cy.get('h1').contains('Get started');
   });
 
   it('Tenancy persisted after logout in OIDC', () => {
