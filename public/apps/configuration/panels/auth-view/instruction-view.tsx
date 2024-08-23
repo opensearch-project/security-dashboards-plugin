@@ -41,6 +41,7 @@ export function InstructionView(props: { config: ClientConfigType }) {
       {props.config.ui.backend_configurable && (
         <div style={{ textAlign: 'center' }}>
           <ExternalLinkButton
+            fill
             size="s"
             href={DocLinks.BackendConfigurationDoc}
             text="Create config.yml"

@@ -25,7 +25,6 @@ import {
   EuiText,
   EuiTitle,
   EuiGlobalToastList,
-  EuiSmallButtonEmpty,
 } from '@elastic/eui';
 import React, { useContext } from 'react';
 import { FormattedMessage } from '@osd/i18n/react';
@@ -59,7 +58,11 @@ const addBackendStep = {
 
       <EuiFlexGroup gutterSize="s" wrap>
         <EuiFlexItem grow={false}>
-          <ExternalLinkButton href={DocLinks.BackendConfigurationDoc} text="Create config.yml" />
+          <ExternalLinkButton
+            fill
+            href={DocLinks.BackendConfigurationDoc}
+            text="Create config.yml"
+          />
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
           <EuiSmallButton
@@ -93,14 +96,14 @@ const setOfSteps = [
 
         <EuiFlexGroup gutterSize="s">
           <EuiFlexItem grow={false}>
-            <EuiSmallButtonEmpty
+            <EuiSmallButton
               data-test-subj="explore-existing-roles"
               onClick={() => {
                 window.location.href = buildHashUrl(ResourceType.roles);
               }}
             >
               Explore existing roles
-            </EuiSmallButtonEmpty>
+            </EuiSmallButton>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <EuiSmallButton
@@ -132,14 +135,14 @@ const setOfSteps = [
 
         <EuiFlexGroup gutterSize="s">
           <EuiFlexItem grow={false}>
-            <EuiSmallButtonEmpty
+            <EuiSmallButton
               data-test-subj="map-users-to-role"
               onClick={() => {
                 window.location.href = buildHashUrl(ResourceType.users);
               }}
             >
               Map users to a role
-            </EuiSmallButtonEmpty>
+            </EuiSmallButton>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <EuiSmallButton
@@ -233,14 +236,14 @@ export function GetStarted(props: AppDependencies) {
               />{' '}
               <ExternalLink href={DocLinks.AuditLogsDoc} />
             </p>
-            <EuiSmallButtonEmpty
+            <EuiSmallButton
               data-test-subj="review-audit-log-configuration"
               onClick={() => {
                 window.location.href = buildHashUrl(ResourceType.auditLogging);
               }}
             >
               Review Audit Log Configuration
-            </EuiSmallButtonEmpty>
+            </EuiSmallButton>
           </EuiText>
         </EuiPanel>
 
@@ -301,22 +304,22 @@ export function GetStarted(props: AppDependencies) {
               </p>
               <EuiFlexGroup gutterSize="s">
                 <EuiFlexItem grow={false}>
-                  <EuiSmallButtonEmpty
+                  <EuiSmallButton
                     onClick={() => {
                       window.location.href = buildHashUrl(ResourceType.tenants);
                     }}
                   >
                     Manage Multi-tenancy
-                  </EuiSmallButtonEmpty>
+                  </EuiSmallButton>
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>
-                  <EuiSmallButtonEmpty
+                  <EuiSmallButton
                     onClick={() => {
                       window.location.href = buildHashUrl(ResourceType.tenantsConfigureTab);
                     }}
                   >
                     Configure Multi-tenancy
-                  </EuiSmallButtonEmpty>
+                  </EuiSmallButton>
                 </EuiFlexItem>
               </EuiFlexGroup>
             </EuiText>
