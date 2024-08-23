@@ -237,7 +237,10 @@ export function LoginPage(props: LoginPageDeps) {
             );
           }
 
-          if (authOpts.length > 1) {
+          if (
+            authOpts.length > 1 &&
+            !(authOpts.includes(AuthType.PROXY) && authOpts.length === 2)
+          ) {
             formBody.push(<EuiSpacer size="xs" />);
             formBody.push(<EuiHorizontalRule size="full" margin="xl" />);
             formBody.push(<EuiSpacer size="xs" />);
@@ -256,6 +259,9 @@ export function LoginPage(props: LoginPageDeps) {
           const nextUrl = extractNextUrlFromWindowLocation();
           const samlAuthLoginUrl = SAML_AUTH_LOGIN_WITH_FRAGMENT + nextUrl;
           formBodyOp.push(renderLoginButton(AuthType.SAML, samlAuthLoginUrl, samlConfig));
+          break;
+        }
+        case AuthType.PROXY: {
           break;
         }
         default: {
