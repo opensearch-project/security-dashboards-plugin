@@ -47,7 +47,17 @@ export class BasicAuthRoutes {
     this.coreSetup.http.resources.register(
       {
         path: LOGIN_PAGE_URI,
-        validate: false,
+        validate: {
+          query: schema.object({
+            nextUrl: schema.maybe(
+              schema.string({
+                validate: (nexturl) => {
+                  return validateNextUrl(nexturl, this.coreSetup.http.basePath.serverBasePath);
+                },
+              })
+            ),
+          }),
+        },
         options: {
           authRequired: false,
         },
