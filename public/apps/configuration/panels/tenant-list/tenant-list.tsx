@@ -13,15 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import {
-  EuiPageHeader,
-  EuiText,
-  EuiTitle,
-  EuiTabs,
-  EuiTab,
-  EuiCallOut,
-  EuiSmallButton,
-} from '@elastic/eui';
+import { EuiPageHeader, EuiText, EuiTabs, EuiTab, EuiCallOut, EuiSmallButton } from '@elastic/eui';
 import { Route } from 'react-router-dom';
 import React, { useState, useMemo } from 'react';
 import { ManageTab } from './manage_tab';
@@ -159,9 +151,9 @@ export function TenantList(props: TenantListProps) {
         fallBackComponent={
           <>
             <EuiPageHeader>
-              <EuiTitle size="l">
+              <EuiText size="s">
                 <h1>Dashboards multi-tenancy</h1>
-              </EuiTitle>
+              </EuiText>
             </EuiPageHeader>
             <EuiText size="s" color="subdued" grow={true} textAlign={'left'}>
               Tenants in OpenSearch Dashboards are spaces for saving index patterns, visualizations,
@@ -175,7 +167,7 @@ export function TenantList(props: TenantListProps) {
         resourceType={ResourceType.tenants}
       />
 
-      <EuiTabs>{renderTabs()}</EuiTabs>
+      <EuiTabs size="s">{renderTabs()}</EuiTabs>
       {!isMultiTenancyEnabled && selectedTabId === 'Manage' && tenancyDisabledWarning}
       {selectedTabContent}
     </>

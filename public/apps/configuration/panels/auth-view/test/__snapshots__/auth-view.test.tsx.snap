@@ -28,13 +28,13 @@ exports[`Auth view should load access error component 1`] = `
       }
     }
     fallBackComponent={
-      <EuiTitle
-        size="l"
+      <EuiText
+        size="s"
       >
         <h1>
           Authentication and authorization
         </h1>
-      </EuiTitle>
+      </EuiText>
     }
     navigation={Object {}}
   />

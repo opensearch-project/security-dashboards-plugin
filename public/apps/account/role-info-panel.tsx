@@ -17,7 +17,6 @@ import {
   EuiModalBody,
   EuiOverlayMask,
   EuiText,
-  EuiTitle,
   EuiHorizontalRule,
   EuiSpacer,
 } from '@elastic/eui';
@@ -48,29 +47,29 @@ export function RoleInfoPanel(props: { coreStart: CoreStart; handleClose: () => 
       <EuiModal data-test-subj="role-info-modal" onClose={props.handleClose}>
         <EuiSpacer />
         <EuiModalBody>
-          <EuiTitle>
-            <h4>Roles ({roles.length})</h4>
-          </EuiTitle>
-          <EuiText color="subdued">
+          <EuiText size="s">
+            <h2>Roles ({roles.length})</h2>
+          </EuiText>
+          <EuiText color="subdued" size="s">
             Roles you are currently mapped to by your administrator.
           </EuiText>
           <EuiSpacer />
           {roles.map((item) => (
-            <EuiText key={item}>
+            <EuiText key={item} size="s">
               {item}
               <br />
             </EuiText>
           ))}
           <EuiHorizontalRule />
-          <EuiTitle>
-            <h4>Backend roles ({backendRoles.length})</h4>
-          </EuiTitle>
-          <EuiText color="subdued">
+          <EuiText size="s">
+            <h2>Backend roles ({backendRoles.length})</h2>
+          </EuiText>
+          <EuiText color="subdued" size="s">
             Backend roles you are currently mapped to by your administrator.
           </EuiText>
           <EuiSpacer />
           {backendRoles.map((item) => (
-            <EuiText key={item}>
+            <EuiText key={item} size="s">
               {item}
               <br />
             </EuiText>

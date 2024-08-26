@@ -308,9 +308,9 @@ export function RoleList(props: AppDependencies) {
         appRightControls={buttonData}
         fallBackComponent={
           <EuiPageHeader>
-            <EuiTitle size="l">
+            <EuiText size="s">
               <h1>Roles</h1>
-            </EuiTitle>
+            </EuiText>
           </EuiPageHeader>
         }
         resourceType={ResourceType.roles}
