@@ -460,9 +460,9 @@ export function RoleView(props: RoleViewProps) {
           <>
             <EuiPageContentHeader>
               <EuiPageContentHeaderSection>
-                <EuiTitle size="l">
+                <EuiText size="s">
                   <h1>{props.roleName}</h1>
-                </EuiTitle>
+                </EuiText>
               </EuiPageContentHeaderSection>
 
               <EuiPageContentHeaderSection>{pageActions}</EuiPageContentHeaderSection>
@@ -479,6 +479,7 @@ export function RoleView(props: RoleViewProps) {
             ? tabs[MAP_USER_TAB_INDEX]
             : tabs[PERMISSIONS_TAB_INDEX]
         }
+        size="s"
       />
 
       <EuiSpacer />

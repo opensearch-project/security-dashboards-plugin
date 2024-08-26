@@ -14,7 +14,7 @@
  */
 
 import React, { useContext } from 'react';
-import { EuiLoadingContent, EuiPageHeader, EuiSpacer, EuiTitle } from '@elastic/eui';
+import { EuiLoadingContent, EuiPageHeader, EuiSpacer, EuiText } from '@elastic/eui';
 import { isEmpty } from 'lodash';
 import { AuthenticationSequencePanel } from './authentication-sequence-panel';
 import { AuthorizationPanel } from './authorization-panel';
@@ -87,9 +87,9 @@ export function AuthView(props: AppDependencies) {
           navigation={props.depsStart.navigation}
           coreStart={props.coreStart}
           fallBackComponent={
-            <EuiTitle size="l">
+            <EuiText size="s">
               <h1>Authentication and authorization</h1>
-            </EuiTitle>
+            </EuiText>
           }
         />
         {accessErrorFlag ? (
@@ -118,9 +118,9 @@ export function AuthView(props: AppDependencies) {
         appRightControls={buttonData}
         fallBackComponent={
           <EuiPageHeader>
-            <EuiTitle size="l">
+            <EuiText size="s">
               <h1>Authentication and authorization</h1>
-            </EuiTitle>
+            </EuiText>
             {!loading && !errorFlag && props.config.ui.backend_configurable && (
               <ExternalLinkButton
                 href={DocLinks.BackendConfigurationDoc}

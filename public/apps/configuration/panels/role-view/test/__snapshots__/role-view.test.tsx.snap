@@ -99,13 +99,13 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
       <React.Fragment>
         <EuiPageContentHeader>
           <EuiPageContentHeaderSection>
-            <EuiTitle
-              size="l"
+            <EuiText
+              size="s"
             >
               <h1>
                 role
               </h1>
-            </EuiTitle>
+            </EuiText>
           </EuiPageContentHeaderSection>
           <EuiPageContentHeaderSection>
             <EuiFlexGroup
@@ -212,6 +212,7 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
         "name": "Permissions",
       }
     }
+    size="s"
     tabs={
       Array [
         Object {
@@ -532,13 +533,13 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
       <React.Fragment>
         <EuiPageContentHeader>
           <EuiPageContentHeaderSection>
-            <EuiTitle
-              size="l"
+            <EuiText
+              size="s"
             >
               <h1>
                 role
               </h1>
-            </EuiTitle>
+            </EuiText>
           </EuiPageContentHeaderSection>
           <EuiPageContentHeaderSection>
             <EuiFlexGroup
@@ -715,6 +716,7 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
         "name": "Mapped users",
       }
     }
+    size="s"
     tabs={
       Array [
         Object {

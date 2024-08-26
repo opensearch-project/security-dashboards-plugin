@@ -20,7 +20,6 @@ import {
   EuiPageHeader,
   EuiSpacer,
   EuiText,
-  EuiTitle,
   EuiGlobalToastList,
 } from '@elastic/eui';
 import React, { useState, useContext } from 'react';
@@ -59,7 +58,7 @@ const TITLE_TEXT_DICT = {
 const descriptionData = [
   {
     renderComponent: (
-      <EuiText size="xs" color="subdued">
+      <EuiText size="s" color="subdued">
         Map users to this role to inherit role permissions. Two types of users are supported: user,
         and backend role. <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
       </EuiText>
@@ -169,12 +168,15 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
         coreStart={props.coreStart}
         fallBackComponent={
           <EuiPageHeader>
-            <EuiText size="xs" color="subdued">
-              <EuiTitle size="m">
+            <EuiText color="subdued">
+              <EuiText size="s">
                 <h1>Map user</h1>
-              </EuiTitle>
-              Map users to this role to inherit role permissions. Two types of users are supported:
-              user, and backend role. <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
+              </EuiText>
+              <EuiText size="s">
+                Map users to this role to inherit role permissions. Two types of users are
+                supported: user, and backend role.{' '}
+                <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
+              </EuiText>
             </EuiText>
           </EuiPageHeader>
         }

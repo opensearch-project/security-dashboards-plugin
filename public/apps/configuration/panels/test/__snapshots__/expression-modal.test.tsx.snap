@@ -15,7 +15,13 @@ exports[`Expression modal renders when isModalVisible = True 1`] = `
     >
       <EuiModalHeader>
         <EuiModalHeaderTitle>
-          Title
+          <EuiText
+            size="s"
+          >
+            <h2>
+              Title
+            </h2>
+          </EuiText>
         </EuiModalHeaderTitle>
       </EuiModalHeader>
       <EuiModalBody>

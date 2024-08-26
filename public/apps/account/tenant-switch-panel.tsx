@@ -26,7 +26,6 @@ import {
   EuiCompressedRadioGroup,
   EuiSpacer,
   EuiText,
-  EuiTitle,
 } from '@elastic/eui';
 import { CoreStart } from 'opensearch-dashboards/public';
 import { keys } from 'lodash';
@@ -286,9 +285,9 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
       <EuiModal data-test-subj="tenant-switch-modal" onClose={props.handleClose}>
         <EuiSpacer />
         <EuiModalBody>
-          <EuiTitle>
-            <h4>Select your tenant</h4>
-          </EuiTitle>
+          <EuiText size="s">
+            <h2>Select your tenant</h2>
+          </EuiText>
 
           <EuiSpacer />
 

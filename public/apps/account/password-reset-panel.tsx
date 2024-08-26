@@ -27,7 +27,7 @@ import {
   EuiModalFooter,
   EuiOverlayMask,
   EuiSpacer,
-  EuiTitle,
+  EuiText,
 } from '@elastic/eui';
 import { CoreStart } from 'opensearch-dashboards/public';
 import { FormRow } from '../configuration/utils/form-row';
@@ -104,9 +104,9 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
       <EuiModal data-test-subj="reset-password-modal" onClose={props.handleClose}>
         <EuiSpacer />
         <EuiModalBody>
-          <EuiTitle>
-            <h4>Reset password for &quot;{props.username}&quot;</h4>
-          </EuiTitle>
+          <EuiText size="s">
+            <h2>Reset password for &quot;{props.username}&quot;</h2>
+          </EuiText>
 
           <EuiSpacer />
 
