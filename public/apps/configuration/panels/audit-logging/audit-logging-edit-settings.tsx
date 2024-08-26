@@ -23,6 +23,7 @@ import {
   EuiPanel,
   EuiSpacer,
   EuiTitle,
+  EuiText,
 } from '@elastic/eui';
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 import { cloneDeep, set, without } from 'lodash';
@@ -221,9 +222,9 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
           coreStart={props.coreStart}
           fallBackComponent={
             <EuiPageHeader>
-              <EuiTitle size="l">
+              <EuiText size="s">
                 <h1>General settings</h1>
-              </EuiTitle>
+              </EuiText>
             </EuiPageHeader>
           }
           resourceType={ResourceType.auditLogging}

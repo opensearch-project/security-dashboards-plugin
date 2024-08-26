@@ -24,6 +24,7 @@ import {
   EuiOverlayMask,
   EuiForm,
   EuiCompressedComboBox,
+  EuiText,
 } from '@elastic/eui';
 import React, { useState } from 'react';
 import { ComboBoxOptions, Action } from '../../types';
@@ -61,7 +62,11 @@ export function PermissionEditModal(props: PermissionEditModalDeps) {
     <EuiOverlayMask>
       <EuiModal onClose={props.handleClose}>
         <EuiModalHeader>
-          <EuiModalHeaderTitle>{TITLE_DICT[props.action]}</EuiModalHeaderTitle>
+          <EuiModalHeaderTitle>
+            <EuiText size="s">
+              <h2>{TITLE_DICT[props.action]}</h2>
+            </EuiText>
+          </EuiModalHeaderTitle>
         </EuiModalHeader>
 
         <EuiModalBody>
