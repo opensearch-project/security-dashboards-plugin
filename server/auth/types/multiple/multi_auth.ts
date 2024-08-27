@@ -29,7 +29,7 @@ import { AuthType, LOGIN_PAGE_URI } from '../../../../common';
 import { composeNextUrlQueryParam } from '../../../utils/next_url';
 import { MultiAuthRoutes } from './routes';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
-import { BasicAuthentication, OpenIdAuthentication, SamlAuthentication } from '../../types';
+import { BasicAuthentication, OpenIdAuthentication, SamlAuthentication, JwtAuthentication } from '../../types';
 
 export class MultipleAuthentication extends AuthenticationType {
   private authTypes: string | string[];
@@ -91,6 +91,19 @@ export class MultipleAuthentication extends AuthenticationType {
           );
           await SamlAuth.init();
           this.authHandlers.set(AuthType.SAML, SamlAuth);
+          break;
+        }
+        case AuthType.JWT: {
+          const JwtAuth = new JwtAuthentication(
+            this.config,
+            this.sessionStorageFactory,
+            this.router,
+            this.esClient,
+            this.coreSetup,
+            this.logger
+          );
+          await JwtAuth.init();
+          this.authHandlers.set(AuthType.JWT, JwtAuth);
           break;
         }
         default: {
