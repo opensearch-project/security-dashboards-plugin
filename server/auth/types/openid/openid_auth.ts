@@ -27,10 +27,9 @@ import {
   IOpenSearchDashboardsResponse,
   AuthResult,
 } from 'opensearch-dashboards/server';
-import HTTP from 'http';
-import HTTPS from 'https';
 import { PeerCertificate } from 'tls';
 import { Server, ServerStateCookieOptions } from '@hapi/hapi';
+import { ProxyAgent } from 'proxy-agent';
 import { SecurityPluginConfigType } from '../../..';
 import {
   SecuritySessionCookie,
@@ -47,6 +46,7 @@ import {
   getExtraAuthStorageValue,
   setExtraAuthStorage,
 } from '../../../session/cookie_splitter';
+import { getRedirectUrl } from '../../../../../../src/core/server/http';
 
 export interface OpenIdAuthConfig {
   authorizationEndpoint?: string;
@@ -128,9 +128,11 @@ export class OpenIdAuthentication extends AuthenticationType {
   }
 
   private generateNextUrl(request: OpenSearchDashboardsRequest): string {
-    const path =
-      this.coreSetup.http.basePath.serverBasePath +
-      (request.url.pathname || '/app/opensearch-dashboards');
+    const path = getRedirectUrl({
+      request,
+      basePath: this.coreSetup.http.basePath.serverBasePath,
+      nextUrl: request.url.pathname || '/app/opensearch-dashboards',
+    });
     return escape(path);
   }
 
@@ -175,19 +177,23 @@ export class OpenIdAuthentication extends AuthenticationType {
       };
     }
     this.logger.info(getObjectProperties(this.wreckHttpsOption, 'WreckHttpsOptions'));
+
+    // Use proxy agent to allow usage of e.g. http_proxy environment variable
+    const httpAgent = new ProxyAgent();
+    const httpsAllowUnauthorizedAgent = new ProxyAgent({
+      rejectUnauthorized: false,
+    });
+    let httpsAgent = new ProxyAgent();
     if (Object.keys(this.wreckHttpsOption).length > 0) {
-      return wreck.defaults({
-        agents: {
-          http: new HTTP.Agent(),
-          https: new HTTPS.Agent(this.wreckHttpsOption),
-          httpsAllowUnauthorized: new HTTPS.Agent({
-            rejectUnauthorized: false,
-          }),
-        },
-      });
-    } else {
-      return wreck;
+      httpsAgent = new ProxyAgent(this.wreckHttpsOption);
     }
+    return wreck.defaults({
+      agents: {
+        http: httpAgent,
+        https: httpsAgent,
+        httpsAllowUnauthorized: httpsAllowUnauthorizedAgent,
+      },
+    });
   }
 
   getWreckHttpsOptions(): WreckHttpsOptions {

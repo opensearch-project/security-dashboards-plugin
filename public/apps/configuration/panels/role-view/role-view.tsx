@@ -15,7 +15,7 @@
 
 import React, { useState, useContext } from 'react';
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiPageContentHeader,
   EuiPageContentHeaderSection,
   EuiSpacer,
@@ -32,7 +32,7 @@ import {
   EuiCallOut,
   EuiGlobalToastList,
   EuiHorizontalRule,
-  EuiButtonEmpty,
+  EuiSmallButtonEmpty,
 } from '@elastic/eui';
 import { difference } from 'lodash';
 import { BreadcrumbsPageDependencies } from '../../../types';
@@ -72,6 +72,7 @@ import { setCrossPageToast } from '../../utils/storage-utils';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { getClusterInfo } from '../../../../utils/datasource-utils';
+import { PageHeader } from '../../header/header-components';
 
 interface RoleViewProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -195,7 +196,7 @@ export function RoleView(props: RoleViewProps) {
             />
           </EuiFlexItem>
           <EuiFlexItem>
-            <EuiButton
+            <EuiSmallButton
               data-test-subj="map-users"
               fill
               onClick={() => {
@@ -208,7 +209,7 @@ export function RoleView(props: RoleViewProps) {
               }}
             >
               Map users
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       }
@@ -302,12 +303,15 @@ export function RoleView(props: RoleViewProps) {
               <EuiPageContentHeaderSection>
                 <EuiFlexGroup>
                   <EuiFlexItem>
-                    <EuiButton onClick={showDeleteConfirmModal} disabled={selection.length === 0}>
+                    <EuiSmallButton
+                      onClick={showDeleteConfirmModal}
+                      disabled={selection.length === 0}
+                    >
                       Delete mapping
-                    </EuiButton>
+                    </EuiSmallButton>
                   </EuiFlexItem>
                   <EuiFlexItem>
-                    <EuiButton
+                    <EuiSmallButton
                       data-test-subj="manage-mapping"
                       onClick={() => {
                         window.location.href = buildHashUrl(
@@ -319,7 +323,7 @@ export function RoleView(props: RoleViewProps) {
                       }}
                     >
                       Manage mapping
-                    </EuiButton>
+                    </EuiSmallButton>
                   </EuiFlexItem>
                 </EuiFlexGroup>
               </EuiPageContentHeaderSection>
@@ -350,10 +354,10 @@ export function RoleView(props: RoleViewProps) {
 
   let pageActions;
   const actionsMenuItems: React.ReactElement[] = [
-    <EuiButtonEmpty key="duplicate" href={duplicateRoleLink}>
+    <EuiSmallButtonEmpty key="duplicate" href={duplicateRoleLink}>
       duplicate
-    </EuiButtonEmpty>,
-    <EuiButtonEmpty
+    </EuiSmallButtonEmpty>,
+    <EuiSmallButtonEmpty
       data-test-subj="delete"
       key="delete"
       color="danger"
@@ -372,24 +376,73 @@ export function RoleView(props: RoleViewProps) {
       }}
     >
       delete
-    </EuiButtonEmpty>,
+    </EuiSmallButtonEmpty>,
   ];
   const [actionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);
+  const useUpdatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
 
   if (isReserved) {
-    pageActions = <EuiButton href={duplicateRoleLink}>Duplicate role</EuiButton>;
+    pageActions = <EuiSmallButton href={duplicateRoleLink}>Duplicate role</EuiSmallButton>;
   } else {
     pageActions = (
       <EuiFlexGroup gutterSize="s">
         <EuiFlexItem>{actionsMenu}</EuiFlexItem>
         <EuiFlexItem>
-          <EuiButton href={buildHashUrl(ResourceType.roles, Action.edit, props.roleName)}>
+          <EuiSmallButton href={buildHashUrl(ResourceType.roles, Action.edit, props.roleName)}>
             Edit role
-          </EuiButton>
+          </EuiSmallButton>
         </EuiFlexItem>
       </EuiFlexGroup>
     );
   }
+
+  const reservedRoleButtons = [
+    {
+      label: 'Duplicate role',
+      isLoading: false,
+      href: buildHashUrl(ResourceType.roles, Action.edit, props.roleName),
+      type: 'button',
+      fill: true,
+    },
+  ];
+  const roleButtons = [
+    {
+      isLoading: false,
+      run: async () => {
+        try {
+          await requestDeleteRoles(props.coreStart.http, [props.roleName], dataSource.id);
+          setCrossPageToast(buildUrl(ResourceType.roles), {
+            id: 'deleteRole',
+            color: 'success',
+            title: `${props.roleName} deleted ${getClusterInfo(dataSourceEnabled, dataSource)}`,
+          });
+          window.location.href = buildHashUrl(ResourceType.roles);
+        } catch (e) {
+          addToast(createUnknownErrorToast('deleteRole', 'delete role'));
+        }
+      },
+      iconType: 'trash',
+      color: 'danger',
+      type: 'button', // this should be icon, but icons current do not support a border currently
+      testId: 'delete',
+      ariaLabel: 'delete',
+    },
+    {
+      label: 'Duplicate',
+      isLoading: false,
+      href: duplicateRoleLink,
+      type: 'button',
+    },
+    {
+      label: 'Edit role',
+      isLoading: false,
+      href: buildHashUrl(ResourceType.roles, Action.edit, props.roleName),
+      fill: true,
+      type: 'button',
+    },
+  ];
+
+  const roleView = isReserved ? reservedRoleButtons : roleButtons;
 
   return (
     <>
@@ -399,18 +452,26 @@ export function RoleView(props: RoleViewProps) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      {props.buildBreadcrumbs(props.roleName)}
+      <PageHeader
+        navigation={props.depsStart.navigation}
+        coreStart={props.coreStart}
+        appRightControls={roleView}
+        fallBackComponent={
+          <>
+            <EuiPageContentHeader>
+              <EuiPageContentHeaderSection>
+                <EuiText size="s">
+                  <h1>{props.roleName}</h1>
+                </EuiText>
+              </EuiPageContentHeaderSection>
 
-      <EuiPageContentHeader>
-        <EuiPageContentHeaderSection>
-          <EuiTitle size="l">
-            <h1>{props.roleName}</h1>
-          </EuiTitle>
-        </EuiPageContentHeaderSection>
-
-        <EuiPageContentHeaderSection>{pageActions}</EuiPageContentHeaderSection>
-      </EuiPageContentHeader>
-
+              <EuiPageContentHeaderSection>{pageActions}</EuiPageContentHeaderSection>
+            </EuiPageContentHeader>
+          </>
+        }
+        resourceType={ResourceType.roles}
+        subAction={props.roleName}
+      />
       <EuiTabbedContent
         tabs={tabs}
         initialSelectedTab={
@@ -418,6 +479,7 @@ export function RoleView(props: RoleViewProps) {
             ? tabs[MAP_USER_TAB_INDEX]
             : tabs[PERMISSIONS_TAB_INDEX]
         }
+        size="s"
       />
 
       <EuiSpacer />

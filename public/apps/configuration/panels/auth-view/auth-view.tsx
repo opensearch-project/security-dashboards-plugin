@@ -14,7 +14,7 @@
  */
 
 import React, { useContext } from 'react';
-import { EuiLoadingContent, EuiPageHeader, EuiSpacer, EuiTitle } from '@elastic/eui';
+import { EuiLoadingContent, EuiPageHeader, EuiSpacer, EuiText } from '@elastic/eui';
 import { isEmpty } from 'lodash';
 import { AuthenticationSequencePanel } from './authentication-sequence-panel';
 import { AuthorizationPanel } from './authorization-panel';
@@ -26,6 +26,8 @@ import { InstructionView } from './instruction-view';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { AccessErrorComponent } from '../../access-error-component';
+import { PageHeader } from '../../header/header-components';
+import { ResourceType } from '../../../../../common';
 
 export function AuthView(props: AppDependencies) {
   const [authentication, setAuthentication] = React.useState([]);
@@ -60,6 +62,18 @@ export function AuthView(props: AppDependencies) {
     fetchData();
   }, [props.coreStart.http, dataSource]);
 
+  const buttonData = [
+    {
+      label: 'Manage via config.yml',
+      isLoading: false,
+      href: DocLinks.BackendConfigurationDoc,
+      iconType: 'popout',
+      iconSide: 'right',
+      type: 'button',
+      target: '_blank',
+    },
+  ];
+
   if (isEmpty(authentication) && !loading) {
     return (
       <>
@@ -69,11 +83,15 @@ export function AuthView(props: AppDependencies) {
           setDataSource={setDataSource}
           selectedDataSource={dataSource}
         />
-        {accessErrorFlag ? (
-          <EuiTitle size="l">
-            <h1>Authentication and authorization</h1>
-          </EuiTitle>
-        ) : null}
+        <PageHeader
+          navigation={props.depsStart.navigation}
+          coreStart={props.coreStart}
+          fallBackComponent={
+            <EuiText size="s">
+              <h1>Authentication and authorization</h1>
+            </EuiText>
+          }
+        />
         {accessErrorFlag ? (
           <AccessErrorComponent
             loading={loading}
@@ -94,17 +112,25 @@ export function AuthView(props: AppDependencies) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      <EuiPageHeader>
-        <EuiTitle size="l">
-          <h1>Authentication and authorization</h1>
-        </EuiTitle>
-        {!loading && !errorFlag && props.config.ui.backend_configurable && (
-          <ExternalLinkButton
-            href={DocLinks.BackendConfigurationDoc}
-            text="Manage via config.yml"
-          />
-        )}
-      </EuiPageHeader>
+      <PageHeader
+        navigation={props.depsStart.navigation}
+        coreStart={props.coreStart}
+        appRightControls={buttonData}
+        fallBackComponent={
+          <EuiPageHeader>
+            <EuiText size="s">
+              <h1>Authentication and authorization</h1>
+            </EuiText>
+            {!loading && !errorFlag && props.config.ui.backend_configurable && (
+              <ExternalLinkButton
+                href={DocLinks.BackendConfigurationDoc}
+                text="Manage via config.yml"
+              />
+            )}
+          </EuiPageHeader>
+        }
+        resourceType={ResourceType.auth}
+      />
       {loading ? (
         <EuiLoadingContent />
       ) : accessErrorFlag ? (

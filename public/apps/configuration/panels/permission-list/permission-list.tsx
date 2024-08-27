@@ -15,7 +15,7 @@
 
 import {
   EuiBasicTableColumn,
-  EuiButtonIcon,
+  EuiSmallButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
   EuiGlobalToastList,
@@ -30,7 +30,7 @@ import {
   EuiText,
   EuiTitle,
   RIGHT_ALIGNMENT,
-  EuiButtonEmpty,
+  EuiSmallButtonEmpty,
   Query,
   EuiLoadingContent,
 } from '@elastic/eui';
@@ -65,6 +65,8 @@ import { DocLinks } from '../../constants';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { DataSourceContext } from '../../app-router';
 import { AccessErrorComponent } from '../../access-error-component';
+import { PageHeader } from '../../header/header-components';
+import { ResourceType } from '../../../../../common';
 
 export function renderBooleanToCheckMark(value: boolean): React.ReactNode {
   return value ? <EuiIcon type="check" /> : '';
@@ -95,7 +97,7 @@ export function renderRowExpansionArrow(
 ) {
   return (item: PermissionListingItem) =>
     item.type === 'Action group' && (
-      <EuiButtonIcon
+      <EuiSmallButtonIcon
         onClick={() => toggleRowDetails(item, actionGroupDict, setItemIdToExpandedRowMap)}
         aria-label={itemIdToExpandedRowMap[item.name] ? 'Collapse' : 'Expand'}
         iconType={itemIdToExpandedRowMap[item.name] ? 'arrowUp' : 'arrowDown'}
@@ -249,15 +251,15 @@ export function PermissionList(props: AppDependencies) {
   );
 
   const actionsMenuItems = [
-    <EuiButtonEmpty
+    <EuiSmallButtonEmpty
       id="edit"
       key="edit"
       onClick={() => showEditModal(selection[0].name, Action.edit, selection[0].allowedActions)}
       disabled={selection.length !== 1 || selection[0].reserved}
     >
       Edit
-    </EuiButtonEmpty>,
-    <EuiButtonEmpty
+    </EuiSmallButtonEmpty>,
+    <EuiSmallButtonEmpty
       id="duplicate"
       key="duplicate"
       onClick={() =>
@@ -270,15 +272,15 @@ export function PermissionList(props: AppDependencies) {
       disabled={selection.length !== 1 || selection[0].type !== 'Action group'}
     >
       Duplicate
-    </EuiButtonEmpty>,
-    <EuiButtonEmpty
+    </EuiSmallButtonEmpty>,
+    <EuiSmallButtonEmpty
       key="delete"
       color="danger"
       onClick={showDeleteConfirmModal}
       disabled={selection.length === 0 || selection.some((group) => group.reserved)}
     >
       Delete
-    </EuiButtonEmpty>,
+    </EuiSmallButtonEmpty>,
   ];
 
   const [actionsMenu, closeActionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);
@@ -331,10 +333,13 @@ export function PermissionList(props: AppDependencies) {
   };
 
   const createActionGroupMenuItems = [
-    <EuiButtonEmpty key="create-from-blank" onClick={() => showEditModal('', Action.create, [])}>
+    <EuiSmallButtonEmpty
+      key="create-from-blank"
+      onClick={() => showEditModal('', Action.create, [])}
+    >
       Create from blank
-    </EuiButtonEmpty>,
-    <EuiButtonEmpty
+    </EuiSmallButtonEmpty>,
+    <EuiSmallButtonEmpty
       key="create-from-selection"
       id="create-from-selection"
       onClick={() =>
@@ -347,14 +352,43 @@ export function PermissionList(props: AppDependencies) {
       disabled={selection.length === 0}
     >
       Create from selection
-    </EuiButtonEmpty>,
+    </EuiSmallButtonEmpty>,
   ];
+
+  const useUpdatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
 
   const [createActionGroupMenu] = useContextMenuState(
     'Create action group',
     { fill: true },
-    createActionGroupMenuItems
+    createActionGroupMenuItems,
+    useUpdatedUX
   );
+
+  const buttonData = [
+    {
+      isLoading: loading,
+      renderComponent: <EuiFlexItem>{createActionGroupMenu}</EuiFlexItem>,
+    },
+  ];
+
+  const descriptionData = [
+    {
+      isLoading: loading,
+      renderComponent: (
+        <EuiText size="xs" color="subdued">
+          Permissions are individual actions, such as cluster:admin/snapshot/restore, which lets you
+          restore snapshots. Action groups <br />
+          are reusable collections of permissions, such as MANAGE_SNAPSHOTS, which lets you view,
+          take, delete, and restore <br />
+          snapshots. You can often meet your security needs using the default action groups, but you
+          might find it convenient to create <br />
+          your own. <ExternalLink href={DocLinks.PermissionsDoc} />
+        </EuiText>
+      ),
+    },
+  ];
+
+  const permissionLen = Query.execute(query || '', permissionList).length;
 
   return (
     <>
@@ -364,44 +398,56 @@ export function PermissionList(props: AppDependencies) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      <EuiPageHeader>
-        <EuiTitle size="l">
-          <h1>Permissions</h1>
-        </EuiTitle>
-      </EuiPageHeader>
+      <PageHeader
+        navigation={props.depsStart.navigation}
+        coreStart={props.coreStart}
+        descriptionControls={descriptionData}
+        appRightControls={buttonData}
+        fallBackComponent={
+          <EuiPageHeader>
+            <EuiText size="s">
+              <h1>Permissions</h1>
+            </EuiText>
+          </EuiPageHeader>
+        }
+        resourceType={ResourceType.permissions}
+        count={permissionList.length}
+      />
       {loading ? (
         <EuiLoadingContent />
       ) : accessErrorFlag ? (
         <AccessErrorComponent loading={loading} dataSourceLabel={dataSource && dataSource.label} />
       ) : (
         <EuiPageContent>
-          <EuiPageContentHeader>
-            <EuiPageContentHeaderSection>
-              <EuiTitle size="s">
-                <h3>
-                  Permissions
-                  <span className="panel-header-count">
-                    {' '}
-                    ({Query.execute(query || '', permissionList).length})
-                  </span>
-                </h3>
-              </EuiTitle>
-              <EuiText size="xs" color="subdued">
-                Permissions are individual actions, such as cluster:admin/snapshot/restore, which
-                lets you restore snapshots. Action groups are reusable collections of permissions,
-                such as MANAGE_SNAPSHOTS, which lets you view, take, delete, and restore snapshots.
-                You can often meet your security needs using the default action groups, but you
-                might find it convenient to create your own.{' '}
-                <ExternalLink href={DocLinks.PermissionsDoc} />
-              </EuiText>
-            </EuiPageContentHeaderSection>
-            <EuiPageContentHeaderSection>
-              <EuiFlexGroup>
-                <EuiFlexItem>{actionsMenu}</EuiFlexItem>
-                <EuiFlexItem>{createActionGroupMenu}</EuiFlexItem>
-              </EuiFlexGroup>
-            </EuiPageContentHeaderSection>
-          </EuiPageContentHeader>
+          {useUpdatedUX ? null : (
+            <EuiPageContentHeader>
+              <EuiPageContentHeaderSection>
+                <EuiTitle size="s">
+                  <h3>
+                    Permissions
+                    <span className="panel-header-count">
+                      {' '}
+                      ({Query.execute(query || '', permissionList).length})
+                    </span>
+                  </h3>
+                </EuiTitle>
+                <EuiText size="xs" color="subdued">
+                  Permissions are individual actions, such as cluster:admin/snapshot/restore, which
+                  lets you restore snapshots. Action groups are reusable collections of permissions,
+                  such as MANAGE_SNAPSHOTS, which lets you view, take, delete, and restore
+                  snapshots. You can often meet your security needs using the default action groups,
+                  but you might find it convenient to create your own.{' '}
+                  <ExternalLink href={DocLinks.PermissionsDoc} />
+                </EuiText>
+              </EuiPageContentHeaderSection>
+              <EuiPageContentHeaderSection>
+                <EuiFlexGroup>
+                  <EuiFlexItem>{actionsMenu}</EuiFlexItem>
+                  <EuiFlexItem>{createActionGroupMenu}</EuiFlexItem>
+                </EuiFlexGroup>
+              </EuiPageContentHeaderSection>
+            </EuiPageContentHeader>
+          )}
           <EuiPageBody>
             <EuiInMemoryTable
               tableLayout={'auto'}
@@ -420,6 +466,7 @@ export function PermissionList(props: AppDependencies) {
                   setQuery(arg.query);
                   return true;
                 },
+                toolsRight: useUpdatedUX ? [<EuiFlexItem>{actionsMenu}</EuiFlexItem>] : undefined,
               }}
               selection={{ onSelectionChange: setSelection }}
               sorting={{ sort: { field: 'type', direction: 'asc' } }}

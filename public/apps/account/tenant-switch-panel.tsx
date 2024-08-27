@@ -14,19 +14,18 @@
  */
 
 import {
-  EuiButton,
-  EuiButtonEmpty,
+  EuiSmallButton,
+  EuiSmallButtonEmpty,
   EuiCallOut,
-  EuiComboBox,
+  EuiCompressedComboBox,
   EuiComboBoxOptionOption,
   EuiModal,
   EuiModalBody,
   EuiModalFooter,
   EuiOverlayMask,
-  EuiRadioGroup,
+  EuiCompressedRadioGroup,
   EuiSpacer,
   EuiText,
-  EuiTitle,
 } from '@elastic/eui';
 import { CoreStart } from 'opensearch-dashboards/public';
 import { keys } from 'lodash';
@@ -247,7 +246,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
   if (isMultiTenancyEnabled) {
     content = (
       <>
-        <EuiRadioGroup
+        <EuiCompressedRadioGroup
           data-test-subj="tenant-switch-radios"
           options={tenantSwitchRadios}
           idSelected={tenantSwitchRadioIdSelected}
@@ -258,7 +257,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
         {/* This combo box has to be outside the radio group.
           In current EUI if put into the child of radio option, clicking in the combo box will not
           show the drop down list since the radio option consumes the click event. */}
-        <EuiComboBox
+        <EuiCompressedComboBox
           placeholder="Select a custom tenant"
           options={customTenantOptions}
           singleSelection={{ asPlainText: true }}
@@ -286,9 +285,9 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
       <EuiModal data-test-subj="tenant-switch-modal" onClose={props.handleClose}>
         <EuiSpacer />
         <EuiModalBody>
-          <EuiTitle>
-            <h4>Select your tenant</h4>
-          </EuiTitle>
+          <EuiText size="s">
+            <h2>Select your tenant</h2>
+          </EuiText>
 
           <EuiSpacer />
 
@@ -304,16 +303,16 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
           <EuiSpacer />
         </EuiModalBody>
         <EuiModalFooter>
-          <EuiButtonEmpty onClick={props.handleClose}>Cancel</EuiButtonEmpty>
+          <EuiSmallButtonEmpty onClick={props.handleClose}>Cancel</EuiSmallButtonEmpty>
 
-          <EuiButton
+          <EuiSmallButton
             data-test-subj="confirm"
             fill={isMultiTenancyEnabled && !invalidCustomTenant}
             disabled={!isMultiTenancyEnabled || invalidCustomTenant}
             onClick={handleTenantConfirmation}
           >
             Confirm
-          </EuiButton>
+          </EuiSmallButton>
         </EuiModalFooter>
       </EuiModal>
     </EuiOverlayMask>

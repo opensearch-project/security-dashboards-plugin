@@ -14,13 +14,12 @@
  */
 
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiFlexGroup,
   EuiFlexItem,
   EuiPageHeader,
   EuiSpacer,
   EuiText,
-  EuiTitle,
   EuiGlobalToastList,
 } from '@elastic/eui';
 import React, { useState, useContext } from 'react';
@@ -46,6 +45,7 @@ import { ExternalLink } from '../../utils/display-utils';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { DataSourceContext } from '../../app-router';
 import { getClusterInfo } from '../../../../utils/datasource-utils';
+import { PageHeader } from '../../header/header-components';
 
 interface RoleEditMappedUserProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -54,6 +54,17 @@ interface RoleEditMappedUserProps extends BreadcrumbsPageDependencies {
 const TITLE_TEXT_DICT = {
   mapuser: 'Map user',
 };
+
+const descriptionData = [
+  {
+    renderComponent: (
+      <EuiText size="s" color="subdued">
+        Map users to this role to inherit role permissions. Two types of users are supported: user,
+        and backend role. <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
+      </EuiText>
+    ),
+  },
+];
 
 export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
   const [internalUsers, setInternalUsers] = React.useState<ComboBoxOptions>([]);
@@ -91,9 +102,7 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
   React.useEffect(() => {
     const fetchInternalUserNames = async () => {
       try {
-        setUserNames(
-          await fetchUserNameList(props.coreStart.http, ResourceType.users, dataSource.id)
-        );
+        setUserNames(await fetchUserNameList(props.coreStart.http, dataSource.id));
       } catch (e) {
         addToast(createUnknownErrorToast('fetchInternalUserNames', 'load data'));
         console.error(e);
@@ -152,16 +161,28 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      {props.buildBreadcrumbs(props.roleName, TITLE_TEXT_DICT[SubAction.mapuser])}
-      <EuiPageHeader>
-        <EuiText size="xs" color="subdued">
-          <EuiTitle size="m">
-            <h1>Map user</h1>
-          </EuiTitle>
-          Map users to this role to inherit role permissions. Two types of users are supported:
-          user, and backend role. <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
-        </EuiText>
-      </EuiPageHeader>
+      <PageHeader
+        navigation={props.depsStart.navigation}
+        coreStart={props.coreStart}
+        fallBackComponent={
+          <EuiPageHeader>
+            <EuiText color="subdued">
+              <EuiText size="s">
+                <h1>Map user</h1>
+              </EuiText>
+              <EuiText size="s">
+                Map users to this role to inherit role permissions. Two types of users are
+                supported: user, and backend role.{' '}
+                <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
+              </EuiText>
+            </EuiText>
+          </EuiPageHeader>
+        }
+        resourceType={ResourceType.roles}
+        subAction={TITLE_TEXT_DICT[SubAction.mapuser]}
+        pageTitle={props.roleName}
+        descriptionControls={descriptionData}
+      />
       <EuiSpacer size="m" />
       <InternalUsersPanel
         state={internalUsers}
@@ -176,18 +197,18 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
       <EuiSpacer size="m" />
       <EuiFlexGroup justifyContent="flexEnd">
         <EuiFlexItem grow={false}>
-          <EuiButton
+          <EuiSmallButton
             onClick={() => {
               window.location.href = buildHashUrl(ResourceType.roles, Action.view, props.roleName);
             }}
           >
             Cancel
-          </EuiButton>
+          </EuiSmallButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButton id="map" fill onClick={updateRoleMappingHandler}>
+          <EuiSmallButton id="map" fill onClick={updateRoleMappingHandler}>
             Map
-          </EuiButton>
+          </EuiSmallButton>
         </EuiFlexItem>
       </EuiFlexGroup>
       <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={10000} dismissToast={removeToast} />

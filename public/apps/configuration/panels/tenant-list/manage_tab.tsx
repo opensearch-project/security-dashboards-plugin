@@ -15,8 +15,8 @@
 
 import {
   EuiBadge,
-  EuiButton,
-  EuiButtonEmpty,
+  EuiSmallButton,
+  EuiSmallButtonEmpty,
   EuiFlexGroup,
   EuiFlexItem,
   EuiInMemoryTable,
@@ -66,14 +66,15 @@ import { PageId } from '../../types';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { useContextMenuState } from '../../utils/context-menu';
-import { generateResourceName } from '../../utils/resource-utils';
+import { generateResourceName, getBreadcrumbs } from '../../utils/resource-utils';
 import { DocLinks } from '../../constants';
 import { TenantList } from './tenant-list';
-import { LocalCluster, getBreadcrumbs } from '../../app-router';
+import { LocalCluster } from '../../../../utils/datasource-utils';
 import { buildUrl } from '../../utils/url-builder';
 import { CrossPageToast } from '../../cross-page-toast';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
 import { AccessErrorComponent } from '../../access-error-component';
+import { HeaderButtonOrLink } from '../../header/header-components';
 
 export function ManageTab(props: AppDependencies) {
   const setGlobalBreadcrumbs = flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs);
@@ -236,13 +237,13 @@ export function ManageTab(props: AppDependencies) {
           Tenancy is currently disabled and users don&apos;t have access to this feature. To create,
           edit tenants you must enabled tenanc throught he configure tenancy page.
         </p>
-        <EuiButton
+        <EuiSmallButton
           id="switchToConfigure"
           color="warning"
           onClick={() => renderConfigurePage().then()}
         >
           Configure tenancy
-        </EuiButton>
+        </EuiSmallButton>
       </EuiCallOut>
     );
   }
@@ -386,23 +387,23 @@ export function ManageTab(props: AppDependencies) {
   ];
 
   const actionsMenuItems = [
-    <EuiButtonEmpty
+    <EuiSmallButtonEmpty
       id="switchTenant"
       key="switchTenant"
       disabled={selection.length !== 1}
       onClick={() => switchToSelectedTenant(selection[0].tenantValue, selection[0].tenant)}
     >
       Switch to selected tenant
-    </EuiButtonEmpty>,
-    <EuiButtonEmpty
+    </EuiSmallButtonEmpty>,
+    <EuiSmallButtonEmpty
       id="edit"
       key="edit"
       disabled={selection.length !== 1 || selection[0].reserved}
       onClick={() => showEditModal(selection[0].tenant, Action.edit, selection[0].description)}
     >
       Edit
-    </EuiButtonEmpty>,
-    <EuiButtonEmpty
+    </EuiSmallButtonEmpty>,
+    <EuiSmallButtonEmpty
       id="duplicate"
       key="duplicate"
       disabled={selection.length !== 1}
@@ -415,32 +416,32 @@ export function ManageTab(props: AppDependencies) {
       }
     >
       Duplicate
-    </EuiButtonEmpty>,
-    <EuiButtonEmpty
+    </EuiSmallButtonEmpty>,
+    <EuiSmallButtonEmpty
       id="createDashboard"
       key="createDashboard"
       disabled={selection.length !== 1}
       onClick={() => viewOrCreateDashboard(selection[0].tenantValue, Action.create)}
     >
       Create dashboard
-    </EuiButtonEmpty>,
-    <EuiButtonEmpty
+    </EuiSmallButtonEmpty>,
+    <EuiSmallButtonEmpty
       id="createVisualizations"
       key="createVisualizations"
       disabled={selection.length !== 1}
       onClick={() => viewOrCreateVisualization(selection[0].tenantValue, Action.create)}
     >
       Create visualizations
-    </EuiButtonEmpty>,
-    <EuiButtonEmpty
+    </EuiSmallButtonEmpty>,
+    <EuiSmallButtonEmpty
       id="set as Global Default"
       key="Set as Global Default key"
       disabled={selection.length !== 1 || !isMultiTenancyEnabled}
       onClick={showModal}
     >
       Set as Default Tenant
-    </EuiButtonEmpty>,
-    <EuiButtonEmpty
+    </EuiSmallButtonEmpty>,
+    <EuiSmallButtonEmpty
       id="delete"
       key="delete"
       color="danger"
@@ -448,7 +449,7 @@ export function ManageTab(props: AppDependencies) {
       disabled={selection.length === 0 || selection.some((tenant) => tenant.reserved)}
     >
       Delete
-    </EuiButtonEmpty>,
+    </EuiSmallButtonEmpty>,
   ];
 
   const [actionsMenu, closeActionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);
@@ -502,6 +503,19 @@ export function ManageTab(props: AppDependencies) {
       />
     );
   }
+  const useUpdatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
+  const createTenantButton = [
+    {
+      id: 'createTenant',
+      label: 'Creat tenant',
+      iconType: 'plus',
+      iconSide: 'left',
+      isLoading: false,
+      run: () => showEditModal('', Action.create, ''),
+      type: 'button',
+      fill: true,
+    },
+  ];
   /* eslint-disable */
   return (
     <>
@@ -527,15 +541,24 @@ export function ManageTab(props: AppDependencies) {
           <EuiPageContentHeaderSection>
             <EuiFlexGroup>
               <EuiFlexItem>{actionsMenu}</EuiFlexItem>
+              { useUpdatedUX ? 
+                <HeaderButtonOrLink
+
+                navigation={props.depsStart.navigation}
+          coreStart={props.coreStart}
+                  appRightControls={createTenantButton}
+  
+                />
+              : 
               <EuiFlexItem>
-                <EuiButton
+                <EuiSmallButton
                   id="createTenant"
                   fill
                   onClick={() => showEditModal('', Action.create, '')}
                 >
                   Create tenant
-                </EuiButton>
-              </EuiFlexItem>
+                </EuiSmallButton>
+              </EuiFlexItem>}
             </EuiFlexGroup>
           </EuiPageContentHeaderSection>
         </EuiPageContentHeader>

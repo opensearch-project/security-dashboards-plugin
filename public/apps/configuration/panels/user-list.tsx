@@ -15,8 +15,8 @@
 
 import {
   EuiBadge,
-  EuiButton,
-  EuiButtonEmpty,
+  EuiSmallButton,
+  EuiSmallButtonEmpty,
   EuiFlexGroup,
   EuiFlexItem,
   EuiInMemoryTable,
@@ -52,6 +52,7 @@ import { buildHashUrl } from '../utils/url-builder';
 import { DataSourceContext } from '../app-router';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
 import { AccessErrorComponent } from '../access-error-component';
+import { PageHeader } from '../header/header-components';
 
 export function dictView(items: Dictionary<string>) {
   if (isEmpty(items)) {
@@ -114,11 +115,7 @@ export function UserList(props: AppDependencies) {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const userDataPromise = getUserList(
-          props.coreStart.http,
-          ResourceType.users,
-          dataSource.id
-        );
+        const userDataPromise = getUserList(props.coreStart.http, dataSource.id);
         setCurrentUsername((await getAuthInfo(props.coreStart.http)).user_name);
         setUserData(await userDataPromise);
         setErrorFlag(false);
@@ -160,7 +157,7 @@ export function UserList(props: AppDependencies) {
   );
 
   const actionsMenuItems = [
-    <EuiButtonEmpty
+    <EuiSmallButtonEmpty
       data-test-subj="edit"
       key="edit"
       onClick={() => {
@@ -169,8 +166,8 @@ export function UserList(props: AppDependencies) {
       disabled={selection.length !== 1}
     >
       Edit
-    </EuiButtonEmpty>,
-    <EuiButtonEmpty
+    </EuiSmallButtonEmpty>,
+    <EuiSmallButtonEmpty
       data-test-subj="duplicate"
       key="duplicate"
       onClick={() => {
@@ -183,8 +180,8 @@ export function UserList(props: AppDependencies) {
       disabled={selection.length !== 1}
     >
       Duplicate
-    </EuiButtonEmpty>,
-    <EuiButtonEmpty
+    </EuiSmallButtonEmpty>,
+    <EuiSmallButtonEmpty
       key="export"
       disabled={selection.length !== 1}
       href={
@@ -195,19 +192,49 @@ export function UserList(props: AppDependencies) {
       target="_blank"
     >
       Export JSON
-    </EuiButtonEmpty>,
-    <EuiButtonEmpty
+    </EuiSmallButtonEmpty>,
+    <EuiSmallButtonEmpty
       key="delete"
       color="danger"
       onClick={showDeleteConfirmModal}
       disabled={selection.length === 0 || selection.some((e) => e.username === currentUsername)}
     >
       Delete
-    </EuiButtonEmpty>,
+    </EuiSmallButtonEmpty>,
   ];
 
   const [actionsMenu, closeActionsMenu] = useContextMenuState('Actions', {}, actionsMenuItems);
 
+  const useUpdatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
+  const buttonData = [
+    {
+      label: 'Create internal user',
+      isLoading: false,
+      href: buildHashUrl(ResourceType.users, Action.create),
+      fill: true,
+      iconType: 'plus',
+      iconSide: 'left',
+      type: 'button',
+      testId: 'create-user',
+    },
+  ];
+  const descriptionData = [
+    {
+      isLoading: loading,
+      renderComponent: (
+        <EuiText size="xs" color="subdued">
+          The Security plugin includes an internal user database. Use this database in place of, or
+          in addition to, an external <br /> authentication system such as LDAP server or Active
+          Directory. You can map an internal user to a role from{' '}
+          <EuiLink href={buildHashUrl(ResourceType.roles)}>Roles</EuiLink>
+          . First, click <br /> into the detail page of the role. Then, under “Mapped users”, click
+          “Manage mapping” <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
+        </EuiText>
+      ),
+    },
+  ];
+
+  const userLen = Query.execute(query || '', userData).length;
   return (
     <>
       <SecurityPluginTopNavMenu
@@ -216,52 +243,61 @@ export function UserList(props: AppDependencies) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      <EuiPageHeader>
-        <EuiTitle size="l">
-          <h1>Internal users</h1>
-        </EuiTitle>
-      </EuiPageHeader>
+      <PageHeader
+        navigation={props.depsStart.navigation}
+        coreStart={props.coreStart}
+        descriptionControls={descriptionData}
+        appRightControls={buttonData}
+        fallBackComponent={
+          <EuiPageHeader>
+            <EuiText size="s">
+              <h1>Internal users</h1>
+            </EuiText>
+          </EuiPageHeader>
+        }
+        resourceType={ResourceType.users}
+        count={userData.length}
+      />
       {loading ? (
         <EuiLoadingContent />
       ) : accessErrorFlag ? (
         <AccessErrorComponent loading={loading} dataSourceLabel={dataSource && dataSource.label} />
       ) : (
         <EuiPageContent>
-          <EuiPageContentHeader>
-            <EuiPageContentHeaderSection>
-              <EuiTitle size="s">
-                <h3>
-                  Internal users
-                  <span className="panel-header-count">
-                    {' '}
-                    ({Query.execute(query || '', userData).length})
-                  </span>
-                </h3>
-              </EuiTitle>
-              <EuiText size="xs" color="subdued">
-                The Security plugin includes an internal user database. Use this database in place
-                of, or in addition to, an external authentication system such as LDAP server or
-                Active Directory. You can map an user account to a role from{' '}
-                <EuiLink href={buildHashUrl(ResourceType.roles)}>Roles</EuiLink>
-                . First, click into the detail page of the role. Then, under “Mapped users”, click
-                “Manage mapping” <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
-              </EuiText>
-            </EuiPageContentHeaderSection>
-            <EuiPageContentHeaderSection>
-              <EuiFlexGroup>
-                <EuiFlexItem>{actionsMenu}</EuiFlexItem>
-                <EuiFlexItem>
-                  <EuiButton
-                    fill
-                    href={buildHashUrl(ResourceType.users, Action.create)}
-                    data-test-subj="create-user"
-                  >
-                    Create internal user
-                  </EuiButton>
-                </EuiFlexItem>
-              </EuiFlexGroup>
-            </EuiPageContentHeaderSection>
-          </EuiPageContentHeader>
+          {useUpdatedUX ? null : (
+            <EuiPageContentHeader>
+              <EuiPageContentHeaderSection>
+                <EuiTitle size="s">
+                  <h3>
+                    Internal users
+                    <span className="panel-header-count"> ({userLen})</span>
+                  </h3>
+                </EuiTitle>
+                <EuiText size="xs" color="subdued">
+                  The Security plugin includes an internal user database. Use this database in place
+                  of, or in addition to, an external authentication system such as LDAP server or
+                  Active Directory. You can map an internal user to a role from{' '}
+                  <EuiLink href={buildHashUrl(ResourceType.roles)}>Roles</EuiLink>
+                  . First, click into the detail page of the role. Then, under “Mapped users”, click
+                  “Manage mapping” <ExternalLink href={DocLinks.MapUsersToRolesDoc} />
+                </EuiText>
+              </EuiPageContentHeaderSection>
+              <EuiPageContentHeaderSection>
+                <EuiFlexGroup>
+                  <EuiFlexItem>{actionsMenu}</EuiFlexItem>
+                  <EuiFlexItem>
+                    <EuiSmallButton
+                      fill
+                      href={buildHashUrl(ResourceType.users, Action.create)}
+                      data-test-subj="create-user"
+                    >
+                      Create internal user
+                    </EuiSmallButton>
+                  </EuiFlexItem>
+                </EuiFlexGroup>
+              </EuiPageContentHeaderSection>
+            </EuiPageContentHeader>
+          )}
           <EuiPageBody>
             <EuiInMemoryTable
               tableLayout={'auto'}
@@ -277,6 +313,7 @@ export function UserList(props: AppDependencies) {
                   setQuery(arg.query);
                   return true;
                 },
+                toolsRight: useUpdatedUX ? [<EuiFlexItem>{actionsMenu}</EuiFlexItem>] : undefined,
               }}
               // @ts-ignore
               selection={{ onSelectionChange: setSelection }}

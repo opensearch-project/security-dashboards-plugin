@@ -22,6 +22,7 @@ import {
   EuiModalHeader,
   EuiModalHeaderTitle,
   EuiOverlayMask,
+  EuiText,
 } from '@elastic/eui';
 
 export function ExpressionModal(props: { title: string; expression: object }) {
@@ -38,7 +39,11 @@ export function ExpressionModal(props: { title: string; expression: object }) {
       <EuiOverlayMask>
         <EuiModal data-test-subj="expression-modal" onClose={closeModal}>
           <EuiModalHeader>
-            <EuiModalHeaderTitle>{props.title}</EuiModalHeaderTitle>
+            <EuiModalHeaderTitle>
+              <EuiText size="s">
+                <h2>{props.title}</h2>
+              </EuiText>
+            </EuiModalHeaderTitle>
           </EuiModalHeader>
 
           <EuiModalBody>

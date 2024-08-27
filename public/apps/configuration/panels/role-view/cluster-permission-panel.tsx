@@ -14,7 +14,7 @@
  */
 
 import React from 'react';
-import { EuiEmptyPrompt, EuiButton } from '@elastic/eui';
+import { EuiEmptyPrompt, EuiSmallButton } from '@elastic/eui';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { PermissionTree } from '../permission-tree';
 import { ActionGroupItem, DataObject, Action } from '../../types';
@@ -37,7 +37,7 @@ export function ClusterPermissionPanel(props: ClusterPermissionPanelProps) {
       title={<h3>No cluster permission</h3>}
       titleSize="s"
       actions={
-        <EuiButton
+        <EuiSmallButton
           data-test-subj="addClusterPermission"
           disabled={props.isReserved}
           onClick={() => {
@@ -45,7 +45,7 @@ export function ClusterPermissionPanel(props: ClusterPermissionPanelProps) {
           }}
         >
           Add cluster permission
-        </EuiButton>
+        </EuiSmallButton>
       }
     />
   );

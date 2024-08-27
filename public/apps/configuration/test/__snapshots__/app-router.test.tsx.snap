@@ -24,34 +24,37 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
             items={
               Array [
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Get started with access control",
                   "href": "/getstarted",
                   "name": "Get Started",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Authentication and authorization",
                   "href": "/auth",
                   "name": "Authentication",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Roles",
                   "href": "/roles",
                   "name": "Roles",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Internal users",
                   "href": "/users",
                   "name": "Internal users",
                 },
                 Object {
-                  "href": "/serviceAccounts",
-                  "name": "Service Accounts",
-                },
-                Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Permissions",
                   "href": "/permissions",
                   "name": "Permissions",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Dashboard multi-tenancy",
                   "href": "/tenants",
                   "name": "Tenants",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Audit logs",
                   "href": "/auditLogging",
                   "name": "Audit logs",
                 },
@@ -70,34 +73,37 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
             items={
               Array [
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Get started with access control",
                   "href": "/getstarted",
                   "name": "Get Started",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Authentication and authorization",
                   "href": "/auth",
                   "name": "Authentication",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Roles",
                   "href": "/roles",
                   "name": "Roles",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Internal users",
                   "href": "/users",
                   "name": "Internal users",
                 },
                 Object {
-                  "href": "/serviceAccounts",
-                  "name": "Service Accounts",
-                },
-                Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Permissions",
                   "href": "/permissions",
                   "name": "Permissions",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Dashboard multi-tenancy",
                   "href": "/tenants",
                   "name": "Tenants",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Audit logs",
                   "href": "/auditLogging",
                   "name": "Audit logs",
                 },
@@ -116,34 +122,37 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
             items={
               Array [
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Get started with access control",
                   "href": "/getstarted",
                   "name": "Get Started",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Authentication and authorization",
                   "href": "/auth",
                   "name": "Authentication",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Roles",
                   "href": "/roles",
                   "name": "Roles",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Internal users",
                   "href": "/users",
                   "name": "Internal users",
                 },
                 Object {
-                  "href": "/serviceAccounts",
-                  "name": "Service Accounts",
-                },
-                Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Permissions",
                   "href": "/permissions",
                   "name": "Permissions",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Dashboard multi-tenancy",
                   "href": "/tenants",
                   "name": "Tenants",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Audit logs",
                   "href": "/auditLogging",
                   "name": "Audit logs",
                 },
@@ -162,80 +171,37 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
             items={
               Array [
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Get started with access control",
                   "href": "/getstarted",
                   "name": "Get Started",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Authentication and authorization",
                   "href": "/auth",
                   "name": "Authentication",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Roles",
                   "href": "/roles",
                   "name": "Roles",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Internal users",
                   "href": "/users",
                   "name": "Internal users",
                 },
                 Object {
-                  "href": "/serviceAccounts",
-                  "name": "Service Accounts",
-                },
-                Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Permissions",
                   "href": "/permissions",
                   "name": "Permissions",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Dashboard multi-tenancy",
                   "href": "/tenants",
                   "name": "Tenants",
                 },
                 Object {
-                  "href": "/auditLogging",
-                  "name": "Audit logs",
-                },
-              ]
-            }
-          />
-        </EuiPageSideBar>
-      </Route>
-      <Route
-        exact={true}
-        key="/serviceAccounts"
-        path="/serviceAccounts"
-      >
-        <EuiPageSideBar>
-          <NavPanel
-            items={
-              Array [
-                Object {
-                  "href": "/getstarted",
-                  "name": "Get Started",
-                },
-                Object {
-                  "href": "/auth",
-                  "name": "Authentication",
-                },
-                Object {
-                  "href": "/roles",
-                  "name": "Roles",
-                },
-                Object {
-                  "href": "/users",
-                  "name": "Internal users",
-                },
-                Object {
-                  "href": "/serviceAccounts",
-                  "name": "Service Accounts",
-                },
-                Object {
-                  "href": "/permissions",
-                  "name": "Permissions",
-                },
-                Object {
-                  "href": "/tenants",
-                  "name": "Tenants",
-                },
-                Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Audit logs",
                   "href": "/auditLogging",
                   "name": "Audit logs",
                 },
@@ -254,34 +220,37 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
             items={
               Array [
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Get started with access control",
                   "href": "/getstarted",
                   "name": "Get Started",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Authentication and authorization",
                   "href": "/auth",
                   "name": "Authentication",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Roles",
                   "href": "/roles",
                   "name": "Roles",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Internal users",
                   "href": "/users",
                   "name": "Internal users",
                 },
                 Object {
-                  "href": "/serviceAccounts",
-                  "name": "Service Accounts",
-                },
-                Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Permissions",
                   "href": "/permissions",
                   "name": "Permissions",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Dashboard multi-tenancy",
                   "href": "/tenants",
                   "name": "Tenants",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Audit logs",
                   "href": "/auditLogging",
                   "name": "Audit logs",
                 },
@@ -300,34 +269,37 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
             items={
               Array [
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Get started with access control",
                   "href": "/getstarted",
                   "name": "Get Started",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Authentication and authorization",
                   "href": "/auth",
                   "name": "Authentication",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Roles",
                   "href": "/roles",
                   "name": "Roles",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Internal users",
                   "href": "/users",
                   "name": "Internal users",
                 },
                 Object {
-                  "href": "/serviceAccounts",
-                  "name": "Service Accounts",
-                },
-                Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Permissions",
                   "href": "/permissions",
                   "name": "Permissions",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Dashboard multi-tenancy",
                   "href": "/tenants",
                   "name": "Tenants",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Audit logs",
                   "href": "/auditLogging",
                   "name": "Audit logs",
                 },
@@ -346,34 +318,37 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
             items={
               Array [
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Get started with access control",
                   "href": "/getstarted",
                   "name": "Get Started",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Authentication and authorization",
                   "href": "/auth",
                   "name": "Authentication",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Roles",
                   "href": "/roles",
                   "name": "Roles",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Internal users",
                   "href": "/users",
                   "name": "Internal users",
                 },
                 Object {
-                  "href": "/serviceAccounts",
-                  "name": "Service Accounts",
-                },
-                Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Permissions",
                   "href": "/permissions",
                   "name": "Permissions",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Dashboard multi-tenancy",
                   "href": "/tenants",
                   "name": "Tenants",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Audit logs",
                   "href": "/auditLogging",
                   "name": "Audit logs",
                 },
@@ -392,34 +367,37 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
             items={
               Array [
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Get started with access control",
                   "href": "/getstarted",
                   "name": "Get Started",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Authentication and authorization",
                   "href": "/auth",
                   "name": "Authentication",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Roles",
                   "href": "/roles",
                   "name": "Roles",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Internal users",
                   "href": "/users",
                   "name": "Internal users",
                 },
                 Object {
-                  "href": "/serviceAccounts",
-                  "name": "Service Accounts",
-                },
-                Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Permissions",
                   "href": "/permissions",
                   "name": "Permissions",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Dashboard multi-tenancy",
                   "href": "/tenants",
                   "name": "Tenants",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Audit logs",
                   "href": "/auditLogging",
                   "name": "Audit logs",
                 },
@@ -438,34 +416,37 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
             items={
               Array [
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Get started with access control",
                   "href": "/getstarted",
                   "name": "Get Started",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Authentication and authorization",
                   "href": "/auth",
                   "name": "Authentication",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Roles",
                   "href": "/roles",
                   "name": "Roles",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Internal users",
                   "href": "/users",
                   "name": "Internal users",
                 },
                 Object {
-                  "href": "/serviceAccounts",
-                  "name": "Service Accounts",
-                },
-                Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Permissions",
                   "href": "/permissions",
                   "name": "Permissions",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Dashboard multi-tenancy",
                   "href": "/tenants",
                   "name": "Tenants",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Audit logs",
                   "href": "/auditLogging",
                   "name": "Audit logs",
                 },
@@ -484,34 +465,37 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
             items={
               Array [
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Get started with access control",
                   "href": "/getstarted",
                   "name": "Get Started",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Authentication and authorization",
                   "href": "/auth",
                   "name": "Authentication",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Roles",
                   "href": "/roles",
                   "name": "Roles",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Internal users",
                   "href": "/users",
                   "name": "Internal users",
                 },
                 Object {
-                  "href": "/serviceAccounts",
-                  "name": "Service Accounts",
-                },
-                Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Permissions",
                   "href": "/permissions",
                   "name": "Permissions",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Dashboard multi-tenancy",
                   "href": "/tenants",
                   "name": "Tenants",
                 },
                 Object {
+                  "breadCrumbDisplayNameWithoutSecurityBase": "Audit logs",
                   "href": "/auditLogging",
                   "name": "Audit logs",
                 },
@@ -551,10 +535,6 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
             render={[Function]}
           />
           <Route
-            path="/serviceAccounts"
-            render={[Function]}
-          />
-          <Route
             path="/auditLogging/edit/generalSettings"
             render={[Function]}
           />
@@ -585,7 +565,6 @@ exports[`SecurityPluginTopNavMenu renders DataSourceMenu when dataSource is enab
           <Redirect
             exact={true}
             from="/"
-            to="/getstarted"
           />
         </Switch>
       </EuiPageBody>

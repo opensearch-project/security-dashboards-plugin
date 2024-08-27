@@ -245,10 +245,17 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
     coreStart={
       Object {
         "http": 1,
+        "uiSettings": Object {
+          "get": [MockFunction],
+        },
       }
     }
     dataSourcePickerReadOnly={false}
-    navigation={Object {}}
+    depsStart={
+      Object {
+        "navigation": Object {},
+      }
+    }
     selectedDataSource={
       Object {
         "id": "test",
@@ -256,15 +263,29 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
     }
     setDataSource={[MockFunction]}
   />
-  <EuiPageHeader>
-    <EuiTitle
-      size="l"
-    >
-      <h3>
-        Audit logging
-      </h3>
-    </EuiTitle>
-  </EuiPageHeader>
+  <PageHeader
+    coreStart={
+      Object {
+        "http": 1,
+        "uiSettings": Object {
+          "get": [MockFunction],
+        },
+      }
+    }
+    fallBackComponent={
+      <EuiPageHeader>
+        <EuiText
+          size="s"
+        >
+          <h1>
+            Audit logging
+          </h1>
+        </EuiText>
+      </EuiPageHeader>
+    }
+    navigation={Object {}}
+    resourceType="auditLogging"
+  />
   <EuiSpacer />
   <EuiPanel>
     <EuiForm>
@@ -276,10 +297,10 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
           </h3>
         }
       >
-        <EuiFormRow
+        <EuiCompressedFormRow
           className="form-row"
           describedByIds={Array []}
-          display="row"
+          display="rowCompressed"
           fullWidth={false}
           hasChildLabel={true}
           hasEmptyLabelSpace={false}
@@ -288,6 +309,7 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
           <EuiText
             color="subdued"
             grow={false}
+            size="s"
           >
             <FormattedMessage
               defaultMessage="Configure the output location and storage types in {opensearchCode}. The default storage location is {internalOpenSearchCode}, which stores the logs in an index on this cluster."
@@ -308,7 +330,7 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
               href="https://opensearch.org/docs/latest/security-plugin/audit-logs/storage-types/"
             />
           </EuiText>
-        </EuiFormRow>
+        </EuiCompressedFormRow>
       </EuiDescribedFormGroup>
       <EuiDescribedFormGroup
         className="described-form-group"
@@ -318,22 +340,22 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
           </h3>
         }
       >
-        <EuiFormRow
+        <EuiCompressedFormRow
           describedByIds={Array []}
-          display="row"
+          display="rowCompressed"
           fullWidth={false}
           hasChildLabel={true}
           hasEmptyLabelSpace={false}
           labelType="label"
         >
-          <EuiSwitch
+          <EuiCompressedSwitch
             checked={true}
             data-test-subj="audit-logging-enabled-switch"
             label="Enabled"
             name="auditLoggingEnabledSwitch"
             onChange={[Function]}
           />
-        </EuiFormRow>
+        </EuiCompressedFormRow>
       </EuiDescribedFormGroup>
     </EuiForm>
   </EuiPanel>
@@ -352,12 +374,12 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
       <EuiFlexItem
         grow={false}
       >
-        <EuiButton
+        <EuiSmallButton
           data-test-subj="general-settings-configure"
           onClick={[Function]}
         >
           Configure
-        </EuiButton>
+        </EuiSmallButton>
       </EuiFlexItem>
     </EuiFlexGroup>
     <EuiHorizontalRule
@@ -503,12 +525,12 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
       <EuiFlexItem
         grow={false}
       >
-        <EuiButton
+        <EuiSmallButton
           data-test-subj="compliance-settings-configure"
           onClick={[Function]}
         >
           Configure
-        </EuiButton>
+        </EuiSmallButton>
       </EuiFlexItem>
     </EuiFlexGroup>
     <EuiHorizontalRule
@@ -655,10 +677,17 @@ exports[`Audit logs should load access error component 1`] = `
     coreStart={
       Object {
         "http": 1,
+        "uiSettings": Object {
+          "get": [MockFunction],
+        },
       }
     }
     dataSourcePickerReadOnly={false}
-    navigation={Object {}}
+    depsStart={
+      Object {
+        "navigation": Object {},
+      }
+    }
     selectedDataSource={
       Object {
         "id": "test",
@@ -666,15 +695,29 @@ exports[`Audit logs should load access error component 1`] = `
     }
     setDataSource={[MockFunction]}
   />
-  <EuiPageHeader>
-    <EuiTitle
-      size="l"
-    >
-      <h3>
-        Audit logging
-      </h3>
-    </EuiTitle>
-  </EuiPageHeader>
+  <PageHeader
+    coreStart={
+      Object {
+        "http": 1,
+        "uiSettings": Object {
+          "get": [MockFunction],
+        },
+      }
+    }
+    fallBackComponent={
+      <EuiPageHeader>
+        <EuiText
+          size="s"
+        >
+          <h1>
+            Audit logging
+          </h1>
+        </EuiText>
+      </EuiPageHeader>
+    }
+    navigation={Object {}}
+    resourceType="auditLogging"
+  />
   <EuiSpacer />
   <AccessErrorComponent
     loading={false}

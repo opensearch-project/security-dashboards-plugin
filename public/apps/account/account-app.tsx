@@ -107,9 +107,10 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
 
     setShouldShowTenantPopup(shouldShowTenantPopup);
 
-    coreStart.chrome.navControls.registerRight({
-      // Pin to rightmost, since newsfeed plugin is using 1000, here needs a number > 1000
-      order: 2000,
+    const isPlacedInLeftNav = coreStart.uiSettings.get('home:useNewHomePage');
+
+    coreStart.chrome.navControls[isPlacedInLeftNav ? 'registerLeftBottom' : 'registerRight']({
+      order: isPlacedInLeftNav ? 10000 : 2000,
       mount: (element: HTMLElement) => {
         ReactDOM.render(
           <AccountNavButton

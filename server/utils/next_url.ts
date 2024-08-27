@@ -17,6 +17,7 @@ import { parse } from 'url';
 import { ParsedUrlQuery } from 'querystring';
 import { OpenSearchDashboardsRequest } from 'opensearch-dashboards/server';
 import { encodeUriQuery } from '../../../../src/plugins/opensearch_dashboards_utils/common/url/encode_uri_query';
+import { getRedirectUrl } from '../../../../src/core/server/http';
 
 export function composeNextUrlQueryParam(
   request: OpenSearchDashboardsRequest,
@@ -28,7 +29,13 @@ export function composeNextUrlQueryParam(
     const nextUrl = parsedUrl?.path;
 
     if (!!nextUrl && nextUrl !== '/') {
-      return `nextUrl=${encodeUriQuery(basePath + nextUrl)}`;
+      return `nextUrl=${encodeUriQuery(
+        getRedirectUrl({
+          request,
+          basePath,
+          nextUrl,
+        })
+      )}`;
     }
   } catch (error) {
     /* Ignore errors from parsing */
@@ -45,25 +52,31 @@ export const INVALID_NEXT_URL_PARAMETER_MESSAGE = 'Invalid nextUrl parameter.';
 /**
  * We require the nextUrl parameter to be an relative url.
  *
- * Here we leverage the normalizeUrl function. If the library can parse the url
- * parameter, which means it is an absolute url, then we reject it. Otherwise, the
- * library cannot parse the url, which means it is not an absolute url, we let to
- * go through.
+ * Here we validate the nextUrl parameter by checking if it meets the following criteria:
+ *   - nextUrl starts with the basePath (/ if no serverBasePath is set)
+ *   - If nextUrl is longer than 2 chars then the second character must be alphabetical or underscore
+ *   - The following characters must be alphanumeric, dash or underscore
  * Note: url has been decoded by OpenSearchDashboards.
  *
  * @param url url string.
  * @returns error message if nextUrl is invalid, otherwise void.
  */
-export const validateNextUrl = (url: string | undefined): string | void => {
+export function validateNextUrl(
+  url: string | undefined,
+  basePath: string | undefined
+): string | void {
   if (url) {
-    const path = url.split('?')[0];
+    const path = url.split(/\?|#/)[0];
+    const bp = basePath || '';
+    if (!path.startsWith(bp)) {
+      return INVALID_NEXT_URL_PARAMETER_MESSAGE;
+    }
+    const pathMinusBase = path.replace(bp, '');
     if (
-      !path.startsWith('/') ||
-      path.startsWith('//') ||
-      path.includes('\\') ||
-      path.includes('@')
+      (pathMinusBase && !pathMinusBase.startsWith('/')) ||
+      (pathMinusBase.length >= 2 && !/^\/[a-zA-Z_][\/a-zA-Z0-9-_]+$/.test(pathMinusBase))
     ) {
       return INVALID_NEXT_URL_PARAMETER_MESSAGE;
     }
   }
-};
+}

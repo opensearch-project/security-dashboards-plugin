@@ -11,10 +11,29 @@ exports[`User list AccessError component should load access error component 1`] 
             "serverBasePath": "",
           },
         },
+        "uiSettings": Object {
+          "get": [MockFunction] {
+            "calls": Array [
+              Array [
+                "home:useNewHomePage",
+              ],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": false,
+              },
+            ],
+          },
+        },
       }
     }
     dataSourcePickerReadOnly={false}
-    navigation={Object {}}
+    depsStart={
+      Object {
+        "navigation": Object {},
+      }
+    }
     params={Object {}}
     selectedDataSource={
       Object {
@@ -23,15 +42,87 @@ exports[`User list AccessError component should load access error component 1`] 
     }
     setDataSource={[MockFunction]}
   />
-  <EuiPageHeader>
-    <EuiTitle
-      size="l"
-    >
-      <h1>
-        Internal users
-      </h1>
-    </EuiTitle>
-  </EuiPageHeader>
+  <PageHeader
+    appRightControls={
+      Array [
+        Object {
+          "fill": true,
+          "href": "#/users/create",
+          "iconSide": "left",
+          "iconType": "plus",
+          "isLoading": false,
+          "label": "Create internal user",
+          "testId": "create-user",
+          "type": "button",
+        },
+      ]
+    }
+    coreStart={
+      Object {
+        "http": Object {
+          "basePath": Object {
+            "serverBasePath": "",
+          },
+        },
+        "uiSettings": Object {
+          "get": [MockFunction] {
+            "calls": Array [
+              Array [
+                "home:useNewHomePage",
+              ],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": false,
+              },
+            ],
+          },
+        },
+      }
+    }
+    count={0}
+    descriptionControls={
+      Array [
+        Object {
+          "isLoading": false,
+          "renderComponent": <EuiText
+            color="subdued"
+            size="xs"
+          >
+            The Security plugin includes an internal user database. Use this database in place of, or in addition to, an external 
+            <br />
+             authentication system such as LDAP server or Active Directory. You can map an internal user to a role from
+             
+            <EuiLink
+              href="#/roles"
+            >
+              Roles
+            </EuiLink>
+            . First, click 
+            <br />
+             into the detail page of the role. Then, under “Mapped users”, click “Manage mapping” 
+            <ExternalLink
+              href="https://opensearch.org/docs/latest/security-plugin/access-control/users-roles/#map-users-to-roles"
+            />
+          </EuiText>,
+        },
+      ]
+    }
+    fallBackComponent={
+      <EuiPageHeader>
+        <EuiText
+          size="s"
+        >
+          <h1>
+            Internal users
+          </h1>
+        </EuiText>
+      </EuiPageHeader>
+    }
+    navigation={Object {}}
+    resourceType="users"
+  />
   <AccessErrorComponent
     loading={false}
   />

@@ -17,7 +17,7 @@ import {
   EuiButtonProps,
   EuiPopover,
   EuiContextMenuPanel,
-  EuiButton,
+  EuiSmallButton,
   EuiFlexGroup,
   EuiFlexItem,
 } from '@elastic/eui';
@@ -27,22 +27,23 @@ import React from 'react';
 export function useContextMenuState(
   buttonText: string,
   buttonProps: EuiButtonProps,
-  children: React.ReactElement[]
+  children: React.ReactElement[],
+  useUpdatedUX?: boolean
 ): [React.ReactElement, () => void] {
   const [isContextMenuOpen, setContextMenuOpen] = useState<boolean>(false);
   const closeContextMenu = () => setContextMenuOpen(false);
 
   const button = (
-    <EuiButton
-      iconType="arrowDown"
-      iconSide="right"
+    <EuiSmallButton
+      iconType={useUpdatedUX ? 'plus' : 'arrowDown'}
+      iconSide={useUpdatedUX ? 'left' : 'right'}
       onClick={() => {
-        setContextMenuOpen(true);
+        setContextMenuOpen(!isContextMenuOpen);
       }}
       {...buttonProps}
     >
       {buttonText}
-    </EuiButton>
+    </EuiSmallButton>
   );
 
   const items = [
@@ -59,9 +60,9 @@ export function useContextMenuState(
       button={button}
       isOpen={isContextMenuOpen}
       closePopover={closeContextMenu}
-      panelPaddingSize="s"
+      panelPaddingSize="none"
     >
-      <EuiContextMenuPanel items={items} hasFocus={false} />
+      <EuiContextMenuPanel items={items} hasFocus={false} size="s" />
     </EuiPopover>
   );
 

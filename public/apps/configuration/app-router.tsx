@@ -13,8 +13,8 @@
  *   permissions and limitations under the License.
  */
 
-import { EuiBreadcrumb, EuiPage, EuiPageBody, EuiPageSideBar } from '@elastic/eui';
-import { flow, partial } from 'lodash';
+import { EuiPage, EuiPageBody, EuiPageSideBar } from '@elastic/eui';
+import { flow } from 'lodash';
 import React, { createContext, useState } from 'react';
 import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { DataSourceOption } from 'src/plugins/data_source_management/public/components/data_source_menu/types';
@@ -36,38 +36,39 @@ import { RoleEditMappedUser } from './panels/role-mapping/role-edit-mapped-user'
 import { RoleView } from './panels/role-view/role-view';
 import { TenantList } from './panels/tenant-list/tenant-list';
 import { UserList } from './panels/user-list';
-import { ServiceAccountList } from './panels/service-account-list';
 import { Action, RouteItem, SubAction } from './types';
 import { ResourceType } from '../../../common';
-import { buildHashUrl, buildUrl } from './utils/url-builder';
+import { buildUrl } from './utils/url-builder';
 import { CrossPageToast } from './cross-page-toast';
-import { getDataSourceFromUrl } from '../../utils/datasource-utils';
+import { getDataSourceFromUrl, LocalCluster } from '../../utils/datasource-utils';
+import { getBreadcrumbs } from './utils/resource-utils';
 
 const LANDING_PAGE_URL = '/getstarted';
 
-const ROUTE_MAP: { [key: string]: RouteItem } = {
+export const ROUTE_MAP: { [key: string]: RouteItem } = {
   getStarted: {
     name: 'Get Started',
+    breadCrumbDisplayNameWithoutSecurityBase: 'Get started with access control',
     href: LANDING_PAGE_URL,
   },
   [ResourceType.roles]: {
     name: 'Roles',
+    breadCrumbDisplayNameWithoutSecurityBase: 'Roles',
     href: buildUrl(ResourceType.roles),
   },
   [ResourceType.users]: {
     name: 'Internal users',
+    breadCrumbDisplayNameWithoutSecurityBase: 'Internal users',
     href: buildUrl(ResourceType.users),
-  },
-  [ResourceType.serviceAccounts]: {
-    name: 'Service Accounts',
-    href: buildUrl(ResourceType.serviceAccounts),
   },
   [ResourceType.permissions]: {
     name: 'Permissions',
+    breadCrumbDisplayNameWithoutSecurityBase: 'Permissions',
     href: buildUrl(ResourceType.permissions),
   },
   [ResourceType.tenants]: {
     name: 'Tenants',
+    breadCrumbDisplayNameWithoutSecurityBase: 'Dashboard multi-tenancy',
     href: buildUrl(ResourceType.tenants),
   },
   [ResourceType.tenantsConfigureTab]: {
@@ -76,10 +77,12 @@ const ROUTE_MAP: { [key: string]: RouteItem } = {
   },
   [ResourceType.auth]: {
     name: 'Authentication',
+    breadCrumbDisplayNameWithoutSecurityBase: 'Authentication and authorization',
     href: buildUrl(ResourceType.auth),
   },
   [ResourceType.auditLogging]: {
     name: 'Audit logs',
+    breadCrumbDisplayNameWithoutSecurityBase: 'Audit logs',
     href: buildUrl(ResourceType.auditLogging),
   },
 };
@@ -90,7 +93,6 @@ const getRouteList = (multitenancyEnabled: boolean) => {
     ROUTE_MAP[ResourceType.auth],
     ROUTE_MAP[ResourceType.roles],
     ROUTE_MAP[ResourceType.users],
-    ROUTE_MAP[ResourceType.serviceAccounts],
     ROUTE_MAP[ResourceType.permissions],
     ...(multitenancyEnabled ? [ROUTE_MAP[ResourceType.tenants]] : []),
     ROUTE_MAP[ResourceType.auditLogging],
@@ -106,39 +108,6 @@ export const allNavPanelUrls = (multitenancyEnabled: boolean) =>
       ...(multitenancyEnabled ? [buildUrl(ResourceType.tenantsConfigureTab)] : []),
     ]);
 
-export function getBreadcrumbs(
-  resourceType?: ResourceType,
-  pageTitle?: string,
-  subAction?: string
-): EuiBreadcrumb[] {
-  const breadcrumbs: EuiBreadcrumb[] = [
-    {
-      text: 'Security',
-      href: buildHashUrl(),
-    },
-  ];
-
-  if (resourceType) {
-    breadcrumbs.push({
-      text: ROUTE_MAP[resourceType].name,
-      href: buildHashUrl(resourceType),
-    });
-  }
-
-  if (pageTitle) {
-    breadcrumbs.push({
-      text: pageTitle,
-    });
-  }
-
-  if (subAction) {
-    breadcrumbs.push({
-      text: subAction,
-    });
-  }
-  return breadcrumbs;
-}
-
 function decodeParams(params: { [k: string]: string }): any {
   return Object.keys(params).reduce((obj: { [k: string]: string }, key: string) => {
     obj[key] = decodeURIComponent(params[key]);
@@ -151,8 +120,6 @@ export interface DataSourceContextType {
   setDataSource: React.Dispatch<React.SetStateAction<DataSourceOption>>;
 }
 
-export const LocalCluster = { label: 'Local cluster', id: '' };
-
 export const DataSourceContext = createContext<DataSourceContextType | null>(null);
 
 export function AppRouter(props: AppDependencies) {
@@ -162,117 +129,92 @@ export function AppRouter(props: AppDependencies) {
   const dataSourceFromUrl = dataSourceEnabled ? getDataSourceFromUrl() : LocalCluster;
 
   const [dataSource, setDataSource] = useState<DataSourceOption>(dataSourceFromUrl);
+  const includeSecurityBase = !props.coreStart.uiSettings.get('home:useNewHomePage');
 
   return (
     <DataSourceContext.Provider value={{ dataSource, setDataSource }}>
       <Router>
         <EuiPage>
-          {allNavPanelUrls(multitenancyEnabled).map((route) => (
-            // Create different routes to update the 'selected' nav item .
-            <Route key={route} path={route} exact>
-              <EuiPageSideBar>
-                <NavPanel items={getRouteList(multitenancyEnabled)} />
-              </EuiPageSideBar>
-            </Route>
-          ))}
+          {!props.coreStart.chrome.navGroup.getNavGroupEnabled() &&
+            allNavPanelUrls(multitenancyEnabled).map((route) => (
+              // Create different routes to update the 'selected' nav item .
+              <Route key={route} path={route} exact>
+                <EuiPageSideBar>
+                  <NavPanel items={getRouteList(multitenancyEnabled)} />
+                </EuiPageSideBar>
+              </Route>
+            ))}
           <EuiPageBody>
             <Switch>
               <Route
                 path={buildUrl(ResourceType.roles, Action.edit) + '/:roleName/' + SubAction.mapuser}
                 render={(match) => (
-                  <RoleEditMappedUser
-                    buildBreadcrumbs={partial(setGlobalBreadcrumbs, ResourceType.roles)}
-                    {...{ ...props, ...decodeParams(match.match.params) }}
-                  />
+                  <RoleEditMappedUser {...{ ...props, ...decodeParams(match.match.params) }} />
                 )}
               />
               <Route
                 path={buildUrl(ResourceType.roles, Action.view) + '/:roleName/:prevAction?'}
                 render={(match) => (
-                  <RoleView
-                    buildBreadcrumbs={partial(setGlobalBreadcrumbs, ResourceType.roles)}
-                    {...{ ...props, ...decodeParams(match.match.params) }}
-                  />
+                  <RoleView {...{ ...props, ...decodeParams(match.match.params) }} />
                 )}
               />
               <Route
                 path={buildUrl(ResourceType.roles) + '/:action/:sourceRoleName?'}
                 render={(match) => (
-                  <RoleEdit
-                    buildBreadcrumbs={partial(setGlobalBreadcrumbs, ResourceType.roles)}
-                    {...{ ...props, ...decodeParams(match.match.params) }}
-                  />
+                  <RoleEdit {...{ ...props, ...decodeParams(match.match.params) }} />
                 )}
               />
               <Route
                 path={ROUTE_MAP.roles.href}
                 render={() => {
-                  setGlobalBreadcrumbs(ResourceType.roles);
                   return <RoleList {...props} />;
                 }}
               />
               <Route
                 path={ROUTE_MAP.auth.href}
                 render={() => {
-                  setGlobalBreadcrumbs(ResourceType.auth);
                   return <AuthView {...props} />;
                 }}
               />
               <Route
                 path={buildUrl(ResourceType.users) + '/:action/:sourceUserName?'}
                 render={(match) => (
-                  <InternalUserEdit
-                    buildBreadcrumbs={partial(setGlobalBreadcrumbs, ResourceType.users)}
-                    {...{ ...props, ...decodeParams(match.match.params) }}
-                  />
+                  <InternalUserEdit {...{ ...props, ...decodeParams(match.match.params) }} />
                 )}
               />
               <Route
                 path={ROUTE_MAP.users.href}
                 render={() => {
-                  setGlobalBreadcrumbs(ResourceType.users);
                   return <UserList {...props} />;
-                }}
-              />
-              <Route
-                path={ROUTE_MAP.serviceAccounts.href}
-                render={() => {
-                  setGlobalBreadcrumbs(ResourceType.serviceAccounts);
-                  return <ServiceAccountList {...props} />;
                 }}
               />
               <Route
                 path={buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT}
                 render={() => {
-                  setGlobalBreadcrumbs(ResourceType.auditLogging, 'General settings');
                   return <AuditLoggingEditSettings setting={'general'} {...props} />;
                 }}
               />
               <Route
                 path={buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT}
                 render={() => {
-                  setGlobalBreadcrumbs(ResourceType.auditLogging, 'Compliance settings');
                   return <AuditLoggingEditSettings setting={'compliance'} {...props} />;
                 }}
               />
               <Route
                 path={ROUTE_MAP.auditLogging.href + '/:fromType?'}
                 render={(match) => {
-                  setGlobalBreadcrumbs(ResourceType.auditLogging);
                   return <AuditLogging {...{ ...props, ...match.match.params }} />;
                 }}
               />
               <Route
                 path={ROUTE_MAP.permissions.href}
                 render={() => {
-                  setGlobalBreadcrumbs(ResourceType.permissions);
                   return <PermissionList {...props} />;
                 }}
               />
               <Route
                 path={ROUTE_MAP.getStarted.href}
                 render={() => {
-                  setGlobalBreadcrumbs();
                   return <GetStarted {...props} />;
                 }}
               />
@@ -280,7 +222,6 @@ export function AppRouter(props: AppDependencies) {
                 <Route
                   path={ROUTE_MAP.tenants.href}
                   render={() => {
-                    setGlobalBreadcrumbs(ResourceType.tenants);
                     return <TenantList tabID={'Manage'} {...props} />;
                   }}
                 />
@@ -289,12 +230,11 @@ export function AppRouter(props: AppDependencies) {
                 <Route
                   path={ROUTE_MAP.tenantsConfigureTab.href}
                   render={() => {
-                    setGlobalBreadcrumbs(ResourceType.tenants);
                     return <TenantList tabID={'Configure'} {...props} />;
                   }}
                 />
               )}
-              <Redirect exact from="/" to={LANDING_PAGE_URL} />
+              <Redirect exact from="/" to={props.redirect} />
             </Switch>
           </EuiPageBody>
           <CrossPageToast />

@@ -17,16 +17,32 @@ import { BehaviorSubject } from 'rxjs';
 import { SavedObjectsManagementColumn } from 'src/plugins/saved_objects_management/public';
 import { i18n } from '@osd/i18n';
 import {
+  AppCategory,
   AppMountParameters,
+  AppNavLinkStatus,
   AppStatus,
   AppUpdater,
   CoreSetup,
   CoreStart,
   DEFAULT_APP_CATEGORIES,
+  DEFAULT_NAV_GROUPS,
   Plugin,
   PluginInitializerContext,
+  WorkspaceAvailability,
 } from '../../../src/core/public';
-import { APP_ID_LOGIN, CUSTOM_ERROR_PAGE_URI, LOGIN_PAGE_URI, PLUGIN_NAME } from '../common';
+import {
+  APP_ID_LOGIN,
+  CUSTOM_ERROR_PAGE_URI,
+  LOGIN_PAGE_URI,
+  PLUGIN_AUDITLOG_APP_ID,
+  PLUGIN_AUTH_APP_ID,
+  PLUGIN_GET_STARTED_APP_ID,
+  PLUGIN_NAME,
+  PLUGIN_PERMISSIONS_APP_ID,
+  PLUGIN_ROLES_APP_ID,
+  PLUGIN_TENANTS_APP_ID,
+  PLUGIN_USERS_APP_ID,
+} from '../common';
 import { APP_ID_CUSTOMERROR } from '../common';
 import { setupTopNavButton } from './apps/account/account-app';
 import { fetchAccountInfoSafe } from './apps/account/utils';
@@ -50,6 +66,11 @@ import { addTenantToShareURL } from './services/shared-link';
 import { interceptError } from './utils/logout-utils';
 import { tenantColumn, getNamespacesToRegister } from './apps/configuration/utils/tenant-utils';
 import { getDashboardsInfoSafe } from './utils/dashboards-info-utils';
+import {
+  dataSource$,
+  getDataSourceEnabledUrl,
+  getDataSourceFromUrl,
+} from './utils/datasource-utils';
 
 async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
   try {
@@ -68,8 +89,13 @@ const APP_ID_DASHBOARDS = 'dashboards';
 // OpenSearchDashboards app is for legacy url migration
 const APP_ID_OPENSEARCH_DASHBOARDS = 'kibana';
 const APP_LIST_FOR_READONLY_ROLE = [APP_ID_HOME, APP_ID_DASHBOARDS, APP_ID_OPENSEARCH_DASHBOARDS];
-const GLOBAL_TENANT_RENDERING_TEXT = 'Global';
-const PRIVATE_TENANT_RENDERING_TEXT = 'Private';
+
+const dataAccessUsersCategory: AppCategory & { group?: AppCategory } = {
+  id: 'dataAccessAndUsers',
+  label: 'Data Access and Users',
+  order: 9000,
+  euiIconType: 'managementApp',
+};
 
 export class SecurityPlugin
   implements
@@ -81,6 +107,15 @@ export class SecurityPlugin
     > {
   // @ts-ignore : initializerContext not used
   constructor(private readonly initializerContext: PluginInitializerContext) {}
+
+  private updateDefaultRouteOfSecurityApplications: AppUpdater = () => {
+    const url = getDataSourceEnabledUrl(getDataSourceFromUrl());
+    return {
+      defaultPath: `?${url.searchParams.toString()}`,
+    };
+  };
+
+  private appStateUpdater = new BehaviorSubject(this.updateDefaultRouteOfSecurityApplications);
 
   public async setup(
     core: CoreSetup,
@@ -97,11 +132,36 @@ export class SecurityPlugin
       (config.readonly_mode?.roles || DEFAULT_READONLY_ROLES).includes(role)
     );
 
+    const mountWrapper = async (params: AppMountParameters, redirect: string) => {
+      const { renderApp } = await import('./apps/configuration/configuration-app');
+      const [coreStart, depsStart] = await core.getStartServices();
+
+      // merge OpenSearchDashboards yml configuration
+      includeClusterPermissions(config.clusterPermissions.include);
+      includeIndexPermissions(config.indexPermissions.include);
+
+      excludeFromDisabledTransportCategories(config.disabledTransportCategories.exclude);
+      excludeFromDisabledRestCategories(config.disabledRestCategories.exclude);
+
+      return renderApp(
+        coreStart,
+        depsStart as SecurityPluginStartDependencies,
+        params,
+        config,
+        redirect,
+        deps.dataSourceManagement
+      );
+    };
+
     if (mdsEnabled || apiPermission) {
       core.application.register({
         id: PLUGIN_NAME,
         title: 'Security',
         order: 9050,
+        workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+        navLinkStatus: core.chrome.navGroup.getNavGroupEnabled()
+          ? AppNavLinkStatus.hidden
+          : AppNavLinkStatus.visible,
         mount: async (params: AppMountParameters) => {
           const { renderApp } = await import('./apps/configuration/configuration-app');
           const [coreStart, depsStart] = await core.getStartServices();
@@ -118,11 +178,140 @@ export class SecurityPlugin
             depsStart as SecurityPluginStartDependencies,
             params,
             config,
+            '/getstarted',
             deps.dataSourceManagement
           );
         },
         category: DEFAULT_APP_CATEGORIES.management,
       });
+
+      if (core.chrome.navGroup.getNavGroupEnabled()) {
+        core.application.register({
+          id: PLUGIN_GET_STARTED_APP_ID,
+          title: 'Get started with access control',
+          order: 8040,
+          workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+          updater$: this.appStateUpdater,
+          mount: async (params: AppMountParameters) => {
+            return mountWrapper(params, '/getstarted');
+          },
+        });
+        core.application.register({
+          id: PLUGIN_AUTH_APP_ID,
+          title: 'Authentication and authorization',
+          order: 8040,
+          description: i18n.translate('security.authenticationAndAuthorization.description', {
+            defaultMessage: 'Set up authentication and authorization sequences.',
+          }),
+          workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+          updater$: this.appStateUpdater,
+          mount: async (params: AppMountParameters) => {
+            return mountWrapper(params, '/auth');
+          },
+        });
+        core.application.register({
+          id: PLUGIN_ROLES_APP_ID,
+          title: 'Roles',
+          order: 8040,
+          description: i18n.translate('security.roles.description', {
+            defaultMessage: 'Create a set of permissions with specific privileges.',
+          }),
+          workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+          updater$: this.appStateUpdater,
+          mount: async (params: AppMountParameters) => {
+            return mountWrapper(params, '/roles');
+          },
+        });
+        core.application.register({
+          id: PLUGIN_USERS_APP_ID,
+          title: 'Internal users',
+          order: 8040,
+          description: i18n.translate('security.internalUsers.description', {
+            defaultMessage: 'Define users to control access to your data.',
+          }),
+          workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+          updater$: this.appStateUpdater,
+          mount: async (params: AppMountParameters) => {
+            return mountWrapper(params, '/users');
+          },
+        });
+        core.application.register({
+          id: PLUGIN_PERMISSIONS_APP_ID,
+          title: 'Permissions',
+          order: 8040,
+          description: i18n.translate('security.permissions.description', {
+            defaultMessage: 'Controls access to individual actions and action groups.',
+          }),
+          workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+          updater$: this.appStateUpdater,
+          mount: async (params: AppMountParameters) => {
+            return mountWrapper(params, '/permissions');
+          },
+        });
+        if (config.multitenancy.enabled) {
+          core.application.register({
+            id: PLUGIN_TENANTS_APP_ID,
+            title: 'Tenants',
+            order: 8040,
+            workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+            updater$: this.appStateUpdater,
+            mount: async (params: AppMountParameters) => {
+              return mountWrapper(params, '/tenants');
+            },
+          });
+        }
+        core.application.register({
+          id: PLUGIN_AUDITLOG_APP_ID,
+          title: 'Audit logs',
+          order: 8040,
+          description: i18n.translate('security.auditLogs.description', {
+            defaultMessage: 'Configure audit logging for system access activities.',
+          }),
+          workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+          updater$: this.appStateUpdater,
+          mount: async (params: AppMountParameters) => {
+            return mountWrapper(params, '/auditLogging');
+          },
+        });
+      }
+
+      core.chrome.navGroup.addNavLinksToGroup(DEFAULT_NAV_GROUPS.dataAdministration, [
+        {
+          id: PLUGIN_GET_STARTED_APP_ID,
+          category: dataAccessUsersCategory,
+          order: 100,
+        },
+        {
+          id: PLUGIN_AUTH_APP_ID,
+          category: dataAccessUsersCategory,
+          order: 200,
+        },
+        {
+          id: PLUGIN_ROLES_APP_ID,
+          category: dataAccessUsersCategory,
+          order: 500,
+        },
+        {
+          id: PLUGIN_USERS_APP_ID,
+          category: dataAccessUsersCategory,
+          order: 300,
+        },
+        {
+          id: PLUGIN_PERMISSIONS_APP_ID,
+          category: dataAccessUsersCategory,
+          order: 400,
+        },
+        {
+          id: PLUGIN_TENANTS_APP_ID,
+          category: dataAccessUsersCategory,
+          order: 700,
+        },
+        {
+          id: PLUGIN_AUDITLOG_APP_ID,
+          category: dataAccessUsersCategory,
+          order: 600,
+        },
+      ]);
 
       if (deps.managementOverview) {
         deps.managementOverview.register({
@@ -135,6 +324,12 @@ export class SecurityPlugin
           }),
         });
       }
+
+      dataSource$.subscribe((dataSourceOption) => {
+        if (dataSourceOption) {
+          this.appStateUpdater.next(this.updateDefaultRouteOfSecurityApplications);
+        }
+      });
     }
 
     core.application.register({

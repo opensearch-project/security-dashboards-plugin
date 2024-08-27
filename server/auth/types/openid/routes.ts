@@ -96,7 +96,9 @@ export class OpenIdAuthRoutes {
               code: schema.maybe(schema.string()),
               nextUrl: schema.maybe(
                 schema.string({
-                  validate: validateNextUrl,
+                  validate: (nexturl) => {
+                    return validateNextUrl(nexturl, this.core.http.basePath.serverBasePath);
+                  },
                 })
               ),
               redirectHash: schema.maybe(schema.boolean()),
@@ -298,7 +300,9 @@ export class OpenIdAuthRoutes {
           query: schema.object({
             nextUrl: schema.maybe(
               schema.string({
-                validate: validateNextUrl,
+                validate: (nexturl) => {
+                  return validateNextUrl(nexturl, this.core.http.basePath.serverBasePath);
+                },
               })
             ),
           }),

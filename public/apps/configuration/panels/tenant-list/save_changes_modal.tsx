@@ -16,8 +16,9 @@
 import {
   EuiPageContentHeader,
   EuiHorizontalRule,
-  EuiCheckbox,
+  EuiCompressedCheckbox,
   EuiConfirmModal,
+  EuiText,
 } from '@elastic/eui';
 import React from 'react';
 import { ExternalLink } from '../../utils/display-utils';
@@ -55,12 +56,14 @@ export function SaveChangesModalGenerator(props: SaveChangesModalDeps) {
         confirmButtonText="Change Default Tenant"
         defaultFocusedButton="confirm"
       >
-        <p>
-          Users will load into {props.updatedTenancyConfig.default_tenant} tenant when they log into
-          Dashboards if they have the appropriate permissions. If users don’t have permissions to a
-          custom tenant they will load into the global tenant.{' '}
-          <ExternalLink href={DocLinks.MultiTenancyDoc} />
-        </p>
+        <EuiText size="s">
+          <p>
+            Users will load into {props.updatedTenancyConfig.default_tenant} tenant when they log
+            into Dashboards if they have the appropriate permissions. If users don’t have
+            permissions to a custom tenant they will load into the global tenant.{' '}
+            <ExternalLink href={DocLinks.MultiTenancyDoc} />
+          </p>
+        </EuiText>
       </EuiConfirmModal>
     );
     return globalDefaultModal;
@@ -92,7 +95,7 @@ export function SaveChangesModalGenerator(props: SaveChangesModalDeps) {
         'global tenant.';
     }
     tenancyChangeCheckbox = (
-      <EuiCheckbox
+      <EuiCompressedCheckbox
         id={'tenancyChangeCheckbox'}
         label={tenancyChangeMessage}
         checked={tenancyChecked}
@@ -117,7 +120,7 @@ export function SaveChangesModalGenerator(props: SaveChangesModalDeps) {
         'other OpenSearch Dashboards saved in their private tenant.';
     }
     privateTenancyChangeCheckbox = (
-      <EuiCheckbox
+      <EuiCompressedCheckbox
         id={'privateTenancyChangeCheckbox'}
         label={privateTenancyChangeMessage}
         checked={privateTenancyChecked}
@@ -138,7 +141,7 @@ export function SaveChangesModalGenerator(props: SaveChangesModalDeps) {
       'if they have the appropriate permissions. If users don’t have permissions to a custom ' +
       'tenant they will load into the global tenant.';
     defaultTenantChangeCheckbox = (
-      <EuiCheckbox
+      <EuiCompressedCheckbox
         id={'defaultTenantChangeCheckbox'}
         label={defaultTenantChangeMessage}
         checked={defaultTenantChecked}
@@ -168,11 +171,13 @@ export function SaveChangesModalGenerator(props: SaveChangesModalDeps) {
         )
       }
     >
-      <p>
-        The changes you are about to make can break large portions of OpenSearch Dashboards. You
-        might be able to revert some of these changes.{' '}
-        <ExternalLink href={DocLinks.MultiTenancyDoc} />
-      </p>
+      <EuiText size="s">
+        <p>
+          The changes you are about to make can break large portions of OpenSearch Dashboards. You
+          might be able to revert some of these changes.{' '}
+          <ExternalLink href={DocLinks.MultiTenancyDoc} />
+        </p>
+      </EuiText>
 
       <EuiHorizontalRule />
 

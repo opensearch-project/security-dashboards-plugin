@@ -31,19 +31,42 @@ exports[`Get started (landing page) renders when backend configuration is disabl
       }
       setDataSource={[MockFunction]}
     />
-    <EuiPageHeader>
-      <EuiTitle
-        size="l"
-      >
-        <h1>
-          Get started
-        </h1>
-      </EuiTitle>
-      <ExternalLinkButton
-        href="#/"
-        text="Open in new window"
-      />
-    </EuiPageHeader>
+    <PageHeader
+      appRightControls={
+        Array [
+          Object {
+            "href": "#/",
+            "iconSide": "right",
+            "iconType": "popout",
+            "isLoading": false,
+            "label": "Open in new window",
+            "target": "_blank",
+            "type": "button",
+          },
+        ]
+      }
+      coreStart={
+        Object {
+          "http": 1,
+        }
+      }
+      fallBackComponent={
+        <EuiPageHeader>
+          <EuiText
+            size="s"
+          >
+            <h1>
+              Get started
+            </h1>
+          </EuiText>
+          <ExternalLinkButton
+            href="#/"
+            text="Open in new window"
+          />
+        </EuiPageHeader>
+      }
+      resourceType="getStarted"
+    />
     <EuiPanel
       paddingSize="l"
     >
@@ -85,23 +108,22 @@ exports[`Get started (landing page) renders when backend configuration is disabl
                   <EuiFlexItem
                     grow={false}
                   >
-                    <EuiButton
+                    <EuiSmallButton
                       data-test-subj="explore-existing-roles"
-                      fill={true}
                       onClick={[Function]}
                     >
                       Explore existing roles
-                    </EuiButton>
+                    </EuiSmallButton>
                   </EuiFlexItem>
                   <EuiFlexItem
                     grow={false}
                   >
-                    <EuiButton
+                    <EuiSmallButton
                       data-test-subj="create-new-role"
                       onClick={[Function]}
                     >
                       Create new role
-                    </EuiButton>
+                    </EuiSmallButton>
                   </EuiFlexItem>
                 </EuiFlexGroup>
                 <EuiSpacer
@@ -131,23 +153,22 @@ exports[`Get started (landing page) renders when backend configuration is disabl
                   <EuiFlexItem
                     grow={false}
                   >
-                    <EuiButton
+                    <EuiSmallButton
                       data-test-subj="map-users-to-role"
-                      fill={true}
                       onClick={[Function]}
                     >
                       Map users to a role
-                    </EuiButton>
+                    </EuiSmallButton>
                   </EuiFlexItem>
                   <EuiFlexItem
                     grow={false}
                   >
-                    <EuiButton
+                    <EuiSmallButton
                       data-test-subj="create-internal-user"
                       onClick={[Function]}
                     >
                       Create internal user
-                    </EuiButton>
+                    </EuiSmallButton>
                   </EuiFlexItem>
                 </EuiFlexGroup>
               </React.Fragment>,
@@ -185,13 +206,12 @@ exports[`Get started (landing page) renders when backend configuration is disabl
             href="https://opensearch.org/docs/latest/security-plugin/audit-logs/"
           />
         </p>
-        <EuiButton
+        <EuiSmallButton
           data-test-subj="review-audit-log-configuration"
-          fill={true}
           onClick={[Function]}
         >
           Review Audit Log Configuration
-        </EuiButton>
+        </EuiSmallButton>
       </EuiText>
     </EuiPanel>
     <EuiSpacer
@@ -214,14 +234,13 @@ exports[`Get started (landing page) renders when backend configuration is disabl
         <p>
           By default, the security plugin caches authenticated users, along with their roles and permissions. This option will purge cached users, roles and permissions.
         </p>
-        <EuiButton
+        <EuiSmallButton
           data-test-subj="purge-cache"
-          fill={true}
           iconType="refresh"
           onClick={[Function]}
         >
           Purge cache
-        </EuiButton>
+        </EuiSmallButton>
       </EuiText>
     </EuiPanel>
     <EuiSpacer
@@ -250,21 +269,20 @@ exports[`Get started (landing page) renders when backend configuration is disabl
           <EuiFlexItem
             grow={false}
           >
-            <EuiButton
-              fill={true}
+            <EuiSmallButton
               onClick={[Function]}
             >
               Manage Multi-tenancy
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
           <EuiFlexItem
             grow={false}
           >
-            <EuiButton
+            <EuiSmallButton
               onClick={[Function]}
             >
               Configure Multi-tenancy
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiText>
@@ -310,19 +328,42 @@ exports[`Get started (landing page) renders when backend configuration is enable
       }
       setDataSource={[MockFunction]}
     />
-    <EuiPageHeader>
-      <EuiTitle
-        size="l"
-      >
-        <h1>
-          Get started
-        </h1>
-      </EuiTitle>
-      <ExternalLinkButton
-        href="#/"
-        text="Open in new window"
-      />
-    </EuiPageHeader>
+    <PageHeader
+      appRightControls={
+        Array [
+          Object {
+            "href": "#/",
+            "iconSide": "right",
+            "iconType": "popout",
+            "isLoading": false,
+            "label": "Open in new window",
+            "target": "_blank",
+            "type": "button",
+          },
+        ]
+      }
+      coreStart={
+        Object {
+          "http": 1,
+        }
+      }
+      fallBackComponent={
+        <EuiPageHeader>
+          <EuiText
+            size="s"
+          >
+            <h1>
+              Get started
+            </h1>
+          </EuiText>
+          <ExternalLinkButton
+            href="#/"
+            text="Open in new window"
+          />
+        </EuiPageHeader>
+      }
+      resourceType="getStarted"
+    />
     <EuiPanel
       paddingSize="l"
     >
@@ -396,12 +437,12 @@ exports[`Get started (landing page) renders when backend configuration is enable
                   <EuiFlexItem
                     grow={false}
                   >
-                    <EuiButton
+                    <EuiSmallButton
                       data-test-subj="review-authentication-and-authorization"
                       onClick={[Function]}
                     >
                       Review authentication and authorization
-                    </EuiButton>
+                    </EuiSmallButton>
                   </EuiFlexItem>
                 </EuiFlexGroup>
                 <EuiSpacer
@@ -431,23 +472,22 @@ exports[`Get started (landing page) renders when backend configuration is enable
                   <EuiFlexItem
                     grow={false}
                   >
-                    <EuiButton
+                    <EuiSmallButton
                       data-test-subj="explore-existing-roles"
-                      fill={true}
                       onClick={[Function]}
                     >
                       Explore existing roles
-                    </EuiButton>
+                    </EuiSmallButton>
                   </EuiFlexItem>
                   <EuiFlexItem
                     grow={false}
                   >
-                    <EuiButton
+                    <EuiSmallButton
                       data-test-subj="create-new-role"
                       onClick={[Function]}
                     >
                       Create new role
-                    </EuiButton>
+                    </EuiSmallButton>
                   </EuiFlexItem>
                 </EuiFlexGroup>
                 <EuiSpacer
@@ -477,23 +517,22 @@ exports[`Get started (landing page) renders when backend configuration is enable
                   <EuiFlexItem
                     grow={false}
                   >
-                    <EuiButton
+                    <EuiSmallButton
                       data-test-subj="map-users-to-role"
-                      fill={true}
                       onClick={[Function]}
                     >
                       Map users to a role
-                    </EuiButton>
+                    </EuiSmallButton>
                   </EuiFlexItem>
                   <EuiFlexItem
                     grow={false}
                   >
-                    <EuiButton
+                    <EuiSmallButton
                       data-test-subj="create-internal-user"
                       onClick={[Function]}
                     >
                       Create internal user
-                    </EuiButton>
+                    </EuiSmallButton>
                   </EuiFlexItem>
                 </EuiFlexGroup>
               </React.Fragment>,
@@ -531,13 +570,12 @@ exports[`Get started (landing page) renders when backend configuration is enable
             href="https://opensearch.org/docs/latest/security-plugin/audit-logs/"
           />
         </p>
-        <EuiButton
+        <EuiSmallButton
           data-test-subj="review-audit-log-configuration"
-          fill={true}
           onClick={[Function]}
         >
           Review Audit Log Configuration
-        </EuiButton>
+        </EuiSmallButton>
       </EuiText>
     </EuiPanel>
     <EuiSpacer
@@ -560,14 +598,13 @@ exports[`Get started (landing page) renders when backend configuration is enable
         <p>
           By default, the security plugin caches authenticated users, along with their roles and permissions. This option will purge cached users, roles and permissions.
         </p>
-        <EuiButton
+        <EuiSmallButton
           data-test-subj="purge-cache"
-          fill={true}
           iconType="refresh"
           onClick={[Function]}
         >
           Purge cache
-        </EuiButton>
+        </EuiSmallButton>
       </EuiText>
     </EuiPanel>
     <EuiSpacer
@@ -596,21 +633,20 @@ exports[`Get started (landing page) renders when backend configuration is enable
           <EuiFlexItem
             grow={false}
           >
-            <EuiButton
-              fill={true}
+            <EuiSmallButton
               onClick={[Function]}
             >
               Manage Multi-tenancy
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
           <EuiFlexItem
             grow={false}
           >
-            <EuiButton
+            <EuiSmallButton
               onClick={[Function]}
             >
               Configure Multi-tenancy
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiText>

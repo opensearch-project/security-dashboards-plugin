@@ -13,15 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import {
-  EuiPageHeader,
-  EuiText,
-  EuiTitle,
-  EuiTabs,
-  EuiTab,
-  EuiCallOut,
-  EuiButton,
-} from '@elastic/eui';
+import { EuiPageHeader, EuiText, EuiTabs, EuiTab, EuiCallOut, EuiSmallButton } from '@elastic/eui';
 import { Route } from 'react-router-dom';
 import React, { useState, useMemo } from 'react';
 import { ManageTab } from './manage_tab';
@@ -30,8 +22,10 @@ import { AppDependencies } from '../../../types';
 import { ExternalLink } from '../../utils/display-utils';
 import { DocLinks } from '../../constants';
 import { getDashboardsInfo } from '../../../../utils/dashboards-info-utils';
-import { LocalCluster } from '../../app-router';
+import { LocalCluster } from '../../../../utils/datasource-utils';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
+import { PageHeader } from '../../header/header-components';
+import { ResourceType } from '../../../../../common';
 
 interface TenantListProps extends AppDependencies {
   tabID: string;
@@ -60,13 +54,13 @@ export function TenantList(props: TenantListProps) {
           Tenancy is currently disabled and users don&apos;t have access to this feature. Enable
           tenancy through the configure tenancy page.
         </p>
-        <EuiButton
+        <EuiSmallButton
           id="switchToConfigure"
           color="warning"
           onClick={() => onSelectedTabChanged('Configure')}
         >
           Configure tenancy
-        </EuiButton>
+        </EuiSmallButton>
       </EuiCallOut>
     </>
   );
@@ -127,6 +121,21 @@ export function TenantList(props: TenantListProps) {
     ));
   };
 
+  const descriptionData = [
+    {
+      renderComponent: (
+        <EuiText size="s" color="subdued" grow={true} textAlign={'left'}>
+          Tenants in OpenSearch Dashboards are spaces for saving index patterns, visualizations,
+          dashboards, and other OpenSearch
+          <br /> Dashboards objects. Tenants are useful for safely sharing your work with other
+          OpenSearch Dashboards users. You can control <br />
+          which roles have access to a tenant and whether those roles have read or write access.{' '}
+          <ExternalLink href={DocLinks.MultiTenancyDoc} />
+        </EuiText>
+      ),
+    },
+  ];
+
   return (
     <>
       <SecurityPluginTopNavMenu
@@ -135,20 +144,30 @@ export function TenantList(props: TenantListProps) {
         setDataSource={() => {}}
         selectedDataSource={LocalCluster}
       />
-      <EuiPageHeader>
-        <EuiTitle size="l">
-          <h1>Dashboards multi-tenancy</h1>
-        </EuiTitle>
-      </EuiPageHeader>
-      <EuiText size="s" color="subdued" grow={true} textAlign={'left'}>
-        Tenants in OpenSearch Dashboards are spaces for saving index patterns, visualizations,
-        dashboards, and other OpenSearch Dashboards objects. Tenants are useful for safely sharing
-        your work with other OpenSearch Dashboards users. You can control which roles have access to
-        a tenant and whether those roles have read or write access.{' '}
-        <ExternalLink href={DocLinks.MultiTenancyDoc} />
-      </EuiText>
+      <PageHeader
+        navigation={props.depsStart.navigation}
+        coreStart={props.coreStart}
+        descriptionControls={descriptionData}
+        fallBackComponent={
+          <>
+            <EuiPageHeader>
+              <EuiText size="s">
+                <h1>Dashboards multi-tenancy</h1>
+              </EuiText>
+            </EuiPageHeader>
+            <EuiText size="s" color="subdued" grow={true} textAlign={'left'}>
+              Tenants in OpenSearch Dashboards are spaces for saving index patterns, visualizations,
+              dashboards, and other OpenSearch Dashboards objects. Tenants are useful for safely
+              sharing your work with other OpenSearch Dashboards users. You can control which roles
+              have access to a tenant and whether those roles have read or write access.{' '}
+              <ExternalLink href={DocLinks.MultiTenancyDoc} />
+            </EuiText>
+          </>
+        }
+        resourceType={ResourceType.tenants}
+      />
 
-      <EuiTabs>{renderTabs()}</EuiTabs>
+      <EuiTabs size="s">{renderTabs()}</EuiTabs>
       {!isMultiTenancyEnabled && selectedTabId === 'Manage' && tenancyDisabledWarning}
       {selectedTabContent}
     </>

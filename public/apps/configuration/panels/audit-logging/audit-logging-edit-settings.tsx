@@ -15,7 +15,7 @@
 
 import React, { useContext } from 'react';
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiFlexGroup,
   EuiFlexItem,
   EuiGlobalToastList,
@@ -23,6 +23,7 @@ import {
   EuiPanel,
   EuiSpacer,
   EuiTitle,
+  EuiText,
 } from '@elastic/eui';
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 import { cloneDeep, set, without } from 'lodash';
@@ -38,6 +39,7 @@ import { setCrossPageToast } from '../../utils/storage-utils';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { DataSourceContext } from '../../app-router';
 import { getClusterInfo } from '../../../../utils/datasource-utils';
+import { PageHeader } from '../../header/header-components';
 
 interface AuditLoggingEditSettingProps extends AppDependencies {
   setting: 'general' | 'compliance';
@@ -83,17 +85,17 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
       <>
         <EuiFlexGroup justifyContent="flexEnd">
           <EuiFlexItem grow={false}>
-            <EuiButton
+            <EuiSmallButton
               data-test-subj="cancel"
               onClick={() => {
                 window.location.href = buildHashUrl(ResourceType.auditLogging);
               }}
             >
               Cancel
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton
+            <EuiSmallButton
               data-test-subj="save"
               fill
               isDisabled={invalidSettings.length !== 0}
@@ -102,7 +104,7 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
               }}
             >
               Save
-            </EuiButton>
+            </EuiSmallButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       </>
@@ -155,11 +157,19 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
   const renderComplianceSetting = () => {
     return (
       <>
-        <EuiPageHeader>
-          <EuiTitle size="l">
-            <h1>Compliance settings</h1>
-          </EuiTitle>
-        </EuiPageHeader>
+        <PageHeader
+          navigation={props.depsStart.navigation}
+          coreStart={props.coreStart}
+          fallBackComponent={
+            <EuiPageHeader>
+              <EuiTitle size="l">
+                <h1>Compliance settings</h1>
+              </EuiTitle>
+            </EuiPageHeader>
+          }
+          resourceType={ResourceType.auditLogging}
+          pageTitle="Compliance settings"
+        />
 
         <EuiPanel>
           <EditSettingGroup
@@ -207,11 +217,19 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
   const renderGeneralSettings = () => {
     return (
       <>
-        <EuiPageHeader>
-          <EuiTitle size="l">
-            <h1>General settings</h1>
-          </EuiTitle>
-        </EuiPageHeader>
+        <PageHeader
+          navigation={props.depsStart.navigation}
+          coreStart={props.coreStart}
+          fallBackComponent={
+            <EuiPageHeader>
+              <EuiText size="s">
+                <h1>General settings</h1>
+              </EuiText>
+            </EuiPageHeader>
+          }
+          resourceType={ResourceType.auditLogging}
+          pageTitle="General settings"
+        />
 
         <EuiPanel>
           <EditSettingGroup

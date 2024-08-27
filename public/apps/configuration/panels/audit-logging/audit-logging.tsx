@@ -14,19 +14,19 @@
  */
 
 import {
-  EuiButton,
+  EuiSmallButton,
   EuiCode,
   EuiDescribedFormGroup,
   EuiFlexGroup,
   EuiFlexItem,
   EuiForm,
-  EuiFormRow,
+  EuiCompressedFormRow,
   EuiHorizontalRule,
   EuiLoadingContent,
   EuiPageHeader,
   EuiPanel,
   EuiSpacer,
-  EuiSwitch,
+  EuiCompressedSwitch,
   EuiText,
   EuiTitle,
 } from '@elastic/eui';
@@ -49,6 +49,7 @@ import { DocLinks } from '../../constants';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { AccessErrorComponent } from '../../access-error-component';
+import { PageHeader } from '../../header/header-components';
 
 interface AuditLoggingProps extends AppDependencies {
   fromType: string;
@@ -59,8 +60,8 @@ function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: bool
     <EuiPanel>
       <EuiForm>
         <EuiDescribedFormGroup title={<h3>Storage location</h3>} className="described-form-group">
-          <EuiFormRow className="form-row">
-            <EuiText color="subdued" grow={false}>
+          <EuiCompressedFormRow className="form-row">
+            <EuiText color="subdued" grow={false} size="s">
               <FormattedMessage
                 id="audit.logs.storageInstruction"
                 defaultMessage="Configure the output location and storage types in {opensearchCode}. The default storage location is {internalOpenSearchCode}, which stores the logs in an index on this cluster."
@@ -71,22 +72,22 @@ function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: bool
               />{' '}
               <ExternalLink href={DocLinks.AuditLogsStorageDoc} />
             </EuiText>
-          </EuiFormRow>
+          </EuiCompressedFormRow>
         </EuiDescribedFormGroup>
 
         <EuiDescribedFormGroup
           title={<h3>Enable audit logging</h3>}
           className="described-form-group"
         >
-          <EuiFormRow>
-            <EuiSwitch
+          <EuiCompressedFormRow>
+            <EuiCompressedSwitch
               data-test-subj="audit-logging-enabled-switch"
               name="auditLoggingEnabledSwitch"
               label={displayBoolean(auditLoggingEnabled)}
               checked={auditLoggingEnabled}
               onChange={onSwitchChange}
             />
-          </EuiFormRow>
+          </EuiCompressedFormRow>
         </EuiDescribedFormGroup>
       </EuiForm>
     </EuiPanel>
@@ -206,7 +207,7 @@ export function AuditLogging(props: AuditLoggingProps) {
               </EuiTitle>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiButton
+              <EuiSmallButton
                 data-test-subj="general-settings-configure"
                 onClick={() => {
                   window.location.href =
@@ -214,7 +215,7 @@ export function AuditLogging(props: AuditLoggingProps) {
                 }}
               >
                 Configure
-              </EuiButton>
+              </EuiSmallButton>
             </EuiFlexItem>
           </EuiFlexGroup>
           <EuiHorizontalRule margin="m" />
@@ -231,7 +232,7 @@ export function AuditLogging(props: AuditLoggingProps) {
               </EuiTitle>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
-              <EuiButton
+              <EuiSmallButton
                 data-test-subj="compliance-settings-configure"
                 onClick={() => {
                   window.location.href =
@@ -239,7 +240,7 @@ export function AuditLogging(props: AuditLoggingProps) {
                 }}
               >
                 Configure
-              </EuiButton>
+              </EuiSmallButton>
             </EuiFlexItem>
           </EuiFlexGroup>
 
@@ -258,11 +259,18 @@ export function AuditLogging(props: AuditLoggingProps) {
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      <EuiPageHeader>
-        <EuiTitle size="l">
-          <h3>Audit logging</h3>
-        </EuiTitle>
-      </EuiPageHeader>
+      <PageHeader
+        coreStart={props.coreStart}
+        navigation={props.depsStart.navigation}
+        fallBackComponent={
+          <EuiPageHeader>
+            <EuiText size="s">
+              <h1>Audit logging</h1>
+            </EuiText>
+          </EuiPageHeader>
+        }
+        resourceType={ResourceType.auditLogging}
+      />
       <EuiSpacer />
       {loading ? <EuiLoadingContent /> : content}
     </div>

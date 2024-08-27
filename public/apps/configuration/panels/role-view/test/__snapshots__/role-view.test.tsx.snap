@@ -3,25 +3,31 @@
 exports[`Role view basic rendering when permission tab is selected 1`] = `
 <Fragment>
   <Memo()
-    buildBreadcrumbs={
-      [MockFunction] {
-        "calls": Array [
-          Array [
-            "role",
-          ],
-        ],
-        "results": Array [
-          Object {
-            "type": "return",
-            "value": undefined,
-          },
-        ],
-      }
-    }
     config={Object {}}
     coreStart={
       Object {
+        "chrome": Object {
+          "navGroup": Object {
+            "getNavGroupEnabled": [MockFunction],
+          },
+          "setBreadcrumbs": [MockFunction],
+        },
         "http": 1,
+        "uiSettings": Object {
+          "get": [MockFunction] {
+            "calls": Array [
+              Array [
+                "home:useNewHomePage",
+              ],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": false,
+              },
+            ],
+          },
+        },
       }
     }
     dataSourcePickerReadOnly={true}
@@ -36,46 +42,104 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
     }
     setDataSource={[MockFunction]}
   />
-  <EuiPageContentHeader>
-    <EuiPageContentHeaderSection>
-      <EuiTitle
-        size="l"
-      >
-        <h1>
-          role
-        </h1>
-      </EuiTitle>
-    </EuiPageContentHeaderSection>
-    <EuiPageContentHeaderSection>
-      <EuiFlexGroup
-        gutterSize="s"
-      >
-        <EuiFlexItem>
-          <EuiButtonEmpty
-            href="#/roles/duplicate/role"
-            key="duplicate"
-          >
-            duplicate
-          </EuiButtonEmpty>
-          <EuiButtonEmpty
-            color="danger"
-            data-test-subj="delete"
-            key="delete"
-            onClick={[Function]}
-          >
-            delete
-          </EuiButtonEmpty>
-        </EuiFlexItem>
-        <EuiFlexItem>
-          <EuiButton
-            href="#/roles/edit/role"
-          >
-            Edit role
-          </EuiButton>
-        </EuiFlexItem>
-      </EuiFlexGroup>
-    </EuiPageContentHeaderSection>
-  </EuiPageContentHeader>
+  <PageHeader
+    appRightControls={
+      Array [
+        Object {
+          "ariaLabel": "delete",
+          "color": "danger",
+          "iconType": "trash",
+          "isLoading": false,
+          "run": [Function],
+          "testId": "delete",
+          "type": "button",
+        },
+        Object {
+          "href": "#/roles/duplicate/role",
+          "isLoading": false,
+          "label": "Duplicate",
+          "type": "button",
+        },
+        Object {
+          "fill": true,
+          "href": "#/roles/edit/role",
+          "isLoading": false,
+          "label": "Edit role",
+          "type": "button",
+        },
+      ]
+    }
+    coreStart={
+      Object {
+        "chrome": Object {
+          "navGroup": Object {
+            "getNavGroupEnabled": [MockFunction],
+          },
+          "setBreadcrumbs": [MockFunction],
+        },
+        "http": 1,
+        "uiSettings": Object {
+          "get": [MockFunction] {
+            "calls": Array [
+              Array [
+                "home:useNewHomePage",
+              ],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": false,
+              },
+            ],
+          },
+        },
+      }
+    }
+    fallBackComponent={
+      <React.Fragment>
+        <EuiPageContentHeader>
+          <EuiPageContentHeaderSection>
+            <EuiText
+              size="s"
+            >
+              <h1>
+                role
+              </h1>
+            </EuiText>
+          </EuiPageContentHeaderSection>
+          <EuiPageContentHeaderSection>
+            <EuiFlexGroup
+              gutterSize="s"
+            >
+              <EuiFlexItem>
+                <EuiSmallButtonEmpty
+                  href="#/roles/duplicate/role"
+                >
+                  duplicate
+                </EuiSmallButtonEmpty>
+                <EuiSmallButtonEmpty
+                  color="danger"
+                  data-test-subj="delete"
+                  onClick={[Function]}
+                >
+                  delete
+                </EuiSmallButtonEmpty>
+              </EuiFlexItem>
+              <EuiFlexItem>
+                <EuiSmallButton
+                  href="#/roles/edit/role"
+                >
+                  Edit role
+                </EuiSmallButton>
+              </EuiFlexItem>
+            </EuiFlexGroup>
+          </EuiPageContentHeaderSection>
+        </EuiPageContentHeader>
+      </React.Fragment>
+    }
+    resourceType="roles"
+    subAction="role"
+  />
   <EuiTabbedContent
     autoFocus="initial"
     initialSelectedTab={
@@ -111,7 +175,28 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
           <TenantsPanel
             coreStart={
               Object {
+                "chrome": Object {
+                  "navGroup": Object {
+                    "getNavGroupEnabled": [MockFunction],
+                  },
+                  "setBreadcrumbs": [MockFunction],
+                },
                 "http": 1,
+                "uiSettings": Object {
+                  "get": [MockFunction] {
+                    "calls": Array [
+                      Array [
+                        "home:useNewHomePage",
+                      ],
+                    ],
+                    "results": Array [
+                      Object {
+                        "type": "return",
+                        "value": false,
+                      },
+                    ],
+                  },
+                },
               }
             }
             dataSourceId="test"
@@ -127,6 +212,7 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
         "name": "Permissions",
       }
     }
+    size="s"
     tabs={
       Array [
         Object {
@@ -161,7 +247,28 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
             <TenantsPanel
               coreStart={
                 Object {
+                  "chrome": Object {
+                    "navGroup": Object {
+                      "getNavGroupEnabled": [MockFunction],
+                    },
+                    "setBreadcrumbs": [MockFunction],
+                  },
                   "http": 1,
+                  "uiSettings": Object {
+                    "get": [MockFunction] {
+                      "calls": Array [
+                        Array [
+                          "home:useNewHomePage",
+                        ],
+                      ],
+                      "results": Array [
+                        Object {
+                          "type": "return",
+                          "value": false,
+                        },
+                      ],
+                    },
+                  },
                 }
               }
               dataSourceId="test"
@@ -211,20 +318,20 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
                 <EuiPageContentHeaderSection>
                   <EuiFlexGroup>
                     <EuiFlexItem>
-                      <EuiButton
+                      <EuiSmallButton
                         disabled={true}
                         onClick={[MockFunction]}
                       >
                         Delete mapping
-                      </EuiButton>
+                      </EuiSmallButton>
                     </EuiFlexItem>
                     <EuiFlexItem>
-                      <EuiButton
+                      <EuiSmallButton
                         data-test-subj="manage-mapping"
                         onClick={[Function]}
                       >
                         Manage mapping
-                      </EuiButton>
+                      </EuiSmallButton>
                     </EuiFlexItem>
                   </EuiFlexGroup>
                 </EuiPageContentHeaderSection>
@@ -268,13 +375,13 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
                             />
                           </EuiFlexItem>
                           <EuiFlexItem>
-                            <EuiButton
+                            <EuiSmallButton
                               data-test-subj="map-users"
                               fill={true}
                               onClick={[Function]}
                             >
                               Map users
-                            </EuiButton>
+                            </EuiSmallButton>
                           </EuiFlexItem>
                         </EuiFlexGroup>
                       }
@@ -330,25 +437,31 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
 exports[`Role view renders when mapped user tab is selected 1`] = `
 <Fragment>
   <Memo()
-    buildBreadcrumbs={
-      [MockFunction] {
-        "calls": Array [
-          Array [
-            "role",
-          ],
-        ],
-        "results": Array [
-          Object {
-            "type": "return",
-            "value": undefined,
-          },
-        ],
-      }
-    }
     config={Object {}}
     coreStart={
       Object {
+        "chrome": Object {
+          "navGroup": Object {
+            "getNavGroupEnabled": [MockFunction],
+          },
+          "setBreadcrumbs": [MockFunction],
+        },
         "http": 1,
+        "uiSettings": Object {
+          "get": [MockFunction] {
+            "calls": Array [
+              Array [
+                "home:useNewHomePage",
+              ],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": false,
+              },
+            ],
+          },
+        },
       }
     }
     dataSourcePickerReadOnly={true}
@@ -363,46 +476,104 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
     }
     setDataSource={[MockFunction]}
   />
-  <EuiPageContentHeader>
-    <EuiPageContentHeaderSection>
-      <EuiTitle
-        size="l"
-      >
-        <h1>
-          role
-        </h1>
-      </EuiTitle>
-    </EuiPageContentHeaderSection>
-    <EuiPageContentHeaderSection>
-      <EuiFlexGroup
-        gutterSize="s"
-      >
-        <EuiFlexItem>
-          <EuiButtonEmpty
-            href="#/roles/duplicate/role"
-            key="duplicate"
-          >
-            duplicate
-          </EuiButtonEmpty>
-          <EuiButtonEmpty
-            color="danger"
-            data-test-subj="delete"
-            key="delete"
-            onClick={[Function]}
-          >
-            delete
-          </EuiButtonEmpty>
-        </EuiFlexItem>
-        <EuiFlexItem>
-          <EuiButton
-            href="#/roles/edit/role"
-          >
-            Edit role
-          </EuiButton>
-        </EuiFlexItem>
-      </EuiFlexGroup>
-    </EuiPageContentHeaderSection>
-  </EuiPageContentHeader>
+  <PageHeader
+    appRightControls={
+      Array [
+        Object {
+          "ariaLabel": "delete",
+          "color": "danger",
+          "iconType": "trash",
+          "isLoading": false,
+          "run": [Function],
+          "testId": "delete",
+          "type": "button",
+        },
+        Object {
+          "href": "#/roles/duplicate/role",
+          "isLoading": false,
+          "label": "Duplicate",
+          "type": "button",
+        },
+        Object {
+          "fill": true,
+          "href": "#/roles/edit/role",
+          "isLoading": false,
+          "label": "Edit role",
+          "type": "button",
+        },
+      ]
+    }
+    coreStart={
+      Object {
+        "chrome": Object {
+          "navGroup": Object {
+            "getNavGroupEnabled": [MockFunction],
+          },
+          "setBreadcrumbs": [MockFunction],
+        },
+        "http": 1,
+        "uiSettings": Object {
+          "get": [MockFunction] {
+            "calls": Array [
+              Array [
+                "home:useNewHomePage",
+              ],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": false,
+              },
+            ],
+          },
+        },
+      }
+    }
+    fallBackComponent={
+      <React.Fragment>
+        <EuiPageContentHeader>
+          <EuiPageContentHeaderSection>
+            <EuiText
+              size="s"
+            >
+              <h1>
+                role
+              </h1>
+            </EuiText>
+          </EuiPageContentHeaderSection>
+          <EuiPageContentHeaderSection>
+            <EuiFlexGroup
+              gutterSize="s"
+            >
+              <EuiFlexItem>
+                <EuiSmallButtonEmpty
+                  href="#/roles/duplicate/role"
+                >
+                  duplicate
+                </EuiSmallButtonEmpty>
+                <EuiSmallButtonEmpty
+                  color="danger"
+                  data-test-subj="delete"
+                  onClick={[Function]}
+                >
+                  delete
+                </EuiSmallButtonEmpty>
+              </EuiFlexItem>
+              <EuiFlexItem>
+                <EuiSmallButton
+                  href="#/roles/edit/role"
+                >
+                  Edit role
+                </EuiSmallButton>
+              </EuiFlexItem>
+            </EuiFlexGroup>
+          </EuiPageContentHeaderSection>
+        </EuiPageContentHeader>
+      </React.Fragment>
+    }
+    resourceType="roles"
+    subAction="role"
+  />
   <EuiTabbedContent
     autoFocus="initial"
     initialSelectedTab={
@@ -441,20 +612,20 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
               <EuiPageContentHeaderSection>
                 <EuiFlexGroup>
                   <EuiFlexItem>
-                    <EuiButton
+                    <EuiSmallButton
                       disabled={true}
                       onClick={[MockFunction]}
                     >
                       Delete mapping
-                    </EuiButton>
+                    </EuiSmallButton>
                   </EuiFlexItem>
                   <EuiFlexItem>
-                    <EuiButton
+                    <EuiSmallButton
                       data-test-subj="manage-mapping"
                       onClick={[Function]}
                     >
                       Manage mapping
-                    </EuiButton>
+                    </EuiSmallButton>
                   </EuiFlexItem>
                 </EuiFlexGroup>
               </EuiPageContentHeaderSection>
@@ -498,13 +669,13 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
                           />
                         </EuiFlexItem>
                         <EuiFlexItem>
-                          <EuiButton
+                          <EuiSmallButton
                             data-test-subj="map-users"
                             fill={true}
                             onClick={[Function]}
                           >
                             Map users
-                          </EuiButton>
+                          </EuiSmallButton>
                         </EuiFlexItem>
                       </EuiFlexGroup>
                     }
@@ -545,6 +716,7 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
         "name": "Mapped users",
       }
     }
+    size="s"
     tabs={
       Array [
         Object {
@@ -579,7 +751,28 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
             <TenantsPanel
               coreStart={
                 Object {
+                  "chrome": Object {
+                    "navGroup": Object {
+                      "getNavGroupEnabled": [MockFunction],
+                    },
+                    "setBreadcrumbs": [MockFunction],
+                  },
                   "http": 1,
+                  "uiSettings": Object {
+                    "get": [MockFunction] {
+                      "calls": Array [
+                        Array [
+                          "home:useNewHomePage",
+                        ],
+                      ],
+                      "results": Array [
+                        Object {
+                          "type": "return",
+                          "value": false,
+                        },
+                      ],
+                    },
+                  },
                 }
               }
               dataSourceId="test"
@@ -629,20 +822,20 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
                 <EuiPageContentHeaderSection>
                   <EuiFlexGroup>
                     <EuiFlexItem>
-                      <EuiButton
+                      <EuiSmallButton
                         disabled={true}
                         onClick={[MockFunction]}
                       >
                         Delete mapping
-                      </EuiButton>
+                      </EuiSmallButton>
                     </EuiFlexItem>
                     <EuiFlexItem>
-                      <EuiButton
+                      <EuiSmallButton
                         data-test-subj="manage-mapping"
                         onClick={[Function]}
                       >
                         Manage mapping
-                      </EuiButton>
+                      </EuiSmallButton>
                     </EuiFlexItem>
                   </EuiFlexGroup>
                 </EuiPageContentHeaderSection>
@@ -686,13 +879,13 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
                             />
                           </EuiFlexItem>
                           <EuiFlexItem>
-                            <EuiButton
+                            <EuiSmallButton
                               data-test-subj="map-users"
                               fill={true}
                               onClick={[Function]}
                             >
                               Map users
-                            </EuiButton>
+                            </EuiSmallButton>
                           </EuiFlexItem>
                         </EuiFlexGroup>
                       }
