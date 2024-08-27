@@ -43,11 +43,13 @@ export async function logout(http: HttpStart, logoutUrl?: string): Promise<void>
   setShouldShowTenantPopup(null);
   // Clear everything in the sessionStorage since they can contain sensitive information
   sessionStorage.clear();
-  const nextUrl = encodeURIComponent(
-    window.location.pathname + window.location.search + window.location.hash
-  );
-  window.location.href =
-    logoutUrl || `${http.basePath.serverBasePath}/app/login?nextUrl=${nextUrl}`;
+  if (logoutUrl) {
+    window.location.href = logoutUrl;
+  } else {
+    // when session timed out, user credentials in cookie are wiped out
+    // refresh the page will direct the user to go through login process
+    window.location.reload();
+  }
 }
 
 export async function externalLogout(http: HttpStart, logoutEndpoint: string): Promise<void> {

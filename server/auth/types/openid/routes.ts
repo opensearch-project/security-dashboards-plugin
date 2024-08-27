@@ -266,7 +266,7 @@ export class OpenIdAuthRoutes {
           ? tokenFromExtraStorage.split(' ')[1]
           : cookie?.credentials.authHeaderValue.split(' ')[1]; // get auth token
         let nextUrl = getBaseRedirectUrl(this.config, this.core, request);
-        if (request.url.searchParams.has('nextUrl')) {
+        if (request.url.searchParams.has('nextUrl') && !!request.url.searchParams.get('nextUrl')) {
           nextUrl = `${nextUrl}/app/login?nextUrl=${encodeURIComponent(
             request.url.searchParams.get('nextUrl') || ''
           )}`;
