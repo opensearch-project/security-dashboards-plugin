@@ -168,21 +168,17 @@ export function LoginPage(props: LoginPageDeps) {
   const formOptions = (options: string | string[]) => {
     let formBody = [];
     const formBodyOp = [];
-    let authOpts = [];
+    let authOpts: string[] = [];
 
     if (typeof options === 'string') {
-      if (options === '') {
-        authOpts.push(AuthType.BASIC);
-      } else {
+      if (options !== '') {
         authOpts.push(options.toLowerCase());
       }
-    } else {
-      if (options && options.length === 1 && options[0] === '') {
-        authOpts.push(AuthType.BASIC);
-      } else {
-        authOpts = [...options];
-      }
+    } else if (!(options && options.length === 1 && options[0] === '')) {
+      authOpts = [...options];
     }
+
+    authOpts = authOpts.filter((auth) => auth !== AuthType.PROXY && auth !== AuthType.JWT);
 
     for (let i = 0; i < authOpts.length; i++) {
       switch (authOpts[i].toLowerCase()) {
@@ -237,10 +233,7 @@ export function LoginPage(props: LoginPageDeps) {
             );
           }
 
-          if (
-            authOpts.length > 1 &&
-            !(authOpts.includes(AuthType.PROXY) && authOpts.length === 2)
-          ) {
+          if (authOpts.length > 1) {
             formBody.push(<EuiSpacer size="xs" />);
             formBody.push(<EuiHorizontalRule size="full" margin="xl" />);
             formBody.push(<EuiSpacer size="xs" />);
@@ -259,9 +252,6 @@ export function LoginPage(props: LoginPageDeps) {
           const nextUrl = extractNextUrlFromWindowLocation();
           const samlAuthLoginUrl = SAML_AUTH_LOGIN_WITH_FRAGMENT + nextUrl;
           formBodyOp.push(renderLoginButton(AuthType.SAML, samlAuthLoginUrl, samlConfig));
-          break;
-        }
-        case AuthType.PROXY: {
           break;
         }
         default: {

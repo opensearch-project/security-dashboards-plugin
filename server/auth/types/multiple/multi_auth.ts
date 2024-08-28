@@ -34,6 +34,7 @@ import {
   OpenIdAuthentication,
   ProxyAuthentication,
   SamlAuthentication,
+  JwtAuthentication,
 } from '../../types';
 
 export class MultipleAuthentication extends AuthenticationType {
@@ -109,6 +110,19 @@ export class MultipleAuthentication extends AuthenticationType {
           );
           await ProxyAuth.init();
           this.authHandlers.set(AuthType.PROXY, ProxyAuth);
+          break;
+        }
+        case AuthType.JWT: {
+          const JwtAuth = new JwtAuthentication(
+            this.config,
+            this.sessionStorageFactory,
+            this.router,
+            this.esClient,
+            this.coreSetup,
+            this.logger
+          );
+          await JwtAuth.init();
+          this.authHandlers.set(AuthType.JWT, JwtAuth);
           break;
         }
         default: {
