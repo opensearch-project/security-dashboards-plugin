@@ -273,20 +273,22 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
       }
     }
     fallBackComponent={
-      <EuiPageHeader>
-        <EuiText
-          size="s"
-        >
-          <h1>
-            Audit logging
-          </h1>
-        </EuiText>
-      </EuiPageHeader>
+      <React.Fragment>
+        <EuiPageHeader>
+          <EuiText
+            size="s"
+          >
+            <h1>
+              Audit logging
+            </h1>
+          </EuiText>
+        </EuiPageHeader>
+        <EuiSpacer />
+      </React.Fragment>
     }
     navigation={Object {}}
     resourceType="auditLogging"
   />
-  <EuiSpacer />
   <EuiPanel>
     <EuiForm>
       <EuiDescribedFormGroup
@@ -705,20 +707,22 @@ exports[`Audit logs should load access error component 1`] = `
       }
     }
     fallBackComponent={
-      <EuiPageHeader>
-        <EuiText
-          size="s"
-        >
-          <h1>
-            Audit logging
-          </h1>
-        </EuiText>
-      </EuiPageHeader>
+      <React.Fragment>
+        <EuiPageHeader>
+          <EuiText
+            size="s"
+          >
+            <h1>
+              Audit logging
+            </h1>
+          </EuiText>
+        </EuiPageHeader>
+        <EuiSpacer />
+      </React.Fragment>
     }
     navigation={Object {}}
     resourceType="auditLogging"
   />
-  <EuiSpacer />
   <AccessErrorComponent
     loading={false}
     message="You do not have permissions to configure audit logging settings"
