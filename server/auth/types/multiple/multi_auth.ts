@@ -154,7 +154,14 @@ export class MultipleAuthentication extends AuthenticationType {
     if (reqAuthType && this.authHandlers.has(reqAuthType)) {
       return await this.authHandlers.get(reqAuthType)!.getAdditionalAuthHeader(request);
     } else {
-      return {};
+      const authHeaders: any = {};
+      for (const key of this.authHandlers.keys()) {
+        Object.assign(
+          authHeaders,
+          await this.authHandlers.get(key)!.getAdditionalAuthHeader(request)
+        );
+      }
+      return authHeaders;
     }
   }
 
