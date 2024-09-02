@@ -155,10 +155,10 @@ export class MultipleAuthentication extends AuthenticationType {
       return await this.authHandlers.get(reqAuthType)!.getAdditionalAuthHeader(request);
     } else {
       const authHeaders: any = {};
-      for (const key of this.authHandlers.keys()) {
+      for (const handler of this.authHandlers.values()) {
         Object.assign(
           authHeaders,
-          await this.authHandlers.get(key)!.getAdditionalAuthHeader(request)
+          await handler.getAdditionalAuthHeader(request)
         );
       }
       return authHeaders;
@@ -166,6 +166,11 @@ export class MultipleAuthentication extends AuthenticationType {
   }
 
   getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
+    for (const handler of this.authHandlers.values()) {
+      if (handler.requestIncludesAuthInfo(request)) {
+        return handler.getCookie(request, authInfo);
+      }
+    }
     return {};
   }
 
