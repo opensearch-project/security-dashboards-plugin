@@ -170,6 +170,7 @@ export function LoginPage(props: LoginPageDeps) {
     const formBodyOp = [];
     let authOpts: string[] = [];
 
+    // Convert auth options to a usable array
     if (typeof options === 'string') {
       if (options !== '') {
         authOpts.push(options.toLowerCase());
@@ -178,6 +179,8 @@ export function LoginPage(props: LoginPageDeps) {
       authOpts = [...options];
     }
 
+    // Remove proxy and jwt from the list because they do not have a login button
+    // The count of visible options determines if a separator gets added
     authOpts = authOpts.filter((auth) => auth !== AuthType.PROXY && auth !== AuthType.JWT);
 
     for (let i = 0; i < authOpts.length; i++) {
@@ -234,6 +237,7 @@ export function LoginPage(props: LoginPageDeps) {
           }
 
           if (authOpts.length > 1) {
+            // Add a separator between the username/password form and the other login options
             formBody.push(<EuiSpacer size="xs" />);
             formBody.push(<EuiHorizontalRule size="full" margin="xl" />);
             formBody.push(<EuiSpacer size="xs" />);
