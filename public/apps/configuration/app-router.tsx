@@ -108,9 +108,10 @@ export const allNavPanelUrls = (multitenancyEnabled: boolean) =>
       ...(multitenancyEnabled ? [buildUrl(ResourceType.tenantsConfigureTab)] : []),
     ]);
 
-function decodeParams(params: { [k: string]: string }): any {
-  return Object.keys(params).reduce((obj: { [k: string]: string }, key: string) => {
-    obj[key] = decodeURIComponent(params[key]);
+function decodeParams(params: { [k: string]: string | undefined }): any {
+  return Object.keys(params).reduce((obj: { [k: string]: string | undefined }, key: string) => {
+    const value = params[key];
+    obj[key] = value !== undefined ? decodeURIComponent(value) : undefined;
     return obj;
   }, {});
 }
