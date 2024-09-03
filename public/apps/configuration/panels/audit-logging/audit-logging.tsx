@@ -263,15 +263,17 @@ export function AuditLogging(props: AuditLoggingProps) {
         coreStart={props.coreStart}
         navigation={props.depsStart.navigation}
         fallBackComponent={
-          <EuiPageHeader>
-            <EuiText size="s">
-              <h1>Audit logging</h1>
-            </EuiText>
-          </EuiPageHeader>
+          <>
+            <EuiPageHeader>
+              <EuiText size="s">
+                <h1>Audit logging</h1>
+              </EuiText>
+            </EuiPageHeader>
+            <EuiSpacer />
+          </>
         }
         resourceType={ResourceType.auditLogging}
       />
-      <EuiSpacer />
       {loading ? <EuiLoadingContent /> : content}
     </div>
   );
