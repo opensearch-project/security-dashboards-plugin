@@ -194,7 +194,6 @@ describe('start OpenSearch Dashboards server', () => {
     })
       .setProtectedHeader({ alg: 'HS256' })
       .sign(new TextEncoder().encode('99011df6ef40e4a2cd9cd6ccb2d649e0'));
-    console.log(adminJWT);
     await wreck
       .get(`http://localhost:5601/app/home?token=${adminJWT}#`, {
         rejectUnauthorized: true,
