@@ -194,6 +194,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
         }
         resourceType={ResourceType.users}
         subAction={TITLE_TEXT_DICT[props.action]}
+        pageTitle={props.sourceUserName}
       />
       <PanelWithHeader headerText="Credentials">
         <EuiForm>
