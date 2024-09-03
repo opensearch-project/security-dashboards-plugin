@@ -281,6 +281,7 @@ export function RoleEdit(props: RoleEditDeps) {
         descriptionControls={descriptionData}
         resourceType={ResourceType.roles}
         subAction={TITLE_TEXT_DICT[props.action]}
+        pageTitle={props.sourceRoleName}
       />
       <PanelWithHeader headerText="Name">
         <EuiForm>
