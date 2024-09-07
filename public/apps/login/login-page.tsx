@@ -178,6 +178,9 @@ export function LoginPage(props: LoginPageDeps) {
     } else if (!(options && options.length === 1 && options[0] === '')) {
       authOpts = [...options];
     }
+    if (authOpts.length === 0) {
+      authOpts.push(AuthType.BASIC);
+    }
 
     // Remove proxy and jwt from the list because they do not have a login button
     // The count of visible options determines if a separator gets added
