@@ -163,6 +163,7 @@ export class MultipleAuthentication extends AuthenticationType {
   }
 
   getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
+    // TODO: This logic is only applicable for JWT auth type
     for (const handler of this.authHandlers.values()) {
       if (handler.requestIncludesAuthInfo(request)) {
         return handler.getCookie(request, authInfo);

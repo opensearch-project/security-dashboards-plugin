@@ -149,6 +149,7 @@ export class JwtAuthentication extends AuthenticationType {
     request: OpenSearchDashboardsRequest<unknown, unknown, unknown, any>,
     authInfo: any
   ): SecuritySessionCookie {
+    // TODO: This logic is only applicable for JWT auth type
     setExtraAuthStorage(
       request,
       this.getBearerToken(request) || '',
