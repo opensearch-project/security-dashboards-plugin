@@ -92,7 +92,7 @@ const APP_LIST_FOR_READONLY_ROLE = [APP_ID_HOME, APP_ID_DASHBOARDS, APP_ID_OPENS
 
 const dataAccessUsersCategory: AppCategory & { group?: AppCategory } = {
   id: 'dataAccessAndUsers',
-  label: 'Data Access and Users',
+  label: 'Data access and users',
   order: 9000,
   euiIconType: 'managementApp',
 };
