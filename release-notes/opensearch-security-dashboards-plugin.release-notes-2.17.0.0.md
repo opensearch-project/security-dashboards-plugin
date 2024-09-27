@@ -20,4 +20,3 @@ Compatible with OpenSearch and OpenSearch Dashboards version 2.17.0
 * Updates backport workflow ([#2074](https://github.com/opensearch-project/security-dashboards-plugin/pull/2074))
 * Fixes spacing in package.json ([#2068](https://github.com/opensearch-project/security-dashboards-plugin/pull/2068))
 * Increment version to 2.17.0.0 ([#2090](https://github.com/opensearch-project/security-dashboards-plugin/pull/2090))
-* Bump micromatch to 4.0.8 ([#2117](https://github.com/opensearch-project/security-dashboards-plugin/pull/2117))
