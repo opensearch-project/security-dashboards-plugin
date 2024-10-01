@@ -85,8 +85,8 @@ runs:
             echo "OpenSearch Dashboards compiled successfully."
             break
           fi
-          if [ $i -eq 60 ]; then
-            echo "Timeout for 600 seconds reached. OpenSearch Dashboards did not finish compiling."
+          if [ $i -eq 90 ]; then
+            echo "Timeout for 900 seconds reached. OpenSearch Dashboards did not finish compiling."
             exit 1
           fi
           sleep 10
