@@ -80,8 +80,8 @@ runs:
       run: |
         cd ./OpenSearch-Dashboards
         echo "Start checking OpenSearch Dashboards."
-        for i in {1..60}; do
-          if grep -q "http server running at" "dashboard.log"; then
+        for i in {1..90}; do
+          if grep -q "bundles compiled successfully after" "dashboard.log"; then
             echo "OpenSearch Dashboards compiled successfully."
             break
           fi
