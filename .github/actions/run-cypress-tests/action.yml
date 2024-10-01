@@ -68,9 +68,9 @@ runs:
       run: |
         cd ./OpenSearch-Dashboards
         if [ -z "${{ inputs.osd_base_path }}" ]; then
-          nohup yarn start --no-base-path --no-watch --csp.warnLegacyBrowsers=false | tee dashboard.log &
+          yarn start --no-base-path --csp.warnLegacyBrowsers=false
         else
-          nohup yarn start --no-watch --csp.warnLegacyBrowsers=false | tee dashboard.log &
+          yarn start --csp.warnLegacyBrowsers=false
         fi
       shell: bash
 
