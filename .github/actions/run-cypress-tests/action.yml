@@ -68,9 +68,9 @@ runs:
       run: |
         cd ./OpenSearch-Dashboards
         if [ -z "${{ inputs.osd_base_path }}" ]; then
-          yarn start --no-base-path --csp.warnLegacyBrowsers=false
+          nohup yarn start --no-base-path --no-watch --csp.warnLegacyBrowsers=false | tee dashboard.log &
         else
-          yarn start --csp.warnLegacyBrowsers=false
+          nohup yarn start --no-watch --csp.warnLegacyBrowsers=false | tee dashboard.log &
         fi
       shell: bash
 
@@ -81,7 +81,7 @@ runs:
         cd ./OpenSearch-Dashboards
         echo "Start checking OpenSearch Dashboards."
         for i in {1..60}; do
-          if grep -q "bundles compiled successfully after" "dashboard.log"; then
+          if grep -q "http server running at" "dashboard.log"; then
             echo "OpenSearch Dashboards compiled successfully."
             break
           fi
