@@ -431,7 +431,7 @@ exports[`Get started (landing page) renders when backend configuration is enable
                     <ExternalLinkButton
                       fill={true}
                       href="https://opensearch.org/docs/latest/security-plugin/configuration/configuration/"
-                      text="Create config.yml"
+                      text="Config.yml documentation"
                     />
                   </EuiFlexItem>
                   <EuiFlexItem
