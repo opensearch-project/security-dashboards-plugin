@@ -67,6 +67,7 @@ runs:
       run: |
         cd OpenSearch-Dashboards
         node scripts/build_opensearch_dashboards_platform_plugins --no-examples --workers=10 --verbose
+      shell: bash
 
     - name: Run OpenSearch Dashboards with provided configuration
       if: ${{ runner.os == 'Linux' }}
