@@ -61,7 +61,7 @@ const addBackendStep = {
           <ExternalLinkButton
             fill
             href={DocLinks.BackendConfigurationDoc}
-            text="Create config.yml"
+            text="Config.yml documentation"
           />
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
