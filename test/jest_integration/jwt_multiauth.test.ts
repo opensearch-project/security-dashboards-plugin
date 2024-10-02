@@ -84,17 +84,6 @@ describe('start OpenSearch Dashboards server', () => {
     await root.setup();
     await root.start();
 
-    console.log('Starting to Download Flights Sample Data');
-    await wreck.post('http://localhost:5601/api/sample_data/flights', {
-      payload: {},
-      rejectUnauthorized: false,
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: ADMIN_CREDENTIALS,
-        security_tenant: 'global',
-      },
-    });
-    console.log('Downloaded Sample Data');
     const getConfigResponse = await wreck.get(
       'https://localhost:9200/_plugins/_security/api/securityconfig',
       {
