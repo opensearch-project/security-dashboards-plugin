@@ -86,13 +86,13 @@ runs:
       run: |
         cd ./OpenSearch-Dashboards
         echo "Start checking OpenSearch Dashboards."
-        for i in {1..60}; do
-          if grep -q "bundles compiled successfully after" "dashboard.log"; then
-            echo "OpenSearch Dashboards compiled successfully."
+        for i in {1..6}; do
+          if grep -q "http server running" "dashboard.log"; then
+            echo "OpenSearch Dashboards started successfully."
             break
           fi
-          if [ $i -eq 60 ]; then
-            echo "Timeout for 900 seconds reached. OpenSearch Dashboards did not finish compiling."
+          if [ $i -eq 6 ]; then
+            echo "Timeout for 60 seconds reached. OpenSearch Dashboards did not start."
             exit 1
           fi
           sleep 10
