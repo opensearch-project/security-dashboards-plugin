@@ -171,8 +171,10 @@ describe('start OpenSearch Dashboards server', () => {
 
   it('Verify access to login page without JWT', async () => {
     console.log('Wreck access login page without JWT');
-    await wreck.get('http://localhost:5601/app/login', {
+    const response = await wreck.get('http://localhost:5601/app/home', {
       rejectUnauthorized: true,
     });
+    expect(response.res.statusCode).toEqual(302);
+    expect(response.res.headers.location).toEqual('/app/login?nextUrl=%2Fapp%2Fhome');
   });
 });
