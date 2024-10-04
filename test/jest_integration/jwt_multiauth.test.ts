@@ -23,6 +23,7 @@ import {
   OPENSEARCH_DASHBOARDS_SERVER_PASSWORD,
   ADMIN_USER,
   JWT_ADMIN_ROLE,
+  JWT_SIGNING_KEY,
 } from '../constant';
 import wreck from '@hapi/wreck';
 import { SignJWT } from 'jose';
@@ -103,7 +104,7 @@ describe('start OpenSearch Dashboards server', () => {
         challenge: false,
         type: 'jwt',
         config: {
-          signing_key: 'OTkwMTFkZjZlZjQwZTRhMmNkOWNkNmNjYjJkNjQ5ZTAK',
+          signing_key: btoa(JWT_SIGNING_KEY),
           jwt_header: 'Authorization',
           jwt_url_parameter: 'token',
           jwt_clock_skew_tolerance_seconds: 30,
@@ -160,7 +161,7 @@ describe('start OpenSearch Dashboards server', () => {
       sub: ADMIN_USER,
     })
       .setProtectedHeader({ alg: 'HS256' })
-      .sign(new TextEncoder().encode('99011df6ef40e4a2cd9cd6ccb2d649e0'));
+      .sign(new TextEncoder().encode(JWT_SIGNING_KEY));
     await wreck.get(`http://localhost:5601/app/home?token=${adminJWT}#`, {
       rejectUnauthorized: true,
       headers: {
