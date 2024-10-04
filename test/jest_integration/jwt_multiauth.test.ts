@@ -135,42 +135,20 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   afterAll(async () => {
-    console.log('Remove the Sample Data');
-    await wreck
-      .delete('http://localhost:5601/api/sample_data/flights', {
-        rejectUnauthorized: false,
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: ADMIN_CREDENTIALS,
-        },
-      })
-      .then((value) => {
-        Promise.resolve(value);
-      })
-      .catch((value) => {
-        Promise.resolve(value);
-      });
     console.log('Remove the Security Config');
-    await wreck
-      .patch('https://localhost:9200/_plugins/_security/api/securityconfig', {
-        payload: [
-          {
-            op: 'remove',
-            path: '/config/dynamic/authc/jwt_auth_domain',
-          },
-        ],
-        rejectUnauthorized: false,
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: ADMIN_CREDENTIALS,
+    await wreck.patch('https://localhost:9200/_plugins/_security/api/securityconfig', {
+      payload: [
+        {
+          op: 'remove',
+          path: '/config/dynamic/authc/jwt_auth_domain',
         },
-      })
-      .then((value) => {
-        Promise.resolve(value);
-      })
-      .catch((value) => {
-        Promise.resolve(value);
-      });
+      ],
+      rejectUnauthorized: false,
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: ADMIN_CREDENTIALS,
+      },
+    });
     // shutdown OpenSearchDashboards server
     await root.shutdown();
   });
@@ -183,18 +161,18 @@ describe('start OpenSearch Dashboards server', () => {
     })
       .setProtectedHeader({ alg: 'HS256' })
       .sign(new TextEncoder().encode('99011df6ef40e4a2cd9cd6ccb2d649e0'));
-    await wreck
-      .get(`http://localhost:5601/app/home?token=${adminJWT}#`, {
-        rejectUnauthorized: true,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then((value) => {
-        Promise.resolve(value);
-      })
-      .catch((value) => {
-        Promise.resolve(value);
-      });
+    await wreck.get(`http://localhost:5601/app/home?token=${adminJWT}#`, {
+      rejectUnauthorized: true,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  });
+
+  it('Verify access to login page without JWT', async () => {
+    console.log('Wreck access login page without JWT');
+    await wreck.get('http://localhost:5601/app/login', {
+      rejectUnauthorized: true,
+    });
   });
 });
