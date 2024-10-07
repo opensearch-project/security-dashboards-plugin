@@ -25,3 +25,6 @@ export const AUTHORIZATION_HEADER_NAME: string = 'Authorization';
 export const PROXY_USER: string = 'x-proxy-user';
 export const PROXY_ROLE: string = 'x-proxy-roles';
 export const PROXY_ADMIN_ROLE: string = 'admin';
+
+export const JWT_ADMIN_ROLE: string = 'admin';
+export const JWT_SIGNING_KEY: string = '99011df6ef40e4a2cd9cd6ccb2d649e0';
