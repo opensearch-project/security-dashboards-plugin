@@ -96,35 +96,32 @@ export abstract class AuthenticationType implements IAuthenticationType {
   }
 
   public authHandler: AuthenticationHandler = async (request, response, toolkit) => {
-    // skip auth for APIs that do not require auth
+    // Skip authentication for APIs that do not require it
     if (this.authNotRequired(request)) {
       return toolkit.authenticated();
     }
 
     const authState: OpenSearchDashboardsAuthState = {};
-
-    // if browser request, auth logic is:
-    //   1. check if request includes auth header or parameter(e.g. jwt in url params) is present, if so, authenticate with auth header.
-    //   2. if auth header not present, check if auth cookie is present, if no cookie, send to authentication workflow
-    //   3. verify whether auth cookie is valid, if not valid, send to authentication workflow
-    //   4. if cookie is valid, pass to route handlers
     const authHeaders = {};
     let cookie: SecuritySessionCookie | null | undefined;
     let authInfo: any | undefined;
-    // if this is an REST API call, suppose the request includes necessary auth header
+
+    // If the request contains authentication data (e.g. Authorization header or JWT in url parameters), use that to authenticate the request.
     if (this.requestIncludesAuthInfo(request)) {
       try {
+        // Build the auth headers from the request
         const additionalAuthHeader = await this.getAdditionalAuthHeader(request);
         Object.assign(authHeaders, additionalAuthHeader);
         authInfo = await this.securityClient.authinfo(request, additionalAuthHeader);
         cookie = this.getCookie(request, authInfo);
 
-        // set tenant from cookie if exist
+        // Set the tenant from the cookie
         const browserCookie = await this.sessionStorageFactory.asScoped(request).get();
         if (browserCookie && isValidTenant(browserCookie.tenant)) {
           cookie.tenant = browserCookie.tenant;
         }
 
+        // Save the cookie
         this.sessionStorageFactory.asScoped(request).set(cookie);
       } catch (error: any) {
         return response.unauthorized({
@@ -132,7 +129,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
         });
       }
     } else {
-      // no auth header in request, try cookie
+      // If the request does not contain authentication data, check for a stored cookie.
       try {
         cookie = await this.sessionStorageFactory.asScoped(request).get();
       } catch (error: any) {
@@ -140,33 +137,35 @@ export abstract class AuthenticationType implements IAuthenticationType {
         cookie = undefined;
       }
 
+      // If the cookie is not valid, clear the cookie and send the request to the authentication workflow
       if (!cookie || !(await this.isValidCookie(cookie, request))) {
-        // clear cookie
+        // Clear the cookie
         this.sessionStorageFactory.asScoped(request).clear();
 
-        // for assets, we can still pass it to resource handler as notHandled.
-        // marking it as authenticated may result in login pop up when auth challenge
+        // For assets, we can still pass it to resource handler as notHandled.
+        // Marking it as authenticated may result in login pop up when auth challenge
         // is enabled.
         if (request.url.pathname && request.url.pathname.startsWith('/bundles/')) {
           return toolkit.notHandled();
         }
 
-        // allow optional authentication
+        // Allow optional authentication
         if (this.authOptional(request)) {
           return toolkit.authenticated();
         }
 
-        // send to auth workflow
+        // Send the request to the authentication workflow
         return this.handleUnauthedRequest(request, response, toolkit);
       }
 
-      // extend session expiration time
+      // If the cookie is still valid, update the cookie with a new expiry time.
       if (this.config.session.keepalive) {
         cookie!.expiryTime = this.getKeepAliveExpiry(cookie!, request);
         this.sessionStorageFactory.asScoped(request).set(cookie!);
       }
-      // cookie is valid
-      // build auth header
+      // At this point we have a valid cookie.
+
+      // Build the auth headers from the cookie.
       const authHeadersFromCookie = this.buildAuthHeaderFromCookie(cookie!, request);
       Object.assign(authHeaders, authHeadersFromCookie);
       const additionalAuthHeader = await this.getAdditionalAuthHeader(request);
