@@ -53,7 +53,8 @@
     "glob-parent": "^5.1.2",
     "debug": "^4.3.4",
     "ejs": "^3.1.10",
-    "express": "^4.19.2",
-    "braces": "^3.0.3"
+    "express": "^4.21.1",
+    "braces": "^3.0.3",
+    "body-parser": "^1.20.3"
   }
 }
