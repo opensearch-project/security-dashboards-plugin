@@ -39,9 +39,13 @@ import { coreMock } from '../../../../../../src/core/public/mocks';
 
 interface Logger {
   debug(message: string): void;
+
   info(message: string): void;
+
   warn(message: string): void;
+
   error(message: string): void;
+
   fatal(message: string): void;
 }
 
@@ -479,7 +483,7 @@ describe('Test OpenID Unauthorized Flows', () => {
     });
   });
 
-  test('Ensure nextUrl points to original request pathname',() =>{
+  test('Ensure nextUrl points to original request pathname', () => {
     const mockCore = coreMock.createSetup();
     const openIdAuthentication = new OpenIdAuthentication(
       config,
@@ -500,7 +504,6 @@ describe('Test OpenID Unauthorized Flows', () => {
     const mockLifecycleFactory = httpServerMock.createLifecycleResponseFactory();
 
     const authToolKitSpy = jest.spyOn(authToolkit, 'redirected');
-
 
     openIdAuthentication.handleUnauthedRequest(osRequest, mockLifecycleFactory, authToolkit);
 
@@ -509,9 +512,9 @@ describe('Test OpenID Unauthorized Flows', () => {
       'set-cookie':
         'security_authentication=; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Path=/',
     });
-  })
+  });
 
-  test('Ensure nextUrl points to original request pathname including security_tenant',() =>{
+  test('Ensure nextUrl points to original request pathname including security_tenant', () => {
     const mockCore = coreMock.createSetup();
     const openIdAuthentication = new OpenIdAuthentication(
       config,
@@ -525,7 +528,7 @@ describe('Test OpenID Unauthorized Flows', () => {
     const mockRequest = httpServerMock.createRawRequest({
       url: {
         pathname: '/app/dashboards',
-        search: 'security_tenant=testing'
+        search: 'security_tenant=testing',
       },
     });
     const osRequest = OpenSearchDashboardsRequest.from(mockRequest);
@@ -534,14 +537,14 @@ describe('Test OpenID Unauthorized Flows', () => {
 
     const authToolKitSpy = jest.spyOn(authToolkit, 'redirected');
 
-
     openIdAuthentication.handleUnauthedRequest(osRequest, mockLifecycleFactory, authToolkit);
 
     expect(authToolKitSpy).toHaveBeenCalledWith({
-      location: `/auth/openid/captureUrlFragment?nextUrl=${escape("/app/dashboards?security_tenant=testing")}`,
+      location: `/auth/openid/captureUrlFragment?nextUrl=${escape(
+        '/app/dashboards?security_tenant=testing'
+      )}`,
       'set-cookie':
         'security_authentication=; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Path=/',
     });
-  })
-
+  });
 });
