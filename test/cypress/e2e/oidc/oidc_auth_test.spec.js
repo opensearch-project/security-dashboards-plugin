@@ -17,7 +17,6 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
-
 const basePath = Cypress.env('basePath') || '';
 
 describe('Log in via OIDC', () => {
@@ -27,7 +26,7 @@ describe('Log in via OIDC', () => {
   });
 
   const kcLogin = () => {
-    cy.origin('http://127.0.0.1:8080', () => {
+    cy.origin('http://localhost:8080', () => {
       const login = 'admin';
       const password = 'admin';
 
@@ -79,16 +78,26 @@ describe('Log in via OIDC', () => {
     cy.getCookie('security_authentication').should('exist');
     cy.getCookie('security_authentication_oidc1').should('exist');
 
-    cy.url().then((url) => {
-      cy.visit(url, {
-        failOnStatusCode: false,
-      });
-    });
-
     localStorage.setItem('opendistro::security::tenant::saved', '""');
     localStorage.setItem('home:newThemeModal:show', 'false');
 
     cy.get('h1').contains('Get started');
+  });
+
+  it('Login to Dashboard preserving Tenant', () => {
+    const startUrl = `http://localhost:5601${basePath}/app/dashboards?security_tenant=private#/list`;
+
+    cy.visit(startUrl, {
+      failOnStatusCode: false,
+    });
+
+    kcLogin();
+    cy.getCookie('security_authentication').should('exist');
+
+    cy.get('#user-icon-btn').should('be.visible');
+    cy.get('#user-icon-btn').click();
+
+    cy.get('#tenantName').should('have.text', 'Private');
   });
 
   it('Tenancy persisted after logout in OIDC', () => {
@@ -97,12 +106,6 @@ describe('Log in via OIDC', () => {
     });
 
     kcLogin();
-
-    cy.url().then((url) => {
-      cy.visit(url, {
-        failOnStatusCode: false,
-      });
-    });
 
     localStorage.setItem('home:newThemeModal:show', 'false');
 
