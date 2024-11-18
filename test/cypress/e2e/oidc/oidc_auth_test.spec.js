@@ -96,7 +96,6 @@ describe('Log in via OIDC', () => {
     cy.get('h1').contains('Get started');
   });
 
-
   it('Login to Dashboard preserving Tenant', () => {
     const startUrl = `http://localhost:5601${basePath}/app/dashboards?security_tenant=private#/list`;
 
@@ -112,6 +111,8 @@ describe('Log in via OIDC', () => {
         failOnStatusCode: false,
       });
     });
+
+    localStorage.setItem('home:newThemeModal:show', 'false');
 
     cy.get('#user-icon-btn').should('be.visible');
     cy.get('#user-icon-btn').click();
