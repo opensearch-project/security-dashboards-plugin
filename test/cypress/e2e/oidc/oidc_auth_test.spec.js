@@ -103,6 +103,8 @@ describe('Log in via OIDC', () => {
       failOnStatusCode: false,
     });
 
+    sessionStorage.setItem('opendistro::security::tenant::show_popup', 'false');
+
     kcLogin();
     cy.getCookie('security_authentication').should('exist');
 
