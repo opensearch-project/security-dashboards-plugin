@@ -145,7 +145,10 @@ export const configSchema = schema.object({
     }),
   }),
   kerberos: schema.object({
-    jwt_siging_key: schema.string({ minLength: 32 }),
+    jwt_siging_key: schema.string({ 
+      defaultValue: '00000000000000000000000000000000', 
+      minLength: 32 
+    }),
   }),
   multitenancy: schema.object({
     enabled: schema.boolean({ defaultValue: false }),
