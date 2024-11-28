@@ -55,7 +55,6 @@ export class KerberosAuthRoutes {
 
         // clear session
         this.sessionStorageFactory.asScoped(request).clear();
-        user.default_tenant;
         const payload = {
           exp: Date.now() + this.config.session.ttl,
           user: user.user_name,
