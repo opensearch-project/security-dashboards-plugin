@@ -144,6 +144,9 @@ export const configSchema = schema.object({
       buttonstyle: schema.string({ defaultValue: '' }),
     }),
   }),
+  kerberos: schema.object({
+    jwt_siging_key: schema.string({ minLength: 32 }),
+  }),
   multitenancy: schema.object({
     enabled: schema.boolean({ defaultValue: false }),
     show_roles: schema.boolean({ defaultValue: false }),
