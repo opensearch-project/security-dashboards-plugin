@@ -44,12 +44,14 @@ export class KerberosAuthRoutes {
       },
       async (context, request, response) => {
         let user: User;
+
         try {
           user = await this.securityClient.authinfo(request);
         } catch (error) {
           context.security_plugin.logger.error(`Failed authentication: ${error}`);
           return response.unauthorized({
-            body: `Kerberos authentication failed`,
+            body: `Kerberos authentication failed ${error}`,
+            headers: 'WWW-Authenticate: Negotiate',
           });
         }
 
