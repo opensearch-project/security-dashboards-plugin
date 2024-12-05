@@ -49,13 +49,12 @@ export class KerberosAuthRoutes {
           user = await this.securityClient.authinfo(request);
         } catch (error) {
           context.security_plugin.logger.error(`Failed authentication: ${error}`);
-          return response.unauthorized(
-            {
-              body: `Kerberos authentication failed ${error}`,
-              headers: {
-                'www-authenticate': 'Negotiate',
-              },
-            });
+          return response.unauthorized({
+            body: `Kerberos authentication failed ${error}`,
+            headers: {
+              'www-authenticate': 'Negotiate',
+            },
+          });
         }
 
         // clear session
