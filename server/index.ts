@@ -146,7 +146,7 @@ export const configSchema = schema.object({
   }),
   kerberos: schema.object({
     jwt_siging_key: schema.string({
-      defaultValue: '00000000000000000000000000000000',
+      defaultValue: 'secret share between opensearch and dashboards',
       minLength: 32,
     }),
   }),
