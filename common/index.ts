@@ -43,6 +43,8 @@ export const SAML_AUTH_LOGIN_WITH_FRAGMENT = '/auth/saml/captureUrlFragment';
 export const ANONYMOUS_AUTH_LOGIN = '/auth/anonymous';
 export const AUTH_TYPE_PARAM = 'auth_type';
 
+export const KERBEROS_AUTH_LOGIN = '/auth/kerberos/login';
+
 export const OPENID_AUTH_LOGOUT = '/auth/openid/logout';
 export const SAML_AUTH_LOGOUT = '/auth/saml/logout';
 export const ANONYMOUS_AUTH_LOGOUT = '/auth/anonymous/logout';
@@ -72,6 +74,7 @@ export enum AuthType {
   SAML = 'saml',
   PROXY = 'proxy',
   ANONYMOUS = 'anonymous',
+  KERBEROS = 'kerberos',
 }
 
 export enum ResourceType {
