@@ -15,7 +15,10 @@
 
 import { httpServerMock } from '../../../../../../src/core/server/http/http_server.mocks';
 
-import { OpenSearchDashboardsRequest } from '../../../../../../src/core/server/http/router';
+import {
+  OpenSearchDashboardsRequest,
+  ResponseHeaders,
+} from '../../../../../../src/core/server/http/router';
 
 import { OpenIdAuthentication } from './openid_auth';
 import { SecurityPluginConfigType } from '../../../index';
@@ -23,17 +26,26 @@ import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { deflateValue } from '../../../utils/compression';
 import { getObjectProperties } from '../../../utils/object_properties_defined';
 import {
-  IRouter,
+  AuthResult,
+  AuthResultParams,
+  AuthResultType,
+  AuthToolkit,
   CoreSetup,
   ILegacyClusterClient,
+  IRouter,
   SessionStorageFactory,
 } from '../../../../../../src/core/server';
+import { coreMock } from '../../../../../../src/core/public/mocks';
 
 interface Logger {
   debug(message: string): void;
+
   info(message: string): void;
+
   warn(message: string): void;
+
   error(message: string): void;
+
   fatal(message: string): void;
 }
 
@@ -332,5 +344,207 @@ describe('test OpenId authHeaderValue', () => {
 
     expect(openIdAuthentication.getKeepAliveExpiry(testCookie, {})).toBe(3900);
     global.Date.now = realDateNow;
+  });
+});
+
+describe('Test OpenID Unauthorized Flows', () => {
+  let router: IRouter;
+  let core: CoreSetup;
+  let esClient: ILegacyClusterClient;
+  let sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>;
+
+  // Consistent with auth_handler_factory.test.ts
+  beforeEach(() => {});
+
+  const config = ({
+    cookie: {
+      secure: false,
+    },
+    openid: {
+      header: 'authorization',
+      scope: [],
+      extra_storage: {
+        cookie_prefix: 'testcookie',
+        additional_cookies: 5,
+      },
+    },
+  } as unknown) as SecurityPluginConfigType;
+
+  const logger = {
+    debug: (message: string) => {},
+    info: (message: string) => {},
+    warn: (message: string) => {},
+    error: (message: string) => {},
+    fatal: (message: string) => {},
+  };
+
+  const authToolkit: AuthToolkit = {
+    authenticated(data: AuthResultParams = {}): AuthResult {
+      return {
+        type: AuthResultType.authenticated,
+        state: data.state,
+        requestHeaders: data.requestHeaders,
+        responseHeaders: data.responseHeaders,
+      };
+    },
+    notHandled(): AuthResult {
+      return {
+        type: AuthResultType.notHandled,
+      };
+    },
+    redirected(headers: { location: string } & ResponseHeaders): AuthResult {
+      return {
+        type: AuthResultType.redirected,
+        headers,
+      };
+    },
+  };
+
+  test('Ensure non pageRequest returns an unauthorized response', () => {
+    const openIdAuthentication = new OpenIdAuthentication(
+      config,
+      sessionStorageFactory,
+      router,
+      esClient,
+      core,
+      logger
+    );
+
+    const mockRequest = httpServerMock.createRawRequest({
+      url: {
+        pathname: '/unknownPath/',
+      },
+    });
+    const osRequest = OpenSearchDashboardsRequest.from(mockRequest);
+
+    const mockLifecycleFactory = httpServerMock.createLifecycleResponseFactory();
+
+    openIdAuthentication.handleUnauthedRequest(osRequest, mockLifecycleFactory, authToolkit);
+
+    expect(mockLifecycleFactory.unauthorized).toBeCalledTimes(1);
+  });
+
+  test('Ensure request without path redirects to default route', () => {
+    const mockCore = coreMock.createSetup();
+    const openIdAuthentication = new OpenIdAuthentication(
+      config,
+      sessionStorageFactory,
+      router,
+      esClient,
+      mockCore,
+      logger
+    );
+
+    const mockRequest = httpServerMock.createRawRequest();
+    const osRequest = OpenSearchDashboardsRequest.from(mockRequest);
+
+    const mockLifecycleFactory = httpServerMock.createLifecycleResponseFactory();
+
+    const authToolKitSpy = jest.spyOn(authToolkit, 'redirected');
+
+    openIdAuthentication.handleUnauthedRequest(osRequest, mockLifecycleFactory, authToolkit);
+
+    expect(authToolKitSpy).toHaveBeenCalledWith({
+      location: '/auth/openid/captureUrlFragment?nextUrl=/',
+      'set-cookie':
+        'security_authentication=; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Path=/',
+    });
+  });
+
+  test('Verify cookie is set "Secure" if configured', () => {
+    const mockCore = coreMock.createSetup();
+    const openIdAuthentication = new OpenIdAuthentication(
+      {
+        ...config,
+        cookie: {
+          secure: true,
+        },
+      },
+      sessionStorageFactory,
+      router,
+      esClient,
+      mockCore,
+      logger
+    );
+
+    const mockRequest = httpServerMock.createRawRequest();
+    const osRequest = OpenSearchDashboardsRequest.from(mockRequest);
+
+    const mockLifecycleFactory = httpServerMock.createLifecycleResponseFactory();
+
+    const authToolKitSpy = jest.spyOn(authToolkit, 'redirected');
+
+    openIdAuthentication.handleUnauthedRequest(osRequest, mockLifecycleFactory, authToolkit);
+
+    expect(authToolKitSpy).toHaveBeenCalledWith({
+      location: '/auth/openid/captureUrlFragment?nextUrl=/',
+      'set-cookie':
+        'security_authentication=; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure; HttpOnly; Path=/',
+    });
+  });
+
+  test('Ensure nextUrl points to original request pathname', () => {
+    const mockCore = coreMock.createSetup();
+    const openIdAuthentication = new OpenIdAuthentication(
+      config,
+      sessionStorageFactory,
+      router,
+      esClient,
+      mockCore,
+      logger
+    );
+
+    const mockRequest = httpServerMock.createRawRequest({
+      url: {
+        pathname: '/app/dashboards',
+      },
+    });
+    const osRequest = OpenSearchDashboardsRequest.from(mockRequest);
+
+    const mockLifecycleFactory = httpServerMock.createLifecycleResponseFactory();
+
+    const authToolKitSpy = jest.spyOn(authToolkit, 'redirected');
+
+    openIdAuthentication.handleUnauthedRequest(osRequest, mockLifecycleFactory, authToolkit);
+
+    expect(authToolKitSpy).toHaveBeenCalledWith({
+      location: '/auth/openid/captureUrlFragment?nextUrl=/app/dashboards',
+      'set-cookie':
+        'security_authentication=; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Path=/',
+    });
+  });
+
+  test('Ensure nextUrl points to original request pathname including security_tenant', () => {
+    const mockCore = coreMock.createSetup();
+    const openIdAuthentication = new OpenIdAuthentication(
+      config,
+      sessionStorageFactory,
+      router,
+      esClient,
+      mockCore,
+      logger
+    );
+
+    const mockRequest = httpServerMock.createRawRequest({
+      url: {
+        pathname: '/app/dashboards',
+        search: 'security_tenant=testing',
+      },
+    });
+    const osRequest = OpenSearchDashboardsRequest.from(mockRequest);
+
+    const mockLifecycleFactory = httpServerMock.createLifecycleResponseFactory();
+
+    const authToolKitSpy = jest.spyOn(authToolkit, 'redirected');
+
+    openIdAuthentication.handleUnauthedRequest(osRequest, mockLifecycleFactory, authToolkit);
+
+    expect(authToolKitSpy).toHaveBeenCalledWith({
+      location: `/auth/openid/captureUrlFragment?nextUrl=${escape(
+        '/app/dashboards?security_tenant=testing'
+      )}`,
+      'set-cookie':
+        'security_authentication=; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Path=/',
+    });
   });
 });
