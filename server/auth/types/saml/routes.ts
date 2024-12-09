@@ -392,9 +392,15 @@ export class SamlAuthRoutes {
             this.getExtraAuthStorageOptions(context.security_plugin.logger)
           );
           this.sessionStorageFactory.asScoped(request).clear();
+
+          let loginUrl = `${this.coreSetup.http.basePath.serverBasePath}/app/login`;
+          if (request.url.searchParams.has('nextUrl')) {
+            loginUrl = `${loginUrl}?nextUrl=${encodeURIComponent(
+              request.url.searchParams.get('nextUrl') || ''
+            )}`;
+          }
           // TODO: need a default logout page
-          const redirectUrl =
-            authInfo.sso_logout_url || this.coreSetup.http.basePath.serverBasePath || '/';
+          const redirectUrl = authInfo.sso_logout_url || loginUrl;
           return response.redirected({
             headers: {
               location: redirectUrl,
