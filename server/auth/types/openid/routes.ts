@@ -101,7 +101,7 @@ export class OpenIdAuthRoutes {
                   },
                 })
               ),
-              redirectHash: schema.maybe(schema.boolean()),
+              redirectHash: schema.maybe(schema.string()),
               state: schema.maybe(schema.string()),
               refresh: schema.maybe(schema.string()),
             },
