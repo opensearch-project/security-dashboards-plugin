@@ -73,3 +73,77 @@ describe("Resolve tenants when multitenancy is enabled and both 'Global' and 'Pr
     expect(adminResult).toEqual('');
   });
 });
+
+describe("Resolve tenants when multitenancy is enabled and both 'Global' and 'Private' tenants are enabled", () => {
+  function resolveWithConfig(config: any) {
+    return resolve(
+      config.username,
+      config.requestedTenant,
+      config.preferredTenants,
+      config.availableTenants,
+      config.globalTenantEnabled,
+      config.multitenancy_enabled,
+      config.privateTenantEnabled
+    );
+  }
+
+  it('Resolve tenant when requested tenant is Private but preferred tenant is Global', () => {
+    const nonadminConfig = {
+      username: 'testuser',
+      requestedTenant: 'Private',
+      preferredTenants: ['Global', 'Private'],
+      availableTenants: { global_tenant: true, testuser: true },
+      globalTenantEnabled: true,
+      multitenancy_enabled: true,
+      privateTenantEnabled: true,
+    };
+
+    const nonadminResult = resolveWithConfig(nonadminConfig);
+    expect(nonadminResult).toEqual('__user__');
+  });
+
+  it('Resolve tenant when requested tenant is Global but preferred tenant is Private', () => {
+    const nonadminConfig = {
+      username: 'testuser',
+      requestedTenant: 'Global',
+      preferredTenants: ['Private', 'Global'],
+      availableTenants: { global_tenant: true, testuser: true },
+      globalTenantEnabled: true,
+      multitenancy_enabled: true,
+      privateTenantEnabled: true,
+    };
+
+    const nonadminResult = resolveWithConfig(nonadminConfig);
+    expect(nonadminResult).toEqual('');
+  });
+
+  it('Resolve tenant when requested tenant is undefined but preferred tenant is Private', () => {
+    const nonadminConfig = {
+      username: 'testuser',
+      requestedTenant: undefined,
+      preferredTenants: ['Private', 'Global'],
+      availableTenants: { global_tenant: true, testuser: true },
+      globalTenantEnabled: true,
+      multitenancy_enabled: true,
+      privateTenantEnabled: true,
+    };
+
+    const nonadminResult = resolveWithConfig(nonadminConfig);
+    expect(nonadminResult).toEqual('__user__');
+  });
+
+  it('Resolve tenant when requested tenant is undefined but preferred tenant is Global', () => {
+    const nonadminConfig = {
+      username: 'testuser',
+      requestedTenant: undefined,
+      preferredTenants: ['Global', 'Private'],
+      availableTenants: { global_tenant: true, testuser: true },
+      globalTenantEnabled: true,
+      multitenancy_enabled: true,
+      privateTenantEnabled: true,
+    };
+
+    const nonadminResult = resolveWithConfig(nonadminConfig);
+    expect(nonadminResult).toEqual('');
+  });
+});
