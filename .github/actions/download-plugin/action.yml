@@ -25,7 +25,7 @@ runs:
         mvn dependency:get \
         -DremoteRepositories=https://aws.oss.sonatype.org/content/repositories/snapshots/ \
         -Dartifact=org.opensearch.plugin:${{ inputs.plugin-name }}:${{ inputs.plugin-version }}-SNAPSHOT:zip \
-        -Dtransitive=false \
-        -Ddest=${{ inputs.download-location }}.zip
+        -Dtransitive=false
+        cp ./${{ inputs.plugin-name }}:${{ inputs.plugin-version }}-SNAPSHOT:zip ${{ inputs.download-location }}.zip
       shell: bash
       
