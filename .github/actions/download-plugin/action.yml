@@ -26,6 +26,7 @@ runs:
         -DremoteRepositories=https://aws.oss.sonatype.org/content/repositories/snapshots/ \
         -Dartifact=org.opensearch.plugin:${{ inputs.plugin-name }}:${{ inputs.plugin-version }}-SNAPSHOT:zip \
         -Dtransitive=false
+        ls ~/.m2/repository/org/opensearch/plugin/${{ inputs.plugin-name }}/
         ls ~/.m2/repository/org/opensearch/plugin/${{ inputs.plugin-name }}/${{ inputs.plugin-version }}/
         cp ~/.m2/repository/org/opensearch/plugin/${{ inputs.plugin-name }}/${{ inputs.plugin-version }}/${{ inputs.plugin-name }}-${{ inputs.plugin-version }}-*.zip ${{ inputs.download-location }}.zip
       shell: bash
