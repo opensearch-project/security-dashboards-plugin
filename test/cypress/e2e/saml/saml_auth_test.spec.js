@@ -27,10 +27,6 @@ const basePath = Cypress.env('basePath') || '';
 before(() => {
   cy.intercept('https://localhost:9200');
 
-  // Avoid Cypress lock onto the ipv4 range, so fake `visit()` before `request()`.
-  // See: https://github.com/cypress-io/cypress/issues/25397#issuecomment-1402556488
-  cy.visit(`http://localhost:5601${basePath}`);
-
   cy.createRoleMapping(ALL_ACCESS_ROLE, samlUserRoleMapping);
   cy.clearCookies();
   cy.clearLocalStorage();
