@@ -47,7 +47,7 @@ beforeEach(() => {
       req.url = req.url.replace(/\[::1\]/g, 'localhost');
     }
 
-    req.continue((res) => {
+    req.on('response', (res) => {
       if (res && res.headers) {
         Object.keys(res.headers).forEach((key) => {
           if (typeof res.headers[key] === 'string' && res.headers[key].includes('[::1]')) {
