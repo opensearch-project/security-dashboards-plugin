@@ -88,8 +88,8 @@ Cypress.Commands.add('loginWithSaml', () => {
 
 Cypress.Commands.add('loginWithSamlMultiauth', () => {
   cy.get('a[aria-label="saml_login_button"]').should('be.visible');
-  cy.get('a[aria-label="saml_login_button"]').should('be.visible').click();
   cy.origin('http://[::1]:7000', () => {
+    cy.get('a[aria-label="saml_login_button"]').should('be.visible').click();
     cy.get('input[id=userName]').should('be.visible');
     cy.get('button[id=btn-sign-in]').should('be.visible').click();
   });
