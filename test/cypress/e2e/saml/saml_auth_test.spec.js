@@ -68,8 +68,8 @@ afterEach(() => {
 describe('Log in via SAML', () => {
   const loginWithSamlMultiauth = () => {
     cy.get('a[aria-label="saml_login_button"]').should('be.visible');
+    cy.get('a[aria-label="saml_login_button"]').should('be.visible').click();
     cy.origin('http://localhost:7000', () => {
-      cy.get('a[aria-label="saml_login_button"]').should('be.visible').click();
       cy.get('input[id=userName]').should('be.visible');
       cy.get('button[id=btn-sign-in]').should('be.visible').click();
     });
