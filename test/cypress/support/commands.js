@@ -80,19 +80,15 @@ Cypress.Commands.add('createRoleMapping', (roleID, rolemappingJson) => {
 });
 
 Cypress.Commands.add('loginWithSaml', () => {
-  cy.origin('http://[::1]:7000', () => {
-    cy.get('input[id=userName]').should('be.visible');
-    cy.get('button[id=btn-sign-in]').should('be.visible').click();
-  });
+  cy.get('input[id=userName]').should('be.visible');
+  cy.get('button[id=btn-sign-in]').should('be.visible').click();
 });
 
 Cypress.Commands.add('loginWithSamlMultiauth', () => {
   cy.get('a[aria-label="saml_login_button"]').should('be.visible');
-  cy.origin('http://[::1]:7000', () => {
-    cy.get('a[aria-label="saml_login_button"]').should('be.visible').click();
-    cy.get('input[id=userName]').should('be.visible');
-    cy.get('button[id=btn-sign-in]').should('be.visible').click();
-  });
+  cy.get('a[aria-label="saml_login_button"]').should('be.visible').click();
+  cy.get('input[id=userName]').should('be.visible');
+  cy.get('button[id=btn-sign-in]').should('be.visible').click();
 });
 
 if (Cypress.env('LOGIN_AS_ADMIN')) {

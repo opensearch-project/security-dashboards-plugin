@@ -32,14 +32,35 @@ before(() => {
   if (Cypress.env('loginMethod') === 'saml_multiauth') {
     cy.visit(`http://localhost:5601${basePath}`);
   } else {
-    cy.origin('http://[::1]:7000', { args: { basePath } }, ({ basePath }) => {
-      cy.visit(`http://localhost:5601${basePath}`);
-    });
+    cy.request(`http://localhost:5601${basePath}`);
   }
 
   cy.createRoleMapping(ALL_ACCESS_ROLE, samlUserRoleMapping);
   cy.clearCookies();
   cy.clearLocalStorage();
+});
+
+beforeEach(() => {
+  cy.intercept('GET', '**/**', (req) => {
+    // Replace [::1] with localhost in the request URL
+    if (req.url.includes('[::1]')) {
+      req.url = req.url.replace(/\[::1\]/g, 'localhost');
+    }
+  
+    req.continue((res) => {
+      if (res && res.headers) {
+        // Loop through all headers and replace [::1] with localhost where applicable
+        Object.keys(res.headers).forEach((key) => {
+          if (typeof res.headers[key] === 'string' && res.headers[key].includes('[::1]')) {
+            res.headers[key] = res.headers[key].replace(/\[::1\]/g, 'localhost');
+          }
+        });
+  
+        console.log(`Modified res.headers: ${JSON.stringify(res.headers)}`);
+      }
+      return res;
+    });
+  });
 });
 
 afterEach(() => {
@@ -60,17 +81,9 @@ describe('Log in via SAML', () => {
     localStorage.setItem('opendistro::security::tenant::saved', '"__user__"');
     localStorage.setItem('home:newThemeModal:show', 'false');
 
-    if (Cypress.env('loginMethod') === 'saml_multiauth') {
-      cy.visit(`http://localhost:5601${basePath}/app/opensearch_dashboards_overview`, {
-        failOnStatusCode: false,
-      });
-    } else {
-      cy.origin('http://[::1]:7000', { args: { basePath } }, ({ basePath }) => {
-        cy.visit(`http://localhost:5601${basePath}/app/opensearch_dashboards_overview`, {
-          failOnStatusCode: false,
-        });
-      });
-    }
+    cy.visit(`http://localhost:5601${basePath}/app/opensearch_dashboards_overview`, {
+      failOnStatusCode: false
+    });
 
     samlLogin();
 
@@ -83,7 +96,7 @@ describe('Log in via SAML', () => {
     localStorage.setItem('home:newThemeModal:show', 'false');
 
     cy.visit(`http://localhost:5601${basePath}/app/dev_tools#/console`, {
-      failOnStatusCode: false,
+      failOnStatusCode: false
     });
 
     samlLogin();
