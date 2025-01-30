@@ -46,7 +46,7 @@ beforeEach(() => {
     if (req.url.includes('[::1]')) {
       req.url = req.url.replace(/\[::1\]/g, 'localhost');
     }
-  
+
     req.continue((res) => {
       if (res && res.headers) {
         // Loop through all headers and replace [::1] with localhost where applicable
@@ -55,7 +55,7 @@ beforeEach(() => {
             res.headers[key] = res.headers[key].replace(/\[::1\]/g, 'localhost');
           }
         });
-  
+
         console.log(`Modified res.headers: ${JSON.stringify(res.headers)}`);
       }
       return res;
@@ -82,7 +82,7 @@ describe('Log in via SAML', () => {
     localStorage.setItem('home:newThemeModal:show', 'false');
 
     cy.visit(`http://localhost:5601${basePath}/app/opensearch_dashboards_overview`, {
-      failOnStatusCode: false
+      failOnStatusCode: false,
     });
 
     samlLogin();
@@ -96,7 +96,7 @@ describe('Log in via SAML', () => {
     localStorage.setItem('home:newThemeModal:show', 'false');
 
     cy.visit(`http://localhost:5601${basePath}/app/dev_tools#/console`, {
-      failOnStatusCode: false
+      failOnStatusCode: false,
     });
 
     samlLogin();
