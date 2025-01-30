@@ -32,7 +32,7 @@ before(() => {
   if (Cypress.env('loginMethod') === 'saml_multiauth') {
     cy.visit(`http://localhost:5601${basePath}`);
   } else {
-    cy.origin('http://[::1]:7000', () => {
+    cy.origin('http://[::1]:7000', { args: { basePath } }, ({ basePath }) => {
       cy.visit(`http://localhost:5601${basePath}`);
     });
   }
