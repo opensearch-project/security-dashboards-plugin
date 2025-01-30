@@ -42,21 +42,18 @@ before(() => {
 
 beforeEach(() => {
   cy.intercept('GET', '**/**', (req) => {
-    // Replace [::1] with localhost in the request URL
+    // Replace [::1] with localhost in the request URL and headers
     if (req.url.includes('[::1]')) {
       req.url = req.url.replace(/\[::1\]/g, 'localhost');
     }
 
     req.continue((res) => {
       if (res && res.headers) {
-        // Loop through all headers and replace [::1] with localhost where applicable
         Object.keys(res.headers).forEach((key) => {
           if (typeof res.headers[key] === 'string' && res.headers[key].includes('[::1]')) {
             res.headers[key] = res.headers[key].replace(/\[::1\]/g, 'localhost');
           }
         });
-
-        console.log(`Modified res.headers: ${JSON.stringify(res.headers)}`);
       }
       return res;
     });
