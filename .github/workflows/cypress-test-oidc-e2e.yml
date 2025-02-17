@@ -3,7 +3,7 @@ name: Snapshot based E2E OIDC tests workflow
 on: [ push, pull_request ]
 
 env:
-  OPENSEARCH_VERSION: '3.0.0'
+  OPENSEARCH_VERSION: '3.0.0-alpha1'
   KEYCLOAK_VERSION: '21.0.1'
   TEST_KEYCLOAK_CLIENT_SECRET: 'oacHfNaXyy81r2uHq1A9RY4ASryre4rZ'
   CI: 1
