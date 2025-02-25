@@ -1,6 +1,9 @@
 name: Run Cypress Tests
 description: 'Runs Cypress tests for the security-dashboards-plugin with opensearch_dashboards.yml and security configuration provided'
 
+env:
+  OPENSEARCH_VERSION: '3.0.0-alpha1'
+
 inputs:
   security_config_file:
     description: 'Name of the security plugin config file'
@@ -21,9 +24,7 @@ runs:
   steps:
     - name: Set env
       run: |
-        opensearch_version=$(node -p "require('./package.json').opensearchDashboards.version")
         plugin_version=$(node -p "require('./package.json').version")
-        echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
         echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
       shell: bash
 
