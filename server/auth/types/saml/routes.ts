@@ -101,7 +101,7 @@ export class SamlAuthRoutes {
 
     this.router.post(
       {
-        path: `/_opendistro/_security/saml/acs`,
+        path: `/_plugins/_security/saml/acs`,
         validate: {
           body: schema.any(),
         },
@@ -200,7 +200,7 @@ export class SamlAuthRoutes {
 
     this.router.post(
       {
-        path: `/_opendistro/_security/saml/acs/idpinitiated`,
+        path: `/_plugins/_security/saml/acs/idpinitiated`,
         validate: {
           body: schema.any(),
         },
@@ -209,7 +209,7 @@ export class SamlAuthRoutes {
         },
       },
       async (context, request, response) => {
-        const acsEndpoint = `${this.coreSetup.http.basePath.serverBasePath}/_opendistro/_security/saml/acs/idpinitiated`;
+        const acsEndpoint = `${this.coreSetup.http.basePath.serverBasePath}/_plugins/_security/saml/acs/idpinitiated`;
         try {
           const credentials = await this.securityClient.authToken({
             requestId: undefined,
@@ -328,7 +328,7 @@ export class SamlAuthRoutes {
       }
     );
 
-    //  Once the User is authenticated via the '_opendistro/_security/saml/acs' route,
+    //  Once the User is authenticated via the '_plugins/_security/saml/acs' route,
     //  the browser will be redirected to '/auth/saml/redirectUrlFragment' route,
     //  which will execute the redirectUrlFragment.js.
     this.coreSetup.http.resources.register(
