@@ -61,7 +61,7 @@ function renderStatusPanel(onSwitchChange: () => void, auditLoggingEnabled: bool
       <EuiForm>
         <EuiDescribedFormGroup title={<h3>Storage location</h3>} className="described-form-group">
           <EuiCompressedFormRow className="form-row">
-            <EuiText color="subdued" grow={false}>
+            <EuiText color="subdued" grow={false} size="s">
               <FormattedMessage
                 id="audit.logs.storageInstruction"
                 defaultMessage="Configure the output location and storage types in {opensearchCode}. The default storage location is {internalOpenSearchCode}, which stores the logs in an index on this cluster."
@@ -263,15 +263,17 @@ export function AuditLogging(props: AuditLoggingProps) {
         coreStart={props.coreStart}
         navigation={props.depsStart.navigation}
         fallBackComponent={
-          <EuiPageHeader>
-            <EuiTitle size="l">
-              <h3>Audit logging</h3>
-            </EuiTitle>
-          </EuiPageHeader>
+          <>
+            <EuiPageHeader>
+              <EuiText size="s">
+                <h1>Audit logging</h1>
+              </EuiText>
+            </EuiPageHeader>
+            <EuiSpacer />
+          </>
         }
         resourceType={ResourceType.auditLogging}
       />
-      <EuiSpacer />
       {loading ? <EuiLoadingContent /> : content}
     </div>
   );

@@ -273,20 +273,22 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
       }
     }
     fallBackComponent={
-      <EuiPageHeader>
-        <EuiTitle
-          size="l"
-        >
-          <h3>
-            Audit logging
-          </h3>
-        </EuiTitle>
-      </EuiPageHeader>
+      <React.Fragment>
+        <EuiPageHeader>
+          <EuiText
+            size="s"
+          >
+            <h1>
+              Audit logging
+            </h1>
+          </EuiText>
+        </EuiPageHeader>
+        <EuiSpacer />
+      </React.Fragment>
     }
     navigation={Object {}}
     resourceType="auditLogging"
   />
-  <EuiSpacer />
   <EuiPanel>
     <EuiForm>
       <EuiDescribedFormGroup
@@ -309,6 +311,7 @@ exports[`Audit logs render when AuditLoggingSettings.enabled is true 1`] = `
           <EuiText
             color="subdued"
             grow={false}
+            size="s"
           >
             <FormattedMessage
               defaultMessage="Configure the output location and storage types in {opensearchCode}. The default storage location is {internalOpenSearchCode}, which stores the logs in an index on this cluster."
@@ -704,20 +707,22 @@ exports[`Audit logs should load access error component 1`] = `
       }
     }
     fallBackComponent={
-      <EuiPageHeader>
-        <EuiTitle
-          size="l"
-        >
-          <h3>
-            Audit logging
-          </h3>
-        </EuiTitle>
-      </EuiPageHeader>
+      <React.Fragment>
+        <EuiPageHeader>
+          <EuiText
+            size="s"
+          >
+            <h1>
+              Audit logging
+            </h1>
+          </EuiText>
+        </EuiPageHeader>
+        <EuiSpacer />
+      </React.Fragment>
     }
     navigation={Object {}}
     resourceType="auditLogging"
   />
-  <EuiSpacer />
   <AccessErrorComponent
     loading={false}
     message="You do not have permissions to configure audit logging settings"

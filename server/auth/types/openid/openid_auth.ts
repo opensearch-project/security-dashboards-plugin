@@ -16,30 +16,29 @@
 import * as fs from 'fs';
 import wreck from '@hapi/wreck';
 import {
-  Logger,
-  SessionStorageFactory,
-  CoreSetup,
-  IRouter,
-  ILegacyClusterClient,
-  OpenSearchDashboardsRequest,
-  LifecycleResponseFactory,
-  AuthToolkit,
-  IOpenSearchDashboardsResponse,
   AuthResult,
+  AuthToolkit,
+  CoreSetup,
+  ILegacyClusterClient,
+  IOpenSearchDashboardsResponse,
+  IRouter,
+  LifecycleResponseFactory,
+  Logger,
+  OpenSearchDashboardsRequest,
+  SessionStorageFactory,
 } from 'opensearch-dashboards/server';
 import { PeerCertificate } from 'tls';
 import { Server, ServerStateCookieOptions } from '@hapi/hapi';
 import { ProxyAgent } from 'proxy-agent';
 import { SecurityPluginConfigType } from '../../..';
 import {
-  SecuritySessionCookie,
   clearOldVersionCookieValue,
+  SecuritySessionCookie,
 } from '../../../session/security_cookie';
 import { OpenIdAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
-import { callTokenEndpoint } from './helper';
+import { callTokenEndpoint, getExpirationDate } from './helper';
 import { getObjectProperties } from '../../../utils/object_properties_defined';
-import { getExpirationDate } from './helper';
 import { AuthType } from '../../../../common';
 import {
   ExtraAuthStorageOptions,
@@ -128,11 +127,14 @@ export class OpenIdAuthentication extends AuthenticationType {
   }
 
   private generateNextUrl(request: OpenSearchDashboardsRequest): string {
-    const path = getRedirectUrl({
+    let path = getRedirectUrl({
       request,
       basePath: this.coreSetup.http.basePath.serverBasePath,
       nextUrl: request.url.pathname || '/app/opensearch-dashboards',
     });
+    if (request.url.search) {
+      path += request.url.search;
+    }
     return escape(path);
   }
 

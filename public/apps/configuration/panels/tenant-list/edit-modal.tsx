@@ -25,6 +25,7 @@ import {
   EuiForm,
   EuiCompressedTextArea,
   EuiHorizontalRule,
+  EuiText,
 } from '@elastic/eui';
 import React, { useState } from 'react';
 import { Action } from '../../types';
@@ -59,7 +60,11 @@ export function TenantEditModal(props: TenantEditModalDeps) {
     <EuiOverlayMask>
       <EuiModal onClose={props.handleClose}>
         <EuiModalHeader>
-          <EuiModalHeaderTitle>{TITLE_DICT[props.action]}</EuiModalHeaderTitle>
+          <EuiModalHeaderTitle>
+            <EuiText size="s">
+              <h2>{TITLE_DICT[props.action]}</h2>
+            </EuiText>
+          </EuiModalHeaderTitle>
         </EuiModalHeader>
 
         <EuiModalBody>

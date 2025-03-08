@@ -61,7 +61,7 @@ const addBackendStep = {
           <ExternalLinkButton
             fill
             href={DocLinks.BackendConfigurationDoc}
-            text="Create config.yml"
+            text="Config.yml documentation"
           />
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
@@ -98,7 +98,6 @@ const setOfSteps = [
           <EuiFlexItem grow={false}>
             <EuiSmallButton
               data-test-subj="explore-existing-roles"
-              fill
               onClick={() => {
                 window.location.href = buildHashUrl(ResourceType.roles);
               }}
@@ -138,7 +137,6 @@ const setOfSteps = [
           <EuiFlexItem grow={false}>
             <EuiSmallButton
               data-test-subj="map-users-to-role"
-              fill
               onClick={() => {
                 window.location.href = buildHashUrl(ResourceType.users);
               }}
@@ -200,9 +198,9 @@ export function GetStarted(props: AppDependencies) {
           appRightControls={buttonData}
           fallBackComponent={
             <EuiPageHeader>
-              <EuiTitle size="l">
+              <EuiText size="s">
                 <h1>Get started</h1>
-              </EuiTitle>
+              </EuiText>
               <ExternalLinkButton text="Open in new window" href={buildHashUrl()} />
             </EuiPageHeader>
           }
@@ -240,7 +238,6 @@ export function GetStarted(props: AppDependencies) {
             </p>
             <EuiSmallButton
               data-test-subj="review-audit-log-configuration"
-              fill
               onClick={() => {
                 window.location.href = buildHashUrl(ResourceType.auditLogging);
               }}
@@ -263,7 +260,6 @@ export function GetStarted(props: AppDependencies) {
             </p>
             <EuiSmallButton
               iconType="refresh"
-              fill
               data-test-subj="purge-cache"
               onClick={async () => {
                 try {
@@ -309,7 +305,6 @@ export function GetStarted(props: AppDependencies) {
               <EuiFlexGroup gutterSize="s">
                 <EuiFlexItem grow={false}>
                   <EuiSmallButton
-                    fill
                     onClick={() => {
                       window.location.href = buildHashUrl(ResourceType.tenants);
                     }}

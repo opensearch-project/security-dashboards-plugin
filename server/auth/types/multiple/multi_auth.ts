@@ -34,6 +34,7 @@ import {
   OpenIdAuthentication,
   ProxyAuthentication,
   SamlAuthentication,
+  JwtAuthentication,
 } from '../../types';
 
 export class MultipleAuthentication extends AuthenticationType {
@@ -111,6 +112,19 @@ export class MultipleAuthentication extends AuthenticationType {
           this.authHandlers.set(AuthType.PROXY, ProxyAuth);
           break;
         }
+        case AuthType.JWT: {
+          const JwtAuth = new JwtAuthentication(
+            this.config,
+            this.sessionStorageFactory,
+            this.router,
+            this.esClient,
+            this.coreSetup,
+            this.logger
+          );
+          await JwtAuth.init();
+          this.authHandlers.set(AuthType.JWT, JwtAuth);
+          break;
+        }
         default: {
           throw new Error(`Unsupported authentication type: ${this.authTypes[i]}`);
         }
@@ -140,11 +154,21 @@ export class MultipleAuthentication extends AuthenticationType {
     if (reqAuthType && this.authHandlers.has(reqAuthType)) {
       return await this.authHandlers.get(reqAuthType)!.getAdditionalAuthHeader(request);
     } else {
-      return {};
+      const authHeaders: any = {};
+      for (const handler of this.authHandlers.values()) {
+        Object.assign(authHeaders, await handler.getAdditionalAuthHeader(request));
+      }
+      return authHeaders;
     }
   }
 
   getCookie(request: OpenSearchDashboardsRequest, authInfo: any): SecuritySessionCookie {
+    // TODO: This logic is only applicable for JWT auth type
+    for (const handler of this.authHandlers.values()) {
+      if (handler.requestIncludesAuthInfo(request)) {
+        return handler.getCookie(request, authInfo);
+      }
+    }
     return {};
   }
 

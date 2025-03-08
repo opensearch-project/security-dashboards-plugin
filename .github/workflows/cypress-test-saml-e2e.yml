@@ -3,7 +3,7 @@ name: Snapshot based E2E SAML tests workflow
 on: [ push, pull_request ]
 
 env:
-  OPENSEARCH_VERSION: '3.0.0'
+  OPENSEARCH_VERSION: '3.0.0-alpha1'
   CI: 1
   # avoid warnings like "tput: No value for $TERM and no -T specified"
   TERM: xterm
@@ -59,7 +59,7 @@ jobs:
                     config:
                       idp:
                         entity_id: urn:example:idp
-                        metadata_url: http://localhost:7000/metadata
+                        metadata_url: http://[::1]:7000/metadata
                       sp:
                         entity_id: https://localhost:9200
                       kibana_url: http://localhost:5601${{ matrix.basePath }}

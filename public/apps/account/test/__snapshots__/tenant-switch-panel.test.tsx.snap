@@ -8,11 +8,13 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
   >
     <EuiSpacer />
     <EuiModalBody>
-      <EuiTitle>
-        <h4>
+      <EuiText
+        size="s"
+      >
+        <h2>
           Select your tenant
-        </h4>
-      </EuiTitle>
+        </h2>
+      </EuiText>
       <EuiSpacer />
       <EuiText
         color="subdued"
@@ -120,11 +122,13 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
   >
     <EuiSpacer />
     <EuiModalBody>
-      <EuiTitle>
-        <h4>
+      <EuiText
+        size="s"
+      >
+        <h2>
           Select your tenant
-        </h4>
-      </EuiTitle>
+        </h2>
+      </EuiText>
       <EuiSpacer />
       <EuiText
         color="subdued"
@@ -235,11 +239,13 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
   >
     <EuiSpacer />
     <EuiModalBody>
-      <EuiTitle>
-        <h4>
+      <EuiText
+        size="s"
+      >
+        <h2>
           Select your tenant
-        </h4>
-      </EuiTitle>
+        </h2>
+      </EuiText>
       <EuiSpacer />
       <EuiText
         color="subdued"
@@ -350,11 +356,13 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
   >
     <EuiSpacer />
     <EuiModalBody>
-      <EuiTitle>
-        <h4>
+      <EuiText
+        size="s"
+      >
+        <h2>
           Select your tenant
-        </h4>
-      </EuiTitle>
+        </h2>
+      </EuiText>
       <EuiSpacer />
       <EuiText
         color="subdued"
@@ -465,11 +473,13 @@ exports[`Account menu -tenant switch panel confirm button and renders renders wh
   >
     <EuiSpacer />
     <EuiModalBody>
-      <EuiTitle>
-        <h4>
+      <EuiText
+        size="s"
+      >
+        <h2>
           Select your tenant
-        </h4>
-      </EuiTitle>
+        </h2>
+      </EuiText>
       <EuiSpacer />
       <EuiText
         color="subdued"

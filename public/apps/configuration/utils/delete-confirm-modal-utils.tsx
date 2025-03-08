@@ -14,7 +14,7 @@
  */
 
 import React, { useState } from 'react';
-import { EuiOverlayMask, EuiConfirmModal } from '@elastic/eui';
+import { EuiOverlayMask, EuiConfirmModal, EuiText } from '@elastic/eui';
 
 /**
  *
@@ -51,7 +51,9 @@ export function useDeleteConfirmState(
           {customConfirmationText ? (
             customConfirmationText
           ) : (
-            <p>Do you really want to delete selected {entity}?</p>
+            <EuiText size="s">
+              <p>Do you really want to delete selected {entity}?</p>
+            </EuiText>
           )}
         </EuiConfirmModal>
       </EuiOverlayMask>

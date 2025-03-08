@@ -23,7 +23,7 @@ import { GLOBAL_TENANT_SYMBOL, globalTenantName, PRIVATE_TENANT_SYMBOL } from '.
 import { ensureRawRequest } from '../../../../src/core/server/http/router';
 import { GOTO_PREFIX } from '../../../../src/plugins/share/common/short_url_routes';
 
-export const PRIVATE_TENANTS: string[] = [PRIVATE_TENANT_SYMBOL, 'private'];
+export const PRIVATE_TENANTS: string[] = [PRIVATE_TENANT_SYMBOL, 'private', 'Private'];
 export const GLOBAL_TENANTS: string[] = ['global', GLOBAL_TENANT_SYMBOL, 'Global'];
 /**
  * Resovles the tenant the user is using.

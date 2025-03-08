@@ -1,6 +1,9 @@
 name: Run Cypress Tests
 description: 'Runs Cypress tests for the security-dashboards-plugin with opensearch_dashboards.yml and security configuration provided'
 
+env:
+  OPENSEARCH_VERSION: '3.0.0-alpha1'
+
 inputs:
   security_config_file:
     description: 'Name of the security plugin config file'
@@ -21,9 +24,7 @@ runs:
   steps:
     - name: Set env
       run: |
-        opensearch_version=$(node -p "require('./package.json').opensearchDashboards.version")
         plugin_version=$(node -p "require('./package.json').version")
-        echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
         echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
       shell: bash
 
@@ -63,6 +64,12 @@ runs:
         fi
       shell: bash
 
+    - name: Compile OpenSearch Dashboards
+      run: |
+        cd OpenSearch-Dashboards
+        node scripts/build_opensearch_dashboards_platform_plugins --no-examples --workers=10 --verbose
+      shell: bash
+
     - name: Run OpenSearch Dashboards with provided configuration
       if: ${{ runner.os == 'Linux' }}
       run: |
@@ -80,13 +87,13 @@ runs:
       run: |
         cd ./OpenSearch-Dashboards
         echo "Start checking OpenSearch Dashboards."
-        for i in {1..60}; do
-          if grep -q "bundles compiled successfully after" "dashboard.log"; then
-            echo "OpenSearch Dashboards compiled successfully."
+        for i in {1..6}; do
+          if grep -q "http server running" "dashboard.log"; then
+            echo "OpenSearch Dashboards started successfully."
             break
           fi
-          if [ $i -eq 60 ]; then
-            echo "Timeout for 600 seconds reached. OpenSearch Dashboards did not finish compiling."
+          if [ $i -eq 6 ]; then
+            echo "Timeout for 60 seconds reached. OpenSearch Dashboards did not start."
             exit 1
           fi
           sleep 10

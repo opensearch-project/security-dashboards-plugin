@@ -18,6 +18,7 @@ import {
   EuiHorizontalRule,
   EuiCompressedCheckbox,
   EuiConfirmModal,
+  EuiText,
 } from '@elastic/eui';
 import React from 'react';
 import { ExternalLink } from '../../utils/display-utils';
@@ -55,12 +56,14 @@ export function SaveChangesModalGenerator(props: SaveChangesModalDeps) {
         confirmButtonText="Change Default Tenant"
         defaultFocusedButton="confirm"
       >
-        <p>
-          Users will load into {props.updatedTenancyConfig.default_tenant} tenant when they log into
-          Dashboards if they have the appropriate permissions. If users don’t have permissions to a
-          custom tenant they will load into the global tenant.{' '}
-          <ExternalLink href={DocLinks.MultiTenancyDoc} />
-        </p>
+        <EuiText size="s">
+          <p>
+            Users will load into {props.updatedTenancyConfig.default_tenant} tenant when they log
+            into Dashboards if they have the appropriate permissions. If users don’t have
+            permissions to a custom tenant they will load into the global tenant.{' '}
+            <ExternalLink href={DocLinks.MultiTenancyDoc} />
+          </p>
+        </EuiText>
       </EuiConfirmModal>
     );
     return globalDefaultModal;
@@ -168,11 +171,13 @@ export function SaveChangesModalGenerator(props: SaveChangesModalDeps) {
         )
       }
     >
-      <p>
-        The changes you are about to make can break large portions of OpenSearch Dashboards. You
-        might be able to revert some of these changes.{' '}
-        <ExternalLink href={DocLinks.MultiTenancyDoc} />
-      </p>
+      <EuiText size="s">
+        <p>
+          The changes you are about to make can break large portions of OpenSearch Dashboards. You
+          might be able to revert some of these changes.{' '}
+          <ExternalLink href={DocLinks.MultiTenancyDoc} />
+        </p>
+      </EuiText>
 
       <EuiHorizontalRule />
 
