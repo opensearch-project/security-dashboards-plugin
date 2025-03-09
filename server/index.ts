@@ -144,6 +144,12 @@ export const configSchema = schema.object({
       buttonstyle: schema.string({ defaultValue: '' }),
     }),
   }),
+  kerberos: schema.object({
+    jwt_siging_key: schema.string({
+      defaultValue: 'secret share between opensearch and dashboards',
+      minLength: 32,
+    }),
+  }),
   multitenancy: schema.object({
     enabled: schema.boolean({ defaultValue: false }),
     show_roles: schema.boolean({ defaultValue: false }),
