@@ -17,19 +17,19 @@ import config from '../../../src/dev/jest/config';
 
 export default {
   ...config,
-  roots: ['<rootDir>/plugins/security-dashboards-plugin'],
+  roots: ['<rootDir>/plugins/wazuh-security-dashboards-plugin'],
   testMatch: ['**/public/**/*.test.{ts,tsx,js,jsx}', '**/common/*.test.{ts, tsx}'],
   testPathIgnorePatterns: [
-    '<rootDir>/plugins/security-dashboards-plugin/build/',
-    '<rootDir>/plugins/security-dashboards-plugin/node_modules/',
+    '<rootDir>/plugins/wazuh-security-dashboards-plugin/build/',
+    '<rootDir>/plugins/wazuh-security-dashboards-plugin/node_modules/',
   ],
   setupFilesAfterEnv: ['<rootDir>/src/dev/jest/setup/after_env.integration.js'],
   collectCoverageFrom: [
-    '<rootDir>/plugins/security-dashboards-plugin/public/**/*.{ts,tsx}',
-    '!<rootDir>/plugins/security-dashboards-plugin/public/**/*.test.{ts,tsx}',
+    '<rootDir>/plugins/wazuh-security-dashboards-plugin/public/**/*.{ts,tsx}',
+    '!<rootDir>/plugins/wazuh-security-dashboards-plugin/public/**/*.test.{ts,tsx}',
   ],
   coverageDirectory:
-    '<rootDir>/plugins/security-dashboards-plugin/opensearch-dashboards-coverage/jest_ui',
+    '<rootDir>/plugins/wazuh-security-dashboards-plugin/opensearch-dashboards-coverage/jest_ui',
   clearMocks: true,
   coverageReporters: ['lcov', 'text', 'cobertura', 'html'],
 };

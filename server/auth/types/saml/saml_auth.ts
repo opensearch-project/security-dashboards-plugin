@@ -63,7 +63,7 @@ export class SamlAuthentication extends AuthenticationType {
     let path = getRedirectUrl({
       request,
       basePath: this.coreSetup.http.basePath.serverBasePath,
-      nextUrl: request.url.pathname || '/app/opensearch-dashboards',
+      nextUrl: request.url.pathname || '/app/wz-home',
     });
     if (request.url.search) {
       path += request.url.search;

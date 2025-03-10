@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Checkout Branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Configure the Dashboard for multi datasources disabled (default)
       - name: Create OpenSearch Dashboards Config

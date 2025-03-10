@@ -219,8 +219,8 @@ describe('start OpenSearch Dashboards server', () => {
     // shutdown OpenSearchDashboards server
     await root.shutdown();
   });
-
-  it('Login to app/opensearch_dashboards_overview#/ when JWT is enabled', async () => {
+  // Wazuh: Skip test because overview page is disabled
+  it.skip('Login to app/opensearch_dashboards_overview#/ when JWT is enabled', async () => {
     const payload = {
       sub: 'jwt_test',
       roles: 'admin,kibanauser',
@@ -267,8 +267,8 @@ describe('start OpenSearch Dashboards server', () => {
     await driver.manage().deleteAllCookies();
     await driver.quit();
   });
-
-  it('Login to app/opensearch_dashboards_overview#/ when JWT is enabled with invalid token', async () => {
+  // Wazuh: Skip test because overview page is disabled
+  it.skip('Login to app/opensearch_dashboards_overview#/ when JWT is enabled with invalid token', async () => {
     const payload = {
       sub: 'jwt_test',
       roles: 'admin,kibanauser',
@@ -294,8 +294,8 @@ describe('start OpenSearch Dashboards server', () => {
     await driver.manage().deleteAllCookies();
     await driver.quit();
   });
-
-  it('Login to app/dev_tools#/console when JWT is enabled with invalid token', async () => {
+  // Wazuh: Skip test because this issue https://github.com/opensearch-project/security-dashboards-plugin/issues/1540
+  it.skip('Login to app/dev_tools#/console when JWT is enabled with invalid token', async () => {
     const payload = {
       sub: 'jwt_test',
       roles: 'admin,kibanauser',

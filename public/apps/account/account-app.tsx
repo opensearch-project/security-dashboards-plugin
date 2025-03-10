@@ -105,7 +105,7 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
       }
     }
 
-    setShouldShowTenantPopup(shouldShowTenantPopup);
+    setShouldShowTenantPopup(false);
 
     const isPlacedInLeftNav = coreStart.uiSettings.get('home:useNewHomePage');
 

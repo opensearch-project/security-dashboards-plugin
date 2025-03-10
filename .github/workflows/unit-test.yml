@@ -1,6 +1,6 @@
 name: Unit Tests
 
-on: [ push, pull_request ]
+on: [push, pull_request]
 
 jobs:
   unit-tests:
@@ -8,21 +8,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest , windows-latest ]
+        os: [ubuntu-latest] # Removed  windows-latest, macos-latest
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Enable longer filenames
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: git config --system core.longpaths true
+      # - name: Enable longer filenames
+      #   if: ${{ matrix.os == 'windows-latest' }}
+      #   run: git config --system core.longpaths true
 
       - name: Checkout Branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - id: install-dashboards
         uses: derek-ho/setup-opensearch-dashboards@v3
         with:
-           plugin_name: security-dashboards-plugin
+          plugin_name: wazuh-security-dashboards-plugin
+          app_reference: ${{ vars.WZD_REF }}
 
       - name: Run lint
         run: yarn lint

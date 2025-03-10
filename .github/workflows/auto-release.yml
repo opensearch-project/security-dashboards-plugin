@@ -14,15 +14,18 @@ jobs:
     steps:
       - name: GitHub App token
         id: github_app_token
-        uses: tibdex/github-app-token@v1.5.0
+        uses: tibdex/github-app-token@v2.1.0
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
-          installation_id: 22958780
+          # https://github.com/tibdex/github-app-token/releases/tag/v2.0.0
+          # https://github.com/tibdex/github-app-token/compare/v1.5.0...v2.1.0#diff-1243c5424efaaa19bd8e813c5e6f6da46316e63761421b3e5f5c8ced9a36e6b6R11-R30
+          installation_retrieval_mode: id
+          installation_retrieval_payload: 22958780
       - name: Get tag
         id: tag
         uses: dawidd6/action-get-tag@v1
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: ncipollo/release-action@v1
         with:
           github_token: ${{ steps.github_app_token.outputs.token }}

@@ -725,7 +725,7 @@ exports[`Login page renders renders with default value: string 1`] = `
   <EuiImage
     alt=""
     size="fullWidth"
-    url="/ui/logos/opensearch_on_light.svg"
+    url="test-file-stub"
   />
   <EuiSpacer
     size="s"
@@ -733,18 +733,14 @@ exports[`Login page renders renders with default value: string 1`] = `
   <EuiText
     size="m"
     textAlign="center"
-  >
-    Log in to OpenSearch Dashboards
-  </EuiText>
+  />
   <EuiSpacer
     size="s"
   />
   <EuiText
     size="s"
     textAlign="center"
-  >
-    If you have forgotten your username or password, contact your system administrator.
-  </EuiText>
+  />
   <EuiSpacer
     size="s"
   />
@@ -819,7 +815,7 @@ exports[`Login page renders renders with default value: string array 1`] = `
   <EuiImage
     alt=""
     size="fullWidth"
-    url="/ui/logos/opensearch_on_light.svg"
+    url="test-file-stub"
   />
   <EuiSpacer
     size="s"
@@ -827,18 +823,14 @@ exports[`Login page renders renders with default value: string array 1`] = `
   <EuiText
     size="m"
     textAlign="center"
-  >
-    Log in to OpenSearch Dashboards
-  </EuiText>
+  />
   <EuiSpacer
     size="s"
   />
   <EuiText
     size="s"
     textAlign="center"
-  >
-    If you have forgotten your username or password, contact your system administrator.
-  </EuiText>
+  />
   <EuiSpacer
     size="s"
   />

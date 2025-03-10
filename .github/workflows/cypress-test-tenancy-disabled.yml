@@ -1,6 +1,6 @@
 name: Cypress Tests Multitenancy Disabled
 
-on: [ push, pull_request ]
+on: [push, pull_request]
 
 env:
   TEST_BROWSER_HEADLESS: 1
@@ -23,12 +23,13 @@ jobs:
 
     steps:
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v4
         with:
+          distribution: 'temurin'
           java-version: 11
 
       - name: Checkout Branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set env
         run: |
@@ -47,10 +48,10 @@ jobs:
           download-location: ${{ env.PLUGIN_NAME }}
 
       - name: Run Opensearch with security
-        uses: derek-ho/start-opensearch@v2
+        uses: derek-ho/start-opensearch@v6
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
-          plugins: "file:$(pwd)/${{ env.PLUGIN_NAME }}.zip"
+          plugins: 'file:$(pwd)/${{ env.PLUGIN_NAME }}.zip'
           security-enabled: true
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
 
@@ -70,9 +71,10 @@ jobs:
           EOT
 
       - name: Run Dashboard with Security Dashboards Plugin
-        uses: derek-ho/setup-opensearch-dashboards@v1
+        uses: derek-ho/setup-opensearch-dashboards@v3
         with:
           plugin_name: security-dashboards-plugin
+          app_reference: ${{ vars.WZD_REF }}
           opensearch_dashboards_yml: tenancy-disabled-opensearch-dashboards-config.yml
 
       - name: Configure and Run OpenSearch Dashboards with Cypress Test Cases
@@ -80,7 +82,7 @@ jobs:
           cd ./OpenSearch-Dashboards
           nohup yarn start --no-base-path --no-watch &
           sleep 500
-          git clone https://github.com/opensearch-project/opensearch-dashboards-functional-test.git
+          git clone https://github.com/opensearch-project/opensearch-dashboards-functional-test.git -b ${{ env.OPENSEARCH_VERSION }}
           cd opensearch-dashboards-functional-test
           npm install cypress --save-dev
           yarn cypress:run-with-security --browser chrome --spec "cypress/integration/plugins/security/inaccessible_tenancy_features.js"

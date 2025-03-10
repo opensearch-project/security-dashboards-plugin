@@ -28,6 +28,7 @@ import {
 } from '@elastic/eui';
 import { CoreStart } from '../../../../../src/core/public';
 import { ClientConfigType } from '../../types';
+import defaultBrandImage from '../../assets/ui/wazuh_logo.svg';
 import { validateCurrentPassword } from '../../utils/login-utils';
 import {
   ANONYMOUS_AUTH_LOGIN,
@@ -276,23 +277,23 @@ export function LoginPage(props: LoginPageDeps) {
   };
 
   // TODO: Get brand image from server config
+  // Don't force custom logo to have 100% width. It should be handled in the svg properties if needed. (Removed fullWidth in the image)
   return (
     <EuiListGroup className="login-wrapper">
       {props.config.ui.basicauth.login.showbrandimage && (
         <EuiImage
           size="fullWidth"
           alt=""
-          url={props.config.ui.basicauth.login.brandimage || props.chrome.logos.OpenSearch.url}
+          url={props.config.ui.basicauth.login.brandimage || defaultBrandImage}
         />
       )}
       <EuiSpacer size="s" />
       <EuiText size="m" textAlign="center">
-        {props.config.ui.basicauth.login.title || 'Log in to OpenSearch Dashboards'}
+        {props.config.ui.basicauth.login.title || ''}
       </EuiText>
       <EuiSpacer size="s" />
       <EuiText size="s" textAlign="center">
-        {props.config.ui.basicauth.login.subtitle ||
-          'If you have forgotten your username or password, contact your system administrator.'}
+        {props.config.ui.basicauth.login.subtitle || ''}
       </EuiText>
       <EuiSpacer size="s" />
       <EuiForm component="form">

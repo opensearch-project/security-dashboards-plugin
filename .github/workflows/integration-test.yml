@@ -14,16 +14,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest , windows-latest ]
+        os: [ubuntu-latest] # Removed  windows-latest
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout Branch
-        uses: actions/checkout@v3
-        
+        uses: actions/checkout@v4
+
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v4
         with:
+          distribution: 'temurin'
           java-version: 11
 
       - name: Set env
@@ -34,7 +35,25 @@ jobs:
           echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
         shell: bash
 
-      - name: Download security plugin and create setup scripts for remote cluster
+      - uses: browser-actions/setup-geckodriver@v0.0.0
+      - run: geckodriver --version
+
+      - name: Set up Firefox browser
+        if: ${{ runner.os == 'Linux' }}
+        uses: browser-actions/setup-firefox@v1
+
+      - run: firefox --version
+        if: ${{ runner.os == 'Linux' }}
+
+      # Browser-action version does not work on Windows
+      # - name: Set up Firefox browser for Windows
+      #   if: ${{ runner.os == 'Windows' }}
+      #   uses: RyanL1997/setup-browser@main
+      #   with:
+      #     browser: firefox
+      #     version: latest
+
+      - name: Download security plugin and create setup scripts
         uses: ./.github/actions/download-plugin
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
@@ -51,7 +70,7 @@ jobs:
           plugin-version: ${{ env.PLUGIN_VERSION }}
       
       - name: Run Opensearch with A Single Plugin Remote Cluster
-        uses: derek-ho/start-opensearch@v4
+        uses: derek-ho/start-opensearch@v6
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: "file:$(pwd)/opensearch-security-${{ env.OPENSEARCH_VERSION }}.zip"
@@ -66,10 +85,10 @@ jobs:
         shell: bash
 
       - name: Run Opensearch with security
-        uses: derek-ho/start-opensearch@v2
+        uses: derek-ho/start-opensearch@v6
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
-          plugins: "file:$(pwd)/${{ env.PLUGIN_NAME }}.zip"
+          plugins: 'file:$(pwd)/${{ env.PLUGIN_NAME }}.zip'
           security-enabled: true
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
 
@@ -83,7 +102,8 @@ jobs:
       - id: install-dashboards
         uses: derek-ho/setup-opensearch-dashboards@v3
         with:
-          plugin_name: security-dashboards-plugin
+          plugin_name: wazuh-security-dashboards-plugin
+          app_reference: ${{ vars.WZD_REF }}
 
       - name: Start Dashboards in background
         run: node scripts/build_opensearch_dashboards_platform_plugins.js
@@ -101,11 +121,10 @@ jobs:
         shell: bash
         working-directory: ${{ steps.install-dashboards.outputs.plugin-directory }}
 
-      - name: Run integration tests on Windows
-        if: ${{ runner.os == 'Windows' }}
-        run: |
-          echo "check if opensearch is ready"
-          curl -XGET https://localhost:9200 -u 'admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}' -k
-          export ADMIN_PASSWORD=${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} && node ./test/run_jest_tests.js --runInBand --detectOpenHandles --forceExit --config ./test/jest.config.server.js
-        shell: bash
-        working-directory: ${{ steps.install-dashboards.outputs.plugin-directory }}
+      # - name: Run integration tests on Windows
+      #   if: ${{ runner.os == 'Windows' }}
+      #   run: |
+      #     echo "check if opensearch is ready"
+      #     curl -XGET https://localhost:9200 -u 'admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}' -k
+      #     node .\test\run_jest_tests.js --runInBand --detectOpenHandles --forceExit --config .\test\jest.config.server.js
+      #   working-directory: ${{ steps.install-dashboards.outputs.plugin-directory }}

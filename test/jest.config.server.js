@@ -17,24 +17,24 @@ import config from '../../../src/dev/jest/config';
 
 export default {
   ...config,
-  roots: ['<rootDir>/plugins/security-dashboards-plugin'],
+  roots: ['<rootDir>/plugins/wazuh-security-dashboards-plugin'],
   testMatch: ['**/test/jest_integration/**/*.test.ts', '**/server/**/*.test.ts'],
   testPathIgnorePatterns: config.testPathIgnorePatterns.filter(
     (pattern) => !pattern.includes('integration_tests')
   ),
   setupFilesAfterEnv: [
     '<rootDir>/src/dev/jest/setup/after_env.integration.js',
-    '<rootDir>/plugins/security-dashboards-plugin/test/setup/after_env.js',
+    '<rootDir>/plugins/wazuh-security-dashboards-plugin/test/setup/after_env.js',
   ],
   collectCoverageFrom: [
-    '<rootDir>/plugins/security-dashboards-plugin/server/**/*.{ts,tsx}',
-    '!<rootDir>/plugins/security-dashboards-plugin/server/**/*.test.{ts,tsx}',
-    '!<rootDir>/plugins/security-dashboards-plugin/server/auth/types/jwt/**/*.{ts,tsx}',
-    '!<rootDir>/plugins/security-dashboards-plugin/server/auth/types/openid/**/*.{ts,tsx}',
-    '!<rootDir>/plugins/security-dashboards-plugin/server/auth/types/saml/**/*.{ts,tsx}',
-    '!<rootDir>/plugins/security-dashboards-plugin/server/auth/types/proxy/**/*.{ts,tsx}',
+    '<rootDir>/plugins/wazuh-security-dashboards-plugin/server/**/*.{ts,tsx}',
+    '!<rootDir>/plugins/wazuh-security-dashboards-plugin/server/**/*.test.{ts,tsx}',
+    '!<rootDir>/plugins/wazuh-security-dashboards-plugin/server/auth/types/jwt/**/*.{ts,tsx}',
+    '!<rootDir>/plugins/wazuh-security-dashboards-plugin/server/auth/types/openid/**/*.{ts,tsx}',
+    '!<rootDir>/plugins/wazuh-security-dashboards-plugin/server/auth/types/saml/**/*.{ts,tsx}',
+    '!<rootDir>/plugins/wazuh-security-dashboards-plugin/server/auth/types/proxy/**/*.{ts,tsx}',
   ],
   coverageDirectory:
-    '<rootDir>/plugins/security-dashboards-plugin/opensearch-dashboards-coverage/jest_server',
+    '<rootDir>/plugins/wazuh-security-dashboards-plugin/opensearch-dashboards-coverage/jest_server',
   coverageReporters: ['lcov', 'text', 'cobertura', 'html'],
 };

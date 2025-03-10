@@ -1,31 +1,32 @@
-[![Unit tests](https://github.com/opensearch-project/security-dashboards-plugin/workflows/Unit%20Tests/badge.svg?branch=main)](https://github.com/opensearch-project/security-dashboards-plugin/actions)[![Integration tests](https://github.com/opensearch-project/security-dashboards-plugin/workflows/Integration%20Tests/badge.svg?branch=main)](https://github.com/opensearch-project/security-dashboards-plugin/actions)[![codecov](https://codecov.io/gh/opensearch-project/security-dashboards-plugin/branch/main/graphs/badge.svg)](https://github.com/opensearch-project/security-dashboards-plugin)
+<div style="text-align:center">
+    <img src="https://wazuh.com/uploads/2022/05/Logo-blogpost.png"/>
+</div>
 
-<img src="https://opensearch.org/assets/brand/SVG/Logo/opensearch_logo_default.svg" height="64px"/>
+# Wazuh Security Dashboards Plugin
 
-# OpenSearch Dashboards Security Plugin
+Wazuh Security Dashboards Plugin is a fork of the OpenSearch Dashboards Security Plugin which incorporate changes to make it easier to use for Wazuh users. Our aim is to contribute back any work not tied specifically to Wazuh.
 
-This plugin for OpenSearch Dashboards adds a configuration management UI for the OpenSearch Security features, as well as authentication, session management and multi-tenancy support to your secured cluster.
+This plugin for Wazuh Dashboard adds a configuration management UI for the Wazuh Security features, as well as authentication, session management and multi-tenancy support to your secured cluster.
 
 - [Features](#features)
 - [Installation](#installation)
 - [Contributing](#contributing)
 - [Getting Help](#getting-help)
-- [Code of Conduct](#code-of-conduct)
 - [Security](#security)
 - [License](#license)
 - [Copyright](#copyright)
 
 ## Features
 
-* OpenSearch Dashboards authentication for OpenSearch
-* OpenSearch Dashboards session management
-* OpenSearch Security configuration UI
-* Multi-tenancy support for OpenSearch Dashboards
-* OpenSearch audit logging configuration UI
+* Wazuh Dashboard authentication for OpenSearch
+* Wazuh Dashboard session management
+* Wazuh Security configuration UI
+* Multi-tenancy support for Wazuh Dashboard
+* Wazuh audit logging configuration UI
 
 ## Installation
 
-The OpenSearch Dashboards Security Plugin comes bundled by default as part of the OpenSearch Dashboards distribution. Please refer to the [installation guide](https://opensearch.org/docs/latest/dashboards/install/index/) and  [technical documentation](https://opensearch.org/docs/latest/security-plugin/index/) for detailed information on installing and configuring the OpenSearch Security Plugin.
+The Wazuh Security Dashboards Plugin comes bundled by default as part of the Wazuh Dashboards distribution. Please refer to the [installation guide](https://documentation.wazuh.com/current/installation-guide/index.html).
 
 ## Contributing
 
@@ -35,15 +36,11 @@ See [developer guide](DEVELOPER_GUIDE.md) and [how to contribute to this project
 
 If you find a bug, or have a feature request, please don't hesitate to open an issue in this repository.
 
-For more information, see [project website](https://opensearch.org/) and [documentation](https://opensearch.org/docs/latest). If you need help and are unsure where to open an issue, try [forums](https://discuss.opendistrocommunity.dev/).
-
-## Code of Conduct
-
-This project has adopted the [Amazon Open Source Code of Conduct](CODE_OF_CONDUCT.md). For more information see the [Code of Conduct FAQ](https://aws.github.io/code-of-conduct-faq), or contact [opensource-codeofconduct@amazon.com](mailto:opensource-codeofconduct@amazon.com) with any additional questions or comments.
+For more information, see [project website](https://wazuh.com/) and [documentation](https://documentation.wazuh.com/current/index.html). If you need help and are unsure where to open an [issue](https://github.com/wazuh/wazuh-security-dashboards-plugin/issues).
 
 ## Security
 
-If you discover a potential security issue in this project we ask that you notify OpenSearch Security directly via email to security@opensearch.org. Please do **not** create a public GitHub issue.
+If you discover a potential security issue in this project we ask that you notify AWS/Amazon Security via our [vulnerability reporting page](https://github.com/wazuh/wazuh-security-dashboards-plugin/issues/new/choose). Please do **not** create a public GitHub issue.
 
 ## License
 
@@ -51,4 +48,5 @@ This code is licensed under the Apache 2.0 License.
 
 ## Copyright
 
-Copyright OpenSearch Contributors. See [NOTICE](NOTICE.txt) for details.
+- Copyright OpenSearch Contributors. See [NOTICE](NOTICE.txt) for details.
+- Copyright Wazuh, Inc.

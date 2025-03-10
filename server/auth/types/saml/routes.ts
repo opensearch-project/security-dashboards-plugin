@@ -71,7 +71,7 @@ export class SamlAuthRoutes {
         if (request.auth.isAuthenticated) {
           return response.redirected({
             headers: {
-              location: `${this.coreSetup.http.basePath.serverBasePath}/app/opensearch-dashboards`,
+              location: `${this.coreSetup.http.basePath.serverBasePath}/app/wz-home`,
             },
           });
         }
@@ -118,8 +118,7 @@ export class SamlAuthRoutes {
           if (cookie) {
             requestId = cookie.saml?.requestId || '';
             nextUrl =
-              cookie.saml?.nextUrl ||
-              `${this.coreSetup.http.basePath.serverBasePath}/app/opensearch-dashboards`;
+              cookie.saml?.nextUrl || `${this.coreSetup.http.basePath.serverBasePath}/app/wz-home`;
             redirectHash = cookie.saml?.redirectHash || false;
           }
           if (!requestId) {
@@ -251,7 +250,7 @@ export class SamlAuthRoutes {
           this.sessionStorageFactory.asScoped(request).set(cookie);
           return response.redirected({
             headers: {
-              location: `${this.coreSetup.http.basePath.serverBasePath}/app/opensearch-dashboards`,
+              location: `${this.coreSetup.http.basePath.serverBasePath}/app/wz-home`,
             },
           });
         } catch (error) {
