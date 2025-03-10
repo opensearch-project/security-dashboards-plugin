@@ -77,7 +77,7 @@ jobs:
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"
 
       - id: install-dashboards
-        uses: derek-ho/setup-opensearch-dashboards@v3
+        uses: derek-ho/setup-opensearch-dashboards@node-20
         with:
           plugin_name: security-dashboards-plugin
 
