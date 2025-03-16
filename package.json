@@ -57,6 +57,8 @@
     "braces": "^3.0.3",
     "body-parser": "^1.20.3",
     "micromatch": "^4.0.8",
-    "cross-spawn": "7.0.5"
+    "cross-spawn": "7.0.5",
+    "elliptic": "^6.6.1",
+    "xml-crypto": "^2.1.6"
   }
 }
