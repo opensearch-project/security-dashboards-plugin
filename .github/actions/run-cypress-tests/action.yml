@@ -48,7 +48,7 @@ runs:
 
     # OSD bootstrap
     - name: Run Dashboard with Security Dashboards Plugin
-      uses: derek-ho/setup-opensearch-dashboards@v1
+      uses: derek-ho/setup-opensearch-dashboards@node-20
       with:
         plugin_name: security-dashboards-plugin
         opensearch_dashboards_yml: ${{ inputs.dashboards_config_file }}
