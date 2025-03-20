@@ -37,8 +37,7 @@
     "jose": "^5.2.4",
     "minimist": "^1.2.8",
     "saml-idp": "^1.2.1",
-    "selfsigned": "^2.0.1",
-    "typescript": "4.0.2"
+    "selfsigned": "^2.0.1"
   },
   "dependencies": {
     "@hapi/cryptiles": "5.0.0",
@@ -58,7 +57,6 @@
     "body-parser": "^1.20.3",
     "micromatch": "^4.0.8",
     "cross-spawn": "7.0.5",
-    "elliptic": "^6.6.1",
     "xml-crypto": "^2.1.6"
   }
 }
