@@ -3,7 +3,7 @@ name: Snapshot based E2E SAML tests workflow
 on: [ push, pull_request ]
 
 env:
-  OPENSEARCH_VERSION: '3.0.0-alpha1'
+  OPENSEARCH_VERSION: '3.0.0-beta1'
   CI: 1
   # avoid warnings like "tput: No value for $TERM and no -T specified"
   TERM: xterm
