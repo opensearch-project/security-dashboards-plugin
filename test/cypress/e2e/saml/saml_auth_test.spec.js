@@ -169,7 +169,7 @@ describe('Log in via SAML', () => {
     cy.get('button[data-test-subj^="switch-tenants"]').click();
 
     cy.get('#private').should('be.enabled');
-    cy.get('#private').click({ force: true });
+    cy.get('#private').click();
 
     cy.get('button[data-test-subj="confirm"]').click();
 
