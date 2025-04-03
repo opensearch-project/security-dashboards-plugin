@@ -38,7 +38,7 @@ export function interceptError(logoutUrl: string, thisWindow: Window): any {
           thisWindow.location.href = logoutUrl;
         } else {
           // when session timed out, user credentials in cookie are wiped out
-          // refres the page will direct the user to go through login process
+          // refresh the page will direct the user to go through login process
           thisWindow.location.reload();
         }
       }
