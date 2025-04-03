@@ -26,6 +26,7 @@ import {
 } from '../constant';
 import { extractAuthCookie, getAuthCookie } from '../helper/cookie';
 import { createOrUpdateEntityAsAdmin } from '../helper/entity_operation';
+import { inspect } from 'util';
 
 describe('start OpenSearch Dashboards server', () => {
   let root: Root;
@@ -37,7 +38,7 @@ describe('start OpenSearch Dashboards server', () => {
           scanDirs: [resolve(__dirname, '../..')],
         },
         opensearch: {
-          hosts: ['https://[::1]:9200'],
+          hosts: ['https://localhost:9200'],
           ignoreVersionMismatch: true,
           ssl: { verificationMode: 'none' },
           username: OPENSEARCH_DASHBOARDS_SERVER_USER,
@@ -69,9 +70,10 @@ describe('start OpenSearch Dashboards server', () => {
     const testUserName = username || `test_user_${Date.now()}`;
     const testUserPassword = password || 'testUserPassword123';
 
-    await createOrUpdateEntityAsAdmin(root, 'internalusers', testUserName, {
+    const resp = await createOrUpdateEntityAsAdmin(root, 'internalusers', testUserName, {
       password: testUserPassword,
     });
+    console.log('create user resp: ' + inspect(resp.body));
     return { username: testUserName, password: testUserPassword };
   }
 

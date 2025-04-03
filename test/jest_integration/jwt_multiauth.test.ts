@@ -48,7 +48,7 @@ describe('start OpenSearch Dashboards server', () => {
           verbose: false,
         },
         opensearch: {
-          hosts: ['https://[::1]:9200'],
+          hosts: ['https://localhost:9200'],
           ignoreVersionMismatch: true,
           ssl: { verificationMode: 'none' },
           username: OPENSEARCH_DASHBOARDS_SERVER_USER,
@@ -84,6 +84,8 @@ describe('start OpenSearch Dashboards server', () => {
     console.log('Starting OpenSearchDashboards server..');
     await root.setup();
     await root.start();
+
+    console.log('process.env.ADMIN_PASSWORD: ' + process.env.ADMIN_PASSWORD);
 
     const getConfigResponse = await wreck.get(
       'https://localhost:9200/_plugins/_security/api/securityconfig',

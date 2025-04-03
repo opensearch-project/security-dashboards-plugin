@@ -46,7 +46,7 @@ describe('start OpenSearch Dashboards server', () => {
           verbose: false,
         },
         opensearch: {
-          hosts: ['https://[::1]:9200'],
+          hosts: ['https://localhost:9200'],
           ignoreVersionMismatch: true,
           ssl: { verificationMode: 'none' },
           username: OPENSEARCH_DASHBOARDS_SERVER_USER,

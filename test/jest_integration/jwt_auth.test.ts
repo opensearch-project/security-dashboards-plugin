@@ -55,7 +55,7 @@ describe('start OpenSearch Dashboards server', () => {
           verbose: false,
         },
         opensearch: {
-          hosts: ['https://[::1]:9200'],
+          hosts: ['https://localhost:9200'],
           ignoreVersionMismatch: true,
           ssl: { verificationMode: 'none' },
           username: OPENSEARCH_DASHBOARDS_SERVER_USER,
@@ -97,17 +97,6 @@ describe('start OpenSearch Dashboards server', () => {
         authorization: ADMIN_CREDENTIALS,
       },
     });
-    console.log('Starting to Download Flights Sample Data');
-    await wreck.post('http://localhost:5601/api/sample_data/flights', {
-      payload: {},
-      rejectUnauthorized: false,
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: ADMIN_CREDENTIALS,
-        security_tenant: 'global',
-      },
-    });
-    console.log('Downloaded Sample Data');
     const getConfigResponse = await wreck.get(
       'https://localhost:9200/_plugins/_security/api/securityconfig',
       {
@@ -158,64 +147,35 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   afterAll(async () => {
-    console.log('Remove the Sample Data');
-    await wreck
-      .delete('http://localhost:5601/api/sample_data/flights', {
-        rejectUnauthorized: false,
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: ADMIN_CREDENTIALS,
-        },
-      })
-      .then((value) => {
-        Promise.resolve(value);
-      })
-      .catch((value) => {
-        Promise.resolve(value);
-      });
     console.log('Remove the Role Mapping');
-    await wreck
-      .patch('https://localhost:9200/_plugins/_security/api/rolesmapping/all_access', {
-        payload: [
-          {
-            op: 'remove',
-            path: '/users',
-            users: ['jwt_test'],
-          },
-        ],
-        rejectUnauthorized: false,
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: ADMIN_CREDENTIALS,
+    await wreck.patch('https://localhost:9200/_plugins/_security/api/rolesmapping/all_access', {
+      payload: [
+        {
+          op: 'remove',
+          path: '/users',
+          users: ['jwt_test'],
         },
-      })
-      .then((value) => {
-        Promise.resolve(value);
-      })
-      .catch((value) => {
-        Promise.resolve(value);
-      });
+      ],
+      rejectUnauthorized: false,
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: ADMIN_CREDENTIALS,
+      },
+    });
     console.log('Remove the Security Config');
-    await wreck
-      .patch('https://localhost:9200/_plugins/_security/api/securityconfig', {
-        payload: [
-          {
-            op: 'remove',
-            path: '/config/dynamic/authc/jwt_auth_domain',
-          },
-        ],
-        rejectUnauthorized: false,
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: ADMIN_CREDENTIALS,
+    await wreck.patch('https://localhost:9200/_plugins/_security/api/securityconfig', {
+      payload: [
+        {
+          op: 'remove',
+          path: '/config/dynamic/authc/jwt_auth_domain',
         },
-      })
-      .then((value) => {
-        Promise.resolve(value);
-      })
-      .catch((value) => {
-        Promise.resolve(value);
-      });
+      ],
+      rejectUnauthorized: false,
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: ADMIN_CREDENTIALS,
+      },
+    });
     // shutdown OpenSearchDashboards server
     await root.shutdown();
   });
