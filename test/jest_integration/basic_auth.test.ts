@@ -92,7 +92,7 @@ describe('start OpenSearch Dashboards server', () => {
 
     // update ES security config to enable anonymous auth
     const getConfigResponse = await wreck.get(
-      'https://localhost:9200/_plugins/_security/api/securityconfig',
+      'https://[::1]:9200/_plugins/_security/api/securityconfig',
       {
         rejectUnauthorized: false,
         headers: {
@@ -105,7 +105,7 @@ describe('start OpenSearch Dashboards server', () => {
     try {
       config.dynamic!.http!.anonymous_auth_enabled = true;
       const updateConfigResponse = await wreck.put(
-        'https://localhost:9200/_plugins/_security/api/securityconfig/config',
+        'https://[::1]:9200/_plugins/_security/api/securityconfig/config',
         {
           payload: config,
           rejectUnauthorized: false,

@@ -456,7 +456,7 @@ describe('start OpenSearch Dashboards server multi datasources enabled', () => {
         },
         data_source: { enabled: true, ssl: { verificationMode: 'none' } },
         opensearch: {
-          hosts: ['https://localhost:9200'],
+          hosts: ['https://[::1]:9200'],
           ignoreVersionMismatch: true,
           ssl: { verificationMode: 'none' },
           username: OPENSEARCH_DASHBOARDS_SERVER_USER,

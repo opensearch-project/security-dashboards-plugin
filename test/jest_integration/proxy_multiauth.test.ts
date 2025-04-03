@@ -102,7 +102,7 @@ describe('start OpenSearch Dashboards server', () => {
     });
     console.log('Downloaded Sample Data');
     const getConfigResponse = await wreck.get(
-      'https://localhost:9200/_plugins/_security/api/securityconfig',
+      'https://[::1]:9200/_plugins/_security/api/securityconfig',
       {
         rejectUnauthorized: false,
         headers: {
@@ -133,7 +133,7 @@ describe('start OpenSearch Dashboards server', () => {
       config.dynamic!.authc!.proxy_auth_domain = proxyConfig;
       config.dynamic!.authc!.basic_internal_auth_domain.http_authenticator.challenge = false;
       config.dynamic!.http!.anonymous_auth_enabled = false;
-      await wreck.put('https://localhost:9200/_plugins/_security/api/securityconfig/config', {
+      await wreck.put('https://[::1]:9200/_plugins/_security/api/securityconfig/config', {
         payload: config,
         rejectUnauthorized: false,
         headers: {
@@ -165,7 +165,7 @@ describe('start OpenSearch Dashboards server', () => {
       });
     console.log('Remove the Security Config');
     await wreck
-      .patch('https://localhost:9200/_plugins/_security/api/securityconfig', {
+      .patch('https://[::1]:9200/_plugins/_security/api/securityconfig', {
         payload: [
           {
             op: 'remove',
