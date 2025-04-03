@@ -85,8 +85,6 @@ describe('start OpenSearch Dashboards server', () => {
     await root.setup();
     await root.start();
 
-    console.log('process.env.ADMIN_PASSWORD: ' + process.env.ADMIN_PASSWORD);
-
     const getConfigResponse = await wreck.get(
       'https://localhost:9200/_plugins/_security/api/securityconfig',
       {
