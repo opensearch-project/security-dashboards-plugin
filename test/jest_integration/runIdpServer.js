@@ -31,8 +31,8 @@ const argv = minimist(process.argv.slice(2), {
 
 // Create certificate pair on the fly and pass it to runServer
 runServer({
-  acsUrl: `http://localhost:5601${argv.basePath}/_opendistro/_security/saml/acs`,
-  audience: 'https://localhost:9200',
+  acsUrl: `http://[::-1]:5601${argv.basePath}/_opendistro/_security/saml/acs`,
+  audience: 'https://[::-1]:9200',
   cert: pems.cert,
   key: pems.private.toString().replace(/\r\n/, '\n'),
 });

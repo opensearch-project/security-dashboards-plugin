@@ -30,9 +30,9 @@ before(() => {
   // Avoid Cypress lock onto the ipv4 range, so fake `visit()` before `request()`.
   // See: https://github.com/cypress-io/cypress/issues/25397#issuecomment-1402556488
   if (Cypress.env('loginMethod') === 'saml_multiauth') {
-    cy.visit(`http://localhost:5601${basePath}`);
+    cy.visit(`http://[::-1]:5601${basePath}`);
   } else {
-    cy.request(`http://localhost:5601${basePath}`);
+    cy.request(`http://[::-1]:5601${basePath}`);
   }
 
   cy.createRoleMapping(ALL_ACCESS_ROLE, samlUserRoleMapping);

@@ -38,7 +38,7 @@ describe('Log in via OIDC', () => {
   };
 
   it('Login to app/opensearch_dashboards_overview#/ when OIDC is enabled', () => {
-    cy.visit(`http://localhost:5601${basePath}/app/opensearch_dashboards_overview`, {
+    cy.visit(`http://[::-1]:5601${basePath}/app/opensearch_dashboards_overview`, {
       failOnStatusCode: false,
     });
 
@@ -53,7 +53,7 @@ describe('Log in via OIDC', () => {
   });
 
   it('Login to app/dev_tools#/console when OIDC is enabled', () => {
-    cy.visit(`http://localhost:5601${basePath}/app/dev_tools#/console`, {
+    cy.visit(`http://[::-1]:5601${basePath}/app/dev_tools#/console`, {
       failOnStatusCode: false,
     });
 
@@ -74,7 +74,7 @@ describe('Log in via OIDC', () => {
   });
 
   it('Login to Dashboard with Hash', () => {
-    const urlWithHash = `http://localhost:5601${basePath}/app/security-dashboards-plugin#/getstarted`;
+    const urlWithHash = `http://[::-1]:5601${basePath}/app/security-dashboards-plugin#/getstarted`;
 
     cy.visit(urlWithHash, {
       failOnStatusCode: false,
@@ -97,7 +97,7 @@ describe('Log in via OIDC', () => {
   });
 
   it('Login to Dashboard preserving Tenant', () => {
-    const startUrl = `http://localhost:5601${basePath}/app/dashboards?security_tenant=private#/list`;
+    const startUrl = `http://[::-1]:5601${basePath}/app/dashboards?security_tenant=private#/list`;
 
     cy.visit(startUrl, {
       failOnStatusCode: false,
@@ -123,7 +123,7 @@ describe('Log in via OIDC', () => {
   });
 
   it('Tenancy persisted after logout in OIDC', () => {
-    cy.visit(`http://localhost:5601${basePath}/app/opensearch_dashboards_overview#/`, {
+    cy.visit(`http://[::-1]:5601${basePath}/app/opensearch_dashboards_overview#/`, {
       failOnStatusCode: false,
     });
 
