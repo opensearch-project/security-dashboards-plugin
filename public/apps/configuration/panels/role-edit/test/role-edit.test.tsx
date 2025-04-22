@@ -14,7 +14,7 @@
  */
 
 import { EuiSmallButton } from '@elastic/eui';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import React from 'react';
 import { updateRole } from '../../../utils/role-detail-utils';
 import { setCrossPageToast } from '../../../utils/storage-utils';
@@ -23,6 +23,8 @@ import { ClusterPermissionPanel } from '../cluster-permission-panel';
 import { IndexPermissionPanel } from '../index-permission-panel';
 import { RoleEdit } from '../role-edit';
 import { TenantPanel } from '../tenant-panel';
+import { getDashboardsInfoSafe } from '../../../../../utils/dashboards-info-utils';
+import { act } from 'react-dom/test-utils';
 
 jest.mock('../../../utils/role-detail-utils', () => ({
   getRoleDetail: jest.fn().mockReturnValue({
@@ -42,16 +44,21 @@ jest.mock('react', () => ({
   ...jest.requireActual('react'),
   useContext: jest.fn().mockReturnValue({ dataSource: { id: 'test' }, setDataSource: jest.fn() }), // Mock the useContext hook to return dummy datasource and setdatasource function
 }));
+jest.mock('../../../../../utils/dashboards-info-utils');
+
+const sampleSourceRole = 'role';
+const mockCoreStart = {
+  http: 1,
+  uiSettings: {
+    get: jest.fn().mockReturnValue(false),
+  },
+  chrome: {
+    navGroup: { getNavGroupEnabled: jest.fn().mockReturnValue(false) },
+    setBreadcrumbs: jest.fn(),
+  },
+};
 
 describe('Role edit', () => {
-  const sampleSourceRole = 'role';
-  const mockCoreStart = {
-    http: 1,
-    uiSettings: {
-      get: jest.fn().mockReturnValue(false),
-    },
-  };
-
   const useEffect = jest.spyOn(React, 'useEffect');
   const useState = jest.spyOn(React, 'useState');
   // useEffect.mockImplementationOnce((f) => f());
@@ -132,6 +139,160 @@ describe('Role edit', () => {
     process.nextTick(() => {
       expect(setCrossPageToast).toHaveBeenCalled();
       done();
+    });
+  });
+});
+
+describe('Role Create/Edit base on Multitenancy', () => {
+  const mockDepsStart = { navigation: { ui: { HeaderControl: {} } } };
+  const actions = ['create', 'edit'] as const;
+  describe.each(actions)('when action is %s', (action) => {
+    it('should render tenants panel when multitenancy is enabled', async () => {
+      const mockConfig = {
+        multitenancy: {
+          enabled: true,
+        },
+      };
+
+      const mockDashboardsInfo = {
+        multitenancy_enabled: true,
+      };
+      (getDashboardsInfoSafe as jest.Mock).mockResolvedValue(mockDashboardsInfo);
+
+      let wrapper;
+      await act(async () => {
+        wrapper = mount(
+          <RoleEdit
+            action={action}
+            sourceRoleName={sampleSourceRole}
+            coreStart={mockCoreStart as any}
+            depsStart={mockDepsStart as any}
+            params={{} as any}
+            config={mockConfig as any}
+          />
+        );
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      wrapper.update();
+      expect(wrapper.find(TenantPanel).exists()).toBe(true);
+    });
+
+    it('should not render tenants panel when multitenancy is disabled in config', async () => {
+      const mockConfig = {
+        multitenancy: {
+          enabled: false,
+        },
+      };
+
+      const mockDashboardsInfo = {
+        multitenancy_enabled: true,
+      };
+      (getDashboardsInfoSafe as jest.Mock).mockResolvedValue(mockDashboardsInfo);
+
+      let wrapper;
+      await act(async () => {
+        wrapper = mount(
+          <RoleEdit
+            action={action}
+            sourceRoleName={sampleSourceRole}
+            coreStart={mockCoreStart as any}
+            depsStart={mockDepsStart as any}
+            params={{} as any}
+            config={mockConfig as any}
+          />
+        );
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      wrapper.update();
+      expect(wrapper.find(TenantPanel).exists()).toBe(false);
+    });
+
+    it('should not render tenants panel when multitenancy is disabled in dashboards info', async () => {
+      const mockConfig = {
+        multitenancy: {
+          enabled: true,
+        },
+      };
+
+      const mockDashboardsInfo = {
+        multitenancy_enabled: false,
+      };
+      (getDashboardsInfoSafe as jest.Mock).mockResolvedValue(mockDashboardsInfo);
+
+      let wrapper;
+      await act(async () => {
+        wrapper = mount(
+          <RoleEdit
+            action={action}
+            sourceRoleName={sampleSourceRole}
+            coreStart={mockCoreStart as any}
+            depsStart={mockDepsStart as any}
+            params={{} as any}
+            config={mockConfig as any}
+          />
+        );
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      wrapper.update();
+      expect(wrapper.find(TenantPanel).exists()).toBe(false);
+    });
+
+    it('should not render tenants panel when multitenancy is disabled in both config and dashboards info', async () => {
+      const mockConfig = {
+        multitenancy: {
+          enabled: false,
+        },
+      };
+
+      const mockDashboardsInfo = {
+        multitenancy_enabled: false,
+      };
+      (getDashboardsInfoSafe as jest.Mock).mockResolvedValue(mockDashboardsInfo);
+
+      let wrapper;
+      await act(async () => {
+        wrapper = mount(
+          <RoleEdit
+            action={action}
+            sourceRoleName={sampleSourceRole}
+            coreStart={mockCoreStart as any}
+            depsStart={mockDepsStart as any}
+            params={{} as any}
+            config={mockConfig as any}
+          />
+        );
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      wrapper.update();
+      expect(wrapper.find(TenantPanel).exists()).toBe(false);
+    });
+
+    it('should handle error when fetching dashboards info', async () => {
+      (getDashboardsInfoSafe as jest.Mock).mockRejectedValue(new Error());
+
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
+
+      let wrapper;
+      await act(async () => {
+        wrapper = mount(
+          <RoleEdit
+            action={action}
+            sourceRoleName={sampleSourceRole}
+            coreStart={mockCoreStart as any}
+            depsStart={mockDepsStart as any}
+            params={{} as any}
+            config={{} as any}
+          />
+        );
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+      wrapper.update();
+      expect(consoleErrorSpy).toHaveBeenCalled();
+      consoleErrorSpy.mockRestore();
     });
   });
 });
