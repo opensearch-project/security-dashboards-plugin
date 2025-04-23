@@ -1,10 +1,10 @@
 {
   "name": "opensearch-security-dashboards",
-  "version": "2.19.1.0",
+  "version": "2.19.2.0",
   "main": "target/plugins/opensearch_security_dashboards",
   "opensearchDashboards": {
-    "version": "2.19.1",
-    "templateVersion": "2.19.1"
+    "version": "2.19.2",
+    "templateVersion": "2.19.2"
   },
   "license": "Apache-2.0",
   "homepage": "https://github.com/opensearch-project/security-dashboards-plugin",
