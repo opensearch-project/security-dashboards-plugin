@@ -109,5 +109,6 @@ runs:
         attempt_limit: 5
         attempt_delay: 2000
         command: |
+          cd OpenSearch-Dashboards/plugins/security-dashboards-plugin
           yarn add cypress --save-dev
           eval ${{ inputs.yarn_command }} 
