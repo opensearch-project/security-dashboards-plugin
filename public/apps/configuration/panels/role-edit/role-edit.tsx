@@ -59,6 +59,7 @@ import { NameRow } from '../../utils/name-row';
 import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { PageHeader } from '../../header/header-components';
+import { getDashboardsInfoSafe } from '../../../../utils/dashboards-info-utils';
 
 interface RoleEditDeps extends BreadcrumbsPageDependencies {
   action: 'create' | 'edit' | 'duplicate';
@@ -144,6 +145,22 @@ export function RoleEdit(props: RoleEditDeps) {
 
     fetchTenantNames();
   }, [addToast, props.coreStart.http, dataSource]);
+
+  const [isMultiTenancyEnabled, setIsMultiTenancyEnabled] = useState(true);
+  React.useEffect(() => {
+    const fetchIsMultiTenancyEnabled = async () => {
+      try {
+        const dashboardsInfo = await getDashboardsInfoSafe(props.coreStart.http);
+        setIsMultiTenancyEnabled(
+          dashboardsInfo?.multitenancy_enabled && props.config.multitenancy.enabled
+        );
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    fetchIsMultiTenancyEnabled();
+  }, [props.coreStart.http, props.config.multitenancy]);
 
   const updateRoleHandler = async () => {
     try {
@@ -309,12 +326,16 @@ export function RoleEdit(props: RoleEditDeps) {
         optionUniverse={indexWisePermissionOptions}
       />
       <EuiSpacer size="m" />
-      <TenantPanel
-        state={roleTenantPermission}
-        setState={setRoleTenantPermission}
-        optionUniverse={tenantOptions}
-      />
-      <EuiSpacer size="m" />
+      {isMultiTenancyEnabled && (
+        <>
+          <TenantPanel
+            state={roleTenantPermission}
+            setState={setRoleTenantPermission}
+            optionUniverse={tenantOptions}
+          />
+          <EuiSpacer size="m" />
+        </>
+      )}
       <EuiFlexGroup justifyContent="flexEnd">
         <EuiFlexItem grow={false}>
           <EuiSmallButton

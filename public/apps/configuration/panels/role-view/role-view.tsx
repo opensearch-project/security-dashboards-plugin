@@ -73,6 +73,7 @@ import { DataSourceContext } from '../../app-router';
 import { SecurityPluginTopNavMenu } from '../../top-nav-menu';
 import { getClusterInfo } from '../../../../utils/datasource-utils';
 import { PageHeader } from '../../header/header-components';
+import { getDashboardsInfoSafe } from '../../../../utils/dashboards-info-utils';
 
 interface RoleViewProps extends BreadcrumbsPageDependencies {
   roleName: string;
@@ -113,6 +114,7 @@ export function RoleView(props: RoleViewProps) {
   const [loading, setLoading] = React.useState(false);
   const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
+  const [isMultiTenancyEnabled, setIsMultiTenancyEnabled] = useState(true);
 
   const PERMISSIONS_TAB_INDEX = 0;
   const MAP_USER_TAB_INDEX = 1;
@@ -149,6 +151,21 @@ export function RoleView(props: RoleViewProps) {
 
     fetchData();
   }, [addToast, props.coreStart.http, props.roleName, props.prevAction, dataSource]);
+
+  React.useEffect(() => {
+    const fetchIsMultiTenancyEnabled = async () => {
+      try {
+        const dashboardsInfo = await getDashboardsInfoSafe(props.coreStart.http);
+        setIsMultiTenancyEnabled(
+          Boolean(dashboardsInfo?.multitenancy_enabled && props.config.multitenancy.enabled)
+        );
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    fetchIsMultiTenancyEnabled();
+  }, [props.coreStart.http, props.config.multitenancy]);
 
   const handleRoleMappingDelete = async () => {
     try {
@@ -265,15 +282,17 @@ export function RoleView(props: RoleViewProps) {
 
           <EuiSpacer size="m" />
 
-          <TenantsPanel
-            roleName={props.roleName}
-            tenantPermissions={roleTenantPermission}
-            errorFlag={errorFlag}
-            coreStart={props.coreStart}
-            loading={loading}
-            isReserved={isReserved}
-            dataSourceId={dataSource.id}
-          />
+          {isMultiTenancyEnabled && (
+            <TenantsPanel
+              roleName={props.roleName}
+              tenantPermissions={roleTenantPermission}
+              errorFlag={errorFlag}
+              coreStart={props.coreStart}
+              loading={loading}
+              isReserved={isReserved}
+              dataSourceId={dataSource.id}
+            />
+          )}
         </>
       ),
     },
