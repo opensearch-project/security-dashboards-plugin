@@ -59,51 +59,59 @@ import { DataSourceContext } from '../app-router';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
 import { AccessErrorComponent } from '../access-error-component';
 import { PageHeader } from '../header/header-components';
+import { getDashboardsInfoSafe } from '../../../utils/dashboards-info-utils';
 
-const columns: Array<EuiBasicTableColumn<RoleListing>> = [
-  {
-    field: 'roleName',
-    name: 'Role',
-    render: (text: string) => (
-      <a href={buildHashUrl(ResourceType.roles, Action.view, text)}>{text}</a>
-    ),
-    sortable: true,
-  },
-  {
-    field: 'clusterPermissions',
-    name: 'Cluster permissions',
-    render: truncatedListView(tableItemsUIProps),
-    truncateText: true,
-  },
-  {
-    field: 'indexPermissions',
-    name: 'Index',
-    render: truncatedListView(tableItemsUIProps),
-    truncateText: true,
-  },
-  {
-    field: 'internalUsers',
-    name: 'Internal users',
-    render: truncatedListView(tableItemsUIProps),
-  },
-  {
-    field: 'backendRoles',
-    name: 'Backend roles',
-    render: truncatedListView(tableItemsUIProps),
-  },
-  {
-    field: 'tenantPermissions',
-    name: 'Tenants',
-    render: truncatedListView(tableItemsUIProps),
-  },
-  {
-    field: 'reserved',
-    name: 'Customization',
-    render: (reserved: boolean) => {
-      return renderCustomization(reserved, tableItemsUIProps);
+const getColumnList = (multitenancyEnabled: boolean): Array<EuiBasicTableColumn<RoleListing>> => {
+  const columns: Array<EuiBasicTableColumn<RoleListing>> = [
+    {
+      field: 'roleName',
+      name: 'Role',
+      render: (text: string) => (
+        <a href={buildHashUrl(ResourceType.roles, Action.view, text)}>{text}</a>
+      ),
+      sortable: true,
     },
-  },
-];
+    {
+      field: 'clusterPermissions',
+      name: 'Cluster permissions',
+      render: truncatedListView(tableItemsUIProps),
+      truncateText: true,
+    },
+    {
+      field: 'indexPermissions',
+      name: 'Index',
+      render: truncatedListView(tableItemsUIProps),
+      truncateText: true,
+    },
+    {
+      field: 'internalUsers',
+      name: 'Internal users',
+      render: truncatedListView(tableItemsUIProps),
+    },
+    {
+      field: 'backendRoles',
+      name: 'Backend roles',
+      render: truncatedListView(tableItemsUIProps),
+    },
+    ...(multitenancyEnabled
+      ? [
+          {
+            field: 'tenantPermissions',
+            name: 'Tenants',
+            render: truncatedListView(tableItemsUIProps),
+          },
+        ]
+      : []),
+    {
+      field: 'reserved',
+      name: 'Customization',
+      render: (reserved: boolean) => {
+        return renderCustomization(reserved, tableItemsUIProps);
+      },
+    },
+  ];
+  return columns;
+};
 
 export function RoleList(props: AppDependencies) {
   const [roleData, setRoleData] = React.useState<RoleListing[]>([]);
@@ -137,6 +145,22 @@ export function RoleList(props: AppDependencies) {
 
     fetchData();
   }, [props.coreStart.http, dataSource]);
+
+  const [isMultiTenancyEnabled, setIsMultiTenancyEnabled] = useState(true);
+  React.useEffect(() => {
+    const fetchIsMultiTenancyEnabled = async () => {
+      try {
+        const dashboardsInfo = await getDashboardsInfoSafe(props.coreStart.http);
+        setIsMultiTenancyEnabled(
+          Boolean(dashboardsInfo?.multitenancy_enabled && props.config.multitenancy.enabled)
+        );
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    fetchIsMultiTenancyEnabled();
+  }, [props.coreStart.http, props.config.multitenancy]);
 
   const handleDelete = async () => {
     const rolesToDelete: string[] = selection.map((r) => r.roleName);
@@ -235,13 +259,17 @@ export function RoleList(props: AppDependencies) {
           multiSelect: 'or',
           options: buildSearchFilterOptions(roleData, 'backendRoles'),
         },
-        {
-          type: 'field_value_selection',
-          field: 'tenantPermissions',
-          name: 'Tenants',
-          multiSelect: 'or',
-          options: buildSearchFilterOptions(roleData, 'tenantPermissions'),
-        },
+        ...(isMultiTenancyEnabled
+          ? [
+              {
+                type: 'field_value_selection',
+                field: 'tenantPermissions',
+                name: 'Tenants',
+                multiSelect: 'or',
+                options: buildSearchFilterOptions(roleData, 'tenantPermissions'),
+              },
+            ]
+          : []),
         {
           type: 'field_value_selection',
           field: 'reserved',
@@ -260,7 +288,7 @@ export function RoleList(props: AppDependencies) {
         },
       ],
     });
-  }, [roleData]);
+  }, [roleData, isMultiTenancyEnabled]);
 
   const useUpdatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
   const buttonData = [
@@ -359,7 +387,7 @@ export function RoleList(props: AppDependencies) {
               data-test-subj="role-list"
               tableLayout={'auto'}
               loading={roleData === [] && !errorFlag}
-              columns={columns}
+              columns={getColumnList(isMultiTenancyEnabled)}
               items={roleData}
               itemId={'roleName'}
               pagination={true}
