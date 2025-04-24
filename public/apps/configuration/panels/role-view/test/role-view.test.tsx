@@ -323,135 +323,69 @@ describe('RoleView base on Multitenancy', () => {
     },
   ];
 
+  const mockRoleTenantPermission = {
+    tenant_patterns: ['dummy'],
+    permissionType: TenantPermissionType.Read,
+  };
+
   beforeEach(() => {
     (transformRoleIndexPermissions as jest.Mock).mockResolvedValue(mockRoleIndexPermission);
-  });
-
-  it('should render tenants panel when multitenancy is enabled', async () => {
-    const mockConfig = {
-      multitenancy: {
-        enabled: true,
-      },
-    };
-
-    const mockDashboardsInfo = {
-      multitenancy_enabled: true,
-    };
-    (getDashboardsInfoSafe as jest.Mock).mockResolvedValue(mockDashboardsInfo);
-
-    const mockRoleTenantPermission = {
-      tenant_patterns: ['dummy'],
-      permissionType: TenantPermissionType.Read,
-    };
     (transformRoleTenantPermissions as jest.Mock).mockResolvedValue(mockRoleTenantPermission);
-
-    let wrapper;
-    await act(async () => {
-      wrapper = mount(
-        <RoleView
-          roleName={sampleRole}
-          prevAction=""
-          coreStart={mockCoreStart}
-          depsStart={mockDepsStart as any}
-          params={{}}
-          config={mockConfig}
-        />
-      );
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    });
-    wrapper.update();
-    expect(wrapper.find(TenantsPanel).exists()).toBe(true);
   });
 
-  it('should not render tenants panel when multitenancy is disabled in config', async () => {
-    const mockConfig = {
-      multitenancy: {
-        enabled: false,
-      },
-    };
+  const testScenarios = [
+    {
+      description: 'When multitenancy is enabled in both config and dashboards',
+      configEnabled: true,
+      dashboardsEnabled: true,
+      shouldRenderTenantsPanel: true,
+    },
+    {
+      description: 'When multitenancy is disabled in config and enabled in dashboards',
+      configEnabled: false,
+      dashboardsEnabled: true,
+      shouldRenderTenantsPanel: false,
+    },
+    {
+      description: 'When multitenancy is disabled in both config and dashboards',
+      configEnabled: false,
+      dashboardsEnabled: false,
+      shouldRenderTenantsPanel: false,
+    },
+    {
+      description: 'When multitenancy is enabled in config and disabled in dashboards',
+      configEnabled: true,
+      dashboardsEnabled: false,
+      shouldRenderTenantsPanel: false,
+    },
+  ] as const;
 
-    const mockDashboardsInfo = {
-      multitenancy_enabled: true,
-    };
-    (getDashboardsInfoSafe as jest.Mock).mockResolvedValue(mockDashboardsInfo);
+  it.each(testScenarios)(
+    '$description → should render TenantsPanel: $shouldRenderTenantsPanel',
+    async function ({ configEnabled, dashboardsEnabled, shouldRenderTenantsPanel }) {
+      // arrange
+      const mockConfig = { multitenancy: { enabled: configEnabled } };
+      const mockDashboardsInfo = { multitenancy_enabled: dashboardsEnabled };
+      (getDashboardsInfoSafe as jest.Mock).mockResolvedValue(mockDashboardsInfo);
 
-    let wrapper;
-    await act(async () => {
-      wrapper = mount(
-        <RoleView
-          roleName={sampleRole}
-          prevAction=""
-          coreStart={mockCoreStart}
-          depsStart={mockDepsStart as any}
-          params={{}}
-          config={mockConfig}
-        />
-      );
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    });
-    wrapper.update();
-    expect(wrapper.find(TenantsPanel).exists()).toBe(false);
-  });
-
-  it('should not render tenants panel when multitenancy is disabled in dashboards info', async () => {
-    const mockConfig = {
-      multitenancy: {
-        enabled: true,
-      },
-    };
-
-    const mockDashboardsInfo = {
-      multitenancy_enabled: false,
-    };
-    (getDashboardsInfoSafe as jest.Mock).mockResolvedValue(mockDashboardsInfo);
-
-    let wrapper;
-    await act(async () => {
-      wrapper = mount(
-        <RoleView
-          roleName={sampleRole}
-          prevAction=""
-          coreStart={mockCoreStart}
-          depsStart={mockDepsStart as any}
-          params={{}}
-          config={mockConfig}
-        />
-      );
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    });
-    wrapper.update();
-    expect(wrapper.find(TenantsPanel).exists()).toBe(false);
-  });
-
-  it('should not render tenants panel when multitenancy is disabled in both config and dashboards info', async () => {
-    const mockConfig = {
-      multitenancy: {
-        enabled: false,
-      },
-    };
-
-    const mockDashboardsInfo = {
-      multitenancy_enabled: false,
-    };
-    (getDashboardsInfoSafe as jest.Mock).mockResolvedValue(mockDashboardsInfo);
-
-    let wrapper;
-    await act(async () => {
-      wrapper = mount(
-        <RoleView
-          roleName={sampleRole}
-          prevAction=""
-          coreStart={mockCoreStart}
-          depsStart={mockDepsStart as any}
-          params={{}}
-          config={mockConfig}
-        />
-      );
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    });
-    wrapper.update();
-    expect(wrapper.find(TenantsPanel).exists()).toBe(false);
-  });
+      let wrapper;
+      await act(async () => {
+        wrapper = mount(
+          <RoleView
+            roleName={sampleRole}
+            prevAction=""
+            coreStart={mockCoreStart}
+            depsStart={mockDepsStart as any}
+            params={{}}
+            config={mockConfig}
+          />
+        );
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+      wrapper.update();
+      expect(wrapper.find(TenantsPanel).exists()).toBe(shouldRenderTenantsPanel);
+    }
+  );
 
   it('should handle error when fetching dashboards info', async () => {
     (getDashboardsInfoSafe as jest.Mock).mockRejectedValue(new Error());

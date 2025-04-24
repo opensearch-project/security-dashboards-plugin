@@ -74,145 +74,64 @@ describe('Role List based on MultiTenancy', () => {
   mockRoleListUtils.fetchRole = jest.fn().mockResolvedValue(mockRoleListingData);
   mockRoleListUtils.fetchRoleMapping = jest.fn().mockResolvedValue({});
 
-  it('render Tenants column when multitenancy is enabled', async () => {
-    const mockConfig = {
-      multitenancy: {
-        enabled: true,
-      },
-    };
+  const testScenarios = [
+    {
+      description: 'When multitenancy is enabled in both config and dashboards',
+      configEnabled: true,
+      dashboardsEnabled: true,
+      shouldRenderTenantsColumn: true,
+    },
+    {
+      description: 'When multitenancy is disabled in config and enabled in dashboards',
+      configEnabled: false,
+      dashboardsEnabled: true,
+      shouldRenderTenantsColumn: false,
+    },
+    {
+      description: 'When multitenancy is disabled in both config and dashboards',
+      configEnabled: false,
+      dashboardsEnabled: false,
+      shouldRenderTenantsColumn: false,
+    },
+    {
+      description: 'When multitenancy is enabled in config and disabled in dashboards',
+      configEnabled: true,
+      dashboardsEnabled: false,
+      shouldRenderTenantsColumn: false,
+    },
+  ] as const;
 
-    const mockDashboardsInfo = {
-      multitenancy_enabled: true,
-    };
-    (getDashboardsInfoSafe as jest.Mock).mockResolvedValue(mockDashboardsInfo);
+  it.each(testScenarios)(
+    '$description → should render Tenants column: $shouldRenderTenantsColumn',
+    async function ({ configEnabled, dashboardsEnabled, shouldRenderTenantsColumn }) {
+      const mockConfig = { multitenancy: { enabled: configEnabled } };
+      const mockDashboardsInfo = { multitenancy_enabled: dashboardsEnabled };
+      (getDashboardsInfoSafe as jest.Mock).mockResolvedValue(mockDashboardsInfo);
 
-    let wrapper;
-    await act(async () => {
-      wrapper = mount(
-        <RoleList
-          coreStart={mockCoreStart}
-          depsStart={mockDepsStart as any}
-          params={{}}
-          config={mockConfig}
-        />
+      let wrapper;
+      await act(async () => {
+        wrapper = mount(
+          <RoleList
+            coreStart={mockCoreStart}
+            depsStart={mockDepsStart as any}
+            params={{}}
+            config={mockConfig}
+          />
+        );
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+      wrapper.update();
+      const roleListTable = wrapper.find('EuiInMemoryTable');
+      const columns = roleListTable.prop('columns');
+      expect(columns.some((column: any) => column.name === 'Tenants')).toBe(
+        shouldRenderTenantsColumn
       );
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    });
-    wrapper.update();
-    const roleListtable = wrapper.find('EuiInMemoryTable');
-    const columns = roleListtable.prop('columns');
-    expect(columns.some((column: any) => column.name === 'Tenants')).toBeTruthy();
-    const searchFilters = roleListtable.prop('search');
-    expect(
-      searchFilters.filters.some((searchFilter: any) => searchFilter.name === 'Tenants')
-    ).toBeTruthy();
-    expect(columns.some((column: any) => column.name === 'Tenants')).toBeTruthy();
-  });
-
-  it('does not render Tenants column when multitenancy is disabled in config', async () => {
-    const mockConfig = {
-      multitenancy: {
-        enabled: false,
-      },
-    };
-
-    const mockDashboardsInfo = {
-      multitenancy_enabled: true,
-    };
-    (getDashboardsInfoSafe as jest.Mock).mockResolvedValue(mockDashboardsInfo);
-
-    let wrapper;
-    await act(async () => {
-      wrapper = mount(
-        <RoleList
-          coreStart={mockCoreStart}
-          depsStart={mockDepsStart as any}
-          params={{}}
-          config={mockConfig}
-        />
-      );
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    });
-    wrapper.update();
-    const roleListtable = wrapper.find('EuiInMemoryTable');
-    const columns = roleListtable.prop('columns');
-    expect(columns.some((column: any) => column.name === 'Tenants')).toBeFalsy();
-    const searchFilters = roleListtable.prop('search');
-    expect(
-      searchFilters.filters.some((searchFilter: any) => searchFilter.name === 'Tenants')
-    ).toBeFalsy();
-    expect(columns.some((column: any) => column.name === 'Tenants')).toBeFalsy();
-  });
-
-  it('does not render Tenants column when multitenancy is disabled in dashboards info', async () => {
-    const mockConfig = {
-      multitenancy: {
-        enabled: true,
-      },
-    };
-
-    const mockDashboardsInfo = {
-      multitenancy_enabled: false,
-    };
-    (getDashboardsInfoSafe as jest.Mock).mockResolvedValue(mockDashboardsInfo);
-
-    let wrapper;
-    await act(async () => {
-      wrapper = mount(
-        <RoleList
-          coreStart={mockCoreStart}
-          depsStart={mockDepsStart as any}
-          params={{}}
-          config={mockConfig}
-        />
-      );
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    });
-    wrapper.update();
-    const roleListtable = wrapper.find('EuiInMemoryTable');
-    const columns = roleListtable.prop('columns');
-    expect(columns.some((column: any) => column.name === 'Tenants')).toBeFalsy();
-    const searchFilters = roleListtable.prop('search');
-    expect(
-      searchFilters.filters.some((searchFilter: any) => searchFilter.name === 'Tenants')
-    ).toBeFalsy();
-    expect(columns.some((column: any) => column.name === 'Tenants')).toBeFalsy();
-  });
-
-  it('does not render Tenants column when multitenancy is disabled in both config and dashboards info', async () => {
-    const mockConfig = {
-      multitenancy: {
-        enabled: false,
-      },
-    };
-
-    const mockDashboardsInfo = {
-      multitenancy_enabled: false,
-    };
-    (getDashboardsInfoSafe as jest.Mock).mockResolvedValue(mockDashboardsInfo);
-
-    let wrapper;
-    await act(async () => {
-      wrapper = mount(
-        <RoleList
-          coreStart={mockCoreStart}
-          depsStart={mockDepsStart as any}
-          params={{}}
-          config={mockConfig}
-        />
-      );
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    });
-    wrapper.update();
-    const roleListtable = wrapper.find('EuiInMemoryTable');
-    const columns = roleListtable.prop('columns');
-    expect(columns.some((column: any) => column.name === 'Tenants')).toBeFalsy();
-    const searchFilters = roleListtable.prop('search');
-    expect(
-      searchFilters.filters.some((searchFilter: any) => searchFilter.name === 'Tenants')
-    ).toBeFalsy();
-    expect(columns.some((column: any) => column.name === 'Tenants')).toBeFalsy();
-  });
+      const searchFilters = roleListTable.prop('search');
+      expect(
+        searchFilters.filters.some((searchFilter: any) => searchFilter.name === 'Tenants')
+      ).toBe(shouldRenderTenantsColumn);
+    }
+  );
 
   it('should handle error when fetching dashboards info', async () => {
     (getDashboardsInfoSafe as jest.Mock).mockRejectedValue(new Error());
