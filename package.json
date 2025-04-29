@@ -1,6 +1,6 @@
 {
   "name": "opensearch-security-dashboards",
-  "version": "3.0.0.0-beta1",
+  "version": "3.0.0.0",
   "main": "target/plugins/opensearch_security_dashboards",
   "opensearchDashboards": {
     "version": "3.0.0",

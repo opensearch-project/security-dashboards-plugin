@@ -12,7 +12,7 @@ env:
   PLUGIN_NAME: opensearch-security
   OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
   CYPRESS_NO_COMMAND_LOG: 1
-  OPENSEARCH_VERSION: '3.0.0-beta1'
+  OPENSEARCH_VERSION: '3.0.0'
 
 jobs:
   cypress-tests:
