@@ -52,7 +52,7 @@
     "glob-parent": "^5.1.2",
     "debug": "^4.3.4",
     "ejs": "^3.1.10",
-    "express": "^4.21.1",
+    "express": "^5.1.0",
     "braces": "^3.0.3",
     "body-parser": "^1.20.3",
     "micromatch": "^4.0.8",
