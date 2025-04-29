@@ -11,7 +11,7 @@ env:
   SPEC: 'cypress/integration/plugins/security-dashboards-plugin/aggregation_view.js,'
   PLUGIN_NAME: opensearch-security
   OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
-  OPENSEARCH_VERSION: '3.0.0-beta1'
+  OPENSEARCH_VERSION: '3.0.0'
 
 jobs:
   cypress-tests-multitenancy-disabled:
