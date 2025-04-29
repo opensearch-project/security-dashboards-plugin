@@ -2,7 +2,7 @@ name: Run Cypress Tests
 description: 'Runs Cypress tests for the security-dashboards-plugin with opensearch_dashboards.yml and security configuration provided'
 
 env:
-  OPENSEARCH_VERSION: '3.0.0-beta1'
+  OPENSEARCH_VERSION: '3.0.0'
 
 inputs:
   security_config_file:
