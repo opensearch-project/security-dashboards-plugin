@@ -2,6 +2,9 @@
 
 Compatible with OpenSearch and OpenSearch Dashboards version 3.0.0-beta1
 
+### Enhancements
+* Add cat shard api permission ([#2217](https://github.com/opensearch-project/security-dashboards-plugin/pull/2217/files))
+
 ### Maintenance
 * Remove typescript dependency ([#2198](https://github.com/opensearch-project/security-dashboards-plugin/pull/2198))
 * Bump babel ([#2200](https://github.com/opensearch-project/security-dashboards-plugin/pull/2200))
