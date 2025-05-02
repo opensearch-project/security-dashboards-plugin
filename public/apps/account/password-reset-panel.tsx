@@ -34,7 +34,10 @@ import { FormRow } from '../configuration/utils/form-row';
 import { logout, updateNewPassword } from './utils';
 import { PASSWORD_INSTRUCTION } from '../apps-constants';
 import { constructErrorMessageAndLog } from '../error-utils';
-import { validateCurrentPassword } from '../../utils/password-reset-panel-utils';
+import {
+  isResetButtonDisabled,
+  validateCurrentPassword,
+} from '../../utils/password-reset-panel-utils';
 import { getDashboardsInfo } from '../../utils/dashboards-info-utils';
 import { PasswordStrengthBar } from '../configuration/utils/password-strength-bar';
 
@@ -185,7 +188,11 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
           <EuiSmallButton
             data-test-subj="reset"
             fill
-            disabled={isRepeatNewPasswordInvalid}
+            disabled={isResetButtonDisabled(
+              currentPassword,
+              newPassword,
+              isRepeatNewPasswordInvalid
+            )}
             onClick={handleReset}
           >
             Reset

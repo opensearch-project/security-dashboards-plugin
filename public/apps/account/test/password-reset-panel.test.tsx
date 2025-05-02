@@ -25,6 +25,7 @@ jest.mock('../utils', () => ({
 }));
 
 jest.mock('../../../utils/password-reset-panel-utils', () => ({
+  isResetButtonDisabled: jest.fn(),
   validateCurrentPassword: jest.fn(),
 }));
 

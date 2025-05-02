@@ -36,3 +36,11 @@ export async function validateCurrentPassword(
     throw new Error(data.message);
   }
 }
+
+export function isResetButtonDisabled(
+  currentPassword: string,
+  newPassword: string,
+  isRepeatNewPasswordInvalid: boolean
+): boolean {
+  return !currentPassword || !newPassword || isRepeatNewPasswordInvalid;
+}

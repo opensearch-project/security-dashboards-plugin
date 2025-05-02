@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { validateCurrentPassword } from '../password-reset-panel-utils';
+import { isResetButtonDisabled, validateCurrentPassword } from '../password-reset-panel-utils';
 import { HttpStart } from 'opensearch-dashboards/public';
 
 describe('Test Password Reset Panel Utlis', () => {
@@ -60,5 +60,55 @@ describe('Test Password Reset Panel Utlis', () => {
     await expect(validateCurrentPassword(http, 'user', 'incorrectpassword')).rejects.toThrow(
       'Unauthorized'
     );
+  });
+});
+
+describe('Validates password reset button state based on input conditions', () => {
+  const testScenarios = [
+    {
+      description: 'should be disabled when currentPassword is empty',
+      currentPassword: '',
+      newPassword: 'newpass',
+      isRepeatNewPasswordInvalid: false,
+      expected: true,
+    },
+    {
+      description: 'should be disabled when newPassword is empty',
+      currentPassword: 'current',
+      newPassword: '',
+      isRepeatNewPasswordInvalid: false,
+      expected: true,
+    },
+    {
+      description: 'should be disabled when isRepeatNewPasswordInvalid is true',
+      currentPassword: 'current',
+      newPassword: 'newpass',
+      isRepeatNewPasswordInvalid: true,
+      expected: true,
+    },
+    {
+      description: 'should be enabled when all conditions are valid',
+      currentPassword: 'current',
+      newPassword: 'newpass',
+      isRepeatNewPasswordInvalid: false,
+      expected: false,
+    },
+    {
+      description: 'should be disabled when all fields are invalid',
+      currentPassword: '',
+      newPassword: '',
+      isRepeatNewPasswordInvalid: true,
+      expected: true,
+    },
+  ] as const;
+
+  it.each(testScenarios)('$description', async function ({
+    currentPassword,
+    newPassword,
+    isRepeatNewPasswordInvalid,
+    expected,
+  }) {
+    const result = isResetButtonDisabled(currentPassword, newPassword, isRepeatNewPasswordInvalid);
+    expect(result).toBe(expected);
   });
 });
