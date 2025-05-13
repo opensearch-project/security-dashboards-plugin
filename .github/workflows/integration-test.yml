@@ -1,6 +1,8 @@
 name: Integration Tests
 
-on: [push, pull_request]
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
 
 env:
   TEST_BROWSER_HEADLESS: 1
@@ -11,6 +13,7 @@ env:
 jobs:
   tests:
     name: Run integration tests
+    if: github.event.pull_request.draft == false
     strategy:
       fail-fast: false
       matrix:

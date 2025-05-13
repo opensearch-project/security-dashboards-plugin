@@ -1,6 +1,8 @@
 name: Snapshot based E2E OIDC tests workflow
 
-on: [ push, pull_request ]
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
 
 env:
   OPENSEARCH_VERSION: '2.12.0'
@@ -17,6 +19,7 @@ env:
 jobs:
   tests:
     name: Run Cypress E2E OIDC tests
+    if: github.event.pull_request.draft == false
     strategy:
       fail-fast: false
       matrix:

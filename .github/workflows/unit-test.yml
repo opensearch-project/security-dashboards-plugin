@@ -1,10 +1,13 @@
 name: Unit Tests
 
-on: [push, pull_request]
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
 
 jobs:
   unit-tests:
     name: Run unit tests
+    if: github.event.pull_request.draft == false
     strategy:
       fail-fast: false
       matrix:

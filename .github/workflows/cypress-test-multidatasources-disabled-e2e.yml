@@ -1,6 +1,8 @@
 name: E2E multi datasources disabled workflow
 
-on: [ push, pull_request ]
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
 
 env:
   OPENSEARCH_VERSION: '3.0.0'
@@ -18,7 +20,7 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
     runs-on: ${{ matrix.os }}
-
+    if: github.event.pull_request.draft == false
     steps:
       - name: Checkout Branch
         uses: actions/checkout@v4
