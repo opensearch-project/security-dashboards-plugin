@@ -331,6 +331,7 @@ export const INDEX_PERMISSIONS: string[] = [
   'indices:admin/mappings/fields/get*',
   'indices:admin/mappings/get',
   'indices:admin/open',
+  'indices:admin/opensearch/ism/managedindex',
   'indices:admin/refresh',
   'indices:admin/refresh*',
   'indices:admin/resize',
