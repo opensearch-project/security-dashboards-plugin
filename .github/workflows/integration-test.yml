@@ -7,7 +7,7 @@ env:
   CI: 1
   PLUGIN_NAME: opensearch-security
   OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
-  OPENSEARCH_VERSION: '3.0.0'
+  OPENSEARCH_VERSION: '3.1.0'
 
 jobs:
   tests:
