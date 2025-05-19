@@ -6,7 +6,7 @@ on:
 jobs:
   # Enforces the update of a changelog file on every pull request
   verify-changelog:
-    if: github.repository == 'opensearch-project/security'
+    if: github.repository == 'opensearch-project/security-dashboards-plugin'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
