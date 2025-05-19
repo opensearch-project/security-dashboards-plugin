@@ -3,7 +3,6 @@ name: E2E multi datasources enabled workflow
 on: [ push, pull_request ]
 
 env:
-  OPENSEARCH_VERSION: '3.1.0'
   CI: 1
   # avoid warnings like "tput: No value for $TERM and no -T specified"
   TERM: xterm
@@ -25,7 +24,9 @@ jobs:
 
       - name: Set env
         run: |
+          opensearch_version=$(node -p "require('./package.json').opensearchDashboards.version")
           plugin_version=$(node -p "require('./package.json').version")
+          echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
           echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
         shell: bash
 
