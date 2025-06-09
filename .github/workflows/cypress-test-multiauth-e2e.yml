@@ -3,7 +3,6 @@ name: Snapshot based E2E SAML multi-auth tests workflow
 on: [ push, pull_request ]
 
 env:
-  OPENSEARCH_VERSION: '3.0.0-alpha1'
   CI: 1
   # avoid warnings like "tput: No value for $TERM and no -T specified"
   TERM: xterm
@@ -23,6 +22,14 @@ jobs:
     steps:
       - name: Checkout Branch
         uses: actions/checkout@v3
+
+      - name: Set env
+        run: |
+          opensearch_version=$(node -p "require('./package.json').opensearchDashboards.version")
+          plugin_version=$(node -p "require('./package.json').version")
+          echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
+          echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
+        shell: bash
       
       # Add SAML Configuration
       - name: Injecting SAML Configuration for Linux

@@ -7,7 +7,6 @@ env:
   CI: 1
   PLUGIN_NAME: opensearch-security
   OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
-  OPENSEARCH_VERSION: '3.0.0-alpha1'
 
 jobs:
   tests:
@@ -24,7 +23,9 @@ jobs:
 
       - name: Set env
         run: |
+          opensearch_version=$(node -p "require('./package.json').opensearchDashboards.version")
           plugin_version=$(node -p "require('./package.json').version")
+          echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
           echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
         shell: bash
 

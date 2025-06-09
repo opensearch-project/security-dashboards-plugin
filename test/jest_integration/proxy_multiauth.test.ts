@@ -90,17 +90,6 @@ describe('start OpenSearch Dashboards server', () => {
     await root.setup();
     await root.start();
 
-    console.log('Starting to Download Flights Sample Data');
-    await wreck.post('http://localhost:5601/api/sample_data/flights', {
-      payload: {},
-      rejectUnauthorized: false,
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: ADMIN_CREDENTIALS,
-        security_tenant: 'global',
-      },
-    });
-    console.log('Downloaded Sample Data');
     const getConfigResponse = await wreck.get(
       'https://localhost:9200/_plugins/_security/api/securityconfig',
       {
@@ -148,21 +137,6 @@ describe('start OpenSearch Dashboards server', () => {
   });
 
   afterAll(async () => {
-    console.log('Remove the Sample Data');
-    await wreck
-      .delete('http://localhost:5601/api/sample_data/flights', {
-        rejectUnauthorized: false,
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: ADMIN_CREDENTIALS,
-        },
-      })
-      .then((value) => {
-        Promise.resolve(value);
-      })
-      .catch((value) => {
-        Promise.resolve(value);
-      });
     console.log('Remove the Security Config');
     await wreck
       .patch('https://localhost:9200/_plugins/_security/api/securityconfig', {

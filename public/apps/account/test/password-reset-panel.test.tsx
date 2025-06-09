@@ -15,7 +15,7 @@
 
 import { shallow } from 'enzyme';
 import React from 'react';
-import { validateCurrentPassword } from '../../../utils/login-utils';
+import { validateCurrentPassword } from '../../../utils/password-reset-panel-utils';
 import { PasswordResetPanel } from '../password-reset-panel';
 import { logout, updateNewPassword } from '../utils';
 
@@ -24,7 +24,8 @@ jest.mock('../utils', () => ({
   updateNewPassword: jest.fn(),
 }));
 
-jest.mock('../../../utils/login-utils', () => ({
+jest.mock('../../../utils/password-reset-panel-utils', () => ({
+  isResetButtonDisabled: jest.fn(),
   validateCurrentPassword: jest.fn(),
 }));
 
@@ -71,7 +72,7 @@ describe('Account menu - Password reset panel', () => {
 
   it('invalid current password', (done) => {
     (validateCurrentPassword as jest.Mock).mockImplementationOnce(() => {
-      throw new Error();
+      throw new Error('Unauthorized');
     });
 
     // Hide the error message
@@ -79,7 +80,8 @@ describe('Account menu - Password reset panel', () => {
 
     component.find('[data-test-subj="reset"]').simulate('click');
     process.nextTick(() => {
-      expect(setState).toHaveBeenCalledWith(true);
+      expect(setState).toHaveBeenNthCalledWith(1, true);
+      expect(setState).toHaveBeenNthCalledWith(2, ['Invalid current password. Unauthorized']);
       expect(setState).toBeTruthy();
       done();
     });

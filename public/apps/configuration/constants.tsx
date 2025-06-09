@@ -261,6 +261,7 @@ export const CLUSTER_PERMISSIONS: string[] = [
   'cluster:monitor/nodes/stats',
   'cluster:monitor/nodes/usage',
   'cluster:monitor/remote/info',
+  'cluster:monitor/shards',
   'cluster:monitor/state',
   'cluster:monitor/stats',
   'cluster:monitor/task',

@@ -22,12 +22,10 @@ import { Action } from '../../types';
 import { ResourceType } from '../../../../../common';
 import { RoleListing } from '../../utils/role-list-utils';
 import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
+import { getDashboardsInfoSafe } from '../../../../utils/dashboards-info-utils';
+import { act } from 'react-dom/test-utils';
 
 jest.mock('../../utils/role-list-utils');
-jest.mock('../../utils/display-utils', () => ({
-  ...jest.requireActual('../../utils/display-utils'),
-  ExternalLink: jest.fn(),
-}));
 jest.mock('../../utils/context-menu', () => ({
   useContextMenuState: jest
     .fn()
@@ -40,9 +38,123 @@ jest.mock('react', () => ({
   ...jest.requireActual('react'),
   useContext: jest.fn().mockReturnValue({ dataSource: { id: 'test' }, setDataSource: jest.fn() }), // Mock the useContext hook to return dummy datasource and setdatasource function
 }));
+jest.mock('../../../../utils/dashboards-info-utils');
 
 // eslint-disable-next-line
+const mockDisplayUtils = require('../../utils/display-utils');
+// eslint-disable-next-line
 const mockRoleListUtils = require('../../utils/role-list-utils');
+
+describe('Role List based on MultiTenancy', () => {
+  const mockCoreStart = {
+    http: 1,
+    uiSettings: {
+      get: jest.fn().mockReturnValue(false),
+    },
+    chrome: {
+      navGroup: { getNavGroupEnabled: jest.fn().mockReturnValue(false) },
+      setBreadcrumbs: jest.fn(),
+    },
+  };
+  const mockDepsStart = { navigation: { ui: { HeaderControl: {} } } };
+
+  const mockRoleListingData = [
+    {
+      roleName: 'role_1',
+      reserved: true,
+      clusterPermission: ['readonly'],
+      indexPermission: ['data1'],
+      tenantPermission: ['tenant1'],
+      internaluser: [],
+      backendRoles: [],
+    },
+  ];
+
+  mockRoleListUtils.transformRoleData = jest.fn().mockReturnValue(mockRoleListingData);
+  mockRoleListUtils.fetchRole = jest.fn().mockResolvedValue(mockRoleListingData);
+  mockRoleListUtils.fetchRoleMapping = jest.fn().mockResolvedValue({});
+
+  const testScenarios = [
+    {
+      description: 'When multitenancy is enabled in both config and dashboards',
+      configEnabled: true,
+      dashboardsEnabled: true,
+      shouldRenderTenantsColumn: true,
+    },
+    {
+      description: 'When multitenancy is disabled in config and enabled in dashboards',
+      configEnabled: false,
+      dashboardsEnabled: true,
+      shouldRenderTenantsColumn: false,
+    },
+    {
+      description: 'When multitenancy is disabled in both config and dashboards',
+      configEnabled: false,
+      dashboardsEnabled: false,
+      shouldRenderTenantsColumn: false,
+    },
+    {
+      description: 'When multitenancy is enabled in config and disabled in dashboards',
+      configEnabled: true,
+      dashboardsEnabled: false,
+      shouldRenderTenantsColumn: false,
+    },
+  ] as const;
+
+  it.each(testScenarios)(
+    '$description → should render Tenants column: $shouldRenderTenantsColumn',
+    async function ({ configEnabled, dashboardsEnabled, shouldRenderTenantsColumn }) {
+      const mockConfig = { multitenancy: { enabled: configEnabled } };
+      const mockDashboardsInfo = { multitenancy_enabled: dashboardsEnabled };
+      (getDashboardsInfoSafe as jest.Mock).mockResolvedValue(mockDashboardsInfo);
+
+      let wrapper;
+      await act(async () => {
+        wrapper = mount(
+          <RoleList
+            coreStart={mockCoreStart}
+            depsStart={mockDepsStart as any}
+            params={{}}
+            config={mockConfig}
+          />
+        );
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+      wrapper.update();
+      const roleListTable = wrapper.find('EuiInMemoryTable');
+      const columns = roleListTable.prop('columns');
+      expect(columns.some((column: any) => column.name === 'Tenants')).toBe(
+        shouldRenderTenantsColumn
+      );
+      const searchFilters = roleListTable.prop('search');
+      expect(
+        searchFilters.filters.some((searchFilter: any) => searchFilter.name === 'Tenants')
+      ).toBe(shouldRenderTenantsColumn);
+    }
+  );
+
+  it('should handle error when fetching dashboards info', async () => {
+    (getDashboardsInfoSafe as jest.Mock).mockRejectedValue(new Error());
+
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
+
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <RoleList
+          coreStart={mockCoreStart}
+          depsStart={mockDepsStart as any}
+          params={{}}
+          config={{} as any}
+        />
+      );
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    wrapper.update();
+    expect(consoleErrorSpy).toHaveBeenCalled();
+    consoleErrorSpy.mockRestore();
+  });
+});
 
 describe('Role list', () => {
   const setState = jest.fn();
@@ -277,6 +389,7 @@ describe('Role list', () => {
   describe('AccessError component', () => {
     let component;
     beforeEach(() => {
+      mockDisplayUtils.ExternalLink = jest.fn();
       jest.spyOn(React, 'useState').mockRestore();
       jest
         .spyOn(React, 'useState')
