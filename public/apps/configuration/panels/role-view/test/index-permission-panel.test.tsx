@@ -181,7 +181,7 @@ describe('Role view - index permission panel', () => {
         },
       ];
 
-      const wrapper = mount(
+      const wrapper = shallow(
         <IndexPermissionPanel
           roleName={sampleRoleName}
           indexPermissions={sampleIndexPermissions}
