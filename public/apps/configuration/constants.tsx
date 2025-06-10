@@ -297,6 +297,21 @@ export const CLUSTER_PERMISSIONS: string[] = [
   'indices:data/read/mtv*',
   'indices:data/read/search/template/render',
   'indices:data/write/reindex',
+  'cluster:admin/plugin/forecast/forecaster/delete',
+  'cluster:admin/plugin/forecast/forecaster/info',
+  'cluster:admin/plugin/forecast/forecaster/jobmanagement',
+  'cluster:admin/plugin/forecast/forecaster/run',
+  'cluster:admin/plugin/forecast/forecaster/runOnce',
+  'cluster:admin/plugin/forecast/forecaster/runOnceProfile',
+  'cluster:admin/plugin/forecast/forecaster/stats',
+  'cluster:admin/plugin/forecast/forecaster/suggest',
+  'cluster:admin/plugin/forecast/forecaster/validate',
+  'cluster:admin/plugin/forecast/forecaster/write',
+  'cluster:admin/plugin/forecast/forecasters/get',
+  'cluster:admin/plugin/forecast/forecasters/profile',
+  'cluster:admin/plugin/forecast/forecasters/search',
+  'cluster:admin/plugin/forecast/result/topForecasts',
+  'cluster:admin/plugin/forecast/tasks/search',
 ];
 
 export function includeClusterPermissions(clusterPermissionsToInclude: string[]) {
