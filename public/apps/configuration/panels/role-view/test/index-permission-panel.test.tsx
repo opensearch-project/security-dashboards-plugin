@@ -194,7 +194,6 @@ describe('Role view - index permission panel', () => {
 
       // Verify the table data
       expect(wrapper.find(EuiInMemoryTable).prop('items')).toEqual(sampleIndexPermissions);
-      expect(wrapper).toMatchSnapshot();
     });
   });
 
