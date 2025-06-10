@@ -1,5 +1,1964 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Role view - index permission panel Index permission list renders table with index permissions 1`] = `
+<IndexPermissionPanel
+  actionGroups={Object {}}
+  errorFlag={false}
+  indexPermissions={
+    Array [
+      Object {
+        "allowed_actions": Array [
+          "read",
+          "write",
+        ],
+        "dls": "{\\"query\\": {\\"match_all\\": {}}}",
+        "fls": Array [
+          "field1",
+          "field2",
+        ],
+        "id": 1,
+        "index_patterns": Array [
+          "test-index-*",
+          "test-index-1-*",
+          "test-index-2-*",
+          "test-index-3-*",
+        ],
+        "masked_fields": Array [
+          "masked1",
+          "masked2",
+        ],
+      },
+      Object {
+        "allowed_actions": Array [
+          "read",
+        ],
+        "dls": "",
+        "fls": Array [],
+        "id": 2,
+        "index_patterns": Array [
+          "another-index",
+        ],
+        "masked_fields": Array [],
+      },
+    ]
+  }
+  isReserved={false}
+  loading={false}
+  roleName="role1"
+>
+  <PanelWithHeader
+    count={2}
+    headerSubText="Index permissions allow you to specify how users in this role can access the indices. You can restrict a role to a subset of documents in an index, and which document fields a user can see as well. If you use field-level security in conjunction with document-level security, make sure you don't restrict access to the fields that document-level security uses."
+    headerText="Index permissions"
+    helpLink="https://opensearch.org/docs/latest/security-plugin/access-control/default-action-groups/#index-level"
+  >
+    <EuiPanel>
+      <div
+        className="euiPanel euiPanel--paddingMedium euiPanel--borderRadiusMedium euiPanel--plain euiPanel--hasShadow"
+      >
+        <EuiTitle
+          size="s"
+        >
+          <h3
+            className="euiTitle euiTitle--small"
+          >
+            Index permissions
+            <span
+              className="panel-header-count"
+            >
+               (
+              2
+              )
+            </span>
+          </h3>
+        </EuiTitle>
+        <EuiText
+          className="panel-header-subtext"
+          color="subdued"
+          size="xs"
+        >
+          <div
+            className="euiText euiText--extraSmall panel-header-subtext"
+          >
+            <EuiTextColor
+              color="subdued"
+              component="div"
+            >
+              <div
+                className="euiTextColor euiTextColor--subdued"
+              >
+                Index permissions allow you to specify how users in this role can access the indices. You can restrict a role to a subset of documents in an index, and which document fields a user can see as well. If you use field-level security in conjunction with document-level security, make sure you don't restrict access to the fields that document-level security uses.
+                 
+                <ExternalLink
+                  href="https://opensearch.org/docs/latest/security-plugin/access-control/default-action-groups/#index-level"
+                >
+                  <EuiLink
+                    className="external-link-inline-block"
+                    external={true}
+                    href="https://opensearch.org/docs/latest/security-plugin/access-control/default-action-groups/#index-level"
+                    target="_blank"
+                  >
+                    <a
+                      className="euiLink euiLink--primary external-link-inline-block"
+                      href="https://opensearch.org/docs/latest/security-plugin/access-control/default-action-groups/#index-level"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      Learn more
+                      <EuiIcon
+                        aria-label="External link"
+                        className="euiLink__externalIcon"
+                        size="s"
+                        type="popout"
+                      >
+                        <span
+                          aria-label="External link"
+                          className="euiLink__externalIcon"
+                          data-euiicon-type="popout"
+                          size="s"
+                        />
+                      </EuiIcon>
+                      <EuiScreenReaderOnly>
+                        <span
+                          className="euiScreenReaderOnly"
+                        >
+                          <EuiI18n
+                            default="(opens in a new tab or window)"
+                            token="euiLink.newTarget.screenReaderOnlyText"
+                          >
+                            (opens in a new tab or window)
+                          </EuiI18n>
+                        </span>
+                      </EuiScreenReaderOnly>
+                    </a>
+                  </EuiLink>
+                </ExternalLink>
+              </div>
+            </EuiTextColor>
+          </div>
+        </EuiText>
+        <EuiHorizontalRule
+          margin="s"
+        >
+          <hr
+            className="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginSmall"
+          />
+        </EuiHorizontalRule>
+        <EuiInMemoryTable
+          columns={
+            Array [
+              Object {
+                "field": "index_patterns",
+                "name": "Index",
+                "render": [Function],
+                "sortable": true,
+                "truncateText": true,
+              },
+              Object {
+                "field": "allowed_actions",
+                "name": "Permissions",
+                "render": [Function],
+                "truncateText": true,
+              },
+              Object {
+                "field": "dls",
+                "name": <EuiToolTip
+                  content="Document-level security lets you restrict a role to a subset of documents in an index."
+                  delay="regular"
+                  position="top"
+                >
+                  <span>
+                    Document-level security
+                     
+                    <EuiIcon
+                      className="eui-alignTop"
+                      color="subdued"
+                      size="s"
+                      type="questionInCircle"
+                    />
+                  </span>
+                </EuiToolTip>,
+                "render": [Function],
+              },
+              Object {
+                "field": "fls",
+                "name": <EuiToolTip
+                  content="Field-level security lets you control which document fields a user can see."
+                  delay="regular"
+                  position="top"
+                >
+                  <span>
+                    Field-level security
+                     
+                    <EuiIcon
+                      className="eui-alignTop"
+                      color="subdued"
+                      size="s"
+                      type="questionInCircle"
+                    />
+                  </span>
+                </EuiToolTip>,
+                "render": [Function],
+              },
+              Object {
+                "field": "masked_fields",
+                "name": "Anonymizations",
+                "render": [Function],
+                "truncateText": true,
+              },
+            ]
+          }
+          data-test-subj="index-permission-container"
+          error=""
+          isExpandable={true}
+          itemId="id"
+          items={
+            Array [
+              Object {
+                "allowed_actions": Array [
+                  "read",
+                  "write",
+                ],
+                "dls": "{\\"query\\": {\\"match_all\\": {}}}",
+                "fls": Array [
+                  "field1",
+                  "field2",
+                ],
+                "id": 1,
+                "index_patterns": Array [
+                  "test-index-*",
+                  "test-index-1-*",
+                  "test-index-2-*",
+                  "test-index-3-*",
+                ],
+                "masked_fields": Array [
+                  "masked1",
+                  "masked2",
+                ],
+              },
+              Object {
+                "allowed_actions": Array [
+                  "read",
+                ],
+                "dls": "",
+                "fls": Array [],
+                "id": 2,
+                "index_patterns": Array [
+                  "another-index",
+                ],
+                "masked_fields": Array [],
+              },
+            ]
+          }
+          loading={false}
+          message={false}
+          responsive={true}
+          sorting={
+            Object {
+              "sort": Object {
+                "direction": "asc",
+                "field": "type",
+              },
+            }
+          }
+          tableLayout="auto"
+        >
+          <EuiBasicTable
+            columns={
+              Array [
+                Object {
+                  "field": "index_patterns",
+                  "name": "Index",
+                  "render": [Function],
+                  "sortable": true,
+                  "truncateText": true,
+                },
+                Object {
+                  "field": "allowed_actions",
+                  "name": "Permissions",
+                  "render": [Function],
+                  "truncateText": true,
+                },
+                Object {
+                  "field": "dls",
+                  "name": <EuiToolTip
+                    content="Document-level security lets you restrict a role to a subset of documents in an index."
+                    delay="regular"
+                    position="top"
+                  >
+                    <span>
+                      Document-level security
+                       
+                      <EuiIcon
+                        className="eui-alignTop"
+                        color="subdued"
+                        size="s"
+                        type="questionInCircle"
+                      />
+                    </span>
+                  </EuiToolTip>,
+                  "render": [Function],
+                },
+                Object {
+                  "field": "fls",
+                  "name": <EuiToolTip
+                    content="Field-level security lets you control which document fields a user can see."
+                    delay="regular"
+                    position="top"
+                  >
+                    <span>
+                      Field-level security
+                       
+                      <EuiIcon
+                        className="eui-alignTop"
+                        color="subdued"
+                        size="s"
+                        type="questionInCircle"
+                      />
+                    </span>
+                  </EuiToolTip>,
+                  "render": [Function],
+                },
+                Object {
+                  "field": "masked_fields",
+                  "name": "Anonymizations",
+                  "render": [Function],
+                  "truncateText": true,
+                },
+              ]
+            }
+            data-test-subj="index-permission-container"
+            error=""
+            isExpandable={true}
+            itemId="id"
+            items={
+              Array [
+                Object {
+                  "allowed_actions": Array [
+                    "read",
+                    "write",
+                  ],
+                  "dls": "{\\"query\\": {\\"match_all\\": {}}}",
+                  "fls": Array [
+                    "field1",
+                    "field2",
+                  ],
+                  "id": 1,
+                  "index_patterns": Array [
+                    "test-index-*",
+                    "test-index-1-*",
+                    "test-index-2-*",
+                    "test-index-3-*",
+                  ],
+                  "masked_fields": Array [
+                    "masked1",
+                    "masked2",
+                  ],
+                },
+                Object {
+                  "allowed_actions": Array [
+                    "read",
+                  ],
+                  "dls": "",
+                  "fls": Array [],
+                  "id": 2,
+                  "index_patterns": Array [
+                    "another-index",
+                  ],
+                  "masked_fields": Array [],
+                },
+              ]
+            }
+            loading={false}
+            noItemsMessage={false}
+            onChange={[Function]}
+            responsive={true}
+            sorting={
+              Object {
+                "allowNeutralSort": true,
+                "sort": undefined,
+              }
+            }
+            tableLayout="auto"
+          >
+            <div
+              className="euiBasicTable"
+              data-test-subj="index-permission-container"
+            >
+              <div>
+                <EuiTableHeaderMobile>
+                  <div
+                    className="euiTableHeaderMobile"
+                  >
+                    <EuiFlexGroup
+                      alignItems="baseline"
+                      justifyContent="spaceBetween"
+                      responsive={false}
+                    >
+                      <div
+                        className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsBaseline euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow"
+                      >
+                        <EuiFlexItem
+                          grow={false}
+                        >
+                          <div
+                            className="euiFlexItem euiFlexItem--flexGrowZero"
+                          />
+                        </EuiFlexItem>
+                        <EuiFlexItem
+                          grow={false}
+                        >
+                          <div
+                            className="euiFlexItem euiFlexItem--flexGrowZero"
+                          >
+                            <EuiTableSortMobile
+                              items={
+                                Array [
+                                  Object {
+                                    "isSortAscending": undefined,
+                                    "isSorted": false,
+                                    "key": "_data_s_index_patterns_0",
+                                    "name": "Index",
+                                    "onSort": [Function],
+                                  },
+                                ]
+                              }
+                            >
+                              <div
+                                className="euiTableSortMobile"
+                              >
+                                <EuiPopover
+                                  anchorPosition="downRight"
+                                  button={
+                                    <EuiButtonEmpty
+                                      flush="right"
+                                      iconSide="right"
+                                      iconType="arrowDown"
+                                      onClick={[Function]}
+                                      size="xs"
+                                    >
+                                      <EuiI18n
+                                        default="Sorting"
+                                        token="euiTableSortMobile.sorting"
+                                      />
+                                    </EuiButtonEmpty>
+                                  }
+                                  closePopover={[Function]}
+                                  display="inlineBlock"
+                                  hasArrow={true}
+                                  isOpen={false}
+                                  ownFocus={true}
+                                  panelPaddingSize="none"
+                                >
+                                  <div
+                                    className="euiPopover euiPopover--anchorDownRight"
+                                  >
+                                    <div
+                                      className="euiPopover__anchor"
+                                    >
+                                      <EuiButtonEmpty
+                                        flush="right"
+                                        iconSide="right"
+                                        iconType="arrowDown"
+                                        onClick={[Function]}
+                                        size="xs"
+                                      >
+                                        <button
+                                          className="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--flushRight"
+                                          disabled={false}
+                                          onClick={[Function]}
+                                          type="button"
+                                        >
+                                          <EuiButtonContent
+                                            className="euiButtonEmpty__content"
+                                            iconGap="m"
+                                            iconSide="right"
+                                            iconSize="s"
+                                            iconType="arrowDown"
+                                            textProps={
+                                              Object {
+                                                "className": "euiButtonEmpty__text",
+                                              }
+                                            }
+                                          >
+                                            <span
+                                              className="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                                            >
+                                              <EuiIcon
+                                                className="euiButtonContent__icon"
+                                                color="inherit"
+                                                size="s"
+                                                type="arrowDown"
+                                              >
+                                                <span
+                                                  className="euiButtonContent__icon"
+                                                  color="inherit"
+                                                  data-euiicon-type="arrowDown"
+                                                  size="s"
+                                                />
+                                              </EuiIcon>
+                                              <span
+                                                className="euiButtonEmpty__text"
+                                              >
+                                                <EuiI18n
+                                                  default="Sorting"
+                                                  token="euiTableSortMobile.sorting"
+                                                >
+                                                  Sorting
+                                                </EuiI18n>
+                                              </span>
+                                            </span>
+                                          </EuiButtonContent>
+                                        </button>
+                                      </EuiButtonEmpty>
+                                    </div>
+                                  </div>
+                                </EuiPopover>
+                              </div>
+                            </EuiTableSortMobile>
+                          </div>
+                        </EuiFlexItem>
+                      </div>
+                    </EuiFlexGroup>
+                  </div>
+                </EuiTableHeaderMobile>
+                <EuiTable
+                  id="__table_generated-id"
+                  responsive={true}
+                  tableLayout="auto"
+                >
+                  <table
+                    className="euiTable euiTable--responsive euiTable--auto"
+                    id="__table_generated-id"
+                    tabIndex={-1}
+                  >
+                    <EuiScreenReaderOnly>
+                      <caption
+                        className="euiScreenReaderOnly euiTableCaption"
+                      >
+                        <EuiDelayRender
+                          delay={500}
+                        />
+                      </caption>
+                    </EuiScreenReaderOnly>
+                    <EuiTableHeader>
+                      <thead>
+                        <tr>
+                          <EuiTableHeaderCell
+                            align="left"
+                            data-test-subj="tableHeaderCell_index_patterns_0"
+                            isSorted={false}
+                            key="_data_h_index_patterns_0"
+                            onSort={[Function]}
+                          >
+                            <th
+                              aria-live="polite"
+                              aria-sort="none"
+                              className="euiTableHeaderCell"
+                              data-test-subj="tableHeaderCell_index_patterns_0"
+                              role="columnheader"
+                              scope="col"
+                              style={
+                                Object {
+                                  "width": undefined,
+                                }
+                              }
+                            >
+                              <button
+                                className="euiTableHeaderButton"
+                                data-test-subj="tableHeaderSortButton"
+                                onClick={[Function]}
+                                type="button"
+                              >
+                                <CellContents
+                                  className="euiTableCellContent"
+                                  isSorted={false}
+                                  showSortMsg={true}
+                                >
+                                  <span
+                                    className="euiTableCellContent"
+                                  >
+                                    <EuiInnerText>
+                                      <EuiI18n
+                                        default="{innerText}; {description}"
+                                        token="euiTableHeaderCell.titleTextWithDesc"
+                                        values={
+                                          Object {
+                                            "description": undefined,
+                                            "innerText": "Index",
+                                          }
+                                        }
+                                      >
+                                        <span
+                                          className="euiTableCellContent__text"
+                                          title="Index"
+                                        >
+                                          Index
+                                        </span>
+                                      </EuiI18n>
+                                    </EuiInnerText>
+                                  </span>
+                                </CellContents>
+                              </button>
+                            </th>
+                          </EuiTableHeaderCell>
+                          <EuiTableHeaderCell
+                            align="left"
+                            data-test-subj="tableHeaderCell_allowed_actions_1"
+                            key="_data_h_allowed_actions_1"
+                          >
+                            <th
+                              className="euiTableHeaderCell"
+                              data-test-subj="tableHeaderCell_allowed_actions_1"
+                              role="columnheader"
+                              scope="col"
+                              style={
+                                Object {
+                                  "width": undefined,
+                                }
+                              }
+                            >
+                              <CellContents
+                                className="euiTableCellContent"
+                                showSortMsg={false}
+                              >
+                                <span
+                                  className="euiTableCellContent"
+                                >
+                                  <EuiInnerText>
+                                    <EuiI18n
+                                      default="{innerText}; {description}"
+                                      token="euiTableHeaderCell.titleTextWithDesc"
+                                      values={
+                                        Object {
+                                          "description": undefined,
+                                          "innerText": "Permissions",
+                                        }
+                                      }
+                                    >
+                                      <span
+                                        className="euiTableCellContent__text"
+                                        title="Permissions"
+                                      >
+                                        Permissions
+                                      </span>
+                                    </EuiI18n>
+                                  </EuiInnerText>
+                                </span>
+                              </CellContents>
+                            </th>
+                          </EuiTableHeaderCell>
+                          <EuiTableHeaderCell
+                            align="left"
+                            data-test-subj="tableHeaderCell_dls_2"
+                            key="_data_h_dls_2"
+                          >
+                            <th
+                              className="euiTableHeaderCell"
+                              data-test-subj="tableHeaderCell_dls_2"
+                              role="columnheader"
+                              scope="col"
+                              style={
+                                Object {
+                                  "width": undefined,
+                                }
+                              }
+                            >
+                              <CellContents
+                                className="euiTableCellContent"
+                                showSortMsg={false}
+                              >
+                                <span
+                                  className="euiTableCellContent"
+                                >
+                                  <EuiInnerText>
+                                    <EuiI18n
+                                      default="{innerText}; {description}"
+                                      token="euiTableHeaderCell.titleTextWithDesc"
+                                      values={
+                                        Object {
+                                          "description": undefined,
+                                          "innerText": "Document-level security ",
+                                        }
+                                      }
+                                    >
+                                      <span
+                                        className="euiTableCellContent__text"
+                                        title="Document-level security "
+                                      >
+                                        <EuiToolTip
+                                          content="Document-level security lets you restrict a role to a subset of documents in an index."
+                                          delay="regular"
+                                          position="top"
+                                        >
+                                          <span
+                                            className="euiToolTipAnchor"
+                                            onKeyUp={[Function]}
+                                            onMouseOut={[Function]}
+                                            onMouseOver={[Function]}
+                                          >
+                                            <span
+                                              onBlur={[Function]}
+                                              onFocus={[Function]}
+                                            >
+                                              Document-level security
+                                               
+                                              <EuiIcon
+                                                className="eui-alignTop"
+                                                color="subdued"
+                                                size="s"
+                                                type="questionInCircle"
+                                              >
+                                                <span
+                                                  className="eui-alignTop"
+                                                  color="subdued"
+                                                  data-euiicon-type="questionInCircle"
+                                                  size="s"
+                                                />
+                                              </EuiIcon>
+                                            </span>
+                                          </span>
+                                        </EuiToolTip>
+                                      </span>
+                                    </EuiI18n>
+                                  </EuiInnerText>
+                                </span>
+                              </CellContents>
+                            </th>
+                          </EuiTableHeaderCell>
+                          <EuiTableHeaderCell
+                            align="left"
+                            data-test-subj="tableHeaderCell_fls_3"
+                            key="_data_h_fls_3"
+                          >
+                            <th
+                              className="euiTableHeaderCell"
+                              data-test-subj="tableHeaderCell_fls_3"
+                              role="columnheader"
+                              scope="col"
+                              style={
+                                Object {
+                                  "width": undefined,
+                                }
+                              }
+                            >
+                              <CellContents
+                                className="euiTableCellContent"
+                                showSortMsg={false}
+                              >
+                                <span
+                                  className="euiTableCellContent"
+                                >
+                                  <EuiInnerText>
+                                    <EuiI18n
+                                      default="{innerText}; {description}"
+                                      token="euiTableHeaderCell.titleTextWithDesc"
+                                      values={
+                                        Object {
+                                          "description": undefined,
+                                          "innerText": "Field-level security ",
+                                        }
+                                      }
+                                    >
+                                      <span
+                                        className="euiTableCellContent__text"
+                                        title="Field-level security "
+                                      >
+                                        <EuiToolTip
+                                          content="Field-level security lets you control which document fields a user can see."
+                                          delay="regular"
+                                          position="top"
+                                        >
+                                          <span
+                                            className="euiToolTipAnchor"
+                                            onKeyUp={[Function]}
+                                            onMouseOut={[Function]}
+                                            onMouseOver={[Function]}
+                                          >
+                                            <span
+                                              onBlur={[Function]}
+                                              onFocus={[Function]}
+                                            >
+                                              Field-level security
+                                               
+                                              <EuiIcon
+                                                className="eui-alignTop"
+                                                color="subdued"
+                                                size="s"
+                                                type="questionInCircle"
+                                              >
+                                                <span
+                                                  className="eui-alignTop"
+                                                  color="subdued"
+                                                  data-euiicon-type="questionInCircle"
+                                                  size="s"
+                                                />
+                                              </EuiIcon>
+                                            </span>
+                                          </span>
+                                        </EuiToolTip>
+                                      </span>
+                                    </EuiI18n>
+                                  </EuiInnerText>
+                                </span>
+                              </CellContents>
+                            </th>
+                          </EuiTableHeaderCell>
+                          <EuiTableHeaderCell
+                            align="left"
+                            data-test-subj="tableHeaderCell_masked_fields_4"
+                            key="_data_h_masked_fields_4"
+                          >
+                            <th
+                              className="euiTableHeaderCell"
+                              data-test-subj="tableHeaderCell_masked_fields_4"
+                              role="columnheader"
+                              scope="col"
+                              style={
+                                Object {
+                                  "width": undefined,
+                                }
+                              }
+                            >
+                              <CellContents
+                                className="euiTableCellContent"
+                                showSortMsg={false}
+                              >
+                                <span
+                                  className="euiTableCellContent"
+                                >
+                                  <EuiInnerText>
+                                    <EuiI18n
+                                      default="{innerText}; {description}"
+                                      token="euiTableHeaderCell.titleTextWithDesc"
+                                      values={
+                                        Object {
+                                          "description": undefined,
+                                          "innerText": "Anonymizations",
+                                        }
+                                      }
+                                    >
+                                      <span
+                                        className="euiTableCellContent__text"
+                                        title="Anonymizations"
+                                      >
+                                        Anonymizations
+                                      </span>
+                                    </EuiI18n>
+                                  </EuiInnerText>
+                                </span>
+                              </CellContents>
+                            </th>
+                          </EuiTableHeaderCell>
+                        </tr>
+                      </thead>
+                    </EuiTableHeader>
+                    <EuiTableBody
+                      bodyRef={[Function]}
+                    >
+                      <tbody>
+                        <EuiTableRow
+                          isExpandable={true}
+                          isSelected={false}
+                        >
+                          <tr
+                            className="euiTableRow euiTableRow-isExpandable"
+                          >
+                            <EuiTableRowCell
+                              align="left"
+                              key="_data_column_index_patterns_1_0"
+                              mobileOptions={
+                                Object {
+                                  "header": "Index",
+                                  "render": undefined,
+                                }
+                              }
+                              setScopeRow={false}
+                              textOnly={false}
+                              truncateText={true}
+                            >
+                              <td
+                                className="euiTableRowCell"
+                                style={
+                                  Object {
+                                    "width": undefined,
+                                  }
+                                }
+                              >
+                                <div
+                                  className="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
+                                >
+                                  Index
+                                </div>
+                                <div
+                                  className="euiTableCellContent euiTableCellContent--truncateText euiTableCellContent--overflowingContent"
+                                >
+                                  <EuiFlexGroup
+                                    className=""
+                                    direction="column"
+                                    key=".0"
+                                    style={
+                                      Object {
+                                        "margin": "1px",
+                                      }
+                                    }
+                                  >
+                                    <div
+                                      className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionColumn euiFlexGroup--responsive"
+                                      style={
+                                        Object {
+                                          "margin": "1px",
+                                        }
+                                      }
+                                    >
+                                      <EuiText
+                                        className="table-items"
+                                        key="test-index-*"
+                                      >
+                                        <div
+                                          className="euiText euiText--medium table-items"
+                                        >
+                                          test-index-*
+                                        </div>
+                                      </EuiText>
+                                      <EuiText
+                                        className="table-items"
+                                        key="test-index-1-*"
+                                      >
+                                        <div
+                                          className="euiText euiText--medium table-items"
+                                        >
+                                          test-index-1-*
+                                        </div>
+                                      </EuiText>
+                                      <EuiText
+                                        className="table-items"
+                                        key="test-index-2-*"
+                                      >
+                                        <div
+                                          className="euiText euiText--medium table-items"
+                                        >
+                                          test-index-2-*
+                                        </div>
+                                      </EuiText>
+                                      <EuiText
+                                        className="table-items"
+                                        key="test-index-3-*"
+                                      >
+                                        <div
+                                          className="euiText euiText--medium table-items"
+                                        >
+                                          test-index-3-*
+                                        </div>
+                                      </EuiText>
+                                    </div>
+                                  </EuiFlexGroup>
+                                </div>
+                              </td>
+                            </EuiTableRowCell>
+                            <EuiTableRowCell
+                              align="left"
+                              key="_data_column_allowed_actions_1_1"
+                              mobileOptions={
+                                Object {
+                                  "header": "Permissions",
+                                  "render": undefined,
+                                }
+                              }
+                              setScopeRow={false}
+                              textOnly={false}
+                              truncateText={true}
+                            >
+                              <td
+                                className="euiTableRowCell"
+                                style={
+                                  Object {
+                                    "width": undefined,
+                                  }
+                                }
+                              >
+                                <div
+                                  className="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
+                                >
+                                  Permissions
+                                </div>
+                                <div
+                                  className="euiTableCellContent euiTableCellContent--truncateText euiTableCellContent--overflowingContent"
+                                >
+                                  <PermissionTree
+                                    actionGroups={Object {}}
+                                    className=""
+                                    key=".0"
+                                    permissions={
+                                      Array [
+                                        "read",
+                                        "write",
+                                      ]
+                                    }
+                                  >
+                                    <div
+                                      className="permission-tree-container"
+                                    >
+                                      <EuiTreeView
+                                        aria-label="Permission tree"
+                                        display="compressed"
+                                        items={
+                                          Array [
+                                            Object {
+                                              "children": undefined,
+                                              "className": "tree-leaf-node",
+                                              "icon": <EuiText
+                                                size="xs"
+                                              >
+                                                •
+                                              </EuiText>,
+                                              "id": "read",
+                                              "label": "read",
+                                            },
+                                            Object {
+                                              "children": undefined,
+                                              "className": "tree-leaf-node",
+                                              "icon": <EuiText
+                                                size="xs"
+                                              >
+                                                •
+                                              </EuiText>,
+                                              "id": "write",
+                                              "label": "write",
+                                            },
+                                          ]
+                                        }
+                                        showExpansionArrows={true}
+                                      >
+                                        <EuiText
+                                          className="euiTreeView__wrapper"
+                                          size="s"
+                                        >
+                                          <div
+                                            className="euiText euiText--small euiTreeView__wrapper"
+                                          >
+                                            <EuiI18n
+                                              default="You can quickly navigate this list using arrow keys."
+                                              token="euiTreeView.listNavigationInstructions"
+                                            >
+                                              <EuiScreenReaderOnly>
+                                                <p
+                                                  className="euiScreenReaderOnly"
+                                                  id="euiTreeView_generated-id--instruction"
+                                                >
+                                                  You can quickly navigate this list using arrow keys.
+                                                </p>
+                                              </EuiScreenReaderOnly>
+                                            </EuiI18n>
+                                            <ul
+                                              aria-describedby="euiTreeView_generated-id--instruction"
+                                              aria-label="Permission tree"
+                                              className="euiTreeView euiTreeView--compressed euiTreeView--withArrows"
+                                              id="euiTreeView_generated-id"
+                                            >
+                                              <EuiInnerText
+                                                fallback="read"
+                                                key="read0"
+                                              >
+                                                <EuiI18n
+                                                  default="{nodeLabel} child of {ariaLabel}"
+                                                  key="read0"
+                                                  token="euiTreeView.ariaLabel"
+                                                  values={
+                                                    Object {
+                                                      "ariaLabel": "Permission tree",
+                                                      "nodeLabel": "read",
+                                                    }
+                                                  }
+                                                >
+                                                  <li
+                                                    className="euiTreeView__node euiTreeView--compressed"
+                                                  >
+                                                    <button
+                                                      aria-controls="euiTreeView_generated-id_read"
+                                                      aria-expanded={false}
+                                                      className="euiTreeView__nodeInner tree-leaf-node"
+                                                      data-test-subj="euiTreeViewButton-euiTreeView_generated-id"
+                                                      id="read"
+                                                      onClick={[Function]}
+                                                      onKeyDown={[Function]}
+                                                    >
+                                                      <span
+                                                        className="euiTreeView__iconWrapper"
+                                                      >
+                                                        <EuiText
+                                                          size="xs"
+                                                        >
+                                                          <div
+                                                            className="euiText euiText--extraSmall"
+                                                          >
+                                                            •
+                                                          </div>
+                                                        </EuiText>
+                                                      </span>
+                                                      <span
+                                                        className="euiTreeView__nodeLabel"
+                                                      >
+                                                        read
+                                                      </span>
+                                                    </button>
+                                                    <div
+                                                      id="euiTreeView_generated-id_read"
+                                                      onKeyDown={[Function]}
+                                                    />
+                                                  </li>
+                                                </EuiI18n>
+                                              </EuiInnerText>
+                                              <EuiInnerText
+                                                fallback="write"
+                                                key="write1"
+                                              >
+                                                <EuiI18n
+                                                  default="{nodeLabel} child of {ariaLabel}"
+                                                  key="write1"
+                                                  token="euiTreeView.ariaLabel"
+                                                  values={
+                                                    Object {
+                                                      "ariaLabel": "Permission tree",
+                                                      "nodeLabel": "write",
+                                                    }
+                                                  }
+                                                >
+                                                  <li
+                                                    className="euiTreeView__node euiTreeView--compressed"
+                                                  >
+                                                    <button
+                                                      aria-controls="euiTreeView_generated-id_write"
+                                                      aria-expanded={false}
+                                                      className="euiTreeView__nodeInner tree-leaf-node"
+                                                      data-test-subj="euiTreeViewButton-euiTreeView_generated-id"
+                                                      id="write"
+                                                      onClick={[Function]}
+                                                      onKeyDown={[Function]}
+                                                    >
+                                                      <span
+                                                        className="euiTreeView__iconWrapper"
+                                                      >
+                                                        <EuiText
+                                                          size="xs"
+                                                        >
+                                                          <div
+                                                            className="euiText euiText--extraSmall"
+                                                          >
+                                                            •
+                                                          </div>
+                                                        </EuiText>
+                                                      </span>
+                                                      <span
+                                                        className="euiTreeView__nodeLabel"
+                                                      >
+                                                        write
+                                                      </span>
+                                                    </button>
+                                                    <div
+                                                      id="euiTreeView_generated-id_write"
+                                                      onKeyDown={[Function]}
+                                                    />
+                                                  </li>
+                                                </EuiI18n>
+                                              </EuiInnerText>
+                                            </ul>
+                                          </div>
+                                        </EuiText>
+                                      </EuiTreeView>
+                                    </div>
+                                  </PermissionTree>
+                                </div>
+                              </td>
+                            </EuiTableRowCell>
+                            <EuiTableRowCell
+                              align="left"
+                              key="_data_column_dls_1_2"
+                              mobileOptions={
+                                Object {
+                                  "header": <EuiToolTip
+                                    content="Document-level security lets you restrict a role to a subset of documents in an index."
+                                    delay="regular"
+                                    position="top"
+                                  >
+                                    <span>
+                                      Document-level security
+                                       
+                                      <EuiIcon
+                                        className="eui-alignTop"
+                                        color="subdued"
+                                        size="s"
+                                        type="questionInCircle"
+                                      />
+                                    </span>
+                                  </EuiToolTip>,
+                                  "render": undefined,
+                                }
+                              }
+                              setScopeRow={false}
+                              textOnly={false}
+                            >
+                              <td
+                                className="euiTableRowCell"
+                                style={
+                                  Object {
+                                    "width": undefined,
+                                  }
+                                }
+                              >
+                                <div
+                                  className="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
+                                >
+                                  <EuiToolTip
+                                    content="Document-level security lets you restrict a role to a subset of documents in an index."
+                                    delay="regular"
+                                    position="top"
+                                  >
+                                    <span
+                                      className="euiToolTipAnchor"
+                                      onKeyUp={[Function]}
+                                      onMouseOut={[Function]}
+                                      onMouseOver={[Function]}
+                                    >
+                                      <span
+                                        onBlur={[Function]}
+                                        onFocus={[Function]}
+                                      >
+                                        Document-level security
+                                         
+                                        <EuiIcon
+                                          className="eui-alignTop"
+                                          color="subdued"
+                                          size="s"
+                                          type="questionInCircle"
+                                        >
+                                          <span
+                                            className="eui-alignTop"
+                                            color="subdued"
+                                            data-euiicon-type="questionInCircle"
+                                            size="s"
+                                          />
+                                        </EuiIcon>
+                                      </span>
+                                    </span>
+                                  </EuiToolTip>
+                                </div>
+                                <div
+                                  className="euiTableCellContent euiTableCellContent--overflowingContent"
+                                >
+                                  <ExpressionModal
+                                    className=""
+                                    expression={
+                                      Object {
+                                        "query": Object {
+                                          "match_all": Object {},
+                                        },
+                                      }
+                                    }
+                                    key=".0"
+                                    title="Document-level security"
+                                  >
+                                    <div>
+                                      <EuiLink
+                                        data-test-subj="view-expression"
+                                        onClick={[Function]}
+                                      >
+                                        <button
+                                          className="euiLink euiLink--primary"
+                                          data-test-subj="view-expression"
+                                          disabled={false}
+                                          onClick={[Function]}
+                                          type="button"
+                                        >
+                                          View expression
+                                        </button>
+                                      </EuiLink>
+                                    </div>
+                                  </ExpressionModal>
+                                </div>
+                              </td>
+                            </EuiTableRowCell>
+                            <EuiTableRowCell
+                              align="left"
+                              key="_data_column_fls_1_3"
+                              mobileOptions={
+                                Object {
+                                  "header": <EuiToolTip
+                                    content="Field-level security lets you control which document fields a user can see."
+                                    delay="regular"
+                                    position="top"
+                                  >
+                                    <span>
+                                      Field-level security
+                                       
+                                      <EuiIcon
+                                        className="eui-alignTop"
+                                        color="subdued"
+                                        size="s"
+                                        type="questionInCircle"
+                                      />
+                                    </span>
+                                  </EuiToolTip>,
+                                  "render": undefined,
+                                }
+                              }
+                              setScopeRow={false}
+                              textOnly={false}
+                            >
+                              <td
+                                className="euiTableRowCell"
+                                style={
+                                  Object {
+                                    "width": undefined,
+                                  }
+                                }
+                              >
+                                <div
+                                  className="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
+                                >
+                                  <EuiToolTip
+                                    content="Field-level security lets you control which document fields a user can see."
+                                    delay="regular"
+                                    position="top"
+                                  >
+                                    <span
+                                      className="euiToolTipAnchor"
+                                      onKeyUp={[Function]}
+                                      onMouseOut={[Function]}
+                                      onMouseOver={[Function]}
+                                    >
+                                      <span
+                                        onBlur={[Function]}
+                                        onFocus={[Function]}
+                                      >
+                                        Field-level security
+                                         
+                                        <EuiIcon
+                                          className="eui-alignTop"
+                                          color="subdued"
+                                          size="s"
+                                          type="questionInCircle"
+                                        >
+                                          <span
+                                            className="eui-alignTop"
+                                            color="subdued"
+                                            data-euiicon-type="questionInCircle"
+                                            size="s"
+                                          />
+                                        </EuiIcon>
+                                      </span>
+                                    </span>
+                                  </EuiToolTip>
+                                </div>
+                                <div
+                                  className="euiTableCellContent euiTableCellContent--overflowingContent"
+                                >
+                                  <EuiFlexGroup
+                                    className=""
+                                    direction="column"
+                                    key=".0"
+                                    style={
+                                      Object {
+                                        "margin": "1px",
+                                      }
+                                    }
+                                  >
+                                    <div
+                                      className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionColumn euiFlexGroup--responsive"
+                                      style={
+                                        Object {
+                                          "margin": "1px",
+                                        }
+                                      }
+                                    >
+                                      <EuiText
+                                        className="table-items"
+                                        data-test-subj="fls-text"
+                                      >
+                                        <div
+                                          className="euiText euiText--medium table-items"
+                                          data-test-subj="fls-text"
+                                        >
+                                          Include
+                                          :
+                                           
+                                          field1, field2
+                                        </div>
+                                      </EuiText>
+                                    </div>
+                                  </EuiFlexGroup>
+                                </div>
+                              </td>
+                            </EuiTableRowCell>
+                            <EuiTableRowCell
+                              align="left"
+                              key="_data_column_masked_fields_1_4"
+                              mobileOptions={
+                                Object {
+                                  "header": "Anonymizations",
+                                  "render": undefined,
+                                }
+                              }
+                              setScopeRow={false}
+                              textOnly={false}
+                              truncateText={true}
+                            >
+                              <td
+                                className="euiTableRowCell"
+                                style={
+                                  Object {
+                                    "width": undefined,
+                                  }
+                                }
+                              >
+                                <div
+                                  className="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
+                                >
+                                  Anonymizations
+                                </div>
+                                <div
+                                  className="euiTableCellContent euiTableCellContent--truncateText euiTableCellContent--overflowingContent"
+                                >
+                                  <EuiFlexGroup
+                                    className=""
+                                    direction="column"
+                                    key=".0"
+                                    style={
+                                      Object {
+                                        "margin": "1px",
+                                      }
+                                    }
+                                  >
+                                    <div
+                                      className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionColumn euiFlexGroup--responsive"
+                                      style={
+                                        Object {
+                                          "margin": "1px",
+                                        }
+                                      }
+                                    >
+                                      <EuiText
+                                        className="table-items"
+                                        key="masked1"
+                                      >
+                                        <div
+                                          className="euiText euiText--medium table-items"
+                                        >
+                                          masked1
+                                        </div>
+                                      </EuiText>
+                                      <EuiText
+                                        className="table-items"
+                                        key="masked2"
+                                      >
+                                        <div
+                                          className="euiText euiText--medium table-items"
+                                        >
+                                          masked2
+                                        </div>
+                                      </EuiText>
+                                    </div>
+                                  </EuiFlexGroup>
+                                </div>
+                              </td>
+                            </EuiTableRowCell>
+                          </tr>
+                        </EuiTableRow>
+                        <EuiTableRow
+                          isExpandable={true}
+                          isSelected={false}
+                        >
+                          <tr
+                            className="euiTableRow euiTableRow-isExpandable"
+                          >
+                            <EuiTableRowCell
+                              align="left"
+                              key="_data_column_index_patterns_2_0"
+                              mobileOptions={
+                                Object {
+                                  "header": "Index",
+                                  "render": undefined,
+                                }
+                              }
+                              setScopeRow={false}
+                              textOnly={false}
+                              truncateText={true}
+                            >
+                              <td
+                                className="euiTableRowCell"
+                                style={
+                                  Object {
+                                    "width": undefined,
+                                  }
+                                }
+                              >
+                                <div
+                                  className="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
+                                >
+                                  Index
+                                </div>
+                                <div
+                                  className="euiTableCellContent euiTableCellContent--truncateText euiTableCellContent--overflowingContent"
+                                >
+                                  <EuiFlexGroup
+                                    className=""
+                                    direction="column"
+                                    key=".0"
+                                    style={
+                                      Object {
+                                        "margin": "1px",
+                                      }
+                                    }
+                                  >
+                                    <div
+                                      className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionColumn euiFlexGroup--responsive"
+                                      style={
+                                        Object {
+                                          "margin": "1px",
+                                        }
+                                      }
+                                    >
+                                      <EuiText
+                                        className="table-items"
+                                        key="another-index"
+                                      >
+                                        <div
+                                          className="euiText euiText--medium table-items"
+                                        >
+                                          another-index
+                                        </div>
+                                      </EuiText>
+                                    </div>
+                                  </EuiFlexGroup>
+                                </div>
+                              </td>
+                            </EuiTableRowCell>
+                            <EuiTableRowCell
+                              align="left"
+                              key="_data_column_allowed_actions_2_1"
+                              mobileOptions={
+                                Object {
+                                  "header": "Permissions",
+                                  "render": undefined,
+                                }
+                              }
+                              setScopeRow={false}
+                              textOnly={false}
+                              truncateText={true}
+                            >
+                              <td
+                                className="euiTableRowCell"
+                                style={
+                                  Object {
+                                    "width": undefined,
+                                  }
+                                }
+                              >
+                                <div
+                                  className="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
+                                >
+                                  Permissions
+                                </div>
+                                <div
+                                  className="euiTableCellContent euiTableCellContent--truncateText euiTableCellContent--overflowingContent"
+                                >
+                                  <PermissionTree
+                                    actionGroups={Object {}}
+                                    className=""
+                                    key=".0"
+                                    permissions={
+                                      Array [
+                                        "read",
+                                      ]
+                                    }
+                                  >
+                                    <div
+                                      className="permission-tree-container"
+                                    >
+                                      <EuiTreeView
+                                        aria-label="Permission tree"
+                                        display="compressed"
+                                        items={
+                                          Array [
+                                            Object {
+                                              "children": undefined,
+                                              "className": "tree-leaf-node",
+                                              "icon": <EuiText
+                                                size="xs"
+                                              >
+                                                •
+                                              </EuiText>,
+                                              "id": "read",
+                                              "label": "read",
+                                            },
+                                          ]
+                                        }
+                                        showExpansionArrows={true}
+                                      >
+                                        <EuiText
+                                          className="euiTreeView__wrapper"
+                                          size="s"
+                                        >
+                                          <div
+                                            className="euiText euiText--small euiTreeView__wrapper"
+                                          >
+                                            <EuiI18n
+                                              default="You can quickly navigate this list using arrow keys."
+                                              token="euiTreeView.listNavigationInstructions"
+                                            >
+                                              <EuiScreenReaderOnly>
+                                                <p
+                                                  className="euiScreenReaderOnly"
+                                                  id="euiTreeView_generated-id--instruction"
+                                                >
+                                                  You can quickly navigate this list using arrow keys.
+                                                </p>
+                                              </EuiScreenReaderOnly>
+                                            </EuiI18n>
+                                            <ul
+                                              aria-describedby="euiTreeView_generated-id--instruction"
+                                              aria-label="Permission tree"
+                                              className="euiTreeView euiTreeView--compressed euiTreeView--withArrows"
+                                              id="euiTreeView_generated-id"
+                                            >
+                                              <EuiInnerText
+                                                fallback="read"
+                                                key="read0"
+                                              >
+                                                <EuiI18n
+                                                  default="{nodeLabel} child of {ariaLabel}"
+                                                  key="read0"
+                                                  token="euiTreeView.ariaLabel"
+                                                  values={
+                                                    Object {
+                                                      "ariaLabel": "Permission tree",
+                                                      "nodeLabel": "read",
+                                                    }
+                                                  }
+                                                >
+                                                  <li
+                                                    className="euiTreeView__node euiTreeView--compressed"
+                                                  >
+                                                    <button
+                                                      aria-controls="euiTreeView_generated-id_read"
+                                                      aria-expanded={false}
+                                                      className="euiTreeView__nodeInner tree-leaf-node"
+                                                      data-test-subj="euiTreeViewButton-euiTreeView_generated-id"
+                                                      id="read"
+                                                      onClick={[Function]}
+                                                      onKeyDown={[Function]}
+                                                    >
+                                                      <span
+                                                        className="euiTreeView__iconWrapper"
+                                                      >
+                                                        <EuiText
+                                                          size="xs"
+                                                        >
+                                                          <div
+                                                            className="euiText euiText--extraSmall"
+                                                          >
+                                                            •
+                                                          </div>
+                                                        </EuiText>
+                                                      </span>
+                                                      <span
+                                                        className="euiTreeView__nodeLabel"
+                                                      >
+                                                        read
+                                                      </span>
+                                                    </button>
+                                                    <div
+                                                      id="euiTreeView_generated-id_read"
+                                                      onKeyDown={[Function]}
+                                                    />
+                                                  </li>
+                                                </EuiI18n>
+                                              </EuiInnerText>
+                                            </ul>
+                                          </div>
+                                        </EuiText>
+                                      </EuiTreeView>
+                                    </div>
+                                  </PermissionTree>
+                                </div>
+                              </td>
+                            </EuiTableRowCell>
+                            <EuiTableRowCell
+                              align="left"
+                              key="_data_column_dls_2_2"
+                              mobileOptions={
+                                Object {
+                                  "header": <EuiToolTip
+                                    content="Document-level security lets you restrict a role to a subset of documents in an index."
+                                    delay="regular"
+                                    position="top"
+                                  >
+                                    <span>
+                                      Document-level security
+                                       
+                                      <EuiIcon
+                                        className="eui-alignTop"
+                                        color="subdued"
+                                        size="s"
+                                        type="questionInCircle"
+                                      />
+                                    </span>
+                                  </EuiToolTip>,
+                                  "render": undefined,
+                                }
+                              }
+                              setScopeRow={false}
+                              textOnly={false}
+                            >
+                              <td
+                                className="euiTableRowCell"
+                                style={
+                                  Object {
+                                    "width": undefined,
+                                  }
+                                }
+                              >
+                                <div
+                                  className="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
+                                >
+                                  <EuiToolTip
+                                    content="Document-level security lets you restrict a role to a subset of documents in an index."
+                                    delay="regular"
+                                    position="top"
+                                  >
+                                    <span
+                                      className="euiToolTipAnchor"
+                                      onKeyUp={[Function]}
+                                      onMouseOut={[Function]}
+                                      onMouseOver={[Function]}
+                                    >
+                                      <span
+                                        onBlur={[Function]}
+                                        onFocus={[Function]}
+                                      >
+                                        Document-level security
+                                         
+                                        <EuiIcon
+                                          className="eui-alignTop"
+                                          color="subdued"
+                                          size="s"
+                                          type="questionInCircle"
+                                        >
+                                          <span
+                                            className="eui-alignTop"
+                                            color="subdued"
+                                            data-euiicon-type="questionInCircle"
+                                            size="s"
+                                          />
+                                        </EuiIcon>
+                                      </span>
+                                    </span>
+                                  </EuiToolTip>
+                                </div>
+                                <div
+                                  className="euiTableCellContent euiTableCellContent--overflowingContent"
+                                >
+                                  <span
+                                    className=""
+                                    key=".0"
+                                  >
+                                    —
+                                  </span>
+                                </div>
+                              </td>
+                            </EuiTableRowCell>
+                            <EuiTableRowCell
+                              align="left"
+                              key="_data_column_fls_2_3"
+                              mobileOptions={
+                                Object {
+                                  "header": <EuiToolTip
+                                    content="Field-level security lets you control which document fields a user can see."
+                                    delay="regular"
+                                    position="top"
+                                  >
+                                    <span>
+                                      Field-level security
+                                       
+                                      <EuiIcon
+                                        className="eui-alignTop"
+                                        color="subdued"
+                                        size="s"
+                                        type="questionInCircle"
+                                      />
+                                    </span>
+                                  </EuiToolTip>,
+                                  "render": undefined,
+                                }
+                              }
+                              setScopeRow={false}
+                              textOnly={false}
+                            >
+                              <td
+                                className="euiTableRowCell"
+                                style={
+                                  Object {
+                                    "width": undefined,
+                                  }
+                                }
+                              >
+                                <div
+                                  className="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
+                                >
+                                  <EuiToolTip
+                                    content="Field-level security lets you control which document fields a user can see."
+                                    delay="regular"
+                                    position="top"
+                                  >
+                                    <span
+                                      className="euiToolTipAnchor"
+                                      onKeyUp={[Function]}
+                                      onMouseOut={[Function]}
+                                      onMouseOver={[Function]}
+                                    >
+                                      <span
+                                        onBlur={[Function]}
+                                        onFocus={[Function]}
+                                      >
+                                        Field-level security
+                                         
+                                        <EuiIcon
+                                          className="eui-alignTop"
+                                          color="subdued"
+                                          size="s"
+                                          type="questionInCircle"
+                                        >
+                                          <span
+                                            className="eui-alignTop"
+                                            color="subdued"
+                                            data-euiicon-type="questionInCircle"
+                                            size="s"
+                                          />
+                                        </EuiIcon>
+                                      </span>
+                                    </span>
+                                  </EuiToolTip>
+                                </div>
+                                <div
+                                  className="euiTableCellContent euiTableCellContent--overflowingContent"
+                                >
+                                  <EuiFlexGroup
+                                    className=""
+                                    direction="column"
+                                    key=".0"
+                                    style={
+                                      Object {
+                                        "margin": "1px",
+                                      }
+                                    }
+                                  >
+                                    <div
+                                      className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionColumn euiFlexGroup--responsive"
+                                      style={
+                                        Object {
+                                          "margin": "1px",
+                                        }
+                                      }
+                                    >
+                                      <EuiText
+                                        className="table-items"
+                                        data-test-subj="empty-fls-text"
+                                        key="-"
+                                      >
+                                        <div
+                                          className="euiText euiText--medium table-items"
+                                          data-test-subj="empty-fls-text"
+                                        >
+                                          <span>
+                                            —
+                                          </span>
+                                        </div>
+                                      </EuiText>
+                                    </div>
+                                  </EuiFlexGroup>
+                                </div>
+                              </td>
+                            </EuiTableRowCell>
+                            <EuiTableRowCell
+                              align="left"
+                              key="_data_column_masked_fields_2_4"
+                              mobileOptions={
+                                Object {
+                                  "header": "Anonymizations",
+                                  "render": undefined,
+                                }
+                              }
+                              setScopeRow={false}
+                              textOnly={false}
+                              truncateText={true}
+                            >
+                              <td
+                                className="euiTableRowCell"
+                                style={
+                                  Object {
+                                    "width": undefined,
+                                  }
+                                }
+                              >
+                                <div
+                                  className="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
+                                >
+                                  Anonymizations
+                                </div>
+                                <div
+                                  className="euiTableCellContent euiTableCellContent--truncateText euiTableCellContent--overflowingContent"
+                                >
+                                  <EuiFlexGroup
+                                    className=""
+                                    direction="column"
+                                    key=".0"
+                                    style={
+                                      Object {
+                                        "margin": "1px",
+                                      }
+                                    }
+                                  >
+                                    <div
+                                      className="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionColumn euiFlexGroup--responsive"
+                                      style={
+                                        Object {
+                                          "margin": "1px",
+                                        }
+                                      }
+                                    >
+                                      <EuiText
+                                        className="table-items"
+                                        key="-"
+                                      >
+                                        <div
+                                          className="euiText euiText--medium table-items"
+                                        >
+                                          <span>
+                                            —
+                                          </span>
+                                        </div>
+                                      </EuiText>
+                                    </div>
+                                  </EuiFlexGroup>
+                                </div>
+                              </td>
+                            </EuiTableRowCell>
+                          </tr>
+                        </EuiTableRow>
+                      </tbody>
+                    </EuiTableBody>
+                  </table>
+                </EuiTable>
+              </div>
+            </div>
+          </EuiBasicTable>
+        </EuiInMemoryTable>
+      </div>
+    </EuiPanel>
+  </PanelWithHeader>
+</IndexPermissionPanel>
+`;
+
 exports[`Role view - index permission panel Render document level security renders document level security when dls is invalid json 1`] = `
 <Fragment>
   {"key": "value"%%%}
@@ -24,15 +1983,5 @@ exports[`Role view - index permission panel Render document level security rende
   <span>
     —
   </span>
-</Fragment>
-`;
-
-exports[`Role view - index permission panel Render row expanstion arrow renders when arrow expanded 1`] = `
-<Fragment>
-  <EuiSmallButtonIcon
-    aria-label="Collapse"
-    iconType="arrowUp"
-    onClick={[Function]}
-  />
 </Fragment>
 `;

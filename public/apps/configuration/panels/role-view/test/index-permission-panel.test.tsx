@@ -19,65 +19,14 @@ import { Action, RoleIndexPermissionView } from '../../../types';
 import { ResourceType } from '../../../../../../common';
 import {
   renderFieldLevelSecurity,
-  renderRowExpanstionArrow,
-  toggleRowDetails,
   IndexPermissionPanel,
   renderDocumentLevelSecurity,
 } from '../index-permission-panel';
-import { EuiSmallButtonIcon, EuiEmptyPrompt, EuiInMemoryTable } from '@elastic/eui';
+import { EuiEmptyPrompt, EuiInMemoryTable } from '@elastic/eui';
 import { buildHashUrl } from '../../../utils/url-builder';
 
 describe('Role view - index permission panel', () => {
   const sampleRoleName = 'role1';
-  const sampleRoleIndexPermission: RoleIndexPermissionView = {
-    id: 1,
-    index_patterns: [],
-    dls: '',
-    fls: [],
-    masked_fields: [],
-    allowed_actions: [],
-  };
-  const setMap = jest.fn();
-
-  it('Toggle row details', () => {
-    toggleRowDetails(sampleRoleIndexPermission, {}, setMap);
-    const updateMapFunc = setMap.mock.calls[0][0];
-    updateMapFunc({ group: '' });
-  });
-
-  describe('Render row expanstion arrow', () => {
-    it('should render down arrow when collapsed', () => {
-      const renderFunc = renderRowExpanstionArrow({}, {}, jest.fn());
-      const Wrapper = () => <>{renderFunc(sampleRoleIndexPermission)}</>;
-      const component = shallow(<Wrapper />);
-
-      expect(component.find(EuiSmallButtonIcon).prop('iconType')).toBe('arrowDown');
-    });
-
-    it('should render up arrow when expanded', () => {
-      const renderFunc = renderRowExpanstionArrow(
-        { [sampleRoleIndexPermission.id]: sampleRoleIndexPermission },
-        {},
-        jest.fn()
-      );
-      const Wrapper = () => <>{renderFunc(sampleRoleIndexPermission)}</>;
-      const component = shallow(<Wrapper />);
-
-      expect(component.find(EuiSmallButtonIcon).prop('iconType')).toBe('arrowUp');
-    });
-
-    it('renders when arrow expanded', () => {
-      const renderFunc = renderRowExpanstionArrow(
-        { [sampleRoleIndexPermission.id]: sampleRoleIndexPermission },
-        {},
-        jest.fn()
-      );
-      const Wrapper = () => <>{renderFunc(sampleRoleIndexPermission)}</>;
-      const component = shallow(<Wrapper />);
-      component.find(EuiSmallButtonIcon).simulate('click');
-      expect(component).toMatchSnapshot();
-    });
-  });
 
   describe('Render field level security', () => {
     const field = 'fls';
@@ -211,5 +160,65 @@ describe('Role view - index permission panel', () => {
         buildHashUrl(ResourceType.roles, Action.edit, sampleRoleName)
       );
     });
+
+    it('renders table with index permissions', () => {
+      const sampleIndexPermissions: RoleIndexPermissionView[] = [
+        {
+          id: 1,
+          index_patterns: ['test-index-*', 'test-index-1-*', 'test-index-2-*', 'test-index-3-*'],
+          dls: '{"query": {"match_all": {}}}',
+          fls: ['field1', 'field2'],
+          masked_fields: ['masked1', 'masked2'],
+          allowed_actions: ['read', 'write'],
+        },
+        {
+          id: 2,
+          index_patterns: ['another-index'],
+          allowed_actions: ['read'],
+          dls: '',
+          fls: [],
+          masked_fields: [],
+        },
+      ];
+
+      const wrapper = mount(
+        <IndexPermissionPanel
+          roleName={sampleRoleName}
+          indexPermissions={sampleIndexPermissions}
+          actionGroups={{}}
+          errorFlag={false}
+          loading={false}
+          isReserved={false}
+        />
+      );
+
+      // Verify the table data
+      expect(wrapper.find(EuiInMemoryTable).prop('items')).toEqual(sampleIndexPermissions);
+      expect(wrapper).toMatchSnapshot();
+    });
+  });
+
+  it('handles empty index patterns', () => {
+    const permission: RoleIndexPermissionView = {
+      id: 1,
+      index_patterns: [],
+      allowed_actions: ['read'],
+      dls: '',
+      fls: [],
+      masked_fields: [],
+    };
+
+    const wrapper = mount(
+      <IndexPermissionPanel
+        roleName={sampleRoleName}
+        indexPermissions={[permission]}
+        actionGroups={{}}
+        errorFlag={false}
+        loading={false}
+        isReserved={false}
+      />
+    );
+
+    expect(wrapper.find('EuiInMemoryTable').exists()).toBeTruthy();
   });
 });
