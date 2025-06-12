@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Dependencies
 - Bump dev dependencies to resolve CVE-2024-52798 ([#2231](https://github.com/opensearch-project/security-dashboards-plugin/pull/2231))
+- Bump `actions/github-script` from 6 to 7 ([#2259](https://github.com/opensearch-project/security-dashboards-plugin/pull/2259))
 
 ### Deprecated
 
