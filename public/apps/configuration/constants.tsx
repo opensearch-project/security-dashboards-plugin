@@ -388,15 +388,8 @@ export const INDEX_PERMISSIONS: string[] = [
   'indices:monitor/stats',
   'indices:monitor/upgrade',
   'system:admin/system_index',
-  'indices:data/read/scroll',
-  'indices:data/read/scroll/clear',
   'indices:data/read/mget*',
-  'indices:data/read/msearch',
-  'indices:data/read/msearch/template',
-  'indices:data/read/mtv',
   'indices:data/read/mtv*',
-  'indices:data/read/search/template/render',
-  'indices:data/write/bulk',
   'indices:data/write/bulk*',
 ];
 
