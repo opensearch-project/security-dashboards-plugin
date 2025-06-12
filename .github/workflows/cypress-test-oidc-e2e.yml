@@ -154,7 +154,7 @@ jobs:
         with:
           security_config_file: config_openid.yml
           dashboards_config_file: opensearch_dashboards_openid.yml
-          yarn_command: 'yarn cypress:run --browser chrome --headless --spec "test/cypress/e2e/oidc/*.js" --env basePath=${{ matrix.basePath }}'
+          yarn_command: 'CYPRESS_VERIFY_TIMEOUT=60000 yarn cypress:run --browser chrome --headless --spec "test/cypress/e2e/oidc/*.js" --env basePath=${{ matrix.basePath }}'
           osd_base_path: ${{ matrix.basePath }}
 
       - name: Run Cypress Tests
@@ -163,4 +163,4 @@ jobs:
         with:
           security_config_file: config_openid.yml
           dashboards_config_file: opensearch_dashboards_openid.yml
-          yarn_command: 'yarn cypress:run --browser chrome --headless --spec "test/cypress/e2e/oidc/*.js"'
+          yarn_command: 'CYPRESS_VERIFY_TIMEOUT=60000 yarn cypress:run --browser chrome --headless --spec "test/cypress/e2e/oidc/*.js"'
