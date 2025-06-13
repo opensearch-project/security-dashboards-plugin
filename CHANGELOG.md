@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Dependencies
 - Bump `actions/checkout` from 2 to 4 ([#2260](https://github.com/opensearch-project/security-dashboards-plugin/pull/2260))
+- Bump `tibdex/github-app-token` from 1.5.0 to 2.1.0 ([#2262](https://github.com/opensearch-project/security-dashboards-plugin/pull/2262))
 
 
 ### Deprecated
