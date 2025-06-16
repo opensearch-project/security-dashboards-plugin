@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Bump `codecov/codecov-action` from 4 to 5 ([#2263](https://github.com/opensearch-project/security-dashboards-plugin/pull/2263))
 - Bump `SvanBoxel/delete-merged-branch` from b77e873cee00b09f55cc553bd24aae5f8dfc9157 to 2b5b058e3db41a3328fd9a6a58fd4c2545a14353 ([#2265](https://github.com/opensearch-project/security-dashboards-plugin/pull/2265))
 - Bump `actions/github-script` from 6 to 7 ([#2259](https://github.com/opensearch-project/security-dashboards-plugin/pull/2259))
+- Bump `tibdex/github-app-token` from 1.5.0 to 2.1.0 ([#2262](https://github.com/opensearch-project/security-dashboards-plugin/pull/2262))
 
 ### Deprecated
 
