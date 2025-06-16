@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 
 ### Changed
-
+- Changes to show all index patterns in index permission panel in role view ([#1303](https://github.com/opensearch-project/security-dashboards-plugin/issues/1303),[#1891](https://github.com/opensearch-project/security-dashboards-plugin/issues/1891))
 
 ### Dependencies
 - Bump `actions/checkout` from 2 to 4 ([#2260](https://github.com/opensearch-project/security-dashboards-plugin/pull/2260))
