@@ -26,13 +26,3 @@ exports[`Role view - index permission panel Render document level security rende
   </span>
 </Fragment>
 `;
-
-exports[`Role view - index permission panel Render row expanstion arrow renders when arrow expanded 1`] = `
-<Fragment>
-  <EuiSmallButtonIcon
-    aria-label="Collapse"
-    iconType="arrowUp"
-    onClick={[Function]}
-  />
-</Fragment>
-`;
