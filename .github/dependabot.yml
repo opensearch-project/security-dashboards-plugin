@@ -12,3 +12,6 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    labels:
+      - "dependabot"
+      - "dependencies"
