@@ -367,6 +367,8 @@ export const INDEX_PERMISSIONS: string[] = [
   'indices:data/read/field_caps',
   'indices:data/read/field_caps*',
   'indices:data/read/get',
+  'indices:data/read/mget*',
+  'indices:data/read/mtv*',
   'indices:data/read/point_in_time/create',
   'indices:data/read/point_in_time/delete',
   'indices:data/read/point_in_time/readall',
@@ -374,6 +376,7 @@ export const INDEX_PERMISSIONS: string[] = [
   'indices:data/read/search*',
   'indices:data/read/search/template',
   'indices:data/read/tv',
+  'indices:data/write/bulk*',
   'indices:data/write/delete',
   'indices:data/write/delete/byquery',
   'indices:data/write/index',
@@ -388,9 +391,6 @@ export const INDEX_PERMISSIONS: string[] = [
   'indices:monitor/stats',
   'indices:monitor/upgrade',
   'system:admin/system_index',
-  'indices:data/read/mget*',
-  'indices:data/read/mtv*',
-  'indices:data/write/bulk*',
 ];
 
 export function includeIndexPermissions(indexPermissionsToInclude: string[]) {
