@@ -163,6 +163,7 @@ export const CLUSTER_PERMISSIONS: string[] = [
   'cluster:admin/opensearch/ml/agents/get',
   'cluster:admin/opensearch/ml/agents/register',
   'cluster:admin/opensearch/ml/agents/search',
+  'cluster:admin/opensearch/ml/agents/update',
   'cluster:admin/opensearch/ml/config/get',
   'cluster:admin/opensearch/ml/create_connector',
   'cluster:admin/opensearch/ml/connectors/get',
