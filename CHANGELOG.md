@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Bump `actions/github-script` from 6 to 7 ([#2259](https://github.com/opensearch-project/security-dashboards-plugin/pull/2259))
 - Bump `tibdex/github-app-token` from 1.5.0 to 2.1.0 ([#2262](https://github.com/opensearch-project/security-dashboards-plugin/pull/2262))
 - Bump `stefanzweifel/git-auto-commit-action` from 5 to 6 ([#2268](https://github.com/opensearch-project/security-dashboards-plugin/pull/2268))
+- Bump `derek-ho/start-opensearch` from 6 to 7 ([#2267](https://github.com/opensearch-project/security-dashboards-plugin/pull/2267))
 
 ### Deprecated
 
