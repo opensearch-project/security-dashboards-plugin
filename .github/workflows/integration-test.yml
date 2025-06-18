@@ -46,7 +46,7 @@ jobs:
           plugin-version: ${{ env.PLUGIN_VERSION }}
       
       - name: Run Opensearch with A Single Plugin Remote Cluster
-        uses: derek-ho/start-opensearch@v6
+        uses: derek-ho/start-opensearch@v7
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: "file:$(pwd)/opensearch-security-${{ env.OPENSEARCH_VERSION }}.zip"
@@ -62,7 +62,7 @@ jobs:
         shell: bash
 
       - name: Run Opensearch with security
-        uses: derek-ho/start-opensearch@v6
+        uses: derek-ho/start-opensearch@v7
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: "file:$(pwd)/${{ env.PLUGIN_NAME }}.zip"
