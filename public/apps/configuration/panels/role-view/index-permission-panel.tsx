@@ -13,26 +13,18 @@
  *   permissions and limitations under the License.
  */
 
-import React, { useState, Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import {
   EuiInMemoryTable,
   EuiBasicTableColumn,
-  RIGHT_ALIGNMENT,
-  EuiSmallButtonIcon,
   EuiText,
   EuiFlexGroup,
   EuiEmptyPrompt,
   EuiSmallButton,
 } from '@elastic/eui';
 import { PanelWithHeader } from '../../utils/panel-with-header';
-import {
-  DataObject,
-  ActionGroupItem,
-  ExpandedRowMapInterface,
-  RoleIndexPermissionView,
-  Action,
-} from '../../types';
-import { ResourceType } from '../../../../../common';
+import { DataObject, ActionGroupItem, RoleIndexPermissionView, Action } from '../../types';
+import { MAX_INTEGER, ResourceType } from '../../../../../common';
 import { truncatedListView, displayArray, tableItemsUIProps } from '../../utils/display-utils';
 import { PermissionTree } from '../permission-tree';
 import { getFieldLevelSecurityMethod } from '../../utils/index-permission-utils';
@@ -41,38 +33,6 @@ import { DocLinks, ToolTipContent } from '../../constants';
 import { showTableStatusMessage } from '../../utils/loading-spinner-utils';
 import { buildHashUrl } from '../../utils/url-builder';
 import { EMPTY_FIELD_VALUE } from '../../ui-constants';
-
-export function toggleRowDetails(
-  item: RoleIndexPermissionView,
-  actionGroupDict: DataObject<ActionGroupItem>,
-  setItemIdToExpandedRowMap: Dispatch<SetStateAction<ExpandedRowMapInterface>>
-) {
-  setItemIdToExpandedRowMap((prevState) => {
-    const itemIdToExpandedRowMapValues = { ...prevState };
-    if (itemIdToExpandedRowMapValues[item.id]) {
-      delete itemIdToExpandedRowMapValues[item.id];
-    } else {
-      itemIdToExpandedRowMapValues[item.id] = (
-        <PermissionTree permissions={item.allowed_actions} actionGroups={actionGroupDict} />
-      );
-    }
-    return itemIdToExpandedRowMapValues;
-  });
-}
-
-export function renderRowExpanstionArrow(
-  itemIdToExpandedRowMap: ExpandedRowMapInterface,
-  actionGroupDict: DataObject<ActionGroupItem>,
-  setItemIdToExpandedRowMap: Dispatch<SetStateAction<ExpandedRowMapInterface>>
-) {
-  return (item: RoleIndexPermissionView) => (
-    <EuiSmallButtonIcon
-      onClick={() => toggleRowDetails(item, actionGroupDict, setItemIdToExpandedRowMap)}
-      aria-label={itemIdToExpandedRowMap[item.id] ? 'Collapse' : 'Expand'}
-      iconType={itemIdToExpandedRowMap[item.id] ? 'arrowUp' : 'arrowDown'}
-    />
-  );
-}
 
 export function renderFieldLevelSecurity() {
   return (items: string[]) => {
@@ -121,22 +81,22 @@ export function renderDocumentLevelSecurity() {
 }
 
 function getColumns(
-  itemIdToExpandedRowMap: ExpandedRowMapInterface,
-  actionGroupDict: DataObject<ActionGroupItem>,
-  setItemIdToExpandedRowMap: Dispatch<SetStateAction<ExpandedRowMapInterface>>
+  actionGroupDict: DataObject<ActionGroupItem>
 ): Array<EuiBasicTableColumn<RoleIndexPermissionView>> {
   return [
     {
       field: 'index_patterns',
       name: 'Index',
       sortable: true,
-      render: truncatedListView(tableItemsUIProps),
+      render: truncatedListView(tableItemsUIProps, MAX_INTEGER),
       truncateText: true,
     },
     {
       field: 'allowed_actions',
       name: 'Permissions',
-      render: truncatedListView(tableItemsUIProps),
+      render: (allowedActions: string[], item: RoleIndexPermissionView) => {
+        return <PermissionTree permissions={allowedActions} actionGroups={actionGroupDict} />;
+      },
       truncateText: true,
     },
     {
@@ -155,18 +115,8 @@ function getColumns(
     {
       field: 'masked_fields',
       name: 'Anonymizations',
-      render: truncatedListView(tableItemsUIProps),
+      render: truncatedListView(tableItemsUIProps, MAX_INTEGER),
       truncateText: true,
-    },
-    {
-      align: RIGHT_ALIGNMENT,
-      width: '40px',
-      isExpander: true,
-      render: renderRowExpanstionArrow(
-        itemIdToExpandedRowMap,
-        actionGroupDict,
-        setItemIdToExpandedRowMap
-      ),
     },
   ];
 }
@@ -181,8 +131,6 @@ interface IndexPermissionPanelProps {
 }
 
 export function IndexPermissionPanel(props: IndexPermissionPanelProps) {
-  const [itemIdToExpandedRowMap, setItemIdToExpandedRowMap] = useState<ExpandedRowMapInterface>({});
-
   const emptyListMessage = (
     <EuiEmptyPrompt
       title={<h3>No index permission</h3>}
@@ -215,13 +163,12 @@ export function IndexPermissionPanel(props: IndexPermissionPanelProps) {
         data-test-subj="index-permission-container"
         tableLayout={'auto'}
         loading={props.indexPermissions === [] && !props.errorFlag}
-        columns={getColumns(itemIdToExpandedRowMap, props.actionGroups, setItemIdToExpandedRowMap)}
+        columns={getColumns(props.actionGroups)}
         items={props.indexPermissions}
         itemId={'id'}
         sorting={{ sort: { field: 'type', direction: 'asc' } }}
         error={props.errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
         isExpandable={true}
-        itemIdToExpandedRowMap={itemIdToExpandedRowMap}
         message={showTableStatusMessage(props.loading, props.indexPermissions, emptyListMessage)}
       />
     </PanelWithHeader>

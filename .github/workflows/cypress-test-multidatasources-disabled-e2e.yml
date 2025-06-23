@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Checkout Branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set env
         run: |
@@ -53,4 +53,4 @@ jobs:
         uses: ./.github/actions/run-cypress-tests
         with:
           dashboards_config_file: opensearch_dashboards_multidatasources.yml
-          yarn_command: 'yarn cypress:run --browser chrome --headless --env LOGIN_AS_ADMIN=true --spec "test/cypress/e2e/multi-datasources/multi_datasources_disabled.spec.js"'
+          yarn_command: 'CYPRESS_VERIFY_TIMEOUT=60000 yarn cypress:run --browser chrome --headless --env LOGIN_AS_ADMIN=true --spec "test/cypress/e2e/multi-datasources/multi_datasources_disabled.spec.js"'

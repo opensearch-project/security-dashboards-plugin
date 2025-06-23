@@ -19,7 +19,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:  
       - name: Checkout Branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set env
         run: |
@@ -38,7 +38,7 @@ jobs:
           download-location: ${{ env.PLUGIN_NAME }}
 
       - name: Run Opensearch with security
-        uses: derek-ho/start-opensearch@v6
+        uses: derek-ho/start-opensearch@v7
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: "file:$(pwd)/${{ env.PLUGIN_NAME }}.zip"
@@ -67,7 +67,7 @@ jobs:
 
       - name: Run Dashboard with Security Dashboards Plugin
         id: setup-dashboards
-        uses: derek-ho/setup-opensearch-dashboards@v1
+        uses: derek-ho/setup-opensearch-dashboards@v3
         with:
           plugin_name: security-dashboards-plugin
           built_plugin_name: security-dashboards
