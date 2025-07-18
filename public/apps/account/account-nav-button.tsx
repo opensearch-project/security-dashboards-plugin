@@ -36,6 +36,7 @@ import { LogoutButton } from './log-out-button';
 import { resolveTenantName } from '../configuration/utils/tenant-utils';
 import { getShouldShowTenantPopup, setShouldShowTenantPopup } from '../../utils/storage-utils';
 import { getDashboardsInfo } from '../../utils/dashboards-info-utils';
+import { LeftBottomActionButton } from '../../../../../src/core/public';
 import './account-nav-button.scss';
 
 export function AccountNavButton(props: {
@@ -173,15 +174,12 @@ export function AccountNavButton(props: {
 
   // ToDo: Add aria-label and tooltip when isPlacedInLeftNav is true
   const innerElement = isPlacedInLeftNav ? (
-    <EuiButtonEmpty
-      size="xs"
-      flush="both"
-      className="accountNavButton"
-      aria-expanded={isPopoverOpen}
-      aria-haspopup="true"
-    >
-      <EuiAvatar name={username} size="s" />
-    </EuiButtonEmpty>
+    <LeftBottomActionButton
+      title={username}
+      icon={<EuiAvatar name={username} size="s" />}
+      isNavDrawerLocked$={props.coreStart.chrome.getIsNavDrawerLocked$()}
+      isChromeVisible$={props.coreStart.chrome.getIsVisible$()}
+    />
   ) : (
     <EuiAvatar name={username} size="m" />
   );
@@ -191,7 +189,6 @@ export function AccountNavButton(props: {
       <EuiPopover
         data-test-subj="account-popover"
         id="actionsMenu"
-        anchorPosition={isPlacedInLeftNav ? 'rightDown' : undefined}
         button={innerElement}
         isOpen={isPopoverOpen}
         closePopover={() => {
@@ -201,6 +198,8 @@ export function AccountNavButton(props: {
         onClick={() => {
           setPopoverOpen((prevState) => !prevState);
         }}
+        // Add buffer 2 to avoid popover move to top center of anchor
+        {...(isPlacedInLeftNav ? { anchorPosition: 'rightDown', buffer: 2 } : {})}
       >
         <EuiContextMenuPanel>{contextMenuPanel}</EuiContextMenuPanel>
       </EuiPopover>
