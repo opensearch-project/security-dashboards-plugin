@@ -176,7 +176,7 @@ export function AccountNavButton(props: {
   const innerElement = isPlacedInLeftNav ? (
     <LeftBottomActionButton
       title={username}
-      icon={<EuiAvatar name={username} size="s" />}
+      icon={<EuiAvatar name={`${username}${username}`} size="s" />}
       isNavDrawerLocked$={props.coreStart.chrome.getIsNavDrawerLocked$()}
       isChromeVisible$={props.coreStart.chrome.getIsVisible$()}
     />
@@ -198,8 +198,10 @@ export function AccountNavButton(props: {
         onClick={() => {
           setPopoverOpen((prevState) => !prevState);
         }}
-        // Add buffer 2 to avoid popover move to top center of anchor
-        {...(isPlacedInLeftNav ? { anchorPosition: 'rightDown', buffer: 2 } : {})}
+        // Use buffer 0 to avoid popover move to top center of anchor
+        {...(isPlacedInLeftNav
+          ? { anchorPosition: 'rightDown', buffer: 0, repositionOnScroll: true }
+          : {})}
       >
         <EuiContextMenuPanel>{contextMenuPanel}</EuiContextMenuPanel>
       </EuiPopover>
