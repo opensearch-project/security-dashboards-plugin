@@ -176,7 +176,7 @@ export function AccountNavButton(props: {
   const innerElement = isPlacedInLeftNav ? (
     <LeftBottomActionButton
       title={username}
-      icon={<EuiAvatar name={`${username}${username}`} size="s" />}
+      icon={<EuiAvatar name={username} size="s" />}
       isNavDrawerLocked$={props.coreStart.chrome.getIsNavDrawerLocked$()}
       isChromeVisible$={props.coreStart.chrome.getIsVisible$()}
     />
