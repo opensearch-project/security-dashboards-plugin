@@ -37,7 +37,6 @@ import { resolveTenantName } from '../configuration/utils/tenant-utils';
 import { getShouldShowTenantPopup, setShouldShowTenantPopup } from '../../utils/storage-utils';
 import { getDashboardsInfo } from '../../utils/dashboards-info-utils';
 import { LeftBottomActionButton } from '../../../../../src/core/public';
-import './account-nav-button.scss';
 
 export function AccountNavButton(props: {
   coreStart: CoreStart;
