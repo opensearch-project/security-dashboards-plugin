@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * Changes to show all index patterns in index permission panel in role view ([#1303](https://github.com/opensearch-project/security-dashboards-plugin/issues/1303),[#1891](https://github.com/opensearch-project/security-dashboards-plugin/issues/1891))
 * Added missing index permissions in the list ([#1969](https://github.com/opensearch-project/security-dashboards-plugin/issues/1969))
+* Update account nav button style when nav group home enabled ([#2279](https://github.com/opensearch-project/security-dashboards-plugin/issues/2279))
 
 
 ### Bug Fixes
