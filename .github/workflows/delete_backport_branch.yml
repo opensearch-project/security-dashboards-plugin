@@ -8,7 +8,7 @@ jobs:
   delete-branch:
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: write
+      contents: write
     if: startsWith(github.event.pull_request.head.ref,'backport/') || startsWith(github.event.pull_request.head.ref,'release-chores/')
     steps:
       - name: Delete merged branch
