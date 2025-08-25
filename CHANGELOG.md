@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * Changes to show all index patterns in index permission panel in role view ([#1303](https://github.com/opensearch-project/security-dashboards-plugin/issues/1303),[#1891](https://github.com/opensearch-project/security-dashboards-plugin/issues/1891))
 * Added missing index permissions in the list ([#1969](https://github.com/opensearch-project/security-dashboards-plugin/issues/1969))
-
+* Update delete_backport_branch workflow to include release-chores branches([#2291](https://github.com/opensearch-project/security-dashboards-plugin/pull/2291))
 
 ### Bug Fixes
 
@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 
 ### Maintenance
+- Bump `actions/checkout` from 4 to 5 ([#2295](https://github.com/opensearch-project/security-dashboards-plugin/pull/2295))
 
 * Bump `actions/checkout` from 2 to 4 ([#2260](https://github.com/opensearch-project/security-dashboards-plugin/pull/2260))
 * Bump `codecov/codecov-action` from 4 to 5 ([#2263](https://github.com/opensearch-project/security-dashboards-plugin/pull/2263))
