@@ -240,6 +240,7 @@ export const CLUSTER_PERMISSIONS: string[] = [
   'cluster:admin/search/pipeline/delete',
   'cluster:admin/search/pipeline/get',
   'cluster:admin/search/pipeline/put',
+  'cluster:admin/security/resource/share',
   'cluster:admin/settings/update',
   'cluster:admin/snapshot/create',
   'cluster:admin/snapshot/clone',
