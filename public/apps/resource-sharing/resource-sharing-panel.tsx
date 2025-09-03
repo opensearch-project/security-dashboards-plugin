@@ -58,10 +58,12 @@ interface ResourceRow {
   resource_type: string;
   created_by: CreatedBy;
   share_with?: ShareWith; // may be empty/undefined
+  can_share?: boolean; // whether the current user can share this resource
 }
 interface TypeEntry {
   type: string; // fully qualified class name
   index: string; // name of the index to be supplied to the API as resource_type
+  action_groups: string[]; // known action-groups for this type
 }
 // Tiny API that the panel consumes
 interface Api {
@@ -90,17 +92,6 @@ interface Props {
   api: Api;
   toasts: CoreStart['notifications']['toasts'];
 }
-
-const ACTION_GROUP_SUGGESTIONS = [
-  'read',
-  'write',
-  'manage',
-  'admin',
-  'monitor',
-  'index',
-  'delete',
-  'all',
-];
 
 const hasSharingInfo = (sw?: ShareWith) =>
   !!sw &&
@@ -226,6 +217,7 @@ interface ModalProps {
   resource: ResourceRow;
   resourceType: string;
   resourceTypeIndex: string;
+  actionGroups: string[];
 }
 
 const hasNonEmptyRecipients = (r?: ShareRecipients) =>
@@ -247,6 +239,7 @@ const ShareAccessModal: React.FC<ModalProps> = ({
   resource,
   resourceType,
   resourceTypeIndex,
+  actionGroups,
 }) => {
   const original = useMemo(() => cloneShareWith(resource?.share_with), [resource?.share_with]);
   const [working, setWorking] = useState<ShareWith>(() =>
@@ -262,9 +255,21 @@ const ShareAccessModal: React.FC<ModalProps> = ({
   }, [mode, resource]);
 
   const groups = Object.keys(working);
+  // suggestions list for this modal (unique + keep order)
+  const SUGGESTIONS = useMemo(() => Array.from(new Set(actionGroups ?? [])), [actionGroups]);
+
   const addGroup = () => {
-    const base =
-      ACTION_GROUP_SUGGESTIONS.find((g) => !groups.includes(g)) || `GROUP_${groups.length + 1}`;
+    // If no suggestions were provided for this type, do nothing.
+    if (!SUGGESTIONS.length) {
+      // Optional: show a subtle warning/toast instead of silent no-op
+      // toasts?.addWarning?.('No predefined action-groups for this type');
+      return;
+    }
+
+    // Pick the first unused suggestion
+    const base = SUGGESTIONS.find((g) => !groups.includes(g));
+    if (!base) return; // all suggestions already used
+
     setWorking({ ...working, [base]: {} });
   };
 
@@ -391,10 +396,10 @@ const ShareAccessModal: React.FC<ModalProps> = ({
           )}
 
           {Object.entries(working).map(([groupName, recipients]) => {
-            // TODO: update these to fetch static action-groups from backend
-            const groupSuggestions = [
-              ...new Set([groupName, ...ACTION_GROUP_SUGGESTIONS]),
-            ].map((l) => ({ label: l }));
+            const groupOptions = [...new Set([groupName, ...SUGGESTIONS])].map((l) => ({
+              label: l,
+            }));
+
             return (
               <EuiPanel key={groupName} paddingSize="m" hasShadow={false} hasBorder>
                 <EuiFlexGroup gutterSize="m" alignItems="center">
@@ -402,7 +407,7 @@ const ShareAccessModal: React.FC<ModalProps> = ({
                     <EuiFormRow label="Action-group">
                       <EuiComboBox
                         singleSelection={{ asPlainText: true }}
-                        options={groupSuggestions}
+                        options={groupOptions}
                         selectedOptions={[{ label: groupName }]}
                         onChange={(opts) => {
                           const newLabel = opts[0]?.label || groupName;
@@ -539,7 +544,7 @@ const humanizeClassName = (fqn: string) => {
 /** ---------- Main table ---------- */
 export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
   const [typeOptions, setTypeOptions] = useState<
-    Array<{ value: string; text: string; fqn: string }>
+    Array<{ value: string; text: string; fqn: string; actionGroups: string[] }>
   >([]);
   const [selectedType, setSelectedType] = useState<string>(''); // no default selection
   const [rows, setRows] = useState<ResourceRow[]>([]);
@@ -561,7 +566,12 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
         const raw: TypeEntry[] = Array.isArray(res) ? res : res?.types || [];
         // value = index (what we send as resourceType); text = type (what we display)
         const options = raw
-          .map((t) => ({ value: t.index, text: humanizeClassName(t.type), fqn: t.type }))
+          .map((t) => ({
+            value: t.index,
+            text: humanizeClassName(t.type),
+            fqn: t.type,
+            actionGroups: t.action_groups,
+          }))
           // sort alphabetically by text (and by value if text is equal)
           .sort((a, b) => {
             const byText = a.text.localeCompare(b.text, undefined, { sensitivity: 'base' });
@@ -600,6 +610,11 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
   ]);
   const selectedTypeLabel = selectedTypeMeta?.text ?? (selectedType || '—');
   const selectedTypeTooltip = selectedTypeMeta?.fqn; // actual class name
+
+  const currentActionGroups = useMemo(
+    () => Array.from(new Set(selectedTypeMeta?.actionGroups ?? [])).sort(),
+    [selectedTypeMeta]
+  );
 
   const columns = [
     // id column
@@ -674,19 +689,35 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
       name: 'Actions',
       render: (item: ResourceRow) => {
         const label = hasSharingInfo(item.share_with) ? 'Update Access' : 'Share';
-        return (
+        const canShare = item.can_share === true;
+
+        const handleClick = () => {
+          if (!canShare) return;
+          setModalState({
+            open: true,
+            mode: hasSharingInfo(item.share_with) ? 'edit' : 'create',
+            resource: item,
+          });
+        };
+
+        const btn = (
           <EuiButton
             size="s"
-            onClick={() => {
-              setModalState({
-                open: true,
-                mode: hasSharingInfo(item.share_with) ? 'edit' : 'create',
-                resource: item,
-              });
-            }}
+            isDisabled={!canShare}
+            data-test-subj={`share-button-${item.resource_id}`}
+            onClick={handleClick}
           >
             {label}
           </EuiButton>
+        );
+
+        // Show tooltip only when disabled
+        return canShare ? (
+          btn
+        ) : (
+          <EuiToolTip content="You do not have access to update sharing information of this resource">
+            <span>{btn}</span>
+          </EuiToolTip>
         );
       },
     },
@@ -818,6 +849,7 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
         resource={modalState.resource as ResourceRow}
         resourceType={selectedTypeLabel}
         resourceTypeIndex={selectedType}
+        actionGroups={currentActionGroups}
       />
     </EuiPanel>
   );
