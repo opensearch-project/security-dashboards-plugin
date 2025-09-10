@@ -7,8 +7,6 @@ env:
   # avoid warnings like "tput: No value for $TERM and no -T specified"
   TERM: xterm
   PLUGIN_NAME: opensearch-security
-  AD_PLUGIN_NAME: opensearch-anomaly-detection # resource plugin
-  JS_PLUGIN_NAME: opensearch-job-scheduler
   OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
   
 jobs:
@@ -39,28 +37,40 @@ jobs:
           plugin-name: ${{ env.PLUGIN_NAME }}
           plugin-version: ${{ env.PLUGIN_VERSION }}
           download-location: ${{env.PLUGIN_NAME}}
-      
-      - name: Download job-scheduler plugin # required for anomaly detection 
-        uses: ./.github/actions/download-plugin
-        with:
-          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
-          plugin-name: ${{ env.JS_PLUGIN_NAME }}
-          plugin-version: ${{ env.PLUGIN_VERSION }}
-          download-location: ${{env.JS_PLUGIN_NAME}}
 
-      - name: Download anomaly detection plugin
-        uses: ./.github/actions/download-plugin
-        with:
-          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
-          plugin-name: ${{ env.AD_PLUGIN_NAME }}
-          plugin-version: ${{ env.PLUGIN_VERSION }}
-          download-location: ${{env.AD_PLUGIN_NAME}}
-      
-      - name: Run Opensearch with security and resource plugins
+      # build sample-resource-plugin from source (Linux runner)
+      - name: Build sample-resource-plugin (server)
+        if: ${{ runner.os == 'Linux' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Derive Security repo tag from your OpenSearch version: 3.2.0 -> 3.2.0.0
+          SEC_TAG="${OPENSEARCH_VERSION}.0"
+          echo "SEC_TAG=$SEC_TAG"
+
+          # Shallow clone at tag; fall back to main if that tag doesn't exist
+          git clone --depth 1 --branch "$SEC_TAG" https://github.com/opensearch-project/security.git security-src \
+            || git clone --depth 1 https://github.com/opensearch-project/security.git security-src
+
+          pushd security-src/sample-resource-plugin
+            # Build the plugin ZIP
+            ./gradlew assemble
+            # Grab the ZIP (there should be exactly one)
+            ZIP_PATH=$(ls build/distributions/*.zip | head -n1)
+            echo "Built sample plugin: $ZIP_PATH"
+            cp "$ZIP_PATH" "$GITHUB_WORKSPACE/sample-resource-plugin.zip"
+          popd
+
+          echo "SAMPLE_PLUGIN_ZIP=$GITHUB_WORKSPACE/sample-resource-plugin.zip" >> $GITHUB_ENV
+
+      # Replace your "Run OpenSearch with security and resource plugins" step's plugins list
+      - name: Run Opensearch with security + sample resource plugin
         uses: derek-ho/start-opensearch@v8
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
-          plugins: "file:$(pwd)/opensearch-security.zip,file:$(pwd)/opensearch-job-scheduler.zip,file:$(pwd)/opensearch-anomaly-detection.zip"
+          # Keep security.zip from your existing download step, add the newly built sample plugin:
+          plugins: "file:$(pwd)/opensearch-security.zip,file:${{ env.SAMPLE_PLUGIN_ZIP }}"
           security-enabled: true
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
           jdk-version: 21
@@ -78,37 +88,6 @@ jobs:
         with:
           plugin_name: security-dashboards-plugin
           opensearch_dashboards_yml: ${{ inputs.dashboards_config_file }}
-      
-            # Add the Anomaly Detection Dashboards plugin (frontend)
-      - name: Add Anomaly Detection Dashboards plugin
-        if: ${{ runner.os == 'Linux' }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          cd OpenSearch-Dashboards/plugins
-
-          # Clone AD Dashboards plugin
-          git clone --depth=1 https://github.com/opensearch-project/anomaly-detection-dashboards.git
-
-          cd anomaly-detection-dashboards
-          # Try to align to a tag/branch. We try several options and fall back to default.
-          git fetch --tags --depth=1 || true
-          for tag in "v${OPENSEARCH_VERSION}" "${OPENSEARCH_VERSION}" "v${PLUGIN_VERSION}" "${PLUGIN_VERSION}"; do
-            if git rev-parse "$tag" >/dev/null 2>&1; then
-              echo "Checking out $tag"
-              git checkout "$tag"
-              break
-            fi
-          done
-
-      # Re-bootstrap so OSD installs deps for the newly added plugin
-      - name: Bootstrap OpenSearch Dashboards (plugins)
-        if: ${{ runner.os == 'Linux' }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          cd OpenSearch-Dashboards
-          yarn osd bootstrap --no-cache
 
       - name: Compile OpenSearch Dashboards
         run: |

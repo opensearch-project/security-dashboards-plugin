@@ -13,6 +13,8 @@
  *   permissions and limitations under the License.
  */
 
+import { ADMIN_AUTH } from '../../support/constants';
+
 // Assumes OpenSearch Dashboards is running and the plugin is installed.
 const BASE = 'http://localhost:5601';
 // resource management app:
@@ -40,25 +42,27 @@ function findTable() {
   cy.get('table', { timeout: 20_000 }).should('exist');
 }
 
-function createSampleHTTPResponseDetector() {
-  const selector = 'button[data-test-subj="createHttpSampleDetectorButton"]';
+function createSampleResource() {
+  const url = 'https://localhost:9200/_plugins/sample_plugin/create';
 
-  cy.visit(`${BASE}/app/anomaly-detection-dashboards`);
-
-  // Only creatt sample detector if it doesn't already exist
-  cy.get('body', { timeout: 60_000 }).then(($body) => {
-    const $btn = $body.find(selector);
-
-    // If not present or not visible, assume already created
-    if ($btn.length === 0 || !$btn.is(':visible')) {
-      cy.log('Sample detector already exists — skipping creation.');
-      return;
+  cy.request({
+    method: 'PUT',
+    url,
+    body: { name: 'sample' },
+    headers: { 'Content-Type': 'application/json' },
+    auth: ADMIN_AUTH,
+    // allow us to handle 409/400 gracefully
+    failOnStatusCode: false,
+  }).then((resp) => {
+    if (resp.status === 200 || resp.status === 201) {
+      cy.log('Sample resource created.');
+    } else if (resp.status === 409 || resp.status === 400) {
+      cy.log('Sample resource already exists — skipping creation.');
+    } else {
+      throw new Error(
+        `Failed to create sample resource: ${resp.status} ${JSON.stringify(resp.body)}`
+      );
     }
-
-    // Otherwise click it and wait for it to go away
-    cy.get(selector).scrollIntoView().should('be.visible').and('not.be.disabled').click();
-
-    cy.get(selector, { timeout: 60_000 }).should('not.exist');
   });
 }
 
@@ -138,7 +142,7 @@ function addRecipientAndSubmit(expectLabel: 'Share' | 'Update Access') {
 
 describe('Resource Access Management Dashboard', () => {
   before(() => {
-    createSampleHTTPResponseDetector();
+    createSampleResource();
   });
   beforeEach(() => {
     cy.clearCookies();
