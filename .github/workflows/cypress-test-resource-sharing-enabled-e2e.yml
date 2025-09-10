@@ -48,7 +48,7 @@ jobs:
           download-location: ${{env.SAMPLE_PLUGIN_NAME}}
       
       - name: Run Opensearch with security and sample plugins
-        uses: derek-ho/start-opensearch@main
+        uses: derek-ho/start-opensearch@v8
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: "file:$(pwd)/opensearch-security.zip,file:$(pwd)/opensearch-sample-resource-plugin.zip"
