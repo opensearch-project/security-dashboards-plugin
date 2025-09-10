@@ -79,11 +79,36 @@ jobs:
           plugin_name: security-dashboards-plugin
           opensearch_dashboards_yml: ${{ inputs.dashboards_config_file }}
       
-      # Add the Anomaly Detection Dashboards plugin (frontend)
-      - name: Setup Dashboard with AD Plugin
-        uses: derek-ho/setup-opensearch-dashboards@v1
-        with:
-          plugin_name: anomaly-detection-dashboards-plugin
+            # Add the Anomaly Detection Dashboards plugin (frontend)
+      - name: Add Anomaly Detection Dashboards plugin
+        if: ${{ runner.os == 'Linux' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd OpenSearch-Dashboards/plugins
+
+          # Clone AD Dashboards plugin
+          git clone --depth=1 https://github.com/opensearch-project/anomaly-detection-dashboards.git
+
+          cd anomaly-detection-dashboards
+          # Try to align to a tag/branch. We try several options and fall back to default.
+          git fetch --tags --depth=1 || true
+          for tag in "v${OPENSEARCH_VERSION}" "${OPENSEARCH_VERSION}" "v${PLUGIN_VERSION}" "${PLUGIN_VERSION}"; do
+            if git rev-parse "$tag" >/dev/null 2>&1; then
+              echo "Checking out $tag"
+              git checkout "$tag"
+              break
+            fi
+          done
+
+      # Re-bootstrap so OSD installs deps for the newly added plugin
+      - name: Bootstrap OpenSearch Dashboards (plugins)
+        if: ${{ runner.os == 'Linux' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd OpenSearch-Dashboards
+          yarn osd bootstrap --no-cache
 
       - name: Compile OpenSearch Dashboards
         run: |
