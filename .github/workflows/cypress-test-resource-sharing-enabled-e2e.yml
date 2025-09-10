@@ -1,4 +1,4 @@
-name: E2E multi datasources enabled workflow
+name: E2E Resource Access Management Cypress Tests
 
 on: [ push, pull_request ]
 
@@ -7,12 +7,13 @@ env:
   # avoid warnings like "tput: No value for $TERM and no -T specified"
   TERM: xterm
   PLUGIN_NAME: opensearch-security
-  SAMPLE_PLUGIN_NAME: opensearch-sample-resource-plugin
+  AD_PLUGIN_NAME: opensearch-anomaly-detection # resource plugin
+  JS_PLUGIN_NAME: opensearch-job-scheduler
   OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
   
 jobs:
   tests:
-    name: Run Cypress multidatasources tests
+    name: Run Cypress resource-access-management tests
     strategy:
       fail-fast: false
       matrix:
@@ -39,19 +40,27 @@ jobs:
           plugin-version: ${{ env.PLUGIN_VERSION }}
           download-location: ${{env.PLUGIN_NAME}}
       
-      - name: Download sample resource plugin
+      - name: Download job-scheduler plugin # required for anomaly detection 
         uses: ./.github/actions/download-plugin
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
-          plugin-name: ${{ env.SAMPLE_PLUGIN_NAME }}
+          plugin-name: ${{ env.JS_PLUGIN_NAME }}
           plugin-version: ${{ env.PLUGIN_VERSION }}
-          download-location: ${{env.SAMPLE_PLUGIN_NAME}}
+          download-location: ${{env.JS_PLUGIN_NAME}}
+
+      - name: Download anomaly detection plugin
+        uses: ./.github/actions/download-plugin
+        with:
+          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
+          plugin-name: ${{ env.AD_PLUGIN_NAME }}
+          plugin-version: ${{ env.PLUGIN_VERSION }}
+          download-location: ${{env.AD_PLUGIN_NAME}}
       
-      - name: Run Opensearch with security and sample plugins
+      - name: Run Opensearch with security and resource plugins
         uses: derek-ho/start-opensearch@v8
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
-          plugins: "file:$(pwd)/opensearch-security.zip,file:$(pwd)/opensearch-sample-resource-plugin.zip"
+          plugins: "file:$(pwd)/opensearch-security.zip,file:$(pwd)/opensearch-job-scheduler.zip,file:$(pwd)/opensearch-anomaly-detection.zip"
           security-enabled: true
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
           jdk-version: 21
@@ -62,7 +71,63 @@ jobs:
         run: |
           curl https://localhost:9200/_cat/plugins -v -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} -k
         shell: bash
-      - name: Run Cypress Tests
-        uses: ./.github/actions/run-cypress-tests
+
+      # OSD bootstrap
+      - name: Setup Dashboard with Security Dashboards Plugin
+        uses: derek-ho/setup-opensearch-dashboards@v1
         with:
-          yarn_command: 'CYPRESS_VERIFY_TIMEOUT=60000 yarn cypress:run --browser chrome --headless --env LOGIN_AS_ADMIN=true --spec "test/cypress/e2e/multi-datasources/multi_datasources_enabled.spec.js"'
+          plugin_name: security-dashboards-plugin
+          opensearch_dashboards_yml: ${{ inputs.dashboards_config_file }}
+      
+      # Add the Anomaly Detection Dashboards plugin (frontend)
+      - name: Setup Dashboard with AD Plugin
+        uses: derek-ho/setup-opensearch-dashboards@v1
+        with:
+          plugin_name: anomaly-detection-dashboards-plugin
+
+      - name: Compile OpenSearch Dashboards
+        run: |
+          cd OpenSearch-Dashboards
+          node scripts/build_opensearch_dashboards_platform_plugins --no-examples --workers=10 --verbose
+        shell: bash
+
+      - name: Run OpenSearch Dashboards with provided configuration
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          cd ./OpenSearch-Dashboards
+          if [ -z "${{ inputs.osd_base_path }}" ]; then
+            nohup yarn start --no-base-path --no-watch --csp.warnLegacyBrowsers=false | tee dashboard.log &
+          else
+            nohup yarn start --no-watch --csp.warnLegacyBrowsers=false | tee dashboard.log &
+          fi
+        shell: bash
+
+      # Check if OSD is ready with a max timeout of 600 seconds
+      - name : Check If OpenSearch Dashboards Is Ready
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          cd ./OpenSearch-Dashboards
+          echo "Start checking OpenSearch Dashboards."
+          for i in {1..6}; do
+            if grep -q "http server running" "dashboard.log"; then
+              echo "OpenSearch Dashboards started successfully."
+              break
+            fi
+            if [ $i -eq 6 ]; then
+              echo "Timeout for 60 seconds reached. OpenSearch Dashboards did not start."
+              exit 1
+            fi
+            sleep 10
+          done
+        shell: bash
+
+      - name: Run Cypress Tests with retry
+        uses: Wandalen/wretry.action@v3.3.0
+        with:
+          attempt_limit: 5
+          attempt_delay: 2000
+          command: |
+            cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
+            yarn add cypress --save-dev
+            eval 'CYPRESS_VERIFY_TIMEOUT=60000 yarn cypress:run --browser chrome --headless --env LOGIN_AS_ADMIN=true --spec "test/cypress/e2e/multi-datasources/multi_datasources_enabled.spec.js"' 
+

@@ -14,9 +14,7 @@
  */
 
 // Assumes OpenSearch Dashboards is running and the plugin is installed.
-declare const Cypress: any;
-const BASE =
-  (Cypress && Cypress.env ? Cypress.env('DASHBOARDS_URL') : undefined) || 'http://localhost:5601';
+const BASE = 'http://localhost:5601';
 // resource management app:
 const ROUTE = '/app/resource_access_management';
 
@@ -40,6 +38,28 @@ function pickFirstType() {
 function findTable() {
   // Table appears only after a type is selected and rows fetched
   cy.get('table', { timeout: 20_000 }).should('exist');
+}
+
+function createSampleHTTPResponseDetector() {
+  const selector = 'button[data-test-subj="createHttpSampleDetectorButton"]';
+
+  cy.visit(`${BASE}/app/anomaly-detection-dashboards`);
+
+  // Only creatt sample detector if it doesn't already exist
+  cy.get('body', { timeout: 60_000 }).then(($body) => {
+    const $btn = $body.find(selector);
+
+    // If not present or not visible, assume already created
+    if ($btn.length === 0 || !$btn.is(':visible')) {
+      cy.log('Sample detector already exists — skipping creation.');
+      return;
+    }
+
+    // Otherwise click it and wait for it to go away
+    cy.get(selector).scrollIntoView().should('be.visible').and('not.be.disabled').click();
+
+    cy.get(selector, { timeout: 60_000 }).should('not.exist');
+  });
 }
 
 function openFirstRowModal() {
@@ -117,6 +137,9 @@ function addRecipientAndSubmit(expectLabel: 'Share' | 'Update Access') {
 }
 
 describe('Resource Access Management Dashboard', () => {
+  before(() => {
+    createSampleHTTPResponseDetector();
+  });
   beforeEach(() => {
     cy.clearCookies();
     cy.clearAllLocalStorage();
