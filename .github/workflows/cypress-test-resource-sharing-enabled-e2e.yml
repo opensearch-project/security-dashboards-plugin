@@ -22,6 +22,12 @@ jobs:
       - name: Checkout Branch
         uses: actions/checkout@v5
 
+      - name: Set up JDK 21 for build
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
       - name: Set env
         run: |
           opensearch_version=$(node -p "require('./package.json').opensearchDashboards.version")
@@ -40,36 +46,33 @@ jobs:
 
       # build sample-resource-plugin from source (Linux runner)
       - name: Build sample-resource-plugin (server)
-        if: ${{ runner.os == 'Linux' }}
         shell: bash
         run: |
           set -euo pipefail
 
-          # Derive Security repo tag from your OpenSearch version: 3.2.0 -> 3.2.0.0
-          SEC_TAG="${OPENSEARCH_VERSION}.0"
-          echo "SEC_TAG=$SEC_TAG"
+          # Shallow clone at main
+          git clone --depth 1 https://github.com/opensearch-project/security.git security-src
 
-          # Shallow clone at tag; fall back to main if that tag doesn't exist
-          git clone --depth 1 --branch "$SEC_TAG" https://github.com/opensearch-project/security.git security-src \
-            || git clone --depth 1 https://github.com/opensearch-project/security.git security-src
+          pushd security-src
+            # Build the sample plugin from the repo root
+            chmod +x ./gradlew
+            ./gradlew :opensearch-sample-resource-plugin:assemble
 
-          pushd security-src/sample-resource-plugin
-            # Build the plugin ZIP
-            ./gradlew assemble
-            # Grab the ZIP (there should be exactly one)
-            ZIP_PATH=$(ls build/distributions/*.zip | head -n1)
+            # Pick the built zip
+            ZIP_PATH=$(ls -t sample-resource-plugin/build/distributions/*.zip | head -n1)
             echo "Built sample plugin: $ZIP_PATH"
+
+            # Copy to workspace for installation
             cp "$ZIP_PATH" "$GITHUB_WORKSPACE/sample-resource-plugin.zip"
           popd
 
+
           echo "SAMPLE_PLUGIN_ZIP=$GITHUB_WORKSPACE/sample-resource-plugin.zip" >> $GITHUB_ENV
 
-      # Replace your "Run OpenSearch with security and resource plugins" step's plugins list
       - name: Run Opensearch with security + sample resource plugin
         uses: derek-ho/start-opensearch@v8
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
-          # Keep security.zip from your existing download step, add the newly built sample plugin:
           plugins: "file:$(pwd)/opensearch-security.zip,file:${{ env.SAMPLE_PLUGIN_ZIP }}"
           security-enabled: true
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
@@ -77,7 +80,6 @@ jobs:
           resource-sharing-enabled: true
 
       - name: Check OpenSearch is running
-          # Verify that the server is operational
         run: |
           curl https://localhost:9200/_cat/plugins -v -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} -k
         shell: bash
@@ -87,43 +89,47 @@ jobs:
         uses: derek-ho/setup-opensearch-dashboards@v1
         with:
           plugin_name: security-dashboards-plugin
-          opensearch_dashboards_yml: ${{ inputs.dashboards_config_file }}
 
       - name: Compile OpenSearch Dashboards
         run: |
-          cd OpenSearch-Dashboards
           node scripts/build_opensearch_dashboards_platform_plugins --no-examples --workers=10 --verbose
         shell: bash
+        working-directory: OpenSearch-Dashboards
 
-      - name: Run OpenSearch Dashboards with provided configuration
-        if: ${{ runner.os == 'Linux' }}
+      - name: Run OpenSearch Dashboards
         run: |
-          cd ./OpenSearch-Dashboards
-          if [ -z "${{ inputs.osd_base_path }}" ]; then
-            nohup yarn start --no-base-path --no-watch --csp.warnLegacyBrowsers=false | tee dashboard.log &
-          else
-            nohup yarn start --no-watch --csp.warnLegacyBrowsers=false | tee dashboard.log &
-          fi
+          nohup yarn start --no-base-path --no-watch --csp.warnLegacyBrowsers=false | tee dashboard.log &
         shell: bash
+        working-directory: OpenSearch-Dashboards
 
-      # Check if OSD is ready with a max timeout of 600 seconds
-      - name : Check If OpenSearch Dashboards Is Ready
-        if: ${{ runner.os == 'Linux' }}
+      # Check if OSD is ready with a max timeout of 300 seconds
+      - name: Wait for OpenSearch Dashboards (status API)
+        shell: bash
+        working-directory: OpenSearch-Dashboards
+        env:
+          OSD_URL: http://localhost:5601
+          OSD_USER: admin
+          OSD_PASS: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
         run: |
-          cd ./OpenSearch-Dashboards
-          echo "Start checking OpenSearch Dashboards."
-          for i in {1..6}; do
-            if grep -q "http server running" "dashboard.log"; then
-              echo "OpenSearch Dashboards started successfully."
-              break
+          set -euo pipefail
+          TIMEOUT=300; INTERVAL=5; end=$((SECONDS + TIMEOUT))
+          code=""; resp=""
+
+          while (( SECONDS < end )); do
+            resp="$(curl -s -k -u "${OSD_USER}:${OSD_PASS}" -H 'kbn-xsrf: true' "${OSD_URL}/api/status" || echo "")"
+            code="$(curl -s -k -o /dev/null -w '%{http_code}' -u "${OSD_USER}:${OSD_PASS}" -H 'kbn-xsrf: true' "${OSD_URL}/api/status" || echo "")"
+
+            if [ "${code:-}" = "200" ] && echo "${resp:-}" | grep -Eiq '"(overall|status)".*"(available|green)"'; then
+              echo "OpenSearch Dashboards status is green."
+              exit 0
             fi
-            if [ $i -eq 6 ]; then
-              echo "Timeout for 60 seconds reached. OpenSearch Dashboards did not start."
-              exit 1
-            fi
-            sleep 10
+            sleep "${INTERVAL}"
           done
-        shell: bash
+
+          echo "Timed out after ${TIMEOUT}s waiting for OpenSearch Dashboards status."
+          tail -n 200 dashboard.log || true
+          exit 1
+
 
       - name: Run Cypress Tests with retry
         uses: Wandalen/wretry.action@v3.3.0
