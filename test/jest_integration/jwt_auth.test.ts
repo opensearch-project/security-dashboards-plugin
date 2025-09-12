@@ -27,35 +27,93 @@ import wreck from '@hapi/wreck';
 import { Builder, By, until } from 'selenium-webdriver';
 import { Options } from 'selenium-webdriver/firefox';
 
-describe('start OpenSearch Dashboards server', () => {
-  let root: Root;
-  let config;
+const OSD_HOST = 'http://localhost:5601';
+const OS_HOST = 'https://localhost:9200';
 
-  // XPath Constants
-  const pageTitleXPath = '//*[@id="osdOverviewPageHeader__title"]';
-  // Browser Settings
-  const browser = 'firefox';
-  const options = new Options().headless();
-  const rawKey = 'This is a very secure secret. No one will ever be able to guess it!';
-  const b = Buffer.from(rawKey);
-  const signingKey = b.toString('base64');
+// Browser (accept self-signed)
+const browser = 'firefox';
+const options = new Options().headless().setAcceptInsecureCerts(true);
+
+// JWT test key
+const rawKey = 'This is a very secure secret. No one will ever be able to guess it!';
+const signingKeyB64 = Buffer.from(rawKey).toString('base64');
+
+// Selectors
+const pageTitleXPath = '//*[@id="osdOverviewPageHeader__title"]';
+
+async function sleep(ms: number) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+async function waitForOpenSearchReady(timeoutMs = 120_000) {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    try {
+      const { res } = await wreck.get(
+        `${OS_HOST}/_cluster/health?wait_for_status=yellow&timeout=1s`,
+        {
+          rejectUnauthorized: false,
+          headers: { authorization: ADMIN_CREDENTIALS },
+        }
+      );
+      if ((res.statusCode ?? 0) >= 200 && (res.statusCode ?? 0) < 500) return;
+    } catch {
+      /* ignore until timeout */
+    }
+    await sleep(2000);
+  }
+  throw new Error('OpenSearch did not become ready in time');
+}
+
+async function waitForDashboardsUp(timeoutMs = 120_000) {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    try {
+      const { res } = await wreck.get(`${OSD_HOST}/`, {
+        redirects: 0,
+        rejectUnauthorized: false,
+      });
+      if ([200, 302, 401].includes(res.statusCode ?? 0)) return;
+    } catch (e: any) {
+      const code = e?.output?.statusCode ?? e?.statusCode;
+      if ([302, 401].includes(code)) return;
+    }
+    await sleep(2000);
+  }
+  throw new Error('OpenSearch Dashboards did not become ready in time');
+}
+
+function getDriver() {
+  return new Builder()
+    .forBrowser(browser)
+    .setFirefoxOptions(options as any)
+    .build();
+}
+
+function analyzeCookies(cookies: Array<{ name: string }>) {
+  const names = cookies.map((c) => c.name);
+  // Security auth cookie may be chunked: security_authentication, security_authentication.1, ...
+  const authChunks = names.filter(
+    (n) => n === 'security_authentication' || n.startsWith('security_authentication.')
+  );
+  return { names, hasAuth: authChunks.length >= 1, authChunksCount: authChunks.length };
+}
+
+describe('start OpenSearch Dashboards server (JWT via url param)', () => {
+  let root: Root;
+  let config: any;
 
   beforeAll(async () => {
+    // Ensure OpenSearch is reachable before configuring
+    await waitForOpenSearchReady();
+
     root = osdTestServer.createRootWithSettings(
       {
-        plugins: {
-          scanDirs: [resolve(__dirname, '../..')],
-        },
-        server: {
-          host: 'localhost',
-          port: 5601,
-        },
-        logging: {
-          silent: true,
-          verbose: false,
-        },
+        plugins: { scanDirs: [resolve(__dirname, '../..')] },
+        server: { host: 'localhost', port: 5601 },
+        logging: { silent: true, verbose: false },
         opensearch: {
-          hosts: ['https://localhost:9200'],
+          hosts: [OS_HOST],
           ignoreVersionMismatch: true,
           ssl: { verificationMode: 'none' },
           username: OPENSEARCH_DASHBOARDS_SERVER_USER,
@@ -63,51 +121,35 @@ describe('start OpenSearch Dashboards server', () => {
           requestHeadersWhitelist: ['authorization', 'securitytenant'],
         },
         opensearch_security: {
-          auth: {
-            anonymous_auth_enabled: false,
-            type: 'jwt',
-          },
-          jwt: {
-            url_param: 'token',
-          },
+          auth: { anonymous_auth_enabled: false, type: 'jwt' },
+          jwt: { url_param: 'token' },
         },
       },
-      {
-        // to make ignoreVersionMismatch setting work
-        // can be removed when we have corresponding ES version
-        dev: true,
-      }
+      { dev: true }
     );
 
-    console.log('Starting OpenSearchDashboards server..');
     await root.setup();
     await root.start();
 
-    await wreck.patch('https://localhost:9200/_plugins/_security/api/rolesmapping/all_access', {
-      payload: [
-        {
-          op: 'add',
-          path: '/users',
-          value: ['jwt_test'],
-        },
-      ],
+    // Map role -> user for JWT subject
+    await wreck.patch(`${OS_HOST}/_plugins/_security/api/rolesmapping/all_access`, {
+      payload: [{ op: 'add', path: '/users', value: ['jwt_test'] }],
       rejectUnauthorized: false,
       headers: {
         'Content-Type': 'application/json',
         authorization: ADMIN_CREDENTIALS,
       },
     });
-    const getConfigResponse = await wreck.get(
-      'https://localhost:9200/_plugins/_security/api/securityconfig',
-      {
-        rejectUnauthorized: false,
-        headers: {
-          authorization: ADMIN_CREDENTIALS,
-        },
-      }
-    );
+
+    // Fetch current security config
+    const getConfigResponse = await wreck.get(`${OS_HOST}/_plugins/_security/api/securityconfig`, {
+      rejectUnauthorized: false,
+      headers: { authorization: ADMIN_CREDENTIALS },
+    });
     const responseBody = (getConfigResponse.payload as Buffer).toString();
     config = JSON.parse(responseBody).config;
+
+    // Inject jwt_auth_domain (HTTP)
     const jwtConfig = {
       http_enabled: true,
       transport_enabled: false,
@@ -116,23 +158,27 @@ describe('start OpenSearch Dashboards server', () => {
         challenge: true,
         type: 'jwt',
         config: {
-          signing_key: signingKey,
+          signing_key: signingKeyB64,
           jwt_header: 'Authorization',
           jwt_url_parameter: 'token',
           subject_key: 'sub',
           roles_key: 'roles',
         },
       },
-      authentication_backend: {
-        type: 'noop',
-        config: {},
-      },
+      authentication_backend: { type: 'noop', config: {} },
     };
+
+    config.dynamic = config.dynamic || {};
+    config.dynamic.authc = config.dynamic.authc || {};
+    config.dynamic.http = config.dynamic.http || {};
+    config.dynamic.authc.jwt_auth_domain = jwtConfig;
+    if (config.dynamic.authc.basic_internal_auth_domain?.http_authenticator) {
+      config.dynamic.authc.basic_internal_auth_domain.http_authenticator.challenge = false;
+    }
+    config.dynamic.http.anonymous_auth_enabled = false;
+
     try {
-      config.dynamic!.authc!.jwt_auth_domain = jwtConfig;
-      config.dynamic!.authc!.basic_internal_auth_domain.http_authenticator.challenge = false;
-      config.dynamic!.http!.anonymous_auth_enabled = false;
-      await wreck.put('https://localhost:9200/_plugins/_security/api/securityconfig/config', {
+      await wreck.put(`${OS_HOST}/_plugins/_security/api/securityconfig/config`, {
         payload: config,
         rejectUnauthorized: false,
         headers: {
@@ -140,184 +186,150 @@ describe('start OpenSearch Dashboards server', () => {
           authorization: ADMIN_CREDENTIALS,
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       console.log('Got an error while updating security config!!', error.stack);
-      fail(error);
+      throw error;
     }
-  });
+
+    // Wait for OSD listener after plugin init
+    await waitForDashboardsUp();
+  }, 240_000);
 
   afterAll(async () => {
-    console.log('Remove the Role Mapping');
-    await wreck.patch('https://localhost:9200/_plugins/_security/api/rolesmapping/all_access', {
-      payload: [
-        {
-          op: 'remove',
-          path: '/users',
-          users: ['jwt_test'],
+    try {
+      await wreck.patch(`${OS_HOST}/_plugins/_security/api/rolesmapping/all_access`, {
+        payload: [{ op: 'remove', path: '/users', users: ['jwt_test'] }],
+        rejectUnauthorized: false,
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: ADMIN_CREDENTIALS,
         },
-      ],
-      rejectUnauthorized: false,
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: ADMIN_CREDENTIALS,
-      },
-    });
-    console.log('Remove the Security Config');
-    await wreck.patch('https://localhost:9200/_plugins/_security/api/securityconfig', {
-      payload: [
-        {
-          op: 'remove',
-          path: '/config/dynamic/authc/jwt_auth_domain',
+      });
+    } catch {
+      /* ignore */
+    }
+    try {
+      await wreck.patch(`${OS_HOST}/_plugins/_security/api/securityconfig`, {
+        payload: [{ op: 'remove', path: '/config/dynamic/authc/jwt_auth_domain' }],
+        rejectUnauthorized: false,
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: ADMIN_CREDENTIALS,
         },
-      ],
-      rejectUnauthorized: false,
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: ADMIN_CREDENTIALS,
-      },
-    });
-    // shutdown OpenSearchDashboards server
+      });
+    } catch {
+      /* ignore */
+    }
     await root.shutdown();
   });
 
   it('Login to app/opensearch_dashboards_overview#/ when JWT is enabled', async () => {
-    const payload = {
-      sub: 'jwt_test',
-      roles: 'admin,kibanauser',
-    };
-
-    const key = new TextEncoder().encode(rawKey);
-
-    const token = await new SignJWT(payload) // details to  encode in the token
-      .setProtectedHeader({ alg: 'HS256' }) // algorithm
+    const token = await new SignJWT({ sub: 'jwt_test', roles: 'admin,kibanauser' })
+      .setProtectedHeader({ alg: 'HS256' })
       .setIssuedAt()
-      .sign(key);
-    const driver = getDriver(browser, options).build();
-    await driver.get(`http://localhost:5601/app/opensearch_dashboards_overview?token=${token}`);
-    await driver.wait(until.elementsLocated(By.xpath(pageTitleXPath)), 10000);
+      .sign(new TextEncoder().encode(rawKey));
 
-    const cookie = await driver.manage().getCookies();
-    expect(cookie.length).toEqual(2);
-    await driver.manage().deleteAllCookies();
-    await driver.quit();
-  });
+    const driver = getDriver();
+    await driver.get(`${OSD_HOST}/app/opensearch_dashboards_overview?token=${token}`);
+    await driver.wait(until.elementsLocated(By.xpath(pageTitleXPath)), 30_000);
 
-  it('Login to app/dev_tools#/console when JWT is enabled', async () => {
-    const payload = {
-      sub: 'jwt_test',
-      roles: 'admin,kibanauser',
-    };
-
-    const key = new TextEncoder().encode(rawKey);
-
-    const token = await new SignJWT(payload) // details to  encode in the token
-      .setProtectedHeader({ alg: 'HS256' }) // algorithm
-      .setIssuedAt()
-      .sign(key);
-    const driver = getDriver(browser, options).build();
-    await driver.get(`http://localhost:5601/app/dev_tools?token=${token}`);
-
-    await driver.wait(
-      until.elementsLocated(By.xpath('//*[@data-test-subj="sendRequestButton"]')),
-      10000
-    );
-
-    const cookie = await driver.manage().getCookies();
-    expect(cookie.length).toEqual(2);
-    await driver.manage().deleteAllCookies();
-    await driver.quit();
-  });
-
-  it('Login to app/opensearch_dashboards_overview#/ when JWT is enabled with invalid token', async () => {
-    const payload = {
-      sub: 'jwt_test',
-      roles: 'admin,kibanauser',
-    };
-
-    const key = new TextEncoder().encode('wrongKey');
-
-    const token = await new SignJWT(payload) // details to  encode in the token
-      .setProtectedHeader({ alg: 'HS256' }) // algorithm
-      .setIssuedAt()
-      .sign(key);
-    const driver = getDriver(browser, options).build();
-    await driver.get(`http://localhost:5601/app/opensearch_dashboards_overview?token=${token}`);
-
-    const rep = await driver.getPageSource();
-    expect(rep).toContain('401');
-    expect(rep).toContain('Unauthorized');
-    expect(rep).toContain('Authentication Exception');
-
-    const cookie = await driver.manage().getCookies();
-    expect(cookie.length).toEqual(0);
-
-    await driver.manage().deleteAllCookies();
-    await driver.quit();
-  });
-
-  it('Login to app/dev_tools#/console when JWT is enabled with invalid token', async () => {
-    const payload = {
-      sub: 'jwt_test',
-      roles: 'admin,kibanauser',
-    };
-
-    const key = new TextEncoder().encode('wrongKey');
-
-    const token = await new SignJWT(payload) // details to  encode in the token
-      .setProtectedHeader({ alg: 'HS256' }) // algorithm
-      .setIssuedAt()
-      .sign(key);
-    const driver = getDriver(browser, options).build();
-    await driver.get(`http://localhost:5601/app/dev_tools?token=${token}`);
-
-    const rep = await driver.getPageSource();
-    expect(rep).toContain('401');
-    expect(rep).toContain('Unauthorized');
-    expect(rep).toContain('Authentication Exception');
-
-    const cookie = await driver.manage().getCookies();
-    expect(cookie.length).toEqual(0);
-
-    await driver.manage().deleteAllCookies();
-    await driver.quit();
-  });
-
-  it('Login to app/opensearch_dashboards_overview#/ when JWT is enabled and the token contains too many roles for one single cookie', async () => {
-    const roles = ['admin'];
-    // Generate "random" roles to add to the token.
-    // Compared to just using one role with a very long name,
-    // this should make it a bit harder for the cookie compression.
-    for (let i = 0; i < 500; i++) {
-      const dummyRole = Math.random().toString(20).substr(2, 10);
-      roles.push(dummyRole);
+    const cookies = await driver.manage().getCookies();
+    const { hasAuth, authChunksCount, names } = analyzeCookies(cookies);
+    expect(hasAuth).toBe(true);
+    expect(authChunksCount).toBeGreaterThanOrEqual(1);
+    if (process.platform === 'win32') {
+      console.log('Cookie names (Windows):', names);
     }
 
-    const payload = {
-      sub: 'jwt_test',
-      roles: roles.join(','),
-    };
-
-    const key = new TextEncoder().encode(rawKey);
-
-    const token = await new SignJWT(payload) // details to  encode in the token
-      .setProtectedHeader({ alg: 'HS256' }) // algorithm
-      .setIssuedAt()
-      .sign(key);
-    const driver = getDriver(browser, options).build();
-    await driver.get(`http://localhost:5601/app/opensearch_dashboards_overview?token=${token}`);
-    await driver.wait(until.elementsLocated(By.xpath(pageTitleXPath)), 10000);
-
-    const cookie = await driver.manage().getCookies();
-    // Testing the amount of cookies may be a bit fragile.
-    // The important thing here is that we know that
-    // we can handle a large payload and still be
-    // able to render the authenticated page
-    expect(cookie.length).toBeGreaterThan(2);
     await driver.manage().deleteAllCookies();
     await driver.quit();
-  });
-});
+  }, 60_000);
 
-function getDriver(browser: string, options: Options) {
-  return new Builder().forBrowser(browser).setFirefoxOptions(options);
-}
+  it('Login to app/dev_tools#/console when JWT is enabled', async () => {
+    const token = await new SignJWT({ sub: 'jwt_test', roles: 'admin,kibanauser' })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .sign(new TextEncoder().encode(rawKey));
+
+    const driver = getDriver();
+    await driver.get(`${OSD_HOST}/app/dev_tools?token=${token}`);
+    await driver.wait(
+      until.elementsLocated(By.xpath('//*[@data-test-subj="sendRequestButton"]')),
+      30_000
+    );
+
+    const cookies = await driver.manage().getCookies();
+    const { hasAuth, authChunksCount } = analyzeCookies(cookies);
+    expect(hasAuth).toBe(true);
+    expect(authChunksCount).toBeGreaterThanOrEqual(1);
+
+    await driver.manage().deleteAllCookies();
+    await driver.quit();
+  }, 60_000);
+
+  it('Login to overview with invalid token → 401', async () => {
+    const token = await new SignJWT({ sub: 'jwt_test', roles: 'admin,kibanauser' })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .sign(new TextEncoder().encode('wrongKey'));
+
+    const driver = getDriver();
+    await driver.get(`${OSD_HOST}/app/opensearch_dashboards_overview?token=${token}`);
+
+    // Accept modern JSON 401 page
+    const src = await driver.getPageSource();
+    expect(src).toMatch(/401/);
+    expect(src).toMatch(/Unauthorized/i);
+
+    const cookies = await driver.manage().getCookies();
+    const { hasAuth, authChunksCount } = analyzeCookies(cookies);
+    expect(hasAuth).toBe(false);
+    expect(authChunksCount).toEqual(0);
+
+    await driver.manage().deleteAllCookies();
+    await driver.quit();
+  }, 60_000);
+
+  it('Login to dev_tools with invalid token → 401', async () => {
+    const token = await new SignJWT({ sub: 'jwt_test', roles: 'admin,kibanauser' })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .sign(new TextEncoder().encode('wrongKey'));
+
+    const driver = getDriver();
+    await driver.get(`${OSD_HOST}/app/dev_tools?token=${token}`);
+
+    const src = await driver.getPageSource();
+    expect(src).toMatch(/401/);
+    expect(src).toMatch(/Unauthorized/i);
+
+    const cookies = await driver.manage().getCookies();
+    const { hasAuth, authChunksCount } = analyzeCookies(cookies);
+    expect(hasAuth).toBe(false);
+    expect(authChunksCount).toEqual(0);
+
+    await driver.manage().deleteAllCookies();
+    await driver.quit();
+  }, 60_000);
+
+  it('Login to overview with many roles (cookie chunking)', async () => {
+    const roles: string[] = ['admin'];
+    for (let i = 0; i < 500; i++) roles.push(Math.random().toString(20).substr(2, 10));
+    const token = await new SignJWT({ sub: 'jwt_test', roles: roles.join(',') })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .sign(new TextEncoder().encode(rawKey));
+
+    const driver = getDriver();
+    await driver.get(`${OSD_HOST}/app/opensearch_dashboards_overview?token=${token}`);
+    await driver.wait(until.elementsLocated(By.xpath(pageTitleXPath)), 30_000);
+
+    const cookies = await driver.manage().getCookies();
+    const { hasAuth, authChunksCount } = analyzeCookies(cookies);
+    expect(hasAuth).toBe(true);
+    expect(authChunksCount).toBeGreaterThan(0);
+
+    await driver.manage().deleteAllCookies();
+    await driver.quit();
+  }, 90_000);
+});

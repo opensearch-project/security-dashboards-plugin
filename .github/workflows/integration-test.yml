@@ -44,31 +44,58 @@ jobs:
           plugin-name: ${{ env.PLUGIN_NAME }}
           download-location: ${{env.PLUGIN_NAME}}
           plugin-version: ${{ env.PLUGIN_VERSION }}
+
+      - name: Compute plugin URIs (Linux)
+        if: ${{ runner.os == 'Linux' }}
+        shell: bash
+        run: |
+          echo "PLUGIN_URI=file:${GITHUB_WORKSPACE}/${{ env.PLUGIN_NAME }}.zip" >> "$GITHUB_ENV"
+          echo "REMOTE_PLUGIN_URI=file:${GITHUB_WORKSPACE}/opensearch-security-${{ env.OPENSEARCH_VERSION }}.zip" >> "$GITHUB_ENV"
       
-      - name: Run Opensearch with A Single Plugin Remote Cluster
-        uses: derek-ho/start-opensearch@v7
+      - name: Compute plugin URIs (Windows)
+        if: ${{ runner.os == 'Windows' }}
+        shell: pwsh
+        run: |
+          $zip1 = Join-Path $env:GITHUB_WORKSPACE "$env:PLUGIN_NAME.zip"
+          $zip2 = Join-Path $env:GITHUB_WORKSPACE ("opensearch-security-{0}.zip" -f $env:OPENSEARCH_VERSION)
+
+          if (!(Test-Path $zip1)) { throw "Plugin zip not found: $zip1" }
+          if (!(Test-Path $zip2)) { throw "Plugin zip not found: $zip2" }
+
+          $uri1 = [System.Uri]::new($zip1).AbsoluteUri   # file:///D:/...
+          $uri2 = [System.Uri]::new($zip2).AbsoluteUri
+
+          "PLUGIN_URI=$uri1"       >> $env:GITHUB_ENV
+          "REMOTE_PLUGIN_URI=$uri2" >> $env:GITHUB_ENV
+
+
+      
+      - name: Run OpenSearch with A Single Plugin Remote Cluster
+        uses: derek-ho/start-opensearch@v8
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
-          plugins: "file:$(pwd)/opensearch-security-${{ env.OPENSEARCH_VERSION }}.zip"
-          security-enabled: true
+          plugins: ${{ env.REMOTE_PLUGIN_URI }}
+          security-enabled: 'true'
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
           security_config_file: ${{ inputs.security_config_file }}
-          port: 9202
-          jdk-version: 21
+          port: '9202'
+          jdk-version: '21'
+
 
       - name: Check OpenSearch remote is running
         run: |
           curl https://localhost:9202/_cat/plugins -v -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} -k
         shell: bash
-
-      - name: Run Opensearch with security
-        uses: derek-ho/start-opensearch@v7
+  
+      - name: Run OpenSearch with security
+        uses: derek-ho/start-opensearch@v8
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
-          plugins: "file:$(pwd)/${{ env.PLUGIN_NAME }}.zip"
-          security-enabled: true
+          plugins: ${{ env.PLUGIN_URI }}
+          security-enabled: 'true'
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
-          jdk-version: 21
+          jdk-version: '21'
+
 
       # https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
       - name: Remove unnecessary files Linux
