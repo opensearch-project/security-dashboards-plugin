@@ -49,25 +49,33 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          OSV="${OPENSEARCH_VERSION}"
+          # Map 3.2.0[-anything] -> 3.2
+          SEC_REF="$(echo "$OSV" | sed -E 's/^([0-9]+)\.([0-9]+).*/\1.\2/')"
+          echo "Derived security repo ref: $SEC_REF (from $OSV)"
 
-          # Shallow clone at main
-          git clone --depth 1 https://github.com/opensearch-project/security.git security-src
+          # Prefer branch/tag = X.Y; fall back to main if not found
+          if git ls-remote --exit-code --heads https://github.com/opensearch-project/security.git "$SEC_REF" >/dev/null 2>&1 \
+            || git ls-remote --exit-code --tags  https://github.com/opensearch-project/security.git "$SEC_REF"  >/dev/null 2>&1; then
+            REF="$SEC_REF"
+          else
+            echo "Ref $SEC_REF not found; falling back to main"
+            REF="main"
+          fi
+
+          git clone --depth 1 --branch "$REF" https://github.com/opensearch-project/security.git security-src
 
           pushd security-src
-            # Build the sample plugin from the repo root
             chmod +x ./gradlew
+            # Build the sample resource plugin
             ./gradlew :opensearch-sample-resource-plugin:assemble
-
-            # Pick the built zip
             ZIP_PATH=$(ls -t sample-resource-plugin/build/distributions/*.zip | head -n1)
             echo "Built sample plugin: $ZIP_PATH"
-
-            # Copy to workspace for installation
             cp "$ZIP_PATH" "$GITHUB_WORKSPACE/sample-resource-plugin.zip"
           popd
 
+          echo "SAMPLE_PLUGIN_ZIP=$GITHUB_WORKSPACE/sample-resource-plugin.zip" >> "$GITHUB_ENV"
 
-          echo "SAMPLE_PLUGIN_ZIP=$GITHUB_WORKSPACE/sample-resource-plugin.zip" >> $GITHUB_ENV
 
       - name: Run Opensearch with security + sample resource plugin
         uses: derek-ho/start-opensearch@v8
@@ -96,6 +104,29 @@ jobs:
         shell: bash
         working-directory: OpenSearch-Dashboards
 
+      - name: Create OpenSearch Dashboards Config
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          cat << 'EOT' > resource_sharing_config.yml
+          server.host: "localhost"
+          opensearch.hosts: ["https://localhost:9200"]
+          opensearch.ssl.verificationMode: none
+          opensearch.username: "kibanaserver"
+          opensearch.password: "kibanaserver"
+          opensearch.requestHeadersWhitelist: [ authorization,securitytenant ]
+          opensearch_security.multitenancy.enabled: true
+          opensearch_security.multitenancy.tenants.preferred: ["Private", "Global"]
+          opensearch_security.readonly_mode.roles: ["kibana_read_only"]
+          opensearch_security.cookie.secure: false
+          home.disableWelcomeScreen: true
+          EOT
+        shell: bash
+
+      - name: Replace opensearch_dashboards.yml 
+        run: |
+            mv resource_sharing_config.yml $GITHUB_WORKSPACE/OpenSearch-Dashboards/config/opensearch_dashboards.yml
+        shell: bash
+
       - name: Run OpenSearch Dashboards
         run: |
           nohup yarn start --no-base-path --no-watch --csp.warnLegacyBrowsers=false | tee dashboard.log &
@@ -112,21 +143,27 @@ jobs:
           OSD_PASS: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
         run: |
           set -euo pipefail
-          TIMEOUT=300; INTERVAL=5; end=$((SECONDS + TIMEOUT))
-          code=""; resp=""
+          TIMEOUT=300
+          INTERVAL=5
+          end=$((SECONDS + TIMEOUT))
 
+          echo "Waiting up to ${TIMEOUT}s for ${OSD_URL}/api/status ..."
           while (( SECONDS < end )); do
-            resp="$(curl -s -k -u "${OSD_USER}:${OSD_PASS}" -H 'kbn-xsrf: true' "${OSD_URL}/api/status" || echo "")"
-            code="$(curl -s -k -o /dev/null -w '%{http_code}' -u "${OSD_USER}:${OSD_PASS}" -H 'kbn-xsrf: true' "${OSD_URL}/api/status" || echo "")"
+            out="$(curl -s -k -u "${OSD_USER}:${OSD_PASS}" -H 'kbn-xsrf: true' \
+                    -w 'HTTPSTATUS:%{http_code}' "${OSD_URL}/api/status" || true)"
+            code="${out##*HTTPSTATUS:}"
+            body="${out%HTTPSTATUS:*}"
 
-            if [ "${code:-}" = "200" ] && echo "${resp:-}" | grep -Eiq '"(overall|status)".*"(available|green)"'; then
-              echo "OpenSearch Dashboards status is green."
+            # Ready when HTTP 200 AND overall.state === "green"
+            if [ "${code:-}" = "200" ] && printf '%s' "${body:-}" | grep -Eiq '"state"[[:space:]]*:[[:space:]]*"green"'; then
+              echo "OpenSearch Dashboards status is green (HTTP ${code})."
               exit 0
             fi
             sleep "${INTERVAL}"
           done
 
           echo "Timed out after ${TIMEOUT}s waiting for OpenSearch Dashboards status."
+          echo "Last 200 lines of dashboard.log:"
           tail -n 200 dashboard.log || true
           exit 1
 
