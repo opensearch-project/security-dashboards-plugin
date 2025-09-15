@@ -56,6 +56,7 @@ export interface DashboardsInfo {
   private_tenant_enabled?: boolean;
   default_tenant: string;
   password_validation_error_message: string;
+  resource_sharing_enabled?: boolean;
 }
 
 export interface ClientConfigType {
@@ -124,4 +125,8 @@ export interface ClientConfigType {
   disabledRestCategories: {
     exclude: string[];
   };
+}
+
+export interface ResourceAccessManagementType {
+  resource_sharing_enabled: boolean;
 }

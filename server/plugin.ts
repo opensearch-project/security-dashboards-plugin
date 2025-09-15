@@ -47,6 +47,7 @@ import { SecuritySavedObjectsClientWrapper } from './saved_objects/saved_objects
 import { addTenantParameterToResolvedShortLink } from './multitenancy/tenant_resolver';
 import { ReadonlyService } from './readonly/readonly_service';
 import { DataSourcePluginSetup } from '../../../src/plugins/data_source/server/types';
+import { defineResourceAccessManagementRoutes } from './routes/resource_access_management_routes';
 
 export interface SecurityPluginRequestContext {
   logger: Logger;
@@ -145,6 +146,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     // Register server side APIs
     defineRoutes(router, dataSourceEnabled);
     defineAuthTypeRoutes(router, config);
+    defineResourceAccessManagementRoutes(router);
 
     // set up multi-tenant routes
     if (config.multitenancy?.enabled) {

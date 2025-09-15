@@ -25,7 +25,7 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {},
     supportFile: 'test/cypress/support/e2e.js',
     baseUrl: 'http://localhost:5601',
-    specPattern: 'test/cypress/e2e/**/*.spec.js',
+    specPattern: ['test/cypress/e2e/**/*.spec.js', 'test/cypress/e2e/**/*.spec.ts'],
   },
   env: {
     openSearchUrl: 'https://localhost:9200',

@@ -32,6 +32,7 @@ import {
 } from '../../../src/core/public';
 import {
   APP_ID_LOGIN,
+  APP_ID_RESOURCE_ACCESS_MANAGEMENT,
   CUSTOM_ERROR_PAGE_URI,
   LOGIN_PAGE_URI,
   PLUGIN_AUDITLOG_APP_ID,
@@ -39,6 +40,7 @@ import {
   PLUGIN_GET_STARTED_APP_ID,
   PLUGIN_NAME,
   PLUGIN_PERMISSIONS_APP_ID,
+  PLUGIN_RESOURCE_ACCESS_MANAGEMENT_APP_ID,
   PLUGIN_ROLES_APP_ID,
   PLUGIN_TENANTS_APP_ID,
   PLUGIN_USERS_APP_ID,
@@ -127,7 +129,9 @@ export class SecurityPlugin
     const config = this.initializerContext.config.get<ClientConfigType>();
 
     const accountInfo = (await fetchAccountInfoSafe(core.http))?.data;
-    const multitenancyEnabled = (await getDashboardsInfoSafe(core.http))?.multitenancy_enabled;
+    const dashboardsInfo = await getDashboardsInfoSafe(core.http);
+    const multitenancyEnabled = dashboardsInfo?.multitenancy_enabled;
+    const resourceSharingEnabled = dashboardsInfo?.resource_sharing_enabled;
     const isReadonly = accountInfo?.roles.some((role) =>
       (config.readonly_mode?.roles || DEFAULT_READONLY_ROLES).includes(role)
     );
@@ -273,6 +277,25 @@ export class SecurityPlugin
             return mountWrapper(params, '/auditLogging');
           },
         });
+
+        // Register Resource Access Management app only if resource sharing is enabled
+        if (resourceSharingEnabled) {
+          core.application.register({
+            id: PLUGIN_RESOURCE_ACCESS_MANAGEMENT_APP_ID,
+            title: 'Resource Access Management',
+            order: 8040,
+            description: i18n.translate('security.resourceAccessManagement.description', {
+              defaultMessage:
+                'Share and manage access to individual resources (detectors, forecasters, etc.).',
+            }),
+            workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+            updater$: this.appStateUpdater,
+            // Reuse your existing wrapper so default route/query handling is consistent:
+            mount: async (params: AppMountParameters) => {
+              return mountWrapper(params, '/resource-access-management');
+            },
+          });
+        }
       }
 
       core.chrome.navGroup.addNavLinksToGroup(DEFAULT_NAV_GROUPS.dataAdministration, [
@@ -311,6 +334,15 @@ export class SecurityPlugin
           category: dataAccessUsersCategory,
           order: 600,
         },
+        ...(resourceSharingEnabled
+          ? [
+              {
+                id: PLUGIN_RESOURCE_ACCESS_MANAGEMENT_APP_ID,
+                category: dataAccessUsersCategory,
+                order: 800,
+              },
+            ]
+          : []),
       ]);
 
       if (deps.managementOverview) {
@@ -356,6 +388,38 @@ export class SecurityPlugin
         return renderPage(coreStart, params, config);
       },
     });
+
+    if (resourceSharingEnabled) {
+      core.application.register({
+        id: APP_ID_RESOURCE_ACCESS_MANAGEMENT,
+        title: 'Resource Access Management',
+        order: 8045,
+        workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+        // If nav groups are enabled, hide the legacy nav link (we’ll add it via navGroup below);
+        // otherwise, make the classic left-nav link visible.
+        navLinkStatus: core.chrome.navGroup.getNavGroupEnabled()
+          ? AppNavLinkStatus.hidden
+          : AppNavLinkStatus.visible,
+        category: DEFAULT_APP_CATEGORIES.management, // classic left-nav placement
+        // updater$ is optional; include if you use defaultPath updates like the others
+        updater$: this.appStateUpdater,
+        // IMPORTANT: do NOT set chromeless: true (that hides the left nav)
+        mount: async (params: AppMountParameters) => {
+          const { renderApp } = await import(
+            './apps/resource-sharing/resource-access-management-app'
+          );
+          const [coreStart, depsStart] = await core.getStartServices();
+          return renderApp(
+            coreStart,
+            depsStart as SecurityPluginStartDependencies,
+            params,
+            config,
+            '/resource-access-management',
+            deps.dataSourceManagement
+          );
+        },
+      });
+    }
 
     core.application.registerAppUpdater(
       new BehaviorSubject<AppUpdater>((app) => {

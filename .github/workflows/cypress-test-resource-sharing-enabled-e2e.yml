@@ -1,0 +1,180 @@
+name: E2E Resource Access Management Cypress Tests
+
+on: [ push, pull_request ]
+
+env:
+  CI: 1
+  # avoid warnings like "tput: No value for $TERM and no -T specified"
+  TERM: xterm
+  PLUGIN_NAME: opensearch-security
+  OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
+  
+jobs:
+  tests:
+    name: Run Cypress resource-access-management tests
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest ]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v5
+
+      - name: Set up JDK 21 for build
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set env
+        run: |
+          opensearch_version=$(node -p "require('./package.json').opensearchDashboards.version")
+          plugin_version=$(node -p "require('./package.json').version")
+          echo "OPENSEARCH_VERSION=$opensearch_version" >> $GITHUB_ENV
+          echo "PLUGIN_VERSION=$plugin_version" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Download security plugin and create setup scripts
+        uses: ./.github/actions/download-plugin
+        with:
+          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
+          plugin-name: ${{ env.PLUGIN_NAME }}
+          plugin-version: ${{ env.PLUGIN_VERSION }}
+          download-location: ${{env.PLUGIN_NAME}}
+
+      # build sample-resource-plugin from source (Linux runner)
+      - name: Build sample-resource-plugin (server)
+        shell: bash
+        run: |
+          set -euo pipefail
+          OSV="${OPENSEARCH_VERSION}"
+          # Map 3.2.0[-anything] -> 3.2
+          SEC_REF="$(echo "$OSV" | sed -E 's/^([0-9]+)\.([0-9]+).*/\1.\2/')"
+          echo "Derived security repo ref: $SEC_REF (from $OSV)"
+
+          # Prefer branch/tag = X.Y; fall back to main if not found
+          if git ls-remote --exit-code --heads https://github.com/opensearch-project/security.git "$SEC_REF" >/dev/null 2>&1 \
+            || git ls-remote --exit-code --tags  https://github.com/opensearch-project/security.git "$SEC_REF"  >/dev/null 2>&1; then
+            REF="$SEC_REF"
+          else
+            echo "Ref $SEC_REF not found; falling back to main"
+            REF="main"
+          fi
+
+          git clone --depth 1 --branch "$REF" https://github.com/opensearch-project/security.git security-src
+
+          pushd security-src
+            chmod +x ./gradlew
+            # Build the sample resource plugin
+            ./gradlew :opensearch-sample-resource-plugin:assemble
+            ZIP_PATH=$(ls -t sample-resource-plugin/build/distributions/*.zip | head -n1)
+            echo "Built sample plugin: $ZIP_PATH"
+            cp "$ZIP_PATH" "$GITHUB_WORKSPACE/sample-resource-plugin.zip"
+          popd
+
+          echo "SAMPLE_PLUGIN_ZIP=$GITHUB_WORKSPACE/sample-resource-plugin.zip" >> "$GITHUB_ENV"
+
+
+      - name: Run Opensearch with security + sample resource plugin
+        uses: derek-ho/start-opensearch@v8
+        with:
+          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
+          plugins: "file:$(pwd)/opensearch-security.zip,file:${{ env.SAMPLE_PLUGIN_ZIP }}"
+          security-enabled: true
+          admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
+          jdk-version: 21
+          resource-sharing-enabled: true
+
+      - name: Check OpenSearch is running
+        run: |
+          curl https://localhost:9200/_cat/plugins -v -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} -k
+        shell: bash
+
+      # OSD bootstrap
+      - name: Setup Dashboard with Security Dashboards Plugin
+        uses: derek-ho/setup-opensearch-dashboards@v1
+        with:
+          plugin_name: security-dashboards-plugin
+
+      - name: Compile OpenSearch Dashboards
+        run: |
+          node scripts/build_opensearch_dashboards_platform_plugins --no-examples --workers=10 --verbose
+        shell: bash
+        working-directory: OpenSearch-Dashboards
+
+      - name: Create OpenSearch Dashboards Config
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          cat << 'EOT' > resource_sharing_config.yml
+          server.host: "localhost"
+          opensearch.hosts: ["https://localhost:9200"]
+          opensearch.ssl.verificationMode: none
+          opensearch.username: "kibanaserver"
+          opensearch.password: "kibanaserver"
+          opensearch.requestHeadersWhitelist: [ authorization,securitytenant ]
+          opensearch_security.multitenancy.enabled: true
+          opensearch_security.multitenancy.tenants.preferred: ["Private", "Global"]
+          opensearch_security.readonly_mode.roles: ["kibana_read_only"]
+          opensearch_security.cookie.secure: false
+          home.disableWelcomeScreen: true
+          EOT
+        shell: bash
+
+      - name: Replace opensearch_dashboards.yml 
+        run: |
+            mv resource_sharing_config.yml $GITHUB_WORKSPACE/OpenSearch-Dashboards/config/opensearch_dashboards.yml
+        shell: bash
+
+      - name: Run OpenSearch Dashboards
+        run: |
+          nohup yarn start --no-base-path --no-watch --csp.warnLegacyBrowsers=false | tee dashboard.log &
+        shell: bash
+        working-directory: OpenSearch-Dashboards
+
+      # Check if OSD is ready with a max timeout of 300 seconds
+      - name: Wait for OpenSearch Dashboards (status API)
+        shell: bash
+        working-directory: OpenSearch-Dashboards
+        env:
+          OSD_URL: http://localhost:5601
+          OSD_USER: admin
+          OSD_PASS: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          TIMEOUT=300
+          INTERVAL=5
+          end=$((SECONDS + TIMEOUT))
+
+          echo "Waiting up to ${TIMEOUT}s for ${OSD_URL}/api/status ..."
+          while (( SECONDS < end )); do
+            out="$(curl -s -k -u "${OSD_USER}:${OSD_PASS}" -H 'kbn-xsrf: true' \
+                    -w 'HTTPSTATUS:%{http_code}' "${OSD_URL}/api/status" || true)"
+            code="${out##*HTTPSTATUS:}"
+            body="${out%HTTPSTATUS:*}"
+
+            # Ready when HTTP 200 AND overall.state === "green"
+            if [ "${code:-}" = "200" ] && printf '%s' "${body:-}" | grep -Eiq '"state"[[:space:]]*:[[:space:]]*"green"'; then
+              echo "OpenSearch Dashboards status is green (HTTP ${code})."
+              exit 0
+            fi
+            sleep "${INTERVAL}"
+          done
+
+          echo "Timed out after ${TIMEOUT}s waiting for OpenSearch Dashboards status."
+          echo "Last 200 lines of dashboard.log:"
+          tail -n 200 dashboard.log || true
+          exit 1
+
+
+      - name: Run Cypress Tests with retry
+        uses: Wandalen/wretry.action@v3.3.0
+        with:
+          attempt_limit: 5
+          attempt_delay: 2000
+          command: |
+            cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
+            yarn add cypress --save-dev
+            eval 'CYPRESS_VERIFY_TIMEOUT=60000 yarn cypress:run --browser chrome --headless --env LOGIN_AS_ADMIN=true --spec "test/cypress/e2e/resource-sharing/resource_access_management.spec.ts"' 
+

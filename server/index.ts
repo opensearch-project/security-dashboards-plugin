@@ -288,6 +288,9 @@ export const configSchema = schema.object({
     autologout: schema.boolean({ defaultValue: true }),
     backend_configurable: schema.boolean({ defaultValue: true }),
   }),
+  resource_sharing: schema.object({
+    enabled: schema.boolean({ defaultValue: false }),
+  }),
 });
 
 export type SecurityPluginConfigType = TypeOf<typeof configSchema>;

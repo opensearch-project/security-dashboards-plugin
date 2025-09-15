@@ -22,9 +22,11 @@ export const PLUGIN_USERS_APP_ID = `${PLUGIN_NAME}_users`;
 export const PLUGIN_PERMISSIONS_APP_ID = `${PLUGIN_NAME}_permissions`;
 export const PLUGIN_TENANTS_APP_ID = `${PLUGIN_NAME}_tenants`;
 export const PLUGIN_AUDITLOG_APP_ID = `${PLUGIN_NAME}_auditlog`;
+export const PLUGIN_RESOURCE_ACCESS_MANAGEMENT_APP_ID = `${PLUGIN_NAME}_resource_access_management`;
 
 export const APP_ID_LOGIN = 'login';
 export const APP_ID_CUSTOMERROR = 'customerror';
+export const APP_ID_RESOURCE_ACCESS_MANAGEMENT = 'resource_access_management';
 export const OPENDISTRO_SECURITY_ANONYMOUS = 'opendistro_security_anonymous';
 
 export const API_PREFIX = '/api/v1';
@@ -34,6 +36,7 @@ export const API_ENDPOINT_DASHBOARDSINFO = API_PREFIX + '/auth/dashboardsinfo';
 export const API_ENDPOINT_AUTHTYPE = API_PREFIX + '/auth/type';
 export const LOGIN_PAGE_URI = '/app/' + APP_ID_LOGIN;
 export const CUSTOM_ERROR_PAGE_URI = '/app/' + APP_ID_CUSTOMERROR;
+export const RESOURCE_ACCESS_MANAGEMENT_URI = '/app/' + APP_ID_RESOURCE_ACCESS_MANAGEMENT;
 export const API_AUTH_LOGIN = '/auth/login';
 export const API_AUTH_LOGOUT = '/auth/logout';
 export const OPENID_AUTH_LOGIN = '/auth/openid/login';
