@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Maintenance
 - Bump `actions/checkout` from 4 to 5 ([#2295](https://github.com/opensearch-project/security-dashboards-plugin/pull/2295))
+- Bump `derek-ho/start-opensearch` from 7 to 8 ([#2309](https://github.com/opensearch-project/security-dashboards-plugin/pull/2309))
 
 * Bump `actions/checkout` from 2 to 4 ([#2260](https://github.com/opensearch-project/security-dashboards-plugin/pull/2260))
 * Bump `codecov/codecov-action` from 4 to 5 ([#2263](https://github.com/opensearch-project/security-dashboards-plugin/pull/2263))
