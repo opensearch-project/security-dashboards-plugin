@@ -110,5 +110,5 @@ runs:
         attempt_delay: 2000
         command: |
           cd OpenSearch-Dashboards/plugins/security-dashboards-plugin
-          yarn add cypress --save-dev
+          yarn add cypress@13 --save-dev
           eval ${{ inputs.yarn_command }} 
