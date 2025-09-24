@@ -61,19 +61,16 @@ interface ResourceRow {
   can_share?: boolean; // whether the current user can share this resource
 }
 interface TypeEntry {
-  type: string; // fully qualified class name
-  index: string; // name of the index to be supplied to the API as resource_type
+  type: string; // type of resource, e.g. `sample-resource`
   action_groups: string[]; // known action-groups for this type
 }
 // Tiny API that the panel consumes
 interface Api {
   listTypes: () => Promise<{ types: TypeEntry[] } | TypeEntry[]>;
-  listSharingRecords: (
-    index: string
-  ) => Promise<ResourceRow[] | { resources: ResourceRow[] } | any>;
+  listSharingRecords: (type: string) => Promise<ResourceRow[] | { resources: ResourceRow[] } | any>;
   getSharingRecord: (
     id: string,
-    index: string
+    type: string
   ) => Promise<ResourceRow | { resource: ResourceRow } | any>;
   share: (payload: {
     resource_id: string;
@@ -523,28 +520,39 @@ const SharedWithExpanded: React.FC<{ sw?: ShareWith }> = ({ sw }) => {
   );
 };
 
-// Helpers: pick simple class name and humanize it
-const simpleName = (fqn: string) => (fqn?.split('.').pop() || fqn || '').trim();
+// Helpers: pick simple name and humanize it
+const simpleName = (type?: string) =>
+  (
+    (type ?? '')
+      .split('.')
+      .filter(Boolean) // remove empty parts from trailing dots, etc.
+      .pop() ?? ''
+  ).trim();
 
-/** Humanize class names: e.g., "AnomalyDetector" -> "Anomaly Detector", "ADDetector" -> "AD Detector" */
-const humanizeClassName = (fqn: string) => {
-  const cls = simpleName(fqn);
-  return (
-    cls
-      // split "ADDetector" -> "AD Detector"
-      .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
-      // split camelCase "AnomalyDetector" -> "Anomaly Detector"
-      .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
-      // underscores to spaces
-      .replace(/_/g, ' ')
-      .trim()
-  );
+/** Humanize class names: e.g., "AnomalyDetector" -> "Anomaly Detector", "ADDetector" -> "AD Detector",
+ *  and kebab/underscore: "sample-resource" -> "Sample Resource", "anomaly-detector" -> "Anomaly Detector"
+ */
+const normalizeResourceTypeName = (t: string) => {
+  const type = simpleName(t);
+
+  // 1) Insert spaces at camel/acronym boundaries, and normalize separators to spaces
+  let s = type
+    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2') // "ADDetector" -> "AD Detector"
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2') // "AnomalyDetector" -> "Anomaly Detector"
+    .replace(/[-_]+/g, ' ') // "sample-resource" / "sample_resource" -> "sample resource"
+    .replace(/\s+/g, ' ') // collapse multiple spaces
+    .trim();
+
+  // 2) Title-case tokens that are all-lowercase; keep existing caps/acronyms as-is.
+  s = s.replace(/\b([a-z])([a-z0-9]*)\b/g, (_, a, rest) => a.toUpperCase() + rest);
+
+  return s;
 };
 
 /** ---------- Main table ---------- */
 export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
   const [typeOptions, setTypeOptions] = useState<
-    Array<{ value: string; text: string; fqn: string; actionGroups: string[] }>
+    Array<{ value: string; text: string; actionGroups: string[] }>
   >([]);
   const [selectedType, setSelectedType] = useState<string>(''); // no default selection
   const [rows, setRows] = useState<ResourceRow[]>([]);
@@ -567,9 +575,8 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
         // value = index (what we send as resourceType); text = type (what we display)
         const options = raw
           .map((t) => ({
-            value: t.index,
-            text: humanizeClassName(t.type),
-            fqn: t.type,
+            value: t.type,
+            text: normalizeResourceTypeName(t.type),
             actionGroups: t.action_groups,
           }))
           // sort alphabetically by text (and by value if text is equal)
@@ -577,7 +584,7 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
             const byText = a.text.localeCompare(b.text, undefined, { sensitivity: 'base' });
             return byText !== 0
               ? byText
-              : a.fqn.localeCompare(b.fqn, undefined, { sensitivity: 'base' });
+              : a.value.localeCompare(b.value, undefined, { sensitivity: 'base' });
           });
         setTypeOptions(options);
       } catch (e: any) {
@@ -590,10 +597,10 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
   }, [toasts]);
 
   // GET visible resource sharing records for selected type
-  const fetchSharingRecords = async (index: string) => {
+  const fetchSharingRecords = async (type: string) => {
     setLoading(true);
     try {
-      const res = await api.listSharingRecords(index);
+      const res = await api.listSharingRecords(type);
       const data: ResourceRow[] = Array.isArray(res) ? res : res?.resources || res?.body || [];
       setRows(Array.isArray(data) ? data : []);
     } catch (e: any) {
@@ -609,7 +616,7 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
     selectedType,
   ]);
   const selectedTypeLabel = selectedTypeMeta?.text ?? (selectedType || '—');
-  const selectedTypeTooltip = selectedTypeMeta?.fqn; // actual class name
+  const selectedTypeTooltip = selectedTypeMeta?.value; // actual resource type
 
   const currentActionGroups = useMemo(
     () => Array.from(new Set(selectedTypeMeta?.actionGroups ?? [])).sort(),
@@ -753,9 +760,9 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
   const baseOptions = useMemo<Array<EuiSuperSelectOption<string>>>(
     () =>
       typeOptions.map((o) => ({
-        value: o.value, // index you send to backend
+        value: o.value, // type name to send to backend
         inputDisplay: o.text, // humanized label when selected
-        dropdownDisplay: <span title={o.fqn}>{o.text}</span>, // show FQN on hover
+        dropdownDisplay: <span title={o.value}>{o.text}</span>, // show original resource-type on hover
       })),
     [typeOptions]
   );
@@ -798,11 +805,11 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
             hasDividers
             onChange={async (value) => {
               if (value === PLACEHOLDER) return;
-              const resourceTypeIndex = value;
-              setSelectedType(resourceTypeIndex);
+              const resourceType = value;
+              setSelectedType(resourceType);
               setExpandedIds(new Set());
               setRows([]);
-              if (resourceTypeIndex) await fetchSharingRecords(resourceTypeIndex);
+              if (resourceType) await fetchSharingRecords(resourceType);
             }}
           />
         </EuiFlexItem>

@@ -17,10 +17,10 @@ import { CoreStart } from '../../../../src/core/public';
 
 export const buildResourceApi = (http: CoreStart['http']) => ({
   listTypes: () => http.get('/api/resource/types'),
-  listSharingRecords: (idx: string) =>
-    http.get('/api/resource/list', { query: { resourceType: idx } }),
-  getSharingRecord: (id: string, idx: string) =>
-    http.get('/api/resource/view', { query: { resourceId: id, resourceType: idx } }),
+  listSharingRecords: (type: string) =>
+    http.get('/api/resource/list', { query: { resourceType: type } }),
+  getSharingRecord: (id: string, type: string) =>
+    http.get('/api/resource/view', { query: { resourceId: id, resourceType: type } }),
   share: (payload: any) => http.put('/api/resource/share', { body: JSON.stringify(payload) }),
   update: (payload: any) =>
     http.patch('/api/resource/update_sharing', { body: JSON.stringify(payload) }),
