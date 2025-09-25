@@ -35,8 +35,7 @@ const toasts = {
 
 const typesPayload = [
   {
-    type: 'org.opensearch.anomaly.AnomalyDetector',
-    index: '.opensearch-anomaly-detector',
+    type: 'anomaly-detector',
     action_groups: ['READ', 'WRITE'],
   },
   {
@@ -49,14 +48,14 @@ const typesPayload = [
 const rowsPayload = [
   {
     resource_id: 'det-1',
-    resource_type: '.opensearch-anomaly-detector',
+    resource_type: 'anomaly-detector',
     created_by: { user: 'alice', tenant: 'global' },
     share_with: undefined,
     can_share: true,
   },
   {
     resource_id: 'det-2',
-    resource_type: '.opensearch-anomaly-detector',
+    resource_type: 'anomaly-detector',
     created_by: { user: 'bob' },
     share_with: { READ: { users: ['charlie'], roles: [], backend_roles: [] } },
     can_share: false,
@@ -109,7 +108,7 @@ describe('ResourceSharingPanel', () => {
 
     // Wait for the API to be called AND for React to commit the state update
     await waitFor(() => {
-      expect(api.listSharingRecords).toHaveBeenCalledWith('.opensearch-anomaly-detector');
+      expect(api.listSharingRecords).toHaveBeenCalledWith('anomaly-detector');
     });
 
     // Now assert via actual visible content instead of data-testid
@@ -144,7 +143,7 @@ describe('ResourceSharingPanel', () => {
     await userEvent.click(await screen.findByText('Anomaly Detector'));
 
     await waitFor(() => {
-      expect(api.listSharingRecords).toHaveBeenCalledWith('.opensearch-anomaly-detector');
+      expect(api.listSharingRecords).toHaveBeenCalledWith('anomaly-detector');
     });
 
     // Open Share modal from row det-1 (not shared)
@@ -211,7 +210,7 @@ describe('ResourceSharingPanel', () => {
     await userEvent.click(await screen.findByText('Anomaly Detector'));
 
     await waitFor(() => {
-      expect(api.listSharingRecords).toHaveBeenCalledWith('.opensearch-anomaly-detector');
+      expect(api.listSharingRecords).toHaveBeenCalledWith('anomaly-detector');
     });
 
     // Open update modal on det-2
@@ -251,7 +250,7 @@ describe('ResourceSharingPanel', () => {
     await waitFor(() => expect(api.update).toHaveBeenCalledTimes(1));
     const payload = (api.update as jest.Mock).mock.calls[0][0];
     expect(payload.resource_id).toBe('det-2');
-    expect(payload.resource_type).toBe('.opensearch-anomaly-detector');
+    expect(payload.resource_type).toBe('anomaly-detector');
     // Ensure both add and revoke present (diff logic)
     expect(payload.add?.READ?.users).toEqual(['erin']);
     expect(payload.revoke?.READ?.users).toEqual(['charlie']);
@@ -281,7 +280,7 @@ describe('ResourceSharingPanel', () => {
     await userEvent.click(await screen.findByText('Anomaly Detector'));
 
     await waitFor(() => {
-      expect(api.listSharingRecords).toHaveBeenCalledWith('.opensearch-anomaly-detector');
+      expect(api.listSharingRecords).toHaveBeenCalledWith('anomaly-detector');
     });
 
     // Open update modal on det-2
