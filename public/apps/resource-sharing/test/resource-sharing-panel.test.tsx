@@ -39,8 +39,7 @@ const typesPayload = [
     action_groups: ['READ', 'WRITE'],
   },
   {
-    type: 'org.opensearch.ml.Forecaster',
-    index: '.plugins-ml-forecaster',
+    type: 'forecaster',
     action_groups: ['READ_ONLY'],
   },
 ];

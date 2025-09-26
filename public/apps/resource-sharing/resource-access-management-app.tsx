@@ -19,7 +19,16 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { I18nProvider } from '@osd/i18n/react';
 
-import { EuiPage, EuiPageBody, EuiPageHeader, EuiTitle, EuiText, EuiSpacer } from '@elastic/eui';
+import {
+  EuiPage,
+  EuiPageBody,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiPageHeader,
+  EuiTitle,
+  EuiText,
+  EuiSpacer,
+} from '@elastic/eui';
 
 import { AppMountParameters, CoreStart } from '../../../../../src/core/public';
 import { DataSourceManagementPluginSetup } from '../../../../../src/plugins/data_source_management/public';
@@ -52,10 +61,18 @@ const ResourceAccessManagementApp: React.FC<Props> = ({ coreStart, depsStart }) 
       <EuiPage restrictWidth="2000px">
         <EuiPageBody component="main">
           <EuiPageHeader>
-            <EuiTitle size="l">
-              <h1>Resource Access Management</h1>
-            </EuiTitle>
-            <EuiText color="subdued">Manage sharing for detectors, forecasters, and more.</EuiText>
+            <EuiFlexGroup direction="column" gutterSize="xs">
+              <EuiFlexItem grow={false}>
+                <EuiTitle size="l">
+                  <h1>Resource Access Management</h1>
+                </EuiTitle>
+              </EuiFlexItem>
+              <EuiFlexItem grow={false}>
+                <EuiText color="subdued" size="s">
+                  Manage sharing for detectors, forecasters, and more.
+                </EuiText>
+              </EuiFlexItem>
+            </EuiFlexGroup>
           </EuiPageHeader>
 
           <EuiSpacer size="m" />

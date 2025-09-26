@@ -4492,6 +4492,162 @@ terser@^4.1.2:
     source-map "~0.6.1"
     source-map-support "~0.5.12"
 
+text-camel-case@1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/text-camel-case/-/text-camel-case-1.2.9.tgz#2dffe736f549731df50a9b0421f7ffd7a8e36c26"
+  integrity sha512-wKYs9SgRxYizJE1mneR7BbLNlGw2IYzJAS8XwkWIry0CTbO1gvvPkFsx5Z1/hr+VqUaBqx9q3yKd30HpZLdMsQ==
+  dependencies:
+    text-pascal-case "1.2.9"
+
+text-capital-case@1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/text-capital-case/-/text-capital-case-1.2.9.tgz#5b1a148c95ed036e4335a6de67afbf0760a2de90"
+  integrity sha512-X5zV8U8pxtq2xS2t46lgAWqZdDbgWMKq03MQSNwY2CJdQCsdTNh144E2Q/q9wBxWzSBUXn+jRc9kF+Gs8/pGhA==
+  dependencies:
+    text-no-case "1.2.9"
+    text-upper-case-first "1.2.9"
+
+text-case@^1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/text-case/-/text-case-1.2.9.tgz#a8add96930a27396d96b2e55243ddf5a2b198bd7"
+  integrity sha512-zZVdA8rMcjx9zhekdUuOPZShc25UTV7W8/ddKbgbPtfCEvIiToPtWiSd2lXLSuiGMovNhJ4+Tw49xll9o9ts+Q==
+  dependencies:
+    text-camel-case "1.2.9"
+    text-capital-case "1.2.9"
+    text-constant-case "1.2.9"
+    text-dot-case "1.2.9"
+    text-header-case "1.2.9"
+    text-is-lower-case "1.2.9"
+    text-is-upper-case "1.2.9"
+    text-kebab-case "1.2.9"
+    text-lower-case "1.2.9"
+    text-lower-case-first "1.2.9"
+    text-no-case "1.2.9"
+    text-param-case "1.2.9"
+    text-pascal-case "1.2.9"
+    text-path-case "1.2.9"
+    text-sentence-case "1.2.9"
+    text-snake-case "1.2.9"
+    text-swap-case "1.2.9"
+    text-title-case "1.2.9"
+    text-upper-case "1.2.9"
+    text-upper-case-first "1.2.9"
+
+text-constant-case@1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/text-constant-case/-/text-constant-case-1.2.9.tgz#75791de7676c14ed586f720f278ee4d7f396a6cf"
+  integrity sha512-Vosm6nC7Gag+JFakJHwqS9AXRNgl07j5KZ7srU9cYuKRzYwrxzeJ4RpEogRBNHw7CfmOm0j5FGEznblWtu7pIw==
+  dependencies:
+    text-no-case "1.2.9"
+    text-upper-case "1.2.9"
+
+text-dot-case@1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/text-dot-case/-/text-dot-case-1.2.9.tgz#302f95c905004be1543cc0d791d2b492098eaa93"
+  integrity sha512-N83hsnvGdSO9q9AfNSB9Cy1LFDNN2MCx53LcxtaPoDWPUTk47fv0JlvIY1tgY0wyzCiThF03kVj3jworvAOScA==
+  dependencies:
+    text-no-case "1.2.9"
+
+text-header-case@1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/text-header-case/-/text-header-case-1.2.9.tgz#b8a3fccb229a9abb6757951ca1bc81f1ed71b656"
+  integrity sha512-TqryEKcYisQAfWLbtT3xPnZlMZ/mySO1uS+LUg+B0eNuqgETrSzVpXIUj5E6Zf/EyJHgpZf4VndbAXtOMJuT4w==
+  dependencies:
+    text-capital-case "1.2.9"
+
+text-is-lower-case@1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/text-is-lower-case/-/text-is-lower-case-1.2.9.tgz#eb6abdbf0dea60895bd92733e6d18111f2585400"
+  integrity sha512-cEurrWSnYVYqL8FSwl5cK4mdfqF7qNDCcKJgXI3NnfTesiB8umxAhdlQoErrRYI1xEvYr2WN0MI333EehUhQjg==
+
+text-is-upper-case@1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/text-is-upper-case/-/text-is-upper-case-1.2.9.tgz#b20c21a7c43040a56080fc9105e9365d0cf123da"
+  integrity sha512-HxsWr3VCsXXiLlhD0c+Ey+mS2lOTCiSJbkepjaXNHl2bp33KiscQaiG0qLwQmmpZQm4SJCg2s9FkndxS0RNDLQ==
+
+text-kebab-case@1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/text-kebab-case/-/text-kebab-case-1.2.9.tgz#e0f1ede2cf95f48a1358f0518670e398c31f8b9d"
+  integrity sha512-nOUyNR5Ej2B9D/wyyXfwUEv26+pQuOb1pEX+ojE37mCIWo8QeOxw5y6nxuqDmG7NrEPzbO6265UMV+EICH13Cw==
+  dependencies:
+    text-no-case "1.2.9"
+
+text-lower-case-first@1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/text-lower-case-first/-/text-lower-case-first-1.2.9.tgz#424a9bb1f72c7a23aad692f7186faff663d13452"
+  integrity sha512-iiphHTV7PVH0MljrEQUA9iBE7jfDpXoi4RQju3WzZU3BRVbS6540cNZgxR19hWa0z6z/7cJTH0Ls9LPBaiUfKg==
+
+text-lower-case@1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/text-lower-case/-/text-lower-case-1.2.9.tgz#e2d4f29780e9100748553cfde3a5d93d51955d94"
+  integrity sha512-53AOnDrhPpiAUQkgY1SHleKUXp/u7GsqRX13NcCREZscmtjLLJ099uxMRjkK7q2KwHkFYVPl9ytkQlTkTQLS0w==
+
+text-no-case@1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/text-no-case/-/text-no-case-1.2.9.tgz#49bcf50e134463a478f810512b65d599a49a1a91"
+  integrity sha512-IcCt328KaapimSrytP4ThfC8URmHZb2DgOqCL9BYvGjpxY2lDiqCkIQk9sClZtwcELs2gTnq83a7jNc573FTLA==
+  dependencies:
+    text-lower-case "1.2.9"
+
+text-param-case@1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/text-param-case/-/text-param-case-1.2.9.tgz#9c0ff5acbd300567cbb8bd4e55035c75db45ba2a"
+  integrity sha512-nR/Ju9amY3aQS1en2CUCgqN/ZiZIVdDyjlJ3xX5J92ChBevGuA4o9K10fh3JGMkbzK97Vcb+bWQJ4Q+Svz+GyQ==
+  dependencies:
+    text-dot-case "1.2.9"
+
+text-pascal-case@1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/text-pascal-case/-/text-pascal-case-1.2.9.tgz#36e834f3fd018c496fb044b27220477a2e9c7e3b"
+  integrity sha512-o6ZxMGjWDTUW54pcghpXes+C2PqbYRMdU5mHrIhueb6z6nq1NueiIOeCUdrSjN/3wXfhCmnFjK7/d9aRGZNqSg==
+  dependencies:
+    text-no-case "1.2.9"
+
+text-path-case@1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/text-path-case/-/text-path-case-1.2.9.tgz#3d92d4df019c54b7c8e376d92542a6bfc63cf7e0"
+  integrity sha512-s8cJ6r5TkJp5ticXMgtxd7f12odEN4d1CfX5u4aoz6jcUtBR2lDqzIhVimkqWFMJ4UKPSrmilUha8Xc2BPi+ow==
+  dependencies:
+    text-dot-case "1.2.9"
+
+text-sentence-case@1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/text-sentence-case/-/text-sentence-case-1.2.9.tgz#6f86b335a3d74a232c3820e4414cc5f4feba4f69"
+  integrity sha512-/G/Yi5kZfUa1edFRV4O3lGZAkbDZTFvlwW8CYfH7szkEGe2k2MYEYbOyAkGRVQEGV6V6JiuUAaP3VS9c1tB6nQ==
+  dependencies:
+    text-no-case "1.2.9"
+    text-upper-case-first "1.2.9"
+
+text-snake-case@1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/text-snake-case/-/text-snake-case-1.2.9.tgz#b34dc6d83b08d1687b0bac37b40067f21a2c7ccb"
+  integrity sha512-+ZrqK19ynF/TLQZ7ynqVrL2Dy04uu9syYZwsm8PhzUdsY3XrwPy6QiRqhIEFqhyWbShPcfyfmheer5UEQqFxlw==
+  dependencies:
+    text-dot-case "1.2.9"
+
+text-swap-case@1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/text-swap-case/-/text-swap-case-1.2.9.tgz#4472c950208ed5141ae14ddb50b32ccfd3ea288a"
+  integrity sha512-g5fp12ldktYKK9wdHRMvvtSCQrZYNv/D+ZGLumDsvAY4q9T5bCMO2IWMkIP1F5gVQrysdHH6Xv877P/pjUq1iw==
+
+text-title-case@1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/text-title-case/-/text-title-case-1.2.9.tgz#2d74d99422f57acba392d32735a79f6badef814c"
+  integrity sha512-RAtC9cdmPp41ns5/HXZBsaQg71BsHT7uZpj2ojTtuFa8o2dNuRYYOrSmy5YdLRIAJQ6WK5hQVpV3jHuq7a+4Tw==
+  dependencies:
+    text-no-case "1.2.9"
+    text-upper-case-first "1.2.9"
+
+text-upper-case-first@1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/text-upper-case-first/-/text-upper-case-first-1.2.9.tgz#26724ab75b2e18ad2a3afa0da742f03ef6bedc3e"
+  integrity sha512-wEDD1B6XqJmEV+xEnBJd+2sBCHZ+7fvA/8Rv/o8+dAsp05YWjYP/kjB8sPH6zqzW0s6jtehIg4IlcKjcYxk2CQ==
+
+text-upper-case@1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/text-upper-case/-/text-upper-case-1.2.9.tgz#a23ad1126e4fa36b04bca0e138d06c4a05dffd14"
+  integrity sha512-K/0DNT7a4z8eah2spARtoJllTZyrNTo6Uc0ujhN/96Ir9uJ/slpahfs13y46H9osL3daaLl3O7iXOkW4xtX6bg==
+
 throttleit@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/throttleit/-/throttleit-1.0.1.tgz#304ec51631c3b770c65c6c6f76938b384000f4d5"

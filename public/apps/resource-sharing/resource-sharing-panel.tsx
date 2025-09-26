@@ -38,6 +38,8 @@ import {
   EuiSuperSelectOption,
 } from '@elastic/eui';
 
+import { titleCase } from 'text-case';
+
 import type { CoreStart } from '../../../../../src/core/public';
 
 interface CreatedBy {
@@ -51,7 +53,7 @@ interface ShareRecipients {
   backend_roles?: string[];
 }
 
-type ShareWith = Record<string /* action-group e.g. READ_ONLY */, ShareRecipients>;
+type ShareWith = Record<string /* access-level e.g. READ_ONLY */, ShareRecipients>;
 
 interface ResourceRow {
   resource_id: string;
@@ -62,9 +64,10 @@ interface ResourceRow {
 }
 interface TypeEntry {
   type: string; // type of resource, e.g. `sample-resource`
-  action_groups: string[]; // known action-groups for this type
+  access_levels: string[]; // known access-levels for this type
 }
-// Tiny API that the panel consumes
+
+// API that the panel consumes
 interface Api {
   listTypes: () => Promise<{ types: TypeEntry[] } | TypeEntry[]>;
   listSharingRecords: (type: string) => Promise<ResourceRow[] | { resources: ResourceRow[] } | any>;
@@ -101,13 +104,13 @@ const toOptions = (vals?: string[]) => (vals || []).map((v) => ({ label: v }));
 const fromOptions = (opts: Array<{ label: string }>) => opts.map((o) => o.label);
 const cloneShareWith = (sw?: ShareWith): ShareWith => JSON.parse(JSON.stringify(sw || {}));
 
-/** diff: produce { add, revoke } between old and next (both are ShareWith) */
+/** diff: produce { add, revoke } between old and next (both are ShareWith): for PUT/PATCH api calls */
 function diffShareWith(prev: ShareWith, next: ShareWith): { add?: ShareWith; revoke?: ShareWith } {
   const add: ShareWith = {};
   const revoke: ShareWith = {};
-  const allGroups = new Set<string>([...Object.keys(prev || {}), ...Object.keys(next || {})]);
+  const allLevels = new Set<string>([...Object.keys(prev || {}), ...Object.keys(next || {})]);
 
-  for (const g of allGroups) {
+  for (const g of allLevels) {
     const p = prev?.[g] || {};
     const n = next?.[g] || {};
     const keys: Array<keyof ShareRecipients> = ['users', 'roles', 'backend_roles'];
@@ -162,13 +165,13 @@ const extractHttpErrorLines = (e: any): string[] => {
   let body: any = e?.body;
   if (typeof body === 'string') body = parseMaybeJson(body) ?? { raw: body };
 
-  // OSD style: { statusCode, error, message }
+  // OSD style Error: { statusCode, error, message }
   if (body?.statusCode || body?.error || body?.message) {
     if (body?.error && typeof body.error === 'string') lines.push(body.error);
     if (body?.message && typeof body.message === 'string') lines.push(body.message);
   }
 
-  // OpenSearch style: { error: { reason, root_cause[], caused_by }, status }
+  // OpenSearch style Error: { error: { reason, root_cause[], caused_by }, status }
   const osErr = body?.error;
   if (osErr) {
     if (typeof osErr.reason === 'string') lines.push(osErr.reason);
@@ -182,16 +185,6 @@ const extractHttpErrorLines = (e: any): string[] => {
       for (const rc of osErr.caused_by.root_cause) {
         if (rc?.reason) lines.push(rc.reason);
       }
-    }
-  }
-
-  // Validation shapes: { details: [...]/violations: [...] }
-  const details = body?.details || body?.violations;
-  if (Array.isArray(details)) {
-    for (const d of details) {
-      if (typeof d === 'string') lines.push(d);
-      else if (d?.message) lines.push(d.message);
-      else if (d?.reason) lines.push(d.reason);
     }
   }
 
@@ -214,7 +207,7 @@ interface ModalProps {
   resource: ResourceRow;
   resourceType: string;
   resourceTypeIndex: string;
-  actionGroups: string[];
+  accessLevels: string[];
 }
 
 const hasNonEmptyRecipients = (r?: ShareRecipients) =>
@@ -223,7 +216,7 @@ const hasNonEmptyRecipients = (r?: ShareRecipients) =>
 const hasNonEmptyShareWith = (sw?: ShareWith) =>
   Object.values(sw || {}).some(hasNonEmptyRecipients);
 
-const emptyGroups = (sw?: ShareWith) =>
+const emptyLevels = (sw?: ShareWith) =>
   Object.entries(sw || {})
     .filter(([, r]) => !hasNonEmptyRecipients(r))
     .map(([g]) => g);
@@ -236,7 +229,7 @@ const ShareAccessModal: React.FC<ModalProps> = ({
   resource,
   resourceType,
   resourceTypeIndex,
-  actionGroups,
+  accessLevels,
 }) => {
   const original = useMemo(() => cloneShareWith(resource?.share_with), [resource?.share_with]);
   const [working, setWorking] = useState<ShareWith>(() =>
@@ -251,32 +244,30 @@ const ShareAccessModal: React.FC<ModalProps> = ({
     setErrorLines([]);
   }, [mode, resource]);
 
-  const groups = Object.keys(working);
+  const levels = Object.keys(working);
   // suggestions list for this modal (unique + keep order)
-  const SUGGESTIONS = useMemo(() => Array.from(new Set(actionGroups ?? [])), [actionGroups]);
+  const ACCESS_LEVELS = useMemo(() => Array.from(new Set(accessLevels ?? [])), [accessLevels]);
 
-  const addGroup = () => {
+  const addLevel = () => {
     // If no suggestions were provided for this type, do nothing.
-    if (!SUGGESTIONS.length) {
-      // Optional: show a subtle warning/toast instead of silent no-op
-      // toasts?.addWarning?.('No predefined action-groups for this type');
+    if (!ACCESS_LEVELS.length) {
       return;
     }
 
     // Pick the first unused suggestion
-    const base = SUGGESTIONS.find((g) => !groups.includes(g));
+    const base = ACCESS_LEVELS.find((level) => !levels.includes(level));
     if (!base) return; // all suggestions already used
 
     setWorking({ ...working, [base]: {} });
   };
 
-  const removeGroup = (g: string) => {
+  const removeLevel = (g: string) => {
     const next = cloneShareWith(working);
     delete next[g];
     setWorking(next);
   };
 
-  const setGroupName = (g: string, newName: string) => {
+  const setLevelName = (g: string, newName: string) => {
     if (!newName || newName === g) return;
     if (working[newName]) return;
     const copy = cloneShareWith(working);
@@ -297,17 +288,24 @@ const ShareAccessModal: React.FC<ModalProps> = ({
 
   // compute whether there are changes
   const diff = useMemo(() => diffShareWith(original || {}, working || {}), [original, working]);
-  const groupsWithNoRecipients = useMemo(() => emptyGroups(working), [working]);
+  const levelsWithNoRecipients = useMemo(() => emptyLevels(working), [working]);
   const hasChanges =
     mode === 'create' ? hasNonEmptyShareWith(working) : Boolean(diff.add || diff.revoke);
-  const isInvalid = groupsWithNoRecipients.length > 0;
-  const disabledReason = !hasChanges
-    ? mode === 'create'
-      ? 'Add at least one user, role, or backend role to share.'
-      : 'No changes detected.'
-    : isInvalid
-    ? `These action-groups have no recipients: ${groupsWithNoRecipients.join(', ')}`
-    : undefined;
+  const isInvalid = levelsWithNoRecipients.length > 0;
+
+  const disabledReason = (): string | undefined => {
+    if (isInvalid) {
+      return `These access-levels have no recipients: ${levelsWithNoRecipients.join(', ')}`;
+    }
+
+    if (!hasChanges) {
+      return mode === 'create'
+        ? 'Add at least one user, role, or backend role to share.'
+        : 'No changes detected.';
+    }
+
+    return undefined;
+  };
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -374,43 +372,43 @@ const ShareAccessModal: React.FC<ModalProps> = ({
         {isInvalid && (
           <>
             <EuiCallOut title="Add recipients" color="warning" iconType="alert">
-              The following action-groups have no recipients: {groupsWithNoRecipients.join(', ')}
+              The following access-levels have no recipients: {levelsWithNoRecipients.join(', ')}
             </EuiCallOut>
             <EuiSpacer size="s" />
           </>
         )}
         <EuiForm component="form">
-          <EuiFormRow label="Action-groups">
-            <EuiButtonEmpty iconType="plusInCircle" onClick={addGroup}>
-              Add action-group
+          <EuiFormRow label="Access-levels">
+            <EuiButtonEmpty iconType="plusInCircle" onClick={addLevel}>
+              Add access-level
             </EuiButtonEmpty>
           </EuiFormRow>
 
           {Object.keys(working).length === 0 && (
             <EuiText color="subdued" size="s">
-              No action-groups added yet.
+              No access-levels added yet.
             </EuiText>
           )}
 
-          {Object.entries(working).map(([groupName, recipients]) => {
-            const groupOptions = [...new Set([groupName, ...SUGGESTIONS])].map((l) => ({
+          {Object.entries(working).map(([levelName, recipients]) => {
+            const levelOptions = [...new Set([levelName, ...ACCESS_LEVELS])].map((l) => ({
               label: l,
             }));
 
             return (
-              <EuiPanel key={groupName} paddingSize="m" hasShadow={false} hasBorder>
+              <EuiPanel key={levelName} paddingSize="m" hasShadow={false} hasBorder>
                 <EuiFlexGroup gutterSize="m" alignItems="center">
                   <EuiFlexItem grow={3}>
-                    <EuiFormRow label="Action-group">
+                    <EuiFormRow label="Access-level">
                       <EuiComboBox
                         singleSelection={{ asPlainText: true }}
-                        options={groupOptions}
-                        selectedOptions={[{ label: groupName }]}
+                        options={levelOptions}
+                        selectedOptions={[{ label: levelName }]}
                         onChange={(opts) => {
-                          const newLabel = opts[0]?.label || groupName;
-                          setGroupName(groupName, newLabel);
+                          const newLabel = opts[0]?.label || levelName;
+                          setLevelName(levelName, newLabel);
                         }}
-                        onCreateOption={(label: string) => setGroupName(groupName, label)}
+                        onCreateOption={(label: string) => setLevelName(levelName, label)}
                       />
                     </EuiFormRow>
                   </EuiFlexItem>
@@ -418,7 +416,7 @@ const ShareAccessModal: React.FC<ModalProps> = ({
                     <EuiButtonEmpty
                       color="danger"
                       iconType="trash"
-                      onClick={() => removeGroup(groupName)}
+                      onClick={() => removeLevel(levelName)}
                     >
                       Remove
                     </EuiButtonEmpty>
@@ -431,9 +429,9 @@ const ShareAccessModal: React.FC<ModalProps> = ({
                     noSuggestions
                     selectedOptions={toOptions(recipients.users)}
                     onCreateOption={(v) =>
-                      setRecipients(groupName, 'users', [...(recipients.users || []), v])
+                      setRecipients(levelName, 'users', [...(recipients.users || []), v])
                     }
-                    onChange={(opts) => setRecipients(groupName, 'users', fromOptions(opts))}
+                    onChange={(opts) => setRecipients(levelName, 'users', fromOptions(opts))}
                   />
                 </EuiFormRow>
                 <EuiFormRow label="Roles">
@@ -442,9 +440,9 @@ const ShareAccessModal: React.FC<ModalProps> = ({
                     noSuggestions
                     selectedOptions={toOptions(recipients.roles)}
                     onCreateOption={(v) =>
-                      setRecipients(groupName, 'roles', [...(recipients.roles || []), v])
+                      setRecipients(levelName, 'roles', [...(recipients.roles || []), v])
                     }
-                    onChange={(opts) => setRecipients(groupName, 'roles', fromOptions(opts))}
+                    onChange={(opts) => setRecipients(levelName, 'roles', fromOptions(opts))}
                   />
                 </EuiFormRow>
                 <EuiFormRow label="Backend roles">
@@ -453,13 +451,13 @@ const ShareAccessModal: React.FC<ModalProps> = ({
                     noSuggestions
                     selectedOptions={toOptions(recipients.backend_roles)}
                     onCreateOption={(v) =>
-                      setRecipients(groupName, 'backend_roles', [
+                      setRecipients(levelName, 'backend_roles', [
                         ...(recipients.backend_roles || []),
                         v,
                       ])
                     }
                     onChange={(opts) =>
-                      setRecipients(groupName, 'backend_roles', fromOptions(opts))
+                      setRecipients(levelName, 'backend_roles', fromOptions(opts))
                     }
                   />
                 </EuiFormRow>
@@ -472,7 +470,7 @@ const ShareAccessModal: React.FC<ModalProps> = ({
         <EuiButtonEmpty onClick={onClose} isDisabled={isSubmitting}>
           Cancel
         </EuiButtonEmpty>
-        <EuiToolTip content={disabledReason}>
+        <EuiToolTip content={disabledReason()}>
           <EuiButton
             onClick={handleSubmit}
             fill
@@ -498,10 +496,10 @@ const SharedWithExpanded: React.FC<{ sw?: ShareWith }> = ({ sw }) => {
   }
   return (
     <EuiText size="s">
-      {Object.entries(sw || {}).map(([ag, r]) => (
-        <div key={ag} style={{ marginBottom: 8 }}>
+      {Object.entries(sw || {}).map(([level, r]) => (
+        <div key={level} style={{ marginBottom: 8 }}>
           <EuiText>
-            <strong>Action-group:</strong> {ag}
+            <strong>Access-level:</strong> {level}
           </EuiText>
           <div style={{ paddingLeft: 12 }}>
             <div>
@@ -520,39 +518,10 @@ const SharedWithExpanded: React.FC<{ sw?: ShareWith }> = ({ sw }) => {
   );
 };
 
-// Helpers: pick simple name and humanize it
-const simpleName = (type?: string) =>
-  (
-    (type ?? '')
-      .split('.')
-      .filter(Boolean) // remove empty parts from trailing dots, etc.
-      .pop() ?? ''
-  ).trim();
-
-/** Humanize class names: e.g., "AnomalyDetector" -> "Anomaly Detector", "ADDetector" -> "AD Detector",
- *  and kebab/underscore: "sample-resource" -> "Sample Resource", "anomaly-detector" -> "Anomaly Detector"
- */
-const normalizeResourceTypeName = (t: string) => {
-  const type = simpleName(t);
-
-  // 1) Insert spaces at camel/acronym boundaries, and normalize separators to spaces
-  let s = type
-    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2') // "ADDetector" -> "AD Detector"
-    .replace(/([a-z0-9])([A-Z])/g, '$1 $2') // "AnomalyDetector" -> "Anomaly Detector"
-    .replace(/[-_]+/g, ' ') // "sample-resource" / "sample_resource" -> "sample resource"
-    .replace(/\s+/g, ' ') // collapse multiple spaces
-    .trim();
-
-  // 2) Title-case tokens that are all-lowercase; keep existing caps/acronyms as-is.
-  s = s.replace(/\b([a-z])([a-z0-9]*)\b/g, (_, a, rest) => a.toUpperCase() + rest);
-
-  return s;
-};
-
 /** ---------- Main table ---------- */
 export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
   const [typeOptions, setTypeOptions] = useState<
-    Array<{ value: string; text: string; actionGroups: string[] }>
+    Array<{ value: string; text: string; accessLevels: string[] }>
   >([]);
   const [selectedType, setSelectedType] = useState<string>(''); // no default selection
   const [rows, setRows] = useState<ResourceRow[]>([]);
@@ -572,12 +541,12 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
       try {
         const res = await api.listTypes();
         const raw: TypeEntry[] = Array.isArray(res) ? res : res?.types || [];
-        // value = index (what we send as resourceType); text = type (what we display)
+        // value = type (what we send as resourceType); text = humanized type (what we display)
         const options = raw
           .map((t) => ({
             value: t.type,
-            text: normalizeResourceTypeName(t.type),
-            actionGroups: t.action_groups,
+            text: titleCase(t.type),
+            accessLevels: t.access_levels,
           }))
           // sort alphabetically by text (and by value if text is equal)
           .sort((a, b) => {
@@ -618,8 +587,8 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
   const selectedTypeLabel = selectedTypeMeta?.text ?? (selectedType || '—');
   const selectedTypeTooltip = selectedTypeMeta?.value; // actual resource type
 
-  const currentActionGroups = useMemo(
-    () => Array.from(new Set(selectedTypeMeta?.actionGroups ?? [])).sort(),
+  const currentAccessLevels = useMemo(
+    () => Array.from(new Set(selectedTypeMeta?.accessLevels ?? [])).sort(),
     [selectedTypeMeta]
   );
 
@@ -635,7 +604,7 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
       ),
     },
 
-    // type column:  Derived from the dropdown: label from typeOptions, tooltip shows the full-qualified class-name
+    // type column:  Derived from the dropdown: label from typeOptions, tooltip shows the original type
     {
       name: 'Resource Type',
       render: () => (
@@ -661,7 +630,7 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
       name: 'Shared With',
       render: (item: ResourceRow) => {
         const summary = hasSharingInfo(item.share_with)
-          ? `${Object.keys(item.share_with || {}).length} action-group(s)`
+          ? `${Object.keys(item.share_with || {}).length} access-level(s)`
           : 'Not shared';
         const isOpen = expandedIds.has(item.resource_id);
 
@@ -856,7 +825,7 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
         resource={modalState.resource as ResourceRow}
         resourceType={selectedTypeLabel}
         resourceTypeIndex={selectedType}
-        actionGroups={currentActionGroups}
+        accessLevels={currentAccessLevels}
       />
     </EuiPanel>
   );
