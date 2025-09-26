@@ -15,6 +15,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import {
+  EuiEmptyPrompt,
   EuiBasicTable,
   EuiBadge,
   EuiButton,
@@ -64,7 +65,7 @@ interface ResourceRow {
 }
 interface TypeEntry {
   type: string; // type of resource, e.g. `sample-resource`
-  access_levels: string[]; // known access-levels for this type
+  action_groups: string[]; // known access-levels for this type
 }
 
 // API that the panel consumes
@@ -546,7 +547,7 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
           .map((t) => ({
             value: t.type,
             text: titleCase(t.type),
-            accessLevels: t.access_levels,
+            accessLevels: t.action_groups,
           }))
           // sort alphabetically by text (and by value if text is equal)
           .sort((a, b) => {
@@ -629,9 +630,9 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
     {
       name: 'Shared With',
       render: (item: ResourceRow) => {
-        const summary = hasSharingInfo(item.share_with)
-          ? `${Object.keys(item.share_with || {}).length} access-level(s)`
-          : 'Not shared';
+        const size = Object.keys(item.share_with || {}).length;
+        const levelCountMessage = `${size} access-level${size > 1 ? 's' : ''}`;
+        const summary = hasSharingInfo(item.share_with) ? levelCountMessage : 'Not shared';
         const isOpen = expandedIds.has(item.resource_id);
 
         return (
@@ -760,7 +761,7 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
       <EuiFlexGroup gutterSize="m" alignItems="center">
         <EuiFlexItem grow={false}>
           <EuiText>
-            <h3>Resources</h3>
+            <h3>Resources{selectedType ? ` (${rows?.length ?? 0})` : ''}</h3>
           </EuiText>
         </EuiFlexItem>
         <EuiFlexItem grow />
@@ -788,20 +789,28 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
       {!selectedType ? (
         <>
           {typesLoading ? (
-            <EuiCallOut title="Loading types…" color="primary" iconType="iInCircle" />
-          ) : typeOptions.length === 0 ? (
-            <EuiCallOut title="No types available" color="warning" iconType="alert">
-              No resource types are available for sharing. Please ensure that you have created
-              resources that support sharing.
-            </EuiCallOut>
-          ) : (
-            <EuiCallOut
-              title="Select a type to view resources"
-              color="primary"
+            <EuiEmptyPrompt
               iconType="iInCircle"
-            >
-              Pick a resource type from the dropdown to load accessible resources.
-            </EuiCallOut>
+              title={<h2>Loading types…</h2>}
+              body={<p>Fetching resource types. This should only take a moment.</p>}
+            />
+          ) : typeOptions.length === 0 ? (
+            <EuiEmptyPrompt
+              iconType="alert"
+              title={<h2>No types available</h2>}
+              body={
+                <p>
+                  No resource types are available for sharing. Please ensure you’ve created
+                  resources that support sharing.
+                </p>
+              }
+            />
+          ) : (
+            <EuiEmptyPrompt
+              iconType="iInCircle"
+              title={<h2>Select a type to view resources</h2>}
+              body={<p>Pick a resource type from the dropdown to load accessible resources.</p>}
+            />
           )}
         </>
       ) : (
@@ -814,6 +823,15 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
           itemIdToExpandedRowMap={itemIdToExpandedRowMap}
           tableLayout="auto"
           rowProps={(item) => ({ 'data-test-subj': `row-${item.resource_id}` })}
+          noItemsMessage={
+            !loading && (
+              <EuiEmptyPrompt
+                iconType="search"
+                title={<h2>No resources found</h2>}
+                body={<p>There are no accessible resources for the selected type.</p>}
+              />
+            )
+          }
         />
       )}
 

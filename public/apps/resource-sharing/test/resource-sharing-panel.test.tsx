@@ -36,11 +36,11 @@ const toasts = {
 const typesPayload = [
   {
     type: 'anomaly-detector',
-    action_groups: ['READ', 'WRITE'],
+    access_levels: ['READ', 'WRITE'],
   },
   {
     type: 'forecaster',
-    action_groups: ['READ_ONLY'],
+    access_levels: ['READ_ONLY'],
   },
 ];
 
@@ -117,7 +117,7 @@ describe('ResourceSharingPanel', () => {
 
     // Shared-with summary
     expect(within(table).getByText(/Not shared/i)).toBeInTheDocument();
-    expect(within(table).getByText(/1 action-group/i)).toBeInTheDocument();
+    expect(within(table).getByText(/1 access-level/i)).toBeInTheDocument();
 
     const row1 = within(table).getByText('det-1').closest('tr')!;
     const row2 = within(table).getByText('det-2').closest('tr')!;
@@ -164,13 +164,13 @@ describe('ResourceSharingPanel', () => {
     const modalShareBtn = within(overlay).getByRole('button', { name: /^Share$/ });
     expect(modalShareBtn).toBeDisabled();
 
-    // Add an action-group
-    const addGroup = within(overlay).getByRole('button', { name: /Add action-group/i });
-    await userEvent.click(addGroup);
+    // Add an access-level
+    const addLevel = within(overlay).getByRole('button', { name: /Add access-level/i });
+    await userEvent.click(addLevel);
 
-    // Comboboxes inside the modal: [0] action-group, [1] Users
+    // Comboboxes inside the modal: [0] access-level, [1] Users
     const combos = within(overlay).getAllByRole('combobox');
-    await userEvent.click(combos[0]); // focus action-group (defaults to first suggestion)
+    await userEvent.click(combos[0]); // focus access-level (defaults to first suggestion)
     const usersInput = within(overlay).getByText('Add users…');
     // type then press Enter to trigger onCreateOption
     await userEvent.type(usersInput, 'dc');
@@ -231,7 +231,7 @@ describe('ResourceSharingPanel', () => {
     const modalShareBtn = within(overlay).getByRole('button', { name: /^Update Access$/ });
     expect(modalShareBtn).toBeDisabled();
 
-    // Comboboxes inside the modal: [0] action-group, [1] Users
+    // Comboboxes inside the modal: [0] access-level, [1] Users
     // Remove charlie and add erin -> should form add/remove diff
     const combos = within(overlay).getAllByRole('combobox');
     await userEvent.click(combos[0]);
@@ -296,7 +296,7 @@ describe('ResourceSharingPanel', () => {
     expect(within(overlay).getByRole('button', { name: 'Share' })).toBeInTheDocument();
 
     // Add minimal valid recipients
-    await userEvent.click(within(overlay).getByRole('button', { name: /Add action-group/i }));
+    await userEvent.click(within(overlay).getByRole('button', { name: /Add access-level/i }));
     const usersInput = within(overlay).getByText('Add users…');
     // type then press Enter to trigger onCreateOption
     await userEvent.type(usersInput, 'dc');
