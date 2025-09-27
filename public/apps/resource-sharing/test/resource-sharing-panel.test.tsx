@@ -36,11 +36,11 @@ const toasts = {
 const typesPayload = [
   {
     type: 'anomaly-detector',
-    access_levels: ['READ', 'WRITE'],
+    action_groups: ['READ', 'WRITE'],
   },
   {
     type: 'forecaster',
-    access_levels: ['READ_ONLY'],
+    action_groups: ['READ_ONLY'],
   },
 ];
 

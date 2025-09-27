@@ -25,13 +25,14 @@ function closeAnyOpenPopover() {
   cy.get('body').type('{esc}', { force: true });
 }
 
-function pickFirstType() {
+function pickSampleResourceType() {
   // Click the SuperSelect trigger (shows either selected text or "Select a type…")
   cy.contains('button.euiSuperSelectControl', /Select a type…|.+/).click();
 
-  // Choose the first real item in the dropdown (ignore placeholder)
-  // EUI renders items as listbox > button; pick the first enabled option
-  cy.get('[role="listbox"] button:enabled').first().click();
+  // Click the "Sample Resource" option in the dropdown
+  cy.get('[role="listbox"]').within(() => {
+    cy.contains('button:enabled', /^Sample Resource$/).click();
+  });
 
   // Close dropdown
   closeAnyOpenPopover();
@@ -85,11 +86,11 @@ function openFirstRowModal() {
 }
 
 function addRecipientAndSubmit(expectLabel: 'Share' | 'Update Access') {
-  // Ensure there is at least one action-group panel (create one if missing)
+  // Ensure there is at least one access-levels panel (create one if missing)
   cy.get('@overlay').then(($ov) => {
-    if ($ov.text().includes('No action-groups added yet.')) {
+    if ($ov.text().includes('No access-levels added yet.')) {
       cy.wrap($ov)
-        .contains('button', /Add action-group/i)
+        .contains('button', /Add access-level/i)
         .click();
     }
   });
@@ -164,14 +165,14 @@ describe('Resource Access Management Dashboard', () => {
 
   it('selects the first available type and loads the table (rows may be empty)', () => {
     cy.visit(BASE + ROUTE);
-    pickFirstType();
+    pickSampleResourceType();
     // Table exists whether or not there are rows
     findTable();
   });
 
   it('opens Share/Update modal on first row (if rows exist), adds a recipient, and submits', () => {
     cy.visit(BASE + ROUTE);
-    pickFirstType();
+    pickSampleResourceType();
     findTable();
 
     // If there are zero rows, gracefully skip the modal flow
