@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Features
 
+* [Resource Sharing] Adds resource access management dashboard ([#2304](https://github.com/opensearch-project/security-dashboards-plugin/pull/2304))
 
 ### Enhancements
 - Add experimental direct query permissions ([#2315](https://github.com/opensearch-project/security-dashboards-plugin/pull/2315))
