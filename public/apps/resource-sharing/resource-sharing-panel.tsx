@@ -39,7 +39,7 @@ import {
   EuiSuperSelectOption,
 } from '@elastic/eui';
 
-import { titleCase } from 'text-case';
+import _ from 'lodash';
 
 import type { CoreStart } from '../../../../../src/core/public';
 
@@ -546,7 +546,7 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
         const options = raw
           .map((t) => ({
             value: t.type,
-            text: titleCase(t.type),
+            text: _.startCase(t.type),
             accessLevels: t.action_groups,
           }))
           // sort alphabetically by text (and by value if text is equal)
