@@ -140,6 +140,7 @@ jobs:
           opensearch_security.openid.base_redirect_url: http://localhost:5601${{ matrix.basePath }}
           opensearch_security.auth.type: "openid"
           home.disableWelcomeScreen: true
+          home.disableExperienceModal: true
           EOT
 
       - name: Run OSD with basePath
