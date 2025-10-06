@@ -94,7 +94,7 @@ jobs:
 
       # OSD bootstrap
       - name: Setup Dashboard with Security Dashboards Plugin
-        uses: derek-ho/setup-opensearch-dashboards@v1
+        uses: derek-ho/setup-opensearch-dashboards@v3
         with:
           plugin_name: security-dashboards-plugin
 
