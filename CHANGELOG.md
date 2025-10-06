@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Bump `actions/github-script` from 7 to 8 ([#2307](https://github.com/opensearch-project/security-dashboards-plugin/pull/2307))
 - Resolve CVE-2025-9288 CVE-2025-9287 CVE-2025-7783 CVE-2025-6547 ([#2317](https://github.com/opensearch-project/security-dashboards-plugin/pull/2317))
 - Bump @derek-ho/start-opensearch to 9 ([#2319]https://github.com/opensearch-project/security-dashboards-plugin/pull/2319)
+- Bump `Wandalen/wretry.action` from 3.3.0 to 3.8.0 ([#2322](https://github.com/opensearch-project/security-dashboards-plugin/pull/2322))
 
 
 ### Documentation
