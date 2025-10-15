@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Set up JDK 21 for build
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '21'
@@ -94,7 +94,7 @@ jobs:
 
       # OSD bootstrap
       - name: Setup Dashboard with Security Dashboards Plugin
-        uses: derek-ho/setup-opensearch-dashboards@v1
+        uses: derek-ho/setup-opensearch-dashboards@v3
         with:
           plugin_name: security-dashboards-plugin
 
