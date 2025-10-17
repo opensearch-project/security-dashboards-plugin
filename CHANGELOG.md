@@ -9,8 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Enhancements
 
-### Bug Fixes
 
+### Bug Fixes
+- Filter blank backend role before creating internal user ([#2330](https://github.com/opensearch-project/security-dashboards-plugin/pull/2330))
 
 ### Refactoring
 
