@@ -57,7 +57,7 @@ const putBodySchema = schema.object(
 );
 
 // PATCH schema: add/revoke must be shareWithSchema
-const patchBodySchema = schema.object(
+const postBodySchema = schema.object(
   {
     resource_id: schema.string({ minLength: 1 }),
     resource_type: schema.string({ minLength: 1 }),
@@ -181,14 +181,14 @@ export function defineResourceAccessManagementRoutes(router: IRouter) {
     }
   );
 
-  // PATCH update sharing — `add`/`revoke` adhere to share_with schema
-  router.patch(
-    { path: '/api/resource/update_sharing', validate: { body: patchBodySchema } },
+  // POST update sharing — `add`/`revoke` adhere to share_with schema
+  router.post(
+    { path: '/api/resource/update_sharing', validate: { body: postBodySchema } },
     async (context, request, response) => {
       try {
         const client = context.core.opensearch.client.asCurrentUser;
         const result = await client.transport.request({
-          method: 'PATCH',
+          method: 'POST',
           path: SHARE_API,
           body: request.body,
         });
