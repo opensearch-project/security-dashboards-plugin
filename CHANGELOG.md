@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Filter blank backend role before creating internal user ([#2330](https://github.com/opensearch-project/security-dashboards-plugin/pull/2330))
 
 ### Refactoring
-
+- [Resource Sharing] Changes patch update sharing API to post ([#2338](https://github.com/opensearch-project/security-dashboards-plugin/pull/2338))
 
 ### Maintenance
 - Bump `Wandalen/wretry.action` from 3.3.0 to 3.8.0 ([#2322](https://github.com/opensearch-project/security-dashboards-plugin/pull/2322))
