@@ -1,2 +1,58 @@
-OpenSearch (https://opensearch.org/)
-Copyright OpenSearch Contributors
+name: Update NOTICE.txt & Security Audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  update-notice:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'yarn'
+
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile
+
+    - name: Generate NOTICE.txt
+      run: |
+        echo "Moje Aplikace" > NOTICE.txt
+        echo "Copyright (c) 2025 Matěj" >> NOTICE.txt
+        echo "" >> NOTICE.txt
+        echo "Tento projekt je licencován pod Apache License, Version 2.0." >> NOTICE.txt
+        echo "Podrobnosti viz LICENSE soubor nebo http://www.apache.org/licenses/LICENSE-2.0" >> NOTICE.txt
+        echo "" >> NOTICE.txt
+        echo "------------------------------------------------------------" >> NOTICE.txt
+        echo "Použité závislosti:" >> NOTICE.txt
+        yarn licenses list --json | jq -r '.data.body[] | "- " + .Name + " (" + .License + ")"' >> NOTICE.txt
+        echo "------------------------------------------------------------" >> NOTICE.txt
+        echo "" >> NOTICE.txt
+        echo "Jakékoli redistribuce musí zahrnovat tento NOTICE soubor." >> NOTICE.txt
+
+    - name: Run security audit
+      run: yarn audit --json > audit.json
+
+    - name: Commit and create PR
+      uses: peter-evans/create-pull-request@v6
+      with:
+        commit-message: "chore: update NOTICE.txt & audit results"
+        branch: update-notice
+        title: "Automated NOTICE.txt update & Security Audit"
+        body: |
+          Tento PR byl automaticky vytvořen GitHub Actions.
+          Obsahuje aktualizovaný NOTICE.txt se seznamem licencí všech závislostí.
+          Níže jsou výsledky bezpečnostního auditu:
+
+          ```
+          $(cat audit.json | jq -r '.advisories | to_entries[] | "Package: " + .value.module_name + "\nSeverity: " + .value.severity + "\nTitle: " + .value.title + "\n---"')
+          ```
