@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Checkout Branch
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 21 for build
         uses: actions/setup-java@v5
