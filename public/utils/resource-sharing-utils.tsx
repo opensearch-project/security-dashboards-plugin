@@ -23,5 +23,5 @@ export const buildResourceApi = (http: CoreStart['http']) => ({
     http.get('/api/resource/view', { query: { resourceId: id, resourceType: type } }),
   share: (payload: any) => http.put('/api/resource/share', { body: JSON.stringify(payload) }),
   update: (payload: any) =>
-    http.patch('/api/resource/update_sharing', { body: JSON.stringify(payload) }),
+    http.post('/api/resource/update_sharing', { body: JSON.stringify(payload) }),
 });
