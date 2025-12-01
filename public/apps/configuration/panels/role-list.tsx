@@ -321,6 +321,10 @@ export function RoleList(props: AppDependencies) {
 
   const roleLen = Query.execute(query || '', roleData).length;
 
+  const searchConfig: any = {
+    ...searchOptions,
+    toolsRight: useUpdatedUX ? [<EuiFlexItem>{actionsMenu}</EuiFlexItem>] : undefined,
+  };
   return (
     <>
       <SecurityPluginTopNavMenu
@@ -393,10 +397,7 @@ export function RoleList(props: AppDependencies) {
               pagination={true}
               selection={{ onSelectionChange: setSelection }}
               sorting={true}
-              search={{
-                ...searchOptions,
-                toolsRight: useUpdatedUX ? [<EuiFlexItem>{actionsMenu}</EuiFlexItem>] : undefined,
-              }}
+              search={searchConfig}
               error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
               message={showTableStatusMessage(loading, roleData)}
             />
