@@ -13,9 +13,23 @@
  *   permissions and limitations under the License.
  */
 
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation((query) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+});
+
 import { coreMock } from '../../../../src/core/public/mocks';
-import { SecurityPlugin } from '../plugin.ts';
-import * as pluginModule from '../plugin'; // Import the entire module to mock specific functions
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const pluginModule = require('../plugin');
 import {
   PLUGIN_AUDITLOG_APP_ID,
   PLUGIN_AUTH_APP_ID,
@@ -36,6 +50,8 @@ jest.mock('../plugin', () => {
 });
 
 describe('SecurityPlugin', () => {
+  const SecurityPlugin = pluginModule.SecurityPlugin;
+
   let plugin;
   let coreSetup;
   let coreStart;
@@ -44,6 +60,9 @@ describe('SecurityPlugin', () => {
 
   beforeEach(() => {
     coreSetup = coreMock.createSetup();
+    coreSetup.http.get = jest.fn().mockResolvedValue({
+      has_api_access: true,
+    });
     coreStart = coreMock.createStart();
     initializerContext = {
       config: {

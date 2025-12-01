@@ -121,7 +121,7 @@ describe('Multi-datasources enabled', () => {
         'osd-xsrf': true,
       },
       body: {
-        backend_roles: [''],
+        backend_roles: [],
         attributes: {},
         password: 'myStrongPassword12345678!',
       },
