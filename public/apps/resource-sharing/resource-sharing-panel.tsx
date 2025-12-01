@@ -65,7 +65,7 @@ interface ResourceRow {
 }
 interface TypeEntry {
   type: string; // type of resource, e.g. `sample-resource`
-  action_groups: string[]; // known access-levels for this type
+  access_levels: string[]; // known access-levels for this type
 }
 
 // API that the panel consumes
@@ -547,7 +547,7 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
           .map((t) => ({
             value: t.type,
             text: _.startCase(t.type),
-            accessLevels: t.action_groups,
+            accessLevels: t.access_levels,
           }))
           // sort alphabetically by text (and by value if text is equal)
           .sort((a, b) => {
