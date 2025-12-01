@@ -23,7 +23,7 @@ runs:
   steps:
     - run: |
         mvn dependency:get \
-        -DremoteRepositories=https://central.sonatype.com/repository/maven-snapshots/ \
+        -DremoteRepositories=https://ci.opensearch.org/ci/dbc/snapshots/maven/ \
         -Dartifact=org.opensearch.plugin:${{ inputs.plugin-name }}:${{ inputs.plugin-version }}-SNAPSHOT:zip \
         -Dtransitive=false
         cp ~/.m2/repository/org/opensearch/plugin/${{ inputs.plugin-name }}/${{ inputs.plugin-version }}-SNAPSHOT/${{ inputs.plugin-name }}-${{ inputs.plugin-version }}-SNAPSHOT.zip ${{ inputs.download-location }}.zip
