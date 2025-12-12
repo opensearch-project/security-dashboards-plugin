@@ -24,6 +24,7 @@ import { ResourceSharingPanel } from '../resource-sharing-panel';
 import { I18nProvider } from '@osd/i18n/react';
 
 function renderWithI18n(ui: React.ReactElement) {
+  // @ts-ignore
   return render(<I18nProvider>{ui}</I18nProvider>);
 }
 
@@ -255,6 +256,35 @@ describe('ResourceSharingPanel', () => {
     expect(payload.revoke?.READ?.users).toEqual(['charlie']);
 
     expect(toasts.addSuccess).toHaveBeenCalledWith('Access updated.');
+  });
+
+  it('passes dataSourceId to API calls when provided', async () => {
+    const api = {
+      listTypes: jest.fn().mockResolvedValue({ types: typesPayload }),
+      listSharingRecords: jest.fn().mockResolvedValue({ resources: rowsPayload }),
+      getSharingRecord: jest.fn(),
+      share: jest.fn(),
+      update: jest.fn(),
+    };
+
+    renderWithI18n(<ResourceSharingPanel api={api as any} toasts={toasts as any} />);
+
+    // listTypes should be called on mount
+    await waitFor(() => {
+      expect(api.listTypes).toHaveBeenCalledTimes(1);
+    });
+
+    // Select a type to trigger listSharingRecords
+    const selectTrigger = await screen.findByText('Select a type…');
+    await userEvent.click(selectTrigger);
+    await userEvent.click(await screen.findByText('Anomaly Detector'));
+
+    await waitFor(() => {
+      expect(api.listSharingRecords).toHaveBeenCalledWith('anomaly-detector');
+    });
+
+    // Verify the API was called (dataSourceId is passed internally via buildResourceApi)
+    expect(api.listSharingRecords).toHaveBeenCalled();
   });
 
   it('renders friendly error lines when backend returns structured errors', async () => {

@@ -15,20 +15,11 @@
 
 import './_index.scss';
 
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React, { useContext, useState, createContext } from 'react';
+import { createRoot } from 'react-dom/client';
 import { I18nProvider } from '@osd/i18n/react';
-
-import {
-  EuiPage,
-  EuiPageBody,
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiPageHeader,
-  EuiTitle,
-  EuiText,
-  EuiSpacer,
-} from '@elastic/eui';
+import { EuiPageHeader, EuiText, EuiSpacer } from '@elastic/eui';
+import { DataSourceOption } from 'src/plugins/data_source_management/public';
 
 import { AppMountParameters, CoreStart } from '../../../../../src/core/public';
 import { DataSourceManagementPluginSetup } from '../../../../../src/plugins/data_source_management/public';
@@ -36,6 +27,16 @@ import { SecurityPluginStartDependencies, ClientConfigType } from '../../types';
 
 import { ResourceSharingPanel } from './resource-sharing-panel';
 import { buildResourceApi } from '../../utils/resource-sharing-utils';
+import { SecurityPluginTopNavMenu } from '../configuration/top-nav-menu';
+import { PageHeader } from '../configuration/header/header-components';
+import { getDataSourceFromUrl, LocalCluster } from '../../utils/datasource-utils';
+
+export interface DataSourceContextType {
+  dataSource: DataSourceOption;
+  setDataSource: React.Dispatch<React.SetStateAction<DataSourceOption>>;
+}
+
+export const DataSourceContext = createContext<DataSourceContextType | null>(null);
 
 interface Props {
   coreStart: CoreStart;
@@ -46,43 +47,56 @@ interface Props {
   dataSourceManagement?: DataSourceManagementPluginSetup;
 }
 
-const ResourceAccessManagementApp: React.FC<Props> = ({ coreStart, depsStart }) => {
+const ResourceAccessManagementApp: React.FC<Props> = (props) => {
   const {
     http,
     notifications: { toasts },
-  } = coreStart;
-  const TopNav = depsStart?.navigation?.ui?.TopNavMenu;
+  } = props.coreStart;
+  const { dataSource, setDataSource } = useContext(DataSourceContext)!;
+
+  const api = React.useMemo(() => buildResourceApi(http, dataSource?.id) as any, [
+    http,
+    dataSource?.id,
+  ]);
 
   return (
-    <>
-      {TopNav ? (
-        <TopNav appName="resource-access" showSearchBar={false} useDefaultBehaviors={true} />
-      ) : null}
-      <EuiPage restrictWidth="2000px">
-        <EuiPageBody component="main">
-          <EuiPageHeader>
-            <EuiFlexGroup direction="column" gutterSize="xs">
-              <EuiFlexItem grow={false}>
-                <EuiTitle size="l">
-                  <h1>Resource Access Management</h1>
-                </EuiTitle>
-              </EuiFlexItem>
-              <EuiFlexItem grow={false}>
-                <EuiText color="subdued" size="s">
-                  Manage sharing for detectors, forecasters, and more.
-                </EuiText>
-              </EuiFlexItem>
-            </EuiFlexGroup>
-          </EuiPageHeader>
-
-          <EuiSpacer size="m" />
-
-          <ResourceSharingPanel api={buildResourceApi(http)} toasts={toasts} />
-        </EuiPageBody>
-      </EuiPage>
-    </>
+    <div className="panel-restrict-width">
+      <SecurityPluginTopNavMenu
+        {...(props as any)}
+        dataSourcePickerReadOnly={false}
+        setDataSource={setDataSource}
+        selectedDataSource={dataSource}
+      />
+      <PageHeader
+        coreStart={props.coreStart}
+        navigation={props.depsStart.navigation}
+        fallBackComponent={
+          <>
+            <EuiPageHeader>
+              <EuiText size="s">
+                <h1>Resource Access Management</h1>
+              </EuiText>
+            </EuiPageHeader>
+            <EuiSpacer />
+          </>
+        }
+      />
+      <ResourceSharingPanel api={api} toasts={toasts} />
+    </div>
   );
 };
+
+function ResourceAccessManagementAppWithContext(props: Props) {
+  const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
+  const dataSourceFromUrl = dataSourceEnabled ? getDataSourceFromUrl() : LocalCluster;
+  const [dataSource, setDataSource] = useState<DataSourceOption>(dataSourceFromUrl);
+
+  return (
+    <DataSourceContext.Provider value={{ dataSource, setDataSource }}>
+      <ResourceAccessManagementApp {...props} />
+    </DataSourceContext.Provider>
+  );
+}
 
 export function renderApp(
   coreStart: CoreStart,
@@ -92,21 +106,17 @@ export function renderApp(
   redirect: string,
   dataSourceManagement?: DataSourceManagementPluginSetup
 ) {
-  const deps: Props = {
-    coreStart,
-    depsStart,
-    params,
-    config,
-    dataSourceManagement,
-    redirect,
-  };
+  const deps = { coreStart, depsStart, params, config, redirect, dataSourceManagement };
 
-  ReactDOM.render(
+  const element = (
+    // @ts-ignore
     <I18nProvider>
-      <ResourceAccessManagementApp {...deps} />
-    </I18nProvider>,
-    params.element
+      <ResourceAccessManagementAppWithContext {...deps} />
+    </I18nProvider>
   );
 
-  return () => ReactDOM.unmountComponentAtNode(params.element);
+  const root = createRoot(params.element);
+  root.render(element);
+
+  return () => root.unmount();
 }

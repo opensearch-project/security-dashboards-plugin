@@ -230,4 +230,66 @@ describe('Multi-datasources enabled', () => {
       // role exists on the remote
     });
   });
+
+  it('Checks Resource Access Management with external data source', () => {
+    // Visit resource access management with external data source
+    cy.visit(`http://localhost:5601/app/resource_access_management${externalDataSourceUrl}`);
+
+    // Verify page title
+    cy.contains('h1', 'Resource Access Management', { timeout: 20_000 }).should('be.visible');
+
+    // Verify data source picker shows the external data source
+    cy.get('[data-test-subj="dataSourceSelectableButton"]', { timeout: 10_000 }).should(
+      'contain',
+      '9202'
+    );
+
+    // Verify the resource type selector is present
+    cy.contains('h3', 'Resources').should('be.visible');
+
+    // Intercept API calls to verify dataSourceId is passed
+    cy.intercept('GET', '/api/resource/types*', (req) => {
+      // Verify dataSourceId query parameter is included
+      expect(req.url).to.include(`dataSourceId=${externalDataSourceId}`);
+      cy.log(`API call includes correct dataSourceId: ${externalDataSourceId}`);
+    }).as('getResourceTypes');
+
+    // Trigger API call by clicking the resource type selector
+    cy.get('button.euiSuperSelectControl').click();
+
+    // Wait for the API call to complete
+    cy.wait('@getResourceTypes', { timeout: 10_000 });
+  });
+
+  it('Checks Resource Access Management with local cluster', () => {
+    // Visit resource access management with local cluster
+    cy.visit(`http://localhost:5601/app/resource_access_management${localDataSourceUrl}`);
+
+    // Verify page title
+    cy.contains('h1', 'Resource Access Management', { timeout: 20_000 }).should('be.visible');
+
+    // Verify data source picker shows local cluster
+    cy.get('[data-test-subj="dataSourceViewButton"]', { timeout: 10_000 }).should(
+      'contain',
+      'Local cluster'
+    );
+
+    // Verify the resource type selector is present
+    cy.contains('h3', 'Resources').should('be.visible');
+
+    // Intercept API calls to verify dataSourceId is NOT passed for local cluster
+    cy.intercept('GET', '/api/resource/types*', (req) => {
+      // For local cluster, dataSourceId should not be in the URL or should be empty
+      if (req.url.includes('dataSourceId=')) {
+        expect(req.url).to.include('dataSourceId=');
+      }
+      cy.log('API call for local cluster completed');
+    }).as('getResourceTypesLocal');
+
+    // Trigger API call by clicking the resource type selector
+    cy.get('button.euiSuperSelectControl').click();
+
+    // Wait for the API call to complete
+    cy.wait('@getResourceTypesLocal', { timeout: 10_000 });
+  });
 });

@@ -84,4 +84,66 @@ export default function (Client: any, config: any, components: any) {
       fmt: '/_plugins/_security/api/tenancy/config',
     },
   });
+
+  /**
+   * Gets registered resource types.
+   */
+  Client.prototype.opensearch_security.prototype.listResourceTypes = ca({
+    url: {
+      fmt: '/_plugins/_security/api/resource/types',
+    },
+  });
+
+  /**
+   * Gets accessible shared resources filtered by resourceType.
+   */
+  Client.prototype.opensearch_security.prototype.listResourceSharing = ca({
+    url: {
+      fmt: '/_plugins/_security/api/resource/list',
+      req: {
+        resource_type: {
+          type: 'query',
+        },
+      },
+    },
+  });
+
+  /**
+   * Gets sharing info for a specific resource.
+   */
+  Client.prototype.opensearch_security.prototype.getResourceSharing = ca({
+    url: {
+      fmt: '/_plugins/_security/api/resource/share',
+      req: {
+        resource_id: {
+          type: 'query',
+        },
+        resource_type: {
+          type: 'query',
+        },
+      },
+    },
+  });
+
+  /**
+   * Shares a resource.
+   */
+  Client.prototype.opensearch_security.prototype.shareResource = ca({
+    method: 'PUT',
+    needBody: true,
+    url: {
+      fmt: '/_plugins/_security/api/resource/share',
+    },
+  });
+
+  /**
+   * Updates resource sharing.
+   */
+  Client.prototype.opensearch_security.prototype.updateResourceSharing = ca({
+    method: 'POST',
+    needBody: true,
+    url: {
+      fmt: '/_plugins/_security/api/resource/share',
+    },
+  });
 }

@@ -14,14 +14,28 @@
  */
 
 import { CoreStart } from '../../../../src/core/public';
+import {
+  createRequestContextWithDataSourceId,
+  createLocalClusterRequestContext,
+} from '../apps/configuration/utils/request-utils';
 
-export const buildResourceApi = (http: CoreStart['http']) => ({
-  listTypes: () => http.get('/api/resource/types'),
-  listSharingRecords: (type: string) =>
-    http.get('/api/resource/list', { query: { resourceType: type } }),
-  getSharingRecord: (id: string, type: string) =>
-    http.get('/api/resource/view', { query: { resourceId: id, resourceType: type } }),
-  share: (payload: any) => http.put('/api/resource/share', { body: JSON.stringify(payload) }),
-  update: (payload: any) =>
-    http.post('/api/resource/update_sharing', { body: JSON.stringify(payload) }),
-});
+export const buildResourceApi = (http: CoreStart['http'], dataSourceId?: string) => {
+  const context = dataSourceId
+    ? createRequestContextWithDataSourceId(dataSourceId)
+    : createLocalClusterRequestContext();
+
+  return {
+    listTypes: () => context.httpGet({ http, url: '/api/resource/types' }),
+    listSharingRecords: (type: string) =>
+      context.httpGet({ http, url: '/api/resource/list', body: { resourceType: type } }),
+    getSharingRecord: (id: string, type: string) =>
+      context.httpGet({
+        http,
+        url: '/api/resource/view',
+        body: { resourceId: id, resourceType: type },
+      }),
+    share: (payload: any) => context.httpPut({ http, url: '/api/resource/share', body: payload }),
+    update: (payload: any) =>
+      context.httpPost({ http, url: '/api/resource/update_sharing', body: payload }),
+  };
+};
