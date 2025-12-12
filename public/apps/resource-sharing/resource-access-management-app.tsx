@@ -16,7 +16,7 @@
 import './_index.scss';
 
 import React, { useContext, useState, createContext } from 'react';
-import { createRoot } from 'react-dom/client';
+import ReactDOM from 'react-dom';
 import { I18nProvider } from '@osd/i18n/react';
 import { EuiPageHeader, EuiText, EuiSpacer } from '@elastic/eui';
 import { DataSourceOption } from 'src/plugins/data_source_management/public';
@@ -115,8 +115,7 @@ export function renderApp(
     </I18nProvider>
   );
 
-  const root = createRoot(params.element);
-  root.render(element);
+  ReactDOM.render(element, params.element);
 
-  return () => root.unmount();
+  return () => ReactDOM.unmountComponentAtNode(params.element);
 }
