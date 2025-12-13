@@ -519,12 +519,16 @@ const SharedWithExpanded: React.FC<{ sw?: ShareWith }> = ({ sw }) => {
   );
 };
 
+const SELECTED_TYPE_SESSION_KEY = 'security::resourceSharing::selectedType';
+
 /** ---------- Main table ---------- */
 export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
   const [typeOptions, setTypeOptions] = useState<
     Array<{ value: string; text: string; accessLevels: string[] }>
   >([]);
-  const [selectedType, setSelectedType] = useState<string>(''); // no default selection
+  const [selectedType, setSelectedType] = useState<string>(() => {
+    return sessionStorage.getItem(SELECTED_TYPE_SESSION_KEY) || '';
+  });
   const [rows, setRows] = useState<ResourceRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [typesLoading, setTypesLoading] = useState(false);
@@ -535,11 +539,19 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
     resource?: ResourceRow;
   }>({ open: false, mode: 'create' });
 
+  // Persist selectedType to sessionStorage
+  useEffect(() => {
+    if (selectedType) {
+      sessionStorage.setItem(SELECTED_TYPE_SESSION_KEY, selectedType);
+    } else {
+      sessionStorage.removeItem(SELECTED_TYPE_SESSION_KEY);
+    }
+  }, [selectedType]);
+
   /** Page load: Fetch types. Re-fetch when api (data source) changes. */
   useEffect(() => {
     (async () => {
       setTypesLoading(true);
-      setSelectedType('');
       setRows([]);
       try {
         const res = await api.listTypes();
@@ -559,6 +571,29 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
               : a.value.localeCompare(b.value, undefined, { sensitivity: 'base' });
           });
         setTypeOptions(options);
+
+        // If there's a saved selectedType and it exists in the new options, fetch its records
+        const savedType = sessionStorage.getItem(SELECTED_TYPE_SESSION_KEY);
+        if (savedType && options.some((o) => o.value === savedType)) {
+          setSelectedType(savedType);
+          // Fetch records for the saved type
+          setLoading(true);
+          try {
+            const recordsRes = await api.listSharingRecords(savedType);
+            const data: ResourceRow[] = Array.isArray(recordsRes)
+              ? recordsRes
+              : recordsRes?.resources || recordsRes?.body || [];
+            setRows(Array.isArray(data) ? data : []);
+          } catch (e: any) {
+            toasts.addError(e, { title: 'Failed to load resources' });
+            setRows([]);
+          } finally {
+            setLoading(false);
+          }
+        } else {
+          // Clear saved type if it doesn't exist in new data source
+          setSelectedType('');
+        }
       } catch (e: any) {
         toasts.addError(e, { title: 'Failed to load types' });
       } finally {
