@@ -21,8 +21,8 @@ const BASE = 'http://localhost:5601';
 const ROUTE = '/app/resource_access_management';
 
 function closeAnyOpenPopover() {
-  // Close EUI popovers / super-select dropdowns to avoid stray act/portal updates
-  cy.get('body').type('{esc}', { force: true });
+  // Close EUI popovers / super-select dropdowns by clicking outside
+  cy.get('body').click(0, 0);
 }
 
 function pickSampleResourceType() {
@@ -100,11 +100,10 @@ function addRecipientAndSubmit(expectLabel: 'Share' | 'Update Access') {
     cy.get('[role="combobox"]', { timeout: 10_000 }).eq(1).as('usersInput');
   });
 
-  // Wipe all existing pills for that combobox
+  // Wipe all existing pills for that combobox by clicking visible remove buttons
   cy.get('@overlay').within(() => {
     cy.get('@usersInput')
       .closest('.euiComboBox')
-      .as('usersBox')
       .then(($box) => {
         const SEL = [
           '[data-test-subj="comboBoxPill"] button[aria-label="Remove option"]',
@@ -112,10 +111,12 @@ function addRecipientAndSubmit(expectLabel: 'Share' | 'Update Access') {
           '.euiBadge__iconButton[aria-label*="Remove"]',
         ].join(', ');
 
-        const $btns = $box.find(SEL); // jQuery find — NO Cypress retrying
+        const $btns = $box.find(SEL);
         if ($btns.length) {
-          // clear existing entries
-          cy.wrap($btns).each(($btn) => cy.wrap($btn).click({ force: true }));
+          // Clear existing entries by clicking each visible remove button
+          $btns.each((_, btn) => {
+            cy.wrap(btn).should('be.visible').click();
+          });
         }
       });
   });

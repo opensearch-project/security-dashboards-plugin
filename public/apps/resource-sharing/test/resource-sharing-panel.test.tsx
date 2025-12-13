@@ -65,6 +65,7 @@ const rowsPayload = [
 describe('ResourceSharingPanel', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    sessionStorage.clear();
   });
 
   it('shows guidance before a type is selected; loads types once', async () => {
