@@ -535,10 +535,12 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
     resource?: ResourceRow;
   }>({ open: false, mode: 'create' });
 
-  /** Page load: ONLY fetch types. Do NOT preselect or fetch rows. */
+  /** Page load: Fetch types. Re-fetch when api (data source) changes. */
   useEffect(() => {
     (async () => {
       setTypesLoading(true);
+      setSelectedType('');
+      setRows([]);
       try {
         const res = await api.listTypes();
         const raw: TypeEntry[] = Array.isArray(res) ? res : res?.types || [];
@@ -563,8 +565,7 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
         setTypesLoading(false);
       }
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [toasts]);
+  }, [api, toasts]);
 
   // GET visible resource sharing records for selected type
   const fetchSharingRecords = async (type: string) => {
