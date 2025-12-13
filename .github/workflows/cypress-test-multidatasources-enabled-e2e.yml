@@ -75,6 +75,7 @@ jobs:
           security_config_file: config_custom.yml
           port: 9202
           jdk-version: 21
+          resource-sharing-enabled: true
 
       - name: Check OpenSearch is running
           # Verify that the server is operational
