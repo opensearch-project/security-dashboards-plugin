@@ -99,6 +99,15 @@ export class RequestContext {
     const { http, url, ignores } = params;
     return await requestWithIgnores<T>({ requestFunc: http.get, url, ignores, query: this.query });
   }
+
+  public async httpGetWithQuery<T>(
+    http: HttpStart,
+    url: string,
+    queryParams?: Record<string, any>
+  ): Promise<T> {
+    const query = { ...this.query, ...queryParams };
+    return (await http.get(url, { query })) as T;
+  }
 }
 
 export async function request<T>(params: ExecuteRequestParams): Promise<T> {

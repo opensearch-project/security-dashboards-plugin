@@ -99,10 +99,11 @@ export default function (Client: any, config: any, components: any) {
    */
   Client.prototype.opensearch_security.prototype.listResourceSharing = ca({
     url: {
-      fmt: '/_plugins/_security/api/resource/list',
+      fmt: '/_plugins/_security/api/resource/list?resource_type=<%=resource_type%>',
       req: {
         resource_type: {
-          type: 'query',
+          type: 'string',
+          required: true,
         },
       },
     },
@@ -113,13 +114,16 @@ export default function (Client: any, config: any, components: any) {
    */
   Client.prototype.opensearch_security.prototype.getResourceSharing = ca({
     url: {
-      fmt: '/_plugins/_security/api/resource/share',
+      fmt:
+        '/_plugins/_security/api/resource/share?resource_id=<%=resource_id%>&resource_type=<%=resource_type%>',
       req: {
         resource_id: {
-          type: 'query',
+          type: 'string',
+          required: true,
         },
         resource_type: {
-          type: 'query',
+          type: 'string',
+          required: true,
         },
       },
     },

@@ -17,12 +17,16 @@
  * @jest-environment jsdom
  */
 import '@testing-library/jest-dom';
+import React from 'react';
 import { renderApp } from '../resource-access-management-app';
 
 function mockCoreStart() {
   return {
     http: {} as any,
     notifications: { toasts: { addError: jest.fn(), addSuccess: jest.fn() } } as any,
+    uiSettings: { get: jest.fn().mockReturnValue(false) } as any,
+    chrome: { setBreadcrumbs: jest.fn() } as any,
+    savedObjects: { client: {} } as any,
   } as any;
 }
 
@@ -30,6 +34,16 @@ function mockDepsStart(withDataSource = true) {
   return {
     navigation: { ui: {} } as any,
     dataSource: withDataSource ? { dataSourceEnabled: true } : undefined,
+  } as any;
+}
+
+function mockDataSourceManagement() {
+  return {
+    ui: {
+      getDataSourceMenu: jest.fn(() => {
+        return () => <div className="dataSourceMenu">Data Source Menu</div>;
+      }),
+    },
   } as any;
 }
 
@@ -44,7 +58,7 @@ describe('ResourceAccessManagementApp', () => {
       { element: elem } as any,
       {} as any,
       '',
-      {} as any
+      mockDataSourceManagement()
     );
 
     // Rendered into elem, so query inside it
@@ -67,7 +81,7 @@ describe('ResourceAccessManagementApp', () => {
       { element: elem } as any,
       {} as any,
       '',
-      {} as any
+      undefined
     );
 
     expect(elem.textContent).toContain('Resource Access Management');

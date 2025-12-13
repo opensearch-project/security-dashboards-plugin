@@ -25,15 +25,11 @@ export const buildResourceApi = (http: CoreStart['http'], dataSourceId?: string)
     : createLocalClusterRequestContext();
 
   return {
-    listTypes: () => context.httpGet({ http, url: '/api/resource/types' }),
+    listTypes: () => context.httpGetWithQuery(http, '/api/resource/types'),
     listSharingRecords: (type: string) =>
-      context.httpGet({ http, url: '/api/resource/list', body: { resourceType: type } }),
+      context.httpGetWithQuery(http, '/api/resource/list', { resourceType: type }),
     getSharingRecord: (id: string, type: string) =>
-      context.httpGet({
-        http,
-        url: '/api/resource/view',
-        body: { resourceId: id, resourceType: type },
-      }),
+      context.httpGetWithQuery(http, '/api/resource/view', { resourceId: id, resourceType: type }),
     share: (payload: any) => context.httpPut({ http, url: '/api/resource/share', body: payload }),
     update: (payload: any) =>
       context.httpPost({ http, url: '/api/resource/update_sharing', body: payload }),

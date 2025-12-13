@@ -355,6 +355,17 @@ export class SecurityPlugin
               'Configure how users access data in OpenSearch with authentication, access control and audit logging.',
           }),
         });
+        if (resourceSharingEnabled) {
+          deps.managementOverview.register({
+            id: PLUGIN_RESOURCE_ACCESS_MANAGEMENT_APP_ID,
+            title: 'Resource Access Management',
+            order: 10050,
+            description: i18n.translate('security.resourceAccessManagement.description', {
+              defaultMessage:
+                'Share and manage access to individual resources (detectors, forecasters, etc.).',
+            }),
+          });
+        }
       }
 
       dataSource$.subscribe((dataSourceOption) => {
@@ -393,7 +404,6 @@ export class SecurityPlugin
       core.application.register({
         id: APP_ID_RESOURCE_ACCESS_MANAGEMENT,
         title: 'Resource Access Management',
-        order: 8045,
         workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
         // If nav groups are enabled, hide the legacy nav link (we’ll add it via navGroup below);
         // otherwise, make the classic left-nav link visible.

@@ -18,7 +18,7 @@ import './_index.scss';
 import React, { useContext, useState, createContext } from 'react';
 import ReactDOM from 'react-dom';
 import { I18nProvider } from '@osd/i18n/react';
-import { EuiPageHeader, EuiText, EuiSpacer } from '@elastic/eui';
+import { EuiPage, EuiPageBody, EuiPageHeader, EuiTitle, EuiText, EuiSpacer } from '@elastic/eui';
 import { DataSourceOption } from 'src/plugins/data_source_management/public';
 
 import { AppMountParameters, CoreStart } from '../../../../../src/core/public';
@@ -28,7 +28,6 @@ import { SecurityPluginStartDependencies, ClientConfigType } from '../../types';
 import { ResourceSharingPanel } from './resource-sharing-panel';
 import { buildResourceApi } from '../../utils/resource-sharing-utils';
 import { SecurityPluginTopNavMenu } from '../configuration/top-nav-menu';
-import { PageHeader } from '../configuration/header/header-components';
 import { getDataSourceFromUrl, LocalCluster } from '../../utils/datasource-utils';
 
 export interface DataSourceContextType {
@@ -60,29 +59,30 @@ const ResourceAccessManagementApp: React.FC<Props> = (props) => {
   ]);
 
   return (
-    <div className="panel-restrict-width">
+    <>
       <SecurityPluginTopNavMenu
         {...(props as any)}
         dataSourcePickerReadOnly={false}
         setDataSource={setDataSource}
         selectedDataSource={dataSource}
       />
-      <PageHeader
-        coreStart={props.coreStart}
-        navigation={props.depsStart.navigation}
-        fallBackComponent={
-          <>
-            <EuiPageHeader>
-              <EuiText size="s">
+      <EuiPage restrictWidth="2000px">
+        <EuiPageBody component="main">
+          <EuiPageHeader>
+            <div>
+              <EuiTitle size="l">
                 <h1>Resource Access Management</h1>
+              </EuiTitle>
+              <EuiText color="subdued" size="s">
+                Manage sharing for detectors, forecasters, and more.
               </EuiText>
-            </EuiPageHeader>
-            <EuiSpacer />
-          </>
-        }
-      />
-      <ResourceSharingPanel api={api} toasts={toasts} />
-    </div>
+            </div>
+          </EuiPageHeader>
+          <EuiSpacer size="m" />
+          <ResourceSharingPanel api={api} toasts={toasts} />
+        </EuiPageBody>
+      </EuiPage>
+    </>
   );
 };
 
