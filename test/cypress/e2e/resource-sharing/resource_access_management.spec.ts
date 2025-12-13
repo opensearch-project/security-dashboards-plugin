@@ -167,45 +167,53 @@ describe('Resource Access Management Dashboard', () => {
   it('renders data source picker when data source is enabled', () => {
     cy.visit(BASE + ROUTE);
 
+    // Wait for page to load
+    cy.contains('h1', 'Resource Access Management', { timeout: 20_000 }).should('be.visible');
+
     // Check if data source picker is rendered (when MDS is enabled)
-    // The data source menu is rendered by SecurityPluginTopNavMenu
-    cy.get('[class*="dataSourceMenu"]', { timeout: 10_000 }).then(($el) => {
-      if ($el.length > 0) {
-        // Data source is enabled - verify the picker is visible
-        cy.wrap($el).should('be.visible');
-        cy.log('Data source picker is enabled and visible');
+    // The data source picker uses data-test-subj="dataSourceSelectableButton" or "dataSourceViewButton"
+    cy.get('body').then(($body) => {
+      const hasSelectableButton = $body.find('[data-test-subj="dataSourceSelectableButton"]')
+        .length;
+      const hasViewButton = $body.find('[data-test-subj="dataSourceViewButton"]').length;
+
+      if (hasSelectableButton) {
+        cy.get('[data-test-subj="dataSourceSelectableButton"]').should('be.visible');
+        cy.log('Data source picker (selectable) is enabled and visible');
+      } else if (hasViewButton) {
+        cy.get('[data-test-subj="dataSourceViewButton"]').should('be.visible');
+        cy.log('Data source picker (view-only) is enabled and visible');
       } else {
-        // Data source is not enabled - this is also valid
+        // Data source is not enabled - this is also valid for local cluster mode
         cy.log('Data source picker is not enabled (local cluster mode)');
       }
     });
   });
 
   it('uses correct data source when making API calls', () => {
+    // Set up intercept before visiting the page
+    cy.intercept('GET', '/api/resource/types*').as('getResourceTypes');
+
     cy.visit(BASE + ROUTE);
 
-    // Intercept API calls to verify dataSourceId is passed in query params
-    cy.intercept('GET', '/api/resource/types*', (req) => {
-      // Log the request to verify dataSourceId is included if MDS is enabled
-      cy.log(`API call: ${req.url}`);
-
-      // Check if dataSourceId query param is present
-      if (req.url.includes('dataSourceId=')) {
-        cy.log('dataSourceId parameter found in API call');
-      } else {
-        cy.log('No dataSourceId parameter (local cluster mode)');
-      }
-
-      req.reply((res) => {
-        res.send({ statusCode: 200 });
-      });
-    }).as('getResourceTypes');
+    // Wait for page to load
+    cy.contains('h1', 'Resource Access Management', { timeout: 20_000 }).should('be.visible');
 
     // Trigger the API call by selecting a resource type
     pickSampleResourceType();
 
-    // Verify the API was called
-    cy.wait('@getResourceTypes', { timeout: 10_000 });
+    // Verify the API was called and check the URL
+    cy.wait('@getResourceTypes', { timeout: 10_000 }).then((interception) => {
+      const url = interception.request.url;
+      cy.log(`API call: ${url}`);
+
+      // Check if dataSourceId query param is present
+      if (url.includes('dataSourceId=')) {
+        cy.log('dataSourceId parameter found in API call');
+      } else {
+        cy.log('No dataSourceId parameter (local cluster mode)');
+      }
+    });
   });
 
   it('selects the first available type and loads the table (rows may be empty)', () => {
