@@ -15,6 +15,10 @@ inputs:
     description: 'The base path for OpenSearch Dashboards'
     required: false
     default: ''
+  resource_sharing_enabled:
+    description: 'Resource sharing feature flag'
+    required: false
+    default: "false"
 
 runs:
   using: "composite"
@@ -44,6 +48,7 @@ runs:
         admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
         security_config_file: ${{ inputs.security_config_file }}
         jdk-version: 21
+        resource-sharing-enabled: ${{ inputs.resource_sharing_enabled }}
 
     # OSD bootstrap
     - name: Run Dashboard with Security Dashboards Plugin
