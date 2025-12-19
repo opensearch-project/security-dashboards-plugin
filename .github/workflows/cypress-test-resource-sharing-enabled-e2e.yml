@@ -118,6 +118,7 @@ jobs:
           opensearch_security.multitenancy.tenants.preferred: ["Private", "Global"]
           opensearch_security.readonly_mode.roles: ["kibana_read_only"]
           opensearch_security.cookie.secure: false
+          data_source.enabled: true
           home.disableWelcomeScreen: true
           EOT
         shell: bash

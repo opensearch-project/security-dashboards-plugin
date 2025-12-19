@@ -75,6 +75,7 @@ jobs:
           security_config_file: config_custom.yml
           port: 9202
           jdk-version: 21
+          resource-sharing-enabled: true
 
       - name: Check OpenSearch is running
           # Verify that the server is operational
@@ -107,3 +108,4 @@ jobs:
         with:
           dashboards_config_file: opensearch_dashboards_multidatasources.yml
           yarn_command: 'CYPRESS_VERIFY_TIMEOUT=60000 yarn cypress:run --browser chrome --headless --env LOGIN_AS_ADMIN=true --spec "test/cypress/e2e/multi-datasources/multi_datasources_enabled.spec.js"'
+          resource_sharing_enabled: "true"

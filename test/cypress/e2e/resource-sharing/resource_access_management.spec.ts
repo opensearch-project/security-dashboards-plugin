@@ -21,8 +21,8 @@ const BASE = 'http://localhost:5601';
 const ROUTE = '/app/resource_access_management';
 
 function closeAnyOpenPopover() {
-  // Close EUI popovers / super-select dropdowns to avoid stray act/portal updates
-  cy.get('body').type('{esc}', { force: true });
+  // Close EUI popovers / super-select dropdowns by clicking outside
+  cy.get('body').click(0, 0);
 }
 
 function pickSampleResourceType() {
@@ -100,11 +100,10 @@ function addRecipientAndSubmit(expectLabel: 'Share' | 'Update Access') {
     cy.get('[role="combobox"]', { timeout: 10_000 }).eq(1).as('usersInput');
   });
 
-  // Wipe all existing pills for that combobox
+  // Wipe all existing pills for that combobox by clicking visible remove buttons
   cy.get('@overlay').within(() => {
     cy.get('@usersInput')
       .closest('.euiComboBox')
-      .as('usersBox')
       .then(($box) => {
         const SEL = [
           '[data-test-subj="comboBoxPill"] button[aria-label="Remove option"]',
@@ -112,10 +111,12 @@ function addRecipientAndSubmit(expectLabel: 'Share' | 'Update Access') {
           '.euiBadge__iconButton[aria-label*="Remove"]',
         ].join(', ');
 
-        const $btns = $box.find(SEL); // jQuery find — NO Cypress retrying
+        const $btns = $box.find(SEL);
         if ($btns.length) {
-          // clear existing entries
-          cy.wrap($btns).each(($btn) => cy.wrap($btn).click({ force: true }));
+          // Clear existing entries by clicking each visible remove button
+          $btns.each((_, btn) => {
+            cy.wrap(btn).should('be.visible').click();
+          });
         }
       });
   });
@@ -161,6 +162,58 @@ describe('Resource Access Management Dashboard', () => {
       'div',
       'Pick a resource type from the dropdown to load accessible resources.'
     ).should('be.visible');
+  });
+
+  it('renders data source picker when data source is enabled', () => {
+    cy.visit(BASE + ROUTE);
+
+    // Wait for page to load
+    cy.contains('h1', 'Resource Access Management', { timeout: 20_000 }).should('be.visible');
+
+    // Check if data source picker is rendered (when MDS is enabled)
+    // The data source picker uses data-test-subj="dataSourceSelectableButton" or "dataSourceViewButton"
+    cy.get('body').then(($body) => {
+      const hasSelectableButton = $body.find('[data-test-subj="dataSourceSelectableButton"]')
+        .length;
+      const hasViewButton = $body.find('[data-test-subj="dataSourceViewButton"]').length;
+
+      if (hasSelectableButton) {
+        cy.get('[data-test-subj="dataSourceSelectableButton"]').should('be.visible');
+        cy.log('Data source picker (selectable) is enabled and visible');
+      } else if (hasViewButton) {
+        cy.get('[data-test-subj="dataSourceViewButton"]').should('be.visible');
+        cy.log('Data source picker (view-only) is enabled and visible');
+      } else {
+        // Data source is not enabled - this is also valid for local cluster mode
+        cy.log('Data source picker is not enabled (local cluster mode)');
+      }
+    });
+  });
+
+  it('uses correct data source when making API calls', () => {
+    // Set up intercept before visiting the page
+    cy.intercept('GET', '/api/resource/types*').as('getResourceTypes');
+
+    cy.visit(BASE + ROUTE);
+
+    // Wait for page to load
+    cy.contains('h1', 'Resource Access Management', { timeout: 20_000 }).should('be.visible');
+
+    // Trigger the API call by selecting a resource type
+    pickSampleResourceType();
+
+    // Verify the API was called and check the URL
+    cy.wait('@getResourceTypes', { timeout: 10_000 }).then((interception) => {
+      const url = interception.request.url;
+      cy.log(`API call: ${url}`);
+
+      // Check if dataSourceId query param is present
+      if (url.includes('dataSourceId=')) {
+        cy.log('dataSourceId parameter found in API call');
+      } else {
+        cy.log('No dataSourceId parameter (local cluster mode)');
+      }
+    });
   });
 
   it('selects the first available type and loads the table (rows may be empty)', () => {

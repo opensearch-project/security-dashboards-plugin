@@ -25,7 +25,7 @@ const createDataSource = () => {
         title: Cypress.env('externalDataSourceLabel'),
         endpoint: Cypress.env('externalDataSourceEndpoint'),
         installedPlugins: ['opensearch-security'],
-        dataSourceVersion: '2.15.0',
+        dataSourceVersion: '3.4.0',
         auth: {
           type: 'username_password',
           credentials: {
@@ -228,6 +228,56 @@ describe('Multi-datasources enabled', () => {
       cy.get('[data-test-subj="checkboxSelectRow-9202-role"]').should('exist');
 
       // role exists on the remote
+    });
+  });
+
+  it('Checks Resource Access Management with external data source', () => {
+    // Set up intercept BEFORE visiting the page since the API call happens on page load
+    cy.intercept('GET', '/api/resource/types*').as('getResourceTypes');
+
+    cy.visit(`http://localhost:5601/app/resource_access_management${externalDataSourceUrl}`);
+
+    // Verify page title
+    cy.contains('h1', 'Resource Access Management', { timeout: 20_000 }).should('be.visible');
+
+    // Verify data source picker shows the external data source
+    cy.get('[data-test-subj="dataSourceSelectableButton"]', { timeout: 10_000 }).should(
+      'contain',
+      '9202'
+    );
+
+    // Verify the resource type selector is present
+    cy.contains('h3', 'Resources').should('be.visible');
+
+    // Wait for the API call and verify dataSourceId is passed
+    cy.wait('@getResourceTypes', { timeout: 10_000 }).then((interception) => {
+      expect(interception.request.url).to.include(`dataSourceId=${externalDataSourceId}`);
+      cy.log(`API call includes correct dataSourceId: ${externalDataSourceId}`);
+    });
+  });
+
+  it('Checks Resource Access Management with local cluster', () => {
+    // Set up intercept BEFORE visiting the page since the API call happens on page load
+    cy.intercept('GET', '/api/resource/types*').as('getResourceTypesLocal');
+
+    cy.visit(`http://localhost:5601/app/resource_access_management${localDataSourceUrl}`);
+
+    // Verify page title
+    cy.contains('h1', 'Resource Access Management', { timeout: 20_000 }).should('be.visible');
+
+    // Verify data source picker shows local cluster
+    cy.get('[data-test-subj="dataSourceSelectableButton"]', { timeout: 10_000 }).should(
+      'contain',
+      'Local cluster'
+    );
+
+    // Verify the resource type selector is present
+    cy.contains('h3', 'Resources').should('be.visible');
+
+    // Wait for the API call - for local cluster, dataSourceId may or may not be present
+    cy.wait('@getResourceTypesLocal', { timeout: 10_000 }).then((interception) => {
+      cy.log('API call for local cluster completed');
+      cy.log(`Request URL: ${interception.request.url}`);
     });
   });
 });

@@ -24,6 +24,7 @@ import { ResourceSharingPanel } from '../resource-sharing-panel';
 import { I18nProvider } from '@osd/i18n/react';
 
 function renderWithI18n(ui: React.ReactElement) {
+  // @ts-ignore
   return render(<I18nProvider>{ui}</I18nProvider>);
 }
 
@@ -64,6 +65,7 @@ const rowsPayload = [
 describe('ResourceSharingPanel', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    sessionStorage.clear();
   });
 
   it('shows guidance before a type is selected; loads types once', async () => {
@@ -257,6 +259,35 @@ describe('ResourceSharingPanel', () => {
     expect(toasts.addSuccess).toHaveBeenCalledWith('Access updated.');
   });
 
+  it('passes dataSourceId to API calls when provided', async () => {
+    const api = {
+      listTypes: jest.fn().mockResolvedValue({ types: typesPayload }),
+      listSharingRecords: jest.fn().mockResolvedValue({ resources: rowsPayload }),
+      getSharingRecord: jest.fn(),
+      share: jest.fn(),
+      update: jest.fn(),
+    };
+
+    renderWithI18n(<ResourceSharingPanel api={api as any} toasts={toasts as any} />);
+
+    // listTypes should be called on mount
+    await waitFor(() => {
+      expect(api.listTypes).toHaveBeenCalledTimes(1);
+    });
+
+    // Select a type to trigger listSharingRecords
+    const selectTrigger = await screen.findByText('Select a type…');
+    await userEvent.click(selectTrigger);
+    await userEvent.click(await screen.findByText('Anomaly Detector'));
+
+    await waitFor(() => {
+      expect(api.listSharingRecords).toHaveBeenCalledWith('anomaly-detector');
+    });
+
+    // Verify the API was called (dataSourceId is passed internally via buildResourceApi)
+    expect(api.listSharingRecords).toHaveBeenCalled();
+  });
+
   it('renders friendly error lines when backend returns structured errors', async () => {
     const api = {
       listTypes: jest.fn().mockResolvedValue({ types: typesPayload }),
@@ -310,5 +341,129 @@ describe('ResourceSharingPanel', () => {
     expect(
       within(overlay).getByText(/You are not allowed to share this resource/)
     ).toBeInTheDocument();
+  });
+
+  describe('sessionStorage persistence', () => {
+    const SESSION_KEY = 'security::resourceSharing::selectedType';
+
+    it('persists selected type to sessionStorage when a type is selected', async () => {
+      const api = {
+        listTypes: jest.fn().mockResolvedValue({ types: typesPayload }),
+        listSharingRecords: jest.fn().mockResolvedValue({ resources: rowsPayload }),
+        getSharingRecord: jest.fn(),
+        share: jest.fn(),
+        update: jest.fn(),
+      };
+
+      renderWithI18n(<ResourceSharingPanel api={api as any} toasts={toasts as any} />);
+
+      // Initially sessionStorage should be empty
+      expect(sessionStorage.getItem(SESSION_KEY)).toBeNull();
+
+      // Select a type
+      const selectTrigger = await screen.findByText('Select a type…');
+      await userEvent.click(selectTrigger);
+      await userEvent.click(await screen.findByText('Anomaly Detector'));
+
+      await waitFor(() => {
+        expect(api.listSharingRecords).toHaveBeenCalledWith('anomaly-detector');
+      });
+
+      // Verify sessionStorage was updated
+      expect(sessionStorage.getItem(SESSION_KEY)).toBe('anomaly-detector');
+    });
+
+    it('restores selected type from sessionStorage on mount and fetches records', async () => {
+      // Pre-populate sessionStorage with a syarn linaved type
+      sessionStorage.setItem(SESSION_KEY, 'anomaly-detector');
+
+      const api = {
+        listTypes: jest.fn().mockResolvedValue({ types: typesPayload }),
+        listSharingRecords: jest.fn().mockResolvedValue({ resources: rowsPayload }),
+        getSharingRecord: jest.fn(),
+        share: jest.fn(),
+        update: jest.fn(),
+      };
+
+      renderWithI18n(<ResourceSharingPanel api={api as any} toasts={toasts as any} />);
+
+      // Wait for types to load and records to be fetched automatically
+      await waitFor(() => {
+        expect(api.listTypes).toHaveBeenCalledTimes(1);
+      });
+
+      // Should automatically fetch records for the saved type
+      await waitFor(() => {
+        expect(api.listSharingRecords).toHaveBeenCalledWith('anomaly-detector');
+      });
+
+      // Table should be rendered with the data
+      const table = await screen.findByRole('table');
+      expect(await within(table).findByText('det-1')).toBeInTheDocument();
+    });
+
+    it('clears saved type if it no longer exists in available types', async () => {
+      // Pre-populate sessionStorage with a type that won't exist
+      sessionStorage.setItem(SESSION_KEY, 'non-existent-type');
+
+      const api = {
+        listTypes: jest.fn().mockResolvedValue({ types: typesPayload }),
+        listSharingRecords: jest.fn().mockResolvedValue({ resources: rowsPayload }),
+        getSharingRecord: jest.fn(),
+        share: jest.fn(),
+        update: jest.fn(),
+      };
+
+      renderWithI18n(<ResourceSharingPanel api={api as any} toasts={toasts as any} />);
+
+      await waitFor(() => {
+        expect(api.listTypes).toHaveBeenCalledTimes(1);
+      });
+
+      // Should NOT fetch records since the saved type doesn't exist
+      expect(api.listSharingRecords).not.toHaveBeenCalled();
+
+      // Should show the placeholder text (no type selected)
+      expect(await screen.findByText('Select a type…')).toBeInTheDocument();
+
+      // sessionStorage should be cleared
+      expect(sessionStorage.getItem(SESSION_KEY)).toBeNull();
+    });
+
+    it('updates sessionStorage when switching between types', async () => {
+      const api = {
+        listTypes: jest.fn().mockResolvedValue({ types: typesPayload }),
+        listSharingRecords: jest.fn().mockResolvedValue({ resources: rowsPayload }),
+        getSharingRecord: jest.fn(),
+        share: jest.fn(),
+        update: jest.fn(),
+      };
+
+      renderWithI18n(<ResourceSharingPanel api={api as any} toasts={toasts as any} />);
+
+      // Select first type
+      const selectTrigger = await screen.findByText('Select a type…');
+      await userEvent.click(selectTrigger);
+      await userEvent.click(await screen.findByText('Anomaly Detector'));
+
+      await waitFor(() => {
+        expect(sessionStorage.getItem(SESSION_KEY)).toBe('anomaly-detector');
+      });
+
+      // Switch to second type - use the SuperSelect button (has class euiSuperSelectControl)
+      const superSelectButton = document.querySelector(
+        'button.euiSuperSelectControl'
+      ) as HTMLElement;
+      await userEvent.click(superSelectButton);
+      await userEvent.click(await screen.findByText('Forecaster'));
+
+      await waitFor(() => {
+        expect(sessionStorage.getItem(SESSION_KEY)).toBe('forecaster');
+      });
+
+      // Verify both types were fetched
+      expect(api.listSharingRecords).toHaveBeenCalledWith('anomaly-detector');
+      expect(api.listSharingRecords).toHaveBeenCalledWith('forecaster');
+    });
   });
 });

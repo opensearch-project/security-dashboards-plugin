@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Features
 
 ### Enhancements
+- Adds multi-datasource support in Resource Access Management app ([#2350](https://github.com/opensearch-project/security-dashboards-plugin/pull/2350))
 
 
 ### Bug Fixes

@@ -80,23 +80,31 @@ const LIST_TYPES_API = `${SECURITY_RESOURCE_API_PREFIX}/types`;
 const LIST_SHARING_INFO_API = `${SECURITY_RESOURCE_API_PREFIX}/list`;
 const SHARE_API = `${SECURITY_RESOURCE_API_PREFIX}/share`;
 
-export function defineResourceAccessManagementRoutes(router: IRouter) {
+export function defineResourceAccessManagementRoutes(router: IRouter, dataSourceEnabled: boolean) {
   // GET registered resource types
   router.get(
     {
       path: '/api/resource/types',
-      validate: false,
+      validate: {
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
+      },
     },
     async (context, request, response) => {
       try {
-        const client = context.core.opensearch.client.asCurrentUser;
-
-        const result = await client.transport.request({
-          method: 'GET',
-          path: LIST_TYPES_API,
-        });
-
-        return response.ok({ body: result.body });
+        if (dataSourceEnabled && request.query?.dataSourceId) {
+          const client = context.dataSource.opensearch.legacy.getClient(request.query.dataSourceId);
+          const result = await client.callAPI('opensearch_security.listResourceTypes', {});
+          return response.ok({ body: result as any });
+        } else {
+          const client = context.core.opensearch.client.asCurrentUser;
+          const result = await client.transport.request({
+            method: 'GET',
+            path: LIST_TYPES_API,
+          });
+          return response.ok({ body: result.body });
+        }
       } catch (error: any) {
         return response.customError({ statusCode: error.statusCode || 500, body: error.message });
       }
@@ -110,21 +118,28 @@ export function defineResourceAccessManagementRoutes(router: IRouter) {
       validate: {
         query: schema.object({
           resourceType: schema.string(),
+          dataSourceId: schema.maybe(schema.string()),
         }),
       },
     },
     async (context, request, response) => {
       try {
-        const client = context.core.opensearch.client.asCurrentUser;
         const { resourceType } = request.query as { resourceType: string };
-
-        const result = await client.transport.request({
-          method: 'GET',
-          path: LIST_SHARING_INFO_API,
-          querystring: { resource_type: resourceType }, // backend expects snake_case
-        });
-
-        return response.ok({ body: result.body });
+        if (dataSourceEnabled && request.query?.dataSourceId) {
+          const client = context.dataSource.opensearch.legacy.getClient(request.query.dataSourceId);
+          const result = await client.callAPI('opensearch_security.listResourceSharing', {
+            resource_type: resourceType,
+          });
+          return response.ok({ body: result as any });
+        } else {
+          const client = context.core.opensearch.client.asCurrentUser;
+          const result = await client.transport.request({
+            method: 'GET',
+            path: LIST_SHARING_INFO_API,
+            querystring: { resource_type: resourceType },
+          });
+          return response.ok({ body: result.body });
+        }
       } catch (error: any) {
         return response.customError({ statusCode: error.statusCode || 500, body: error.message });
       }
@@ -139,24 +154,32 @@ export function defineResourceAccessManagementRoutes(router: IRouter) {
         query: schema.object({
           resourceId: schema.string(),
           resourceType: schema.string(),
+          dataSourceId: schema.maybe(schema.string()),
         }),
       },
     },
     async (context, request, response) => {
       try {
-        const client = context.core.opensearch.client.asCurrentUser;
         const { resourceId, resourceType } = request.query as {
           resourceId: string;
           resourceType: string;
         };
-
-        const result = await client.transport.request({
-          method: 'GET',
-          path: SHARE_API,
-          querystring: { resource_id: resourceId, resource_type: resourceType }, // backend expects snake_case
-        });
-
-        return response.ok({ body: result.body });
+        if (dataSourceEnabled && request.query?.dataSourceId) {
+          const client = context.dataSource.opensearch.legacy.getClient(request.query.dataSourceId);
+          const result = await client.callAPI('opensearch_security.getResourceSharing', {
+            resource_id: resourceId,
+            resource_type: resourceType,
+          });
+          return response.ok({ body: result as any });
+        } else {
+          const client = context.core.opensearch.client.asCurrentUser;
+          const result = await client.transport.request({
+            method: 'GET',
+            path: SHARE_API,
+            querystring: { resource_id: resourceId, resource_type: resourceType },
+          });
+          return response.ok({ body: result.body });
+        }
       } catch (error: any) {
         return response.customError({ statusCode: error.statusCode || 500, body: error.message });
       }
@@ -165,16 +188,30 @@ export function defineResourceAccessManagementRoutes(router: IRouter) {
 
   // PUT share a resource — requires `share_with`
   router.put(
-    { path: '/api/resource/share', validate: { body: putBodySchema } },
+    {
+      path: '/api/resource/share',
+      validate: {
+        body: putBodySchema,
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
+      },
+    },
     async (context, request, response) => {
       try {
-        const client = context.core.opensearch.client.asCurrentUser;
-        const result = await client.transport.request({
-          method: 'PUT',
-          path: SHARE_API,
-          body: request.body,
-        });
-        return response.ok({ body: result.body });
+        if (dataSourceEnabled && request.query?.dataSourceId) {
+          const client = context.dataSource.opensearch.legacy.getClient(request.query.dataSourceId);
+          const result = await client.callAPI('opensearch_security.shareResource', request.body);
+          return response.ok({ body: result as any });
+        } else {
+          const client = context.core.opensearch.client.asCurrentUser;
+          const result = await client.transport.request({
+            method: 'PUT',
+            path: SHARE_API,
+            body: request.body,
+          });
+          return response.ok({ body: result.body });
+        }
       } catch (error: any) {
         return response.customError({ statusCode: error.statusCode || 500, body: error.message });
       }
@@ -183,16 +220,33 @@ export function defineResourceAccessManagementRoutes(router: IRouter) {
 
   // POST update sharing — `add`/`revoke` adhere to share_with schema
   router.post(
-    { path: '/api/resource/update_sharing', validate: { body: postBodySchema } },
+    {
+      path: '/api/resource/update_sharing',
+      validate: {
+        body: postBodySchema,
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
+      },
+    },
     async (context, request, response) => {
       try {
-        const client = context.core.opensearch.client.asCurrentUser;
-        const result = await client.transport.request({
-          method: 'POST',
-          path: SHARE_API,
-          body: request.body,
-        });
-        return response.ok({ body: result.body });
+        if (dataSourceEnabled && request.query?.dataSourceId) {
+          const client = context.dataSource.opensearch.legacy.getClient(request.query.dataSourceId);
+          const result = await client.callAPI(
+            'opensearch_security.updateResourceSharing',
+            request.body
+          );
+          return response.ok({ body: result as any });
+        } else {
+          const client = context.core.opensearch.client.asCurrentUser;
+          const result = await client.transport.request({
+            method: 'POST',
+            path: SHARE_API,
+            body: request.body,
+          });
+          return response.ok({ body: result.body });
+        }
       } catch (error: any) {
         return response.customError({ statusCode: error.statusCode || 500, body: error.message });
       }
