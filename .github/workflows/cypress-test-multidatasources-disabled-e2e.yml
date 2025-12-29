@@ -2,6 +2,10 @@ name: E2E multi datasources disabled workflow
 
 on: [ push, pull_request ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 env:
   CI: 1
   # avoid warnings like "tput: No value for $TERM and no -T specified"

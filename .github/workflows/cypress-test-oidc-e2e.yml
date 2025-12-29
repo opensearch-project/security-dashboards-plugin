@@ -2,6 +2,10 @@ name: Snapshot based E2E OIDC tests workflow
 
 on: [ push, pull_request ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 env:
   KEYCLOAK_VERSION: '21.0.1'
   TEST_KEYCLOAK_CLIENT_SECRET: 'oacHfNaXyy81r2uHq1A9RY4ASryre4rZ'

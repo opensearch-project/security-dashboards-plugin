@@ -2,6 +2,10 @@ name: Cypress Tests Multitenancy Disabled
 
 on: [ push, pull_request ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 env:
   TEST_BROWSER_HEADLESS: 1
   CI: 1
