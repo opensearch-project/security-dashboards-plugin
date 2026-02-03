@@ -36,10 +36,6 @@ const columns = [
     name: 'HTTP',
   },
   {
-    field: 'transport_enabled',
-    name: 'TRANSPORT',
-  },
-  {
     field: 'http_type',
     name: 'HTTP type',
   },
@@ -84,8 +80,6 @@ export function AuthenticationSequencePanel(props: { authc: []; loading: boolean
       domain_name: domain,
       // @ts-ignore
       http_enabled: data.http_enabled ? ENABLED_STRING : DISABLED_STRING,
-      // @ts-ignore
-      transport_enabled: data.transport_enabled ? ENABLED_STRING : DISABLED_STRING,
       http_type: httpAuthenticator.type,
       http_challenge: httpAuthenticator.challenge ? TRUE_STRING : FALSE_STRING,
       http_configuration: httpAuthenticator.config,

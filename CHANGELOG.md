@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Refactoring
 
 ### Maintenance
+- Remove transport_enabled column from the authentication sequence table ([#2363](https://github.com/opensearch-project/security-dashboards-plugin/pull/2363))
 
 ### Documentation
 
