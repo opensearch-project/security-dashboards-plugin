@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import { useDeleteConfirmState } from '../delete-confirm-modal-utils';
 
 describe('Delete confirm modal utils', () => {
