@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import { useToastState, createUnknownErrorToast, getSuccessToastMessage } from '../toast-utils';
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 
