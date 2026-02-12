@@ -23,7 +23,10 @@ export default {
     '<rootDir>/plugins/security-dashboards-plugin/build/',
     '<rootDir>/plugins/security-dashboards-plugin/node_modules/',
   ],
-  setupFilesAfterEnv: ['<rootDir>/src/dev/jest/setup/after_env.integration.js'],
+  setupFilesAfterEnv: [
+    '<rootDir>/src/dev/jest/setup/react_testing_library.js',
+    '<rootDir>/src/dev/jest/setup/after_env.integration.js',
+  ],
   collectCoverageFrom: [
     '<rootDir>/plugins/security-dashboards-plugin/public/**/*.{ts,tsx}',
     '!<rootDir>/plugins/security-dashboards-plugin/public/**/*.test.{ts,tsx}',
