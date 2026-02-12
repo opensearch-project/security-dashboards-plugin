@@ -36,7 +36,6 @@ import { ResourceType } from '../../../../../../common';
 import { buildHashUrl } from '../../../utils/url-builder';
 import { createUnknownErrorToast } from '../../../utils/toast-utils';
 
-
 jest.mock('../../../utils/role-mapping-utils', () => ({
   getRoleMappingData: jest.fn().mockReturnValue({ backend_roles: [], hosts: [], users: [] }),
   transformRoleMappingData: jest.fn().mockReturnValue({
@@ -79,7 +78,6 @@ jest.mock('react', () => ({
   useContext: jest.fn().mockReturnValue({ dataSource: { id: 'test' }, setDataSource: jest.fn() }), // Mock the useContext hook to return dummy datasource and setdatasource function
 }));
 
-
 const sampleRole = 'role';
 const mockCoreStart = {
   http: 1,
@@ -91,7 +89,6 @@ const mockCoreStart = {
     setBreadcrumbs: jest.fn(),
   },
 };
-
 
 describe('Role view', () => {
   const setState = jest.fn();
@@ -310,5 +307,3 @@ describe('Role view', () => {
     expect(createUnknownErrorToast).toBeCalled();
   });
 });
-
-
