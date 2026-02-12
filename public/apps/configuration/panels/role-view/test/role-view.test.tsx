@@ -35,6 +35,7 @@ import { Action, SubAction } from '../../../types';
 import { ResourceType } from '../../../../../../common';
 import { buildHashUrl } from '../../../utils/url-builder';
 import { createUnknownErrorToast } from '../../../utils/toast-utils';
+import { getDashboardsInfoSafe } from '../../../../../utils/dashboards-info-utils';
 
 jest.mock('../../../utils/role-mapping-utils', () => ({
   getRoleMappingData: jest.fn().mockReturnValue({ backend_roles: [], hosts: [], users: [] }),
@@ -77,6 +78,9 @@ jest.mock('react', () => ({
   ...jest.requireActual('react'),
   useContext: jest.fn().mockReturnValue({ dataSource: { id: 'test' }, setDataSource: jest.fn() }), // Mock the useContext hook to return dummy datasource and setdatasource function
 }));
+jest.mock('../../../../../utils/dashboards-info-utils', () => ({
+  getDashboardsInfoSafe: jest.fn().mockResolvedValue({ multitenancy_enabled: false }),
+}));
 
 const sampleRole = 'role';
 const mockCoreStart = {
@@ -89,6 +93,7 @@ const mockCoreStart = {
     setBreadcrumbs: jest.fn(),
   },
 };
+const mockConfig = { multitenancy: { enabled: false } };
 
 describe('Role view', () => {
   const setState = jest.fn();
@@ -110,7 +115,7 @@ describe('Role view', () => {
         coreStart={mockCoreStart as any}
         depsStart={{} as any}
         params={{} as any}
-        config={{} as any}
+        config={mockConfig as any}
       />
     );
 
@@ -131,7 +136,7 @@ describe('Role view', () => {
         coreStart={mockCoreStart as any}
         depsStart={{} as any}
         params={{} as any}
-        config={{} as any}
+        config={mockConfig as any}
       />
     );
     expect(component).toMatchSnapshot();
@@ -146,7 +151,7 @@ describe('Role view', () => {
         coreStart={mockCoreStart as any}
         depsStart={{} as any}
         params={{} as any}
-        config={{} as any}
+        config={mockConfig as any}
       />
     );
     const tabs = wrapper.find(EuiTabbedContent).dive();
@@ -167,7 +172,7 @@ describe('Role view', () => {
         coreStart={mockCoreStart as any}
         depsStart={{} as any}
         params={{} as any}
-        config={{} as any}
+        config={mockConfig as any}
       />
     );
     const tabs = wrapper.find(EuiTabbedContent).dive();
@@ -186,7 +191,7 @@ describe('Role view', () => {
         coreStart={mockCoreStart as any}
         depsStart={{} as any}
         params={{} as any}
-        config={{} as any}
+        config={mockConfig as any}
       />
     );
 
@@ -216,7 +221,7 @@ describe('Role view', () => {
         coreStart={mockCoreStart as any}
         depsStart={{} as any}
         params={{} as any}
-        config={{} as any}
+        config={mockConfig as any}
       />
     );
 
@@ -232,7 +237,7 @@ describe('Role view', () => {
         coreStart={mockCoreStart as any}
         depsStart={{} as any}
         params={{} as any}
-        config={{} as any}
+        config={mockConfig as any}
       />
     );
     const deleteFunc = useDeleteConfirmState.mock.calls[0][0];
@@ -258,7 +263,7 @@ describe('Role view', () => {
         coreStart={mockCoreStart as any}
         depsStart={{ navigation: { ui: { HeaderControl: {} } } } as any}
         params={{} as any}
-        config={{} as any}
+        config={mockConfig as any}
       />
     );
     const deleteFunc = useDeleteConfirmState.mock.calls[0][0];
@@ -272,6 +277,7 @@ describe('Role view', () => {
   });
 
   it('delete role', () => {
+    useEffect.mockImplementation(() => {}); // Don't run effects for mount tests
     const component = mount(
       <RoleView
         roleName={sampleRole}
@@ -280,7 +286,7 @@ describe('Role view', () => {
         coreStart={mockCoreStart as any}
         depsStart={{ navigation: { ui: { HeaderControl: {} } } } as any}
         params={{} as any}
-        config={{} as any}
+        config={mockConfig as any}
       />
     );
     component.find('[data-test-subj="delete"]').first().simulate('click');
@@ -289,6 +295,7 @@ describe('Role view', () => {
   });
 
   it('error occurred while deleting the role', () => {
+    useEffect.mockImplementation(() => {}); // Don't run effects for mount tests
     (requestDeleteRoles as jest.Mock).mockImplementationOnce(() => {
       throw new Error();
     });
@@ -300,7 +307,7 @@ describe('Role view', () => {
         coreStart={mockCoreStart as any}
         depsStart={{ navigation: { ui: { HeaderControl: {} } } } as any}
         params={{} as any}
-        config={{} as any}
+        config={mockConfig as any}
       />
     );
     component.find('[data-test-subj="delete"]').first().simulate('click');

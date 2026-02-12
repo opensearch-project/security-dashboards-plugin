@@ -3,7 +3,13 @@
 exports[`Role view basic rendering when permission tab is selected 1`] = `
 <Fragment>
   <Memo()
-    config={Object {}}
+    config={
+      Object {
+        "multitenancy": Object {
+          "enabled": false,
+        },
+      }
+    }
     coreStart={
       Object {
         "chrome": Object {
@@ -438,7 +444,13 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
 exports[`Role view renders when mapped user tab is selected 1`] = `
 <Fragment>
   <Memo()
-    config={Object {}}
+    config={
+      Object {
+        "multitenancy": Object {
+          "enabled": false,
+        },
+      }
+    }
     coreStart={
       Object {
         "chrome": Object {
