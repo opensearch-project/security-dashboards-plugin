@@ -15,6 +15,7 @@
 
 import React from 'react';
 import { CoreStart } from 'opensearch-dashboards/public';
+import { createRoot } from 'react-dom/client';
 import { AccountNavButton } from './account-nav-button';
 import { fetchAccountInfoSafe } from './utils';
 import { ClientConfigType } from '../../types';
@@ -28,7 +29,6 @@ import {
 import { constructErrorMessageAndLog } from '../error-utils';
 import { fetchCurrentAuthType } from '../../utils/logout-utils';
 import { getDashboardsInfoSafe } from '../../utils/dashboards-info-utils';
-import { createRoot } from 'react-dom/client';
 
 function tenantSpecifiedInUrl() {
   return (
@@ -112,7 +112,7 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
     coreStart.chrome.navControls[isPlacedInLeftNav ? 'registerLeftBottom' : 'registerRight']({
       order: isPlacedInLeftNav ? 10000 : 2000,
       mount: (element: HTMLElement) => {
-        const root = createRoot(element)
+        const root = createRoot(element);
         root.render(
           <AccountNavButton
             coreStart={coreStart}
