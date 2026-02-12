@@ -329,6 +329,7 @@ describe('RoleView base on Multitenancy', () => {
   };
 
   beforeEach(() => {
+    jest.restoreAllMocks();
     (transformRoleIndexPermissions as jest.Mock).mockResolvedValue(mockRoleIndexPermission);
     (transformRoleTenantPermissions as jest.Mock).mockResolvedValue(mockRoleTenantPermission);
   });
