@@ -26,7 +26,6 @@
   },
   "devDependencies": {
     "@elastic/eslint-import-resolver-kibana": "link:../../packages/osd-eslint-import-resolver-opensearch-dashboards",
-    "@testing-library/react": "^14.0.0",
     "@types/hapi__wreck": "^15.0.1",
     "cypress": "^13.6.0",
     "cypress-mochawesome-reporter": "^3.3.0",
