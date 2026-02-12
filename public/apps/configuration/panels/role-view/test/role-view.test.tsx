@@ -35,7 +35,6 @@ import { Action, SubAction } from '../../../types';
 import { ResourceType } from '../../../../../../common';
 import { buildHashUrl } from '../../../utils/url-builder';
 import { createUnknownErrorToast } from '../../../utils/toast-utils';
-import { getDashboardsInfoSafe } from '../../../../../utils/dashboards-info-utils';
 
 jest.mock('../../../utils/role-mapping-utils', () => ({
   getRoleMappingData: jest.fn().mockReturnValue({ backend_roles: [], hosts: [], users: [] }),
