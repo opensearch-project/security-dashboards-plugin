@@ -14,8 +14,8 @@
  */
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { CoreStart } from 'opensearch-dashboards/public';
+import { createRoot } from 'react-dom/client';
 import { AccountNavButton } from './account-nav-button';
 import { fetchAccountInfoSafe } from './utils';
 import { ClientConfigType } from '../../types';
@@ -112,7 +112,8 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
     coreStart.chrome.navControls[isPlacedInLeftNav ? 'registerLeftBottom' : 'registerRight']({
       order: isPlacedInLeftNav ? 10000 : 2000,
       mount: (element: HTMLElement) => {
-        ReactDOM.render(
+        const root = createRoot(element);
+        root.render(
           <AccountNavButton
             coreStart={coreStart}
             isInternalUser={accountInfo.is_internal_user}
@@ -120,10 +121,9 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
             tenant={tenant}
             config={config}
             currAuthType={currAuthType.toLowerCase()}
-          />,
-          element
+          />
         );
-        return () => ReactDOM.unmountComponentAtNode(element);
+        return () => root.unmount();
       },
     });
   }

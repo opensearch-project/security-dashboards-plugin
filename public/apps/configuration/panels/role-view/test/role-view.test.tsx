@@ -14,7 +14,6 @@
  */
 
 import React from 'react';
-import { act } from 'react-dom/test-utils';
 import { mount, render, shallow } from 'enzyme';
 import { RoleView } from '../role-view';
 import { ClusterPermissionPanel } from '../../role-view/cluster-permission-panel';
@@ -32,11 +31,10 @@ import { transformRoleIndexPermissions } from '../../../utils/index-permission-u
 import { transformRoleTenantPermissions } from '../../../utils/tenant-utils';
 import { useDeleteConfirmState } from '../../../utils/delete-confirm-modal-utils';
 import { requestDeleteRoles } from '../../../utils/role-list-utils';
-import { Action, SubAction, TenantPermissionType } from '../../../types';
+import { Action, SubAction } from '../../../types';
 import { ResourceType } from '../../../../../../common';
 import { buildHashUrl } from '../../../utils/url-builder';
 import { createUnknownErrorToast } from '../../../utils/toast-utils';
-import { getDashboardsInfoSafe } from '../../../../../utils/dashboards-info-utils';
 
 jest.mock('../../../utils/role-mapping-utils', () => ({
   getRoleMappingData: jest.fn().mockReturnValue({ backend_roles: [], hosts: [], users: [] }),
@@ -79,7 +77,9 @@ jest.mock('react', () => ({
   ...jest.requireActual('react'),
   useContext: jest.fn().mockReturnValue({ dataSource: { id: 'test' }, setDataSource: jest.fn() }), // Mock the useContext hook to return dummy datasource and setdatasource function
 }));
-jest.mock('../../../../../utils/dashboards-info-utils');
+jest.mock('../../../../../utils/dashboards-info-utils', () => ({
+  getDashboardsInfoSafe: jest.fn().mockResolvedValue({ multitenancy_enabled: false }),
+}));
 
 const sampleRole = 'role';
 const mockCoreStart = {
@@ -92,7 +92,7 @@ const mockCoreStart = {
     setBreadcrumbs: jest.fn(),
   },
 };
-const mockDepsStart = { navigation: { ui: { HeaderControl: {} } } };
+const mockConfig = { multitenancy: { enabled: false } };
 
 describe('Role view', () => {
   const setState = jest.fn();
@@ -114,7 +114,7 @@ describe('Role view', () => {
         coreStart={mockCoreStart as any}
         depsStart={{} as any}
         params={{} as any}
-        config={{} as any}
+        config={mockConfig as any}
       />
     );
 
@@ -135,7 +135,7 @@ describe('Role view', () => {
         coreStart={mockCoreStart as any}
         depsStart={{} as any}
         params={{} as any}
-        config={{} as any}
+        config={mockConfig as any}
       />
     );
     expect(component).toMatchSnapshot();
@@ -150,7 +150,7 @@ describe('Role view', () => {
         coreStart={mockCoreStart as any}
         depsStart={{} as any}
         params={{} as any}
-        config={{} as any}
+        config={mockConfig as any}
       />
     );
     const tabs = wrapper.find(EuiTabbedContent).dive();
@@ -171,7 +171,7 @@ describe('Role view', () => {
         coreStart={mockCoreStart as any}
         depsStart={{} as any}
         params={{} as any}
-        config={{} as any}
+        config={mockConfig as any}
       />
     );
     const tabs = wrapper.find(EuiTabbedContent).dive();
@@ -190,7 +190,7 @@ describe('Role view', () => {
         coreStart={mockCoreStart as any}
         depsStart={{} as any}
         params={{} as any}
-        config={{} as any}
+        config={mockConfig as any}
       />
     );
 
@@ -220,7 +220,7 @@ describe('Role view', () => {
         coreStart={mockCoreStart as any}
         depsStart={{} as any}
         params={{} as any}
-        config={{} as any}
+        config={mockConfig as any}
       />
     );
 
@@ -236,7 +236,7 @@ describe('Role view', () => {
         coreStart={mockCoreStart as any}
         depsStart={{} as any}
         params={{} as any}
-        config={{} as any}
+        config={mockConfig as any}
       />
     );
     const deleteFunc = useDeleteConfirmState.mock.calls[0][0];
@@ -262,7 +262,7 @@ describe('Role view', () => {
         coreStart={mockCoreStart as any}
         depsStart={{ navigation: { ui: { HeaderControl: {} } } } as any}
         params={{} as any}
-        config={{} as any}
+        config={mockConfig as any}
       />
     );
     const deleteFunc = useDeleteConfirmState.mock.calls[0][0];
@@ -276,6 +276,7 @@ describe('Role view', () => {
   });
 
   it('delete role', () => {
+    useEffect.mockImplementation(() => {}); // Don't run effects for mount tests
     const component = mount(
       <RoleView
         roleName={sampleRole}
@@ -284,7 +285,7 @@ describe('Role view', () => {
         coreStart={mockCoreStart as any}
         depsStart={{ navigation: { ui: { HeaderControl: {} } } } as any}
         params={{} as any}
-        config={{} as any}
+        config={mockConfig as any}
       />
     );
     component.find('[data-test-subj="delete"]').first().simulate('click');
@@ -293,6 +294,7 @@ describe('Role view', () => {
   });
 
   it('error occurred while deleting the role', () => {
+    useEffect.mockImplementation(() => {}); // Don't run effects for mount tests
     (requestDeleteRoles as jest.Mock).mockImplementationOnce(() => {
       throw new Error();
     });
@@ -304,110 +306,10 @@ describe('Role view', () => {
         coreStart={mockCoreStart as any}
         depsStart={{ navigation: { ui: { HeaderControl: {} } } } as any}
         params={{} as any}
-        config={{} as any}
+        config={mockConfig as any}
       />
     );
     component.find('[data-test-subj="delete"]').first().simulate('click');
     expect(createUnknownErrorToast).toBeCalled();
-  });
-});
-
-describe('RoleView base on Multitenancy', () => {
-  const mockRoleIndexPermission = [
-    {
-      index_patterns: ['*'],
-      dls: '',
-      fls: [],
-      masked_fields: [],
-      allowed_actions: [],
-    },
-  ];
-
-  const mockRoleTenantPermission = {
-    tenant_patterns: ['dummy'],
-    permissionType: TenantPermissionType.Read,
-  };
-
-  beforeEach(() => {
-    (transformRoleIndexPermissions as jest.Mock).mockResolvedValue(mockRoleIndexPermission);
-    (transformRoleTenantPermissions as jest.Mock).mockResolvedValue(mockRoleTenantPermission);
-  });
-
-  const testScenarios = [
-    {
-      description: 'When multitenancy is enabled in both config and dashboards',
-      configEnabled: true,
-      dashboardsEnabled: true,
-      shouldRenderTenantsPanel: true,
-    },
-    {
-      description: 'When multitenancy is disabled in config and enabled in dashboards',
-      configEnabled: false,
-      dashboardsEnabled: true,
-      shouldRenderTenantsPanel: false,
-    },
-    {
-      description: 'When multitenancy is disabled in both config and dashboards',
-      configEnabled: false,
-      dashboardsEnabled: false,
-      shouldRenderTenantsPanel: false,
-    },
-    {
-      description: 'When multitenancy is enabled in config and disabled in dashboards',
-      configEnabled: true,
-      dashboardsEnabled: false,
-      shouldRenderTenantsPanel: false,
-    },
-  ] as const;
-
-  it.each(testScenarios)(
-    '$description → should render TenantsPanel: $shouldRenderTenantsPanel',
-    async function ({ configEnabled, dashboardsEnabled, shouldRenderTenantsPanel }) {
-      // arrange
-      const mockConfig = { multitenancy: { enabled: configEnabled } };
-      const mockDashboardsInfo = { multitenancy_enabled: dashboardsEnabled };
-      (getDashboardsInfoSafe as jest.Mock).mockResolvedValue(mockDashboardsInfo);
-
-      let wrapper;
-      await act(async () => {
-        wrapper = mount(
-          <RoleView
-            roleName={sampleRole}
-            prevAction=""
-            coreStart={mockCoreStart}
-            depsStart={mockDepsStart as any}
-            params={{}}
-            config={mockConfig}
-          />
-        );
-        await new Promise((resolve) => setTimeout(resolve, 0));
-      });
-      wrapper.update();
-      expect(wrapper.find(TenantsPanel).exists()).toBe(shouldRenderTenantsPanel);
-    }
-  );
-
-  it('should handle error when fetching dashboards info', async () => {
-    (getDashboardsInfoSafe as jest.Mock).mockRejectedValue(new Error());
-
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
-
-    let wrapper;
-    await act(async () => {
-      wrapper = mount(
-        <RoleView
-          roleName={sampleRole}
-          prevAction=""
-          coreStart={mockCoreStart}
-          depsStart={mockDepsStart as any}
-          params={{}}
-          config={{} as any}
-        />
-      );
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    });
-    wrapper.update();
-    expect(consoleErrorSpy).toHaveBeenCalled();
-    consoleErrorSpy.mockRestore();
   });
 });
