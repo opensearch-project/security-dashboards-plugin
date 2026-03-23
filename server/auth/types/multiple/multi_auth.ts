@@ -36,6 +36,7 @@ import {
   JwtAuthentication,
 } from '../../types';
 import { composeLoginPageRedirectLocation } from '../../login/login_page';
+import { isAutoLoginEnabled } from '../../login/login_page';
 
 export class MultipleAuthentication extends AuthenticationType {
   private authTypes: string | string[];
@@ -203,6 +204,18 @@ export class MultipleAuthentication extends AuthenticationType {
     toolkit: AuthToolkit
   ): OpenSearchDashboardsResponse {
     if (this.isPageRequest(request)) {
+      const defaultRedirectAuthType = this.config.auth.default_redirect_auth_type?.toLowerCase();
+
+      if (
+        isAutoLoginEnabled(request) &&
+        defaultRedirectAuthType &&
+        this.authHandlers.has(defaultRedirectAuthType)
+      ) {
+        return this.authHandlers
+          .get(defaultRedirectAuthType)!
+          .handleUnauthedRequest(request, response, toolkit);
+      }
+
       return response.redirected({
         headers: {
           location: composeLoginPageRedirectLocation(
