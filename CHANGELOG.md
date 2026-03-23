@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Features
 
 ### Enhancements
+- Add support for url param `?auto_login=false` to force show login screen and associated setting `opensearch_security.auth.default_redirect_auth_type` ([#2384](https://github.com/opensearch-project/security-dashboards-plugin/issues/2384))
 
 ### Bug Fixes
 
