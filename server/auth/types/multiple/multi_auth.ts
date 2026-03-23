@@ -25,8 +25,7 @@ import {
 import { OpenSearchDashboardsResponse } from '../../../../../../src/core/server/http/router';
 import { SecurityPluginConfigType } from '../../..';
 import { AuthenticationType } from '../authentication_type';
-import { AuthType, LOGIN_PAGE_URI } from '../../../../common';
-import { composeNextUrlQueryParam } from '../../../utils/next_url';
+import { AuthType } from '../../../../common';
 import { MultiAuthRoutes } from './routes';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import {
@@ -36,6 +35,7 @@ import {
   SamlAuthentication,
   JwtAuthentication,
 } from '../../types';
+import { composeLoginPageRedirectLocation } from '../../login/login_page';
 
 export class MultipleAuthentication extends AuthenticationType {
   private authTypes: string | string[];
@@ -203,14 +203,12 @@ export class MultipleAuthentication extends AuthenticationType {
     toolkit: AuthToolkit
   ): OpenSearchDashboardsResponse {
     if (this.isPageRequest(request)) {
-      const nextUrlParam = composeNextUrlQueryParam(
-        request,
-        this.coreSetup.http.basePath.serverBasePath
-      );
-
       return response.redirected({
         headers: {
-          location: `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`,
+          location: composeLoginPageRedirectLocation(
+            request,
+            this.coreSetup.http.basePath.serverBasePath
+          ),
         },
       });
     } else {
