@@ -15,10 +15,7 @@
 
 import { schema } from '@osd/config-schema';
 import { IRouter, SessionStorageFactory, CoreSetup } from 'opensearch-dashboards/server';
-import {
-  SecuritySessionCookie,
-  clearOldVersionCookieValue,
-} from '../../../session/security_cookie';
+import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
 import { User } from '../../user';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
@@ -29,9 +26,7 @@ import {
   LOGIN_PAGE_URI,
 } from '../../../../common';
 import { resolveTenant } from '../../../multitenancy/tenant_resolver';
-import { encodeUriQuery } from '../../../../../../src/plugins/opensearch_dashboards_utils/common/url/encode_uri_query';
 import { AuthType } from '../../../../common';
-import { validateNextUrl } from '../../../utils/next_url';
 
 export class BasicAuthRoutes {
   constructor(
@@ -43,37 +38,6 @@ export class BasicAuthRoutes {
   ) {}
 
   public setupRoutes() {
-    // bootstrap an empty page so that browser app can render the login page
-    // using client side routing.
-    this.coreSetup.http.resources.register(
-      {
-        path: LOGIN_PAGE_URI,
-        validate: {
-          query: schema.object({
-            nextUrl: schema.maybe(
-              schema.string({
-                validate: (nexturl) => {
-                  return validateNextUrl(nexturl, this.coreSetup.http.basePath.serverBasePath);
-                },
-              })
-            ),
-          }),
-        },
-        options: {
-          authRequired: false,
-        },
-      },
-      async (context, request, response) => {
-        this.sessionStorageFactory.asScoped(request).clear();
-        const clearOldVersionCookie = clearOldVersionCookieValue(this.config);
-        return response.renderAnonymousCoreApp({
-          headers: {
-            'set-cookie': clearOldVersionCookie,
-          },
-        });
-      }
-    );
-
     // login using username and password
     this.router.post(
       {
@@ -205,7 +169,7 @@ export class BasicAuthRoutes {
             return response.redirected({
               headers: {
                 location: `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}${
-                  nextUrl ? '?nextUrl=' + encodeUriQuery(redirectUrl) : ''
+                  nextUrl ? '?nextUrl=' + encodeURIComponent(redirectUrl) : ''
                 }`,
               },
             });

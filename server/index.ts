@@ -112,6 +112,7 @@ export const configSchema = schema.object({
       ],
       { defaultValue: '' }
     ),
+    default_redirect_auth_type: schema.maybe(schema.string()),
     anonymous_auth_enabled: schema.boolean({ defaultValue: false }),
     unauthenticated_routes: schema.arrayOf(schema.string(), {
       defaultValue: ['/api/reporting/stats'],

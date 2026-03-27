@@ -33,6 +33,39 @@ import { SecuritySessionCookie } from '../session/security_cookie';
 import { IAuthenticationType, IAuthHandlerConstructor } from './types/authentication_type';
 import { SecurityPluginConfigType } from '..';
 
+const REDIRECT_AUTH_TYPES = [AuthType.OPEN_ID, AuthType.SAML];
+
+function validateDefaultRedirectAuthType(
+  authType: string | string[],
+  config: SecurityPluginConfigType
+) {
+  const defaultRedirectAuthType = config?.auth?.default_redirect_auth_type?.toLowerCase();
+
+  if (!defaultRedirectAuthType) {
+    return;
+  }
+
+  if (!REDIRECT_AUTH_TYPES.includes(defaultRedirectAuthType as AuthType)) {
+    throw new Error(
+      `Unsupported default redirect authentication type: ${
+        config.auth.default_redirect_auth_type
+      }. Allowed values are ${REDIRECT_AUTH_TYPES.join(', ')}`
+    );
+  }
+
+  const configuredAuthTypes = (Array.isArray(authType) ? authType : [authType])
+    .filter((type) => type !== '')
+    .map((type) => type.toLowerCase());
+
+  if (!configuredAuthTypes.includes(defaultRedirectAuthType)) {
+    throw new Error(
+      `default_redirect_auth_type must be included in auth.type. Received default_redirect_auth_type=${
+        config.auth.default_redirect_auth_type
+      } and auth.type=${configuredAuthTypes.join(',')}`
+    );
+  }
+}
+
 async function createAuthentication(
   ctor: IAuthHandlerConstructor,
   config: SecurityPluginConfigType,
@@ -56,6 +89,8 @@ export async function getAuthenticationHandler(
   securitySessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
   logger: Logger
 ): Promise<IAuthenticationType> {
+  validateDefaultRedirectAuthType(authType, config);
+
   let authHandlerType: IAuthHandlerConstructor;
   if (typeof authType === 'string' || authType.length === 1) {
     const currType = typeof authType === 'string' ? authType : authType[0];
