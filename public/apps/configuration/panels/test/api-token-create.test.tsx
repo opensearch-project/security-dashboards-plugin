@@ -15,10 +15,7 @@
 
 import { shallow } from 'enzyme';
 import React from 'react';
-import {
-  EuiCompressedSuperSelect,
-  EuiCompressedFieldNumber,
-} from '@elastic/eui';
+import { EuiCompressedSuperSelect, EuiCompressedFieldNumber } from '@elastic/eui';
 import { ApiTokenCreate } from '../api-token-create';
 import { IndexPermissionPanel } from '../role-edit/index-permission-panel';
 

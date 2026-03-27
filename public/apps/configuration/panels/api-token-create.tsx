@@ -60,7 +60,8 @@ const EXPIRATION_OPTIONS = [
 
 function getExpirationMs(expirationPreset: string, customDays: string): number | undefined {
   if (expirationPreset === 'never') return undefined;
-  const days = expirationPreset === 'custom' ? parseInt(customDays, 10) : parseInt(expirationPreset, 10);
+  const days =
+    expirationPreset === 'custom' ? parseInt(customDays, 10) : parseInt(expirationPreset, 10);
   if (!days || days <= 0) return undefined;
   return days * 24 * 60 * 60 * 1000;
 }

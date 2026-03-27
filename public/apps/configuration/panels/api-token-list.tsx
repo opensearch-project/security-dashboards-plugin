@@ -161,8 +161,8 @@ export function ApiTokenList(props: AppDependencies) {
     'API key(s)',
     <EuiText size="s">
       <p>
-        Do you really want to revoke the selected API key(s)? Revoked keys will no longer be
-        usable for authentication.
+        Do you really want to revoke the selected API key(s)? Revoked keys will no longer be usable
+        for authentication.
       </p>
     </EuiText>
   );
@@ -187,9 +187,8 @@ export function ApiTokenList(props: AppDependencies) {
       isLoading: loading,
       renderComponent: (
         <EuiText size="xs" color="subdued">
-          API keys allow security admins to issue scoped, long-lived keys with permissions
-          attached directly to the key. Keys authenticate via the{' '}
-          <code>Authorization: ApiKey</code> header.
+          API keys allow security admins to issue scoped, long-lived keys with permissions attached
+          directly to the key. Keys authenticate via the <code>Authorization: ApiKey</code> header.
         </EuiText>
       ),
     },
@@ -235,8 +234,8 @@ export function ApiTokenList(props: AppDependencies) {
                   </h3>
                 </EuiTitle>
                 <EuiText size="xs" color="subdued">
-                  API keys allow security admins to issue scoped, long-lived keys with
-                  permissions attached directly to the key. Keys authenticate via the{' '}
+                  API keys allow security admins to issue scoped, long-lived keys with permissions
+                  attached directly to the key. Keys authenticate via the{' '}
                   <code>Authorization: ApiKey</code> header.
                 </EuiText>
               </EuiPageContentHeaderSection>
