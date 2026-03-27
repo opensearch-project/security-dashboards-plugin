@@ -148,7 +148,9 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     defineRoutes(router, dataSourceEnabled);
     defineAuthTypeRoutes(router, config);
     defineResourceAccessManagementRoutes(router, dataSourceEnabled);
-    defineApiTokenRoutes(router);
+    if (config.api_keys?.enabled) {
+      defineApiTokenRoutes(router);
+    }
 
     // set up multi-tenant routes
     if (config.multitenancy?.enabled) {

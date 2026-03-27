@@ -88,13 +88,13 @@ export const ROUTE_MAP: { [key: string]: RouteItem } = {
     href: buildUrl(ResourceType.auditLogging),
   },
   [ResourceType.apiTokens]: {
-    name: 'API Tokens',
-    breadCrumbDisplayNameWithoutSecurityBase: 'API Tokens',
+    name: 'API Keys',
+    breadCrumbDisplayNameWithoutSecurityBase: 'API Keys',
     href: buildUrl(ResourceType.apiTokens),
   },
 };
 
-const getRouteList = (multitenancyEnabled: boolean) => {
+const getRouteList = (multitenancyEnabled: boolean, apiKeysEnabled: boolean = false) => {
   return [
     ROUTE_MAP.getStarted,
     ROUTE_MAP[ResourceType.auth],
@@ -103,12 +103,12 @@ const getRouteList = (multitenancyEnabled: boolean) => {
     ROUTE_MAP[ResourceType.permissions],
     ...(multitenancyEnabled ? [ROUTE_MAP[ResourceType.tenants]] : []),
     ROUTE_MAP[ResourceType.auditLogging],
-    ROUTE_MAP[ResourceType.apiTokens],
+    ...(apiKeysEnabled ? [ROUTE_MAP[ResourceType.apiTokens]] : []),
   ];
 };
 
-export const allNavPanelUrls = (multitenancyEnabled: boolean) =>
-  getRouteList(multitenancyEnabled)
+export const allNavPanelUrls = (multitenancyEnabled: boolean, apiKeysEnabled: boolean = false) =>
+  getRouteList(multitenancyEnabled, apiKeysEnabled)
     .map((route) => route.href)
     .concat([
       buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT,
@@ -133,6 +133,7 @@ export const DataSourceContext = createContext<DataSourceContextType | null>(nul
 
 export function AppRouter(props: AppDependencies) {
   const multitenancyEnabled = props.config.multitenancy.enabled;
+  const apiKeysEnabled = props.config.api_keys?.enabled ?? false;
   const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const setGlobalBreadcrumbs = flow(getBreadcrumbs, props.coreStart.chrome.setBreadcrumbs);
   const dataSourceFromUrl = dataSourceEnabled ? getDataSourceFromUrl() : LocalCluster;
@@ -145,11 +146,11 @@ export function AppRouter(props: AppDependencies) {
       <Router>
         <EuiPage>
           {!props.coreStart.chrome.navGroup.getNavGroupEnabled() &&
-            allNavPanelUrls(multitenancyEnabled).map((route) => (
+            allNavPanelUrls(multitenancyEnabled, apiKeysEnabled).map((route) => (
               // Create different routes to update the 'selected' nav item .
               <Route key={route} path={route} exact>
                 <EuiPageSideBar>
-                  <NavPanel items={getRouteList(multitenancyEnabled)} />
+                  <NavPanel items={getRouteList(multitenancyEnabled, apiKeysEnabled)} />
                 </EuiPageSideBar>
               </Route>
             ))}
@@ -243,18 +244,22 @@ export function AppRouter(props: AppDependencies) {
                   }}
                 />
               )}
-              <Route
-                path={buildUrl(ResourceType.apiTokens, Action.create)}
-                render={() => {
-                  return <ApiTokenCreate {...props} />;
-                }}
-              />
-              <Route
-                path={ROUTE_MAP.apiTokens.href}
-                render={() => {
-                  return <ApiTokenList {...props} />;
-                }}
-              />
+              {apiKeysEnabled && (
+                <Route
+                  path={buildUrl(ResourceType.apiTokens, Action.create)}
+                  render={() => {
+                    return <ApiTokenCreate {...props} />;
+                  }}
+                />
+              )}
+              {apiKeysEnabled && (
+                <Route
+                  path={ROUTE_MAP.apiTokens.href}
+                  render={() => {
+                    return <ApiTokenList {...props} />;
+                  }}
+                />
+              )}
               <Redirect exact from="/" to={props.redirect} />
             </Switch>
           </EuiPageBody>

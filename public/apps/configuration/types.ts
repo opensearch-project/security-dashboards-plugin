@@ -164,4 +164,5 @@ export interface ApiToken {
   cluster_permissions: string[];
   index_permissions: ApiTokenIndexPermission[];
   revoked_at?: number;
+  created_by?: string;
 }

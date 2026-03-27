@@ -94,6 +94,12 @@ function getColumns() {
       truncateText: true,
     },
     {
+      field: 'created_by',
+      name: 'Created by',
+      sortable: true,
+      render: (createdBy?: string) => createdBy || '-',
+    },
+    {
       field: 'iat',
       name: 'Created',
       render: (iat: number) => formatDate(iat),
@@ -152,10 +158,10 @@ export function ApiTokenList(props: AppDependencies) {
 
   const [showRevokeConfirmModal, revokeConfirmModal] = useDeleteConfirmState(
     handleRevoke,
-    'API token(s)',
+    'API key(s)',
     <EuiText size="s">
       <p>
-        Do you really want to revoke the selected API token(s)? Revoked tokens will no longer be
+        Do you really want to revoke the selected API key(s)? Revoked keys will no longer be
         usable for authentication.
       </p>
     </EuiText>
@@ -166,14 +172,14 @@ export function ApiTokenList(props: AppDependencies) {
   const useUpdatedUX = props.coreStart.uiSettings.get('home:useNewHomePage');
   const buttonData = [
     {
-      label: 'Create API token',
+      label: 'Create API key',
       isLoading: false,
       href: buildHashUrl(ResourceType.apiTokens, Action.create),
       fill: true,
       iconType: 'plus',
       iconSide: 'left',
       type: 'button',
-      testId: 'create-api-token',
+      testId: 'create-api-key',
     },
   ];
   const descriptionData = [
@@ -181,8 +187,8 @@ export function ApiTokenList(props: AppDependencies) {
       isLoading: loading,
       renderComponent: (
         <EuiText size="xs" color="subdued">
-          API tokens allow security admins to issue scoped, long-lived tokens with permissions
-          attached directly to the token. Tokens authenticate via the{' '}
+          API keys allow security admins to issue scoped, long-lived keys with permissions
+          attached directly to the key. Keys authenticate via the{' '}
           <code>Authorization: ApiKey</code> header.
         </EuiText>
       ),
@@ -206,7 +212,7 @@ export function ApiTokenList(props: AppDependencies) {
         fallBackComponent={
           <EuiPageHeader>
             <EuiText size="s">
-              <h1>API Tokens</h1>
+              <h1>API Keys</h1>
             </EuiText>
           </EuiPageHeader>
         }
@@ -224,13 +230,13 @@ export function ApiTokenList(props: AppDependencies) {
               <EuiPageContentHeaderSection>
                 <EuiTitle size="s">
                   <h3>
-                    API Tokens
+                    API Keys
                     <span className="panel-header-count"> ({tokenLen})</span>
                   </h3>
                 </EuiTitle>
                 <EuiText size="xs" color="subdued">
-                  API tokens allow security admins to issue scoped, long-lived tokens with
-                  permissions attached directly to the token. Tokens authenticate via the{' '}
+                  API keys allow security admins to issue scoped, long-lived keys with
+                  permissions attached directly to the key. Keys authenticate via the{' '}
                   <code>Authorization: ApiKey</code> header.
                 </EuiText>
               </EuiPageContentHeaderSection>
@@ -241,7 +247,7 @@ export function ApiTokenList(props: AppDependencies) {
                       color="danger"
                       onClick={showRevokeConfirmModal}
                       disabled={activeSelection.length === 0}
-                      data-test-subj="revoke-api-tokens"
+                      data-test-subj="revoke-api-keys"
                     >
                       Revoke
                     </EuiSmallButton>
@@ -250,9 +256,9 @@ export function ApiTokenList(props: AppDependencies) {
                     <EuiSmallButton
                       fill
                       href={buildHashUrl(ResourceType.apiTokens, Action.create)}
-                      data-test-subj="create-api-token"
+                      data-test-subj="create-api-key"
                     >
-                      Create API token
+                      Create API key
                     </EuiSmallButton>
                   </EuiFlexItem>
                 </EuiFlexGroup>
@@ -268,7 +274,7 @@ export function ApiTokenList(props: AppDependencies) {
               itemId={'id'}
               pagination
               search={{
-                box: { placeholder: 'Search API tokens' },
+                box: { placeholder: 'Search API keys' },
                 onChange: (arg) => {
                   setQuery(arg.query);
                   return true;

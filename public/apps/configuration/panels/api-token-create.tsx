@@ -25,6 +25,7 @@ import {
   EuiSpacer,
   EuiText,
   EuiCompressedFieldNumber,
+  EuiCompressedSuperSelect,
 } from '@elastic/eui';
 import React, { useState, useContext } from 'react';
 import { AppDependencies } from '../../types';
@@ -49,11 +50,27 @@ import { SecurityPluginTopNavMenu } from '../top-nav-menu';
 import { PageHeader } from '../header/header-components';
 import { createApiToken } from '../utils/api-token-utils';
 
+const EXPIRATION_OPTIONS = [
+  { value: 'never', inputDisplay: 'No expiration' },
+  { value: '30', inputDisplay: '30 days' },
+  { value: '60', inputDisplay: '60 days' },
+  { value: '90', inputDisplay: '90 days' },
+  { value: 'custom', inputDisplay: 'Custom (days)' },
+];
+
+function getExpirationMs(expirationPreset: string, customDays: string): number | undefined {
+  if (expirationPreset === 'never') return undefined;
+  const days = expirationPreset === 'custom' ? parseInt(customDays, 10) : parseInt(expirationPreset, 10);
+  if (!days || days <= 0) return undefined;
+  return days * 24 * 60 * 60 * 1000;
+}
+
 export function ApiTokenCreate(props: AppDependencies) {
   const [tokenName, setTokenName] = useState('');
   const [clusterPermissions, setClusterPermissions] = useState<ComboBoxOptions>([]);
   const [indexPermissions, setIndexPermissions] = useState<RoleIndexPermissionStateClass[]>([]);
-  const [expiration, setExpiration] = useState<string>('');
+  const [expirationPreset, setExpirationPreset] = useState<string>('never');
+  const [customDays, setCustomDays] = useState<string>('');
   const [toasts, addToast, removeToast] = useToastState();
   const [isFormValid, setIsFormValid] = useState<boolean>(true);
   const [createdToken, setCreatedToken] = useState<string | null>(null);
@@ -109,8 +126,9 @@ export function ApiTokenCreate(props: AppDependencies) {
         index_permissions: apiTokenIndexPerms,
       };
 
-      if (expiration && parseInt(expiration, 10) > 0) {
-        requestBody.expiration = parseInt(expiration, 10);
+      const expirationMs = getExpirationMs(expirationPreset, customDays);
+      if (expirationMs) {
+        requestBody.expiration = expirationMs;
       }
 
       const result = await createApiToken(props.coreStart.http, requestBody, dataSource.id);
@@ -118,13 +136,13 @@ export function ApiTokenCreate(props: AppDependencies) {
       addToast(
         createSuccessToast(
           'api-token-create-success',
-          'API token created',
-          `Token "${tokenName}" was created successfully. Copy the token now — it will not be shown again.`
+          'API key created',
+          `Key "${tokenName}" was created successfully. Copy the key now — it will not be shown again.`
         )
       );
     } catch (e) {
       console.log(e);
-      addToast(createUnknownErrorToast('api-token-create-error', 'create API token'));
+      addToast(createUnknownErrorToast('api-token-create-error', 'create API key'));
     }
   };
 
@@ -144,20 +162,20 @@ export function ApiTokenCreate(props: AppDependencies) {
         fallBackComponent={
           <EuiPageHeader>
             <EuiText size="s">
-              <h1>Create API Token</h1>
+              <h1>Create API Key</h1>
             </EuiText>
           </EuiPageHeader>
         }
         resourceType={ResourceType.apiTokens}
-        pageTitle="Create API Token"
+        pageTitle="Create API Key"
       />
       <EuiSpacer size="m" />
 
       {createdToken && (
         <>
-          <EuiCallOut title="API token created" color="success" iconType="check">
+          <EuiCallOut title="API key created" color="success" iconType="check">
             <p>
-              Copy this token now. It will not be shown again. Use it in the{' '}
+              Copy this key now. It will not be shown again. Use it in the{' '}
               <code>Authorization: ApiKey {'<token>'}</code> header.
             </p>
             <EuiCodeBlock language="text" isCopyable paddingSize="s">
@@ -166,7 +184,7 @@ export function ApiTokenCreate(props: AppDependencies) {
           </EuiCallOut>
           <EuiSpacer size="l" />
           <EuiSmallButton href={buildHashUrl(ResourceType.apiTokens)}>
-            Back to API Tokens
+            Back to API Keys
           </EuiSmallButton>
           <EuiSpacer size="l" />
         </>
@@ -176,11 +194,11 @@ export function ApiTokenCreate(props: AppDependencies) {
         <EuiForm isInvalid={!isFormValid}>
           <PanelWithHeader
             headerText="Token details"
-            headerSubText="Provide a name and optional expiration for this API token."
+            headerSubText="Provide a name and optional expiration for this API key."
           >
             <NameRow
               headerText="Token name"
-              headerSubText="Specify a descriptive and unique name for this API token. The name must not be empty."
+              headerSubText="Specify a descriptive and unique name for this API key. The name must not be empty."
               resourceName={tokenName}
               resourceType="token"
               action="create"
@@ -188,16 +206,31 @@ export function ApiTokenCreate(props: AppDependencies) {
               setIsFormValid={setIsFormValid}
             />
             <FormRow
-              headerText="Expiration (milliseconds)"
-              headerSubText="Optional. Time in milliseconds until the token expires. Leave empty for no expiration."
+              headerText="Expiration"
+              headerSubText="Choose how long this API key should remain valid."
               optional
             >
-              <EuiCompressedFieldNumber
-                placeholder="e.g. 86400000 for 24 hours"
-                value={expiration}
-                onChange={(e) => setExpiration(e.target.value)}
-                min={0}
-              />
+              <div>
+                <EuiCompressedSuperSelect
+                  options={EXPIRATION_OPTIONS}
+                  valueOfSelected={expirationPreset}
+                  onChange={setExpirationPreset}
+                  data-test-subj="api-key-expiration-select"
+                />
+                {expirationPreset === 'custom' && (
+                  <>
+                    <EuiSpacer size="s" />
+                    <EuiCompressedFieldNumber
+                      placeholder="Number of days"
+                      value={customDays}
+                      onChange={(e) => setCustomDays(e.target.value)}
+                      min={1}
+                      append="days"
+                      data-test-subj="api-key-custom-expiration"
+                    />
+                  </>
+                )}
+              </div>
             </FormRow>
           </PanelWithHeader>
 
@@ -215,6 +248,7 @@ export function ApiTokenCreate(props: AppDependencies) {
             state={indexPermissions}
             optionUniverse={indexPermissionOptions}
             setState={setIndexPermissions}
+            showAdvancedSecurityOptions={false}
           />
 
           <EuiSpacer size="m" />
