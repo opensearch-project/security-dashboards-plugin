@@ -23,6 +23,7 @@ export const PLUGIN_PERMISSIONS_APP_ID = `${PLUGIN_NAME}_permissions`;
 export const PLUGIN_TENANTS_APP_ID = `${PLUGIN_NAME}_tenants`;
 export const PLUGIN_AUDITLOG_APP_ID = `${PLUGIN_NAME}_auditlog`;
 export const PLUGIN_RESOURCE_ACCESS_MANAGEMENT_APP_ID = `${PLUGIN_NAME}_resource_access_management`;
+export const PLUGIN_API_TOKENS_APP_ID = `${PLUGIN_NAME}_api_tokens`;
 
 export const APP_ID_LOGIN = 'login';
 export const APP_ID_CUSTOMERROR = 'customerror';
@@ -86,6 +87,7 @@ export enum ResourceType {
   tenantsConfigureTab = 'tenantsConfigureTab',
   auth = 'auth',
   auditLogging = 'auditLogging',
+  apiTokens = 'apiTokens',
 }
 
 /**

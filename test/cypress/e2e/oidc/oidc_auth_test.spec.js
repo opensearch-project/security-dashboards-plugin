@@ -138,6 +138,7 @@ describe('Log in via OIDC', () => {
     localStorage.setItem('home:newThemeModal:show', 'false');
 
     cy.get('#private').should('be.enabled');
+    // eslint-disable-next-line cypress/no-force
     cy.get('#private').click({ force: true });
 
     cy.get('button[data-test-subj="confirm"]').click();
