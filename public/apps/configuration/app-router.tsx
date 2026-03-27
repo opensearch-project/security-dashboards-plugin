@@ -36,6 +36,8 @@ import { RoleEditMappedUser } from './panels/role-mapping/role-edit-mapped-user'
 import { RoleView } from './panels/role-view/role-view';
 import { TenantList } from './panels/tenant-list/tenant-list';
 import { UserList } from './panels/user-list';
+import { ApiTokenList } from './panels/api-token-list';
+import { ApiTokenCreate } from './panels/api-token-create';
 import { Action, RouteItem, SubAction } from './types';
 import { ResourceType } from '../../../common';
 import { buildUrl } from './utils/url-builder';
@@ -85,6 +87,11 @@ export const ROUTE_MAP: { [key: string]: RouteItem } = {
     breadCrumbDisplayNameWithoutSecurityBase: 'Audit logs',
     href: buildUrl(ResourceType.auditLogging),
   },
+  [ResourceType.apiTokens]: {
+    name: 'API Tokens',
+    breadCrumbDisplayNameWithoutSecurityBase: 'API Tokens',
+    href: buildUrl(ResourceType.apiTokens),
+  },
 };
 
 const getRouteList = (multitenancyEnabled: boolean) => {
@@ -96,6 +103,7 @@ const getRouteList = (multitenancyEnabled: boolean) => {
     ROUTE_MAP[ResourceType.permissions],
     ...(multitenancyEnabled ? [ROUTE_MAP[ResourceType.tenants]] : []),
     ROUTE_MAP[ResourceType.auditLogging],
+    ROUTE_MAP[ResourceType.apiTokens],
   ];
 };
 
@@ -235,6 +243,18 @@ export function AppRouter(props: AppDependencies) {
                   }}
                 />
               )}
+              <Route
+                path={buildUrl(ResourceType.apiTokens, Action.create)}
+                render={() => {
+                  return <ApiTokenCreate {...props} />;
+                }}
+              />
+              <Route
+                path={ROUTE_MAP.apiTokens.href}
+                render={() => {
+                  return <ApiTokenList {...props} />;
+                }}
+              />
               <Redirect exact from="/" to={props.redirect} />
             </Switch>
           </EuiPageBody>
