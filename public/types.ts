@@ -125,6 +125,9 @@ export interface ClientConfigType {
   disabledRestCategories: {
     exclude: string[];
   };
+  api_keys: {
+    enabled: boolean;
+  };
 }
 
 export interface ResourceAccessManagementType {
