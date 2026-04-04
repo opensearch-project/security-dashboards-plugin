@@ -46,6 +46,7 @@ import {
   setExtraAuthStorage,
 } from '../../../session/cookie_splitter';
 import { getRedirectUrl } from '../../../../../../src/core/server/http';
+import { composeLoginPageRedirectLocation, isAutoLoginEnabled } from '../../login/login_page';
 
 export interface OpenIdAuthConfig {
   authorizationEndpoint?: string;
@@ -143,6 +144,17 @@ export class OpenIdAuthentication extends AuthenticationType {
     const clearOldVersionCookie = clearOldVersionCookieValue(this.config);
     return toolkit.redirected({
       location: `${this.coreSetup.http.basePath.serverBasePath}/auth/openid/captureUrlFragment?nextUrl=${nextUrl}`,
+      'set-cookie': clearOldVersionCookie,
+    });
+  };
+
+  private redirectToLoginPage = (request: OpenSearchDashboardsRequest, toolkit: AuthToolkit) => {
+    const clearOldVersionCookie = clearOldVersionCookieValue(this.config);
+    return toolkit.redirected({
+      location: composeLoginPageRedirectLocation(
+        request,
+        this.coreSetup.http.basePath.serverBasePath
+      ),
       'set-cookie': clearOldVersionCookie,
     });
   };
@@ -332,7 +344,9 @@ export class OpenIdAuthentication extends AuthenticationType {
     toolkit: AuthToolkit
   ): IOpenSearchDashboardsResponse | AuthResult {
     if (this.isPageRequest(request)) {
-      return this.redirectOIDCCapture(request, toolkit);
+      return isAutoLoginEnabled(request)
+        ? this.redirectOIDCCapture(request, toolkit)
+        : this.redirectToLoginPage(request, toolkit);
     } else {
       return response.unauthorized();
     }
