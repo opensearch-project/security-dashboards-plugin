@@ -459,7 +459,9 @@ export class SecurityPlugin
     }
 
     // Return methods that should be available to other plugins
-    return {};
+    return {
+      checkHasApiPermission: async () => hasApiPermission(core),
+    };
   }
 
   public start(core: CoreStart, deps: SecurityPluginStartDependencies): SecurityPluginStart {
