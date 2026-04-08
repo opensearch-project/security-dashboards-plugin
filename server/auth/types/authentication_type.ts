@@ -272,6 +272,8 @@ export abstract class AuthenticationType implements IAuthenticationType {
       multitenancyEnabled: dashboardsInfo.multitenancy_enabled,
       privateTenantEnabled: dashboardsInfo.private_tenant_enabled,
       defaultTenant: dashboardsInfo.default_tenant,
+      preferredTenants:
+        dashboardsInfo.preferred_tenants ?? this.config.multitenancy?.tenants.preferred,
     });
   }
 

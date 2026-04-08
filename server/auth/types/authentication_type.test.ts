@@ -17,6 +17,7 @@ import { SecurityPluginConfigType } from '../..';
 import { AuthenticationType } from './authentication_type';
 import { httpServerMock } from '../../../../../src/core/server/mocks';
 import { OpenSearchDashboardsRequest } from '../../../../../src/core/server';
+import * as tenantResolver from '../../multitenancy/tenant_resolver';
 
 class DummyAuthType extends AuthenticationType {
   authNotRequired(request: OpenSearchDashboardsRequest): boolean {
@@ -163,5 +164,124 @@ describe('test capabilities request authinfo', () => {
     };
     const result = await dummyAuthType.authHandler(request, response, toolkit);
     expect(result.state.authInfo.username).toEqual('capabilities-username');
+  });
+});
+
+describe('resolveTenant preferred_tenants precedence', () => {
+  const config = {
+    multitenancy: {
+      enabled: true,
+      tenants: {
+        preferred: ['Private', 'Global'],
+      },
+    },
+    auth: {
+      unauthenticated_routes: [] as string[],
+    },
+    session: {
+      keepalive: false,
+      ttl: 1000,
+    },
+    readonly_mode: {
+      roles: [],
+    },
+  } as SecurityPluginConfigType;
+
+  const sessionStorageFactory = {
+    asScoped: jest.fn(() => ({
+      clear: jest.fn(),
+      get: jest.fn().mockResolvedValue({}),
+      set: jest.fn(),
+    })),
+  };
+
+  const router = jest.fn();
+  const esClient = {
+    asScoped: jest.fn().mockImplementation(() => ({
+      callAsCurrentUser: jest.fn(),
+    })),
+  };
+  const coreSetup = jest.fn();
+  const logger = {
+    error: jest.fn(),
+  };
+
+  beforeEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('prefers dynamic preferred_tenants from dashboardsinfo', async () => {
+    const dummyAuthType = new DummyAuthType(
+      config,
+      sessionStorageFactory,
+      router,
+      esClient as any,
+      coreSetup as any,
+      logger as any
+    );
+
+    const resolveSpy = jest.spyOn(tenantResolver, 'resolveTenant').mockReturnValue('__user__');
+
+    jest.spyOn((dummyAuthType as any).securityClient, 'dashboardsinfo').mockResolvedValue({
+      multitenancy_enabled: true,
+      private_tenant_enabled: true,
+      default_tenant: '',
+      preferred_tenants: ['tenant1', 'tenant2'],
+    });
+
+    const request = httpServerMock.createOpenSearchDashboardsRequest({ path: '/app/home' });
+
+    await AuthenticationType.prototype.resolveTenant.call(
+      dummyAuthType,
+      request,
+      { tenant: undefined } as any,
+      {},
+      {
+        user_name: 'testuser',
+        roles: ['all_access'],
+        tenants: { global_tenant: true, testuser: true },
+      }
+    );
+
+    expect(resolveSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ preferredTenants: ['tenant1', 'tenant2'] })
+    );
+  });
+
+  it('falls back to config preferred tenants when dashboardsinfo field is missing', async () => {
+    const dummyAuthType = new DummyAuthType(
+      config,
+      sessionStorageFactory,
+      router,
+      esClient as any,
+      coreSetup as any,
+      logger as any
+    );
+
+    const resolveSpy = jest.spyOn(tenantResolver, 'resolveTenant').mockReturnValue('__user__');
+
+    jest.spyOn((dummyAuthType as any).securityClient, 'dashboardsinfo').mockResolvedValue({
+      multitenancy_enabled: true,
+      private_tenant_enabled: true,
+      default_tenant: '',
+    });
+
+    const request = httpServerMock.createOpenSearchDashboardsRequest({ path: '/app/home' });
+
+    await AuthenticationType.prototype.resolveTenant.call(
+      dummyAuthType,
+      request,
+      { tenant: undefined } as any,
+      {},
+      {
+        user_name: 'testuser',
+        roles: ['all_access'],
+        tenants: { global_tenant: true, testuser: true },
+      }
+    );
+
+    expect(resolveSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ preferredTenants: ['Private', 'Global'] })
+    );
   });
 });
