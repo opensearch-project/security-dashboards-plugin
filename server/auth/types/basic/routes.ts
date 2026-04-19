@@ -19,7 +19,12 @@ import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
 import { User } from '../../user';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
-import { ANONYMOUS_AUTH_LOGIN, API_AUTH_LOGIN, API_AUTH_LOGOUT } from '../../../../common';
+import {
+  ANONYMOUS_AUTH_LOGIN,
+  API_AUTH_LOGIN,
+  API_AUTH_LOGOUT,
+  LOGIN_PAGE_URI,
+} from '../../../../common';
 import { resolveTenant } from '../../../multitenancy/tenant_resolver';
 import { AuthType } from '../../../../common';
 
@@ -165,7 +170,7 @@ export class BasicAuthRoutes {
             return response.redirected({
               headers: {
                 location: `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}${
-                  nextUrl ? '?nextUrl=' + encodeUriQuery(redirectUrl) : ''
+                  nextUrl ? '?nextUrl=' + encodeURIComponent(redirectUrl) : ''
                 }`,
               },
             });
