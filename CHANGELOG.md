@@ -1,24 +1,5 @@
 # CHANGELOG
-All notable changes to this project are documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to the [Semantic Versioning](https://semver.org/spec/v2.0.0.html). See the [CONTRIBUTING guide](./CONTRIBUTING.md#Changelog) for instructions on how to add changelog entries.
+As of the 3.6 release [the CHANGELOG is no longer used](https://github.com/opensearch-project/OpenSearch/issues/21071) to generate release notes.
+[Use this PR search](https://github.com/opensearch-project/security-dashboards-plugin/pulls?q=sort%3Amerged-desc+is%3Apr+-label%3Askip-changelog+is%3Amerged+base%3Amain+) to browse unreleased changes.
 
-## [Unreleased 3.x]
-
-### Features
-
-### Enhancements
-- Add support for url param `?auto_login=false` to force show login screen and associated setting `opensearch_security.auth.default_redirect_auth_type` ([#2384](https://github.com/opensearch-project/security-dashboards-plugin/issues/2384))
-
-### Bug Fixes
-
-### Refactoring
-
-### Maintenance
-- Remove transport_enabled column from the authentication sequence table ([#2363](https://github.com/opensearch-project/security-dashboards-plugin/pull/2363))
-- React 18 Upgrade ([#2371](https://github.com/opensearch-project/security-dashboards-plugin/issues/2371))
-- Force resolution of basic-ftp to 5.2.0 ([#2374](https://github.com/opensearch-project/security-dashboards-plugin/issues/2374))
-
-### Documentation
-
-[Unreleased 3.x]: https://github.com/opensearch-project/security-dashboards-plugin/compare/3.5...main
