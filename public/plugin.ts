@@ -88,6 +88,7 @@ async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
 const DEFAULT_READONLY_ROLES = ['kibana_read_only'];
 const APP_ID_HOME = 'home';
 const APP_ID_DASHBOARDS = 'dashboards';
+const APP_ID_DISCOVER = 'discover';
 // OpenSearchDashboards app is for legacy url migration
 const APP_ID_OPENSEARCH_DASHBOARDS = 'kibana';
 const APP_LIST_FOR_READONLY_ROLE = [APP_ID_HOME, APP_ID_DASHBOARDS, APP_ID_OPENSEARCH_DASHBOARDS];
@@ -431,9 +432,13 @@ export class SecurityPlugin
       });
     }
 
+    const readonlyAppAllowlist = config.readonly_mode?.allow_discover
+      ? [...APP_LIST_FOR_READONLY_ROLE, APP_ID_DISCOVER]
+      : APP_LIST_FOR_READONLY_ROLE;
+
     core.application.registerAppUpdater(
       new BehaviorSubject<AppUpdater>((app) => {
-        if (!apiPermission && isReadonly && !APP_LIST_FOR_READONLY_ROLE.includes(app.id)) {
+        if (!apiPermission && isReadonly && !readonlyAppAllowlist.includes(app.id)) {
           return {
             status: AppStatus.inaccessible,
           };

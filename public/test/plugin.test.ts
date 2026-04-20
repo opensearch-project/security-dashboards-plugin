@@ -27,6 +27,7 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
+import { AppStatus } from '../../../../src/core/public';
 import { coreMock } from '../../../../src/core/public/mocks';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const pluginModule = require('../plugin');
@@ -39,6 +40,17 @@ import {
   PLUGIN_TENANTS_APP_ID,
   PLUGIN_USERS_APP_ID,
 } from '../../common/index.ts';
+
+jest.mock('../apps/account/utils', () => ({
+  fetchAccountInfoSafe: jest.fn(),
+}));
+jest.mock('../utils/dashboards-info-utils', () => ({
+  getDashboardsInfoSafe: jest.fn(),
+}));
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { fetchAccountInfoSafe } = require('../apps/account/utils');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { getDashboardsInfoSafe } = require('../utils/dashboards-info-utils');
 
 // Mock the hasApiPermission function
 jest.mock('../plugin', () => {
@@ -150,6 +162,76 @@ describe('SecurityPlugin', () => {
 
     expectedApps.forEach((app) => {
       expect(registeredApps).toContain(app);
+    });
+  });
+
+  describe('readonly app allowlist — allow_discover flag', () => {
+    const makeContext = (allowDiscover: boolean | undefined) => ({
+      config: {
+        get: jest.fn().mockReturnValue({
+          readonly_mode: {
+            roles: ['kibana_read_only'],
+            ...(allowDiscover === undefined ? {} : { allow_discover: allowDiscover }),
+          },
+          multitenancy: { enabled: true, enable_aggregation_view: false },
+          clusterPermissions: { include: [] },
+          indexPermissions: { include: [] },
+          disabledTransportCategories: { exclude: [] },
+          disabledRestCategories: { exclude: [] },
+          ui: { autologout: false },
+        }),
+      },
+    });
+
+    const runAndGetUpdater = async (allowDiscover: boolean | undefined) => {
+      // Force hasApiPermission() to resolve false so the readonly updater engages.
+      coreSetup.http.get = jest.fn().mockResolvedValue({ has_api_access: false });
+      (fetchAccountInfoSafe as jest.Mock).mockResolvedValue({
+        data: { roles: ['kibana_read_only'] },
+      });
+      (getDashboardsInfoSafe as jest.Mock).mockResolvedValue({
+        multitenancy_enabled: true,
+      });
+      coreSetup.chrome.navGroup = {
+        ...coreSetup.chrome.navGroup,
+        getNavGroupEnabled: () => false,
+      };
+
+      const registerAppUpdaterSpy = jest.spyOn(coreSetup.application, 'registerAppUpdater');
+      plugin = new SecurityPlugin(makeContext(allowDiscover));
+      await plugin.setup(coreSetup, deps);
+
+      const subject = registerAppUpdaterSpy.mock.calls[0][0];
+      return subject.getValue();
+    };
+
+    it('blocks Discover when the flag is unset (default off)', async () => {
+      const updater = await runAndGetUpdater(undefined);
+      expect(updater({ id: 'discover' })).toEqual({ status: AppStatus.inaccessible });
+    });
+
+    it('blocks Discover when the flag is explicitly false', async () => {
+      const updater = await runAndGetUpdater(false);
+      expect(updater({ id: 'discover' })).toEqual({ status: AppStatus.inaccessible });
+    });
+
+    it('allows Discover when the flag is true', async () => {
+      const updater = await runAndGetUpdater(true);
+      expect(updater({ id: 'discover' })).toBeUndefined();
+    });
+
+    it('still blocks other non-allowlisted apps when the flag is true', async () => {
+      const updater = await runAndGetUpdater(true);
+      expect(updater({ id: 'visualize' })).toEqual({ status: AppStatus.inaccessible });
+      expect(updater({ id: 'management' })).toEqual({ status: AppStatus.inaccessible });
+    });
+
+    it('keeps baseline allowlist members (home, dashboards) accessible regardless of flag', async () => {
+      for (const allow of [false, true]) {
+        const updater = await runAndGetUpdater(allow);
+        expect(updater({ id: 'home' })).toBeUndefined();
+        expect(updater({ id: 'dashboards' })).toBeUndefined();
+      }
     });
   });
 

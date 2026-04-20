@@ -63,6 +63,7 @@ export interface DashboardsInfo {
 export interface ClientConfigType {
   readonly_mode: {
     roles: string[];
+    allow_discover?: boolean;
   };
   ui: {
     basicauth: {
