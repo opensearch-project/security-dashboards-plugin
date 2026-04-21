@@ -85,7 +85,7 @@ function openFirstRowModal() {
   cy.get('.euiOverlayMask', { timeout: 10_000 }).should('exist');
 }
 
-function addRecipientAndSubmit(expectLabel: 'Share' | 'Update Access') {
+function addRecipientAndSubmit(expectLabel) {
   // Ensure there is at least one access-levels panel (create one if missing)
   cy.get('@overlay').then(($ov) => {
     if ($ov.text().includes('No access-levels added yet.')) {
