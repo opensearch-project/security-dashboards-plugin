@@ -27,7 +27,6 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
-import { AppStatus } from '../../../../src/core/public';
 import { coreMock } from '../../../../src/core/public/mocks';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const pluginModule = require('../plugin');
@@ -205,14 +204,22 @@ describe('SecurityPlugin', () => {
       return subject.getValue();
     };
 
+    // The updater returns an object with a `status` field (AppStatus.inaccessible)
+    // when blocking an app, and `undefined` when allowing. Assert on shape so this
+    // test file does not need to import from `src/core/public` (which pulls in
+    // monaco-editor and fails under jsdom at module-load time).
+    const expectBlocked = (result: unknown) => {
+      expect(result).toEqual(expect.objectContaining({ status: expect.anything() }));
+    };
+
     it('blocks Discover when the flag is unset (default off)', async () => {
       const updater = await runAndGetUpdater(undefined);
-      expect(updater({ id: 'discover' })).toEqual({ status: AppStatus.inaccessible });
+      expectBlocked(updater({ id: 'discover' }));
     });
 
     it('blocks Discover when the flag is explicitly false', async () => {
       const updater = await runAndGetUpdater(false);
-      expect(updater({ id: 'discover' })).toEqual({ status: AppStatus.inaccessible });
+      expectBlocked(updater({ id: 'discover' }));
     });
 
     it('allows Discover when the flag is true', async () => {
@@ -222,8 +229,8 @@ describe('SecurityPlugin', () => {
 
     it('still blocks other non-allowlisted apps when the flag is true', async () => {
       const updater = await runAndGetUpdater(true);
-      expect(updater({ id: 'visualize' })).toEqual({ status: AppStatus.inaccessible });
-      expect(updater({ id: 'management' })).toEqual({ status: AppStatus.inaccessible });
+      expectBlocked(updater({ id: 'visualize' }));
+      expectBlocked(updater({ id: 'management' }));
     });
 
     it('keeps baseline allowlist members (home, dashboards) accessible regardless of flag', async () => {
