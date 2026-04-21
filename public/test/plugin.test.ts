@@ -212,19 +212,22 @@ describe('SecurityPlugin', () => {
       expect(result).toEqual(expect.objectContaining({ status: expect.anything() }));
     };
 
-    it('blocks Discover when the flag is unset (default off)', async () => {
+    it('blocks Discover (both ids) when the flag is unset (default off)', async () => {
       const updater = await runAndGetUpdater(undefined);
       expectBlocked(updater({ id: 'discover' }));
+      expectBlocked(updater({ id: 'data-explorer' }));
     });
 
-    it('blocks Discover when the flag is explicitly false', async () => {
+    it('blocks Discover (both ids) when the flag is explicitly false', async () => {
       const updater = await runAndGetUpdater(false);
       expectBlocked(updater({ id: 'discover' }));
+      expectBlocked(updater({ id: 'data-explorer' }));
     });
 
-    it('allows Discover when the flag is true', async () => {
+    it('allows Discover (both legacy and data-explorer ids) when the flag is true', async () => {
       const updater = await runAndGetUpdater(true);
       expect(updater({ id: 'discover' })).toBeUndefined();
+      expect(updater({ id: 'data-explorer' })).toBeUndefined();
     });
 
     it('still blocks other non-allowlisted apps when the flag is true', async () => {
