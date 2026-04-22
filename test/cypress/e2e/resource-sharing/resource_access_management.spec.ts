@@ -249,9 +249,7 @@ describe('Resource Access Management Dashboard', () => {
       .find('.euiModalHeader')
       .invoke('text')
       .then((txt) => {
-        const mode: 'Share' | 'Update Access' = /Update Access/i.test(txt)
-          ? 'Update Access'
-          : 'Share';
+        const mode: 'Share' | 'Update Access' = /Update Access/i.test(txt) ? 'Update Access' : 'Share';
 
         addRecipientAndSubmit(mode);
       });
