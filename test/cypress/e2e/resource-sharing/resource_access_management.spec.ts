@@ -85,7 +85,7 @@ function openFirstRowModal() {
   cy.get('.euiOverlayMask', { timeout: 10_000 }).should('exist');
 }
 
-function addRecipientAndSubmit(expectLabel) {
+function addRecipientAndSubmit(expectLabel: 'Share' | 'Update Access') {
   // Ensure there is at least one access-levels panel (create one if missing)
   cy.get('@overlay').then(($ov) => {
     if ($ov.text().includes('No access-levels added yet.')) {
@@ -249,7 +249,7 @@ describe('Resource Access Management Dashboard', () => {
       .find('.euiModalHeader')
       .invoke('text')
       .then((txt) => {
-        const mode = /Update Access/i.test(txt) ? 'Update Access' : 'Share';
+        const mode: 'Share' | 'Update Access' = /Update Access/i.test(txt) ? 'Update Access' : 'Share';
 
         addRecipientAndSubmit(mode);
       });
