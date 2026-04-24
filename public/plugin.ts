@@ -90,7 +90,13 @@ const APP_ID_HOME = 'home';
 const APP_ID_DASHBOARDS = 'dashboards';
 // OpenSearchDashboards app is for legacy url migration
 const APP_ID_OPENSEARCH_DASHBOARDS = 'kibana';
-const APP_LIST_FOR_READONLY_ROLE = [APP_ID_HOME, APP_ID_DASHBOARDS, APP_ID_OPENSEARCH_DASHBOARDS];
+const APP_ID_OVERVIEW = 'opensearch_dashboards_overview';
+const APP_LIST_FOR_READONLY_ROLE = [
+  APP_ID_HOME,
+  APP_ID_DASHBOARDS,
+  APP_ID_OPENSEARCH_DASHBOARDS,
+  APP_ID_OVERVIEW,
+];
 
 const dataAccessUsersCategory: AppCategory & { group?: AppCategory } = {
   id: 'dataAccessAndUsers',
