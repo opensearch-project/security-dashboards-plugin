@@ -88,6 +88,20 @@ async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
 const DEFAULT_READONLY_ROLES = ['kibana_read_only'];
 const APP_ID_HOME = 'home';
 const APP_ID_DASHBOARDS = 'dashboards';
+// Modern OSD registers Discover twice, on purpose, and both ids must be
+// allowlisted together to avoid breaking the UI:
+//   - `data-explorer` hosts the real Discover UI at /app/data-explorer/discover.
+//   - `discover` is a thin shim that client-side-redirects to data-explorer
+//     (see src/plugins/discover/public/plugin.ts). Its mount function fires
+//     navigateToApp('data-explorer', ...) — but the AppUpdater status check
+//     runs BEFORE mount, so if `discover` is marked inaccessible the user
+//     sees "Application not found" and the redirect never executes.
+//   - The nav menu's "Discover" entry points at the `discover` id, not
+//     `data-explorer`, so blocking `discover` also breaks the nav link.
+// Dropping either id produces a visibly broken Discover for the read-only user.
+const APP_ID_DISCOVER = 'discover';
+const APP_ID_DATA_EXPLORER = 'data-explorer';
+const APP_ID_VISUALIZE = 'visualize';
 // OpenSearchDashboards app is for legacy url migration
 const APP_ID_OPENSEARCH_DASHBOARDS = 'kibana';
 const APP_ID_OVERVIEW = 'opensearch_dashboards_overview';
@@ -437,9 +451,15 @@ export class SecurityPlugin
       });
     }
 
+    const readonlyAppAllowlist = [
+      ...APP_LIST_FOR_READONLY_ROLE,
+      ...(config.readonly_mode?.allow_discover ? [APP_ID_DISCOVER, APP_ID_DATA_EXPLORER] : []),
+      ...(config.readonly_mode?.allow_visualize ? [APP_ID_VISUALIZE] : []),
+    ];
+
     core.application.registerAppUpdater(
       new BehaviorSubject<AppUpdater>((app) => {
-        if (!apiPermission && isReadonly && !APP_LIST_FOR_READONLY_ROLE.includes(app.id)) {
+        if (!apiPermission && isReadonly && !readonlyAppAllowlist.includes(app.id)) {
           return {
             status: AppStatus.inaccessible,
           };
