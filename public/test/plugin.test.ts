@@ -164,13 +164,13 @@ describe('SecurityPlugin', () => {
     });
   });
 
-  describe('readonly app allowlist — allow_discover flag', () => {
-    const makeContext = (allowDiscover: boolean | undefined) => ({
+  describe('readonly app allowlist — opt-in flags', () => {
+    const makeContext = (flags: { allow_discover?: boolean; allow_visualize?: boolean }) => ({
       config: {
         get: jest.fn().mockReturnValue({
           readonly_mode: {
             roles: ['kibana_read_only'],
-            ...(allowDiscover === undefined ? {} : { allow_discover: allowDiscover }),
+            ...flags,
           },
           multitenancy: { enabled: true, enable_aggregation_view: false },
           clusterPermissions: { include: [] },
@@ -182,7 +182,10 @@ describe('SecurityPlugin', () => {
       },
     });
 
-    const runAndGetUpdater = async (allowDiscover: boolean | undefined) => {
+    const runAndGetUpdater = async (flags: {
+      allow_discover?: boolean;
+      allow_visualize?: boolean;
+    }) => {
       // Force hasApiPermission() to resolve false so the readonly updater engages.
       coreSetup.http.get = jest.fn().mockResolvedValue({ has_api_access: false });
       (fetchAccountInfoSafe as jest.Mock).mockResolvedValue({
@@ -197,10 +200,13 @@ describe('SecurityPlugin', () => {
       };
 
       const registerAppUpdaterSpy = jest.spyOn(coreSetup.application, 'registerAppUpdater');
-      plugin = new SecurityPlugin(makeContext(allowDiscover));
+      const callsBefore = registerAppUpdaterSpy.mock.calls.length;
+      plugin = new SecurityPlugin(makeContext(flags));
       await plugin.setup(coreSetup, deps);
 
-      const subject = registerAppUpdaterSpy.mock.calls[0][0];
+      // Pick the subject registered during THIS setup — coreSetup is reused across
+      // runAndGetUpdater() calls within a single test, so spy.mock.calls accumulates.
+      const subject = registerAppUpdaterSpy.mock.calls[callsBefore][0];
       return subject.getValue();
     };
 
@@ -212,33 +218,82 @@ describe('SecurityPlugin', () => {
       expect(result).toEqual(expect.objectContaining({ status: expect.anything() }));
     };
 
-    it('blocks Discover (both ids) when the flag is unset (default off)', async () => {
-      const updater = await runAndGetUpdater(undefined);
-      expectBlocked(updater({ id: 'discover' }));
-      expectBlocked(updater({ id: 'data-explorer' }));
+    describe('allow_discover flag', () => {
+      it('blocks Discover (both ids) when the flag is unset (default off)', async () => {
+        const updater = await runAndGetUpdater({});
+        expectBlocked(updater({ id: 'discover' }));
+        expectBlocked(updater({ id: 'data-explorer' }));
+      });
+
+      it('blocks Discover (both ids) when the flag is explicitly false', async () => {
+        const updater = await runAndGetUpdater({ allow_discover: false });
+        expectBlocked(updater({ id: 'discover' }));
+        expectBlocked(updater({ id: 'data-explorer' }));
+      });
+
+      it('allows Discover (both legacy and data-explorer ids) when the flag is true', async () => {
+        const updater = await runAndGetUpdater({ allow_discover: true });
+        expect(updater({ id: 'discover' })).toBeUndefined();
+        expect(updater({ id: 'data-explorer' })).toBeUndefined();
+      });
+
+      it('still blocks other non-allowlisted apps when the flag is true', async () => {
+        const updater = await runAndGetUpdater({ allow_discover: true });
+        expectBlocked(updater({ id: 'visualize' }));
+        expectBlocked(updater({ id: 'management' }));
+      });
     });
 
-    it('blocks Discover (both ids) when the flag is explicitly false', async () => {
-      const updater = await runAndGetUpdater(false);
-      expectBlocked(updater({ id: 'discover' }));
-      expectBlocked(updater({ id: 'data-explorer' }));
+    describe('allow_visualize flag', () => {
+      it('blocks Visualize when the flag is unset (default off)', async () => {
+        const updater = await runAndGetUpdater({});
+        expectBlocked(updater({ id: 'visualize' }));
+      });
+
+      it('blocks Visualize when the flag is explicitly false', async () => {
+        const updater = await runAndGetUpdater({ allow_visualize: false });
+        expectBlocked(updater({ id: 'visualize' }));
+      });
+
+      it('allows Visualize when the flag is true', async () => {
+        const updater = await runAndGetUpdater({ allow_visualize: true });
+        expect(updater({ id: 'visualize' })).toBeUndefined();
+      });
+
+      it('still blocks other non-allowlisted apps when the flag is true', async () => {
+        const updater = await runAndGetUpdater({ allow_visualize: true });
+        expectBlocked(updater({ id: 'discover' }));
+        expectBlocked(updater({ id: 'data-explorer' }));
+        expectBlocked(updater({ id: 'management' }));
+      });
+
+      it('does not affect Discover gating (flags are independent)', async () => {
+        const discoverOnly = await runAndGetUpdater({ allow_discover: true });
+        expectBlocked(discoverOnly({ id: 'visualize' }));
+
+        const visualizeOnly = await runAndGetUpdater({ allow_visualize: true });
+        expectBlocked(visualizeOnly({ id: 'discover' }));
+      });
+
+      it('allows both apps when both flags are true', async () => {
+        const updater = await runAndGetUpdater({ allow_discover: true, allow_visualize: true });
+        expect(updater({ id: 'discover' })).toBeUndefined();
+        expect(updater({ id: 'data-explorer' })).toBeUndefined();
+        expect(updater({ id: 'visualize' })).toBeUndefined();
+      });
     });
 
-    it('allows Discover (both legacy and data-explorer ids) when the flag is true', async () => {
-      const updater = await runAndGetUpdater(true);
-      expect(updater({ id: 'discover' })).toBeUndefined();
-      expect(updater({ id: 'data-explorer' })).toBeUndefined();
-    });
-
-    it('still blocks other non-allowlisted apps when the flag is true', async () => {
-      const updater = await runAndGetUpdater(true);
-      expectBlocked(updater({ id: 'visualize' }));
-      expectBlocked(updater({ id: 'management' }));
-    });
-
-    it('keeps baseline allowlist members (home, dashboards) accessible regardless of flag', async () => {
-      for (const allow of [false, true]) {
-        const updater = await runAndGetUpdater(allow);
+    it('keeps baseline allowlist members (home, dashboards) accessible regardless of flags', async () => {
+      const combos = [
+        {},
+        { allow_discover: false },
+        { allow_discover: true },
+        { allow_visualize: false },
+        { allow_visualize: true },
+        { allow_discover: true, allow_visualize: true },
+      ];
+      for (const flags of combos) {
+        const updater = await runAndGetUpdater(flags);
         expect(updater({ id: 'home' })).toBeUndefined();
         expect(updater({ id: 'dashboards' })).toBeUndefined();
       }

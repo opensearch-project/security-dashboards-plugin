@@ -101,6 +101,7 @@ const APP_ID_DASHBOARDS = 'dashboards';
 // Dropping either id produces a visibly broken Discover for the read-only user.
 const APP_ID_DISCOVER = 'discover';
 const APP_ID_DATA_EXPLORER = 'data-explorer';
+const APP_ID_VISUALIZE = 'visualize';
 // OpenSearchDashboards app is for legacy url migration
 const APP_ID_OPENSEARCH_DASHBOARDS = 'kibana';
 const APP_LIST_FOR_READONLY_ROLE = [APP_ID_HOME, APP_ID_DASHBOARDS, APP_ID_OPENSEARCH_DASHBOARDS];
@@ -444,9 +445,11 @@ export class SecurityPlugin
       });
     }
 
-    const readonlyAppAllowlist = config.readonly_mode?.allow_discover
-      ? [...APP_LIST_FOR_READONLY_ROLE, APP_ID_DISCOVER, APP_ID_DATA_EXPLORER]
-      : APP_LIST_FOR_READONLY_ROLE;
+    const readonlyAppAllowlist = [
+      ...APP_LIST_FOR_READONLY_ROLE,
+      ...(config.readonly_mode?.allow_discover ? [APP_ID_DISCOVER, APP_ID_DATA_EXPLORER] : []),
+      ...(config.readonly_mode?.allow_visualize ? [APP_ID_VISUALIZE] : []),
+    ];
 
     core.application.registerAppUpdater(
       new BehaviorSubject<AppUpdater>((app) => {

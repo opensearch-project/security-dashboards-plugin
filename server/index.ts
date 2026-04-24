@@ -46,6 +46,7 @@ export const configSchema = schema.object({
   readonly_mode: schema.object({
     roles: schema.arrayOf(schema.string(), { defaultValue: [] }),
     allow_discover: schema.boolean({ defaultValue: false }),
+    allow_visualize: schema.boolean({ defaultValue: false }),
   }),
   clusterPermissions: schema.object({
     include: schema.arrayOf(schema.string(), { defaultValue: [] }),
