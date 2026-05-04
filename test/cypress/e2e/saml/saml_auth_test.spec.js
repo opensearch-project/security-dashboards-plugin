@@ -165,6 +165,7 @@ describe('Log in via SAML', () => {
     }
 
     cy.get('#private').should('be.enabled');
+    // eslint-disable-next-line cypress/no-force
     cy.get('#private').click({ force: true });
 
     cy.get('button[data-test-subj="confirm"]').click();
