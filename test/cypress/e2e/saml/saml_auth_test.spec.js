@@ -25,40 +25,12 @@ import samlUserRoleMapping from '../../fixtures/saml/samlUserRoleMappiing.json';
 const basePath = Cypress.env('basePath') || '';
 
 before(() => {
-  cy.intercept('https://localhost:9200');
-
-  // Avoid Cypress lock onto the ipv4 range, so fake `visit()` before `request()`.
-  // See: https://github.com/cypress-io/cypress/issues/25397#issuecomment-1402556488
-  if (Cypress.env('loginMethod') === 'saml_multiauth') {
-    cy.visit(`http://localhost:5601${basePath}`);
-  } else {
-    cy.request(`http://localhost:5601${basePath}`);
-  }
 
   cy.createRoleMapping(ALL_ACCESS_ROLE, samlUserRoleMapping);
   cy.clearCookies();
   cy.clearLocalStorage();
 });
 
-beforeEach(() => {
-  cy.intercept('GET', '**/**', (req) => {
-    // Replace [::1] with localhost in the request URL and headers
-    if (req.url.includes('[::1]')) {
-      req.url = req.url.replace(/\[::1\]/g, 'localhost');
-    }
-
-    req.on('response', (res) => {
-      if (res && res.headers) {
-        Object.keys(res.headers).forEach((key) => {
-          if (typeof res.headers[key] === 'string' && res.headers[key].includes('[::1]')) {
-            res.headers[key] = res.headers[key].replace(/\[::1\]/g, 'localhost');
-          }
-        });
-      }
-      return res;
-    });
-  });
-});
 
 afterEach(() => {
   cy.clearCookies();
