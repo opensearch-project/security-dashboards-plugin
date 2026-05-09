@@ -81,7 +81,7 @@ runs:
         if [ -z "${{ inputs.osd_base_path }}" ]; then
           nohup yarn start --no-base-path --no-watch --csp.warnLegacyBrowsers=false | tee dashboard.log &
         else
-          nohup yarn start --no-watch --csp.warnLegacyBrowsers=false | tee dashboard.log &
+          nohup yarn start --no-base-path --no-watch --csp.warnLegacyBrowsers=false | tee dashboard.log &
         fi
       shell: bash
 
