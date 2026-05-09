@@ -40,7 +40,7 @@ describe('Log in via SAML', () => {
     cy.get('a[aria-label="saml_login_button"]').should('be.visible');
     cy.get('a[aria-label="saml_login_button"]').should('be.visible').click();
     cy.url().should('include', ':7000');
-    cy.origin('http://[::1]:7000', () => {
+    cy.origin('http://localhost:7000', () => {
       cy.get('input[id=userName]').should('be.visible');
       cy.get('button[id=btn-sign-in]').should('be.visible').click();
     });
@@ -59,7 +59,7 @@ describe('Log in via SAML', () => {
       cy.visit(`http://localhost:5601${basePath}/app/opensearch_dashboards_overview`, {
         failOnStatusCode: false,
       });
-      cy.origin('http://[::1]:7000', () => {
+      cy.origin('http://localhost:7000', () => {
         cy.get('input[id=userName]').should('be.visible');
         cy.get('button[id=btn-sign-in]').should('be.visible').click();
       });
@@ -82,7 +82,7 @@ describe('Log in via SAML', () => {
       cy.visit(`http://localhost:5601${basePath}/app/dev_tools#/console`, {
         failOnStatusCode: false,
       });
-      cy.origin('http://[::1]:7000', () => {
+      cy.origin('http://localhost:7000', () => {
         cy.get('input[id=userName]').should('be.visible');
         cy.get('button[id=btn-sign-in]').should('be.visible').click();
       });
@@ -107,7 +107,7 @@ describe('Log in via SAML', () => {
       cy.visit(urlWithHash, {
         failOnStatusCode: false,
       });
-      cy.origin('http://[::1]:7000', () => {
+      cy.origin('http://localhost:7000', () => {
         cy.get('input[id=userName]').should('be.visible');
         cy.get('button[id=btn-sign-in]').should('be.visible').click();
       });
@@ -129,7 +129,7 @@ describe('Log in via SAML', () => {
       cy.visit(`http://localhost:5601${basePath}/app/opensearch_dashboards_overview`, {
         failOnStatusCode: false,
       });
-      cy.origin('http://[::1]:7000', () => {
+      cy.origin('http://localhost:7000', () => {
         cy.get('input[id=userName]').should('be.visible');
         cy.get('button[id=btn-sign-in]').should('be.visible').click();
       });
@@ -155,7 +155,7 @@ describe('Log in via SAML', () => {
       cy.visit(`http://localhost:5601${basePath}/app/opensearch_dashboards_overview`, {
         failOnStatusCode: false,
       });
-      cy.origin('http://[::1]:7000', () => {
+      cy.origin('http://localhost:7000', () => {
         cy.get('input[id=userName]').should('be.visible');
         cy.get('button[id=btn-sign-in]').should('be.visible').click();
       });
@@ -182,7 +182,7 @@ describe('Log in via SAML', () => {
           });
           loginWithSamlMultiauth();
         } else {
-          cy.origin('http://[::1]:7000', { args: { gotoUrl } }, ({ gotoUrl }) => {
+          cy.origin('http://localhost:7000', { args: { gotoUrl } }, ({ gotoUrl }) => {
             cy.visit(gotoUrl, {
               failOnStatusCode: false,
             });
