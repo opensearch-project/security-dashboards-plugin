@@ -53,7 +53,10 @@ describe('Log in via OIDC', () => {
     const targetUrl = new URL(url);
 
     oidcLoginUrl.searchParams.set('redirectHash', 'false');
-    oidcLoginUrl.searchParams.set('nextUrl', `${targetUrl.pathname}${targetUrl.search}`);
+    oidcLoginUrl.searchParams.set(
+      'nextUrl',
+      `${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`
+    );
 
     cy.visit(oidcLoginUrl.toString(), {
       failOnStatusCode: false,
@@ -62,32 +65,24 @@ describe('Log in via OIDC', () => {
     kcLogin();
 
     cy.location('origin', { timeout: 60000 }).should('not.eq', keycloakOrigin);
-    cy.origin(
-      osdOrigin,
-      {
-        args: {
-          url,
-          options,
-        },
-      },
-      ({ url: target, options: loginOptions }) => {
-        if (loginOptions.savedTenant !== undefined) {
-          localStorage.setItem('opendistro::security::tenant::saved', loginOptions.savedTenant);
-        }
+    cy.origin(osdOrigin, { args: { options } }, ({ options: loginOptions }) => {
+      cy.getCookie('security_authentication', { timeout: 60000 }).should('exist');
 
-        if (loginOptions.hideHomeModal) {
-          localStorage.setItem('home:newThemeModal:show', 'false');
-        }
-
-        if (loginOptions.hideTenantPopup) {
-          sessionStorage.setItem('opendistro::security::tenant::show_popup', 'false');
-        }
-
-        cy.visit(target, {
-          failOnStatusCode: false,
-        });
+      if (loginOptions.savedTenant !== undefined) {
+        localStorage.setItem('opendistro::security::tenant::saved', loginOptions.savedTenant);
       }
-    );
+
+      if (loginOptions.hideHomeModal) {
+        localStorage.setItem('home:newThemeModal:show', 'false');
+      }
+
+      if (loginOptions.hideTenantPopup) {
+        sessionStorage.setItem('opendistro::security::tenant::show_popup', 'false');
+      }
+    });
+    cy.visit(url, {
+      failOnStatusCode: false,
+    });
   };
 
   it('Login to app/opensearch_dashboards_overview#/ when OIDC is enabled', () => {

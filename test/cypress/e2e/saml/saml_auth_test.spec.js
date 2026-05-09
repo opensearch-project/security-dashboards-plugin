@@ -77,9 +77,7 @@ describe('Log in via SAML', () => {
   const loginWithSaml = (url, options = {}) => {
     const samlLoginUrl = new URL(`${osdOrigin}${basePath}/auth/saml/login`);
     const targetUrl = new URL(url);
-    const nextUrl = options.useTargetAsNextUrl
-      ? `${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`
-      : `${basePath}/`;
+    const nextUrl = `${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`;
 
     samlLoginUrl.searchParams.set('redirectHash', 'false');
     samlLoginUrl.searchParams.set('nextUrl', nextUrl);
@@ -91,14 +89,24 @@ describe('Log in via SAML', () => {
     submitIdpLoginIfNeeded();
 
     cy.location('origin', { timeout: 60000 }).should('not.eq', idpOrigin);
+    cy.origin(osdOrigin, { args: { options } }, ({ options: loginOptions }) => {
+      cy.getCookie('security_authentication', { timeout: 60000 }).should('exist');
 
-    if (options.visitTargetAfterLogin !== false) {
-      cy.origin(osdOrigin, { args: { url } }, ({ url: target }) => {
-        cy.visit(target, {
-          failOnStatusCode: false,
-        });
-      });
-    }
+      if (loginOptions.savedTenant !== undefined) {
+        localStorage.setItem('opendistro::security::tenant::saved', loginOptions.savedTenant);
+      }
+
+      if (loginOptions.hideHomeModal) {
+        localStorage.setItem('home:newThemeModal:show', 'false');
+      }
+
+      if (loginOptions.hideTenantPopup) {
+        sessionStorage.setItem('opendistro::security::tenant::show_popup', 'false');
+      }
+    });
+    cy.visit(url, {
+      failOnStatusCode: false,
+    });
   };
 
   it('Login to app/opensearch_dashboards_overview#/ when SAML is enabled', () => {
@@ -112,7 +120,10 @@ describe('Log in via SAML', () => {
       });
       loginWithSamlMultiauth();
     } else {
-      loginWithSaml(url);
+      loginWithSaml(url, {
+        savedTenant: '"__user__"',
+        hideHomeModal: true,
+      });
     }
 
     cy.origin(osdOrigin, () => {
@@ -132,7 +143,10 @@ describe('Log in via SAML', () => {
       });
       loginWithSamlMultiauth();
     } else {
-      loginWithSaml(url);
+      loginWithSaml(url, {
+        savedTenant: '"__user__"',
+        hideHomeModal: true,
+      });
     }
 
     cy.origin(osdOrigin, () => {
@@ -153,7 +167,10 @@ describe('Log in via SAML', () => {
       });
       loginWithSamlMultiauth();
     } else {
-      loginWithSaml(urlWithHash);
+      loginWithSaml(urlWithHash, {
+        savedTenant: '"__user__"',
+        hideHomeModal: true,
+      });
     }
 
     cy.origin(osdOrigin, () => {
@@ -172,7 +189,9 @@ describe('Log in via SAML', () => {
       });
       loginWithSamlMultiauth();
     } else {
-      loginWithSaml(url);
+      loginWithSaml(url, {
+        hideHomeModal: true,
+      });
     }
 
     cy.intercept('GET', `${basePath}/auth/saml/logout`).as('samlLogout');
@@ -197,7 +216,9 @@ describe('Log in via SAML', () => {
       });
       loginWithSamlMultiauth();
     } else {
-      loginWithSaml(url);
+      loginWithSaml(url, {
+        hideHomeModal: true,
+      });
     }
 
     cy.origin(osdOrigin, () => {
@@ -223,10 +244,7 @@ describe('Log in via SAML', () => {
           });
           loginWithSamlMultiauth();
         } else {
-          loginWithSaml(gotoUrl, {
-            useTargetAsNextUrl: true,
-            visitTargetAfterLogin: false,
-          });
+          loginWithSaml(gotoUrl);
         }
         cy.origin(osdOrigin, () => {
           cy.getCookie('security_authentication').should('exist');
