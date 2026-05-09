@@ -77,36 +77,11 @@ jobs:
       - name: Configure and Run OpenSearch Dashboards with Cypress Test Cases
         run: |
           cd ./OpenSearch-Dashboards
-          node scripts/build_opensearch_dashboards_platform_plugins --no-examples --workers=10
-          nohup yarn start --no-base-path --no-watch | tee dashboard.log &
-          TIMEOUT=300
-          INTERVAL=5
-          end=$((SECONDS + TIMEOUT))
-
-          echo "Waiting up to ${TIMEOUT}s for OpenSearch Dashboards status ..."
-          while (( SECONDS < end )); do
-            out="$(curl -s -k -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} -H 'kbn-xsrf: true' \
-                    -w 'HTTPSTATUS:%{http_code}' http://localhost:5601/api/status || true)"
-            code="${out##*HTTPSTATUS:}"
-            body="${out%HTTPSTATUS:*}"
-
-            if [ "${code:-}" = "200" ] && printf '%s' "${body:-}" | grep -Eiq '"state"[[:space:]]*:[[:space:]]*"green"'; then
-              echo "OpenSearch Dashboards status is green (HTTP ${code})."
-              break
-            fi
-            sleep "${INTERVAL}"
-          done
-
-          if (( SECONDS >= end )); then
-            echo "Timed out after ${TIMEOUT}s waiting for OpenSearch Dashboards status."
-            echo "Last 200 lines of dashboard.log:"
-            tail -n 200 dashboard.log || true
-            exit 1
-          fi
-
+          nohup yarn start --no-base-path --no-watch &
+          sleep 500
           git clone https://github.com/opensearch-project/opensearch-dashboards-functional-test.git
           cd opensearch-dashboards-functional-test
-          yarn install
+          npm install cypress --save-dev
           CYPRESS_VERIFY_TIMEOUT=60000 yarn cypress:run-with-security-and-aggregation-view --browser chrome --spec "cypress/integration/plugins/security-dashboards-plugin/aggregation_view.js"
           CYPRESS_VERIFY_TIMEOUT=60000 yarn cypress:run-with-security --browser chrome --spec "cypress/integration/plugins/security-dashboards-plugin/multi_tenancy.js"
           CYPRESS_VERIFY_TIMEOUT=60000 yarn cypress:run-with-security --browser chrome --spec "cypress/integration/plugins/security-dashboards-plugin/default_tenant.js"
