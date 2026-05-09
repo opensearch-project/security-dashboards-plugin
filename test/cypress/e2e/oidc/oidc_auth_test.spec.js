@@ -18,6 +18,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 const basePath = Cypress.env('basePath') || '';
+const keycloakOrigin = 'http://127.0.0.1:8080';
 
 describe('Log in via OIDC', () => {
   afterEach(() => {
@@ -26,7 +27,7 @@ describe('Log in via OIDC', () => {
   });
 
   const kcLogin = () => {
-    cy.origin('http://127.0.0.1:8080', () => {
+    cy.origin(keycloakOrigin, () => {
       const login = 'admin';
       const password = 'admin';
 
@@ -37,12 +38,27 @@ describe('Log in via OIDC', () => {
     });
   };
 
-  it('Login to app/opensearch_dashboards_overview#/ when OIDC is enabled', () => {
-    cy.visit(`http://localhost:5601${basePath}/app/opensearch_dashboards_overview`, {
+  const loginWithOidc = (url) => {
+    const oidcLoginUrl = new URL(`http://localhost:5601${basePath}/auth/openid/login`);
+    const targetUrl = new URL(url);
+
+    oidcLoginUrl.searchParams.set('redirectHash', 'false');
+    oidcLoginUrl.searchParams.set('nextUrl', `${targetUrl.pathname}${targetUrl.search}`);
+
+    cy.visit(oidcLoginUrl.toString(), {
       failOnStatusCode: false,
     });
 
     kcLogin();
+
+    cy.location('origin', { timeout: 60000 }).should('not.eq', keycloakOrigin);
+    cy.visit(url, {
+      failOnStatusCode: false,
+    });
+  };
+
+  it('Login to app/opensearch_dashboards_overview#/ when OIDC is enabled', () => {
+    loginWithOidc(`http://localhost:5601${basePath}/app/opensearch_dashboards_overview`);
 
     localStorage.setItem('opendistro::security::tenant::saved', '""');
     localStorage.setItem('home:newThemeModal:show', 'false');
@@ -53,17 +69,7 @@ describe('Log in via OIDC', () => {
   });
 
   it('Login to app/dev_tools#/console when OIDC is enabled', () => {
-    cy.visit(`http://localhost:5601${basePath}/app/dev_tools#/console`, {
-      failOnStatusCode: false,
-    });
-
-    kcLogin();
-
-    cy.url().then((url) => {
-      cy.visit(url, {
-        failOnStatusCode: false,
-      });
-    });
+    loginWithOidc(`http://localhost:5601${basePath}/app/dev_tools#/console`);
 
     cy.getCookie('security_authentication').should('exist');
 
@@ -76,19 +82,9 @@ describe('Log in via OIDC', () => {
   it('Login to Dashboard with Hash', () => {
     const urlWithHash = `http://localhost:5601${basePath}/app/security-dashboards-plugin#/getstarted`;
 
-    cy.visit(urlWithHash, {
-      failOnStatusCode: false,
-    });
-
-    kcLogin();
+    loginWithOidc(urlWithHash);
     cy.getCookie('security_authentication').should('exist');
     cy.getCookie('security_authentication_oidc1').should('exist');
-
-    cy.url().then((url) => {
-      cy.visit(url, {
-        failOnStatusCode: false,
-      });
-    });
 
     localStorage.setItem('opendistro::security::tenant::saved', '""');
     localStorage.setItem('home:newThemeModal:show', 'false');
@@ -99,20 +95,10 @@ describe('Log in via OIDC', () => {
   it('Login to Dashboard preserving Tenant', () => {
     const startUrl = `http://localhost:5601${basePath}/app/dashboards?security_tenant=private#/list`;
 
-    cy.visit(startUrl, {
-      failOnStatusCode: false,
-    });
-
     sessionStorage.setItem('opendistro::security::tenant::show_popup', 'false');
 
-    kcLogin();
+    loginWithOidc(startUrl);
     cy.getCookie('security_authentication').should('exist');
-
-    cy.url().then((url) => {
-      cy.visit(url, {
-        failOnStatusCode: false,
-      });
-    });
 
     localStorage.setItem('home:newThemeModal:show', 'false');
 
@@ -123,17 +109,8 @@ describe('Log in via OIDC', () => {
   });
 
   it('Tenancy persisted after logout in OIDC', () => {
-    cy.visit(`http://localhost:5601${basePath}/app/opensearch_dashboards_overview#/`, {
-      failOnStatusCode: false,
-    });
-
-    kcLogin();
-
-    cy.url().then((url) => {
-      cy.visit(url, {
-        failOnStatusCode: false,
-      });
-    });
+    const url = `http://localhost:5601${basePath}/app/opensearch_dashboards_overview#/`;
+    loginWithOidc(url);
 
     localStorage.setItem('home:newThemeModal:show', 'false');
 
@@ -152,7 +129,7 @@ describe('Log in via OIDC', () => {
 
     cy.wait('@openidLogout').then(() => {});
 
-    kcLogin();
+    loginWithOidc(url);
 
     cy.get('#user-icon-btn').should('be.visible');
     cy.get('#user-icon-btn').click();
