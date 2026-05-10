@@ -77,6 +77,7 @@ jobs:
       - name: Configure and Run OpenSearch Dashboards with Cypress Test Cases
         run: |
           cd ./OpenSearch-Dashboards
+          node scripts/build_opensearch_dashboards_platform_plugins --no-examples --workers=10
           nohup yarn start --no-base-path --no-watch &
           sleep 500
           git clone --branch fix-security-aggregation-view-ftr https://github.com/cwperks/opensearch-dashboards-functional-test.git
