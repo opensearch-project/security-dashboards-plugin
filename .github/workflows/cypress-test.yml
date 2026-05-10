@@ -79,7 +79,17 @@ jobs:
           cd ./OpenSearch-Dashboards
           node scripts/build_opensearch_dashboards_platform_plugins --no-examples --workers=10
           nohup yarn start --no-base-path --no-watch &
-          sleep 500
+          for i in {1..120}; do
+            if curl -s http://localhost:5601/api/status >/dev/null; then
+              echo "OpenSearch Dashboards is ready"
+              break
+            fi
+            if [ "$i" -eq 120 ]; then
+              echo "Timed out waiting for OpenSearch Dashboards"
+              exit 1
+            fi
+            sleep 5
+          done
           git clone --branch fix-security-aggregation-view-ftr https://github.com/cwperks/opensearch-dashboards-functional-test.git
           cd opensearch-dashboards-functional-test
           npm install cypress --save-dev
