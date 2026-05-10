@@ -67,11 +67,24 @@ describe('Log in via SAML', () => {
     submitIdpLogin();
   };
 
+  const runOnOsd = (callback) => {
+    if (Cypress.env('loginMethod') === 'saml_multiauth') {
+      callback();
+    } else {
+      cy.origin(osdOrigin, callback);
+    }
+  };
+
   const loginWithSamlMultiauth = () => {
     cy.get('a[aria-label="saml_login_button"]').should('be.visible');
     cy.get('a[aria-label="saml_login_button"]').should('be.visible').click();
-    cy.url().should('include', ':7000');
-    submitIdpLoginIfNeeded();
+    cy.location('origin', { timeout: 60000 }).should('eq', idpOrigin);
+    cy.origin(idpOrigin, () => {
+      cy.get('input[id=userName]').should('be.visible');
+      cy.get('button[id=btn-sign-in]').should('be.visible').click();
+    });
+    cy.location('origin', { timeout: 60000 }).should('not.eq', idpOrigin);
+    cy.getCookie('security_authentication', { timeout: 60000 }).should('exist');
   };
 
   const loginWithSaml = (url, options = {}) => {
@@ -126,7 +139,7 @@ describe('Log in via SAML', () => {
       });
     }
 
-    cy.origin(osdOrigin, () => {
+    runOnOsd(() => {
       cy.get('#osdOverviewPageHeader__title').should('be.visible');
       cy.getCookie('security_authentication').should('exist');
     });
@@ -149,7 +162,7 @@ describe('Log in via SAML', () => {
       });
     }
 
-    cy.origin(osdOrigin, () => {
+    runOnOsd(() => {
       cy.get('a.euiBreadcrumb--last').contains('Dev Tools');
       cy.getCookie('security_authentication').should('exist');
     });
@@ -173,7 +186,7 @@ describe('Log in via SAML', () => {
       });
     }
 
-    cy.origin(osdOrigin, () => {
+    runOnOsd(() => {
       cy.get('h1').contains('Get started');
       cy.getCookie('security_authentication').should('exist');
     });
@@ -195,7 +208,7 @@ describe('Log in via SAML', () => {
     }
 
     cy.intercept('GET', `${basePath}/auth/saml/logout`).as('samlLogout');
-    cy.origin(osdOrigin, () => {
+    runOnOsd(() => {
       cy.get('#private').should('be.enabled');
       cy.get('#private').click({ force: true });
 
@@ -221,7 +234,7 @@ describe('Log in via SAML', () => {
       });
     }
 
-    cy.origin(osdOrigin, () => {
+    runOnOsd(() => {
       cy.get('#user-icon-btn').should('be.visible');
       cy.get('#user-icon-btn').click();
 
@@ -246,7 +259,7 @@ describe('Log in via SAML', () => {
         } else {
           loginWithSaml(gotoUrl);
         }
-        cy.origin(osdOrigin, () => {
+        runOnOsd(() => {
           cy.getCookie('security_authentication').should('exist');
         });
       });
