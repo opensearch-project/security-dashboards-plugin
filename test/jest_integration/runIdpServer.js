@@ -26,11 +26,12 @@ const pems = generate(null, {
 });
 
 const argv = minimist(process.argv.slice(2), {
-  default: { basePath: '' },
+  default: { basePath: '', host: 'localhost' },
 });
 
 // Create certificate pair on the fly and pass it to runServer
 runServer({
+  host: argv.host,
   acsUrl: `http://localhost:5601${argv.basePath}/_opendistro/_security/saml/acs`,
   audience: 'https://localhost:9200',
   cert: pems.cert,
