@@ -23,55 +23,102 @@ import { ALL_ACCESS_ROLE, SHORTEN_URL_DATA } from '../../support/constants';
 import samlUserRoleMapping from '../../fixtures/saml/samlUserRoleMappiing.json';
 
 const basePath = Cypress.env('basePath') || '';
+const idpOrigin = new URL(Cypress.env('idpUrl') || 'http://localhost:7000').origin;
+const osdOrigin = 'http://localhost:5601';
+
+Cypress.on('uncaught:exception', (err) => {
+  if (err.message.includes("Cannot read properties of null (reading 'postMessage')")) {
+    return false;
+  }
+});
 
 before(() => {
   cy.intercept('https://localhost:9200');
 
-  // Avoid Cypress lock onto the ipv4 range, so fake `visit()` before `request()`.
-  // See: https://github.com/cypress-io/cypress/issues/25397#issuecomment-1402556488
+  // Avoid Cypress locking onto the OpenSearch origin before the browser has
+  // visited OpenSearch Dashboards. This matters for the SAML cross-origin flow.
   if (Cypress.env('loginMethod') === 'saml_multiauth') {
     cy.visit(`http://localhost:5601${basePath}`);
   } else {
-    cy.request(`http://localhost:5601${basePath}`);
+    cy.request({
+      url: `http://localhost:5601${basePath}`,
+      auth: null,
+    });
   }
 
   cy.createRoleMapping(ALL_ACCESS_ROLE, samlUserRoleMapping);
-  cy.clearCookies();
-  cy.clearLocalStorage();
-});
-
-beforeEach(() => {
-  cy.intercept('GET', '**/**', (req) => {
-    // Replace [::1] with localhost in the request URL and headers
-    if (req.url.includes('[::1]')) {
-      req.url = req.url.replace(/\[::1\]/g, 'localhost');
-    }
-
-    req.on('response', (res) => {
-      if (res && res.headers) {
-        Object.keys(res.headers).forEach((key) => {
-          if (typeof res.headers[key] === 'string' && res.headers[key].includes('[::1]')) {
-            res.headers[key] = res.headers[key].replace(/\[::1\]/g, 'localhost');
-          }
-        });
-      }
-      return res;
-    });
-  });
+  cy.clearAllCookies();
+  cy.clearAllLocalStorage();
 });
 
 afterEach(() => {
-  cy.clearCookies();
-  cy.clearLocalStorage();
+  cy.clearAllCookies();
+  cy.clearAllLocalStorage();
 });
 
 describe('Log in via SAML', () => {
+  const submitIdpLogin = () => {
+    cy.get('input[id=userName]').should('be.visible');
+    cy.get('button[id=btn-sign-in]').should('be.visible').click();
+  };
+
+  const submitIdpLoginIfNeeded = () => {
+    cy.location('origin', { timeout: 60000 }).should('eq', idpOrigin);
+    submitIdpLogin();
+  };
+
+  const runOnOsd = (callback) => {
+    if (Cypress.env('loginMethod') === 'saml_multiauth') {
+      callback();
+    } else {
+      cy.origin(osdOrigin, callback);
+    }
+  };
+
   const loginWithSamlMultiauth = () => {
     cy.get('a[aria-label="saml_login_button"]').should('be.visible');
     cy.get('a[aria-label="saml_login_button"]').should('be.visible').click();
-    cy.origin('http://localhost:7000', () => {
+    cy.location('origin', { timeout: 60000 }).should('eq', idpOrigin);
+    cy.origin(idpOrigin, () => {
       cy.get('input[id=userName]').should('be.visible');
       cy.get('button[id=btn-sign-in]').should('be.visible').click();
+    });
+    cy.location('origin', { timeout: 60000 }).should('not.eq', idpOrigin);
+    cy.getCookie('security_authentication', { timeout: 60000 }).should('exist');
+  };
+
+  const loginWithSaml = (url, options = {}) => {
+    const samlLoginUrl = new URL(`${osdOrigin}${basePath}/auth/saml/login`);
+    const targetUrl = new URL(url);
+    const nextUrl = `${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`;
+
+    samlLoginUrl.searchParams.set('redirectHash', 'false');
+    samlLoginUrl.searchParams.set('nextUrl', nextUrl);
+
+    cy.visit(samlLoginUrl.toString(), {
+      failOnStatusCode: false,
+    });
+
+    submitIdpLoginIfNeeded();
+
+    cy.location('origin', { timeout: 60000 }).should('not.eq', idpOrigin);
+    cy.origin(osdOrigin, { args: { options } }, ({ options: loginOptions }) => {
+      cy.getCookie('security_authentication', { timeout: 60000 }).should('exist');
+
+      if (loginOptions.savedTenant !== undefined) {
+        localStorage.setItem('opendistro::security::tenant::saved', loginOptions.savedTenant);
+      }
+
+      if (loginOptions.hideHomeModal) {
+        localStorage.setItem('home:newThemeModal:show', 'false');
+      }
+
+      if (loginOptions.hideTenantPopup) {
+        sessionStorage.setItem('opendistro::security::tenant::show_popup', 'false');
+      }
+    });
+    cy.visit(url, {
+      failOnStatusCode: false,
     });
   };
 
@@ -79,53 +126,53 @@ describe('Log in via SAML', () => {
     localStorage.setItem('opendistro::security::tenant::saved', '"__user__"');
     localStorage.setItem('home:newThemeModal:show', 'false');
 
+    const url = `${osdOrigin}${basePath}/app/opensearch_dashboards_overview`;
     if (Cypress.env('loginMethod') === 'saml_multiauth') {
-      cy.visit(`http://localhost:5601${basePath}/app/opensearch_dashboards_overview`, {
+      cy.visit(url, {
         failOnStatusCode: false,
       });
       loginWithSamlMultiauth();
     } else {
-      cy.origin('http://localhost:7000', { args: { basePath } }, ({ basePath }) => {
-        cy.visit(`http://localhost:5601${basePath}/app/opensearch_dashboards_overview`, {
-          failOnStatusCode: false,
-        });
-        cy.get('input[id=userName]').should('be.visible');
-        cy.get('button[id=btn-sign-in]').should('be.visible').click();
+      loginWithSaml(url, {
+        savedTenant: '"__user__"',
+        hideHomeModal: true,
       });
     }
 
-    cy.get('#osdOverviewPageHeader__title').should('be.visible');
-    cy.getCookie('security_authentication').should('exist');
+    runOnOsd(() => {
+      cy.get('#osdOverviewPageHeader__title').should('be.visible');
+      cy.getCookie('security_authentication').should('exist');
+    });
   });
 
   it('Login to app/dev_tools#/console when SAML is enabled', () => {
     localStorage.setItem('opendistro::security::tenant::saved', '"__user__"');
     localStorage.setItem('home:newThemeModal:show', 'false');
 
+    const url = `${osdOrigin}${basePath}/app/dev_tools#/console`;
     if (Cypress.env('loginMethod') === 'saml_multiauth') {
-      cy.visit(`http://localhost:5601${basePath}/app/dev_tools#/console`, {
+      cy.visit(url, {
         failOnStatusCode: false,
       });
       loginWithSamlMultiauth();
     } else {
-      cy.origin('http://localhost:7000', { args: { basePath } }, ({ basePath }) => {
-        cy.visit(`http://localhost:5601${basePath}/app/dev_tools#/console`, {
-          failOnStatusCode: false,
-        });
-        cy.get('input[id=userName]').should('be.visible');
-        cy.get('button[id=btn-sign-in]').should('be.visible').click();
+      loginWithSaml(url, {
+        savedTenant: '"__user__"',
+        hideHomeModal: true,
       });
     }
 
-    cy.get('a.euiBreadcrumb--last').contains('Dev Tools');
-    cy.getCookie('security_authentication').should('exist');
+    runOnOsd(() => {
+      cy.get('a.euiBreadcrumb--last').contains('Dev Tools');
+      cy.getCookie('security_authentication').should('exist');
+    });
   });
 
   it('Login to Dashboard with Hash', () => {
     localStorage.setItem('opendistro::security::tenant::saved', '"__user__"');
     localStorage.setItem('home:newThemeModal:show', 'false');
 
-    const urlWithHash = `http://localhost:5601${basePath}/app/security-dashboards-plugin#/getstarted`;
+    const urlWithHash = `${osdOrigin}${basePath}/app/security-dashboards-plugin#/getstarted`;
 
     if (Cypress.env('loginMethod') === 'saml_multiauth') {
       cy.visit(urlWithHash, {
@@ -133,69 +180,68 @@ describe('Log in via SAML', () => {
       });
       loginWithSamlMultiauth();
     } else {
-      cy.origin('http://localhost:7000', { args: { urlWithHash } }, ({ urlWithHash }) => {
-        cy.visit(urlWithHash, {
-          failOnStatusCode: false,
-        });
-        cy.get('input[id=userName]').should('be.visible');
-        cy.get('button[id=btn-sign-in]').should('be.visible').click();
+      loginWithSaml(urlWithHash, {
+        savedTenant: '"__user__"',
+        hideHomeModal: true,
       });
     }
 
-    cy.get('h1').contains('Get started');
-    cy.getCookie('security_authentication').should('exist');
+    runOnOsd(() => {
+      cy.get('h1').contains('Get started');
+      cy.getCookie('security_authentication').should('exist');
+    });
   });
 
   it('Tenancy persisted after logout in SAML', () => {
     localStorage.setItem('home:newThemeModal:show', 'false');
 
+    const url = `${osdOrigin}${basePath}/app/opensearch_dashboards_overview`;
     if (Cypress.env('loginMethod') === 'saml_multiauth') {
-      cy.visit(`http://localhost:5601${basePath}/app/opensearch_dashboards_overview`, {
+      cy.visit(url, {
         failOnStatusCode: false,
       });
       loginWithSamlMultiauth();
     } else {
-      cy.origin('http://localhost:7000', { args: { basePath } }, ({ basePath }) => {
-        cy.visit(`http://localhost:5601${basePath}/app/opensearch_dashboards_overview`, {
-          failOnStatusCode: false,
-        });
-        cy.get('input[id=userName]').should('be.visible');
-        cy.get('button[id=btn-sign-in]').should('be.visible').click();
+      loginWithSaml(url, {
+        hideHomeModal: true,
       });
     }
 
-    cy.get('#private').should('be.enabled');
-    cy.get('#private').click({ force: true });
+    cy.intercept('GET', `${basePath}/auth/saml/logout`).as('samlLogout');
+    runOnOsd(() => {
+      cy.get('#private').should('be.enabled');
+      cy.get('#private').click({ force: true });
 
-    cy.get('button[data-test-subj="confirm"]').click();
+      cy.get('button[data-test-subj="confirm"]').click();
 
-    cy.get('#osdOverviewPageHeader__title').should('be.visible');
+      cy.get('#osdOverviewPageHeader__title').should('be.visible');
 
-    cy.get('button[id="user-icon-btn"]').click();
+      cy.get('button[id="user-icon-btn"]').click();
 
-    cy.get('button[data-test-subj^="log-out-"]').click();
+      cy.get('button[data-test-subj^="log-out-"]').click();
+    });
+    cy.wait('@samlLogout').then(() => {});
+    cy.clearAllCookies();
 
     if (Cypress.env('loginMethod') === 'saml_multiauth') {
-      cy.visit(`http://localhost:5601${basePath}/app/opensearch_dashboards_overview`, {
+      cy.visit(url, {
         failOnStatusCode: false,
       });
       loginWithSamlMultiauth();
     } else {
-      cy.origin('http://localhost:7000', { args: { basePath } }, ({ basePath }) => {
-        cy.visit(`http://localhost:5601${basePath}/app/opensearch_dashboards_overview`, {
-          failOnStatusCode: false,
-        });
-        cy.get('input[id=userName]').should('be.visible');
-        cy.get('button[id=btn-sign-in]').should('be.visible').click();
+      loginWithSaml(url, {
+        hideHomeModal: true,
       });
     }
 
-    cy.get('#user-icon-btn').should('be.visible');
-    cy.get('#user-icon-btn').click();
+    runOnOsd(() => {
+      cy.get('#user-icon-btn').should('be.visible');
+      cy.get('#user-icon-btn').click();
 
-    cy.get('#osdOverviewPageHeader__title').should('be.visible');
+      cy.get('#osdOverviewPageHeader__title').should('be.visible');
 
-    cy.get('#tenantName').should('have.text', 'Private');
+      cy.get('#tenantName').should('have.text', 'Private');
+    });
   });
 
   it('Login to Dashboard with Goto URL', () => {
@@ -204,22 +250,18 @@ describe('Log in via SAML', () => {
       // We need to explicitly clear cookies,
       // since the Shorten URL api is return's set-cookie header for admin user.
       cy.clearCookies().then(() => {
-        const gotoUrl = `http://localhost:5601${basePath}/goto/${response.urlId}?security_tenant=global`;
+        const gotoUrl = `${osdOrigin}${basePath}/goto/${response.urlId}?security_tenant=global`;
         if (Cypress.env('loginMethod') === 'saml_multiauth') {
           cy.visit(gotoUrl, {
             failOnStatusCode: false,
           });
           loginWithSamlMultiauth();
         } else {
-          cy.origin('http://localhost:7000', { args: { gotoUrl } }, ({ gotoUrl }) => {
-            cy.visit(gotoUrl, {
-              failOnStatusCode: false,
-            });
-            cy.get('input[id=userName]').should('be.visible');
-            cy.get('button[id=btn-sign-in]').should('be.visible').click();
-          });
+          loginWithSaml(gotoUrl);
         }
-        cy.getCookie('security_authentication').should('exist');
+        runOnOsd(() => {
+          cy.getCookie('security_authentication').should('exist');
+        });
       });
     });
   });

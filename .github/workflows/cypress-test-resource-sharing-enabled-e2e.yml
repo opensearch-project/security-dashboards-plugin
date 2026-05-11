@@ -78,7 +78,7 @@ jobs:
 
 
       - name: Run Opensearch with security + sample resource plugin
-        uses: derek-ho/start-opensearch@v9
+        uses: derek-ho/start-opensearch@v10
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: "file:$(pwd)/opensearch-security.zip,file:${{ env.SAMPLE_PLUGIN_ZIP }}"
