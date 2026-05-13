@@ -148,7 +148,6 @@ describe('Log in via OIDC', () => {
       hideHomeModal: true,
     });
 
-
     cy.intercept('GET', `${basePath}/auth/openid/logout`).as('openidLogout');
     cy.origin(osdOrigin, () => {
       localStorage.setItem('home:newThemeModal:show', 'false');

@@ -56,7 +56,7 @@ function getStatusBadge(token: ApiToken) {
       </EuiToolTip>
     );
   }
-  if (token.expiration && token.iat + token.expiration < Date.now()) {
+  if (token.expires_at && token.expires_at < Date.now()) {
     return <EuiBadge color="warning">Expired</EuiBadge>;
   }
   return <EuiBadge color="success">Active</EuiBadge>;

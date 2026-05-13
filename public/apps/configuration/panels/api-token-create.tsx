@@ -49,29 +49,43 @@ import { DataSourceContext } from '../app-router';
 import { SecurityPluginTopNavMenu } from '../top-nav-menu';
 import { PageHeader } from '../header/header-components';
 import { createApiToken } from '../utils/api-token-utils';
+import { getDashboardsInfoSafe } from '../../../utils/dashboards-info-utils';
+
+const EXPIRATION_PRESETS = [
+  { value: '30', inputDisplay: '30 days', seconds: 30 * 24 * 60 * 60 },
+  { value: '60', inputDisplay: '60 days', seconds: 60 * 24 * 60 * 60 },
+  { value: '90', inputDisplay: '90 days', seconds: 90 * 24 * 60 * 60 },
+];
+
+function getDefaultExpiration(maxDurationSeconds?: number): string {
+  if (!maxDurationSeconds) return '90';
+  for (let i = EXPIRATION_PRESETS.length - 1; i >= 0; i--) {
+    if (EXPIRATION_PRESETS[i].seconds <= maxDurationSeconds) {
+      return EXPIRATION_PRESETS[i].value;
+    }
+  }
+  return 'custom';
+}
 
 const EXPIRATION_OPTIONS = [
-  { value: 'never', inputDisplay: 'No expiration' },
-  { value: '30', inputDisplay: '30 days' },
-  { value: '60', inputDisplay: '60 days' },
-  { value: '90', inputDisplay: '90 days' },
+  ...EXPIRATION_PRESETS.map(({ value, inputDisplay }) => ({ value, inputDisplay })),
   { value: 'custom', inputDisplay: 'Custom (days)' },
 ];
 
-function getExpirationMs(expirationPreset: string, customDays: string): number | undefined {
-  if (expirationPreset === 'never') return undefined;
+function getExpirationSeconds(expirationPreset: string, customDays: string): number | undefined {
   const days =
     expirationPreset === 'custom' ? parseInt(customDays, 10) : parseInt(expirationPreset, 10);
   if (!days || days <= 0) return undefined;
-  return days * 24 * 60 * 60 * 1000;
+  return days * 24 * 60 * 60;
 }
 
 export function ApiTokenCreate(props: AppDependencies) {
   const [tokenName, setTokenName] = useState('');
   const [clusterPermissions, setClusterPermissions] = useState<ComboBoxOptions>([]);
   const [indexPermissions, setIndexPermissions] = useState<RoleIndexPermissionStateClass[]>([]);
-  const [expirationPreset, setExpirationPreset] = useState<string>('never');
+  const [expirationPreset, setExpirationPreset] = useState<string>('90');
   const [customDays, setCustomDays] = useState<string>('');
+  const [maxDurationSeconds, setMaxDurationSeconds] = useState<number | undefined>(undefined);
   const [toasts, addToast, removeToast] = useToastState();
   const [isFormValid, setIsFormValid] = useState<boolean>(true);
   const [createdToken, setCreatedToken] = useState<string | null>(null);
@@ -84,10 +98,17 @@ export function ApiTokenCreate(props: AppDependencies) {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const actionGroupsData = await fetchActionGroups(props.coreStart.http, dataSource.id);
+        const [actionGroupsData, dashboardsInfo] = await Promise.all([
+          fetchActionGroups(props.coreStart.http, dataSource.id),
+          getDashboardsInfoSafe(props.coreStart.http),
+        ]);
         setActionGroups(
           Object.entries(actionGroupsData).map(([key]) => stringToComboBoxOption(key))
         );
+        if (dashboardsInfo?.max_duration_seconds) {
+          setMaxDurationSeconds(dashboardsInfo.max_duration_seconds);
+          setExpirationPreset(getDefaultExpiration(dashboardsInfo.max_duration_seconds));
+        }
       } catch (e) {
         console.log(e);
       }
@@ -96,13 +117,13 @@ export function ApiTokenCreate(props: AppDependencies) {
   }, [props.coreStart.http, dataSource]);
 
   const clusterPermissionOptions = [
-    ...CLUSTER_PERMISSIONS.map(stringToComboBoxOption),
     ...actionGroups,
+    ...CLUSTER_PERMISSIONS.map(stringToComboBoxOption),
   ];
 
   const indexPermissionOptions = [
-    ...INDEX_PERMISSIONS.map(stringToComboBoxOption),
     ...actionGroups,
+    ...INDEX_PERMISSIONS.map(stringToComboBoxOption),
   ];
 
   const handleCreate = async () => {
@@ -127,9 +148,9 @@ export function ApiTokenCreate(props: AppDependencies) {
         index_permissions: apiTokenIndexPerms,
       };
 
-      const expirationMs = getExpirationMs(expirationPreset, customDays);
-      if (expirationMs) {
-        requestBody.expiration = expirationMs;
+      const durationSeconds = getExpirationSeconds(expirationPreset, customDays);
+      if (durationSeconds) {
+        requestBody.duration_seconds = durationSeconds;
       }
 
       const result = await createApiToken(props.coreStart.http, requestBody, dataSource.id);
@@ -241,6 +262,7 @@ export function ApiTokenCreate(props: AppDependencies) {
             state={clusterPermissions}
             optionUniverse={clusterPermissionOptions}
             setState={setClusterPermissions}
+            allowCustomOptions
           />
 
           <EuiSpacer size="m" />

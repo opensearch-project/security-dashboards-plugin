@@ -81,7 +81,7 @@ export function defineApiTokenRoutes(router: IRouter) {
           name: schema.string(),
           cluster_permissions: schema.arrayOf(schema.string(), { defaultValue: [] }),
           index_permissions: schema.arrayOf(schema.any(), { defaultValue: [] }),
-          expiration: schema.maybe(schema.number()),
+          duration_seconds: schema.maybe(schema.number()),
         }),
         query: schema.object({
           dataSourceId: schema.maybe(schema.string()),

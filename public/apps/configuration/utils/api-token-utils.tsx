@@ -22,7 +22,7 @@ export interface ApiTokenCreateRequest {
   name: string;
   cluster_permissions: string[];
   index_permissions: ApiTokenIndexPermission[];
-  expiration?: number;
+  duration_seconds?: number;
 }
 
 export interface ApiTokenCreateResponse {

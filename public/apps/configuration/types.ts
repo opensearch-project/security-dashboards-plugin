@@ -160,7 +160,7 @@ export interface ApiToken {
   id: string;
   name: string;
   iat: number;
-  expiration?: number;
+  expires_at?: number;
   cluster_permissions: string[];
   index_permissions: ApiTokenIndexPermission[];
   revoked_at?: number;
