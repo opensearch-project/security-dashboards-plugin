@@ -54,6 +54,7 @@ export interface AuthInfo {
 export interface DashboardsInfo {
   multitenancy_enabled?: boolean;
   private_tenant_enabled?: boolean;
+  preferred_tenants?: string[];
   default_tenant: string;
   password_validation_error_message: string;
   resource_sharing_enabled?: boolean;

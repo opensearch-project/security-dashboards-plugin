@@ -24,4 +24,5 @@ export interface User {
   multitenancy_enabled?: boolean;
   private_tenant_enabled?: boolean;
   default_tenant?: string;
+  preferred_tenants?: string[];
 }

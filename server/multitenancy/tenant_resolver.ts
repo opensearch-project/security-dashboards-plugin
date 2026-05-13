@@ -51,6 +51,7 @@ export function resolveTenant({
   multitenancyEnabled,
   privateTenantEnabled,
   defaultTenant,
+  preferredTenants,
 }: {
   request: any;
   username: string;
@@ -61,6 +62,7 @@ export function resolveTenant({
   multitenancyEnabled: boolean;
   privateTenantEnabled: boolean | undefined;
   defaultTenant: string | undefined;
+  preferredTenants: string[] | undefined;
 }): string | undefined {
   const DEFAULT_READONLY_ROLES = ['kibana_read_only'];
   let selectedTenant: string | undefined;
@@ -89,7 +91,6 @@ export function resolveTenant({
     (role) => config.readonly_mode?.roles.includes(role) || DEFAULT_READONLY_ROLES.includes(role)
   );
 
-  const preferredTenants = config.multitenancy?.tenants.preferred;
   const globalTenantEnabled = config.multitenancy?.tenants.enable_global;
 
   return resolve(

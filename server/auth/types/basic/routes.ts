@@ -140,6 +140,9 @@ export class BasicAuthRoutes {
             multitenancyEnabled: user.multitenancy_enabled,
             privateTenantEnabled: user.private_tenant_enabled,
             defaultTenant: user.default_tenant,
+            preferredTenants:
+              (user.preferred_tenants?.length ? user.preferred_tenants : null) ??
+              this.config.multitenancy?.tenants.preferred,
           });
           // const selectTenant = user.default_tenant;
           sessionStorage.tenant = selectTenant;
@@ -230,6 +233,9 @@ export class BasicAuthRoutes {
               multitenancyEnabled: user.multitenancy_enabled,
               privateTenantEnabled: user.private_tenant_enabled,
               defaultTenant: user.default_tenant,
+              preferredTenants:
+                (user.preferred_tenants?.length ? user.preferred_tenants : null) ??
+                this.config.multitenancy?.tenants.preferred,
             });
             sessionStorage.tenant = selectTenant;
           }
