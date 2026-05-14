@@ -48,6 +48,7 @@ import { addTenantParameterToResolvedShortLink } from './multitenancy/tenant_res
 import { ReadonlyService } from './readonly/readonly_service';
 import { DataSourcePluginSetup } from '../../../src/plugins/data_source/server/types';
 import { defineResourceAccessManagementRoutes } from './routes/resource_access_management_routes';
+import { registerLoginPageRoute } from './auth/login/login_page';
 
 export interface SecurityPluginRequestContext {
   logger: Logger;
@@ -114,6 +115,8 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     const securitySessionStorageFactory: SessionStorageFactory<SecuritySessionCookie> = await core.http.createCookieSessionStorageFactory<
       SecuritySessionCookie
     >(getSecurityCookieOptions(config));
+
+    registerLoginPageRoute(core, config, securitySessionStorageFactory);
 
     // put logger into route handler context, so that we don't need to pass througth parameters
     core.http.registerRouteHandlerContext('security_plugin', (context, request) => {

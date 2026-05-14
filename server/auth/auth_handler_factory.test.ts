@@ -315,4 +315,56 @@ describe('test authentication factory', () => {
       expect(e.toString()).toEqual(targetError);
     }
   });
+
+  test('throws error for unsupported default redirect auth type', async () => {
+    config = {
+      auth: {
+        type: [AuthType.BASIC, AuthType.SAML],
+        multiple_auth_enabled: true,
+        default_redirect_auth_type: AuthType.BASIC,
+      },
+    } as SecurityPluginConfigType;
+
+    try {
+      await getAuthenticationHandler(
+        [AuthType.BASIC, AuthType.SAML],
+        router,
+        config,
+        core,
+        esClient,
+        sessionStorageFactory,
+        logger
+      );
+    } catch (e) {
+      const targetError =
+        'Error: Unsupported default redirect authentication type: basicauth. Allowed values are openid, saml';
+      expect(e.toString()).toEqual(targetError);
+    }
+  });
+
+  test('throws error when default redirect auth type is not configured in auth.type', async () => {
+    config = {
+      auth: {
+        type: [AuthType.BASIC, AuthType.SAML],
+        multiple_auth_enabled: true,
+        default_redirect_auth_type: AuthType.OPEN_ID,
+      },
+    } as SecurityPluginConfigType;
+
+    try {
+      await getAuthenticationHandler(
+        [AuthType.BASIC, AuthType.SAML],
+        router,
+        config,
+        core,
+        esClient,
+        sessionStorageFactory,
+        logger
+      );
+    } catch (e) {
+      const targetError =
+        'Error: default_redirect_auth_type must be included in auth.type. Received default_redirect_auth_type=openid and auth.type=basicauth,saml';
+      expect(e.toString()).toEqual(targetError);
+    }
+  });
 });
