@@ -547,4 +547,36 @@ describe('Test OpenID Unauthorized Flows', () => {
         'security_authentication=; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Path=/',
     });
   });
+
+  test('Ensure auto_login=false redirects to login page instead of auto redirecting to OIDC', () => {
+    const mockCore = coreMock.createSetup();
+    const openIdAuthentication = new OpenIdAuthentication(
+      config,
+      sessionStorageFactory,
+      router,
+      esClient,
+      mockCore,
+      logger
+    );
+
+    const mockRequest = httpServerMock.createRawRequest({
+      url: {
+        pathname: '/app/dashboards',
+        search: 'auto_login=false',
+      },
+    });
+    const osRequest = OpenSearchDashboardsRequest.from(mockRequest);
+
+    const mockLifecycleFactory = httpServerMock.createLifecycleResponseFactory();
+
+    const authToolKitSpy = jest.spyOn(authToolkit, 'redirected');
+
+    openIdAuthentication.handleUnauthedRequest(osRequest, mockLifecycleFactory, authToolkit);
+
+    expect(authToolKitSpy).toHaveBeenCalledWith({
+      location: '/app/login?nextUrl=%2Fapp%2Fdashboards%3Fauto_login%3Dfalse&auto_login=false',
+      'set-cookie':
+        'security_authentication=; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Path=/',
+    });
+  });
 });

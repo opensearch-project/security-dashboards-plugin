@@ -30,12 +30,12 @@ import { BasicAuthRoutes } from './routes';
 import { AuthenticationType } from '../authentication_type';
 import { composeNextUrlQueryParam } from '../../../utils/next_url';
 import {
-  LOGIN_PAGE_URI,
   ANONYMOUS_AUTH_LOGIN,
   AUTH_HEADER_NAME,
   AuthType,
   OPENDISTRO_SECURITY_ANONYMOUS,
 } from '../../../../common';
+import { composeLoginPageRedirectLocation, isAutoLoginEnabled } from '../../login/login_page';
 
 export class BasicAuthentication extends AuthenticationType {
   public readonly type: string = AuthType.BASIC;
@@ -117,6 +117,16 @@ export class BasicAuthentication extends AuthenticationType {
         this.coreSetup.http.basePath.serverBasePath
       );
       if (this.config.auth.anonymous_auth_enabled) {
+        if (!isAutoLoginEnabled(request)) {
+          return response.redirected({
+            headers: {
+              location: composeLoginPageRedirectLocation(
+                request,
+                this.coreSetup.http.basePath.serverBasePath
+              ),
+            },
+          });
+        }
         const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${ANONYMOUS_AUTH_LOGIN}?${nextUrlParam}`;
         return response.redirected({
           headers: {
@@ -124,7 +134,10 @@ export class BasicAuthentication extends AuthenticationType {
           },
         });
       } else {
-        const redirectLocation = `${this.coreSetup.http.basePath.serverBasePath}${LOGIN_PAGE_URI}?${nextUrlParam}`;
+        const redirectLocation = composeLoginPageRedirectLocation(
+          request,
+          this.coreSetup.http.basePath.serverBasePath
+        );
         return response.redirected({
           headers: {
             location: `${redirectLocation}`,

@@ -5,3 +5,4 @@ As of the 3.6 release [the CHANGELOG is no longer used](https://github.com/opens
 
 Release notes are now auto-generated from PR metadata at release time using an LLM-based pipeline in [opensearch-build](https://github.com/opensearch-project/opensearch-build).
 See the [release notes workflow](https://github.com/opensearch-project/opensearch-build/blob/main/src/release_notes_workflow/README.md) for details.
+
