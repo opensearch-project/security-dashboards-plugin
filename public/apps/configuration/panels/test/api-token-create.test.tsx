@@ -64,17 +64,16 @@ describe('ApiTokenCreate', () => {
     const options = select.prop('options') as any[];
     const values = options.map((o: any) => o.value);
 
-    expect(values).toContain('never');
     expect(values).toContain('30');
     expect(values).toContain('60');
     expect(values).toContain('90');
     expect(values).toContain('custom');
   });
 
-  it('defaults to no expiration', () => {
+  it('defaults to 90 days expiration', () => {
     const component = renderComponent();
     const select = component.find(EuiCompressedSuperSelect);
-    expect(select.prop('valueOfSelected')).toBe('never');
+    expect(select.prop('valueOfSelected')).toBe('90');
   });
 
   it('does not show custom days input by default', () => {
