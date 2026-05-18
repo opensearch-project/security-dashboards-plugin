@@ -14,17 +14,26 @@
  */
 
 import {
-  EuiBadge,
   EuiSmallButton,
+  EuiCodeBlock,
+  EuiConfirmModal,
   EuiFlexGroup,
   EuiFlexItem,
+  EuiHealth,
   EuiInMemoryTable,
   EuiLoadingContent,
+  EuiModal,
+  EuiModalBody,
+  EuiModalFooter,
+  EuiModalHeader,
+  EuiModalHeaderTitle,
+  EuiOverlayMask,
   EuiPageBody,
   EuiPageContent,
   EuiPageContentHeader,
   EuiPageContentHeaderSection,
   EuiPageHeader,
+  EuiSpacer,
   EuiText,
   EuiTitle,
   EuiToolTip,
@@ -34,7 +43,6 @@ import React, { useCallback, useContext, useState } from 'react';
 import { AppDependencies } from '../../types';
 import { Action, ApiToken } from '../types';
 import { ResourceType } from '../../../../common';
-import { useDeleteConfirmState } from '../utils/delete-confirm-modal-utils';
 import { tableItemsUIProps, truncatedListView } from '../utils/display-utils';
 import { listApiTokens, requestRevokeApiTokens } from '../utils/api-token-utils';
 import { showTableStatusMessage } from '../utils/loading-spinner-utils';
@@ -48,18 +56,24 @@ function formatDate(epochMillis: number): string {
   return new Date(epochMillis).toLocaleString();
 }
 
+function getTokenStatus(token: ApiToken): string {
+  if (token.revoked_at) return 'revoked';
+  if (token.expires_at && token.expires_at < Date.now()) return 'expired';
+  return 'active';
+}
+
 function getStatusBadge(token: ApiToken) {
   if (token.revoked_at) {
     return (
       <EuiToolTip content={`Revoked on ${formatDate(token.revoked_at)}`}>
-        <EuiBadge color="danger">Revoked</EuiBadge>
+        <EuiHealth color="danger">Revoked</EuiHealth>
       </EuiToolTip>
     );
   }
   if (token.expires_at && token.expires_at < Date.now()) {
-    return <EuiBadge color="warning">Expired</EuiBadge>;
+    return <EuiHealth color="warning">Expired</EuiHealth>;
   }
-  return <EuiBadge color="success">Active</EuiBadge>;
+  return <EuiHealth color="success">Active</EuiHealth>;
 }
 
 function getColumns() {
@@ -106,9 +120,9 @@ function getColumns() {
       sortable: true,
     },
     {
-      field: 'revoked_at',
-      name: 'Revoked at',
-      render: (revokedAt?: number) => (revokedAt ? formatDate(revokedAt) : '-'),
+      field: 'expires_at',
+      name: 'Expires',
+      render: (expiresAt?: number) => (expiresAt ? formatDate(expiresAt) : 'Never'),
       sortable: true,
     },
   ];
@@ -121,6 +135,8 @@ export function ApiTokenList(props: AppDependencies) {
   const [selection, setSelection] = React.useState<ApiToken[]>([]);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState<Query | null>(null);
+  const [createdToken, setCreatedToken] = useState<string | null>(null);
+  const [createdTokenName, setCreatedTokenName] = useState<string>('');
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
 
   const fetchData = useCallback(async () => {
@@ -145,6 +161,17 @@ export function ApiTokenList(props: AppDependencies) {
     fetchData();
   }, [fetchData]);
 
+  React.useEffect(() => {
+    const token = sessionStorage.getItem('apiKeyCreatedToken');
+    const name = sessionStorage.getItem('apiKeyCreatedName');
+    if (token) {
+      setCreatedToken(token);
+      setCreatedTokenName(name || '');
+      sessionStorage.removeItem('apiKeyCreatedToken');
+      sessionStorage.removeItem('apiKeyCreatedName');
+    }
+  }, []);
+
   const handleRevoke = async () => {
     const tokensToRevoke = selection.filter((t) => !t.revoked_at).map((t) => t.id);
     try {
@@ -156,16 +183,33 @@ export function ApiTokenList(props: AppDependencies) {
     }
   };
 
-  const [showRevokeConfirmModal, revokeConfirmModal] = useDeleteConfirmState(
-    handleRevoke,
-    'API key(s)',
-    <EuiText size="s">
-      <p>
-        Do you really want to revoke the selected API key(s)? Revoked keys will no longer be usable
-        for authentication.
-      </p>
-    </EuiText>
-  );
+  const [showRevokeConfirm, setShowRevokeConfirm] = useState(false);
+
+  const handleRevokeConfirm = async () => {
+    await handleRevoke();
+    setShowRevokeConfirm(false);
+  };
+
+  const revokeConfirmModal = showRevokeConfirm ? (
+    <EuiOverlayMask>
+      <EuiConfirmModal
+        title="Revoke key?"
+        onCancel={() => setShowRevokeConfirm(false)}
+        onConfirm={handleRevokeConfirm}
+        cancelButtonText="Cancel"
+        confirmButtonText="Revoke"
+        buttonColor="danger"
+        defaultFocusedButton="confirm"
+      >
+        <EuiText size="s">
+          <p>
+            Do you really want to revoke the selected API key(s)? Revoked keys will no longer be
+            usable for authentication.
+          </p>
+        </EuiText>
+      </EuiConfirmModal>
+    </EuiOverlayMask>
+  ) : null;
 
   const activeSelection = selection.filter((t) => !t.revoked_at);
 
@@ -195,6 +239,11 @@ export function ApiTokenList(props: AppDependencies) {
   ];
 
   const tokenLen = Query.execute(query || '', tokenData).length;
+  const enrichedTokenData = tokenData.map((t) => ({ ...t, status: getTokenStatus(t) }));
+  const statusCounts = enrichedTokenData.reduce((acc, t) => {
+    acc[t.status] = (acc[t.status] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
   return (
     <>
       <SecurityPluginTopNavMenu
@@ -244,7 +293,7 @@ export function ApiTokenList(props: AppDependencies) {
                   <EuiFlexItem>
                     <EuiSmallButton
                       color="danger"
-                      onClick={showRevokeConfirmModal}
+                      onClick={() => setShowRevokeConfirm(true)}
                       disabled={activeSelection.length === 0}
                       data-test-subj="revoke-api-keys"
                     >
@@ -269,11 +318,24 @@ export function ApiTokenList(props: AppDependencies) {
               tableLayout={'auto'}
               loading={tokenData === [] && !errorFlag}
               columns={getColumns()}
-              items={tokenData}
+              items={enrichedTokenData}
               itemId={'id'}
               pagination
               search={{
                 box: { placeholder: 'Search API keys' },
+                filters: [
+                  {
+                    type: 'field_value_selection',
+                    field: 'status',
+                    name: 'Status',
+                    multiSelect: 'or',
+                    options: [
+                      { value: 'active', name: `Active (${statusCounts.active || 0})` },
+                      { value: 'expired', name: `Expired (${statusCounts.expired || 0})` },
+                      { value: 'revoked', name: `Revoked (${statusCounts.revoked || 0})` },
+                    ],
+                  },
+                ],
                 onChange: (arg) => {
                   setQuery(arg.query);
                   return true;
@@ -283,7 +345,7 @@ export function ApiTokenList(props: AppDependencies) {
                       <EuiFlexItem>
                         <EuiSmallButton
                           color="danger"
-                          onClick={showRevokeConfirmModal}
+                          onClick={() => setShowRevokeConfirm(true)}
                           disabled={activeSelection.length === 0}
                         >
                           Revoke
@@ -299,6 +361,33 @@ export function ApiTokenList(props: AppDependencies) {
             />
           </EuiPageBody>
           {revokeConfirmModal}
+          {createdToken && (
+            <EuiModal onClose={() => {}} aria-labelledby="apiKeyCreatedModal">
+              <EuiModalHeader>
+                <EuiModalHeaderTitle id="apiKeyCreatedModal">API key created</EuiModalHeaderTitle>
+              </EuiModalHeader>
+              <EuiModalBody>
+                <EuiText size="s">
+                  <p>
+                    <strong>{createdTokenName}</strong> was created successfully. Copy the key now —
+                    it will not be shown again.
+                  </p>
+                  <p>
+                    Use it in the <code>Authorization: ApiKey {'<token>'}</code> header.
+                  </p>
+                </EuiText>
+                <EuiSpacer size="m" />
+                <EuiCodeBlock language="text" isCopyable paddingSize="s">
+                  {createdToken}
+                </EuiCodeBlock>
+              </EuiModalBody>
+              <EuiModalFooter>
+                <EuiSmallButton fill onClick={() => setCreatedToken(null)}>
+                  Back to API Keys
+                </EuiSmallButton>
+              </EuiModalFooter>
+            </EuiModal>
+          )}
         </EuiPageContent>
       )}
     </>

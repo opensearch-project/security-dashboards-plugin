@@ -15,8 +15,6 @@
 
 import {
   EuiSmallButton,
-  EuiCallOut,
-  EuiCodeBlock,
   EuiFlexGroup,
   EuiFlexItem,
   EuiForm,
@@ -42,7 +40,7 @@ import { RoleIndexPermissionStateClass } from './role-edit/types';
 import { buildHashUrl } from '../utils/url-builder';
 import { ComboBoxOptions } from '../types';
 import { ResourceType } from '../../../../common';
-import { useToastState, createUnknownErrorToast, createSuccessToast } from '../utils/toast-utils';
+import { useToastState, createUnknownErrorToast } from '../utils/toast-utils';
 import { FormRow } from '../utils/form-row';
 import { NameRow } from '../utils/name-row';
 import { DataSourceContext } from '../app-router';
@@ -88,7 +86,6 @@ export function ApiTokenCreate(props: AppDependencies) {
   const [maxDurationSeconds, setMaxDurationSeconds] = useState<number | undefined>(undefined);
   const [toasts, addToast, removeToast] = useToastState();
   const [isFormValid, setIsFormValid] = useState<boolean>(true);
-  const [createdToken, setCreatedToken] = useState<string | null>(null);
 
   const [actionGroups, setActionGroups] = useState<ComboBoxOptions>([]);
 
@@ -154,14 +151,10 @@ export function ApiTokenCreate(props: AppDependencies) {
       }
 
       const result = await createApiToken(props.coreStart.http, requestBody, dataSource.id);
-      setCreatedToken(result.token);
-      addToast(
-        createSuccessToast(
-          'api-token-create-success',
-          'API key created',
-          `Key "${tokenName}" was created successfully. Copy the key now — it will not be shown again.`
-        )
-      );
+      // Store token in sessionStorage so the list page can show it in a modal
+      sessionStorage.setItem('apiKeyCreatedToken', result.token);
+      sessionStorage.setItem('apiKeyCreatedName', tokenName);
+      window.location.hash = buildHashUrl(ResourceType.apiTokens);
     } catch (e) {
       console.log(e);
       addToast(createUnknownErrorToast('api-token-create-error', 'create API key'));
@@ -193,101 +186,80 @@ export function ApiTokenCreate(props: AppDependencies) {
       />
       <EuiSpacer size="m" />
 
-      {createdToken && (
-        <>
-          <EuiCallOut title="API key created" color="success" iconType="check">
-            <p>
-              Copy this key now. It will not be shown again. Use it in the{' '}
-              <code>Authorization: ApiKey {'<token>'}</code> header.
-            </p>
-            <EuiCodeBlock language="text" isCopyable paddingSize="s">
-              {createdToken}
-            </EuiCodeBlock>
-          </EuiCallOut>
-          <EuiSpacer size="l" />
-          <EuiSmallButton href={buildHashUrl(ResourceType.apiTokens)}>
-            Back to API Keys
-          </EuiSmallButton>
-          <EuiSpacer size="l" />
-        </>
-      )}
-
-      {!createdToken && (
-        <EuiForm isInvalid={!isFormValid}>
-          <PanelWithHeader
-            headerText="Token details"
-            headerSubText="Provide a name and optional expiration for this API key."
+      <EuiForm isInvalid={!isFormValid}>
+        <PanelWithHeader
+          headerText="Token details"
+          headerSubText="Provide a name and optional expiration for this API key."
+        >
+          <NameRow
+            headerText="Token name"
+            headerSubText="Specify a descriptive and unique name for this API key. The name must not be empty."
+            resourceName={tokenName}
+            resourceType="token"
+            action="create"
+            setNameState={setTokenName}
+            setIsFormValid={setIsFormValid}
+          />
+          <FormRow
+            headerText="Expiration"
+            headerSubText="Choose how long this API key should remain valid."
+            optional
           >
-            <NameRow
-              headerText="Token name"
-              headerSubText="Specify a descriptive and unique name for this API key. The name must not be empty."
-              resourceName={tokenName}
-              resourceType="token"
-              action="create"
-              setNameState={setTokenName}
-              setIsFormValid={setIsFormValid}
-            />
-            <FormRow
-              headerText="Expiration"
-              headerSubText="Choose how long this API key should remain valid."
-              optional
-            >
-              <div>
-                <EuiCompressedSuperSelect
-                  options={EXPIRATION_OPTIONS}
-                  valueOfSelected={expirationPreset}
-                  onChange={setExpirationPreset}
-                  data-test-subj="api-key-expiration-select"
-                />
-                {expirationPreset === 'custom' && (
-                  <>
-                    <EuiSpacer size="s" />
-                    <EuiCompressedFieldNumber
-                      placeholder="Number of days"
-                      value={customDays}
-                      onChange={(e) => setCustomDays(e.target.value)}
-                      min={1}
-                      append="days"
-                      data-test-subj="api-key-custom-expiration"
-                    />
-                  </>
-                )}
-              </div>
-            </FormRow>
-          </PanelWithHeader>
+            <div>
+              <EuiCompressedSuperSelect
+                options={EXPIRATION_OPTIONS}
+                valueOfSelected={expirationPreset}
+                onChange={setExpirationPreset}
+                data-test-subj="api-key-expiration-select"
+              />
+              {expirationPreset === 'custom' && (
+                <>
+                  <EuiSpacer size="s" />
+                  <EuiCompressedFieldNumber
+                    placeholder="Number of days"
+                    value={customDays}
+                    onChange={(e) => setCustomDays(e.target.value)}
+                    min={1}
+                    append="days"
+                    data-test-subj="api-key-custom-expiration"
+                  />
+                </>
+              )}
+            </div>
+          </FormRow>
+        </PanelWithHeader>
 
-          <EuiSpacer size="m" />
+        <EuiSpacer size="m" />
 
-          <ClusterPermissionPanel
-            state={clusterPermissions}
-            optionUniverse={clusterPermissionOptions}
-            setState={setClusterPermissions}
-            allowCustomOptions
-          />
+        <ClusterPermissionPanel
+          state={clusterPermissions}
+          optionUniverse={clusterPermissionOptions}
+          setState={setClusterPermissions}
+          allowCustomOptions
+        />
 
-          <EuiSpacer size="m" />
+        <EuiSpacer size="m" />
 
-          <IndexPermissionPanel
-            state={indexPermissions}
-            optionUniverse={indexPermissionOptions}
-            setState={setIndexPermissions}
-            showAdvancedSecurityOptions={false}
-          />
+        <IndexPermissionPanel
+          state={indexPermissions}
+          optionUniverse={indexPermissionOptions}
+          setState={setIndexPermissions}
+          showAdvancedSecurityOptions={false}
+        />
 
-          <EuiSpacer size="m" />
+        <EuiSpacer size="m" />
 
-          <EuiFlexGroup justifyContent="flexEnd">
-            <EuiFlexItem grow={false}>
-              <EuiSmallButton href={buildHashUrl(ResourceType.apiTokens)}>Cancel</EuiSmallButton>
-            </EuiFlexItem>
-            <EuiFlexItem grow={false}>
-              <EuiSmallButton fill onClick={handleCreate} data-test-subj="create-api-token-submit">
-                Create
-              </EuiSmallButton>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-        </EuiForm>
-      )}
+        <EuiFlexGroup justifyContent="flexEnd">
+          <EuiFlexItem grow={false}>
+            <EuiSmallButton href={buildHashUrl(ResourceType.apiTokens)}>Cancel</EuiSmallButton>
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>
+            <EuiSmallButton fill onClick={handleCreate} data-test-subj="create-api-token-submit">
+              Create
+            </EuiSmallButton>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      </EuiForm>
 
       <EuiGlobalToastList toasts={toasts} toastLifeTimeMs={10000} dismissToast={removeToast} />
     </>
