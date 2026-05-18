@@ -17,14 +17,10 @@ import { shallow } from 'enzyme';
 import React from 'react';
 import { EuiInMemoryTable } from '@elastic/eui';
 import { ApiTokenList } from '../api-token-list';
-import { useDeleteConfirmState } from '../../utils/delete-confirm-modal-utils';
 
 jest.mock('../../utils/api-token-utils', () => ({
   listApiTokens: jest.fn().mockResolvedValue([]),
   requestRevokeApiTokens: jest.fn().mockResolvedValue(undefined),
-}));
-jest.mock('../../utils/delete-confirm-modal-utils', () => ({
-  useDeleteConfirmState: jest.fn().mockReturnValue([jest.fn(), '']),
 }));
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
@@ -60,7 +56,7 @@ describe('ApiTokenList', () => {
     expect(component.find(EuiInMemoryTable).length).toBe(1);
   });
 
-  it('renders table with correct columns including created_by', () => {
+  it('renders table with correct columns', () => {
     const component = shallow(
       <ApiTokenList
         coreStart={mockCoreStart as any}
@@ -78,9 +74,9 @@ describe('ApiTokenList', () => {
     expect(columnNames).toContain('Status');
     expect(columnNames).toContain('Created by');
     expect(columnNames).toContain('Created');
+    expect(columnNames).toContain('Expires');
     expect(columnNames).toContain('Cluster permissions');
     expect(columnNames).toContain('Index permissions');
-    expect(columnNames).toContain('Revoked at');
   });
 
   it('created_by column renders dash when missing', () => {
@@ -102,6 +98,24 @@ describe('ApiTokenList', () => {
     expect(createdByCol.render('admin')).toBe('admin');
   });
 
+  it('expires column renders Never when no expiration', () => {
+    const component = shallow(
+      <ApiTokenList
+        coreStart={mockCoreStart as any}
+        depsStart={mockDepsStart as any}
+        params={{} as any}
+        config={{} as any}
+      />
+    );
+
+    const table = component.find(EuiInMemoryTable);
+    const columns = table.prop('columns') as any[];
+    const expiresCol = columns.find((c: any) => c.name === 'Expires');
+
+    expect(expiresCol.render(undefined)).toBe('Never');
+    expect(expiresCol.render(1700000000000)).toContain('2023');
+  });
+
   it('fetches data on mount', () => {
     jest.spyOn(React, 'useEffect').mockImplementationOnce((f) => f());
 
@@ -117,8 +131,8 @@ describe('ApiTokenList', () => {
     expect(mockApiTokenUtils.listApiTokens).toHaveBeenCalled();
   });
 
-  it('revoke calls requestRevokeApiTokens', (done) => {
-    shallow(
+  it('search config includes status filter', () => {
+    const component = shallow(
       <ApiTokenList
         coreStart={mockCoreStart as any}
         depsStart={mockDepsStart as any}
@@ -127,12 +141,12 @@ describe('ApiTokenList', () => {
       />
     );
 
-    const revokeFunc = (useDeleteConfirmState as jest.Mock).mock.calls[0][0];
-    revokeFunc();
+    const table = component.find(EuiInMemoryTable);
+    const search = table.prop('search') as any;
+    const filters = search.filters;
 
-    process.nextTick(() => {
-      expect(mockApiTokenUtils.requestRevokeApiTokens).toHaveBeenCalled();
-      done();
-    });
+    expect(filters).toHaveLength(1);
+    expect(filters[0].field).toBe('status');
+    expect(filters[0].name).toBe('Status');
   });
 });
