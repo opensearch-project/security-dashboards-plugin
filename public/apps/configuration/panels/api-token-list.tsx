@@ -56,7 +56,7 @@ function formatDate(epochMillis: number): string {
   return new Date(epochMillis).toLocaleString();
 }
 
-function getTokenStatus(token: ApiToken): string {
+export function getTokenStatus(token: ApiToken): string {
   if (token.revoked_at) return 'revoked';
   if (token.expires_at && token.expires_at < Date.now()) return 'expired';
   return 'active';

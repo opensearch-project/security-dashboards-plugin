@@ -70,7 +70,10 @@ const EXPIRATION_OPTIONS = [
   { value: 'custom', inputDisplay: 'Custom (days)' },
 ];
 
-function getExpirationSeconds(expirationPreset: string, customDays: string): number | undefined {
+export function getExpirationSeconds(
+  expirationPreset: string,
+  customDays: string
+): number | undefined {
   const days =
     expirationPreset === 'custom' ? parseInt(customDays, 10) : parseInt(expirationPreset, 10);
   if (!days || days <= 0) return undefined;
