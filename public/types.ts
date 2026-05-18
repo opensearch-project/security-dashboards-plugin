@@ -58,6 +58,8 @@ export interface DashboardsInfo {
   default_tenant: string;
   password_validation_error_message: string;
   resource_sharing_enabled?: boolean;
+  api_tokens_enabled?: boolean;
+  max_duration_seconds?: number;
 }
 
 export interface ClientConfigType {
@@ -125,6 +127,9 @@ export interface ClientConfigType {
   };
   disabledRestCategories: {
     exclude: string[];
+  };
+  api_keys: {
+    enabled: boolean;
   };
 }
 

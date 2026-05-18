@@ -48,6 +48,7 @@ import { addTenantParameterToResolvedShortLink } from './multitenancy/tenant_res
 import { ReadonlyService } from './readonly/readonly_service';
 import { DataSourcePluginSetup } from '../../../src/plugins/data_source/server/types';
 import { defineResourceAccessManagementRoutes } from './routes/resource_access_management_routes';
+import { defineApiTokenRoutes } from './routes/api-token-routes';
 import { registerLoginPageRoute } from './auth/login/login_page';
 
 export interface SecurityPluginRequestContext {
@@ -150,6 +151,9 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     defineRoutes(router, dataSourceEnabled);
     defineAuthTypeRoutes(router, config);
     defineResourceAccessManagementRoutes(router, dataSourceEnabled);
+    if (config.api_keys?.enabled) {
+      defineApiTokenRoutes(router);
+    }
 
     // set up multi-tenant routes
     if (config.multitenancy?.enabled) {
