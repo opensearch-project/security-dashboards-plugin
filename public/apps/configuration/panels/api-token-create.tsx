@@ -110,7 +110,7 @@ export function ApiTokenCreate(props: AppDependencies) {
           setExpirationPreset(getDefaultExpiration(dashboardsInfo.max_duration_seconds));
         }
       } catch (e) {
-        console.log(e);
+        // Non-critical: action groups or dashboards info unavailable
       }
     };
     fetchData();
@@ -159,7 +159,6 @@ export function ApiTokenCreate(props: AppDependencies) {
       sessionStorage.setItem('apiKeyCreatedName', tokenName);
       window.location.hash = buildHashUrl(ResourceType.apiTokens);
     } catch (e) {
-      console.log(e);
       addToast(createUnknownErrorToast('api-token-create-error', 'create API key'));
     }
   };

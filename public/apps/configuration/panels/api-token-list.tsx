@@ -122,7 +122,7 @@ function getColumns() {
     {
       field: 'expires_at',
       name: 'Expires',
-      render: (expiresAt?: number) => (expiresAt ? formatDate(expiresAt) : 'Never'),
+      render: (expiresAt?: number) => (expiresAt ? formatDate(expiresAt) : '-'),
       sortable: true,
     },
   ];
@@ -147,7 +147,6 @@ export function ApiTokenList(props: AppDependencies) {
       setErrorFlag(false);
       setAccessErrorFlag(false);
     } catch (e) {
-      console.log(e);
       if (e.response && [400, 403].includes(e.response.status)) {
         setAccessErrorFlag(true);
       }
@@ -179,7 +178,7 @@ export function ApiTokenList(props: AppDependencies) {
       await fetchData();
       setSelection([]);
     } catch (e) {
-      console.log(e);
+      setErrorFlag(true);
     }
   };
 
@@ -356,7 +355,7 @@ export function ApiTokenList(props: AppDependencies) {
               }}
               selection={{ onSelectionChange: setSelection }}
               sorting
-              error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
+              error={errorFlag ? 'Failed to load API keys. Please try again later.' : ''}
               message={showTableStatusMessage(loading, tokenData)}
             />
           </EuiPageBody>

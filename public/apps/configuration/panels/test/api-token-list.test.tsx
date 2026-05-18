@@ -98,7 +98,7 @@ describe('ApiTokenList', () => {
     expect(createdByCol.render('admin')).toBe('admin');
   });
 
-  it('expires column renders Never when no expiration', () => {
+  it('expires column renders dash when no expiration', () => {
     const component = shallow(
       <ApiTokenList
         coreStart={mockCoreStart as any}
@@ -112,7 +112,7 @@ describe('ApiTokenList', () => {
     const columns = table.prop('columns') as any[];
     const expiresCol = columns.find((c: any) => c.name === 'Expires');
 
-    expect(expiresCol.render(undefined)).toBe('Never');
+    expect(expiresCol.render(undefined)).toBe('-');
     expect(expiresCol.render(1700000000000)).toContain('2023');
   });
 
