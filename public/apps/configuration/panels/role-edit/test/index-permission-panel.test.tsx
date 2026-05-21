@@ -241,5 +241,56 @@ describe('Role edit - index permission panel', () => {
     });
 
     // TODO: Add unit test for remove row. Need to investigate how to simulate a click on a Accordion's extraAction
+
+    it('hides DLS, FLS, and Anonymization when showAdvancedSecurityOptions is false', () => {
+      const state: RoleIndexPermissionStateClass[] = [
+        {
+          indexPatterns: sampleIndexPatternsOptions,
+          allowedActions: sampleActionGroupOptions,
+          docLevelSecurity: dls,
+          fieldLevelSecurityMethod: 'exclude',
+          fieldLevelSecurityFields: [field1, field2].map(stringToComboBoxOption),
+          maskedFields: [field1, field2].map(stringToComboBoxOption),
+        },
+      ];
+      const optionUniverse = sampleOptionUniverse;
+
+      const result = shallow(
+        <IndexPermissionPanel
+          state={state}
+          optionUniverse={optionUniverse}
+          setState={setState}
+          showAdvancedSecurityOptions={false}
+        />
+      );
+
+      expect(result.find(IndexPatternRow).length).toBe(1);
+      expect(result.find(IndexPermissionRow).length).toBe(1);
+      expect(result.find(DocLevelSecurityRow).length).toBe(0);
+      expect(result.find(FieldLevelSecurityRow).length).toBe(0);
+      expect(result.find(AnonymizationRow).length).toBe(0);
+    });
+
+    it('shows DLS, FLS, and Anonymization by default (showAdvancedSecurityOptions unset)', () => {
+      const state: RoleIndexPermissionStateClass[] = [
+        {
+          indexPatterns: sampleIndexPatternsOptions,
+          allowedActions: sampleActionGroupOptions,
+          docLevelSecurity: dls,
+          fieldLevelSecurityMethod: 'exclude',
+          fieldLevelSecurityFields: [field1, field2].map(stringToComboBoxOption),
+          maskedFields: [field1, field2].map(stringToComboBoxOption),
+        },
+      ];
+      const optionUniverse = sampleOptionUniverse;
+
+      const result = shallow(
+        <IndexPermissionPanel state={state} optionUniverse={optionUniverse} setState={setState} />
+      );
+
+      expect(result.find(DocLevelSecurityRow).length).toBe(1);
+      expect(result.find(FieldLevelSecurityRow).length).toBe(1);
+      expect(result.find(AnonymizationRow).length).toBe(1);
+    });
   });
 });
