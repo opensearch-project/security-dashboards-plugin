@@ -17,10 +17,10 @@ jobs:
         run: git config --system core.longpaths true
 
       - name: Checkout Branch
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - id: install-dashboards
-        uses: derek-ho/setup-opensearch-dashboards@v3
+        uses: derek-ho/setup-opensearch-dashboards@623a4c478a9075486bb1db7eaffa7046524992a4 # v3
         with:
            plugin_name: security-dashboards-plugin
 
@@ -33,6 +33,6 @@ jobs:
         working-directory: ${{ steps.install-dashboards.outputs.plugin-directory }}
 
       - name: Uploads coverage
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

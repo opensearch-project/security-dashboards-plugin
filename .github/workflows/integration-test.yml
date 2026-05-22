@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout Branch
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Set env
         run: |
@@ -71,7 +71,7 @@ jobs:
 
       
       - name: Run OpenSearch with A Single Plugin Remote Cluster
-        uses: derek-ho/start-opensearch@v10
+        uses: derek-ho/start-opensearch@d686795cd945a1cd702ab4237227045300505e09 # v10
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: ${{ env.REMOTE_PLUGIN_URI }}
@@ -88,7 +88,7 @@ jobs:
         shell: bash
   
       - name: Run OpenSearch with security
-        uses: derek-ho/start-opensearch@v10
+        uses: derek-ho/start-opensearch@d686795cd945a1cd702ab4237227045300505e09 # v10
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: ${{ env.PLUGIN_URI }}
@@ -105,7 +105,7 @@ jobs:
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"
 
       - id: install-dashboards
-        uses: derek-ho/setup-opensearch-dashboards@v3
+        uses: derek-ho/setup-opensearch-dashboards@623a4c478a9075486bb1db7eaffa7046524992a4 # v3
         with:
           plugin_name: security-dashboards-plugin
 
