@@ -109,4 +109,47 @@ describe('SecurityPluginTopNavMenu', () => {
     expect(allNavPanelUrls(true)).toContain('/tenants');
     expect(allNavPanelUrls(false)).not.toContain('/tenants');
   });
+
+  it('checks paths returned with api keys off vs on', () => {
+    expect(allNavPanelUrls(false, true)).toContain('/apiTokens');
+    expect(allNavPanelUrls(false, false)).not.toContain('/apiTokens');
+  });
+
+  it('does not include API Keys routes when api_keys is disabled', () => {
+    const configDisabled = {
+      multitenancy: { enabled: false },
+      api_keys: { enabled: false },
+      ui: {},
+    };
+
+    const wrapper = shallow(
+      <AppRouter
+        coreStart={coreStartMock}
+        depsStart={{}}
+        params={{ appBasePath: '' }}
+        config={configDisabled}
+      />
+    );
+
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it('includes API Keys routes when api_keys is enabled', () => {
+    const configEnabled = {
+      multitenancy: { enabled: false },
+      api_keys: { enabled: true },
+      ui: {},
+    };
+
+    const wrapper = shallow(
+      <AppRouter
+        coreStart={coreStartMock}
+        depsStart={{}}
+        params={{ appBasePath: '' }}
+        config={configEnabled}
+      />
+    );
+
+    expect(wrapper).toMatchSnapshot();
+  });
 });

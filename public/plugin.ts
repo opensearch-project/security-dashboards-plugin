@@ -37,6 +37,7 @@ import {
   LOGIN_PAGE_URI,
   PLUGIN_AUDITLOG_APP_ID,
   PLUGIN_AUTH_APP_ID,
+  PLUGIN_API_TOKENS_APP_ID,
   PLUGIN_GET_STARTED_APP_ID,
   PLUGIN_NAME,
   PLUGIN_PERMISSIONS_APP_ID,
@@ -302,6 +303,19 @@ export class SecurityPlugin
             },
           });
         }
+
+        if (config.api_keys?.enabled) {
+          core.application.register({
+            id: PLUGIN_API_TOKENS_APP_ID,
+            title: 'API Keys',
+            order: 8050,
+            workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+            updater$: this.appStateUpdater,
+            mount: async (params: AppMountParameters) => {
+              return mountWrapper(params, '/apiTokens');
+            },
+          });
+        }
       }
 
       core.chrome.navGroup.addNavLinksToGroup(DEFAULT_NAV_GROUPS.dataAdministration, [
@@ -346,6 +360,15 @@ export class SecurityPlugin
                 id: PLUGIN_RESOURCE_ACCESS_MANAGEMENT_APP_ID,
                 category: dataAccessUsersCategory,
                 order: 800,
+              },
+            ]
+          : []),
+        ...(config.api_keys?.enabled
+          ? [
+              {
+                id: PLUGIN_API_TOKENS_APP_ID,
+                category: dataAccessUsersCategory,
+                order: 900,
               },
             ]
           : []),

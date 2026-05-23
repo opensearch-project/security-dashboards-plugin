@@ -252,7 +252,8 @@ export function AnonymizationRow(props: {
 export function generateIndexPermissionPanels(
   indexPermissions: RoleIndexPermissionStateClass[],
   permisionOptionsSet: ComboBoxOptions,
-  setRoleIndexPermission: Dispatch<SetStateAction<RoleIndexPermissionStateClass[]>>
+  setRoleIndexPermission: Dispatch<SetStateAction<RoleIndexPermissionStateClass[]>>,
+  showAdvancedSecurityOptions: boolean = true
 ) {
   const panels = indexPermissions.map((permission, arrayIndex) => {
     const onValueChangeHandler = (attributeToUpdate: string) =>
@@ -289,22 +290,26 @@ export function generateIndexPermissionPanels(
             permisionOptionsSet={permisionOptionsSet}
             onChangeHandler={onValueChangeHandler('allowedActions')}
           />
-          <DocLevelSecurityRow
-            value={permission.docLevelSecurity}
-            onChangeHandler={(e) => onValueChangeHandler('docLevelSecurity')(e.target.value)}
-          />
-          <FieldLevelSecurityRow
-            method={permission.fieldLevelSecurityMethod}
-            fields={permission.fieldLevelSecurityFields}
-            onMethodChangeHandler={onValueChangeHandler('fieldLevelSecurityMethod')}
-            onFieldChangeHandler={onValueChangeHandler('fieldLevelSecurityFields')}
-            onFieldCreateHandler={onCreateOptionHandler('fieldLevelSecurityFields')}
-          />
-          <AnonymizationRow
-            value={permission.maskedFields}
-            onChangeHandler={onValueChangeHandler('maskedFields')}
-            onCreateHandler={onCreateOptionHandler('maskedFields')}
-          />
+          {showAdvancedSecurityOptions && (
+            <>
+              <DocLevelSecurityRow
+                value={permission.docLevelSecurity}
+                onChangeHandler={(e) => onValueChangeHandler('docLevelSecurity')(e.target.value)}
+              />
+              <FieldLevelSecurityRow
+                method={permission.fieldLevelSecurityMethod}
+                fields={permission.fieldLevelSecurityFields}
+                onMethodChangeHandler={onValueChangeHandler('fieldLevelSecurityMethod')}
+                onFieldChangeHandler={onValueChangeHandler('fieldLevelSecurityFields')}
+                onFieldCreateHandler={onCreateOptionHandler('fieldLevelSecurityFields')}
+              />
+              <AnonymizationRow
+                value={permission.maskedFields}
+                onChangeHandler={onValueChangeHandler('maskedFields')}
+                onCreateHandler={onCreateOptionHandler('maskedFields')}
+              />
+            </>
+          )}
         </EuiAccordion>
         <EuiHorizontalRule />
       </Fragment>
@@ -317,8 +322,9 @@ export function IndexPermissionPanel(props: {
   state: RoleIndexPermissionStateClass[];
   optionUniverse: ComboBoxOptions;
   setState: Dispatch<SetStateAction<RoleIndexPermissionStateClass[]>>;
+  showAdvancedSecurityOptions?: boolean;
 }) {
-  const { state, optionUniverse, setState } = props;
+  const { state, optionUniverse, setState, showAdvancedSecurityOptions = true } = props;
   // Show one empty row if there is no data.
   useEffect(() => {
     if (isEmpty(state)) {
@@ -331,7 +337,7 @@ export function IndexPermissionPanel(props: {
       headerSubText="Index permissions allow you to specify how users in this role can access the specific indices. By default, no index permission is granted."
       helpLink={DocLinks.IndexPermissionsDoc}
     >
-      {generateIndexPermissionPanels(state, optionUniverse, setState)}
+      {generateIndexPermissionPanels(state, optionUniverse, setState, showAdvancedSecurityOptions)}
       <EuiSmallButton
         onClick={() => {
           appendElementToArray(setState, [], getEmptyIndexPermission());

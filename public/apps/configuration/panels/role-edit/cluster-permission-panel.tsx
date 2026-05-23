@@ -28,8 +28,15 @@ export function ClusterPermissionPanel(props: {
   state: ComboBoxOptions;
   optionUniverse: ComboBoxOptions;
   setState: Dispatch<SetStateAction<ComboBoxOptions>>;
+  allowCustomOptions?: boolean;
 }) {
-  const { state, optionUniverse, setState } = props;
+  const { state, optionUniverse, setState, allowCustomOptions } = props;
+
+  const onCreateOption = (searchValue: string) => {
+    const newOption = { label: searchValue };
+    setState((prev) => [...prev, newOption]);
+  };
+
   return (
     <PanelWithHeader
       headerText="Cluster permissions"
@@ -50,6 +57,10 @@ export function ClusterPermissionPanel(props: {
                 options={optionUniverse}
                 selectedOptions={state}
                 onChange={setState}
+                onCreateOption={allowCustomOptions ? onCreateOption : undefined}
+                customOptionText={
+                  allowCustomOptions ? 'Add {searchValue} as a custom permission' : undefined
+                }
                 id="roles-cluster-permission-box"
               />
             </EuiFlexItem>
