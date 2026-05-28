@@ -72,7 +72,7 @@
   version "0.0.0"
   uid ""
 
-"@hapi/boom@*":
+"@hapi/boom@*", "@hapi/boom@^10.0.1":
   version "10.0.1"
   resolved "https://registry.yarnpkg.com/@hapi/boom/-/boom-10.0.1.tgz#ebb14688275ae150aa6af788dbe482e6a6062685"
   integrity sha512-ERcCZaEjdH3OgSJlyjVk8pHIFeus91CjKP3v+MpgBNp5IvGzP2l/bRiD78nqYcKPaZdbKkK5vDBVPd2ohHBlsA==
@@ -86,10 +86,10 @@
   dependencies:
     "@hapi/hoek" "9.x.x"
 
-"@hapi/bourne@2.x.x":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@hapi/bourne/-/bourne-2.1.0.tgz#66aff77094dc3080bd5df44ec63881f2676eb020"
-  integrity sha512-i1BpaNDVLJdRBEKeJWkVO6tYX6DMFBuwMhSuWqLsY4ufeTKGVuV5rBsUhxPayXqnnWHgXUAmWK16H/ykO5Wj4Q==
+"@hapi/bourne@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@hapi/bourne/-/bourne-3.0.0.tgz#f11fdf7dda62fe8e336fa7c6642d9041f30356d7"
+  integrity sha512-Waj1cwPXJDucOib4a3bAISsKJVb15MKi9IvmTI/7ssVEm6sywXGjVJDhl6/umt1pK1ZS7PacXU3A1PmFKHEZ2w==
 
 "@hapi/cryptiles@5.0.0":
   version "5.0.0"
@@ -108,14 +108,14 @@
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-11.0.7.tgz#56a920793e0a42d10e530da9a64cc0d3919c4002"
   integrity sha512-HV5undWkKzcB4RZUusqOpcgxOaq6VOAH7zhhIr2g3G8NF/MlFO75SjOr2NfuSx0Mh40+1FqCkagKLJRykUWoFQ==
 
-"@hapi/wreck@^17.1.0":
-  version "17.2.0"
-  resolved "https://registry.yarnpkg.com/@hapi/wreck/-/wreck-17.2.0.tgz#a5b69b724fa8fa25550fb02f55c649becfc59f63"
-  integrity sha512-pJ5kjYoRPYDv+eIuiLQqhGon341fr2bNIYZjuotuPJG/3Ilzr/XtI+JAp0A86E2bYfsS3zBPABuS2ICkaXFT8g==
+"@hapi/wreck@^18.1.1":
+  version "18.1.2"
+  resolved "https://registry.yarnpkg.com/@hapi/wreck/-/wreck-18.1.2.tgz#1c1c84427085d7018ff4157ef3eb1e2cf080b26b"
+  integrity sha512-3dMnV2pfhQiyEqu8DL3VBmxkdLiRDiiUDuG79Dp+UK1gL9ZxAfDOUhB6k3D5MLqcgJJ1IARyGFhwoc1NITr/pg==
   dependencies:
-    "@hapi/boom" "9.x.x"
-    "@hapi/bourne" "2.x.x"
-    "@hapi/hoek" "9.x.x"
+    "@hapi/boom" "^10.0.1"
+    "@hapi/bourne" "^3.0.0"
+    "@hapi/hoek" "^11.0.2"
 
 "@testing-library/dom@^9.0.0":
   version "9.3.4"
@@ -201,10 +201,10 @@
   dependencies:
     "@types/node" "*"
 
-"@xmldom/xmldom@^0.7.0", "@xmldom/xmldom@^0.7.4", "@xmldom/xmldom@^0.7.9", "@xmldom/xmldom@^0.9.10":
-  version "0.9.10"
-  resolved "https://registry.yarnpkg.com/@xmldom/xmldom/-/xmldom-0.9.10.tgz#a0ad5a26fe8aa996310870726e1704977f769dee"
-  integrity sha512-A9gOqLdi6cV4ibazAjcQufGj0B1y/vDqYrcuP6d/6x8P27gRS8643Dj9o1dEKtB6O7fwxb2FgBmJS2mX7gpvdw==
+"@xmldom/xmldom@^0.7.0", "@xmldom/xmldom@^0.7.4", "@xmldom/xmldom@^0.7.9", "@xmldom/xmldom@^0.8.13":
+  version "0.8.13"
+  resolved "https://registry.yarnpkg.com/@xmldom/xmldom/-/xmldom-0.8.13.tgz#00d1dd940b218dff2e49309d410d8bb212159225"
+  integrity sha512-KRYzxepc14G/CEpEGc3Yn+JKaAeT63smlDr+vjB8jRfgTBBI9wRj/nkQEO+ucV8p8I9bfKLWp37uHgFrbntPvw==
 
 accepts@^2.0.0:
   version "2.0.0"
