@@ -91,13 +91,13 @@ runs:
       run: |
         cd ./OpenSearch-Dashboards
         echo "Start checking OpenSearch Dashboards."
-        for i in {1..6}; do
+        for i in {1..12}; do
           if grep -q "http server running" "dashboard.log"; then
             echo "OpenSearch Dashboards started successfully."
             break
           fi
-          if [ $i -eq 6 ]; then
-            echo "Timeout for 60 seconds reached. OpenSearch Dashboards did not start."
+          if [ $i -eq 12 ]; then
+            echo "Timeout for 120 seconds reached. OpenSearch Dashboards did not start."
             exit 1
           fi
           sleep 10
