@@ -13,6 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-// proxy-agent v7 is ESM-only. This wrapper uses a native dynamic import()
-// that won't be transpiled to require() by TypeScript's commonjs module setting.
-module.exports = import('proxy-agent');
+// proxy-agent v7 is ESM-only. Both TypeScript (module: "commonjs") and OSD's
+// require-in-the-middle instrumentation hook transform import() to require().
+// Using Function() prevents both from seeing and transforming the import call.
+module.exports = new Function('return import("proxy-agent")')();
