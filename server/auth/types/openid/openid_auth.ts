@@ -90,6 +90,9 @@ export class OpenIdAuthentication extends AuthenticationType {
 
     this.openIdConnectUrl = this.config.openid?.connect_url || '';
     this.configureWreckHttpsOptions();
+    this.wreckClient = wreck.defaults({
+      https: this.wreckHttpsOption,
+    });
     let scope = this.config.openid!.scope;
     if (scope.indexOf('openid') < 0) {
       scope = `openid ${scope}`;
@@ -213,13 +216,6 @@ export class OpenIdAuthentication extends AuthenticationType {
     });
   }
 
-  private async getWreckClient(): Promise<typeof wreck> {
-    if (!this.wreckClient) {
-      this.wreckClient = await this.createWreckClient();
-    }
-    return this.wreckClient;
-  }
-
   getWreckHttpsOptions(): WreckHttpsOptions {
     return this.wreckHttpsOption;
   }
@@ -317,7 +313,7 @@ export class OpenIdAuthentication extends AuthenticationType {
         const refreshTokenResponse = await callTokenEndpoint(
           this.openIdAuthConfig.tokenEndpoint!,
           query,
-          await this.getWreckClient()
+          this.wreckClient
         );
 
         // if no id_token from refresh token call, maybe the Idp doesn't allow refresh id_token
