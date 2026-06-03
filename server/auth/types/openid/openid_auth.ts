@@ -89,6 +89,7 @@ export class OpenIdAuthentication extends AuthenticationType {
     this.openIdAuthConfig.authHeaderName = this.authHeaderName;
 
     this.openIdConnectUrl = this.config.openid?.connect_url || '';
+    this.configureWreckHttpsOptions();
     let scope = this.config.openid!.scope;
     if (scope.indexOf('openid') < 0) {
       scope = `openid ${scope}`;
@@ -157,7 +158,7 @@ export class OpenIdAuthentication extends AuthenticationType {
     });
   };
 
-  private async createWreckClient(): Promise<typeof wreck> {
+  private configureWreckHttpsOptions() {
     if (this.config.openid?.root_ca) {
       this.wreckHttpsOption.ca = [fs.readFileSync(this.config.openid.root_ca)];
       this.logger.debug(`Using CA Cert: ${this.config.openid.root_ca}`);
@@ -189,10 +190,12 @@ export class OpenIdAuthentication extends AuthenticationType {
       };
     }
     this.logger.info(getObjectProperties(this.wreckHttpsOption, 'WreckHttpsOptions'));
+  }
 
+  private async createWreckClient(): Promise<typeof wreck> {
     // Use proxy agent to allow usage of e.g. http_proxy environment variable
     // proxy-agent v7 is ESM-only; import via a .js wrapper to avoid TS transpiling it to require()
-    const { ProxyAgent } = await require('../utils/import_proxy_agent');
+    const { ProxyAgent } = await require('../../../utils/import_proxy_agent');
     const httpAgent = new ProxyAgent();
     const httpsAllowUnauthorizedAgent = new ProxyAgent({
       rejectUnauthorized: false,
@@ -208,6 +211,13 @@ export class OpenIdAuthentication extends AuthenticationType {
         httpsAllowUnauthorized: httpsAllowUnauthorizedAgent,
       },
     });
+  }
+
+  private async getWreckClient(): Promise<typeof wreck> {
+    if (!this.wreckClient) {
+      this.wreckClient = await this.createWreckClient();
+    }
+    return this.wreckClient;
   }
 
   getWreckHttpsOptions(): WreckHttpsOptions {
@@ -307,7 +317,7 @@ export class OpenIdAuthentication extends AuthenticationType {
         const refreshTokenResponse = await callTokenEndpoint(
           this.openIdAuthConfig.tokenEndpoint!,
           query,
-          this.wreckClient
+          await this.getWreckClient()
         );
 
         // if no id_token from refresh token call, maybe the Idp doesn't allow refresh id_token
