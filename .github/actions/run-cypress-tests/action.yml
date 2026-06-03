@@ -98,6 +98,9 @@ runs:
           fi
           if [ $i -eq 12 ]; then
             echo "Timeout for 120 seconds reached. OpenSearch Dashboards did not start."
+            echo "=== dashboard.log tail ==="
+            tail -100 dashboard.log || true
+            echo "=== end dashboard.log ==="
             exit 1
           fi
           sleep 10
