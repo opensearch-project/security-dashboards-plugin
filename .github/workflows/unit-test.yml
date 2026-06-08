@@ -17,7 +17,7 @@ jobs:
         run: git config --system core.longpaths true
 
       - name: Checkout Branch
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
 
       - id: install-dashboards
         uses: derek-ho/setup-opensearch-dashboards@623a4c478a9075486bb1db7eaffa7046524992a4 # v3
