@@ -29,7 +29,6 @@ import {
 } from 'opensearch-dashboards/server';
 import { PeerCertificate } from 'tls';
 import { Server, ServerStateCookieOptions } from '@hapi/hapi';
-import { ProxyAgent } from 'proxy-agent';
 import { SecurityPluginConfigType } from '../../..';
 import {
   clearOldVersionCookieValue,
@@ -85,13 +84,15 @@ export class OpenIdAuthentication extends AuthenticationType {
   ) {
     super(config, sessionStorageFactory, router, esClient, core, logger);
 
-    this.wreckClient = this.createWreckClient();
-
     this.openIdAuthConfig = {};
     this.authHeaderName = this.config.openid?.header || '';
     this.openIdAuthConfig.authHeaderName = this.authHeaderName;
 
     this.openIdConnectUrl = this.config.openid?.connect_url || '';
+    this.configureWreckHttpsOptions();
+    this.wreckClient = wreck.defaults({
+      https: this.wreckHttpsOption,
+    });
     let scope = this.config.openid!.scope;
     if (scope.indexOf('openid') < 0) {
       scope = `openid ${scope}`;
@@ -101,6 +102,7 @@ export class OpenIdAuthentication extends AuthenticationType {
 
   public async init() {
     try {
+      this.wreckClient = await this.createWreckClient();
       const response = await this.wreckClient.get(this.openIdConnectUrl);
       const payload = JSON.parse(response.payload as string);
 
@@ -159,7 +161,7 @@ export class OpenIdAuthentication extends AuthenticationType {
     });
   };
 
-  private createWreckClient(): typeof wreck {
+  private configureWreckHttpsOptions() {
     if (this.config.openid?.root_ca) {
       this.wreckHttpsOption.ca = [fs.readFileSync(this.config.openid.root_ca)];
       this.logger.debug(`Using CA Cert: ${this.config.openid.root_ca}`);
@@ -191,8 +193,12 @@ export class OpenIdAuthentication extends AuthenticationType {
       };
     }
     this.logger.info(getObjectProperties(this.wreckHttpsOption, 'WreckHttpsOptions'));
+  }
 
+  private async createWreckClient(): Promise<typeof wreck> {
     // Use proxy agent to allow usage of e.g. http_proxy environment variable
+    // proxy-agent v7 is ESM-only; import via a .js wrapper to avoid TS transpiling it to require()
+    const { ProxyAgent } = await require('../../../utils/import_proxy_agent');
     const httpAgent = new ProxyAgent();
     const httpsAllowUnauthorizedAgent = new ProxyAgent({
       rejectUnauthorized: false,
