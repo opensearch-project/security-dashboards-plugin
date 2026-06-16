@@ -71,7 +71,7 @@ jobs:
 
       
       - name: Run OpenSearch with A Single Plugin Remote Cluster
-        uses: derek-ho/start-opensearch@d686795cd945a1cd702ab4237227045300505e09 # v10
+        uses: opensearch-project/opensearch-build/.github/actions/start-opensearch@58029ed0db12929e8e920eb875925335583f9490
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: ${{ env.REMOTE_PLUGIN_URI }}
@@ -88,7 +88,7 @@ jobs:
         shell: bash
   
       - name: Run OpenSearch with security
-        uses: derek-ho/start-opensearch@d686795cd945a1cd702ab4237227045300505e09 # v10
+        uses: opensearch-project/opensearch-build/.github/actions/start-opensearch@58029ed0db12929e8e920eb875925335583f9490
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: ${{ env.PLUGIN_URI }}
