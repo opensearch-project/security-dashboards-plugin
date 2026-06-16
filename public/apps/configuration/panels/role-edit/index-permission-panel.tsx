@@ -26,7 +26,7 @@ import {
 import React, { Dispatch, Fragment, SetStateAction, useEffect } from 'react';
 import { isEmpty } from 'lodash';
 import { RoleIndexPermission } from '../../types';
-import { ResourceType } from '../../../../../common';
+import { MAX_INPUT_LENGTH, ResourceType } from '../../../../../common';
 import {
   appendElementToArray,
   removeElementFromArray,
@@ -184,6 +184,7 @@ export function DocLevelSecurityRow(props: {
         placeholder={FIELD_LEVEL_SECURITY_PLACEHOLDER}
         value={props.value}
         onChange={props.onChangeHandler}
+        maxLength={MAX_INPUT_LENGTH}
       />
     </FormRow>
   );

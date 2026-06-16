@@ -18,6 +18,7 @@ import { EuiCompressedFieldText } from '@elastic/eui';
 import { FormRow } from './form-row';
 import { resourceNameHelpText, validateResourceName } from './resource-validation-util';
 import { FormRowDeps } from '../types';
+import { MAX_INPUT_LENGTH } from '../../../../common';
 
 export interface NameRowDeps extends FormRowDeps {
   resourceName: string;
@@ -49,6 +50,7 @@ export function NameRow(props: NameRowDeps) {
         data-test-subj="name-text"
         fullWidth={props.fullWidth}
         value={props.resourceName}
+        maxLength={MAX_INPUT_LENGTH}
         onChange={(e) => {
           props.setNameState(e.target.value);
         }}

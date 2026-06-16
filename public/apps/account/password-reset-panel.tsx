@@ -33,6 +33,7 @@ import { CoreStart } from 'opensearch-dashboards/public';
 import { FormRow } from '../configuration/utils/form-row';
 import { logout, updateNewPassword } from './utils';
 import { PASSWORD_INSTRUCTION } from '../apps-constants';
+import { MAX_INPUT_LENGTH } from '../../../common';
 import { constructErrorMessageAndLog } from '../error-utils';
 import {
   isResetButtonDisabled,
@@ -128,6 +129,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
               }}
               isInvalid={isCurrentPasswordInvalid}
               type="dual"
+              maxLength={MAX_INPUT_LENGTH}
             />
           </FormRow>
           <EuiSpacer />
@@ -148,6 +150,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
                   }}
                   type="dual"
                   isInvalid={isNewPasswordInvalid}
+                  maxLength={MAX_INPUT_LENGTH}
                 />
               </FormRow>
               <EuiCompressedFormRow>
@@ -169,6 +172,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
                 setIsRepeatNewPasswordInvalid(value !== newPassword);
               }}
               type="dual"
+              maxLength={MAX_INPUT_LENGTH}
             />
           </FormRow>
 
