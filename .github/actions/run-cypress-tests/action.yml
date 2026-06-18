@@ -40,7 +40,7 @@ runs:
         download-location: ${{ env.PLUGIN_NAME }}
     
     - name: Run Opensearch with A Single Plugin
-      uses: derek-ho/start-opensearch@v9
+      uses: opensearch-project/opensearch-build/.github/actions/start-opensearch@58029ed0db12929e8e920eb875925335583f9490
       with:
         opensearch-version: ${{ env.OPENSEARCH_VERSION }}
         plugins: "file:$(pwd)/opensearch-security.zip"
@@ -52,7 +52,7 @@ runs:
 
     # OSD bootstrap
     - name: Run Dashboard with Security Dashboards Plugin
-      uses: derek-ho/setup-opensearch-dashboards@v1
+      uses: opensearch-project/opensearch-build/.github/actions/setup-opensearch-dashboards@72a7a8a167ed06d83ba65b4d9f60acd08232cd56
       with:
         plugin_name: security-dashboards-plugin
         opensearch_dashboards_yml: ${{ inputs.dashboards_config_file }}
@@ -108,11 +108,21 @@ runs:
       shell: bash
 
     - name: Run Cypress Tests with retry
-      uses: Wandalen/wretry.action@v3.3.0
-      with:
-        attempt_limit: 5
-        attempt_delay: 2000
-        command: |
-          cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
-          yarn add cypress --save-dev
-          eval ${{ inputs.yarn_command }} 
+      run: |
+        cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
+        yarn add cypress --save-dev
+
+        for attempt in {1..5}; do
+          echo "Running Cypress attempt ${attempt}/5."
+          if eval ${{ inputs.yarn_command }}; then
+            exit 0
+          fi
+
+          if [ "${attempt}" -eq 5 ]; then
+            echo "Cypress failed after ${attempt} attempts."
+            exit 1
+          fi
+
+          sleep 2
+        done
+      shell: bash
