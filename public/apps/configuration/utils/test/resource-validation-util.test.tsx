@@ -20,7 +20,7 @@ describe('Resource validation util', () => {
   const validResourceName = 'resource1';
   const resourceNameWithInvalidChar = 'resource1%';
   const resourceNameWithInvalidLength1 = 'r';
-  const resourceNameWithInvalidLength2 = 'rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr'; // 51 Characters
+  const resourceNameWithInvalidLength2 = 'r'.repeat(257); // 257 Characters, exceeds max of 256
 
   it('should return no error when resource name is valid', () => {
     const errors = validateResourceName(resourceType, validResourceName);
