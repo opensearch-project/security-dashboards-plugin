@@ -23,12 +23,13 @@ jobs:
 
     steps:
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5
         with:
+          distribution: temurin
           java-version: 11
 
       - name: Checkout Branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Set env
         run: |
@@ -47,7 +48,7 @@ jobs:
           download-location: ${{ env.PLUGIN_NAME }}
 
       - name: Run Opensearch with security
-        uses: derek-ho/start-opensearch@v2
+        uses: opensearch-project/opensearch-build/.github/actions/start-opensearch@58029ed0db12929e8e920eb875925335583f9490
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: "file:$(pwd)/${{ env.PLUGIN_NAME }}.zip"
@@ -70,7 +71,7 @@ jobs:
           EOT
 
       - name: Run Dashboard with Security Dashboards Plugin
-        uses: derek-ho/setup-opensearch-dashboards@v1
+        uses: opensearch-project/opensearch-build/.github/actions/setup-opensearch-dashboards@72a7a8a167ed06d83ba65b4d9f60acd08232cd56
         with:
           plugin_name: security-dashboards-plugin
           opensearch_dashboards_yml: tenancy-disabled-opensearch-dashboards-config.yml
