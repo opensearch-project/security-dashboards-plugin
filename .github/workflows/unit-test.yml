@@ -2,6 +2,9 @@ name: Unit Tests
 
 on: [ push, pull_request ]
 
+env:
+  YARN_IGNORE_ENGINES: true
+
 jobs:
   unit-tests:
     name: Run unit tests
@@ -17,10 +20,10 @@ jobs:
         run: git config --system core.longpaths true
 
       - name: Checkout Branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
 
       - id: install-dashboards
-        uses: derek-ho/setup-opensearch-dashboards@v3
+        uses: opensearch-project/opensearch-build/.github/actions/setup-opensearch-dashboards@643b632712710159088d5f0798de7e91c1f2b8f7
         with:
            plugin_name: security-dashboards-plugin
 
@@ -33,6 +36,6 @@ jobs:
         working-directory: ${{ steps.install-dashboards.outputs.plugin-directory }}
 
       - name: Uploads coverage
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
