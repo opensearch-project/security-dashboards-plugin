@@ -43,7 +43,7 @@ jobs:
           download-location: ${{ env.PLUGIN_NAME }}
 
       - name: Run Opensearch with security
-        uses: derek-ho/start-opensearch@d686795cd945a1cd702ab4237227045300505e09 # v10
+        uses: opensearch-project/opensearch-build/.github/actions/start-opensearch@643b632712710159088d5f0798de7e91c1f2b8f7
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: "file:$(pwd)/${{ env.PLUGIN_NAME }}.zip"
@@ -69,7 +69,7 @@ jobs:
           EOT
 
       - name: Run Dashboard with Security Dashboards Plugin
-        uses: derek-ho/setup-opensearch-dashboards@623a4c478a9075486bb1db7eaffa7046524992a4 # v3
+        uses: opensearch-project/opensearch-build/.github/actions/setup-opensearch-dashboards@643b632712710159088d5f0798de7e91c1f2b8f7
         with:
           plugin_name: security-dashboards-plugin
           opensearch_dashboards_yml: cypress-opensearch-dashboards-config.yml
