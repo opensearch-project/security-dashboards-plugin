@@ -25,6 +25,7 @@ exports[`User editing - backend role panel BackendRolePanel add backend role whe
         <EuiCompressedFieldText
           id="backend-role-0"
           isInvalid={false}
+          maxLength={256}
           onChange={[Function]}
           placeholder="Type in backend role"
           value="admin"
@@ -70,6 +71,7 @@ exports[`User editing - backend role panel BackendRolePanel add backend role whe
         <EuiCompressedFieldText
           id="backend-role-1"
           isInvalid={false}
+          maxLength={256}
           onChange={[Function]}
           placeholder="Type in backend role"
           value="HR"

@@ -33,6 +33,7 @@ import { PanelWithHeader } from '../../utils/panel-with-header';
 import { UserAttributeStateClass } from './types';
 import { FormRow } from '../../utils/form-row';
 import { DocLinks } from '../../constants';
+import { MAX_INPUT_LENGTH } from '../../../../../common';
 
 export function buildAttributeState(attributesDict: UserAttributes): UserAttributeStateClass[] {
   return map(attributesDict, (v, k) => ({
@@ -73,6 +74,7 @@ function generateAttributesPanels(
                 value={userAttribute.key}
                 onChange={(e) => onValueChangeHandler('key')(e.target.value)}
                 placeholder="Type in variable name"
+                maxLength={MAX_INPUT_LENGTH}
               />
             </FormRow>
           </EuiFlexItem>
@@ -83,6 +85,7 @@ function generateAttributesPanels(
                 value={userAttribute.value}
                 onChange={(e) => onValueChangeHandler('value')(e.target.value)}
                 placeholder="Type in value"
+                maxLength={MAX_INPUT_LENGTH}
               />
             </FormRow>
           </EuiFlexItem>

@@ -461,6 +461,6 @@ export enum ToolTipContent {
 }
 
 export const MIN_NUMBER_OF_CHARS_IN_RESOURCE_NAME = 2;
-export const MAX_NUMBER_OF_CHARS_IN_RESOURCE_NAME = 50;
+export const MAX_NUMBER_OF_CHARS_IN_RESOURCE_NAME = 256;
 
 export const LIMIT_WIDTH_INPUT_CLASS = 'limit-width-input';
