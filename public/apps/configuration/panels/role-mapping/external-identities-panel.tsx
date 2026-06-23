@@ -32,6 +32,7 @@ import {
 } from '../../utils/array-state-utils';
 import { ExternalIdentityStateClass } from './types';
 import { DocLinks } from '../../constants';
+import { MAX_INPUT_LENGTH } from '../../../../../common';
 
 export function unbuildExternalIdentityState(
   externalIdentities: ExternalIdentityStateClass[]
@@ -77,6 +78,7 @@ export function ExternalIdentitiesPanel(props: {
                 value={externalIdentity.externalIdentity}
                 onChange={(e) => onValueChangeHandler('externalIdentity')(e.target.value)}
                 placeholder="Type in backend role"
+                maxLength={MAX_INPUT_LENGTH}
               />
             </FormRow>
           </EuiFlexItem>

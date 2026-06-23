@@ -40,7 +40,7 @@ runs:
         download-location: ${{ env.PLUGIN_NAME }}
     
     - name: Run Opensearch with A Single Plugin
-      uses: opensearch-project/opensearch-build/.github/actions/start-opensearch@58029ed0db12929e8e920eb875925335583f9490
+      uses: opensearch-project/opensearch-build/.github/actions/start-opensearch@643b632712710159088d5f0798de7e91c1f2b8f7
       with:
         opensearch-version: ${{ env.OPENSEARCH_VERSION }}
         plugins: "file:$(pwd)/opensearch-security.zip"
@@ -52,7 +52,7 @@ runs:
 
     # OSD bootstrap
     - name: Run Dashboard with Security Dashboards Plugin
-      uses: opensearch-project/opensearch-build/.github/actions/setup-opensearch-dashboards@72a7a8a167ed06d83ba65b4d9f60acd08232cd56
+      uses: opensearch-project/opensearch-build/.github/actions/setup-opensearch-dashboards@643b632712710159088d5f0798de7e91c1f2b8f7
       with:
         plugin_name: security-dashboards-plugin
         opensearch_dashboards_yml: ${{ inputs.dashboards_config_file }}

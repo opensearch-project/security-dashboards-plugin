@@ -30,6 +30,7 @@ import {
 } from '../../utils/array-state-utils';
 import { PanelWithHeader } from '../../utils/panel-with-header';
 import { DocLinks, LIMIT_WIDTH_INPUT_CLASS } from '../../constants';
+import { MAX_INPUT_LENGTH } from '../../../../../common';
 
 function generateBackendRolesPanels(
   backendRoles: string[],
@@ -56,6 +57,7 @@ function generateBackendRolesPanels(
                   updateElementInArrayHandler(setBackendRoles, [arrayIndex])(e.target.value);
                   setRoleEmptyErrorMessage('');
                 }}
+                maxLength={MAX_INPUT_LENGTH}
                 placeholder="Type in backend role"
               />
             </EuiCompressedFormRow>

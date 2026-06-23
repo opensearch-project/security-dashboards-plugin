@@ -31,6 +31,7 @@ import React, { useState } from 'react';
 import { Action } from '../../types';
 import { FormRow } from '../../utils/form-row';
 import { NameRow } from '../../utils/name-row';
+import { MAX_INPUT_LENGTH } from '../../../../../common';
 
 interface TenantEditModalDeps {
   tenantName: string;
@@ -90,6 +91,7 @@ export function TenantEditModal(props: TenantEditModalDeps) {
                 placeholder="Describe the tenant"
                 value={tenantDescription}
                 onChange={handleTenantDescriptionChange}
+                maxLength={MAX_INPUT_LENGTH}
               />
             </FormRow>
           </EuiForm>

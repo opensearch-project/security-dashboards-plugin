@@ -25,6 +25,7 @@ import { FormRow } from './form-row';
 import { PASSWORD_INSTRUCTION } from '../../apps-constants';
 import { getDashboardsInfo } from '../../../utils/dashboards-info-utils';
 import { PasswordStrengthBar } from './password-strength-bar';
+import { MAX_INPUT_LENGTH } from '../../../../common';
 
 export function PasswordEditPanel(props: {
   coreStart: CoreStart;
@@ -73,6 +74,7 @@ export function PasswordEditPanel(props: {
             <EuiCompressedFieldPassword
               data-test-subj="password"
               type="dual"
+              maxLength={MAX_INPUT_LENGTH}
               onChange={passwordChangeHandler}
             />
           </FormRow>
@@ -89,6 +91,7 @@ export function PasswordEditPanel(props: {
         <EuiCompressedFieldPassword
           data-test-subj="re-enter-password"
           type="dual"
+          maxLength={MAX_INPUT_LENGTH}
           isInvalid={isRepeatPasswordInvalid}
           onChange={repeatPasswordChangeHandler}
         />
