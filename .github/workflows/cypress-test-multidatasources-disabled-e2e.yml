@@ -3,6 +3,7 @@ name: E2E multi datasources disabled workflow
 on: [ push, pull_request ]
 
 env:
+  YARN_IGNORE_ENGINES: true
   OPENSEARCH_VERSION: '3.0.0'
   CI: 1
   # avoid warnings like "tput: No value for $TERM and no -T specified"
@@ -21,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout Branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
 
       # Configure the Dashboard for multi datasources disabled (default)
       - name: Create OpenSearch Dashboards Config

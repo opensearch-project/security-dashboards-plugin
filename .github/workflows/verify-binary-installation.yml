@@ -2,6 +2,7 @@ name: 'Install Dashboards with Plugin via Binary'
 
 on: [push, pull_request]
 env:
+  YARN_IGNORE_ENGINES: true
   OPENSEARCH_VERSION: '3.0.0'
   CI: 1
   # avoid warnings like "tput: No value for $TERM and no -T specified"
@@ -20,7 +21,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:  
       - name: Checkout Branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
 
       - name: Set env
         run: |
@@ -39,7 +40,7 @@ jobs:
           download-location: ${{ env.PLUGIN_NAME }}
 
       - name: Run Opensearch with security
-        uses: derek-ho/start-opensearch@v2
+        uses: opensearch-project/opensearch-build/.github/actions/start-opensearch@643b632712710159088d5f0798de7e91c1f2b8f7
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: "file:$(pwd)/${{ env.PLUGIN_NAME }}.zip"
@@ -67,7 +68,7 @@ jobs:
 
       - name: Run Dashboard with Security Dashboards Plugin
         id: setup-dashboards
-        uses: derek-ho/setup-opensearch-dashboards@v2
+        uses: opensearch-project/opensearch-build/.github/actions/setup-opensearch-dashboards@643b632712710159088d5f0798de7e91c1f2b8f7
         with:
           plugin_name: security-dashboards-plugin
           built_plugin_name: security-dashboards
