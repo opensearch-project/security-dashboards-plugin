@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - id: install-dashboards
-        uses: opensearch-project/opensearch-build/.github/actions/setup-opensearch-dashboards@643b632712710159088d5f0798de7e91c1f2b8f7
+        uses: opensearch-project/opensearch-build/.github/actions/setup-opensearch-dashboards@3d9a524bbfc8128d96113cc578b462153f2ea8d4
         with:
            plugin_name: security-dashboards-plugin
 
