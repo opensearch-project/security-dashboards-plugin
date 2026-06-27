@@ -22,8 +22,9 @@ import { ManagementOverViewPluginSetup } from '../../../src/plugins/management_o
 import { DataSourcePluginStart } from '../../../src/plugins/data_source/public/types';
 import { DataSourceManagementPluginSetup } from '../../../src/plugins/data_source_management/public';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SecurityPluginSetup {}
+export interface SecurityPluginSetup {
+  checkHasApiPermission: () => Promise<boolean | undefined>;
+}
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SecurityPluginStart {}
 
