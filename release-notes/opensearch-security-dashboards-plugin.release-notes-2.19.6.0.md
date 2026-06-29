@@ -4,7 +4,7 @@ Compatible with OpenSearch and OpenSearch Dashboards version 2.19.6
 
 ### Bug Fixes
 
-* Remove serialize-javascript dependency to fix node compatibility issue ([#2455](https://github.com/opensearch-project/security-dashboards-plugin/pull/2455))
+* Remove serialize-javascript dependency to fix node compatibility issue during production install ([#2455](https://github.com/opensearch-project/security-dashboards-plugin/pull/2455))
 
 ### Maintenance
 
