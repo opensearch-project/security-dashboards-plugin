@@ -94,7 +94,7 @@ jobs:
 
       # OSD bootstrap
       - name: Setup Dashboard with Security Dashboards Plugin
-        uses: opensearch-project/opensearch-build/.github/actions/setup-opensearch-dashboards@3d9a524bbfc8128d96113cc578b462153f2ea8d4
+        uses: opensearch-project/opensearch-build/.github/actions/setup-opensearch-dashboards@6fd71a24af82afd15fb3c73b8379e29b2ab58bc7
         with:
           plugin_name: security-dashboards-plugin
 
