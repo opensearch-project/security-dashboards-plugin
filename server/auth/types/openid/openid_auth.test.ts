@@ -64,7 +64,7 @@ describe('test OpenId authHeaderValue', () => {
   // Consistent with auth_handler_factory.test.ts
   beforeEach(() => {});
 
-  const config = ({
+  const config = {
     openid: {
       header: 'authorization',
       scope: [],
@@ -73,7 +73,7 @@ describe('test OpenId authHeaderValue', () => {
         additional_cookies: 5,
       },
     },
-  } as unknown) as SecurityPluginConfigType;
+  } as unknown as SecurityPluginConfigType;
 
   const logger = {
     debug: (message: string) => {},
@@ -161,7 +161,7 @@ describe('test OpenId authHeaderValue', () => {
       },
     };
 
-    const openidConfig = (customConfig as unknown) as SecurityPluginConfigType;
+    const openidConfig = customConfig as unknown as SecurityPluginConfigType;
 
     const openIdAuthentication = new OpenIdAuthentication(
       openidConfig,
@@ -199,7 +199,7 @@ describe('test OpenId authHeaderValue', () => {
       },
     };
 
-    const openidConfig = (customConfig as unknown) as SecurityPluginConfigType;
+    const openidConfig = customConfig as unknown as SecurityPluginConfigType;
 
     const openIdAuthentication = new OpenIdAuthentication(
       openidConfig,
@@ -356,7 +356,7 @@ describe('Test OpenID Unauthorized Flows', () => {
   // Consistent with auth_handler_factory.test.ts
   beforeEach(() => {});
 
-  const config = ({
+  const config = {
     cookie: {
       secure: false,
     },
@@ -368,7 +368,7 @@ describe('Test OpenID Unauthorized Flows', () => {
         additional_cookies: 5,
       },
     },
-  } as unknown) as SecurityPluginConfigType;
+  } as unknown as SecurityPluginConfigType;
 
   const logger = {
     debug: (message: string) => {},

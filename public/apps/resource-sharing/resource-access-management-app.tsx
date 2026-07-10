@@ -53,10 +53,10 @@ const ResourceAccessManagementApp: React.FC<Props> = (props) => {
   } = props.coreStart;
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
 
-  const api = React.useMemo(() => buildResourceApi(http, dataSource?.id) as any, [
-    http,
-    dataSource?.id,
-  ]);
+  const api = React.useMemo(
+    () => buildResourceApi(http, dataSource?.id) as any,
+    [http, dataSource?.id]
+  );
 
   return (
     <>

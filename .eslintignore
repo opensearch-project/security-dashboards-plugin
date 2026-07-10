@@ -1,7 +1,0 @@
-node_modules
-/data
-/optimize
-/build
-/target
-/.eslintrc.js
-/cypress.config.js

@@ -35,21 +35,21 @@ describe('Multi auth tests', () => {
   let esClient: ILegacyClusterClient;
   let sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>;
   let logger: Logger;
-  const authToolkit = ({
+  const authToolkit = {
     next: jest.fn(),
     rewriteUrl: jest.fn(),
     render: jest.fn(),
     redirected: jest.fn(),
-  } as unknown) as AuthToolkit;
+  } as unknown as AuthToolkit;
 
-  const config = ({
+  const config = {
     session: {
       ttl: 1000,
     },
     auth: {
       type: 'basic',
     },
-  } as unknown) as SecurityPluginConfigType;
+  } as unknown as SecurityPluginConfigType;
 
   test('getKeepAliveExpiry', () => {
     const realDateNow = Date.now.bind(global.Date);
@@ -82,14 +82,14 @@ describe('Multi auth tests', () => {
   test('uses configured default redirect auth type when auto login is enabled', () => {
     const redirectResponse = { status: 'redirected' };
     const multiAuthentication = new MultipleAuthentication(
-      ({
+      {
         ...config,
         auth: {
           type: [AuthType.BASIC, AuthType.SAML],
           multiple_auth_enabled: true,
           default_redirect_auth_type: AuthType.SAML,
         },
-      } as unknown) as SecurityPluginConfigType,
+      } as unknown as SecurityPluginConfigType,
       sessionStorageFactory,
       router,
       esClient,

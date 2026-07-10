@@ -114,8 +114,7 @@ export default function (Client: any, config: any, components: any) {
    */
   Client.prototype.opensearch_security.prototype.getResourceSharing = ca({
     url: {
-      fmt:
-        '/_plugins/_security/api/resource/share?resource_id=<%=resource_id%>&resource_type=<%=resource_type%>',
+      fmt: '/_plugins/_security/api/resource/share?resource_id=<%=resource_id%>&resource_type=<%=resource_type%>',
       req: {
         resource_id: {
           type: 'string',

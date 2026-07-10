@@ -102,13 +102,15 @@ describe('Validates password reset button state based on input conditions', () =
     },
   ] as const;
 
-  it.each(testScenarios)('$description', async function ({
-    currentPassword,
-    newPassword,
-    isRepeatNewPasswordInvalid,
-    expected,
-  }) {
-    const result = isResetButtonDisabled(currentPassword, newPassword, isRepeatNewPasswordInvalid);
-    expect(result).toBe(expected);
-  });
+  it.each(testScenarios)(
+    '$description',
+    async function ({ currentPassword, newPassword, isRepeatNewPasswordInvalid, expected }) {
+      const result = isResetButtonDisabled(
+        currentPassword,
+        newPassword,
+        isRepeatNewPasswordInvalid
+      );
+      expect(result).toBe(expected);
+    }
+  );
 });

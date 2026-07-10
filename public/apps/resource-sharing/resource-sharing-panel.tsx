@@ -617,10 +617,10 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
     }
   };
 
-  const selectedTypeMeta = useMemo(() => typeOptions.find((o) => o.value === selectedType), [
-    typeOptions,
-    selectedType,
-  ]);
+  const selectedTypeMeta = useMemo(
+    () => typeOptions.find((o) => o.value === selectedType),
+    [typeOptions, selectedType]
+  );
   const selectedTypeLabel = selectedTypeMeta?.text ?? (selectedType || '—');
   const selectedTypeTooltip = selectedTypeMeta?.value; // actual resource type
 

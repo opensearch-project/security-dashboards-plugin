@@ -33,11 +33,11 @@ describe('Proxy auth tests', () => {
   let sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>;
   let logger: Logger;
 
-  const config = ({
+  const config = {
     session: {
       ttl: 1000,
     },
-  } as unknown) as SecurityPluginConfigType;
+  } as unknown as SecurityPluginConfigType;
 
   test('getKeepAliveExpiry', () => {
     const realDateNow = Date.now.bind(global.Date);

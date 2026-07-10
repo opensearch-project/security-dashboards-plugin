@@ -106,14 +106,12 @@ const dataAccessUsersCategory: AppCategory & { group?: AppCategory } = {
   euiIconType: 'managementApp',
 };
 
-export class SecurityPlugin
-  implements
-    Plugin<
-      SecurityPluginSetup,
-      SecurityPluginStart,
-      SecurityPluginSetupDependencies,
-      SecurityPluginStartDependencies
-    > {
+export class SecurityPlugin implements Plugin<
+  SecurityPluginSetup,
+  SecurityPluginStart,
+  SecurityPluginSetupDependencies,
+  SecurityPluginStartDependencies
+> {
   // @ts-ignore : initializerContext not used
   constructor(private readonly initializerContext: PluginInitializerContext) {}
 
@@ -444,9 +442,8 @@ export class SecurityPlugin
         updater$: this.appStateUpdater,
         // IMPORTANT: do NOT set chromeless: true (that hides the left nav)
         mount: async (params: AppMountParameters) => {
-          const { renderApp } = await import(
-            './apps/resource-sharing/resource-access-management-app'
-          );
+          const { renderApp } =
+            await import('./apps/resource-sharing/resource-access-management-app');
           const [coreStart, depsStart] = await core.getStartServices();
           return renderApp(
             coreStart,
@@ -476,7 +473,7 @@ export class SecurityPlugin
       config.multitenancy.enable_aggregation_view
     ) {
       deps.savedObjectsManagement.columns.register(
-        (tenantColumn as unknown) as SavedObjectsManagementColumn<string>
+        tenantColumn as unknown as SavedObjectsManagementColumn<string>
       );
       if (!!accountInfo) {
         const namespacesToRegister = getNamespacesToRegister(accountInfo);

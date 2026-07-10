@@ -541,24 +541,23 @@ export function ManageTab(props: AppDependencies) {
           <EuiPageContentHeaderSection>
             <EuiFlexGroup>
               <EuiFlexItem>{actionsMenu}</EuiFlexItem>
-              { useUpdatedUX ? 
+              {useUpdatedUX ? (
                 <HeaderButtonOrLink
-
-                navigation={props.depsStart.navigation}
-          coreStart={props.coreStart}
+                  navigation={props.depsStart.navigation}
+                  coreStart={props.coreStart}
                   appRightControls={createTenantButton}
-  
                 />
-              : 
-              <EuiFlexItem>
-                <EuiSmallButton
-                  id="createTenant"
-                  fill
-                  onClick={() => showEditModal('', Action.create, '')}
-                >
-                  Create tenant
-                </EuiSmallButton>
-              </EuiFlexItem>}
+              ) : (
+                <EuiFlexItem>
+                  <EuiSmallButton
+                    id="createTenant"
+                    fill
+                    onClick={() => showEditModal('', Action.create, '')}
+                  >
+                    Create tenant
+                  </EuiSmallButton>
+                </EuiFlexItem>
+              )}
             </EuiFlexGroup>
           </EuiPageContentHeaderSection>
         </EuiPageContentHeader>

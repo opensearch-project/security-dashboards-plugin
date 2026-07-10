@@ -28,12 +28,10 @@ export function interceptError(logoutUrl: string, thisWindow: Window): any {
       setShouldShowTenantPopup(null);
       // Clear everything in the sessionStorage since they can contain sensitive information
       sessionStorage.clear();
-      if (
-        !(
-          thisWindow.location.pathname.toLowerCase().includes(LOGIN_PAGE_URI) ||
-          thisWindow.location.pathname.toLowerCase().includes(CUSTOM_ERROR_PAGE_URI)
-        )
-      ) {
+      if (!(
+        thisWindow.location.pathname.toLowerCase().includes(LOGIN_PAGE_URI) ||
+        thisWindow.location.pathname.toLowerCase().includes(CUSTOM_ERROR_PAGE_URI)
+      )) {
         if (logoutUrl) {
           thisWindow.location.href = logoutUrl;
         } else {

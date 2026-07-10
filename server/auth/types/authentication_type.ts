@@ -179,8 +179,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
         // return 401 if no tenant available
         if (!isValidTenant(tenant)) {
           return response.badRequest({
-            body:
-              'No available tenant for current user, please reach out to your system administrator',
+            body: 'No available tenant for current user, please reach out to your system administrator',
           });
         }
         authState.selectedTenant = tenant;
