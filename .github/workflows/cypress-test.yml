@@ -43,7 +43,7 @@ jobs:
           download-location: ${{ env.PLUGIN_NAME }}
 
       - name: Run Opensearch with security
-        uses: opensearch-project/opensearch-build/.github/actions/start-opensearch@3d9a524bbfc8128d96113cc578b462153f2ea8d4
+        uses: opensearch-project/opensearch-build/.github/actions/start-opensearch@22a857dc1abddc721de2aeabfd0a2ffd9cc428cb
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: "file:$(pwd)/${{ env.PLUGIN_NAME }}.zip"
