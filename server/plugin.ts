@@ -113,9 +113,10 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
 
     this.securityClient = new SecurityClient(esClient);
 
-    const securitySessionStorageFactory: SessionStorageFactory<SecuritySessionCookie> = await core.http.createCookieSessionStorageFactory<
-      SecuritySessionCookie
-    >(getSecurityCookieOptions(config));
+    const securitySessionStorageFactory: SessionStorageFactory<SecuritySessionCookie> =
+      await core.http.createCookieSessionStorageFactory<SecuritySessionCookie>(
+        getSecurityCookieOptions(config)
+      );
 
     registerLoginPageRoute(core, config, securitySessionStorageFactory);
 
@@ -195,8 +196,8 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     this.savedObjectClientWrapper.config = config;
 
     if (config.multitenancy?.enabled) {
-      const globalConfig$: Observable<SharedGlobalConfig> = this.initializerContext.config.legacy
-        .globalConfig$;
+      const globalConfig$: Observable<SharedGlobalConfig> =
+        this.initializerContext.config.legacy.globalConfig$;
       const globalConfig: SharedGlobalConfig = await globalConfig$.pipe(first()).toPromise();
       const opensearchDashboardsIndex = globalConfig.opensearchDashboards.index;
       const typeRegistry: ISavedObjectTypeRegistry = core.savedObjects.getTypeRegistry();

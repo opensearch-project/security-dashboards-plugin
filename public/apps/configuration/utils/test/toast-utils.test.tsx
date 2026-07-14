@@ -92,8 +92,7 @@ describe('Toast utils', () => {
         iconType: 'alert',
         color: 'danger',
         title: 'Failed to dummy_action',
-        text:
-          'Failed to dummy_action. You may refresh the page to retry or see browser console for more information.',
+        text: 'Failed to dummy_action. You may refresh the page to retry or see browser console for more information.',
       };
       expect(result).toEqual(expectedUnknownErrorToast);
     });

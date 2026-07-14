@@ -136,9 +136,8 @@ describe('Role view - tenant panel', () => {
         .first()
         .getElement();
       const component = shallow(prompt);
-      const columns = component.prop<
-        Array<EuiTableFieldDataColumnType<RoleTenantPermissionDetail>>
-      >('columns');
+      const columns =
+        component.prop<Array<EuiTableFieldDataColumnType<RoleTenantPermissionDetail>>>('columns');
       const viewDashboardRenderer = columns[3].render as (tenant: string) => JSX.Element;
       const Container = (props: { tenant: string }) => viewDashboardRenderer(props.tenant);
       const result = shallow(<Container tenant={'tenant1'} />);
@@ -164,9 +163,8 @@ describe('Role view - tenant panel', () => {
         .first()
         .getElement();
       const component = shallow(prompt);
-      const columns = component.prop<
-        Array<EuiTableFieldDataColumnType<RoleTenantPermissionDetail>>
-      >('columns');
+      const columns =
+        component.prop<Array<EuiTableFieldDataColumnType<RoleTenantPermissionDetail>>>('columns');
       const viewVisualizationRenderer = columns[4].render as (tenant: string) => JSX.Element;
       const Container = (props: { tenant: string }) => viewVisualizationRenderer(props.tenant);
       const result = shallow(<Container tenant={'tenant1'} />);
@@ -192,9 +190,8 @@ describe('Role view - tenant panel', () => {
         .first()
         .getElement();
       const component = shallow(prompt);
-      const columns = component.prop<
-        Array<EuiTableFieldDataColumnType<RoleTenantPermissionDetail>>
-      >('columns');
+      const columns =
+        component.prop<Array<EuiTableFieldDataColumnType<RoleTenantPermissionDetail>>>('columns');
       const viewDashboardRenderer = columns[3].render as (tenant: string) => JSX.Element;
       const Container = (props: { tenant: string }) => viewDashboardRenderer(props.tenant);
       const result = shallow(<Container tenant={RoleViewTenantInvalidText} />);
@@ -219,9 +216,8 @@ describe('Role view - tenant panel', () => {
         .first()
         .getElement();
       const component = shallow(prompt);
-      const columns = component.prop<
-        Array<EuiTableFieldDataColumnType<RoleTenantPermissionDetail>>
-      >('columns');
+      const columns =
+        component.prop<Array<EuiTableFieldDataColumnType<RoleTenantPermissionDetail>>>('columns');
       const viewVisualizationRenderer = columns[4].render as (tenant: string) => JSX.Element;
       const Container = (props: { tenant: string }) => viewVisualizationRenderer(props.tenant);
       const result = shallow(<Container tenant={RoleViewTenantInvalidText} />);

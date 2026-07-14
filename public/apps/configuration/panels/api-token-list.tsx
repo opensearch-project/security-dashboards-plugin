@@ -239,10 +239,13 @@ export function ApiTokenList(props: AppDependencies) {
 
   const tokenLen = Query.execute(query || '', tokenData).length;
   const enrichedTokenData = tokenData.map((t) => ({ ...t, status: getTokenStatus(t) }));
-  const statusCounts = enrichedTokenData.reduce((acc, t) => {
-    acc[t.status] = (acc[t.status] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  const statusCounts = enrichedTokenData.reduce(
+    (acc, t) => {
+      acc[t.status] = (acc[t.status] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
   return (
     <>
       <SecurityPluginTopNavMenu

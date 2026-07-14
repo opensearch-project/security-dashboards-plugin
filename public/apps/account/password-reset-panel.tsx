@@ -60,9 +60,8 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
   const [isNewPasswordInvalid, setIsNewPasswordInvalid] = React.useState<boolean>(false);
 
   const [repeatNewPassword, setRepeatNewPassword] = React.useState<string>('');
-  const [isRepeatNewPasswordInvalid, setIsRepeatNewPasswordInvalid] = React.useState<boolean>(
-    false
-  );
+  const [isRepeatNewPasswordInvalid, setIsRepeatNewPasswordInvalid] =
+    React.useState<boolean>(false);
 
   const [errorCallOut, setErrorCallOut] = React.useState<string>('');
 

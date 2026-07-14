@@ -38,17 +38,17 @@ describe('test SAML authHeaderValue', () => {
   let esClient: ILegacyClusterClient;
   let sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>;
   let logger: Logger;
-  const authToolkit = ({
+  const authToolkit = {
     next: jest.fn(),
     rewriteUrl: jest.fn(),
     render: jest.fn(),
     redirected: jest.fn(),
-  } as unknown) as AuthToolkit;
+  } as unknown as AuthToolkit;
 
   // Consistent with auth_handler_factory.test.ts
   beforeEach(() => {});
 
-  const config = ({
+  const config = {
     cookie: {
       secure: false,
     },
@@ -58,7 +58,7 @@ describe('test SAML authHeaderValue', () => {
         additional_cookies: 5,
       },
     },
-  } as unknown) as SecurityPluginConfigType;
+  } as unknown as SecurityPluginConfigType;
 
   test('make sure that cookies with authHeaderValue are still valid', async () => {
     const samlAuthentication = new SamlAuthentication(
