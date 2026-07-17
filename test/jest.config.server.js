@@ -24,6 +24,10 @@ export default {
     // Use a plugin-local shim that resolves relative to its own file location instead.
     '^query-string$':
       '<rootDir>/plugins/security-dashboards-plugin/test/mocks/query_string_mock.js',
+    // Under Jest 30's stricter package "exports" resolution, `import ... from 'jose'` resolves
+    // to jose's pure-ESM `browser` build (dist/browser/index.js), which Jest can't parse
+    // ("Unexpected token 'export'"). Pin it to the CommonJS build the `require` condition uses.
+    '^jose$': '<rootDir>/plugins/security-dashboards-plugin/node_modules/jose/dist/node/cjs/index.js',
   },
   roots: ['<rootDir>/plugins/security-dashboards-plugin'],
   testMatch: ['**/test/jest_integration/**/*.test.ts', '**/server/**/*.test.ts'],
