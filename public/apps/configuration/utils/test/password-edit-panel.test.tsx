@@ -62,7 +62,7 @@ describe('Password edit panel', () => {
     process.nextTick(() => {
       expect(updatePassword).toHaveBeenCalledTimes(1);
       expect(updateIsInvalid).toHaveBeenCalledTimes(1);
-      expect(setState).toBeCalledWith(mockDashboardsInfo.password_validation_error_message);
+      expect(setState).toHaveBeenCalledWith(mockDashboardsInfo.password_validation_error_message);
       done();
     });
   });
@@ -79,7 +79,7 @@ describe('Password edit panel', () => {
       target: { value: 'dummy' },
     } as React.ChangeEvent<HTMLInputElement>;
     component.find('[data-test-subj="password"]').simulate('change', event);
-    expect(setState).toBeCalledWith('dummy');
+    expect(setState).toHaveBeenCalledWith('dummy');
   });
 
   it('repeat password field update', () => {
@@ -95,6 +95,6 @@ describe('Password edit panel', () => {
       target: { value: 'dummy' },
     } as React.ChangeEvent<HTMLInputElement>;
     component.find('[data-test-subj="re-enter-password"]').simulate('change', event);
-    expect(setState).toBeCalledWith('dummy');
+    expect(setState).toHaveBeenCalledWith('dummy');
   });
 });

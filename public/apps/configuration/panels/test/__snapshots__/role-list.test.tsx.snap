@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Role list AccessError component should load access error component 1`] = `
 <Fragment>
@@ -256,6 +256,7 @@ exports[`Role list Render columns render Customization column 1`] = `
     grow={false}
   >
     <EuiIcon
+      aria-hidden={true}
       type="lock"
     />
   </EuiFlexItem>

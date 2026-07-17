@@ -235,5 +235,5 @@ export function reloadAfterTenantSwitch(): void {
 
   // rather than just reload when we switch tenants, we set the URL to the pathname. i.e. the portion like: '/app/dashboards'
   // therefore, the copied URL will now allow tenancy changes.
-  window.location.href = window.location.pathname;
+  window.location.assign(window.location.pathname);
 }

@@ -17,13 +17,27 @@ import config from '../../../src/dev/jest/config';
 
 export default {
   ...config,
+  moduleNameMapper: {
+    ...config.moduleNameMapper,
+    // The shared query-string shim resolves the package via process.cwd(), which the
+    // plugin's custom test runner leaves pointing at the plugin dir (no node_modules there).
+    // Use a plugin-local shim that resolves relative to its own file location instead.
+    '^query-string$':
+      '<rootDir>/plugins/security-dashboards-plugin/test/mocks/query_string_mock.js',
+  },
   roots: ['<rootDir>/plugins/security-dashboards-plugin'],
   testMatch: ['**/public/**/*.test.{ts,tsx,js,jsx}', '**/common/*.test.{ts, tsx}'],
   testPathIgnorePatterns: [
     '<rootDir>/plugins/security-dashboards-plugin/build/',
     '<rootDir>/plugins/security-dashboards-plugin/node_modules/',
   ],
-  setupFilesAfterEnv: ['<rootDir>/src/dev/jest/setup/after_env.integration.js'],
+  // Preserve the base setupFilesAfterEnv chain (jest-location-mock, mocks.js which
+  // provides matchMedia/localStorage/HOST for jsdom 26, react_testing_library, monaco_mock)
+  // which the previous override dropped, then keep the plugin-specific integration timeout.
+  setupFilesAfterEnv: [
+    ...config.setupFilesAfterEnv,
+    '<rootDir>/src/dev/jest/setup/after_env.integration.js',
+  ],
   collectCoverageFrom: [
     '<rootDir>/plugins/security-dashboards-plugin/public/**/*.{ts,tsx}',
     '!<rootDir>/plugins/security-dashboards-plugin/public/**/*.test.{ts,tsx}',

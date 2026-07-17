@@ -184,7 +184,7 @@ describe('checks isReadonly', () => {
     const service = getService();
     service.isAnonymousPage = jest.fn(() => true);
     await service.isReadonly(httpServerMock.createOpenSearchDashboardsRequest());
-    expect(service.isAnonymousPage).toBeCalled();
+    expect(service.isAnonymousPage).toHaveBeenCalled();
   });
   it('calls isReadOnlyTenant with correct authinfo', async () => {
     const cookie = mockCookie({ tenant: 'readonly_tenant' });

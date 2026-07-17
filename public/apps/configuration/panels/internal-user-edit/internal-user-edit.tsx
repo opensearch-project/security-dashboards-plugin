@@ -139,7 +139,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
         )}`,
       });
       // Redirect to user listing
-      window.location.href = buildHashUrl(ResourceType.users);
+      window.location.assign(buildHashUrl(ResourceType.users));
     } catch (e) {
       addToast(
         createErrorToast('updateUserFailed', 'Update error', constructErrorMessageAndLog(e, ''))
@@ -223,7 +223,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
         <EuiFlexItem grow={false}>
           <EuiSmallButton
             onClick={() => {
-              window.location.href = buildHashUrl(ResourceType.users);
+              window.location.assign(buildHashUrl(ResourceType.users));
             }}
           >
             Cancel

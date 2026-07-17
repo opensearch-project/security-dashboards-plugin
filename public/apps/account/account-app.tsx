@@ -56,8 +56,9 @@ export async function setupTopNavButton(coreStart: CoreStart, config: ClientConf
   if (accountInfo) {
     // Missing role error
     if (accountInfo.roles.length === 0 && !window.location.href.includes(CUSTOM_ERROR_PAGE_URI)) {
-      window.location.href =
-        coreStart.http.basePath.serverBasePath + CUSTOM_ERROR_PAGE_URI + ERROR_MISSING_ROLE_PATH;
+      window.location.assign(
+        coreStart.http.basePath.serverBasePath + CUSTOM_ERROR_PAGE_URI + ERROR_MISSING_ROLE_PATH
+      );
     }
 
     let tenant: string | undefined;

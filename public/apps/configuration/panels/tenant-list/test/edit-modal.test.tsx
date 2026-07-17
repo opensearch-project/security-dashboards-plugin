@@ -38,7 +38,7 @@ describe('Permission edit modal', () => {
   it('Submit change', () => {
     component.find('#submit').simulate('click');
 
-    expect(handleSave).toBeCalled();
+    expect(handleSave).toHaveBeenCalled();
   });
 
   it('handle tenant description change', () => {
@@ -46,7 +46,7 @@ describe('Permission edit modal', () => {
       target: { value: 'dummy' },
     } as React.ChangeEvent<HTMLTextAreaElement>;
     component.find('[data-test-subj="tenant-description"]').simulate('change', event);
-    expect(setState).toBeCalledWith('dummy');
+    expect(setState).toHaveBeenCalledWith('dummy');
   });
 
   it('Submit button text should be Create when user is creating tenant', () => {

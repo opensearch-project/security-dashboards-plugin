@@ -161,7 +161,9 @@ export function UserList(props: AppDependencies) {
       data-test-subj="edit"
       key="edit"
       onClick={() => {
-        window.location.href = buildHashUrl(ResourceType.users, Action.edit, selection[0].username);
+        window.location.assign(
+          buildHashUrl(ResourceType.users, Action.edit, selection[0].username)
+        );
       }}
       disabled={selection.length !== 1}
     >
@@ -171,10 +173,8 @@ export function UserList(props: AppDependencies) {
       data-test-subj="duplicate"
       key="duplicate"
       onClick={() => {
-        window.location.href = buildHashUrl(
-          ResourceType.users,
-          Action.duplicate,
-          selection[0].username
+        window.location.assign(
+          buildHashUrl(ResourceType.users, Action.duplicate, selection[0].username)
         );
       }}
       disabled={selection.length !== 1}

@@ -244,7 +244,7 @@ describe('Role view', () => {
     deleteFunc();
 
     process.nextTick(() => {
-      expect(updateRoleMapping).toBeCalled();
+      expect(updateRoleMapping).toHaveBeenCalled();
       done();
     });
   });
@@ -270,7 +270,7 @@ describe('Role view', () => {
     deleteFunc();
 
     process.nextTick(() => {
-      expect(spy).toBeCalled();
+      expect(spy).toHaveBeenCalled();
       done();
     });
   });
@@ -290,7 +290,7 @@ describe('Role view', () => {
     );
     component.find('[data-test-subj="delete"]').first().simulate('click');
 
-    expect(requestDeleteRoles).toBeCalled();
+    expect(requestDeleteRoles).toHaveBeenCalled();
   });
 
   it('error occurred while deleting the role', () => {
@@ -310,6 +310,6 @@ describe('Role view', () => {
       />
     );
     component.find('[data-test-subj="delete"]').first().simulate('click');
-    expect(createUnknownErrorToast).toBeCalled();
+    expect(createUnknownErrorToast).toHaveBeenCalled();
   });
 });

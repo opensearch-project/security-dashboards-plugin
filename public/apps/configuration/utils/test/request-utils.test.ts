@@ -33,7 +33,7 @@ describe('RequestContext', () => {
   });
 
   it('should error if no dataSourceId is passed', () => {
-    expect(() => createRequestContextWithDataSourceId()).toThrowError();
+    expect(() => createRequestContextWithDataSourceId()).toThrow();
   });
 
   it('should have the correct query based on the passed dataSourceId', () => {

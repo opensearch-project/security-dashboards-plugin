@@ -63,7 +63,7 @@ describe('Account menu - Role info panel', () => {
     jest.spyOn(console, 'log').mockImplementationOnce(() => {});
     shallow(<RoleInfoPanel coreStart={mockCoreStart as any} handleClose={handleClose} />);
     process.nextTick(() => {
-      expect(setState).toBeCalledTimes(0);
+      expect(setState).toHaveBeenCalledTimes(0);
       done();
     });
   });
@@ -73,7 +73,7 @@ describe('Account menu - Role info panel', () => {
       <RoleInfoPanel coreStart={mockCoreStart as any} handleClose={handleClose} />
     );
     component.find('[data-test-subj="role-info-modal"]').simulate('close');
-    expect(handleClose).toBeCalled();
+    expect(handleClose).toHaveBeenCalled();
   });
 
   it('renders', () => {

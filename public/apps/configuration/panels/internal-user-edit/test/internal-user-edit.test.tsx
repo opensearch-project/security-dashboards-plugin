@@ -81,7 +81,7 @@ describe('Internal user edit', () => {
       />
     );
 
-    expect(getUserDetail).toBeCalledWith(mockCoreStart.http, sampleUsername, 'test');
+    expect(getUserDetail).toHaveBeenCalledWith(mockCoreStart.http, sampleUsername, 'test');
   });
 
   it('should not submit if password is empty on creation', () => {
@@ -101,8 +101,8 @@ describe('Internal user edit', () => {
     );
     component.find('#submit').simulate('click');
 
-    expect(createErrorToast).toBeCalled();
-    expect(updateUser).toBeCalledTimes(0);
+    expect(createErrorToast).toHaveBeenCalled();
+    expect(updateUser).toHaveBeenCalledTimes(0);
   });
 
   it('submit change', () => {
@@ -121,7 +121,7 @@ describe('Internal user edit', () => {
     );
     component.find('#submit').simulate('click');
 
-    expect(updateUser).toBeCalled();
+    expect(updateUser).toHaveBeenCalled();
     const userUpdateObj: InternalUserUpdate = updateUser.mock.calls[0][0];
     expect(userUpdateObj.password).toEqual(undefined);
   });
@@ -143,7 +143,7 @@ describe('Internal user edit', () => {
     );
     component.find('#submit').simulate('click');
 
-    expect(createErrorToast).toBeCalled();
-    expect(updateUser).toBeCalledTimes(0);
+    expect(createErrorToast).toHaveBeenCalled();
+    expect(updateUser).toHaveBeenCalledTimes(0);
   });
 });

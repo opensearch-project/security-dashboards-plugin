@@ -71,7 +71,7 @@ describe('PageHeader', () => {
     );
     expect(wrapper.contains(props.fallBackComponent)).toBe(true);
 
-    expect(props.navigation.ui.HeaderControl).not.toBeCalled();
+    expect(props.navigation.ui.HeaderControl).not.toHaveBeenCalled();
   });
 
   it('renders with the feature flag on', () => {

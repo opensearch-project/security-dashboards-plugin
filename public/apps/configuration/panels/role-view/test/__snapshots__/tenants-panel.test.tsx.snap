@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Role view - tenant panel Tenant permission list render view dashboard column when tenant permissions contains multiple tenants or tenant pattern 1`] = `
 <Fragment>

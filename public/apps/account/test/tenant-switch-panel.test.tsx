@@ -214,7 +214,7 @@ describe('Account menu -tenant switch panel', () => {
       />
     );
     component.find('[data-test-subj="tenant-switch-modal"]').simulate('close');
-    expect(handleClose).toBeCalled();
+    expect(handleClose).toHaveBeenCalled();
   });
 
   it('Confirm button should be disabled when multitenancy is disabled in Config', () => {
@@ -264,8 +264,8 @@ describe('Account menu -tenant switch panel', () => {
       .find('[data-test-subj="tenant-switch-radios"]')
       .simulate('change', GLOBAL_TENANT_RADIO_ID);
 
-    expect(setState).toBeCalledWith(GLOBAL_TENANT_RADIO_ID);
-    expect(setState).toBeCalledWith('');
+    expect(setState).toHaveBeenCalledWith(GLOBAL_TENANT_RADIO_ID);
+    expect(setState).toHaveBeenCalledWith('');
   });
 
   it('should set error call out when tenant name is undefined', () => {
@@ -281,7 +281,7 @@ describe('Account menu -tenant switch panel', () => {
       />
     );
     component.find('[data-test-subj="confirm"]').simulate('click');
-    expect(setState).toBeCalledWith('No target tenant is specified!');
+    expect(setState).toHaveBeenCalledWith('No target tenant is specified!');
   });
 
   describe('confirm button and renders', () => {

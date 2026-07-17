@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`User editing - backend role panel BackendRolePanel add backend role when one of the previous roles is blank 1`] = `
 <PanelWithHeader

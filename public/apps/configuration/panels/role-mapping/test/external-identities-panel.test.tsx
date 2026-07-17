@@ -104,7 +104,7 @@ describe('Role mapping - external identities panel', () => {
       );
       component.find('#add-row').simulate('click');
 
-      expect(appendElementToArray).toBeCalledWith(setExternalIdentities, [], {
+      expect(appendElementToArray).toHaveBeenCalledWith(setExternalIdentities, [], {
         externalIdentity: '',
       });
     });
@@ -118,7 +118,7 @@ describe('Role mapping - external identities panel', () => {
       );
       component.find('#externalIdentity-0').simulate('change', { target: { value: '' } });
 
-      expect(updateElementInArrayHandler).toBeCalledWith(setExternalIdentities, [
+      expect(updateElementInArrayHandler).toHaveBeenCalledWith(setExternalIdentities, [
         0,
         'externalIdentity',
       ]);
@@ -133,7 +133,7 @@ describe('Role mapping - external identities panel', () => {
       );
       component.find('#remove-0').simulate('click');
 
-      expect(removeElementFromArray).toBeCalledWith(setExternalIdentities, [], 0);
+      expect(removeElementFromArray).toHaveBeenCalledWith(setExternalIdentities, [], 0);
     });
   });
 });

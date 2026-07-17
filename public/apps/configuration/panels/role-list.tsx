@@ -188,7 +188,9 @@ export function RoleList(props: AppDependencies) {
       data-test-subj="edit"
       key="edit"
       onClick={() => {
-        window.location.href = buildHashUrl(ResourceType.roles, Action.edit, selection[0].roleName);
+        window.location.assign(
+          buildHashUrl(ResourceType.roles, Action.edit, selection[0].roleName)
+        );
       }}
       disabled={selection.length !== 1 || selection[0].reserved}
     >
@@ -199,10 +201,8 @@ export function RoleList(props: AppDependencies) {
       data-test-subj="duplicate"
       key="duplicate"
       onClick={() => {
-        window.location.href = buildHashUrl(
-          ResourceType.roles,
-          Action.duplicate,
-          selection[0].roleName
+        window.location.assign(
+          buildHashUrl(ResourceType.roles, Action.duplicate, selection[0].roleName)
         );
       }}
       disabled={selection.length !== 1}

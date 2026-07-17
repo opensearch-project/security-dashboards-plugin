@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`AccessErrorComponent should display custom message prefix once loading is complete 1`] = `
 <EuiPageContent>

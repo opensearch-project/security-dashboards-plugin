@@ -100,7 +100,7 @@ describe('Role edit', () => {
       />
     );
 
-    expect(fetchTenantNameList).toBeCalledTimes(1);
+    expect(fetchTenantNameList).toHaveBeenCalledTimes(1);
   });
 
   it('submit update', (done) => {
@@ -125,7 +125,7 @@ describe('Role edit', () => {
     // click update
     component.find(EuiSmallButton).last().simulate('click');
 
-    expect(updateRole).toBeCalledWith(
+    expect(updateRole).toHaveBeenCalledWith(
       mockCoreStart.http,
       '',
       {

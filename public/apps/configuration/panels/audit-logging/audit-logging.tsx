@@ -210,8 +210,9 @@ export function AuditLogging(props: AuditLoggingProps) {
               <EuiSmallButton
                 data-test-subj="general-settings-configure"
                 onClick={() => {
-                  window.location.href =
-                    buildHashUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT;
+                  window.location.assign(
+                    buildHashUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT
+                  );
                 }}
               >
                 Configure
@@ -235,8 +236,9 @@ export function AuditLogging(props: AuditLoggingProps) {
               <EuiSmallButton
                 data-test-subj="compliance-settings-configure"
                 onClick={() => {
-                  window.location.href =
-                    buildHashUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT;
+                  window.location.assign(
+                    buildHashUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT
+                  );
                 }}
               >
                 Configure

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Permission edit modal Submit button text should be Create when user is creating tenant 1`] = `
 <EuiButton

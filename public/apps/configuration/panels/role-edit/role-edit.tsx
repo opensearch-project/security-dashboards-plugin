@@ -195,7 +195,7 @@ export function RoleEdit(props: RoleEditDeps) {
         )}`,
       });
       // Redirect to role view
-      window.location.href = buildHashUrl(ResourceType.roles, Action.view, roleName);
+      window.location.assign(buildHashUrl(ResourceType.roles, Action.view, roleName));
     } catch (e) {
       addToast(createUnknownErrorToast('updateRole', `${props.action} role`));
       console.error(e);
@@ -340,7 +340,7 @@ export function RoleEdit(props: RoleEditDeps) {
         <EuiFlexItem grow={false}>
           <EuiSmallButton
             onClick={() => {
-              window.location.href = buildHashUrl(ResourceType.roles);
+              window.location.assign(buildHashUrl(ResourceType.roles));
             }}
           >
             Cancel

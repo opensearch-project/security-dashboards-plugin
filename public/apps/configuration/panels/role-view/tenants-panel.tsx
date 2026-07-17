@@ -85,7 +85,7 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
         tenant: tenantName,
         username: currentUsername,
       });
-      window.location.href = getNavLinkById(props.coreStart, PageId.dashboardId);
+      window.location.assign(getNavLinkById(props.coreStart, PageId.dashboardId));
     } catch (e) {
       console.log(e);
       addToast(createUnknownErrorToast('viewDashboard', `view dashboard for ${tenantName} tenant`));
@@ -98,7 +98,7 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
         tenant: tenantName,
         username: currentUsername,
       });
-      window.location.href = getNavLinkById(props.coreStart, PageId.visualizationId);
+      window.location.assign(getNavLinkById(props.coreStart, PageId.visualizationId));
     } catch (e) {
       console.log(e);
       addToast(
@@ -175,7 +175,7 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
           data-test-subj="addTenantPermission"
           disabled={props.isReserved}
           onClick={() => {
-            window.location.href = buildHashUrl(ResourceType.roles, Action.edit, props.roleName);
+            window.location.assign(buildHashUrl(ResourceType.roles, Action.edit, props.roleName));
           }}
         >
           Add tenant permission

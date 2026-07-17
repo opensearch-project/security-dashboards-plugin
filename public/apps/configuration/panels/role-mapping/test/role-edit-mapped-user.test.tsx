@@ -83,8 +83,8 @@ describe('Role mapping edit', () => {
       />
     );
     process.nextTick(() => {
-      expect(getRoleMappingData).toBeCalledTimes(1);
-      expect(fetchUserNameList).toBeCalledTimes(1);
+      expect(getRoleMappingData).toHaveBeenCalledTimes(1);
+      expect(fetchUserNameList).toHaveBeenCalledTimes(1);
       expect(setState).toHaveBeenCalledWith([{ label: 'user1' }]);
       expect(setState).toHaveBeenCalledWith([{ externalIdentity: 'externalIdentity1' }]);
       expect(setState).toHaveBeenCalledWith([]);
@@ -105,7 +105,7 @@ describe('Role mapping edit', () => {
     // click update
     component.find('#map').last().simulate('click');
 
-    expect(updateRoleMapping).toBeCalledWith(
+    expect(updateRoleMapping).toHaveBeenCalledWith(
       mockCoreStart.http,
       sampleRole,
       {
@@ -136,6 +136,6 @@ describe('Role mapping edit', () => {
     );
     // click update
     component.find('#map').last().simulate('click');
-    expect(consoleError).toBeCalledWith(error);
+    expect(consoleError).toHaveBeenCalledWith(error);
   });
 });

@@ -41,7 +41,7 @@ export function ClusterPermissionPanel(props: ClusterPermissionPanelProps) {
           data-test-subj="addClusterPermission"
           disabled={props.isReserved}
           onClick={() => {
-            window.location.href = buildHashUrl(ResourceType.roles, Action.edit, props.roleName);
+            window.location.assign(buildHashUrl(ResourceType.roles, Action.edit, props.roleName));
           }}
         >
           Add cluster permission

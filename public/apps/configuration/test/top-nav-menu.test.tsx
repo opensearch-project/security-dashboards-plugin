@@ -57,7 +57,7 @@ describe('SecurityPluginTopNavMenu', () => {
       />
     );
 
-    expect(dataSourceMenuMock).toBeCalled();
+    expect(dataSourceMenuMock).toHaveBeenCalled();
     expect(wrapper.html()).not.toBe('');
   });
 
@@ -79,7 +79,7 @@ describe('SecurityPluginTopNavMenu', () => {
       />
     );
 
-    expect(dataSourceMenuMock).not.toBeCalled();
+    expect(dataSourceMenuMock).not.toHaveBeenCalled();
     expect(wrapper.html()).toBe('');
   });
 });

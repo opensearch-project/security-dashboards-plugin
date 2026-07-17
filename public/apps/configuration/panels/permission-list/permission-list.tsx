@@ -69,7 +69,7 @@ import { PageHeader } from '../../header/header-components';
 import { ResourceType } from '../../../../../common';
 
 export function renderBooleanToCheckMark(value: boolean): React.ReactNode {
-  return value ? <EuiIcon type="check" /> : '';
+  return value ? <EuiIcon type="check" aria-hidden={true} /> : '';
 }
 
 export function toggleRowDetails(

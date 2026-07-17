@@ -109,27 +109,27 @@ describe('Account navigation button', () => {
         currAuthType={'dummy'}
       />
     );
-    expect(setState).toBeCalledTimes(1);
+    expect(setState).toHaveBeenCalledTimes(1);
   });
 
   it('should set modal when click on "View roles and identities" button', () => {
     component.find('[data-test-subj="view-roles-and-identities"]').simulate('click');
-    expect(setState).toBeCalledTimes(1);
+    expect(setState).toHaveBeenCalledTimes(1);
   });
 
   it('should set modal when click on "Switch tenants" button', () => {
     component.find('[data-test-subj="switch-tenants"]').simulate('click');
-    expect(setState).toBeCalledTimes(1);
+    expect(setState).toHaveBeenCalledTimes(1);
   });
 
   it('should set modal when click on "Reset password" button', () => {
     component.find('[data-test-subj="reset-password"]').simulate('click');
-    expect(setState).toBeCalledTimes(1);
+    expect(setState).toHaveBeenCalledTimes(1);
   });
 
   it('should set isPopoverOpen to true when click on Avatar in header section', () => {
     component.find('[data-test-subj="account-popover"]').simulate('click');
-    expect(setState).toBeCalledTimes(1);
+    expect(setState).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -172,7 +172,7 @@ describe('Account navigation button, multitenancy disabled', () => {
         currAuthType={'dummy'}
       />
     );
-    expect(setState).toBeCalledTimes(0);
+    expect(setState).toHaveBeenCalledTimes(0);
   });
 });
 
@@ -247,34 +247,12 @@ describe('Shows tenant info when multitenancy enabled, and hides it if disabled'
 });
 
 describe('Reload window after tenant switch', () => {
-  const originalLocation = window.location;
-  const mockSetWindowHref = jest.fn();
-  let pathname: string = '';
-  beforeAll(() => {
-    pathname = '/app/myapp';
-    Object.defineProperty(window, 'location', {
-      value: {
-        get pathname() {
-          return pathname;
-        },
-        get href() {
-          return '/app/dashboards?security_tenant=admin_tenant';
-        },
-        set href(value: string) {
-          mockSetWindowHref(value);
-        },
-      },
-    });
-  });
-
-  afterAll(() => {
-    window.location = originalLocation;
-  });
-
   it('should remove the tenant query parameter before reloading', () => {
-    pathname = '/app/pathname-only';
+    // jest-location-mock: reloadAfterTenantSwitch() calls window.location.assign(pathname).
+    window.location.assign('http://localhost:5601/app/pathname-only?security_tenant=admin_tenant');
+    const assignSpy = jest.spyOn(window.location, 'assign');
     reloadAfterTenantSwitch();
-    expect(mockSetWindowHref).toHaveBeenCalledWith(pathname);
+    expect(assignSpy).toHaveBeenCalledWith('/app/pathname-only');
   });
 });
 

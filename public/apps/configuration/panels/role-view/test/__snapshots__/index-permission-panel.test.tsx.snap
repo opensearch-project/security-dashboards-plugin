@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Role view - index permission panel Render document level security renders document level security when dls is invalid json 1`] = `
 <Fragment>

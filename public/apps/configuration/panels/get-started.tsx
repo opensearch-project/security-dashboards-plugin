@@ -68,7 +68,7 @@ const addBackendStep = {
           <EuiSmallButton
             data-test-subj="review-authentication-and-authorization"
             onClick={() => {
-              window.location.href = buildHashUrl(ResourceType.auth);
+              window.location.assign(buildHashUrl(ResourceType.auth));
             }}
           >
             Review authentication and authorization
@@ -99,7 +99,7 @@ const setOfSteps = [
             <EuiSmallButton
               data-test-subj="explore-existing-roles"
               onClick={() => {
-                window.location.href = buildHashUrl(ResourceType.roles);
+                window.location.assign(buildHashUrl(ResourceType.roles));
               }}
             >
               Explore existing roles
@@ -109,7 +109,7 @@ const setOfSteps = [
             <EuiSmallButton
               data-test-subj="create-new-role"
               onClick={() => {
-                window.location.href = buildHashUrl(ResourceType.roles, Action.create);
+                window.location.assign(buildHashUrl(ResourceType.roles, Action.create));
               }}
             >
               Create new role
@@ -138,7 +138,7 @@ const setOfSteps = [
             <EuiSmallButton
               data-test-subj="map-users-to-role"
               onClick={() => {
-                window.location.href = buildHashUrl(ResourceType.users);
+                window.location.assign(buildHashUrl(ResourceType.users));
               }}
             >
               Map users to a role
@@ -148,7 +148,7 @@ const setOfSteps = [
             <EuiSmallButton
               data-test-subj="create-internal-user"
               onClick={() => {
-                window.location.href = buildHashUrl(ResourceType.users, Action.create);
+                window.location.assign(buildHashUrl(ResourceType.users, Action.create));
               }}
             >
               Create internal user
@@ -239,7 +239,7 @@ export function GetStarted(props: AppDependencies) {
             <EuiSmallButton
               data-test-subj="review-audit-log-configuration"
               onClick={() => {
-                window.location.href = buildHashUrl(ResourceType.auditLogging);
+                window.location.assign(buildHashUrl(ResourceType.auditLogging));
               }}
             >
               Review Audit Log Configuration
@@ -306,7 +306,7 @@ export function GetStarted(props: AppDependencies) {
                 <EuiFlexItem grow={false}>
                   <EuiSmallButton
                     onClick={() => {
-                      window.location.href = buildHashUrl(ResourceType.tenants);
+                      window.location.assign(buildHashUrl(ResourceType.tenants));
                     }}
                   >
                     Manage Multi-tenancy
@@ -315,7 +315,7 @@ export function GetStarted(props: AppDependencies) {
                 <EuiFlexItem grow={false}>
                   <EuiSmallButton
                     onClick={() => {
-                      window.location.href = buildHashUrl(ResourceType.tenantsConfigureTab);
+                      window.location.assign(buildHashUrl(ResourceType.tenantsConfigureTab));
                     }}
                   >
                     Configure Multi-tenancy
