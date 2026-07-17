@@ -27,7 +27,8 @@ export default {
     // Under Jest 30's stricter package "exports" resolution, `import ... from 'jose'` resolves
     // to jose's pure-ESM `browser` build (dist/browser/index.js), which Jest can't parse
     // ("Unexpected token 'export'"). Pin it to the CommonJS build the `require` condition uses.
-    '^jose$': '<rootDir>/plugins/security-dashboards-plugin/node_modules/jose/dist/node/cjs/index.js',
+    '^jose$':
+      '<rootDir>/plugins/security-dashboards-plugin/node_modules/jose/dist/node/cjs/index.js',
   },
   roots: ['<rootDir>/plugins/security-dashboards-plugin'],
   testMatch: ['**/test/jest_integration/**/*.test.ts', '**/server/**/*.test.ts'],
