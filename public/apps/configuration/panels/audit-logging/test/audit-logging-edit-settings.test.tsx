@@ -124,7 +124,7 @@ describe('Audit logs edit', () => {
     );
 
     process.nextTick(() => {
-      expect(spy).toBeCalled();
+      expect(spy).toHaveBeenCalled();
       done();
     });
   });
@@ -143,7 +143,7 @@ describe('Audit logs edit', () => {
     expect(window.location.hash).toBe(buildHashUrl(ResourceType.auditLogging));
   });
 
-  it('should save or update audit logging when click on Save button and setting is compliance', () => {
+  it('should save or update audit logging when click on Save button and setting is compliance', async () => {
     const component = shallow(
       <AuditLoggingEditSettings
         coreStart={mockCoreStart as any}
@@ -154,11 +154,13 @@ describe('Audit logs edit', () => {
       />
     );
     component.find('[data-test-subj="save"]').simulate('click');
-    expect(mockAuditLoggingUtils.updateAuditLogging).toBeCalled();
+    expect(mockAuditLoggingUtils.updateAuditLogging).toHaveBeenCalled();
+    // saveConfig() awaits updateAuditLogging before navigating; flush microtasks.
+    await Promise.resolve();
     expect(window.location.hash).toBe(buildHashUrl(ResourceType.auditLogging));
   });
 
-  it('should save or update audit logging when click on Save button and setting is general', () => {
+  it('should save or update audit logging when click on Save button and setting is general', async () => {
     const component = shallow(
       <AuditLoggingEditSettings
         coreStart={mockCoreStart as any}
@@ -169,7 +171,9 @@ describe('Audit logs edit', () => {
       />
     );
     component.find('[data-test-subj="save"]').simulate('click');
-    expect(mockAuditLoggingUtils.updateAuditLogging).toBeCalled();
+    expect(mockAuditLoggingUtils.updateAuditLogging).toHaveBeenCalled();
+    // saveConfig() awaits updateAuditLogging before navigating; flush microtasks.
+    await Promise.resolve();
     expect(window.location.hash).toBe(buildHashUrl(ResourceType.auditLogging));
   });
 });

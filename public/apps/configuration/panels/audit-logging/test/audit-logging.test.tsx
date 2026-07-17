@@ -105,7 +105,7 @@ describe('Audit logs', () => {
 
     process.nextTick(() => {
       expect(mockAuditLoggingUtils.getAuditLogging).toHaveBeenCalledTimes(1);
-      expect(setState).toBeCalledTimes(0);
+      expect(setState).toHaveBeenCalledTimes(0);
 
       done();
     });
@@ -145,8 +145,8 @@ describe('Audit logs', () => {
     );
     component.find('[data-test-subj="audit-logging-enabled-switch"]').simulate('change');
 
-    expect(spy).toBeCalled();
-    expect(setState).toBeCalledTimes(0);
+    expect(spy).toHaveBeenCalled();
+    expect(setState).toHaveBeenCalledTimes(0);
   });
 
   it('render when AuditLoggingSettings.enabled is true', () => {

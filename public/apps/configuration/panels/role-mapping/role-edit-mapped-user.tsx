@@ -137,11 +137,8 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
           )}`,
         }
       );
-      window.location.href = buildHashUrl(
-        ResourceType.roles,
-        Action.view,
-        props.roleName,
-        SubAction.mapuser
+      window.location.assign(
+        buildHashUrl(ResourceType.roles, Action.view, props.roleName, SubAction.mapuser)
       );
     } catch (e) {
       if (e.message) {
@@ -199,7 +196,7 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
         <EuiFlexItem grow={false}>
           <EuiSmallButton
             onClick={() => {
-              window.location.href = buildHashUrl(ResourceType.roles, Action.view, props.roleName);
+              window.location.assign(buildHashUrl(ResourceType.roles, Action.view, props.roleName));
             }}
           >
             Cancel

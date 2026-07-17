@@ -67,7 +67,7 @@ export function renderCustomization(reserved: boolean, props: UIProps) {
   return (
     <EuiFlexGroup alignItems="center" gutterSize="xs">
       <EuiFlexItem grow={false}>
-        <EuiIcon type={reserved ? 'lock' : 'pencil'} />
+        <EuiIcon type={reserved ? 'lock' : 'pencil'} aria-hidden={true} />
       </EuiFlexItem>
       <EuiFlexItem grow={false}>
         <EuiText
@@ -125,7 +125,13 @@ export const displayHeaderWithTooltip = (columnHeader: string, tooltipText: stri
     <EuiToolTip content={tooltipText}>
       <span>
         {columnHeader}{' '}
-        <EuiIcon size="s" color="subdued" type="questionInCircle" className="eui-alignTop" />
+        <EuiIcon
+          size="s"
+          color="subdued"
+          type="questionInCircle"
+          className="eui-alignTop"
+          aria-hidden={true}
+        />
       </span>
     </EuiToolTip>
   );

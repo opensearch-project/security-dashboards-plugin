@@ -41,7 +41,7 @@ describe('User editing - backend role panel', () => {
     it('render an empty row when no data', () => {
       shallow(<BackendRolePanel state={[]} setState={setState} />);
 
-      expect(setState).toBeCalledWith(['']);
+      expect(setState).toHaveBeenCalledWith(['']);
     });
 
     it('render data', () => {
@@ -56,21 +56,21 @@ describe('User editing - backend role panel', () => {
       const component = shallow(<BackendRolePanel state={sampleState} setState={setState} />);
       component.find('#backend-role-add-row').simulate('click');
 
-      expect(appendElementToArray).toBeCalledWith(setState, [], '');
+      expect(appendElementToArray).toHaveBeenCalledWith(setState, [], '');
     });
 
     it('change backend role value', () => {
       const component = shallow(<BackendRolePanel state={sampleState} setState={setState} />);
       component.find('#backend-role-0').simulate('change', { target: { value: '' } });
 
-      expect(updateElementInArrayHandler).toBeCalledWith(setState, [0]);
+      expect(updateElementInArrayHandler).toHaveBeenCalledWith(setState, [0]);
     });
 
     it('delete row', () => {
       const component = shallow(<BackendRolePanel state={sampleState} setState={setState} />);
       component.find('#backend-role-delete-0').simulate('click');
 
-      expect(removeElementFromArray).toBeCalledWith(setState, [], 0);
+      expect(removeElementFromArray).toHaveBeenCalledWith(setState, [], 0);
     });
 
     // TODO: Fix the tests for backend role error message

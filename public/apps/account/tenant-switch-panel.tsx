@@ -270,7 +270,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
         <EuiSpacer />
 
         {errorCallOut && (
-          <EuiCallOut color="danger" iconType="alert">
+          <EuiCallOut announceOnMount color="danger" iconType="alert">
             {errorCallOut}
           </EuiCallOut>
         )}

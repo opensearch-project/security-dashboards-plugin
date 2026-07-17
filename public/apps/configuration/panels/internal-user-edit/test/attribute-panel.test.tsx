@@ -59,7 +59,7 @@ describe('User editing - attribute panel', () => {
     it('render an empty row when no data', () => {
       shallow(<AttributePanel state={[]} setState={setState} />);
 
-      expect(setState).toBeCalledWith([{ key: '', value: '' }]);
+      expect(setState).toHaveBeenCalledWith([{ key: '', value: '' }]);
     });
 
     it('render data', () => {
@@ -76,28 +76,28 @@ describe('User editing - attribute panel', () => {
       const component = shallow(<AttributePanel state={sampleState} setState={setState} />);
       component.find('#add-row').simulate('click');
 
-      expect(appendElementToArray).toBeCalledWith(setState, [], { key: '', value: '' });
+      expect(appendElementToArray).toHaveBeenCalledWith(setState, [], { key: '', value: '' });
     });
 
     it('change attribute name', () => {
       const component = shallow(<AttributePanel state={sampleState} setState={setState} />);
       component.find('#attribute-0').simulate('change', { target: { value: '' } });
 
-      expect(updateElementInArrayHandler).toBeCalledWith(setState, [0, 'key']);
+      expect(updateElementInArrayHandler).toHaveBeenCalledWith(setState, [0, 'key']);
     });
 
     it('change attribute value', () => {
       const component = shallow(<AttributePanel state={sampleState} setState={setState} />);
       component.find('#value-0').simulate('change', { target: { value: '' } });
 
-      expect(updateElementInArrayHandler).toBeCalledWith(setState, [0, 'value']);
+      expect(updateElementInArrayHandler).toHaveBeenCalledWith(setState, [0, 'value']);
     });
 
     it('delete row', () => {
       const component = shallow(<AttributePanel state={sampleState} setState={setState} />);
       component.find('#delete-0').simulate('click');
 
-      expect(removeElementFromArray).toBeCalledWith(setState, [], 0);
+      expect(removeElementFromArray).toHaveBeenCalledWith(setState, [], 0);
     });
   });
 });

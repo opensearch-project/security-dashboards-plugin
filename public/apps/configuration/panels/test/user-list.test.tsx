@@ -121,8 +121,8 @@ describe('User list', () => {
         />
       );
 
-      expect(getUserList).toBeCalled();
-      expect(getAuthInfo).toBeCalled();
+      expect(getUserList).toHaveBeenCalled();
+      expect(getAuthInfo).toHaveBeenCalled();
     });
 
     it('fetch data error', () => {
@@ -142,7 +142,7 @@ describe('User list', () => {
       );
 
       // Expect error flag set to true
-      expect(setState).toBeCalledWith(true);
+      expect(setState).toHaveBeenCalledWith(true);
     });
 
     it('delete user', (done) => {
@@ -159,7 +159,7 @@ describe('User list', () => {
       deleteFunc();
 
       process.nextTick(() => {
-        expect(requestDeleteUsers).toBeCalled();
+        expect(requestDeleteUsers).toHaveBeenCalled();
         done();
       });
     });
@@ -184,7 +184,7 @@ describe('User list', () => {
       deleteFunc();
 
       process.nextTick(() => {
-        expect(loggingFunc).toBeCalled();
+        expect(loggingFunc).toHaveBeenCalled();
         done();
       });
     });

@@ -16,34 +16,12 @@
 import { reloadAfterTenantSwitch } from '../account-nav-button';
 
 describe('Reload window after tenant switch', () => {
-  const originalLocation = window.location;
-  const mockSetWindowHref = jest.fn();
-  let pathname: string = '';
-  beforeAll(() => {
-    pathname = '/app/myapp';
-    Object.defineProperty(window, 'location', {
-      value: {
-        get pathname() {
-          return pathname;
-        },
-        get href() {
-          return '/app/dashboards?security_tenant=admin_tenant';
-        },
-        set href(value: string) {
-          mockSetWindowHref(value);
-        },
-      },
-    });
-  });
-
-  afterAll(() => {
-    window.location = originalLocation;
-  });
-
   it('should remove the tenant query parameter before reloading', () => {
-    pathname = '/app/pathname-only';
+    // jest-location-mock: reloadAfterTenantSwitch() calls window.location.assign(pathname).
+    window.location.assign('http://localhost:5601/app/pathname-only?security_tenant=admin_tenant');
+    const assignSpy = jest.spyOn(window.location, 'assign');
     reloadAfterTenantSwitch();
-    expect(mockSetWindowHref).toHaveBeenCalledWith(pathname);
+    expect(assignSpy).toHaveBeenCalledWith('/app/pathname-only');
   });
 });
 

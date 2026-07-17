@@ -33,6 +33,6 @@ describe('Permission edit modal', () => {
     );
     component.find('#submit').simulate('click');
 
-    expect(handleSave).toBeCalled();
+    expect(handleSave).toHaveBeenCalled();
   });
 });

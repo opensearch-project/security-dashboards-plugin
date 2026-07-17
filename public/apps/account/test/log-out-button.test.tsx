@@ -87,6 +87,6 @@ describe('Account menu - Log out button', () => {
     );
     component.find('[data-test-subj="log-out-3"]').simulate('click');
 
-    expect(logout).toBeCalled();
+    expect(logout).toHaveBeenCalled();
   });
 });

@@ -78,16 +78,14 @@ describe('Account app', () => {
   });
 
   it('Should skip if auto swich if securitytenant in url', (done) => {
-    // Trick to mock window.location
-    const originalLocation = window.location;
-    delete window.location;
-    window.location = new URL('http://www.example.com?securitytenant=abc') as any;
+    // jest-location-mock: assign a URL with securitytenant instead of replacing window.location.
+    window.location.assign('http://www.example.com?securitytenant=abc');
 
     setupTopNavButton(mockCoreStart, mockConfig as any);
 
     process.nextTick(() => {
-      expect(setShouldShowTenantPopup).toBeCalledWith(false);
-      window.location = originalLocation;
+      expect(setShouldShowTenantPopup).toHaveBeenCalledWith(false);
+      window.location.assign('http://localhost:5601/');
       done();
     });
   });
@@ -98,11 +96,11 @@ describe('Account app', () => {
     setupTopNavButton(mockCoreStart, mockConfig as any);
 
     process.nextTick(() => {
-      expect(getSavedTenant).toBeCalledTimes(1);
+      expect(getSavedTenant).toHaveBeenCalledTimes(1);
     });
 
     process.nextTick(() => {
-      expect(setShouldShowTenantPopup).toBeCalledWith(false);
+      expect(setShouldShowTenantPopup).toHaveBeenCalledWith(false);
       done();
     });
   });
@@ -113,8 +111,8 @@ describe('Account app', () => {
     setupTopNavButton(mockCoreStart, mockConfig as any);
 
     process.nextTick(() => {
-      expect(getSavedTenant).toBeCalledTimes(1);
-      expect(setShouldShowTenantPopup).toBeCalledWith(true);
+      expect(getSavedTenant).toHaveBeenCalledTimes(1);
+      expect(setShouldShowTenantPopup).toHaveBeenCalledWith(true);
       done();
     });
   });
@@ -128,8 +126,8 @@ describe('Account app', () => {
     setupTopNavButton(mockCoreStart, mockConfig as any);
 
     process.nextTick(() => {
-      expect(getSavedTenant).toBeCalledTimes(0);
-      expect(setShouldShowTenantPopup).toBeCalledWith(false);
+      expect(getSavedTenant).toHaveBeenCalledTimes(0);
+      expect(setShouldShowTenantPopup).toHaveBeenCalledWith(false);
       done();
     });
   });
@@ -144,8 +142,8 @@ describe('Account app', () => {
     setupTopNavButton(mockCoreStart, multiTenancyDisabledConfig as any);
 
     process.nextTick(() => {
-      expect(getSavedTenant).toBeCalledTimes(0);
-      expect(setShouldShowTenantPopup).toBeCalledWith(false);
+      expect(getSavedTenant).toHaveBeenCalledTimes(0);
+      expect(setShouldShowTenantPopup).toHaveBeenCalledWith(false);
       done();
     });
   });
@@ -159,8 +157,8 @@ describe('Account app', () => {
     setupTopNavButton(mockCoreStart, mockConfig as any);
 
     process.nextTick(() => {
-      expect(getSavedTenant).toBeCalledTimes(0);
-      expect(setShouldShowTenantPopup).toBeCalledWith(false);
+      expect(getSavedTenant).toHaveBeenCalledTimes(0);
+      expect(setShouldShowTenantPopup).toHaveBeenCalledWith(false);
       done();
     });
   });

@@ -140,7 +140,7 @@ export function IndexPermissionPanel(props: IndexPermissionPanelProps) {
           data-test-subj="addIndexPermission"
           disabled={props.isReserved}
           onClick={() => {
-            window.location.href = buildHashUrl(ResourceType.roles, Action.edit, props.roleName);
+            window.location.assign(buildHashUrl(ResourceType.roles, Action.edit, props.roleName));
           }}
         >
           Add index permission

@@ -46,15 +46,16 @@ export async function logout(http: HttpStart, logoutUrl?: string): Promise<void>
   // When no basepath is set, we can take '/' as the basepath.
   const basePath = http.basePath.serverBasePath ? http.basePath.serverBasePath : '/';
   const nextUrl = encodeURIComponent(basePath);
-  window.location.href =
-    logoutUrl || `${http.basePath.serverBasePath}/app/login?nextUrl=${nextUrl}`;
+  window.location.assign(
+    logoutUrl || `${http.basePath.serverBasePath}/app/login?nextUrl=${nextUrl}`
+  );
 }
 
 export async function externalLogout(http: HttpStart, logoutEndpoint: string): Promise<void> {
   // This will ensure tenancy is picked up from local storage in the next login.
   setShouldShowTenantPopup(null);
   sessionStorage.clear();
-  window.location.href = `${http.basePath.serverBasePath}${logoutEndpoint}`;
+  window.location.assign(`${http.basePath.serverBasePath}${logoutEndpoint}`);
 }
 
 export async function updateNewPassword(

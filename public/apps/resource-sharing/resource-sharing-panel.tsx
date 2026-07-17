@@ -360,7 +360,7 @@ const ShareAccessModal: React.FC<ModalProps> = ({
         <EuiSpacer size="m" />
         {!isSubmitting && errorLines.length > 0 && (
           <>
-            <EuiCallOut title="Request failed" color="danger" iconType="alert">
+            <EuiCallOut announceOnMount title="Request failed" color="danger" iconType="alert">
               <ul style={{ margin: 0, paddingLeft: 18 }}>
                 {errorLines.map((l, i) => (
                   <li key={i}>{l}</li>
@@ -372,7 +372,7 @@ const ShareAccessModal: React.FC<ModalProps> = ({
         )}
         {isInvalid && (
           <>
-            <EuiCallOut title="Add recipients" color="warning" iconType="alert">
+            <EuiCallOut announceOnMount title="Add recipients" color="warning" iconType="alert">
               The following access-levels have no recipients: {levelsWithNoRecipients.join(', ')}
             </EuiCallOut>
             <EuiSpacer size="s" />

@@ -61,25 +61,25 @@ describe('Intercept error handler', () => {
   it('Intercept error handler should call setShouldShowTenantPopup on session timeout', () => {
     const sessionTimeoutFn = interceptError(LOGIN_PAGE_URI, window);
     sessionTimeoutFn(fakeError401, null);
-    expect(setShouldShowTenantPopup).toBeCalledTimes(1);
-    expect(sessionStorage.clear).toBeCalledTimes(1);
+    expect(setShouldShowTenantPopup).toHaveBeenCalledTimes(1);
+    expect(sessionStorage.clear).toHaveBeenCalledTimes(1);
   });
 
   it('Intercept error handler should clear the session', () => {
     const sessionTimeoutFn = interceptError(LOGIN_PAGE_URI, window);
     sessionTimeoutFn(fakeError401, null);
-    expect(sessionStorage.clear).toBeCalledTimes(1);
+    expect(sessionStorage.clear).toHaveBeenCalledTimes(1);
   });
 
   it('Intercept error handler should not call setShouldShowTenantPopup on session timeout', () => {
     const sessionTimeoutFn = interceptError(LOGIN_PAGE_URI, window);
     sessionTimeoutFn(fakeError400, null);
-    expect(setShouldShowTenantPopup).toBeCalledTimes(0);
+    expect(setShouldShowTenantPopup).toHaveBeenCalledTimes(0);
   });
 
   it('Intercept error handler should not clear the session', () => {
     const sessionTimeoutFn = interceptError(LOGIN_PAGE_URI, window);
     sessionTimeoutFn(fakeError400, null);
-    expect(sessionStorage.clear).toBeCalledTimes(0);
+    expect(sessionStorage.clear).toHaveBeenCalledTimes(0);
   });
 });

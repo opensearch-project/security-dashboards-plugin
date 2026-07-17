@@ -269,7 +269,7 @@ describe('Role list', () => {
     deleteFunc();
 
     process.nextTick(() => {
-      expect(mockRoleListUtils.requestDeleteRoles).toBeCalled();
+      expect(mockRoleListUtils.requestDeleteRoles).toHaveBeenCalled();
       done();
     });
   });
@@ -290,7 +290,7 @@ describe('Role list', () => {
     const deleteFunc = useDeleteConfirmState.mock.calls[0][0];
 
     deleteFunc();
-    expect(spy).toBeCalled();
+    expect(spy).toHaveBeenCalled();
   });
 
   describe('Action menu click', () => {

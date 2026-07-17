@@ -181,7 +181,7 @@ describe('Tenant list', () => {
     deleteFunc();
 
     process.nextTick(() => {
-      expect(mockTenantUtils.requestDeleteTenant).toBeCalled();
+      expect(mockTenantUtils.requestDeleteTenant).toHaveBeenCalled();
       done();
     });
   });
@@ -206,7 +206,7 @@ describe('Tenant list', () => {
     deleteFunc();
 
     process.nextTick(() => {
-      expect(loggingFunc).toBeCalled();
+      expect(loggingFunc).toHaveBeenCalled();
       done();
     });
   });
@@ -224,7 +224,7 @@ describe('Tenant list', () => {
     const submitFunc = component.find(TenantEditModal).prop('handleSave');
     submitFunc('tenant_1', '');
 
-    expect(mockTenantUtils.updateTenant).toBeCalled();
+    expect(mockTenantUtils.updateTenant).toHaveBeenCalled();
   });
 
   it('submit tenant error', () => {
@@ -247,7 +247,7 @@ describe('Tenant list', () => {
     submitFunc('tenant_1', '');
 
     // Expect error log
-    expect(consoleLog).toBeCalledWith(error);
+    expect(consoleLog).toHaveBeenCalledWith(error);
   });
 
   describe('Action menu enable-disable check', () => {
@@ -406,7 +406,7 @@ describe('Tenant list', () => {
 
     it('switchTenant click', () => {
       component.find('#switchTenant').simulate('click');
-      expect(mockTenantUtils.selectTenant).toBeCalled();
+      expect(mockTenantUtils.selectTenant).toHaveBeenCalled();
     });
 
     it('Edit click', () => {

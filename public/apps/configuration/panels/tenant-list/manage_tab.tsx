@@ -232,7 +232,7 @@ export function ManageTab(props: AppDependencies) {
   let tenancyDisabledWarning;
   if (!true) {
     tenancyDisabledWarning = (
-      <EuiCallOut title="Tenancy is disabled" color="warning" iconType="iInCircle">
+      <EuiCallOut announceOnMount title="Tenancy is disabled" color="warning" iconType="iInCircle">
         <p>
           Tenancy is currently disabled and users don&apos;t have access to this feature. To create,
           edit tenants you must enabled tenanc throught he configure tenancy page.
@@ -251,7 +251,7 @@ export function ManageTab(props: AppDependencies) {
   const viewOrCreateDashboard = async (tenantValue: string, action: string) => {
     try {
       await changeTenant(tenantValue);
-      window.location.href = getNavLinkById(props.coreStart, PageId.dashboardId);
+      window.location.assign(getNavLinkById(props.coreStart, PageId.dashboardId));
     } catch (e) {
       console.log(e);
       addToast(
@@ -266,7 +266,7 @@ export function ManageTab(props: AppDependencies) {
   const viewOrCreateVisualization = async (tenantValue: string, action: string) => {
     try {
       await changeTenant(tenantValue);
-      window.location.href = getNavLinkById(props.coreStart, PageId.visualizationId);
+      window.location.assign(getNavLinkById(props.coreStart, PageId.visualizationId));
     } catch (e) {
       console.log(e);
       addToast(
@@ -287,45 +287,61 @@ export function ManageTab(props: AppDependencies) {
         dashboardsDefaultTenant === ''
       ) {
         return (
-          <EuiFacetButton icon={<EuiIcon type="dot" color="primary" />}>
+          <EuiFacetButton icon={<EuiIcon type="dot" color="primary" aria-hidden={true} />}>
             Default Tenant
           </EuiFacetButton>
         );
       }
-      return <EuiFacetButton icon={<EuiIcon type="dot" color="success" />}>Enabled</EuiFacetButton>;
+      return (
+        <EuiFacetButton icon={<EuiIcon type="dot" color="success" aria-hidden={true} />}>
+          Enabled
+        </EuiFacetButton>
+      );
     }
 
     if (tenantName === 'Private') {
       if (isPrivateTenantEnabled && isMultiTenancyEnabled) {
         if (tenantName === dashboardsDefaultTenant) {
           return (
-            <EuiFacetButton icon={<EuiIcon type="dot" color="primary" />}>
+            <EuiFacetButton icon={<EuiIcon type="dot" color="primary" aria-hidden={true} />}>
               Default Tenant
             </EuiFacetButton>
           );
         }
 
         return (
-          <EuiFacetButton icon={<EuiIcon type="dot" color="success" />}>Enabled</EuiFacetButton>
+          <EuiFacetButton icon={<EuiIcon type="dot" color="success" aria-hidden={true} />}>
+            Enabled
+          </EuiFacetButton>
         );
       }
       return (
-        <EuiFacetButton icon={<EuiIcon type="dot" color="#DDDDDD" />}>Disabled</EuiFacetButton>
+        <EuiFacetButton icon={<EuiIcon type="dot" color="#DDDDDD" aria-hidden={true} />}>
+          Disabled
+        </EuiFacetButton>
       );
     }
 
     if (isMultiTenancyEnabled) {
       if (tenantName === dashboardsDefaultTenant) {
         return (
-          <EuiFacetButton icon={<EuiIcon type="dot" color="primary" />}>
+          <EuiFacetButton icon={<EuiIcon type="dot" color="primary" aria-hidden={true} />}>
             Default Tenant
           </EuiFacetButton>
         );
       }
-      return <EuiFacetButton icon={<EuiIcon type="dot" color="success" />}>Enabled</EuiFacetButton>;
+      return (
+        <EuiFacetButton icon={<EuiIcon type="dot" color="success" aria-hidden={true} />}>
+          Enabled
+        </EuiFacetButton>
+      );
     }
 
-    return <EuiFacetButton icon={<EuiIcon type="dot" color="#DDDDDD" />}>Disabled</EuiFacetButton>;
+    return (
+      <EuiFacetButton icon={<EuiIcon type="dot" color="#DDDDDD" aria-hidden={true} />}>
+        Disabled
+      </EuiFacetButton>
+    );
   }
 
   const columns = [

@@ -310,7 +310,7 @@ describe('test OpenId authHeaderValue', () => {
     });
 
     expect(await openIdAuthentication.isValidCookie(testCookie, {})).toBe(true);
-    expect(mockClient.post).toBeCalledTimes(1);
+    expect(mockClient.post).toHaveBeenCalledTimes(1);
     global.Date.now = realDateNow;
   });
 
@@ -421,7 +421,7 @@ describe('Test OpenID Unauthorized Flows', () => {
 
     openIdAuthentication.handleUnauthedRequest(osRequest, mockLifecycleFactory, authToolkit);
 
-    expect(mockLifecycleFactory.unauthorized).toBeCalledTimes(1);
+    expect(mockLifecycleFactory.unauthorized).toHaveBeenCalledTimes(1);
   });
 
   test('Ensure request without path redirects to default route', () => {

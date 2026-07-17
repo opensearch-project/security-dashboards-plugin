@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Display utils Render Customization column when reserved = False 1`] = `
 <div
@@ -8,6 +8,7 @@ exports[`Display utils Render Customization column when reserved = False 1`] = `
     grow={false}
   >
     <EuiIcon
+      aria-hidden={true}
       type="pencil"
     />
   </EuiFlexItem>
@@ -32,6 +33,7 @@ exports[`Display utils Render Customization column when reserved = True 1`] = `
     grow={false}
   >
     <EuiIcon
+      aria-hidden={true}
       type="lock"
     />
   </EuiFlexItem>
@@ -98,6 +100,7 @@ exports[`Display utils Render header with tooltip 1`] = `
       Header
        
       <EuiIcon
+        aria-hidden={true}
         className="eui-alignTop"
         color="subdued"
         size="s"

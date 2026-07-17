@@ -217,11 +217,8 @@ export function RoleView(props: RoleViewProps) {
               data-test-subj="map-users"
               fill
               onClick={() => {
-                window.location.href = buildHashUrl(
-                  ResourceType.roles,
-                  Action.edit,
-                  props.roleName,
-                  SubAction.mapuser
+                window.location.assign(
+                  buildHashUrl(ResourceType.roles, Action.edit, props.roleName, SubAction.mapuser)
                 );
               }}
             >
@@ -244,6 +241,7 @@ export function RoleView(props: RoleViewProps) {
 
           {isReserved && (
             <EuiCallOut
+              announceOnMount
               title="This role is reserved for the Security plugin environment. Reserved roles are restricted for any permission customizations."
               iconType="lock"
               size="s"
@@ -333,11 +331,13 @@ export function RoleView(props: RoleViewProps) {
                     <EuiSmallButton
                       data-test-subj="manage-mapping"
                       onClick={() => {
-                        window.location.href = buildHashUrl(
-                          ResourceType.roles,
-                          Action.edit,
-                          props.roleName,
-                          SubAction.mapuser
+                        window.location.assign(
+                          buildHashUrl(
+                            ResourceType.roles,
+                            Action.edit,
+                            props.roleName,
+                            SubAction.mapuser
+                          )
                         );
                       }}
                     >
@@ -388,7 +388,7 @@ export function RoleView(props: RoleViewProps) {
             color: 'success',
             title: `${props.roleName} deleted ${getClusterInfo(dataSourceEnabled, dataSource)}`,
           });
-          window.location.href = buildHashUrl(ResourceType.roles);
+          window.location.assign(buildHashUrl(ResourceType.roles));
         } catch (e) {
           addToast(createUnknownErrorToast('deleteRole', 'delete role'));
         }
@@ -435,7 +435,7 @@ export function RoleView(props: RoleViewProps) {
             color: 'success',
             title: `${props.roleName} deleted ${getClusterInfo(dataSourceEnabled, dataSource)}`,
           });
-          window.location.href = buildHashUrl(ResourceType.roles);
+          window.location.assign(buildHashUrl(ResourceType.roles));
         } catch (e) {
           addToast(createUnknownErrorToast('deleteRole', 'delete role'));
         }

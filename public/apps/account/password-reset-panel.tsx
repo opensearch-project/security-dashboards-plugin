@@ -178,7 +178,7 @@ export function PasswordResetPanel(props: PasswordResetPanelProps) {
           <EuiSpacer />
 
           {errorCallOut && (
-            <EuiCallOut color="danger" iconType="alert">
+            <EuiCallOut announceOnMount color="danger" iconType="alert">
               {errorCallOut}
             </EuiCallOut>
           )}

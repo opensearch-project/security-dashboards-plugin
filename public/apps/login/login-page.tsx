@@ -78,7 +78,7 @@ export function getNextPath(serverBasePath: string) {
 
 function redirect(serverBasePath: string) {
   // navigate to nextUrl
-  window.location.href = getNextPath(serverBasePath);
+  window.location.assign(getNextPath(serverBasePath));
 }
 
 export function extractNextUrlFromWindowLocation(): string {

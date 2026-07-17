@@ -78,7 +78,7 @@ describe('Role view - index permission panel', () => {
       const Wrapper = () => <>{renderFunc('{"key": "value"%%%}')}</>;
       const spy = jest.spyOn(console, 'warn').mockImplementationOnce(() => {});
       const component = shallow(<Wrapper />);
-      expect(spy).toBeCalled();
+      expect(spy).toHaveBeenCalled();
       expect(component).toMatchSnapshot();
     });
   });

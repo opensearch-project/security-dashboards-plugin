@@ -88,7 +88,7 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
             <EuiSmallButton
               data-test-subj="cancel"
               onClick={() => {
-                window.location.href = buildHashUrl(ResourceType.auditLogging);
+                window.location.assign(buildHashUrl(ResourceType.auditLogging));
               }}
             >
               Cancel
@@ -135,7 +135,7 @@ export function AuditLoggingEditSettings(props: AuditLoggingEditSettingProps) {
         );
       }
 
-      window.location.href = buildHashUrl(ResourceType.auditLogging);
+      window.location.assign(buildHashUrl(ResourceType.auditLogging));
     } catch (e) {
       const failureToast: Toast = {
         id: 'update-result',

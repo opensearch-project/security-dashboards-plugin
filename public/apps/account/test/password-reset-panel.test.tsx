@@ -52,12 +52,12 @@ describe('Account menu - Password reset panel', () => {
 
   it('handle modal close', () => {
     component.find('[data-test-subj="reset-password-modal"]').simulate('close');
-    expect(handleClose).toBeCalled();
+    expect(handleClose).toHaveBeenCalled();
   });
 
   it('click cancel button', () => {
     component.find('[data-test-subj="cancel"]').simulate('click');
-    expect(handleClose).toBeCalled();
+    expect(handleClose).toHaveBeenCalled();
   });
 
   it('click reset button', (done) => {
@@ -107,8 +107,8 @@ describe('Account menu - Password reset panel', () => {
       target: { value: 'dummy' },
     } as React.ChangeEvent<HTMLInputElement>;
     component.find('[data-test-subj="current-password"]').simulate('change', event);
-    expect(setState).toBeCalledWith('dummy');
-    expect(setState).toBeCalledWith(false);
+    expect(setState).toHaveBeenCalledWith('dummy');
+    expect(setState).toHaveBeenCalledWith(false);
   });
 
   it('New password field update', () => {
@@ -116,9 +116,9 @@ describe('Account menu - Password reset panel', () => {
       target: { value: 'dummy' },
     } as React.ChangeEvent<HTMLInputElement>;
     component.find('[data-test-subj="new-password"]').simulate('change', event);
-    expect(setState).toBeCalledWith('dummy');
-    expect(setState).toBeCalledWith(false);
-    expect(setState).toBeCalledWith(false);
+    expect(setState).toHaveBeenCalledWith('dummy');
+    expect(setState).toHaveBeenCalledWith(false);
+    expect(setState).toHaveBeenCalledWith(false);
   });
 
   it('Re-enter new password field update', () => {
@@ -126,7 +126,7 @@ describe('Account menu - Password reset panel', () => {
       target: { value: 'dummy' },
     } as React.ChangeEvent<HTMLInputElement>;
     component.find('[data-test-subj="reenter-new-password"]').simulate('change', event);
-    expect(setState).toBeCalledWith('dummy');
-    expect(setState).toBeCalledWith(true);
+    expect(setState).toHaveBeenCalledWith('dummy');
+    expect(setState).toHaveBeenCalledWith(true);
   });
 });

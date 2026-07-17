@@ -311,8 +311,8 @@ export function ConfigureTab1(props: AppDependencies) {
   const errorCallOut = (
     <EuiCallOut title="Address the highlighted areas" color="danger" iconType="iInCircle">
       <p>
-        <EuiIcon type="dot" size={'s'} /> The private tenant is disabled. Select another default
-        tenant.
+        <EuiIcon type="dot" size={'s'} aria-hidden={true} /> The private tenant is disabled. Select
+        another default tenant.
       </p>
     </EuiCallOut>
   );

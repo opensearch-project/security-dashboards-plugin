@@ -129,7 +129,7 @@ describe('Permission list page ', () => {
         />
       );
 
-      expect(fetchActionGroups).toBeCalledWith(mockCoreStart.http, 'test');
+      expect(fetchActionGroups).toHaveBeenCalledWith(mockCoreStart.http, 'test');
     });
 
     it('fetch data error', () => {
@@ -152,7 +152,7 @@ describe('Permission list page ', () => {
       );
 
       // Expect error log
-      expect(consoleLog).toBeCalledWith(error);
+      expect(consoleLog).toHaveBeenCalledWith(error);
     });
 
     it('submit change', () => {
@@ -168,7 +168,7 @@ describe('Permission list page ', () => {
       const submitFunc = component.find(PermissionEditModal).prop('handleSave');
       submitFunc('group1', []);
 
-      expect(updateActionGroup).toBeCalledWith(
+      expect(updateActionGroup).toHaveBeenCalledWith(
         mockCoreStart.http,
         'group1',
         { allowed_actions: [] },
@@ -196,7 +196,7 @@ describe('Permission list page ', () => {
       submitFunc('group1', []);
 
       // Expect error log
-      expect(consoleLog).toBeCalledWith(error);
+      expect(consoleLog).toHaveBeenCalledWith(error);
     });
 
     it('delete action group', (done) => {
@@ -213,7 +213,7 @@ describe('Permission list page ', () => {
       deleteFunc();
 
       process.nextTick(() => {
-        expect(requestDeleteActionGroups).toBeCalledWith(mockCoreStart.http, [], 'test');
+        expect(requestDeleteActionGroups).toHaveBeenCalledWith(mockCoreStart.http, [], 'test');
         done();
       });
     });
