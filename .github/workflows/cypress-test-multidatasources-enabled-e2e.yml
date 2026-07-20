@@ -42,6 +42,8 @@ jobs:
             config_version: 2
           config:
             dynamic:
+              kibana:
+                multitenancy_enabled: false
               http:
                 anonymous_auth_enabled: false
               authc:
@@ -56,6 +58,7 @@ jobs:
                   authentication_backend:
                     type: intern
           EOT
+          cp config_custom.yml config_custom_remote.yml
 
       - name: Download security plugin and create setup scripts
         uses: ./.github/actions/download-plugin
@@ -72,7 +75,7 @@ jobs:
           plugins: "file:$(pwd)/opensearch-security.zip"
           security-enabled: true
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
-          security_config_file: config_custom.yml
+          security_config_file: config_custom_remote.yml
           port: 9202
           jdk-version: 21
           resource-sharing-enabled: true
@@ -94,8 +97,7 @@ jobs:
           opensearch.username: "kibanaserver"
           opensearch.password: "kibanaserver"
           opensearch.requestHeadersWhitelist: [ authorization,securitytenant ]
-          opensearch_security.multitenancy.enabled: true
-          opensearch_security.multitenancy.tenants.preferred: ["Private", "Global"]
+          opensearch_security.multitenancy.enabled: false
           opensearch_security.readonly_mode.roles: ["kibana_read_only"]
           opensearch_security.cookie.secure: false
           data_source.enabled: true
@@ -106,6 +108,7 @@ jobs:
       - name: Run Cypress Tests
         uses: ./.github/actions/run-cypress-tests
         with:
+          security_config_file: config_custom.yml
           dashboards_config_file: opensearch_dashboards_multidatasources.yml
           yarn_command: 'CYPRESS_VERIFY_TIMEOUT=60000 yarn cypress:run --browser chrome --headless --env LOGIN_AS_ADMIN=true --spec "test/cypress/e2e/multi-datasources/multi_datasources_enabled.spec.js"'
           resource_sharing_enabled: "true"
