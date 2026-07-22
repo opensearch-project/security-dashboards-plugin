@@ -66,6 +66,7 @@ import {
   SecurityPluginSetupDependencies,
 } from './types';
 import { addTenantToShareURL } from './services/shared-link';
+import { createShareButton } from './apps/resource-sharing/share-button-embeddable';
 import { interceptError } from './utils/logout-utils';
 import { tenantColumn, getNamespacesToRegister } from './apps/configuration/utils/tenant-utils';
 import { getDashboardsInfoSafe } from './utils/dashboards-info-utils';
@@ -115,6 +116,9 @@ export class SecurityPlugin implements Plugin<
   // @ts-ignore : initializerContext not used
   constructor(private readonly initializerContext: PluginInitializerContext) {}
 
+  /** Set during setup() from dashboardsinfo; used to gate the embeddable ShareButton in start(). */
+  private resourceSharingEnabled: boolean = false;
+
   private updateDefaultRouteOfSecurityApplications: AppUpdater = () => {
     const url = getDataSourceEnabledUrl(getDataSourceFromUrl());
     return {
@@ -137,6 +141,7 @@ export class SecurityPlugin implements Plugin<
     const dashboardsInfo = await getDashboardsInfoSafe(core.http);
     const multitenancyEnabled = dashboardsInfo?.multitenancy_enabled;
     const resourceSharingEnabled = dashboardsInfo?.resource_sharing_enabled;
+    this.resourceSharingEnabled = !!resourceSharingEnabled;
     const isReadonly = accountInfo?.roles.some((role) =>
       (config.readonly_mode?.roles || DEFAULT_READONLY_ROLES).includes(role)
     );
@@ -503,7 +508,12 @@ export class SecurityPlugin implements Plugin<
     if (config.multitenancy.enabled) {
       addTenantToShareURL(core);
     }
-    return {};
+
+    return {
+      ui: {
+        ShareButton: createShareButton(core, this.resourceSharingEnabled),
+      },
+    };
   }
 
   public stop() {}
