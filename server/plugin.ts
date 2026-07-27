@@ -113,6 +113,24 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
 
     this.securityClient = new SecurityClient(esClient);
 
+    // Expose resource-sharing availability as a core capability so ANY plugin
+    // can gate UI (e.g. a "Share" table column) via
+    // `core.application.capabilities.resourceSharing?.enabled`
+    // without taking a dependency on the security plugin.
+    core.capabilities.registerProvider(() => ({
+      resourceSharing: { enabled: false },
+    }));
+    core.capabilities.registerSwitcher(async (request) => {
+      try {
+        const dashboardsInfo = await this.securityClient.dashboardsinfo(request);
+        return {
+          resourceSharing: { enabled: !!dashboardsInfo?.resource_sharing_enabled },
+        };
+      } catch (e) {
+        return { resourceSharing: { enabled: false } };
+      }
+    });
+
     const securitySessionStorageFactory: SessionStorageFactory<SecuritySessionCookie> =
       await core.http.createCookieSessionStorageFactory<SecuritySessionCookie>(
         getSecurityCookieOptions(config)

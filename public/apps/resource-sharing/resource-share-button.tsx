@@ -14,7 +14,7 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { EuiButton, EuiToolTip } from '@elastic/eui';
+import { EuiButton, EuiButtonIcon, EuiToolTip } from '@elastic/eui';
 
 import type { CoreStart } from '../../../../../src/core/public';
 import { buildResourceApi } from '../../utils/resource-sharing-utils';
@@ -40,6 +40,20 @@ export interface ResourceShareButtonProps {
   size?: 's' | 'm';
   /** Render as filled button. Defaults to false. */
   fill?: boolean;
+  /**
+   * Visual style of the trigger: 'button' (default) renders a labeled button,
+   * 'icon' renders a compact icon-only button with a tooltip — suited for
+   * dense placements like table rows.
+   */
+  display?: 'button' | 'icon';
+  /**
+   * Controlled mode: when set, the built-in trigger button is hidden and the
+   * modal visibility follows this prop. Useful when the trigger lives inside
+   * a context menu / popover that unmounts on close.
+   */
+  isModalOpen?: boolean;
+  /** Controlled mode: called when the modal is dismissed (or cannot be shown). */
+  onModalClose?: () => void;
 }
 
 export interface ResourceShareButtonInternalProps extends ResourceShareButtonProps {
@@ -64,6 +78,31 @@ const INITIAL_STATE: RecordState = {
 };
 
 /**
+ * Short-lived request coalescing so many buttons rendered at once (e.g. one
+ * per table row) share a single types/list fetch instead of N identical calls.
+ */
+const COALESCE_TTL_MS = 5000;
+const inflightCache = new Map<string, { promise: Promise<any>; ts: number }>();
+
+/** Test helper: clears the request-coalescing cache. */
+export const resetShareButtonRequestCache = () => inflightCache.clear();
+
+function coalesced<T>(key: string, fn: () => Promise<T>): Promise<T> {
+  const now = Date.now();
+  const hit = inflightCache.get(key);
+  if (hit && now - hit.ts < COALESCE_TTL_MS) {
+    return hit.promise as Promise<T>;
+  }
+  const promise = fn().catch((e) => {
+    // do not cache failures
+    inflightCache.delete(key);
+    throw e;
+  });
+  inflightCache.set(key, { promise, ts: now });
+  return promise;
+}
+
+/**
  * Standalone share button + modal for a single protected resource.
  *
  * Fetches the sharing record and available access-levels on mount, renders a
@@ -81,21 +120,38 @@ export const ResourceShareButton: React.FC<ResourceShareButtonInternalProps> = (
     notifications,
     size = 's',
     fill = false,
+    display = 'button',
+    isModalOpen: controlledModalOpen,
+    onModalClose,
   } = props;
+
+  const isControlled = controlledModalOpen !== undefined;
 
   const api = useMemo(() => buildResourceApi(http, dataSourceId), [http, dataSourceId]);
   const [state, setState] = useState<RecordState>(INITIAL_STATE);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [internalModalOpen, setInternalModalOpen] = useState(false);
+  const isModalOpen = isControlled ? controlledModalOpen : internalModalOpen;
+  const closeModal = () => {
+    if (isControlled) onModalClose?.();
+    else setInternalModalOpen(false);
+  };
 
-  const fetchRecord = useCallback(async () => {
-    setState((s) => ({ ...s, loading: true, error: undefined }));
-    try {
-      // Fetch types (for access-level suggestions) and accessible records in parallel.
-      // The list API is used because it is the only API returning `can_share` today.
-      const [typesRes, listRes] = await Promise.all([
-        api.listTypes(),
-        api.listSharingRecords(resourceType),
-      ]);
+  const fetchRecord = useCallback(
+    async (bypassCache: boolean = false) => {
+      setState((s) => ({ ...s, loading: true, error: undefined }));
+      try {
+        const dsKey = dataSourceId ?? '';
+        if (bypassCache) {
+          inflightCache.delete(`types:${dsKey}`);
+          inflightCache.delete(`list:${dsKey}:${resourceType}`);
+        }
+        // Fetch types (for access-level suggestions) and accessible records in parallel.
+        // The list API is used because it is the only API returning `can_share` today.
+        // Calls are coalesced across concurrently-mounted buttons (e.g. table rows).
+        const [typesRes, listRes] = await Promise.all([
+          coalesced(`types:${dsKey}`, () => api.listTypes()),
+          coalesced(`list:${dsKey}:${resourceType}`, () => api.listSharingRecords(resourceType)),
+        ]);
 
       const types: TypeEntry[] = Array.isArray(typesRes)
         ? typesRes
@@ -132,11 +188,30 @@ export const ResourceShareButton: React.FC<ResourceShareButtonInternalProps> = (
         error: e?.body?.message || e?.message || 'Failed to load sharing info',
       });
     }
-  }, [api, resourceId, resourceType]);
+    },
+    [api, dataSourceId, resourceId, resourceType]
+  );
 
   useEffect(() => {
     fetchRecord();
   }, [fetchRecord]);
+
+  // Controlled mode: open requested but sharing is not possible => notify and dismiss.
+  useEffect(() => {
+    if (!isControlled || !isModalOpen || state.loading || state.hidden) return;
+    const rec = state.record;
+    if (!rec || rec.can_share !== true || state.error) {
+      notifications.toasts.addWarning(
+        state.error
+          ? `Unable to load sharing info: ${state.error}`
+          : !rec
+          ? 'Sharing information for this resource is not available.'
+          : 'You do not have access to update sharing information of this resource'
+      );
+      onModalClose?.();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isControlled, isModalOpen, state]);
 
   const handleSubmitModal = async (payload: any) => {
     const isCreate = !hasSharingInfo(state.record?.share_with);
@@ -147,7 +222,7 @@ export const ResourceShareButton: React.FC<ResourceShareButtonInternalProps> = (
       await api.update(payload);
       notifications.toasts.addSuccess('Access updated.');
     }
-    await fetchRecord();
+    await fetchRecord(true);
     onUpdated?.();
   };
 
@@ -168,34 +243,48 @@ export const ResourceShareButton: React.FC<ResourceShareButtonInternalProps> = (
     ? 'You do not have access to update sharing information of this resource'
     : undefined;
 
-  const button = (
-    <EuiButton
-      size={size}
-      fill={fill}
-      iconType="share"
-      isLoading={state.loading}
-      isDisabled={state.loading || !!disabledReason}
-      onClick={() => setIsModalOpen(true)}
-      data-test-subj={`resource-share-button-${resourceId}`}
-    >
-      {label}
-    </EuiButton>
-  );
+  // Controlled mode with share unavailable is handled by the effect above.
+  const trigger =
+    display === 'icon' ? (
+      <EuiButtonIcon
+        iconType="share"
+        aria-label={label}
+        isDisabled={state.loading || !!disabledReason}
+        onClick={() => setInternalModalOpen(true)}
+        data-test-subj={`resource-share-button-${resourceId}`}
+      />
+    ) : (
+      <EuiButton
+        size={size}
+        fill={fill}
+        iconType="share"
+        isLoading={state.loading}
+        isDisabled={state.loading || !!disabledReason}
+        onClick={() => setInternalModalOpen(true)}
+        data-test-subj={`resource-share-button-${resourceId}`}
+      >
+        {label}
+      </EuiButton>
+    );
+
+  const triggerTooltip =
+    display === 'icon' ? disabledReason ?? label : disabledReason && !state.loading ? disabledReason : undefined;
 
   return (
     <>
-      {disabledReason && !state.loading ? (
-        <EuiToolTip content={disabledReason}>
-          <span>{button}</span>
-        </EuiToolTip>
-      ) : (
-        button
-      )}
-      {isModalOpen && record && (
+      {!isControlled &&
+        (triggerTooltip ? (
+          <EuiToolTip content={triggerTooltip}>
+            <span>{trigger}</span>
+          </EuiToolTip>
+        ) : (
+          trigger
+        ))}
+      {isModalOpen && record && canShare && (
         <ShareAccessModal
           mode={shared ? 'edit' : 'create'}
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          isOpen={true}
+          onClose={closeModal}
           onSubmit={handleSubmitModal}
           resource={record}
           resourceType={resourceType}

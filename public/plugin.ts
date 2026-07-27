@@ -67,6 +67,7 @@ import {
 } from './types';
 import { addTenantToShareURL } from './services/shared-link';
 import { createShareButton } from './apps/resource-sharing/share-button-embeddable';
+import { startShareButtonDomSpi } from './apps/resource-sharing/share-button-dom-spi';
 import { interceptError } from './utils/logout-utils';
 import { tenantColumn, getNamespacesToRegister } from './apps/configuration/utils/tenant-utils';
 import { getDashboardsInfoSafe } from './utils/dashboards-info-utils';
@@ -507,6 +508,12 @@ export class SecurityPlugin implements Plugin<
 
     if (config.multitenancy.enabled) {
       addTenantToShareURL(core);
+    }
+
+    // DOM-marker SPI: any plugin can render a `data-resource-share-button`
+    // marker element and the centralized share button mounts into it.
+    if (this.resourceSharingEnabled) {
+      startShareButtonDomSpi(core);
     }
 
     return {
