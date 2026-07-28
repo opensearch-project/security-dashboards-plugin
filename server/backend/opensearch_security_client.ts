@@ -131,6 +131,16 @@ export class SecurityClient {
     }
   }
 
+  public async listResourceTypes(request: OpenSearchDashboardsRequest) {
+    try {
+      return await this.esClient
+        .asScoped(request)
+        .callAsCurrentUser('opensearch_security.listResourceTypes', {});
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
+
   // Multi-tenancy APIs
   public async getMultitenancyInfo(request: OpenSearchDashboardsRequest) {
     try {
