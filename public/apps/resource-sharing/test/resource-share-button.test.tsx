@@ -23,10 +23,7 @@ import userEvent from '@testing-library/user-event';
 
 configure({ testIdAttribute: 'data-test-subj' });
 
-import {
-  ResourceShareButton,
-  resetShareButtonRequestCache,
-} from '../resource-share-button';
+import { ResourceShareButton, resetShareButtonRequestCache } from '../resource-share-button';
 import { buildResourceApi } from '../../../utils/resource-sharing-utils';
 
 jest.mock('../../../utils/resource-sharing-utils', () => ({

@@ -153,41 +153,41 @@ export const ResourceShareButton: React.FC<ResourceShareButtonInternalProps> = (
           coalesced(`list:${dsKey}:${resourceType}`, () => api.listSharingRecords(resourceType)),
         ]);
 
-      const types: TypeEntry[] = Array.isArray(typesRes)
-        ? typesRes
-        : (typesRes as any)?.types || [];
-      const typeEntry = types.find((t) => t.type === resourceType);
-      if (!typeEntry) {
-        // Type not registered as a shareable/protected resource => nothing to render.
-        setState({ loading: false, accessLevels: [], hidden: true });
-        return;
-      }
+        const types: TypeEntry[] = Array.isArray(typesRes)
+          ? typesRes
+          : (typesRes as any)?.types || [];
+        const typeEntry = types.find((t) => t.type === resourceType);
+        if (!typeEntry) {
+          // Type not registered as a shareable/protected resource => nothing to render.
+          setState({ loading: false, accessLevels: [], hidden: true });
+          return;
+        }
 
-      const rows: ResourceRow[] = Array.isArray(listRes)
-        ? listRes
-        : (listRes as any)?.resources || (listRes as any)?.body || [];
-      const record = (Array.isArray(rows) ? rows : []).find((r) => r.resource_id === resourceId);
+        const rows: ResourceRow[] = Array.isArray(listRes)
+          ? listRes
+          : (listRes as any)?.resources || (listRes as any)?.body || [];
+        const record = (Array.isArray(rows) ? rows : []).find((r) => r.resource_id === resourceId);
 
-      setState({
-        loading: false,
-        record,
-        accessLevels: Array.from(new Set(typeEntry.access_levels ?? [])).sort(),
-        hidden: false,
-      });
-    } catch (e: any) {
-      const status = e?.response?.status ?? e?.body?.statusCode;
-      if (status === 501 || status === 400) {
-        // 501: resource-sharing feature disabled; 400: type not protected.
-        setState({ loading: false, accessLevels: [], hidden: true });
-        return;
+        setState({
+          loading: false,
+          record,
+          accessLevels: Array.from(new Set(typeEntry.access_levels ?? [])).sort(),
+          hidden: false,
+        });
+      } catch (e: any) {
+        const status = e?.response?.status ?? e?.body?.statusCode;
+        if (status === 501 || status === 400) {
+          // 501: resource-sharing feature disabled; 400: type not protected.
+          setState({ loading: false, accessLevels: [], hidden: true });
+          return;
+        }
+        setState({
+          loading: false,
+          accessLevels: [],
+          hidden: false,
+          error: e?.body?.message || e?.message || 'Failed to load sharing info',
+        });
       }
-      setState({
-        loading: false,
-        accessLevels: [],
-        hidden: false,
-        error: e?.body?.message || e?.message || 'Failed to load sharing info',
-      });
-    }
     },
     [api, dataSourceId, resourceId, resourceType]
   );
@@ -268,7 +268,11 @@ export const ResourceShareButton: React.FC<ResourceShareButtonInternalProps> = (
     );
 
   const triggerTooltip =
-    display === 'icon' ? disabledReason ?? label : disabledReason && !state.loading ? disabledReason : undefined;
+    display === 'icon'
+      ? disabledReason ?? label
+      : disabledReason && !state.loading
+      ? disabledReason
+      : undefined;
 
   return (
     <>
