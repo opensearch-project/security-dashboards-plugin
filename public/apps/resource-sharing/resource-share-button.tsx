@@ -205,8 +205,8 @@ export const ResourceShareButton: React.FC<ResourceShareButtonInternalProps> = (
         state.error
           ? `Unable to load sharing info: ${state.error}`
           : !rec
-          ? 'Sharing information for this resource is not available.'
-          : 'You do not have access to update sharing information of this resource'
+            ? 'Sharing information for this resource is not available.'
+            : 'You do not have access to update sharing information of this resource'
       );
       onModalClose?.();
     }
@@ -238,10 +238,10 @@ export const ResourceShareButton: React.FC<ResourceShareButtonInternalProps> = (
   const disabledReason = state.error
     ? `Unable to load sharing info: ${state.error}`
     : !record
-    ? 'Sharing information for this resource is not available.'
-    : !canShare
-    ? 'You do not have access to update sharing information of this resource'
-    : undefined;
+      ? 'Sharing information for this resource is not available.'
+      : !canShare
+        ? 'You do not have access to update sharing information of this resource'
+        : undefined;
 
   // Controlled mode with share unavailable is handled by the effect above.
   const trigger =
@@ -269,10 +269,10 @@ export const ResourceShareButton: React.FC<ResourceShareButtonInternalProps> = (
 
   const triggerTooltip =
     display === 'icon'
-      ? disabledReason ?? label
+      ? (disabledReason ?? label)
       : disabledReason && !state.loading
-      ? disabledReason
-      : undefined;
+        ? disabledReason
+        : undefined;
 
   return (
     <>
