@@ -220,4 +220,27 @@ export default function (Client: any, config: any, components: any) {
       fmt: '/_plugins/_security/api/audit/config',
     },
   });
+
+  /**
+   * Gets cluster settings. Used by the standalone audit config panel, whose settings
+   * live in cluster settings rather than the .opendistro_security index. include_defaults
+   * surfaces unset settings; flat_settings keeps keys in dotted form for direct mapping.
+   */
+  Client.prototype.opensearch_security.prototype.getClusterSettings = ca({
+    method: 'GET',
+    url: {
+      fmt: '/_cluster/settings?include_defaults=true&flat_settings=true',
+    },
+  });
+
+  /**
+   * Updates cluster settings. Used to persist standalone audit config.
+   */
+  Client.prototype.opensearch_security.prototype.updateClusterSettings = ca({
+    method: 'PUT',
+    needBody: true,
+    url: {
+      fmt: '/_cluster/settings',
+    },
+  });
 }
