@@ -40,6 +40,7 @@ import {
 import { setupIndexTemplate, migrateTenantIndices } from './multitenancy/tenant_index';
 import { IAuthenticationType } from './auth/types/authentication_type';
 import { getAuthenticationHandler } from './auth/auth_handler_factory';
+import { isNoAuthMode } from '../common';
 import { setupMultitenantRoutes } from './multitenancy/routes';
 import { defineAuthTypeRoutes } from './routes/auth_type_routes';
 import { createMigrationOpenSearchClient } from '../../../src/core/server/saved_objects/migrations/core';
@@ -129,16 +130,28 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
     });
 
     // setup auth
-    const auth: IAuthenticationType = await getAuthenticationHandler(
-      config.auth.type,
-      router,
-      config,
-      core,
-      esClient,
-      securitySessionStorageFactory,
-      this.logger
-    );
-    core.http.registerAuth(auth.authHandler);
+    // No-auth mode (auth.type: 'none'): the backend cluster has no auth (SSL-only or
+    // disabled security), so there is nothing to authenticate against. Skip registering
+    // the auth handler entirely — the plugin's pages load without a login page.
+    let auth: IAuthenticationType | undefined;
+    if (isNoAuthMode(config.auth.type)) {
+      this.logger.warn(
+        'Security Dashboards plugin is running in no-auth mode (auth.type: "none"). All pages are ' +
+          'accessible without login. Use ONLY with clusters that have no authentication ' +
+          '(SSL-only or disabled security modes) on trusted networks.'
+      );
+    } else {
+      auth = await getAuthenticationHandler(
+        config.auth.type,
+        router,
+        config,
+        core,
+        esClient,
+        securitySessionStorageFactory,
+        this.logger
+      );
+      core.http.registerAuth(auth.authHandler);
+    }
 
     /* Here we check if multitenancy is enabled to ensure if it is, we insert the tenant info (security_tenant) into the resolved, short URL so the page can correctly load with the right tenant information [Fix for issue 1203](https://github.com/opensearch-project/security-dashboards-plugin/issues/1203 */
     if (config.multitenancy?.enabled) {
@@ -169,15 +182,19 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
       );
     }
 
-    const service = new ReadonlyService(
-      this.logger,
-      this.securityClient,
-      auth,
-      securitySessionStorageFactory,
-      config
-    );
+    // Readonly mode restricts users with readonly roles/tenants; in no-auth mode there
+    // are no users to restrict, so keep core's default readonly service.
+    if (auth) {
+      const service = new ReadonlyService(
+        this.logger,
+        this.securityClient,
+        auth,
+        securitySessionStorageFactory,
+        config
+      );
 
-    core.security.registerReadonlyService(service);
+      core.security.registerReadonlyService(service);
+    }
 
     return {
       config$,

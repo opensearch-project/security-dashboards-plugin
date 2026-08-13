@@ -36,6 +36,7 @@ import {
   CUSTOM_ERROR_PAGE_URI,
   LOGIN_PAGE_URI,
   PLUGIN_AUDITLOG_APP_ID,
+  PLUGIN_STANDALONE_AUDIT_APP_ID,
   PLUGIN_AUTH_APP_ID,
   PLUGIN_API_TOKENS_APP_ID,
   PLUGIN_GET_STARTED_APP_ID,
@@ -45,6 +46,7 @@ import {
   PLUGIN_ROLES_APP_ID,
   PLUGIN_TENANTS_APP_ID,
   PLUGIN_USERS_APP_ID,
+  isNoAuthMode,
 } from '../common';
 import { APP_ID_CUSTOMERROR } from '../common';
 import { setupTopNavButton } from './apps/account/account-app';
@@ -132,9 +134,17 @@ export class SecurityPlugin implements Plugin<
     const mdsEnabled = !!deps.dataSource?.dataSourceEnabled;
 
     const config = this.initializerContext.config.get<ClientConfigType>();
+    // In no-auth mode the backend has no auth, so hasApiPermission() can't succeed;
+    // register the apps regardless so the nav items are reachable.
+    const noAuthMode = isNoAuthMode(config.auth?.type);
 
-    const accountInfo = (await fetchAccountInfoSafe(core.http))?.data;
-    const dashboardsInfo = await getDashboardsInfoSafe(core.http);
+    // In no-auth mode the backend has no security REST API, so the account and
+    // dashboards-info endpoints return 400 (no handler). These "safe" fetches only
+    // ignore 401, so calling them here would throw and trip the fatal error page.
+    // Everything they feed (account menu, readonly roles, multitenancy) is inherently
+    // off in no-auth mode, so skip them.
+    const accountInfo = noAuthMode ? undefined : (await fetchAccountInfoSafe(core.http))?.data;
+    const dashboardsInfo = noAuthMode ? undefined : await getDashboardsInfoSafe(core.http);
     const multitenancyEnabled = dashboardsInfo?.multitenancy_enabled;
     const resourceSharingEnabled = dashboardsInfo?.resource_sharing_enabled;
     const isReadonly = accountInfo?.roles.some((role) =>
@@ -162,7 +172,7 @@ export class SecurityPlugin implements Plugin<
       );
     };
 
-    if (mdsEnabled || apiPermission) {
+    if (mdsEnabled || apiPermission || noAuthMode) {
       core.application.register({
         id: PLUGIN_NAME,
         title: 'Security',
@@ -282,6 +292,20 @@ export class SecurityPlugin implements Plugin<
             return mountWrapper(params, '/auditLogging');
           },
         });
+        core.application.register({
+          id: PLUGIN_STANDALONE_AUDIT_APP_ID,
+          title: 'Standalone audit',
+          order: 8040,
+          description: i18n.translate('security.standaloneAudit.description', {
+            defaultMessage:
+              'Configure audit logging via cluster settings for SSL-only and disabled security modes.',
+          }),
+          workspaceAvailability: WorkspaceAvailability.outsideWorkspace,
+          updater$: this.appStateUpdater,
+          mount: async (params: AppMountParameters) => {
+            return mountWrapper(params, '/standaloneAudit');
+          },
+        });
 
         // Register Resource Access Management app only if resource sharing is enabled
         if (resourceSharingEnabled) {
@@ -351,6 +375,11 @@ export class SecurityPlugin implements Plugin<
           id: PLUGIN_AUDITLOG_APP_ID,
           category: dataAccessUsersCategory,
           order: 600,
+        },
+        {
+          id: PLUGIN_STANDALONE_AUDIT_APP_ID,
+          category: dataAccessUsersCategory,
+          order: 650,
         },
         ...(resourceSharingEnabled
           ? [
@@ -491,7 +520,11 @@ export class SecurityPlugin implements Plugin<
   public start(core: CoreStart, deps: SecurityPluginStartDependencies): SecurityPluginStart {
     const config = this.initializerContext.config.get<ClientConfigType>();
 
-    setupTopNavButton(core, config);
+    // The account nav button fetches account info from the security backend, which
+    // doesn't exist in no-auth mode. Skip it — there is no logged-in user to show.
+    if (!isNoAuthMode(config.auth?.type)) {
+      setupTopNavButton(core, config);
+    }
 
     if (config.ui.autologout) {
       // logout the user when getting 401 unauthorized, e.g. when session timed out.

@@ -782,6 +782,81 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
   );
 
   /**
+   * Gets standalone audit configuration from cluster settings.
+   *
+   * Returns the raw `_cluster/settings` response ({ persistent, transient, defaults }).
+   * The frontend translates the flat keys into the nested audit config shape.
+   */
+  router.get(
+    {
+      path: `${API_PREFIX}/configuration/standaloneaudit`,
+      validate: {
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
+      },
+    },
+    async (
+      context,
+      request,
+      response
+    ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
+      try {
+        const esResp = await wrapRouteWithDataSource(
+          dataSourceEnabled,
+          context,
+          request,
+          'opensearch_security.getClusterSettings'
+        );
+
+        return response.ok({
+          body: esResp,
+        });
+      } catch (error) {
+        return response.custom({
+          statusCode: error.statusCode,
+          body: parseEsErrorResponse(error),
+        });
+      }
+    }
+  );
+
+  /**
+   * Updates standalone audit configuration via cluster settings.
+   *
+   * Expects a `_cluster/settings` payload, e.g. { persistent: { "plugins.security.audit...": ... } }.
+   */
+  router.post(
+    {
+      path: `${API_PREFIX}/configuration/standaloneaudit/config`,
+      validate: {
+        body: schema.any(),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
+      },
+    },
+    async (context, request, response) => {
+      try {
+        const esResp = await wrapRouteWithDataSource(
+          dataSourceEnabled,
+          context,
+          request,
+          'opensearch_security.updateClusterSettings',
+          {
+            body: request.body,
+          }
+        );
+        return response.ok({
+          body: esResp,
+        });
+      } catch (error) {
+        return errorResponse(response, error);
+      }
+    }
+  );
+
+  /**
    * Deletes cache.
    *
    * Sample response: {"message":"Cache flushed successfully."}
