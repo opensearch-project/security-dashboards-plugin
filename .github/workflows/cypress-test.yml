@@ -69,7 +69,7 @@ jobs:
           EOT
 
       - name: Run Dashboard with Security Dashboards Plugin
-        uses: opensearch-project/opensearch-build/.github/actions/setup-opensearch-dashboards@3d9a524bbfc8128d96113cc578b462153f2ea8d4
+        uses: opensearch-project/opensearch-build/.github/actions/setup-opensearch-dashboards@a5c7d887e0bd9a036d9d227929b09fa42b7651df
         with:
           plugin_name: security-dashboards-plugin
           opensearch_dashboards_yml: cypress-opensearch-dashboards-config.yml
