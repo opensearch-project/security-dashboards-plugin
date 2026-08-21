@@ -168,9 +168,9 @@ describe('ResourceSharingPanel', () => {
     expect(modalShareBtn).toBeDisabled();
 
     // Add a person in the READ section's Users field (create seeds the first level)
-    const peopleInput = within(
-      within(overlay).getByTestId('share-access-users-READ')
-    ).getByRole('textbox');
+    const peopleInput = within(within(overlay).getByTestId('share-access-users-READ')).getByRole(
+      'textbox'
+    );
     await userEvent.type(peopleInput, 'dc{enter}');
 
     await waitFor(() => expect(modalShareBtn).toBeEnabled());
@@ -226,9 +226,9 @@ describe('ResourceSharingPanel', () => {
     expect(modalShareBtn).toBeDisabled();
 
     // READ section pre-populated with charlie. Remove charlie and add erin.
-    const peopleInput = within(
-      within(overlay).getByTestId('share-access-users-READ')
-    ).getByRole('textbox');
+    const peopleInput = within(within(overlay).getByTestId('share-access-users-READ')).getByRole(
+      'textbox'
+    );
     await userEvent.type(peopleInput, '{Backspace}erin{enter}');
     await userEvent.tab();
 
@@ -321,9 +321,9 @@ describe('ResourceSharingPanel', () => {
     expect(within(overlay).getByRole('button', { name: 'Share' })).toBeInTheDocument();
 
     // Add minimal valid recipients via the READ section's Users field
-    const peopleInput = within(
-      within(overlay).getByTestId('share-access-users-READ')
-    ).getByRole('textbox');
+    const peopleInput = within(within(overlay).getByTestId('share-access-users-READ')).getByRole(
+      'textbox'
+    );
     await userEvent.type(peopleInput, 'dc{enter}');
 
     await userEvent.click(within(overlay).getByRole('button', { name: /^Share$/ }));

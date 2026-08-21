@@ -82,6 +82,7 @@ async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
     const permissions = await core.http.get(API_ENDPOINT_PERMISSIONS_INFO);
     return permissions.has_api_access || false;
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error(e);
     // ignore exceptions and default to no security related access.
     return false;

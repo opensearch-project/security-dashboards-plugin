@@ -309,10 +309,7 @@ export const ShareAccessModal: React.FC<ShareAccessModalProps> = ({
                     </EuiFlexItem>
                   </EuiFlexGroup>
 
-                  <EuiFormRow
-                    label="Users"
-                    helpText="Type a username and press Enter."
-                  >
+                  <EuiFormRow label="Users" helpText="Type a username and press Enter.">
                     <EuiComboBox
                       noSuggestions
                       placeholder="Enter a username, then press Enter"
