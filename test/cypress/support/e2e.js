@@ -34,3 +34,14 @@
 // ***********************************************************
 
 import './commands';
+
+// EUI components that measure the DOM (modals, super-selects, data grids) can
+// emit a benign "ResizeObserver loop completed with undelivered notifications"
+// browser warning. It is not an application bug, but Cypress fails tests on any
+// uncaught exception by default, so ignore just this one.
+Cypress.on('uncaught:exception', (err) => {
+  if (/ResizeObserver loop/.test(err.message)) {
+    return false;
+  }
+  return undefined;
+});
