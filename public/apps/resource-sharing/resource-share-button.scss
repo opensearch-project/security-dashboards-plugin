@@ -3,25 +3,26 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// Palette from the UX prototype (detectors Access column, final variant),
-// centralized so it can be aliased to OUI theme tokens if promoted.
-$osdShareTeal: #077772;
-$osdShareTealDk: #04635f;
-$osdShareTealBg: #e2f2f0;
-$osdShareGrayBg: #f1f3f5;
-$osdShareInk2: #54585c;
-$osdShareInk3: #7a7f85;
-$osdShareLine: #d3dae6;
-$osdShareIconHoverBg: #eef1f4;
+// Status badge + action colors, derived from the OUI theme (no hard-coded hex,
+// per @osd/stylelint/no_restricted_values). The teal accent maps to the
+// success palette; neutrals map to the shade palette.
+$osdShareSharedText: $euiColorSuccessText;
+$osdShareSharedBg: tint($euiColorSuccess, 90%);
+$osdSharePrivateText: $euiColorDarkShade;
+$osdSharePrivateBg: $euiColorLightestShade;
+$osdShareLine: $euiColorLightShade;
+$osdShareIconColor: $euiColorDarkShade;
+$osdShareIconHoverBg: $euiColorLightestShade;
+$osdShareAccent: $euiColorSuccess;
 
-// State badge + action icon share one line, right-aligned in the table cell.
+// State badge + action icon share one line in the table cell.
 .osdResourceShareStack {
   display: inline-flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
   gap: $euiSizeXS + 2px; // 6px
-  min-height: 28px;
+  min-height: $euiSizeL + $euiSizeXS; // 28px
   white-space: nowrap;
 }
 
@@ -30,26 +31,25 @@ $osdShareIconHoverBg: #eef1f4;
   display: inline-flex;
   align-items: center;
   gap: $euiSizeXS + 2px; // 6px
-  border-radius: 999px;
+  border-radius: $euiSizeXL * 10; // fully rounded pill
   padding: $euiSizeXS ($euiSizeS + 2px); // 4px 10px
   font-size: $euiFontSizeXS;
   font-weight: $euiFontWeightMedium;
   white-space: nowrap;
 
   &--private {
-    background: $osdShareGrayBg;
-    color: $osdShareInk2;
+    background: $osdSharePrivateBg;
+    color: $osdSharePrivateText;
   }
 
   &--shared {
-    background: $osdShareTealBg;
-    color: $osdShareTealDk;
+    background: $osdShareSharedBg;
+    color: $osdShareSharedText;
   }
 }
 
 .osdResourceShareAction {
-  // Labeled variant (detail pages): standard bordered button, like the
-  // page's Actions button.
+  // Labeled variant (detail pages): standard bordered button.
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -59,7 +59,7 @@ $osdShareIconHoverBg: #eef1f4;
   border: $euiBorderWidthThin solid $osdShareLine;
   border-radius: $euiBorderRadius;
   background: $euiColorEmptyShade;
-  color: $osdShareInk2;
+  color: $osdSharePrivateText;
   font-size: $euiFontSizeS;
   font-weight: $euiFontWeightSemiBold;
   white-space: nowrap;
@@ -67,30 +67,30 @@ $osdShareIconHoverBg: #eef1f4;
 
   &:hover:not(:disabled) {
     background: $osdShareIconHoverBg;
-    color: $osdShareTeal;
-    border-color: $osdShareTeal;
+    color: $osdShareAccent;
+    border-color: $osdShareAccent;
   }
 
   &:disabled {
-    color: $osdShareInk3;
+    color: $osdShareIconColor;
     cursor: not-allowed;
     opacity: 0.7;
   }
 
   // Quiet icon-only variant (list tables): transparent, gray → teal on hover.
   &--iconOnly {
-    width: 28px;
-    height: 28px;
-    min-height: 28px;
+    width: $euiSizeL + $euiSizeXS; // 28px
+    height: $euiSizeL + $euiSizeXS;
+    min-height: $euiSizeL + $euiSizeXS;
     padding: 0;
     gap: 0;
     border-color: transparent;
     background: none;
-    color: $osdShareInk3;
+    color: $osdShareIconColor;
 
     &:hover:not(:disabled) {
       background: $osdShareIconHoverBg;
-      color: $osdShareTeal;
+      color: $osdShareAccent;
       border-color: $osdShareLine;
     }
 
