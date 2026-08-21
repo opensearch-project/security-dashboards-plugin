@@ -1,10 +1,10 @@
 {
   "name": "opensearch-security-dashboards",
-  "version": "3.8.0.0",
+  "version": "3.9.0.0",
   "main": "target/plugins/opensearch_security_dashboards",
   "opensearchDashboards": {
-    "version": "3.8.0",
-    "templateVersion": "3.8.0"
+    "version": "3.9.0",
+    "templateVersion": "3.9.0"
   },
   "license": "Apache-2.0",
   "homepage": "https://github.com/opensearch-project/security-dashboards-plugin",
@@ -26,50 +26,28 @@
   },
   "devDependencies": {
     "@elastic/eslint-import-resolver-kibana": "link:../../packages/osd-eslint-import-resolver-opensearch-dashboards",
-    "@testing-library/react": "^14.0.0",
-    "@types/hapi__wreck": "^15.0.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/hapi__wreck": "^17.0.1",
     "cypress": "^13.6.0",
     "cypress-mochawesome-reporter": "^3.3.0",
     "eslint-plugin-unused-imports": "^4.4.1",
     "gulp-rename": "2.0.0",
-    "husky": "^8.0.0",
+    "husky": "^8.0.3",
     "jose": "^5.2.4",
     "minimist": "^1.2.8",
     "xml-crypto": "^6.0.1",
     "selfsigned": "^2.0.1"
   },
   "dependencies": {
-    "@hapi/cryptiles": "5.0.0",
-    "@hapi/wreck": "^18.1.1",
+    "@hapi/cryptiles": "^6.0.1",
+    "@hapi/wreck": "^18.1.2",
     "html-entities": "1.3.1",
-    "proxy-agent": "^8.0.0",
+    "proxy-agent": "^8.0.2",
     "semver": "^7.5.3",
     "zxcvbn": "^4.4.2"
   },
   "resolutions": {
-    "selenium-webdriver": "4.10.0",
-    "glob-parent": "^5.1.2",
-    "debug": "^4.3.4",
-    "ejs": "^3.1.10",
-    "express": "^5.1.0",
-    "braces": "^3.0.3",
-    "body-parser": "^1.20.3",
-    "micromatch": "^4.0.8",
-    "cross-spawn": "7.0.5",
-    "xml-crypto": "^6.0.1",
-    "@xmldom/xmldom": "^0.8.13",
-    "@babel/runtime": "^7.27.0",
-    "pbkdf2": "^3.1.3",
-    "crypto-browserify": "^3.12.1",
-    "cipher-base": "^1.0.7",
-    "sha.js": "^2.4.5",
-    "basic-ftp": "^5.2.0",
-    "handlebars": "^4.7.9",
-    "qs": "^6.15.0",
-    "lodash": "^4.18.0",
-    "bn.js": "^5.2.3",
-    "minimatch": "^5.1.7",
-    "uuid": ">=14.0.0",
-    "ws": ">=8.20.1"
+    "qs": "^6.15.2",
+    "uuid": "^11.1.1"
   }
 }
