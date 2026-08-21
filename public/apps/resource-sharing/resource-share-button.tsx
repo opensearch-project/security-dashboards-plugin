@@ -271,8 +271,8 @@ export const ResourceShareButton: React.FC<ResourceShareButtonInternalProps> = (
         state.error
           ? `Unable to load sharing info: ${state.error}`
           : !rec
-          ? 'Sharing information for this resource is not available.'
-          : 'You do not have access to update sharing information of this resource'
+            ? 'Sharing information for this resource is not available.'
+            : 'You do not have access to update sharing information of this resource'
       );
       onModalClose?.();
     }
@@ -304,10 +304,10 @@ export const ResourceShareButton: React.FC<ResourceShareButtonInternalProps> = (
   const disabledReason = state.error
     ? `Unable to load sharing info: ${state.error}`
     : !record
-    ? 'Sharing information for this resource is not available.'
-    : !canShare
-    ? 'You do not have access to update sharing information of this resource'
-    : undefined;
+      ? 'Sharing information for this resource is not available.'
+      : !canShare
+        ? 'You do not have access to update sharing information of this resource'
+        : undefined;
 
   const trigger = (
     <ActionButton
@@ -322,10 +322,10 @@ export const ResourceShareButton: React.FC<ResourceShareButtonInternalProps> = (
 
   const triggerTooltip =
     display === 'icon'
-      ? disabledReason ?? label
+      ? (disabledReason ?? label)
       : disabledReason && !state.loading
-      ? disabledReason
-      : undefined;
+        ? disabledReason
+        : undefined;
 
   const sharedCount = shared ? countSharedPrincipals(record?.share_with) : 0;
   const statusPill = showStatus && !state.loading && record && (
@@ -339,7 +339,7 @@ export const ResourceShareButton: React.FC<ResourceShareButtonInternalProps> = (
           {statusPill}
           {triggerTooltip ? (
             <EuiToolTip content={triggerTooltip}>
-              <span>{trigger}</span>
+              <span tabIndex={0}>{trigger}</span>
             </EuiToolTip>
           ) : (
             trigger

@@ -82,7 +82,6 @@ async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
     const permissions = await core.http.get(API_ENDPOINT_PERMISSIONS_INFO);
     return permissions.has_api_access || false;
   } catch (e) {
-    // eslint-disable-next-line no-console
     console.error(e);
     // ignore exceptions and default to no security related access.
     return false;
@@ -109,14 +108,12 @@ const dataAccessUsersCategory: AppCategory & { group?: AppCategory } = {
   euiIconType: 'managementApp',
 };
 
-export class SecurityPlugin
-  implements
-    Plugin<
-      SecurityPluginSetup,
-      SecurityPluginStart,
-      SecurityPluginSetupDependencies,
-      SecurityPluginStartDependencies
-    > {
+export class SecurityPlugin implements Plugin<
+  SecurityPluginSetup,
+  SecurityPluginStart,
+  SecurityPluginSetupDependencies,
+  SecurityPluginStartDependencies
+> {
   // @ts-ignore : initializerContext not used
   constructor(private readonly initializerContext: PluginInitializerContext) {}
 
@@ -451,9 +448,8 @@ export class SecurityPlugin
         updater$: this.appStateUpdater,
         // IMPORTANT: do NOT set chromeless: true (that hides the left nav)
         mount: async (params: AppMountParameters) => {
-          const { renderApp } = await import(
-            './apps/resource-sharing/resource-access-management-app'
-          );
+          const { renderApp } =
+            await import('./apps/resource-sharing/resource-access-management-app');
           const [coreStart, depsStart] = await core.getStartServices();
           return renderApp(
             coreStart,
@@ -483,7 +479,7 @@ export class SecurityPlugin
       config.multitenancy.enable_aggregation_view
     ) {
       deps.savedObjectsManagement.columns.register(
-        (tenantColumn as unknown) as SavedObjectsManagementColumn<string>
+        tenantColumn as unknown as SavedObjectsManagementColumn<string>
       );
       if (!!accountInfo) {
         const namespacesToRegister = getNamespacesToRegister(accountInfo);

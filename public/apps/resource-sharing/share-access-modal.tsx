@@ -206,7 +206,12 @@ export const ShareAccessModal: React.FC<ShareAccessModalProps> = ({
   const sharedNowLabel = sharedNow ? 'Shared' : 'Private';
 
   return (
-    <EuiModal onClose={onClose} style={{ width: 640 }} data-test-subj="share-access-modal">
+    <EuiModal
+      onClose={onClose}
+      style={{ width: 640 }}
+      aria-label={mode === 'create' ? 'Share resource' : 'Manage access'}
+      data-test-subj="share-access-modal"
+    >
       <EuiModalHeader>
         <div>
           <EuiModalHeaderTitle>
@@ -419,6 +424,7 @@ export const ShareAccessModal: React.FC<ShareAccessModalProps> = ({
       {showConfirm && (
         <EuiConfirmModal
           title="Confirm access changes"
+          aria-label="Confirm access changes"
           onCancel={() => setShowConfirm(false)}
           onConfirm={performSubmit}
           cancelButtonText="Back"

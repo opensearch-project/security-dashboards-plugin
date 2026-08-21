@@ -172,10 +172,10 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
     }
   };
 
-  const selectedTypeMeta = useMemo(() => typeOptions.find((o) => o.value === selectedType), [
-    typeOptions,
-    selectedType,
-  ]);
+  const selectedTypeMeta = useMemo(
+    () => typeOptions.find((o) => o.value === selectedType),
+    [typeOptions, selectedType]
+  );
   const selectedTypeLabel = selectedTypeMeta?.text ?? (selectedType || '—');
   const selectedTypeTooltip = selectedTypeMeta?.value; // actual resource type
 
@@ -201,7 +201,9 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
       name: 'Resource Type',
       render: () => (
         <EuiToolTip content={selectedTypeTooltip}>
-          <EuiText size="s">{selectedTypeLabel}</EuiText>
+          <EuiText size="s" tabIndex={0}>
+            {selectedTypeLabel}
+          </EuiText>
         </EuiToolTip>
       ),
     },
@@ -284,7 +286,7 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
           btn
         ) : (
           <EuiToolTip content="You do not have access to update sharing information of this resource">
-            <span>{btn}</span>
+            <span tabIndex={0}>{btn}</span>
           </EuiToolTip>
         );
       },
@@ -360,6 +362,7 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
           <EuiSuperSelect
             options={superOptions}
             valueOfSelected={valueOfSelected}
+            aria-label="Select resource type"
             disabled={typesLoading}
             itemLayoutAlign="top"
             fullWidth
@@ -408,6 +411,7 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
         <EuiBasicTable<ResourceRow>
           items={rows}
           loading={loading}
+          tableCaption="Shared resources"
           columns={columns}
           itemId="resource_id"
           isExpandable
