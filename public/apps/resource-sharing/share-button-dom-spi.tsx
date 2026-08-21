@@ -54,6 +54,10 @@ export const SHARE_BUTTON_MARKER_ATTR = 'data-resource-share-button';
 export const RESOURCE_ID_ATTR = 'data-resource-id';
 export const RESOURCE_TYPE_ATTR = 'data-resource-type';
 export const DATA_SOURCE_ID_ATTR = 'data-resource-data-source-id';
+/** Optional: human-readable resource name, shown in the modal instead of the id. */
+export const RESOURCE_NAME_ATTR = 'data-resource-name';
+/** Optional (presence): hide the Private/Shared status pill (e.g. on detail pages). */
+export const HIDE_STATUS_ATTR = 'data-resource-hide-status';
 /** Optional: "button" (default, labeled) or "icon" (compact, for table rows). */
 export const DISPLAY_ATTR = 'data-resource-share-display';
 
@@ -76,9 +80,13 @@ export function startShareButtonDomSpi(core: CoreStart): () => void {
     const resourceType = el.getAttribute(RESOURCE_TYPE_ATTR);
     if (!resourceId || !resourceType) return;
     const dataSourceId = el.getAttribute(DATA_SOURCE_ID_ATTR) || undefined;
+    const resourceName = el.getAttribute(RESOURCE_NAME_ATTR) || undefined;
     const display = el.getAttribute(DISPLAY_ATTR) === 'icon' ? ('icon' as const) : undefined;
+    const showStatus = !el.hasAttribute(HIDE_STATUS_ATTR);
 
-    const signature = `${resourceId}|${resourceType}|${dataSourceId ?? ''}|${display ?? ''}`;
+    const signature = `${resourceId}|${resourceType}|${dataSourceId ?? ''}|${display ?? ''}|${
+      resourceName ?? ''
+    }|${showStatus}`;
     if (mounted.get(el) === signature) return;
 
     ReactDOM.render(
@@ -86,8 +94,10 @@ export function startShareButtonDomSpi(core: CoreStart): () => void {
         <LazyResourceShareButton
           resourceId={resourceId}
           resourceType={resourceType}
+          resourceName={resourceName}
           dataSourceId={dataSourceId}
           display={display}
+          showStatus={showStatus}
           http={core.http}
           notifications={core.notifications}
         />
@@ -132,7 +142,14 @@ export function startShareButtonDomSpi(core: CoreStart): () => void {
     childList: true,
     subtree: true,
     attributes: true,
-    attributeFilter: [RESOURCE_ID_ATTR, RESOURCE_TYPE_ATTR, DATA_SOURCE_ID_ATTR, DISPLAY_ATTR],
+    attributeFilter: [
+      RESOURCE_ID_ATTR,
+      RESOURCE_TYPE_ATTR,
+      DATA_SOURCE_ID_ATTR,
+      DISPLAY_ATTR,
+      RESOURCE_NAME_ATTR,
+      HIDE_STATUS_ATTR,
+    ],
   });
 
   return () => {

@@ -18,7 +18,8 @@
  */
 import '@testing-library/jest-dom';
 import React from 'react';
-import { render, screen, within, waitFor } from '@testing-library/react';
+import { configure, render, screen, within, waitFor } from '@testing-library/react';
+configure({ testIdAttribute: 'data-test-subj' });
 import userEvent from '@testing-library/user-event';
 import { ResourceSharingPanel } from '../resource-sharing-panel';
 import { I18nProvider } from '@osd/i18n/react';
@@ -124,7 +125,7 @@ describe('ResourceSharingPanel', () => {
     const row1 = within(table).getByText('det-1').closest('tr')!;
     const row2 = within(table).getByText('det-2').closest('tr')!;
     expect(within(row1).getByRole('button', { name: /Share/i })).toBeEnabled();
-    expect(within(row2).getByRole('button', { name: /Update Access/i })).toBeDisabled();
+    expect(within(row2).getByRole('button', { name: /Manage access/i })).toBeDisabled();
   });
 
   it('opens Share modal and validates empty state; submits to share()', async () => {
@@ -159,24 +160,18 @@ describe('ResourceSharingPanel', () => {
     // Now scope queries strictly to the modal overlay
     const overlay = document.querySelector('.euiOverlayMask') as HTMLElement;
 
-    // Header text is "Share Resource" in create mode — optional assertion
-    expect(within(overlay).getByText(/Share Resource/i)).toBeInTheDocument();
+    // Header text is "Share resource" in create mode — optional assertion
+    expect(within(overlay).getByText(/Share resource/i)).toBeInTheDocument();
 
     // The primary button in the modal footer (initially disabled)
     const modalShareBtn = within(overlay).getByRole('button', { name: /^Share$/ });
     expect(modalShareBtn).toBeDisabled();
 
-    // Add an access-level
-    const addLevel = within(overlay).getByRole('button', { name: /Add access-level/i });
-    await userEvent.click(addLevel);
-
-    // Comboboxes inside the modal: [0] access-level, [1] Users
-    const combos = within(overlay).getAllByRole('combobox');
-    await userEvent.click(combos[0]); // focus access-level (defaults to first suggestion)
-    const usersInput = within(overlay).getByText('Add users…');
-    // type then press Enter to trigger onCreateOption
-    await userEvent.type(usersInput, 'dc');
-    await userEvent.tab(); // focus out
+    // Add a person in the READ section's Users field (create seeds the first level)
+    const peopleInput = within(
+      within(overlay).getByTestId('share-access-users-READ')
+    ).getByRole('textbox');
+    await userEvent.type(peopleInput, 'dc{enter}');
 
     await waitFor(() => expect(modalShareBtn).toBeEnabled());
 
@@ -187,14 +182,14 @@ describe('ResourceSharingPanel', () => {
     expect(toasts.addSuccess).toHaveBeenCalledWith('Resource shared.');
   });
 
-  it('opens Update Access modal, computes add/revoke diff and calls update()', async () => {
+  it('opens Manage access modal, computes add/revoke diff and calls update()', async () => {
     const api = {
       listTypes: jest.fn().mockResolvedValue({ types: typesPayload }),
       listSharingRecords: jest.fn().mockResolvedValue({
         resources: [
           {
             ...rowsPayload[1],
-            // pre-existing share_with so we get "Update Access"
+            // pre-existing share_with so we get "Manage access"
             share_with: { READ: { users: ['charlie'], roles: ['roleA'], backend_roles: [] } },
             can_share: true,
           },
@@ -214,8 +209,8 @@ describe('ResourceSharingPanel', () => {
       expect(api.listSharingRecords).toHaveBeenCalledWith('anomaly-detector');
     });
 
-    // Open update modal on det-2
-    await userEvent.click(await screen.findByRole('button', { name: /Update Access/i }));
+    // Open manage access modal on det-2
+    await userEvent.click(await screen.findByRole('button', { name: /Manage access/i }));
 
     // Wait for the modal overlay to exist (EUI portals)
     await waitFor(() => {
@@ -226,27 +221,26 @@ describe('ResourceSharingPanel', () => {
     // Now scope queries strictly to the modal overlay
     const overlay = document.querySelector('.euiOverlayMask') as HTMLElement;
 
-    // Header text is "Share Resource" in create mode — optional assertion
-    expect(within(overlay).getByRole('button', { name: 'Update Access' })).toBeInTheDocument();
-
     // The primary button in the modal footer (initially disabled)
-    const modalShareBtn = within(overlay).getByRole('button', { name: /^Update Access$/ });
+    const modalShareBtn = within(overlay).getByRole('button', { name: /^Save changes$/ });
     expect(modalShareBtn).toBeDisabled();
 
-    // Comboboxes inside the modal: [0] access-level, [1] Users
-    // Remove charlie and add erin -> should form add/remove diff
-    const combos = within(overlay).getAllByRole('combobox');
-    await userEvent.click(combos[0]);
+    // READ section pre-populated with charlie. Remove charlie and add erin.
+    const peopleInput = within(
+      within(overlay).getByTestId('share-access-users-READ')
+    ).getByRole('textbox');
+    await userEvent.type(peopleInput, '{Backspace}erin{enter}');
+    await userEvent.tab();
 
-    // Remove 'charlie' by clearing tags then add 'erin'
-    // Simple strategy: replace via typing new value and enter; then remove the old pill via Backspace
-    const usersInput = within(overlay).getByText('charlie');
-    await userEvent.type(usersInput, '{Backspace}{Backspace}erin{enter}'); // simulate clearing last token and new entry
-    await userEvent.tab(); // focus out
-
-    const updateBtn = within(overlay).getByRole('button', { name: /Update Access/i });
+    const updateBtn = within(overlay).getByRole('button', { name: /Save changes/i });
     await waitFor(() => expect(updateBtn).toBeEnabled());
     await userEvent.click(updateBtn);
+
+    // A confirmation summarizing the diff appears; confirm to apply
+    const confirmModal = await screen.findByTestId('share-access-confirm-modal');
+    expect(confirmModal.textContent).toContain('erin');
+    expect(confirmModal.textContent).toContain('charlie');
+    await userEvent.click(within(confirmModal).getByRole('button', { name: /Save changes/i }));
 
     await waitFor(() => expect(api.update).toHaveBeenCalledTimes(1));
     const payload = (api.update as jest.Mock).mock.calls[0][0];
@@ -326,12 +320,11 @@ describe('ResourceSharingPanel', () => {
 
     expect(within(overlay).getByRole('button', { name: 'Share' })).toBeInTheDocument();
 
-    // Add minimal valid recipients
-    await userEvent.click(within(overlay).getByRole('button', { name: /Add access-level/i }));
-    const usersInput = within(overlay).getByText('Add users…');
-    // type then press Enter to trigger onCreateOption
-    await userEvent.type(usersInput, 'dc');
-    await userEvent.tab(); // focus out
+    // Add minimal valid recipients via the READ section's Users field
+    const peopleInput = within(
+      within(overlay).getByTestId('share-access-users-READ')
+    ).getByRole('textbox');
+    await userEvent.type(peopleInput, 'dc{enter}');
 
     await userEvent.click(within(overlay).getByRole('button', { name: /^Share$/ }));
 

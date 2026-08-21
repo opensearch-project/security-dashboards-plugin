@@ -1,0 +1,102 @@
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+// Palette from the UX prototype (detectors Access column, final variant),
+// centralized so it can be aliased to OUI theme tokens if promoted.
+$osdShareTeal: #077772;
+$osdShareTealDk: #04635f;
+$osdShareTealBg: #e2f2f0;
+$osdShareGrayBg: #f1f3f5;
+$osdShareInk2: #54585c;
+$osdShareInk3: #7a7f85;
+$osdShareLine: #d3dae6;
+$osdShareIconHoverBg: #eef1f4;
+
+// State badge + action icon share one line, right-aligned in the table cell.
+.osdResourceShareStack {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: $euiSizeXS + 2px; // 6px
+  min-height: 28px;
+  white-space: nowrap;
+}
+
+// Borderless status badge.
+.osdResourceShareStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: $euiSizeXS + 2px; // 6px
+  border-radius: 999px;
+  padding: $euiSizeXS ($euiSizeS + 2px); // 4px 10px
+  font-size: $euiFontSizeXS;
+  font-weight: $euiFontWeightMedium;
+  white-space: nowrap;
+
+  &--private {
+    background: $osdShareGrayBg;
+    color: $osdShareInk2;
+  }
+
+  &--shared {
+    background: $osdShareTealBg;
+    color: $osdShareTealDk;
+  }
+}
+
+.osdResourceShareAction {
+  // Labeled variant (detail pages): standard bordered button, like the
+  // page's Actions button.
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $euiSizeS;
+  min-height: $euiButtonHeightSmall;
+  padding: 0 $euiSizeM;
+  border: $euiBorderWidthThin solid $osdShareLine;
+  border-radius: $euiBorderRadius;
+  background: $euiColorEmptyShade;
+  color: $osdShareInk2;
+  font-size: $euiFontSizeS;
+  font-weight: $euiFontWeightSemiBold;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: $osdShareIconHoverBg;
+    color: $osdShareTeal;
+    border-color: $osdShareTeal;
+  }
+
+  &:disabled {
+    color: $osdShareInk3;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  // Quiet icon-only variant (list tables): transparent, gray → teal on hover.
+  &--iconOnly {
+    width: 28px;
+    height: 28px;
+    min-height: 28px;
+    padding: 0;
+    gap: 0;
+    border-color: transparent;
+    background: none;
+    color: $osdShareInk3;
+
+    &:hover:not(:disabled) {
+      background: $osdShareIconHoverBg;
+      color: $osdShareTeal;
+      border-color: $osdShareLine;
+    }
+
+    &:disabled {
+      background: none;
+      border-color: transparent;
+    }
+  }
+}

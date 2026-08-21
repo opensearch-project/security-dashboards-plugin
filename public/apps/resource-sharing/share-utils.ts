@@ -21,6 +21,21 @@ export const hasSharingInfo = (sw?: ShareWith) =>
     (v) => !!v && (v.users?.length || v.roles?.length || v.backend_roles?.length)
   );
 
+/**
+ * Counts the distinct principals a resource is shared with across all access
+ * levels. A principal shared at multiple levels is counted once. Used for the
+ * "Shared with N" status indicator.
+ */
+export const countSharedPrincipals = (sw?: ShareWith): number => {
+  const seen = new Set<string>();
+  for (const recipients of Object.values(sw || {})) {
+    (recipients?.users || []).forEach((u) => seen.add(`u:${u}`));
+    (recipients?.roles || []).forEach((r) => seen.add(`r:${r}`));
+    (recipients?.backend_roles || []).forEach((b) => seen.add(`b:${b}`));
+  }
+  return seen.size;
+};
+
 /** ---------- helpers: UI <-> payload ---------- */
 export const toOptions = (vals?: string[]) => (vals || []).map((v) => ({ label: v }));
 export const fromOptions = (opts: Array<{ label: string }>) => opts.map((o) => o.label);
@@ -132,3 +147,27 @@ export const emptyLevels = (sw?: ShareWith) =>
   Object.entries(sw || {})
     .filter(([, r]) => !hasNonEmptyRecipients(r))
     .map(([g]) => g);
+
+/**
+ * Translates a raw access-level token (e.g. `ad_read_only`,
+ * `workflow_full_access`) into plain language for display. The raw token
+ * remains the value submitted to the backend. Unknown patterns fall back to
+ * title-cased words.
+ */
+export function humanizeAccessLevel(level: string): string {
+  if (!level) return level;
+  const normalized = level.toLowerCase();
+  const suffixes: Array<[RegExp, string]> = [
+    [/(^|_)read_only$/, 'Read only'],
+    [/(^|_)read_write$/, 'Read & write'],
+    [/(^|_)full_access$/, 'Full access'],
+    [/(^|_)read$/, 'Read only'],
+    [/(^|_)write$/, 'Read & write'],
+  ];
+  for (const [pattern, label] of suffixes) {
+    if (pattern.test(normalized)) return label;
+  }
+  // Fallback: title-case the words, e.g. `custom_level` -> `Custom level`
+  const words = level.replace(/[-_]+/g, ' ').trim();
+  return words.charAt(0).toUpperCase() + words.slice(1);
+}

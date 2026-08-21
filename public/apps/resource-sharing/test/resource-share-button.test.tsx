@@ -18,7 +18,7 @@
  */
 import '@testing-library/jest-dom';
 import React from 'react';
-import { configure, render, screen, waitFor } from '@testing-library/react';
+import { configure, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 configure({ testIdAttribute: 'data-test-subj' });
@@ -105,9 +105,11 @@ describe('ResourceShareButton', () => {
     const button = await screen.findByTestId('resource-share-button-det-1');
     await waitFor(() => expect(button).not.toBeDisabled());
     expect(button).toHaveTextContent('Share');
+    // Private status badge shown beside the action for an unshared resource
+    expect(await screen.findByTestId('resource-share-status-det-1')).toHaveTextContent('Private');
   });
 
-  it('renders "Update Access" for an already shared resource', async () => {
+  it('renders "Manage access" for an already shared resource', async () => {
     makeApi();
     render(
       <ResourceShareButton
@@ -120,7 +122,34 @@ describe('ResourceShareButton', () => {
 
     const button = await screen.findByTestId('resource-share-button-det-2');
     await waitFor(() => expect(button).not.toBeDisabled());
-    expect(button).toHaveTextContent('Update Access');
+    expect(button).toHaveTextContent('Manage access');
+    // Shared status pill shown beside the action
+    expect(await screen.findByTestId('resource-share-status-det-2')).toHaveTextContent('Shared');
+  });
+
+  it('shows the resource name and humanized access levels in the modal', async () => {
+    makeApi();
+    render(
+      <ResourceShareButton
+        resourceId="det-2"
+        resourceType="anomaly-detector"
+        resourceName="my-cpu-detector"
+        http={http}
+        notifications={notifications}
+      />
+    );
+
+    const button = await screen.findByTestId('resource-share-button-det-2');
+    await waitFor(() => expect(button).not.toBeDisabled());
+    await userEvent.click(button);
+
+    // Edit-mode title (also on the trigger button, hence >1) and display name
+    await waitFor(() => expect(screen.getAllByText('Manage access').length).toBeGreaterThan(1));
+    expect(screen.getByText(/my-cpu-detector/)).toBeInTheDocument();
+    // Raw level token `READ` renders humanized in the level combo
+    expect(screen.getAllByText('Read only').length).toBeGreaterThan(0);
+    // Primary action reads Save changes
+    expect(screen.getByTestId('share-access-modal-submit')).toHaveTextContent('Save changes');
   });
 
   it('disables the button when the user cannot share the resource', async () => {
@@ -222,14 +251,11 @@ describe('ResourceShareButton', () => {
     await userEvent.click(button);
 
     // Modal opens in create mode
-    expect(await screen.findByText('Share Resource')).toBeInTheDocument();
+    expect(await screen.findByText('Share resource')).toBeInTheDocument();
 
-    // Add an access-level (picks first suggestion: READ)
-    await userEvent.click(screen.getByText('Add access-level'));
-
-    // Add a user recipient
-    const usersInput = screen.getAllByRole('textbox')[1]; // [0] is access-level combo, [1] users
-    await userEvent.type(usersInput, 'dave{enter}');
+    // Add a person in the READ section's Users field (create seeds the first level)
+    const peopleInput = within(screen.getByTestId('share-access-users-READ')).getByRole('textbox');
+    await userEvent.type(peopleInput, 'dave{enter}');
 
     // Submit
     const submit = await screen.findByTestId('share-access-modal-submit');
@@ -264,7 +290,7 @@ describe('ResourceShareButton', () => {
     // No trigger button in controlled mode
     expect(screen.queryByTestId('resource-share-button-det-1')).not.toBeInTheDocument();
     // Modal opens once the record is loaded
-    expect(await screen.findByText('Share Resource')).toBeInTheDocument();
+    expect(await screen.findByText('Share resource')).toBeInTheDocument();
   });
 
   it('controlled mode: warns and closes when user cannot share', async () => {
@@ -283,8 +309,8 @@ describe('ResourceShareButton', () => {
 
     await waitFor(() => expect(notifications.toasts.addWarning).toHaveBeenCalled());
     expect(onModalClose).toHaveBeenCalled();
-    expect(screen.queryByText('Share Resource')).not.toBeInTheDocument();
-    expect(screen.queryByText('Update Access')).not.toBeInTheDocument();
+    expect(screen.queryByText('Share resource')).not.toBeInTheDocument();
+    expect(screen.queryByText('Manage access')).not.toBeInTheDocument();
   });
 
   it('controlled mode: renders nothing visible when isModalOpen is false', async () => {
@@ -302,6 +328,23 @@ describe('ResourceShareButton', () => {
 
     await waitFor(() => expect(mockBuildResourceApi).toHaveBeenCalled());
     expect(container).toBeEmptyDOMElement();
+  });
+
+  it('hides the status pill when showStatus is false (detail pages)', async () => {
+    makeApi();
+    render(
+      <ResourceShareButton
+        resourceId="det-2"
+        resourceType="anomaly-detector"
+        showStatus={false}
+        http={http}
+        notifications={notifications}
+      />
+    );
+
+    const button = await screen.findByTestId('resource-share-button-det-2');
+    await waitFor(() => expect(button).not.toBeDisabled());
+    expect(screen.queryByTestId('resource-share-status-det-2')).not.toBeInTheDocument();
   });
 
   it('renders a compact icon-only trigger with display="icon"', async () => {
@@ -324,7 +367,7 @@ describe('ResourceShareButton', () => {
 
     // Still opens the shared modal
     await userEvent.click(button);
-    expect(await screen.findByText('Share Resource')).toBeInTheDocument();
+    expect(await screen.findByText('Share resource')).toBeInTheDocument();
   });
 
   it('coalesces types/list requests across concurrently rendered buttons', async () => {

@@ -34,7 +34,7 @@ import _ from 'lodash';
 import type { CoreStart } from '../../../../../src/core/public';
 
 import { ResourceRow, ResourceSharingApi, ShareWith, TypeEntry } from './types';
-import { hasSharingInfo } from './share-utils';
+import { hasSharingInfo, humanizeAccessLevel } from './share-utils';
 import { ShareAccessModal } from './share-access-modal';
 
 interface Props {
@@ -55,7 +55,7 @@ const SharedWithExpanded: React.FC<{ sw?: ShareWith }> = ({ sw }) => {
       {Object.entries(sw || {}).map(([level, r]) => (
         <div key={level} style={{ marginBottom: 8 }}>
           <EuiText>
-            <strong>Access-level:</strong> {level}
+            <strong>Access level:</strong> {humanizeAccessLevel(level)}
           </EuiText>
           <div style={{ paddingLeft: 12 }}>
             <div>
@@ -172,10 +172,10 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
     }
   };
 
-  const selectedTypeMeta = useMemo(
-    () => typeOptions.find((o) => o.value === selectedType),
-    [typeOptions, selectedType]
-  );
+  const selectedTypeMeta = useMemo(() => typeOptions.find((o) => o.value === selectedType), [
+    typeOptions,
+    selectedType,
+  ]);
   const selectedTypeLabel = selectedTypeMeta?.text ?? (selectedType || '—');
   const selectedTypeTooltip = selectedTypeMeta?.value; // actual resource type
 
@@ -256,7 +256,7 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
     {
       name: 'Actions',
       render: (item: ResourceRow) => {
-        const label = hasSharingInfo(item.share_with) ? 'Update Access' : 'Share';
+        const label = hasSharingInfo(item.share_with) ? 'Manage access' : 'Share';
         const canShare = item.can_share === true;
 
         const handleClick = () => {

@@ -173,9 +173,8 @@ describe('Resource Access Management Dashboard', () => {
     // Check if data source picker is rendered (when MDS is enabled)
     // The data source picker uses data-test-subj="dataSourceSelectableButton" or "dataSourceViewButton"
     cy.get('body').then(($body) => {
-      const hasSelectableButton = $body.find(
-        '[data-test-subj="dataSourceSelectableButton"]'
-      ).length;
+      const hasSelectableButton = $body.find('[data-test-subj="dataSourceSelectableButton"]')
+        .length;
       const hasViewButton = $body.find('[data-test-subj="dataSourceViewButton"]').length;
 
       if (hasSelectableButton) {

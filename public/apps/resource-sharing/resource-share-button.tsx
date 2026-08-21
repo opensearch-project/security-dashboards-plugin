@@ -13,13 +13,16 @@
  *   permissions and limitations under the License.
  */
 
+import './resource-share-button.scss';
+
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { EuiButton, EuiButtonIcon, EuiToolTip } from '@elastic/eui';
+import { EuiToolTip } from '@elastic/eui';
 
 import type { CoreStart } from '../../../../../src/core/public';
 import { buildResourceApi } from '../../utils/resource-sharing-utils';
 import { ShareAccessModal } from './share-access-modal';
-import { hasSharingInfo } from './share-utils';
+import { countSharedPrincipals, hasSharingInfo } from './share-utils';
+import { PrivateLockIcon, ShareNodesIcon, SharedWithIcon } from './share-icons';
 import { ResourceRow, TypeEntry } from './types';
 
 /**
@@ -32,6 +35,11 @@ export interface ResourceShareButtonProps {
   resourceId: string;
   /** Registered resource type, e.g. `anomaly-detector`. */
   resourceType: string;
+  /**
+   * Human-readable name of the resource (e.g. the detector name), shown in
+   * the modal instead of the opaque resource id when provided.
+   */
+  resourceName?: string;
   /** Optional data source id when Multi Data Source is enabled. */
   dataSourceId?: string;
   /** Called after sharing info has been successfully created/updated. */
@@ -40,6 +48,12 @@ export interface ResourceShareButtonProps {
   size?: 's' | 'm';
   /** Render as filled button. Defaults to false. */
   fill?: boolean;
+  /**
+   * Whether to show the Private / Shared status pill above the action. Defaults
+   * to true (list views); set false on single-resource detail pages where the
+   * status is shown elsewhere and only the action button is wanted.
+   */
+  showStatus?: boolean;
   /**
    * Visual style of the trigger: 'button' (default) renders a labeled button,
    * 'icon' renders a compact icon-only button with a tooltip — suited for
@@ -103,24 +117,76 @@ function coalesced<T>(key: string, fn: () => Promise<T>): Promise<T> {
 }
 
 /**
+ * Status pill. Rendered as a custom chip (not EuiBadge) because EuiBadge only
+ * renders string/registered icon names and silently drops custom SVG
+ * components — we need the prototype's padlock / person-with-plus glyphs.
+ * Colors come from EUI theme variables via resource-share-button.scss so the
+ * pill stays uniform with the page. Icons inherit `currentColor`.
+ */
+const StatusPill: React.FC<{ shared: boolean; count: number; resourceId: string }> = ({
+  shared,
+  count,
+  resourceId,
+}) => (
+  <span
+    className={`osdResourceShareStatus osdResourceShareStatus--${shared ? 'shared' : 'private'}`}
+    data-test-subj={`resource-share-status-${resourceId}`}
+  >
+    {shared ? <SharedWithIcon /> : <PrivateLockIcon />}
+    {shared ? 'Shared' : 'Private'}
+  </span>
+);
+
+/**
+ * Access-action button, structured per the prototype `.access-action` (compact
+ * outlined button with a connected-nodes icon, or a disabled padlock variant
+ * when the user lacks permission). Colors come from EUI theme variables via
+ * resource-share-button.scss. `iconOnly` drops the label for dense rows.
+ */
+const ActionButton: React.FC<{
+  label: string;
+  disabled: boolean;
+  loading: boolean;
+  iconOnly: boolean;
+  resourceId: string;
+  onClick: () => void;
+}> = ({ label, disabled, loading, iconOnly, resourceId, onClick }) => {
+  const isBlocked = disabled || loading;
+  const Icon = disabled && !loading ? PrivateLockIcon : ShareNodesIcon;
+  return (
+    <button
+      type="button"
+      className={`osdResourceShareAction${iconOnly ? ' osdResourceShareAction--iconOnly' : ''}`}
+      disabled={isBlocked}
+      aria-label={label}
+      onClick={onClick}
+      data-test-subj={`resource-share-button-${resourceId}`}
+    >
+      <Icon />
+      {!iconOnly && <span>{label}</span>}
+    </button>
+  );
+};
+
+/**
  * Standalone share button + modal for a single protected resource.
  *
  * Fetches the sharing record and available access-levels on mount, renders a
- * `Share` / `Update Access` button and opens the shared access modal on click.
- * Renders nothing when resource-sharing is disabled on the cluster or the
- * resource type is not registered/protected.
+ * Private / Shared status pill and a `Share` / `Manage access` action button,
+ * and opens the shared access modal on click. Renders nothing when resource
+ * sharing is disabled on the cluster or the resource type is not registered.
  */
 export const ResourceShareButton: React.FC<ResourceShareButtonInternalProps> = (props) => {
   const {
     resourceId,
     resourceType,
+    resourceName,
     dataSourceId,
     onUpdated,
     http,
     notifications,
-    size = 's',
-    fill = false,
     display = 'button',
+    showStatus = true,
     isModalOpen: controlledModalOpen,
     onModalClose,
   } = props;
@@ -205,8 +271,8 @@ export const ResourceShareButton: React.FC<ResourceShareButtonInternalProps> = (
         state.error
           ? `Unable to load sharing info: ${state.error}`
           : !rec
-            ? 'Sharing information for this resource is not available.'
-            : 'You do not have access to update sharing information of this resource'
+          ? 'Sharing information for this resource is not available.'
+          : 'You do not have access to update sharing information of this resource'
       );
       onModalClose?.();
     }
@@ -232,58 +298,54 @@ export const ResourceShareButton: React.FC<ResourceShareButtonInternalProps> = (
 
   const record = state.record;
   const shared = hasSharingInfo(record?.share_with);
-  const label = shared ? 'Update Access' : 'Share';
+  const label = shared ? 'Manage access' : 'Share';
   const canShare = record?.can_share === true;
 
   const disabledReason = state.error
     ? `Unable to load sharing info: ${state.error}`
     : !record
-      ? 'Sharing information for this resource is not available.'
-      : !canShare
-        ? 'You do not have access to update sharing information of this resource'
-        : undefined;
+    ? 'Sharing information for this resource is not available.'
+    : !canShare
+    ? 'You do not have access to update sharing information of this resource'
+    : undefined;
 
-  // Controlled mode with share unavailable is handled by the effect above.
-  const trigger =
-    display === 'icon' ? (
-      <EuiButtonIcon
-        iconType="share"
-        aria-label={label}
-        isDisabled={state.loading || !!disabledReason}
-        onClick={() => setInternalModalOpen(true)}
-        data-test-subj={`resource-share-button-${resourceId}`}
-      />
-    ) : (
-      <EuiButton
-        size={size}
-        fill={fill}
-        iconType="share"
-        isLoading={state.loading}
-        isDisabled={state.loading || !!disabledReason}
-        onClick={() => setInternalModalOpen(true)}
-        data-test-subj={`resource-share-button-${resourceId}`}
-      >
-        {label}
-      </EuiButton>
-    );
+  const trigger = (
+    <ActionButton
+      label={label}
+      disabled={!!disabledReason}
+      loading={state.loading}
+      iconOnly={display === 'icon'}
+      resourceId={resourceId}
+      onClick={() => setInternalModalOpen(true)}
+    />
+  );
 
   const triggerTooltip =
     display === 'icon'
-      ? (disabledReason ?? label)
+      ? disabledReason ?? label
       : disabledReason && !state.loading
-        ? disabledReason
-        : undefined;
+      ? disabledReason
+      : undefined;
+
+  const sharedCount = shared ? countSharedPrincipals(record?.share_with) : 0;
+  const statusPill = showStatus && !state.loading && record && (
+    <StatusPill shared={shared} count={sharedCount} resourceId={resourceId} />
+  );
 
   return (
     <>
-      {!isControlled &&
-        (triggerTooltip ? (
-          <EuiToolTip content={triggerTooltip}>
-            <span>{trigger}</span>
-          </EuiToolTip>
-        ) : (
-          trigger
-        ))}
+      {!isControlled && (
+        <div className="osdResourceShareStack">
+          {statusPill}
+          {triggerTooltip ? (
+            <EuiToolTip content={triggerTooltip}>
+              <span>{trigger}</span>
+            </EuiToolTip>
+          ) : (
+            trigger
+          )}
+        </div>
+      )}
       {isModalOpen && record && canShare && (
         <ShareAccessModal
           mode={shared ? 'edit' : 'create'}
@@ -291,6 +353,7 @@ export const ResourceShareButton: React.FC<ResourceShareButtonInternalProps> = (
           onClose={closeModal}
           onSubmit={handleSubmitModal}
           resource={record}
+          resourceName={resourceName}
           resourceType={resourceType}
           resourceTypeIndex={resourceType}
           accessLevels={state.accessLevels}
