@@ -68,14 +68,13 @@ function createSampleResource() {
 }
 
 function openFirstRowModal() {
-  // Prefer the first row; the table component sets data-test-subj="row-<id>"
-  // But we don’t know the ID, so use the first row’s action cell.
+  // The panel renders a labeled action button per row with
+  // data-test-subj="share-button-<resourceId>" ("Share" or "Manage access").
   cy.get('table').within(() => {
-    // Look for a visible row action button (Share or Update Access)
-    cy.get('tr')
-      .eq(1) // skip header (row 0)
+    cy.get('tbody tr')
+      .first()
       .within(() => {
-        cy.contains('button', /^Share$|^Update Access$/).as('rowAction');
+        cy.get('[data-test-subj^="share-button-"]').as('rowAction');
       });
   });
 
@@ -85,57 +84,33 @@ function openFirstRowModal() {
   cy.get('.euiOverlayMask', { timeout: 10_000 }).should('exist');
 }
 
-function addRecipientAndSubmit(expectLabel) {
-  // Ensure there is at least one access-levels panel (create one if missing)
-  cy.get('@overlay').then(($ov) => {
-    if ($ov.text().includes('No access-levels added yet.')) {
-      cy.wrap($ov)
-        .contains('button', /Add access-level/i)
-        .click();
-    }
-  });
-
-  // Use the 2nd combobox in the modal (index 1) = Users
-  cy.get('@overlay').within(() => {
-    cy.get('[role="combobox"]', { timeout: 10_000 }).eq(1).as('usersInput');
-  });
-
-  // Wipe all existing pills for that combobox by clicking visible remove buttons
-  cy.get('@overlay').within(() => {
-    cy.get('@usersInput')
-      .closest('.euiComboBox')
-      .then(($box) => {
-        const SEL = [
-          '[data-test-subj="comboBoxPill"] button[aria-label="Remove option"]',
-          '.euiComboBoxPill__removeButton',
-          '.euiBadge__iconButton[aria-label*="Remove"]',
-        ].join(', ');
-
-        const $btns = $box.find(SEL);
-        if ($btns.length) {
-          // Clear existing entries by clicking each visible remove button
-          $btns.each((_, btn) => {
-            cy.wrap(btn).should('be.visible').click();
-          });
-        }
-      });
-  });
-
-  // Type a user into combobox[1] and commit with Enter
+function addRecipientAndSubmit(isEdit) {
+  // The modal seeds one access-level section in create mode and shows the
+  // existing level(s) in edit mode. Target that section's Users combo box
+  // directly via its data-test-subj prefix (share-access-users-<level>).
   const user = `cypress_test_user${Math.floor(Math.random() * 100)}`;
   cy.get('@overlay').within(() => {
-    cy.get('@usersInput').type(`${user}{enter}`);
+    cy.get('[data-test-subj^="share-access-users-"]', { timeout: 10_000 })
+      .first()
+      .find('input')
+      .first()
+      .type(`${user}{enter}`);
   });
 
-  // Click the primary button ("Share" or "Update Access")
+  // Primary action: "Share" (create) or "Save changes" (edit)
   cy.get('@overlay').within(() => {
-    cy.contains('button', new RegExp(`^${expectLabel}$`))
-      .should('be.enabled')
-      .click();
+    cy.get('[data-test-subj="share-access-modal-submit"]').should('be.enabled').click();
   });
+
+  // Edit mode surfaces a confirmation dialog before applying changes
+  if (isEdit) {
+    cy.get('[data-test-subj="share-access-confirm-modal"]', { timeout: 10_000 })
+      .contains('button', /Save changes/i)
+      .click();
+  }
 
   // Success toast & modal closes; table back
-  const successText = expectLabel === 'Share' ? 'Resource shared.' : 'Access updated.';
+  const successText = isEdit ? 'Access updated.' : 'Resource shared.';
   cy.contains('.euiToast', successText, { timeout: 10_000 }).should('exist');
 
   cy.get('.euiOverlayMask').should('not.exist');
@@ -250,9 +225,10 @@ describe('Resource Access Management Dashboard', () => {
       .find('.euiModalHeader')
       .invoke('text')
       .then((txt) => {
-        const mode = /Update Access/i.test(txt) ? 'Update Access' : 'Share';
+        // Header is "Share resource" (create) or "Manage access" (edit)
+        const isEdit = /Manage access/i.test(txt);
 
-        addRecipientAndSubmit(mode);
+        addRecipientAndSubmit(isEdit);
       });
 
     // TODO expand these tests by creating a user and verifying access before and after. Also ensure that sample resource is available. (Maybe put a dummy entry in sharing index directly?)
