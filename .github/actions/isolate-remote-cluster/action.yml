@@ -31,6 +31,9 @@ runs:
         # rejects in combination with single-node discovery.
         sed -i -e '/^[[:space:]]*cluster\.initial_cluster_manager_nodes/d' \
                -e '/^[[:space:]]*cluster\.initial_master_nodes/d' "$CONFIG"
+        # Derived from the HTTP port so different callers cannot collide;
+        # 9202 -> 9402, outside the default discovery probe range (9300-9305).
+        TRANSPORT_PORT=$((OS_PORT + 200))
         {
           echo ''
           echo '# Keep this node isolated from the default cluster on the same host.'
@@ -38,7 +41,7 @@ runs:
           echo 'cluster.name: opensearch-remote-cluster'
           echo '# Outside the default discovery probe range (9300-9305), so the other'
           echo '# node cannot find this one via loopback seed scanning either.'
-          echo 'transport.port: 9402'
+          echo "transport.port: ${TRANSPORT_PORT}"
         } >> "$CONFIG"
 
     - name: Stop node (Linux)
@@ -53,8 +56,12 @@ runs:
     - name: Stop node (Windows)
       if: ${{ runner.os == 'Windows' }}
       shell: pwsh
+      env:
+        OS_PORT: ${{ inputs.port }}
       run: |
-        Get-Process -Name java -ErrorAction SilentlyContinue | Stop-Process -Force
+        Get-CimInstance Win32_Process -Filter "Name='java.exe'" |
+          Where-Object { $_.CommandLine -match "SNAPSHOT$env:OS_PORT" } |
+          ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
         Start-Sleep -Seconds 10
 
     - name: Restart node (Linux)

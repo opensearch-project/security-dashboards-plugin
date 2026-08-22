@@ -111,11 +111,29 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          local_uuid=$(curl -s -k -u 'admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}' https://localhost:9200/ | grep '"cluster_uuid"')
-          remote_uuid=$(curl -s -k -u 'admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}' https://localhost:9202/ | grep '"cluster_uuid"')
+          extract_uuid() {
+            curl -s -k -u 'admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}' "$1" \
+              | sed -n 's/.*"cluster_uuid"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p'
+          }
+          # A freshly started node briefly reports "_na_" until its cluster
+          # state is recovered; retry rather than compare transient values.
+          for i in $(seq 1 12); do
+            local_uuid=$(extract_uuid https://localhost:9200/)
+            remote_uuid=$(extract_uuid https://localhost:9202/)
+            if [ -n "$local_uuid" ] && [ -n "$remote_uuid" ] \
+              && [ "$local_uuid" != "_na_" ] && [ "$remote_uuid" != "_na_" ]; then
+              break
+            fi
+            sleep 5
+          done
           echo "local:  $local_uuid"
           echo "remote: $remote_uuid"
-          if [ -z "$local_uuid" ] || [ "$local_uuid" = "$remote_uuid" ]; then
+          if [ -z "$local_uuid" ] || [ -z "$remote_uuid" ] \
+            || [ "$local_uuid" = "_na_" ] || [ "$remote_uuid" = "_na_" ]; then
+            echo "ERROR: could not obtain a settled cluster_uuid from both nodes."
+            exit 1
+          fi
+          if [ "$local_uuid" = "$remote_uuid" ]; then
             echo "ERROR: the local (9200) and remote (9202) nodes report the same cluster_uuid - they merged into one cluster."
             exit 1
           fi
