@@ -113,6 +113,37 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
 
     this.securityClient = new SecurityClient(esClient);
 
+    // Expose resource-sharing availability as a core capability so ANY plugin
+    // can gate UI (e.g. a "Share" table column) via
+    // `core.application.capabilities.resourceSharing?.enabled` and
+    // `...resourceSharing?.availableTypes` without taking a dependency on the
+    // security plugin. `availableTypes` is a comma-joined list of registered
+    // resource types (capabilities values must be primitives with stable types
+    // for the switcher merge to retain them).
+    core.capabilities.registerProvider(() => ({
+      resourceSharing: { enabled: false, availableTypes: '' },
+    }));
+    core.capabilities.registerSwitcher(async (request) => {
+      try {
+        const dashboardsInfo = await this.securityClient.dashboardsinfo(request);
+        if (!dashboardsInfo?.resource_sharing_enabled) {
+          return { resourceSharing: { enabled: false, availableTypes: '' } };
+        }
+        let availableTypes = '';
+        try {
+          const typesRes = await this.securityClient.listResourceTypes(request);
+          const types: Array<{ type: string }> = typesRes?.types ?? [];
+          availableTypes = types.map((t) => t.type).join(',');
+        } catch (e) {
+          // Feature reported enabled but types could not be listed; expose
+          // enabled with no types rather than failing capability resolution.
+        }
+        return { resourceSharing: { enabled: true, availableTypes } };
+      } catch (e) {
+        return { resourceSharing: { enabled: false, availableTypes: '' } };
+      }
+    });
+
     const securitySessionStorageFactory: SessionStorageFactory<SecuritySessionCookie> =
       await core.http.createCookieSessionStorageFactory<SecuritySessionCookie>(
         getSecurityCookieOptions(config)

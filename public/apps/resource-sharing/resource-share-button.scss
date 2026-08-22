@@ -1,0 +1,102 @@
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+// Status badge + action colors, derived from the OUI theme (no hard-coded hex,
+// per @osd/stylelint/no_restricted_values). The teal accent maps to the
+// success palette; neutrals map to the shade palette.
+$osdShareSharedText: $euiColorSuccessText;
+$osdShareSharedBg: tint($euiColorSuccess, 90%);
+$osdSharePrivateText: $euiColorDarkShade;
+$osdSharePrivateBg: $euiColorLightestShade;
+$osdShareLine: $euiColorLightShade;
+$osdShareIconColor: $euiColorDarkShade;
+$osdShareIconHoverBg: $euiColorLightestShade;
+$osdShareAccent: $euiColorSuccess;
+
+// State badge + action icon share one line in the table cell.
+.osdResourceShareStack {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: $euiSizeXS + 2px; // 6px
+  min-height: $euiSizeL + $euiSizeXS; // 28px
+  white-space: nowrap;
+}
+
+// Borderless status badge.
+.osdResourceShareStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: $euiSizeXS + 2px; // 6px
+  border-radius: $euiSizeXL * 10; // fully rounded pill
+  padding: $euiSizeXS ($euiSizeS + 2px); // 4px 10px
+  font-size: $euiFontSizeXS;
+  font-weight: $euiFontWeightMedium;
+  white-space: nowrap;
+
+  &--private {
+    background: $osdSharePrivateBg;
+    color: $osdSharePrivateText;
+  }
+
+  &--shared {
+    background: $osdShareSharedBg;
+    color: $osdShareSharedText;
+  }
+}
+
+.osdResourceShareAction {
+  // Labeled variant (detail pages): standard bordered button.
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $euiSizeS;
+  min-height: $euiButtonHeightSmall;
+  padding: 0 $euiSizeM;
+  border: $euiBorderWidthThin solid $osdShareLine;
+  border-radius: $euiBorderRadius;
+  background: $euiColorEmptyShade;
+  color: $osdSharePrivateText;
+  font-size: $euiFontSizeS;
+  font-weight: $euiFontWeightSemiBold;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: $osdShareIconHoverBg;
+    color: $osdShareAccent;
+    border-color: $osdShareAccent;
+  }
+
+  &:disabled {
+    color: $osdShareIconColor;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  // Quiet icon-only variant (list tables): transparent, gray → teal on hover.
+  &--iconOnly {
+    width: $euiSizeL + $euiSizeXS; // 28px
+    height: $euiSizeL + $euiSizeXS;
+    min-height: $euiSizeL + $euiSizeXS;
+    padding: 0;
+    gap: 0;
+    border-color: transparent;
+    background: none;
+    color: $osdShareIconColor;
+
+    &:hover:not(:disabled) {
+      background: $osdShareIconHoverBg;
+      color: $osdShareAccent;
+      border-color: $osdShareLine;
+    }
+
+    &:disabled {
+      background: none;
+      border-color: transparent;
+    }
+  }
+}
