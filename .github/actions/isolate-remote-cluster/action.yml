@@ -1,0 +1,80 @@
+---
+name: 'Isolate remote OpenSearch cluster'
+description: 'Reconfigures an already-started secondary OpenSearch node with single-node discovery, a distinct cluster name, and an out-of-range transport port, then restarts it. Without this, the node shares the default cluster name and loopback seed hosts (127.0.0.1:9300-9305) with the node later started on 9200, and the two can merge into one cluster. See issue #2506. Must run before the default-port node is started, while this node is the only one running.'
+
+inputs:
+  opensearch-version:
+    description: 'The version of OpenSearch used to start the node (determines the install directory name)'
+    required: true
+  admin-password:
+    description: 'Admin password for the readiness check'
+    required: true
+  port:
+    description: 'HTTP port of the remote node'
+    required: false
+    default: '9202'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Apply isolated discovery settings
+      shell: bash
+      run: |
+        set -euo pipefail
+        CONFIG="./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml"
+        {
+          echo ''
+          echo '# Keep this node isolated from the default cluster on the same host.'
+          echo 'discovery.type: single-node'
+          echo 'cluster.name: opensearch-remote-cluster'
+          echo '# Outside the default discovery probe range (9300-9305), so the other'
+          echo '# node cannot find this one via loopback seed scanning either.'
+          echo 'transport.port: 9402'
+        } >> "$CONFIG"
+
+    - name: Stop node (Linux)
+      if: ${{ runner.os == 'Linux' }}
+      shell: bash
+      run: |
+        pkill -f "SNAPSHOT${{ inputs.port }}" || true
+        sleep 5
+
+    - name: Stop node (Windows)
+      if: ${{ runner.os == 'Windows' }}
+      shell: pwsh
+      run: |
+        Get-Process -Name java -ErrorAction SilentlyContinue | Stop-Process -Force
+        Start-Sleep -Seconds 10
+
+    - name: Restart node (Linux)
+      if: ${{ runner.os == 'Linux' }}
+      shell: bash
+      run: /bin/bash -c "./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/bin/opensearch &"
+
+    - name: Restart node (Windows)
+      if: ${{ runner.os == 'Windows' }}
+      shell: pwsh
+      run: start .\opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}\bin\opensearch.bat
+
+    - name: Wait for node and verify it is a single-node cluster
+      shell: bash
+      run: |
+        set -euo pipefail
+        for i in $(seq 1 36); do
+          if nodes=$(curl -s -k --fail -u 'admin:${{ inputs.admin-password }}' "https://localhost:${{ inputs.port }}/_cat/nodes"); then
+            count=$(printf '%s\n' "$nodes" | sed '/^$/d' | wc -l)
+            if [ "$count" -eq 1 ]; then
+              echo "Remote node restarted as an isolated single-node cluster."
+              exit 0
+            fi
+            echo "Unexpected node count on restarted remote: $count"
+            printf '%s\n' "$nodes"
+            exit 1
+          fi
+          sleep 5
+        done
+        echo "Remote node did not come back up in time; last log lines:"
+        tail -n 100 ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/logs/opensearch-remote-cluster.log \
+          || tail -n 100 ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/logs/opensearch.log \
+          || true
+        exit 1
