@@ -37,7 +37,7 @@ const argv = minimist(process.argv.slice(2), {
 });
 
 const IDP_PORT = Number(argv.port);
-const ACS_URL = `http://localhost:5601${argv.basePath}/_opendistro/_security/saml/acs`;
+const ACS_URL = `http://localhost:5601${argv.basePath}/_plugins/_security/saml/acs`;
 const AUDIENCE = 'https://localhost:9200';
 const ISSUER = 'urn:example:idp';
 
