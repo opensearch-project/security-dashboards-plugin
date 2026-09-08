@@ -19,7 +19,7 @@ This document contains a list of maintainers in this repo. See [opensearch-proje
 | Bandini Bhopi    | [bandinib-amzn](https://github.com/bandinib-amzn)   | Amazon      |
 | Tianle Huang     | [tianleh](https://github.com/tianleh)               | Amazon      |
 | Dave Lago        | [davidlago](https://github.com/davidlago)           | Contributor |
-| Peter Nied       | [peternied](https://github.com/peternied)           | Amazon      |
+| Peter Nied       | [peternied](https://github.com/peternied)           | Airbnb      |
 | Chang Liu        | [cliu123](https://github.com/cliu123)               | Amazon      |
 | Stephen Crawford | [scrawfor99](https://github.com/stephen-crawford)   | Contributor |
 
