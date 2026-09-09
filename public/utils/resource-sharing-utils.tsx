@@ -35,3 +35,40 @@ export const buildResourceApi = (http: CoreStart['http'], dataSourceId?: string)
       context.httpPost({ http, url: '/api/resource/update_sharing', body: payload }),
   };
 };
+
+/**
+ * Whether resource sharing is available for the given resource type on the
+ * selected data source. Resource sharing is a backend, per-cluster setting,
+ * so availability must be evaluated against the data source that operations
+ * target rather than the local Dashboards `resourceSharing` capability (which
+ * is resolved from the local/default cluster). In a multi-data-source (MDS)
+ * deployment the same Dashboards instance can connect to data sources that do
+ * or do not support resource sharing (for example AOSS, or AOS versions
+ * predating the feature).
+ *
+ * This probes the selected data source's registered resource types and
+ * returns whether `resourceType` is present. It fails closed (returns false)
+ * on any error, so consumers hide their share affordances for data sources
+ * that do not support resource sharing.
+ *
+ * Consumer plugins should declare `securityDashboards` as an optional plugin
+ * dependency and call `securityDashboards.ui.isResourceSharingAvailable(type, dataSourceId)`.
+ */
+export async function isResourceSharingAvailable(
+  http: CoreStart['http'],
+  resourceType: string,
+  dataSourceId?: string
+): Promise<boolean> {
+  try {
+    const response: any = await buildResourceApi(http, dataSourceId).listTypes();
+    // listTypes() may resolve to either a bare array of type entries or a
+    // { types: [...] } wrapper, matching how the resource-sharing panel and
+    // share button normalize it.
+    const types: Array<{ type: string }> = Array.isArray(response)
+      ? response
+      : (response?.types ?? []);
+    return types.some((registeredType) => registeredType?.type === resourceType);
+  } catch (e) {
+    return false;
+  }
+}

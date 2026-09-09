@@ -68,6 +68,7 @@ import {
 import { addTenantToShareURL } from './services/shared-link';
 import { createShareButton } from './apps/resource-sharing/share-button-embeddable';
 import { startShareButtonDomSpi } from './apps/resource-sharing/share-button-dom-spi';
+import { isResourceSharingAvailable } from './utils/resource-sharing-utils';
 import { interceptError } from './utils/logout-utils';
 import { tenantColumn, getNamespacesToRegister } from './apps/configuration/utils/tenant-utils';
 import { getDashboardsInfoSafe } from './utils/dashboards-info-utils';
@@ -519,6 +520,8 @@ export class SecurityPlugin implements Plugin<
     return {
       ui: {
         ShareButton: createShareButton(core, this.resourceSharingEnabled),
+        isResourceSharingAvailable: (resourceType: string, dataSourceId?: string) =>
+          isResourceSharingAvailable(core.http, resourceType, dataSourceId),
       },
     };
   }
