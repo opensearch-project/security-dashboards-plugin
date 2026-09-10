@@ -110,7 +110,7 @@ runs:
     - name: Run Cypress Tests with retry
       run: |
         cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
-        yarn add cypress --save-dev
+        yarn add cypress@^13.6.0 --save-dev
 
         for attempt in {1..5}; do
           echo "Running Cypress attempt ${attempt}/5."
