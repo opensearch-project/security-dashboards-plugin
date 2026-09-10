@@ -42,16 +42,8 @@ export interface SecurityPluginStart {
 
     /**
      * Whether resource sharing is available for the given resource type on the
-     * selected data source. Resource sharing is a backend, per-cluster setting,
-     * so availability is evaluated per data source (probing the selected
-     * source's registered resource types) rather than via the local Dashboards
-     * `resourceSharing` capability. Fails closed (resolves false) on any error,
-     * including data sources that do not support resource sharing (for example
-     * AOSS, or AOS versions predating the feature).
-     *
-     * Consumers should use this to gate their Access column / share affordances
-     * per selected data source in MDS deployments:
-     * `await securityDashboards.ui.isResourceSharingAvailable(type, dataSourceId)`.
+     * selected data source. Evaluated per data source (feature flag + registered
+     * types) rather than via the local Dashboards capability. Fails closed.
      */
     isResourceSharingAvailable: (resourceType: string, dataSourceId?: string) => Promise<boolean>;
   };

@@ -87,9 +87,8 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
   const [rows, setRows] = useState<ResourceRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [typesLoading, setTypesLoading] = useState(false);
-  // True when resource sharing is disabled on the selected data source's cluster
-  // (the types endpoint returns HTTP 501). Rendered as a friendly empty state
-  // rather than an error toast.
+  // Resource sharing disabled on the selected data source (types endpoint 501);
+  // rendered as a friendly empty state instead of an error toast.
   const [featureDisabled, setFeatureDisabled] = useState(false);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
   const [modalState, setModalState] = useState<{
@@ -155,9 +154,8 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
           setSelectedType('');
         }
       } catch (e: any) {
-        // Resource sharing is a per-cluster feature; when it's disabled on the
-        // selected data source the types endpoint returns HTTP 501. Treat that as
-        // a friendly empty state rather than surfacing a raw error toast.
+        // Feature disabled on this data source (HTTP 501): show a friendly empty
+        // state instead of a raw error toast.
         const status = e?.response?.status ?? e?.body?.statusCode;
         const message: string = e?.body?.message ?? e?.message ?? '';
         const isFeatureDisabled =

@@ -38,22 +38,9 @@ export const buildResourceApi = (http: CoreStart['http'], dataSourceId?: string)
 };
 
 /**
- * Whether resource sharing is available for the given resource type on the
- * selected data source. Resource sharing is a backend, per-cluster setting,
- * so availability must be evaluated against the data source that operations
- * target rather than the local Dashboards `resourceSharing` capability (which
- * is resolved from the local/default cluster). In a multi-data-source (MDS)
- * deployment the same Dashboards instance can connect to data sources that do
- * or do not support resource sharing (for example AOSS, or AOS versions
- * predating the feature).
- *
- * This probes the selected data source's registered resource types and
- * returns whether `resourceType` is present. It fails closed (returns false)
- * on any error, so consumers hide their share affordances for data sources
- * that do not support resource sharing.
- *
- * Consumer plugins should declare `securityDashboards` as an optional plugin
- * dependency and call `securityDashboards.ui.isResourceSharingAvailable(type, dataSourceId)`.
+ * Whether resource sharing is available for `resourceType` on the selected data
+ * source. Gated on the feature flag and per-type registration, evaluated per
+ * data source (not the local Dashboards capability). Fails closed on error.
  */
 export async function isResourceSharingAvailable(
   http: CoreStart['http'],
@@ -61,20 +48,15 @@ export async function isResourceSharingAvailable(
   dataSourceId?: string
 ): Promise<boolean> {
   try {
-    // Global gate: the resource-sharing feature flag must be enabled on the
-    // selected data source's cluster (same signal the local Share button uses).
+    // Global gate: feature flag must be enabled on the selected data source.
     const dashboardsInfo = await getDashboardsInfo(http, dataSourceId);
     if (!dashboardsInfo?.resource_sharing_enabled) {
       return false;
     }
 
-    // Per-type gate: the resource type must be a registered/protected shareable
-    // type. Admins can enable sharing for only a subset of types, so a globally
-    // enabled cluster does not imply every type is shareable.
+    // Per-type gate: type must be registered/protected on that data source.
     const response: any = await buildResourceApi(http, dataSourceId).listTypes();
-    // listTypes() may resolve to either a bare array of type entries or a
-    // { types: [...] } wrapper, matching how the resource-sharing panel and
-    // share button normalize it.
+    // listTypes() may return a bare array or a { types: [...] } wrapper.
     const types: Array<{ type: string }> = Array.isArray(response)
       ? response
       : (response?.types ?? []);
