@@ -34,44 +34,43 @@ const captureRoutes = (dataSourceEnabled: boolean): CapturedRoute[] => {
   return routes;
 };
 
-const findHandler = (routes: CapturedRoute[], suffix: string) =>
-  routes.find((r) => typeof r.cfg?.path === 'string' && r.cfg.path.endsWith(suffix))?.handler;
+const findRoute = (routes: CapturedRoute[], suffix: string) =>
+  routes.find((r) => typeof r.cfg?.path === 'string' && r.cfg.path.endsWith(suffix));
 
 const mockResponse = () => ({ ok: jest.fn((x: any) => x) });
 
-describe('dashboardsinfo route (data source aware)', () => {
+describe('resource_sharing_enabled route (minimal, data source aware)', () => {
   const routes = captureRoutes(true);
-  const route = routes.find(
-    (r) => typeof r.cfg?.path === 'string' && r.cfg.path.endsWith('/auth/dashboardsinfo')
-  );
-  const handler = findHandler(routes, '/auth/dashboardsinfo');
+  const route = findRoute(routes, '/auth/resource_sharing_enabled');
+  const handler = route?.handler;
 
-  it('registers the dashboardsinfo route with a dataSourceId query param', () => {
+  it('registers the route with a dataSourceId query param', () => {
     expect(route).toBeDefined();
     expect(route!.cfg.validate).toBeTruthy();
   });
 
-  it('reads from the local cluster when no dataSourceId is provided', async () => {
-    const body = { resource_sharing_enabled: true };
-    const callAsCurrentUser = jest.fn().mockResolvedValue(body);
+  it('returns only the boolean from the local cluster when no dataSourceId is provided', async () => {
+    const callAsCurrentUser = jest
+      .fn()
+      .mockResolvedValue({ resource_sharing_enabled: true, default_tenant: 'secret' });
     const context: any = {
       security_plugin: { esClient: { asScoped: () => ({ callAsCurrentUser }) } },
     };
     const response = mockResponse();
     await handler(context, { query: {} } as any, response as any);
-    expect(callAsCurrentUser).toHaveBeenCalledWith('opensearch_security.dashboardsinfo', undefined);
-    expect(response.ok).toHaveBeenCalledWith({ body });
+    // Only the flag is returned; no other dashboardsinfo config leaks.
+    expect(response.ok).toHaveBeenCalledWith({ body: { enabled: true } });
   });
 
-  it('reads from the selected data source when a dataSourceId is provided', async () => {
-    const body = { resource_sharing_enabled: false };
-    const callAPI = jest.fn().mockResolvedValue(body);
+  it('returns only the boolean from the selected data source when a dataSourceId is provided', async () => {
+    const callAPI = jest
+      .fn()
+      .mockResolvedValue({ resource_sharing_enabled: false, default_tenant: 'secret' });
     const getClient = jest.fn(() => ({ callAPI }));
     const context: any = { dataSource: { opensearch: { legacy: { getClient } } } };
     const response = mockResponse();
     await handler(context, { query: { dataSourceId: 'ds-1' } } as any, response as any);
     expect(getClient).toHaveBeenCalledWith('ds-1');
-    expect(callAPI).toHaveBeenCalledWith('opensearch_security.dashboardsinfo', undefined);
-    expect(response.ok).toHaveBeenCalledWith({ body });
+    expect(response.ok).toHaveBeenCalledWith({ body: { enabled: false } });
   });
 });

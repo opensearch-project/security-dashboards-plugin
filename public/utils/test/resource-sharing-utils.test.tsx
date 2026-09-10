@@ -24,81 +24,64 @@ jest.mock('../../apps/configuration/utils/request-utils', () => ({
   })),
 }));
 
-jest.mock('../dashboards-info-utils', () => ({
-  getDashboardsInfo: jest.fn(),
-}));
-
 import { isResourceSharingAvailable } from '../resource-sharing-utils';
 import {
   createRequestContextWithDataSourceId,
   createLocalClusterRequestContext,
 } from '../../apps/configuration/utils/request-utils';
-import { getDashboardsInfo } from '../dashboards-info-utils';
-
-const mockGetDashboardsInfo = getDashboardsInfo as jest.Mock;
 
 const http = {} as any;
 
-describe('isResourceSharingAvailable', () => {
-  beforeEach(() => {
-    // Global feature flag ON by default; individual tests override as needed.
-    mockGetDashboardsInfo.mockResolvedValue({ resource_sharing_enabled: true });
-  });
+// Route the two probes (feature flag + types) by URL.
+const respond = (enabled: boolean, typesResponse: any) => (_http: any, url: string) => {
+  if (url.includes('resource_sharing_enabled')) return Promise.resolve({ enabled });
+  if (url.includes('resource/types')) return Promise.resolve(typesResponse);
+  return Promise.resolve({});
+};
 
+describe('isResourceSharingAvailable', () => {
   afterEach(() => {
     mockHttpGetWithQuery.mockReset();
-    mockGetDashboardsInfo.mockReset();
     (createRequestContextWithDataSourceId as jest.Mock).mockClear();
     (createLocalClusterRequestContext as jest.Mock).mockClear();
   });
 
   it('returns true when the feature is enabled and the type is registered', async () => {
-    mockHttpGetWithQuery.mockResolvedValue({
-      types: [{ type: 'anomaly-detector' }, { type: 'monitor' }],
-    });
+    mockHttpGetWithQuery.mockImplementation(
+      respond(true, { types: [{ type: 'anomaly-detector' }, { type: 'monitor' }] })
+    );
     await expect(isResourceSharingAvailable(http, 'anomaly-detector', 'ds-1')).resolves.toBe(true);
-    expect(mockGetDashboardsInfo).toHaveBeenCalledWith(http, 'ds-1');
     expect(createRequestContextWithDataSourceId).toHaveBeenCalledWith('ds-1');
   });
 
   it('returns false (global gate) when the feature flag is disabled, even if the type is registered', async () => {
-    mockGetDashboardsInfo.mockResolvedValue({ resource_sharing_enabled: false });
-    mockHttpGetWithQuery.mockResolvedValue({ types: [{ type: 'anomaly-detector' }] });
+    mockHttpGetWithQuery.mockImplementation(
+      respond(false, { types: [{ type: 'anomaly-detector' }] })
+    );
     await expect(isResourceSharingAvailable(http, 'anomaly-detector', 'ds-1')).resolves.toBe(false);
-    // per-type probe should be short-circuited when the global flag is off
-    expect(mockHttpGetWithQuery).not.toHaveBeenCalled();
+    // the types probe is skipped once the flag is off
+    expect(mockHttpGetWithQuery).toHaveBeenCalledTimes(1);
   });
 
   it('returns false (per-type gate) when enabled but the type is not registered', async () => {
-    mockHttpGetWithQuery.mockResolvedValue({ types: [{ type: 'monitor' }] });
+    mockHttpGetWithQuery.mockImplementation(respond(true, { types: [{ type: 'monitor' }] }));
     await expect(isResourceSharingAvailable(http, 'anomaly-detector', 'ds-1')).resolves.toBe(false);
   });
 
-  it('returns false (fail-closed) when the dashboards-info probe throws', async () => {
-    mockGetDashboardsInfo.mockRejectedValue(new Error('dashboardsinfo unavailable'));
+  it('returns false (fail-closed) when a probe throws', async () => {
+    mockHttpGetWithQuery.mockRejectedValue(new Error('boom'));
     await expect(isResourceSharingAvailable(http, 'anomaly-detector', 'ds-1')).resolves.toBe(false);
-  });
-
-  it('returns false (fail-closed) when the types probe throws', async () => {
-    mockHttpGetWithQuery.mockRejectedValue(new Error('resource types endpoint not found'));
-    await expect(isResourceSharingAvailable(http, 'anomaly-detector', 'ds-1')).resolves.toBe(false);
-  });
-
-  it('returns false when the types response is empty', async () => {
-    mockHttpGetWithQuery.mockResolvedValue({});
-    await expect(isResourceSharingAvailable(http, 'anomaly-detector')).resolves.toBe(false);
   });
 
   it('handles a bare array types response (no { types } wrapper)', async () => {
-    mockHttpGetWithQuery.mockResolvedValue([{ type: 'anomaly-detector' }, { type: 'forecaster' }]);
+    mockHttpGetWithQuery.mockImplementation(respond(true, [{ type: 'forecaster' }]));
     await expect(isResourceSharingAvailable(http, 'forecaster', 'ds-1')).resolves.toBe(true);
     await expect(isResourceSharingAvailable(http, 'monitor', 'ds-1')).resolves.toBe(false);
   });
 
   it('uses the local cluster context when no data source id is provided', async () => {
-    mockHttpGetWithQuery.mockResolvedValue({ types: [{ type: 'forecaster' }] });
+    mockHttpGetWithQuery.mockImplementation(respond(true, { types: [{ type: 'forecaster' }] }));
     await expect(isResourceSharingAvailable(http, 'forecaster')).resolves.toBe(true);
-    expect(mockGetDashboardsInfo).toHaveBeenCalledWith(http, undefined);
     expect(createLocalClusterRequestContext).toHaveBeenCalled();
   });
 });

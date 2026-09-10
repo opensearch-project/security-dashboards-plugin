@@ -18,7 +18,7 @@ import {
   createRequestContextWithDataSourceId,
   createLocalClusterRequestContext,
 } from '../apps/configuration/utils/request-utils';
-import { getDashboardsInfo } from './dashboards-info-utils';
+import { API_ENDPOINT_RESOURCE_SHARING_ENABLED } from '../../common';
 
 export const buildResourceApi = (http: CoreStart['http'], dataSourceId?: string) => {
   const context = dataSourceId
@@ -38,6 +38,21 @@ export const buildResourceApi = (http: CoreStart['http'], dataSourceId?: string)
 };
 
 /**
+ * Whether the resource-sharing feature flag is enabled on the selected data
+ * source. Reads only the boolean from the minimal endpoint. Fails closed.
+ */
+export async function isResourceSharingEnabled(
+  http: CoreStart['http'],
+  dataSourceId?: string
+): Promise<boolean> {
+  const context = dataSourceId
+    ? createRequestContextWithDataSourceId(dataSourceId)
+    : createLocalClusterRequestContext();
+  const response: any = await context.httpGetWithQuery(http, API_ENDPOINT_RESOURCE_SHARING_ENABLED);
+  return !!response?.enabled;
+}
+
+/**
  * Whether resource sharing is available for `resourceType` on the selected data
  * source. Gated on the feature flag and per-type registration, evaluated per
  * data source (not the local Dashboards capability). Fails closed on error.
@@ -49,8 +64,7 @@ export async function isResourceSharingAvailable(
 ): Promise<boolean> {
   try {
     // Global gate: feature flag must be enabled on the selected data source.
-    const dashboardsInfo = await getDashboardsInfo(http, dataSourceId);
-    if (!dashboardsInfo?.resource_sharing_enabled) {
+    if (!(await isResourceSharingEnabled(http, dataSourceId))) {
       return false;
     }
 

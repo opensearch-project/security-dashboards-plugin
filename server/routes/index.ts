@@ -581,14 +581,37 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
     }
   );
 
-  // Optionally data-source-scoped via dataSourceId. Uses the same MDS access
-  // model as the resource/types route (wrapRouteWithDataSource): the data source
-  // client uses the data source's configured credentials, and access is governed
-  // by the user's permission to that data-source saved object. The response is
-  // cluster-level config flags, not per-user data.
   router.get(
     {
       path: `${API_PREFIX}/auth/dashboardsinfo`,
+      validate: false,
+    },
+    async (
+      context,
+      request,
+      response
+    ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
+      const client = context.security_plugin.esClient.asScoped(request);
+      let esResp;
+      try {
+        esResp = await client.callAsCurrentUser('opensearch_security.dashboardsinfo');
+
+        return response.ok({
+          body: esResp,
+        });
+      } catch (error) {
+        return errorResponse(response, error);
+      }
+    }
+  );
+
+  // Minimal, data-source-scoped resource-sharing feature flag. Reads dashboardsinfo
+  // for the selected data source (same MDS access model as the resource/types
+  // route) but returns ONLY the boolean, so no other cluster config crosses the
+  // data-source boundary.
+  router.get(
+    {
+      path: `${API_PREFIX}/auth/resource_sharing_enabled`,
       validate: {
         query: schema.object({
           dataSourceId: schema.maybe(schema.string()),
@@ -601,7 +624,7 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
       response
     ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
       try {
-        const esResp = await wrapRouteWithDataSource(
+        const info: any = await wrapRouteWithDataSource(
           dataSourceEnabled,
           context,
           request,
@@ -609,7 +632,7 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
         );
 
         return response.ok({
-          body: esResp,
+          body: { enabled: !!info?.resource_sharing_enabled },
         });
       } catch (error) {
         return errorResponse(response, error);
