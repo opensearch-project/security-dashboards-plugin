@@ -22,8 +22,8 @@ import { ALL_ACCESS_ROLE, SHORTEN_URL_DATA } from '../../support/constants';
 
 import samlUserRoleMapping from '../../fixtures/saml/samlUserRoleMappiing.json';
 
-const basePath = Cypress.env('basePath') || '';
-const idpOrigin = new URL(Cypress.env('idpUrl') || 'http://localhost:7000').origin;
+const basePath = Cypress.getConfigEnv('basePath') || '';
+const idpOrigin = new URL(Cypress.getConfigEnv('idpUrl') || 'http://localhost:7000').origin;
 const osdOrigin = 'http://localhost:5601';
 
 Cypress.on('uncaught:exception', (err) => {
@@ -37,7 +37,7 @@ before(() => {
 
   // Avoid Cypress locking onto the OpenSearch origin before the browser has
   // visited OpenSearch Dashboards. This matters for the SAML cross-origin flow.
-  if (Cypress.env('loginMethod') === 'saml_multiauth') {
+  if (Cypress.getConfigEnv('loginMethod') === 'saml_multiauth') {
     cy.visit(`http://localhost:5601${basePath}`);
   } else {
     cy.request({
@@ -68,7 +68,7 @@ describe('Log in via SAML', () => {
   };
 
   const runOnOsd = (callback) => {
-    if (Cypress.env('loginMethod') === 'saml_multiauth') {
+    if (Cypress.getConfigEnv('loginMethod') === 'saml_multiauth') {
       callback();
     } else {
       cy.origin(osdOrigin, callback);
@@ -127,7 +127,7 @@ describe('Log in via SAML', () => {
     localStorage.setItem('home:newThemeModal:show', 'false');
 
     const url = `${osdOrigin}${basePath}/app/opensearch_dashboards_overview`;
-    if (Cypress.env('loginMethod') === 'saml_multiauth') {
+    if (Cypress.getConfigEnv('loginMethod') === 'saml_multiauth') {
       cy.visit(url, {
         failOnStatusCode: false,
       });
@@ -150,7 +150,7 @@ describe('Log in via SAML', () => {
     localStorage.setItem('home:newThemeModal:show', 'false');
 
     const url = `${osdOrigin}${basePath}/app/dev_tools#/console`;
-    if (Cypress.env('loginMethod') === 'saml_multiauth') {
+    if (Cypress.getConfigEnv('loginMethod') === 'saml_multiauth') {
       cy.visit(url, {
         failOnStatusCode: false,
       });
@@ -174,7 +174,7 @@ describe('Log in via SAML', () => {
 
     const urlWithHash = `${osdOrigin}${basePath}/app/security-dashboards-plugin#/getstarted`;
 
-    if (Cypress.env('loginMethod') === 'saml_multiauth') {
+    if (Cypress.getConfigEnv('loginMethod') === 'saml_multiauth') {
       cy.visit(urlWithHash, {
         failOnStatusCode: false,
       });
@@ -196,7 +196,7 @@ describe('Log in via SAML', () => {
     localStorage.setItem('home:newThemeModal:show', 'false');
 
     const url = `${osdOrigin}${basePath}/app/opensearch_dashboards_overview`;
-    if (Cypress.env('loginMethod') === 'saml_multiauth') {
+    if (Cypress.getConfigEnv('loginMethod') === 'saml_multiauth') {
       cy.visit(url, {
         failOnStatusCode: false,
       });
@@ -223,7 +223,7 @@ describe('Log in via SAML', () => {
     cy.wait('@samlLogout').then(() => {});
     cy.clearAllCookies();
 
-    if (Cypress.env('loginMethod') === 'saml_multiauth') {
+    if (Cypress.getConfigEnv('loginMethod') === 'saml_multiauth') {
       cy.visit(url, {
         failOnStatusCode: false,
       });
@@ -251,7 +251,7 @@ describe('Log in via SAML', () => {
       // since the Shorten URL api is return's set-cookie header for admin user.
       cy.clearCookies().then(() => {
         const gotoUrl = `${osdOrigin}${basePath}/goto/${response.urlId}?security_tenant=global`;
-        if (Cypress.env('loginMethod') === 'saml_multiauth') {
+        if (Cypress.getConfigEnv('loginMethod') === 'saml_multiauth') {
           cy.visit(gotoUrl, {
             failOnStatusCode: false,
           });

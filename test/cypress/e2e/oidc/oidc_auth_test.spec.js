@@ -17,7 +17,7 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
-const basePath = Cypress.env('basePath') || '';
+const basePath = Cypress.getConfigEnv('basePath') || '';
 const keycloakOrigin = 'http://127.0.0.1:8080';
 const osdOrigin = 'http://localhost:5601';
 
