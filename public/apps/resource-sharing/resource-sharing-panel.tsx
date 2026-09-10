@@ -154,13 +154,11 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
           setSelectedType('');
         }
       } catch (e: any) {
-        // Feature disabled on this data source (HTTP 501): show a friendly empty
-        // state instead of a raw error toast.
-        const status = e?.response?.status ?? e?.body?.statusCode;
-        const message: string = e?.body?.message ?? e?.message ?? '';
-        const isFeatureDisabled =
-          status === 501 || /not implemented|feature disabled/i.test(message);
-        if (isFeatureDisabled) {
+        // Feature disabled on this data source surfaces as HTTP 501. Match on the
+        // status code only (not error-message text, which a proxied data source
+        // could spoof) so real connection/auth failures still surface as toasts.
+        const status = e?.response?.status ?? e?.body?.statusCode ?? e?.statusCode;
+        if (status === 501) {
           setFeatureDisabled(true);
           setTypeOptions([]);
           setSelectedType('');

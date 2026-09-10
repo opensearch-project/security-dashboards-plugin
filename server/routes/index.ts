@@ -581,6 +581,11 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
     }
   );
 
+  // Optionally data-source-scoped via dataSourceId. Uses the same MDS access
+  // model as the resource/types route (wrapRouteWithDataSource): the data source
+  // client uses the data source's configured credentials, and access is governed
+  // by the user's permission to that data-source saved object. The response is
+  // cluster-level config flags, not per-user data.
   router.get(
     {
       path: `${API_PREFIX}/auth/dashboardsinfo`,
