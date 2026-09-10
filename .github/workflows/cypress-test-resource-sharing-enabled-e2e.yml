@@ -67,8 +67,21 @@ jobs:
 
           pushd security-src
             chmod +x ./gradlew
-            # Build the sample resource plugin
-            ./gradlew :opensearch-sample-resource-plugin:assemble
+            # Build the sample resource plugin. Retried because the Spotless
+            # Eclipse JDT formatter is resolved at Gradle configuration time and
+            # its download intermittently times out (SocketTimeoutException),
+            # failing the build before any task runs. See issue #2504.
+            for attempt in 1 2 3; do
+              if ./gradlew :opensearch-sample-resource-plugin:assemble; then
+                break
+              elif [ "$attempt" -eq 3 ]; then
+                echo "Build failed after $attempt attempts"
+                exit 1
+              else
+                echo "Build attempt $attempt failed; retrying in $((attempt * 30))s..."
+                sleep $((attempt * 30))
+              fi
+            done
             ZIP_PATH=$(ls -t sample-resource-plugin/build/distributions/*.zip | head -n1)
             echo "Built sample plugin: $ZIP_PATH"
             cp "$ZIP_PATH" "$GITHUB_WORKSPACE/sample-resource-plugin.zip"
