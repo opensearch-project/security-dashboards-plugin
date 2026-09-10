@@ -247,6 +247,53 @@ describe('Login page', () => {
     });
   });
 
+  describe('renders login title', () => {
+    const config: ClientConfigType = {
+      ui: configUiDefault,
+      auth: {
+        type: AuthType.BASIC,
+      },
+    } as any;
+
+    it('renders default title when login title and branding applicationTitle are not configured', () => {
+      const component = shallow(
+        <LoginPage http={mockHttpStart as any} chrome={chrome} config={config as any} />
+      );
+      expect(component.contains('Log in to OpenSearch Dashboards')).toBe(true);
+    });
+
+    it('renders title derived from branding applicationTitle when login title is not configured', () => {
+      const component = shallow(
+        <LoginPage
+          http={mockHttpStart as any}
+          chrome={chrome}
+          config={config as any}
+          applicationTitle="My Custom Analytics"
+        />
+      );
+      expect(component.contains('Log in to My Custom Analytics')).toBe(true);
+    });
+
+    it('renders configured login title over branding applicationTitle', () => {
+      const configWithTitle: ClientConfigType = {
+        ui: configUI,
+        auth: {
+          type: AuthType.BASIC,
+        },
+      } as any;
+      const component = shallow(
+        <LoginPage
+          http={mockHttpStart as any}
+          chrome={chrome}
+          config={configWithTitle as any}
+          applicationTitle="My Custom Analytics"
+        />
+      );
+      expect(component.contains('Title1')).toBe(true);
+      expect(component.contains('Log in to My Custom Analytics')).toBe(false);
+    });
+  });
+
   describe('event trigger testing', () => {
     let component;
     const setState = jest.fn();

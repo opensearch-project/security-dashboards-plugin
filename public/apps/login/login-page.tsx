@@ -42,6 +42,8 @@ interface LoginPageDeps {
   http: CoreStart['http'];
   chrome: CoreStart['chrome'];
   config: ClientConfigType;
+  // `opensearchDashboards.branding.applicationTitle`, if customized
+  applicationTitle?: string;
 }
 
 interface LoginButtonConfig {
@@ -290,7 +292,8 @@ export function LoginPage(props: LoginPageDeps) {
       )}
       <EuiSpacer size="s" />
       <EuiText size="m" textAlign="center">
-        {props.config.ui.basicauth.login.title || 'Log in to OpenSearch Dashboards'}
+        {props.config.ui.basicauth.login.title ||
+          `Log in to ${props.applicationTitle || 'OpenSearch Dashboards'}`}
       </EuiText>
       <EuiSpacer size="s" />
       <EuiText size="s" textAlign="center">
