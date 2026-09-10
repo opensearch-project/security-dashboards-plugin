@@ -22,15 +22,15 @@ const createDataSource = () => {
     },
     body: {
       attributes: {
-        title: Cypress.getConfigEnv('externalDataSourceLabel'),
-        endpoint: Cypress.getConfigEnv('externalDataSourceEndpoint'),
+        title: Cypress.expose('externalDataSourceLabel'),
+        endpoint: Cypress.expose('externalDataSourceEndpoint'),
         installedPlugins: ['opensearch-security'],
         dataSourceVersion: '3.4.0',
         auth: {
           type: 'username_password',
           credentials: {
-            username: Cypress.getConfigEnv('externalDataSourceAdminUserName'),
-            password: Cypress.getConfigEnv('externalDataSourceAdminPassword'),
+            username: Cypress.expose('externalDataSourceAdminUserName'),
+            password: Cypress.expose('externalDataSourceAdminPassword'),
           },
         },
       },
@@ -77,7 +77,7 @@ describe('Multi-datasources enabled', () => {
         externalDataSourceId = resp.body.id;
       }
       externalDataSourceUrl = createUrlParam(
-        Cypress.getConfigEnv('externalDataSourceLabel'),
+        Cypress.expose('externalDataSourceLabel'),
         externalDataSourceId
       );
       localDataSourceUrl = createUrlParam('Local cluster', '');

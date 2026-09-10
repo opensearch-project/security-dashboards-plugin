@@ -17,16 +17,6 @@
 // / <reference types="cypress" />
 
 declare namespace Cypress {
-  interface Cypress {
-    /**
-     * Synchronously read a value from the Cypress config env.
-     * Replaces the removed Cypress.env() accessor.
-     * @example
-     * Cypress.getConfigEnv('openSearchUrl')
-     */
-    getConfigEnv(key: string): any;
-  }
-
   interface Chainable<Subject> {
     /**
      * Create a test tenant by calling REST API
