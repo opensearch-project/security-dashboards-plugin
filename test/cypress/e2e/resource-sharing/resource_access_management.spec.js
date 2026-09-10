@@ -44,7 +44,7 @@ function findTable() {
 }
 
 function createSampleResource() {
-  const url = `${Cypress.env('openSearchUrl')}/_plugins/sample_plugin/create`;
+  const url = `${Cypress.getConfigEnv('openSearchUrl')}/_plugins/sample_plugin/create`;
 
   cy.request({
     method: 'PUT',

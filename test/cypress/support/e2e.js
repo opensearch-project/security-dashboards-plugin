@@ -33,6 +33,8 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
+// Must load first: defines Cypress.getConfigEnv used at module scope by ./commands.
+import './setup-env';
 import './commands';
 
 // EUI components that measure the DOM (modals, super-selects, data grids) can

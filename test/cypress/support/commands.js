@@ -44,7 +44,7 @@ Cypress.Commands.overwrite('request', (originalFn, ...args) => {
 Cypress.Commands.add('createTenant', (tenantID, tenantJson) => {
   cy.request(
     'PUT',
-    `${Cypress.env('openSearchUrl')}${SEC_API.TENANTS_BASE}/${tenantID}`,
+    `${Cypress.getConfigEnv('openSearchUrl')}${SEC_API.TENANTS_BASE}/${tenantID}`,
     tenantJson
   ).then((response) => {
     expect(response.status).to.eq(200);
@@ -54,7 +54,7 @@ Cypress.Commands.add('createTenant', (tenantID, tenantJson) => {
 Cypress.Commands.add('createInternalUser', (userID, userJson) => {
   cy.request(
     'PUT',
-    `${Cypress.env('openSearchUrl')}${SEC_API.INTERNALUSERS_BASE}/${userID}`,
+    `${Cypress.getConfigEnv('openSearchUrl')}${SEC_API.INTERNALUSERS_BASE}/${userID}`,
     userJson
   ).then((response) => {
     expect(response.status).to.eq(200);
@@ -62,27 +62,29 @@ Cypress.Commands.add('createInternalUser', (userID, userJson) => {
 });
 
 Cypress.Commands.add('createRole', (roleID, roleJson) => {
-  cy.request('PUT', `${Cypress.env('openSearchUrl')}${SEC_API.ROLE_BASE}/${roleID}`, roleJson).then(
-    (response) => {
-      expect(response.status).to.eq(200);
-    }
-  );
+  cy.request(
+    'PUT',
+    `${Cypress.getConfigEnv('openSearchUrl')}${SEC_API.ROLE_BASE}/${roleID}`,
+    roleJson
+  ).then((response) => {
+    expect(response.status).to.eq(200);
+  });
 });
 
 Cypress.Commands.add('createRoleMapping', (roleID, rolemappingJson) => {
   cy.request(
     'PUT',
-    `${Cypress.env('openSearchUrl')}${SEC_API.ROLE_MAPPING_BASE}/${roleID}`,
+    `${Cypress.getConfigEnv('openSearchUrl')}${SEC_API.ROLE_MAPPING_BASE}/${roleID}`,
     rolemappingJson
   ).then((response) => {
     expect(response.status).to.eq(200);
   });
 });
 
-if (Cypress.env('LOGIN_AS_ADMIN')) {
+if (Cypress.getConfigEnv('LOGIN_AS_ADMIN')) {
   // Define custom cy.visit() only if LOGIN_AS_ADMIN is true
   Cypress.Commands.overwrite('visit', (orig, url, options = {}) => {
-    if (Cypress.env('LOGIN_AS_ADMIN')) {
+    if (Cypress.getConfigEnv('LOGIN_AS_ADMIN')) {
       options.auth = ADMIN_AUTH;
       options.failOnStatusCode = false;
       options.qs = {

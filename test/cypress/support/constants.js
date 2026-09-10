@@ -28,11 +28,11 @@ export const ALL_ACCESS_ROLE = 'all_access';
 
 //Admin Credential
 export const ADMIN_AUTH = {
-  username: Cypress.env('adminUserName'),
-  password: Cypress.env('adminPassword'),
+  username: Cypress.getConfigEnv('adminUserName'),
+  password: Cypress.getConfigEnv('adminPassword'),
 };
 
-const basePath = Cypress.env('basePath') || '';
+const basePath = Cypress.getConfigEnv('basePath') || '';
 
 //Security API Constants
 export const SEC_API_PREFIX = '/_plugins/_security/api';
