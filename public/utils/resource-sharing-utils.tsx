@@ -18,6 +18,7 @@ import {
   createRequestContextWithDataSourceId,
   createLocalClusterRequestContext,
 } from '../apps/configuration/utils/request-utils';
+import { API_ENDPOINT_RESOURCE_SHARING_ENABLED } from '../../common';
 
 export const buildResourceApi = (http: CoreStart['http'], dataSourceId?: string) => {
   const context = dataSourceId
@@ -35,3 +36,46 @@ export const buildResourceApi = (http: CoreStart['http'], dataSourceId?: string)
       context.httpPost({ http, url: '/api/resource/update_sharing', body: payload }),
   };
 };
+
+/**
+ * Whether the resource-sharing feature flag is enabled on the selected data
+ * source. Reads only the boolean from the minimal endpoint. Fails closed.
+ */
+export async function isResourceSharingEnabled(
+  http: CoreStart['http'],
+  dataSourceId?: string
+): Promise<boolean> {
+  const context = dataSourceId
+    ? createRequestContextWithDataSourceId(dataSourceId)
+    : createLocalClusterRequestContext();
+  const response: any = await context.httpGetWithQuery(http, API_ENDPOINT_RESOURCE_SHARING_ENABLED);
+  return !!response?.enabled;
+}
+
+/**
+ * Whether resource sharing is available for `resourceType` on the selected data
+ * source. Gated on the feature flag and per-type registration, evaluated per
+ * data source (not the local Dashboards capability). Fails closed on error.
+ */
+export async function isResourceSharingAvailable(
+  http: CoreStart['http'],
+  resourceType: string,
+  dataSourceId?: string
+): Promise<boolean> {
+  try {
+    // Global gate: feature flag must be enabled on the selected data source.
+    if (!(await isResourceSharingEnabled(http, dataSourceId))) {
+      return false;
+    }
+
+    // Per-type gate: type must be registered/protected on that data source.
+    const response: any = await buildResourceApi(http, dataSourceId).listTypes();
+    // listTypes() may return a bare array or a { types: [...] } wrapper.
+    const types: Array<{ type: string }> = Array.isArray(response)
+      ? response
+      : (response?.types ?? []);
+    return types.some((registeredType) => registeredType?.type === resourceType);
+  } catch (e) {
+    return false;
+  }
+}
