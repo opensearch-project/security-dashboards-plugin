@@ -22,6 +22,7 @@ export const PLUGIN_USERS_APP_ID = `${PLUGIN_NAME}_users`;
 export const PLUGIN_PERMISSIONS_APP_ID = `${PLUGIN_NAME}_permissions`;
 export const PLUGIN_TENANTS_APP_ID = `${PLUGIN_NAME}_tenants`;
 export const PLUGIN_AUDITLOG_APP_ID = `${PLUGIN_NAME}_auditlog`;
+export const PLUGIN_STANDALONE_AUDIT_APP_ID = `${PLUGIN_NAME}_standalone_audit`;
 export const PLUGIN_RESOURCE_ACCESS_MANAGEMENT_APP_ID = `${PLUGIN_NAME}_resource_access_management`;
 export const PLUGIN_API_TOKENS_APP_ID = `${PLUGIN_NAME}_api_tokens`;
 
@@ -78,6 +79,20 @@ export enum AuthType {
   SAML = 'saml',
   PROXY = 'proxy',
   ANONYMOUS = 'anonymous',
+  NONE = 'none',
+}
+
+/**
+ * No-auth mode: the plugin runs against a cluster that has no auth backend
+ * (SSL-only or disabled security). `opensearch_security.auth.type: none` tells the
+ * plugin to skip the login flow entirely, so its pages are reachable on such clusters.
+ */
+export function isNoAuthMode(authType?: string | string[]): boolean {
+  if (!authType) {
+    return false;
+  }
+  const types = Array.isArray(authType) ? authType : [authType];
+  return types.length === 1 && (types[0] || '').toLowerCase() === AuthType.NONE;
 }
 
 export enum ResourceType {
@@ -89,6 +104,7 @@ export enum ResourceType {
   tenantsConfigureTab = 'tenantsConfigureTab',
   auth = 'auth',
   auditLogging = 'auditLogging',
+  standaloneAudit = 'standaloneAudit',
   apiTokens = 'apiTokens',
 }
 
