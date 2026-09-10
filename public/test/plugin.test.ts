@@ -40,6 +40,17 @@ import {
   PLUGIN_USERS_APP_ID,
 } from '../../common/index.ts';
 
+jest.mock('../apps/account/utils', () => ({
+  fetchAccountInfoSafe: jest.fn(),
+}));
+jest.mock('../utils/dashboards-info-utils', () => ({
+  getDashboardsInfoSafe: jest.fn(),
+}));
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { fetchAccountInfoSafe } = require('../apps/account/utils');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { getDashboardsInfoSafe } = require('../utils/dashboards-info-utils');
+
 // Mock the hasApiPermission function
 jest.mock('../plugin', () => {
   const originalModule = jest.requireActual('../plugin');
@@ -150,6 +161,142 @@ describe('SecurityPlugin', () => {
 
     expectedApps.forEach((app) => {
       expect(registeredApps).toContain(app);
+    });
+  });
+
+  describe('readonly app allowlist — opt-in flags', () => {
+    const makeContext = (flags: { allow_discover?: boolean; allow_visualize?: boolean }) => ({
+      config: {
+        get: jest.fn().mockReturnValue({
+          readonly_mode: {
+            roles: ['kibana_read_only'],
+            ...flags,
+          },
+          multitenancy: { enabled: true, enable_aggregation_view: false },
+          clusterPermissions: { include: [] },
+          indexPermissions: { include: [] },
+          disabledTransportCategories: { exclude: [] },
+          disabledRestCategories: { exclude: [] },
+          ui: { autologout: false },
+        }),
+      },
+    });
+
+    const runAndGetUpdater = async (flags: {
+      allow_discover?: boolean;
+      allow_visualize?: boolean;
+    }) => {
+      // Force hasApiPermission() to resolve false so the readonly updater engages.
+      coreSetup.http.get = jest.fn().mockResolvedValue({ has_api_access: false });
+      (fetchAccountInfoSafe as jest.Mock).mockResolvedValue({
+        data: { roles: ['kibana_read_only'] },
+      });
+      (getDashboardsInfoSafe as jest.Mock).mockResolvedValue({
+        multitenancy_enabled: true,
+      });
+      coreSetup.chrome.navGroup = {
+        ...coreSetup.chrome.navGroup,
+        getNavGroupEnabled: () => false,
+      };
+
+      const registerAppUpdaterSpy = jest.spyOn(coreSetup.application, 'registerAppUpdater');
+      const callsBefore = registerAppUpdaterSpy.mock.calls.length;
+      plugin = new SecurityPlugin(makeContext(flags));
+      await plugin.setup(coreSetup, deps);
+
+      // Pick the subject registered during THIS setup — coreSetup is reused across
+      // runAndGetUpdater() calls within a single test, so spy.mock.calls accumulates.
+      const subject = registerAppUpdaterSpy.mock.calls[callsBefore][0];
+      return subject.getValue();
+    };
+
+    // The updater returns an object with a `status` field (AppStatus.inaccessible)
+    // when blocking an app, and `undefined` when allowing. Assert on shape so this
+    // test file does not need to import from `src/core/public` (which pulls in
+    // monaco-editor and fails under jsdom at module-load time).
+    const expectBlocked = (result: unknown) => {
+      expect(result).toEqual(expect.objectContaining({ status: expect.anything() }));
+    };
+
+    describe('allow_discover flag', () => {
+      it('blocks Discover (both ids) when the flag is unset (default off)', async () => {
+        const updater = await runAndGetUpdater({});
+        expectBlocked(updater({ id: 'discover' }));
+        expectBlocked(updater({ id: 'data-explorer' }));
+      });
+
+      it('blocks Discover (both ids) when the flag is explicitly false', async () => {
+        const updater = await runAndGetUpdater({ allow_discover: false });
+        expectBlocked(updater({ id: 'discover' }));
+        expectBlocked(updater({ id: 'data-explorer' }));
+      });
+
+      it('allows Discover (both legacy and data-explorer ids) when the flag is true', async () => {
+        const updater = await runAndGetUpdater({ allow_discover: true });
+        expect(updater({ id: 'discover' })).toBeUndefined();
+        expect(updater({ id: 'data-explorer' })).toBeUndefined();
+      });
+
+      it('still blocks other non-allowlisted apps when the flag is true', async () => {
+        const updater = await runAndGetUpdater({ allow_discover: true });
+        expectBlocked(updater({ id: 'visualize' }));
+        expectBlocked(updater({ id: 'management' }));
+      });
+    });
+
+    describe('allow_visualize flag', () => {
+      it('blocks Visualize when the flag is unset (default off)', async () => {
+        const updater = await runAndGetUpdater({});
+        expectBlocked(updater({ id: 'visualize' }));
+      });
+
+      it('blocks Visualize when the flag is explicitly false', async () => {
+        const updater = await runAndGetUpdater({ allow_visualize: false });
+        expectBlocked(updater({ id: 'visualize' }));
+      });
+
+      it('allows Visualize when the flag is true', async () => {
+        const updater = await runAndGetUpdater({ allow_visualize: true });
+        expect(updater({ id: 'visualize' })).toBeUndefined();
+      });
+
+      it('still blocks other non-allowlisted apps when the flag is true', async () => {
+        const updater = await runAndGetUpdater({ allow_visualize: true });
+        expectBlocked(updater({ id: 'discover' }));
+        expectBlocked(updater({ id: 'data-explorer' }));
+        expectBlocked(updater({ id: 'management' }));
+      });
+
+      it('does not affect Discover gating (flags are independent)', async () => {
+        const discoverOnly = await runAndGetUpdater({ allow_discover: true });
+        expectBlocked(discoverOnly({ id: 'visualize' }));
+
+        const visualizeOnly = await runAndGetUpdater({ allow_visualize: true });
+        expectBlocked(visualizeOnly({ id: 'discover' }));
+      });
+
+      it('allows both apps when both flags are true', async () => {
+        const updater = await runAndGetUpdater({ allow_discover: true, allow_visualize: true });
+        expect(updater({ id: 'discover' })).toBeUndefined();
+        expect(updater({ id: 'data-explorer' })).toBeUndefined();
+        expect(updater({ id: 'visualize' })).toBeUndefined();
+      });
+    });
+
+    it('keeps baseline allowlist members (home, dashboards) accessible regardless of flags', async () => {
+      const combos = [
+        {},
+        { allow_discover: false },
+        { allow_discover: true },
+        { allow_visualize: false },
+        { allow_visualize: true },
+        { allow_discover: true, allow_visualize: true },
+      ];
+      for (const flags of combos) {
+        const updater = await runAndGetUpdater(flags);
+        expect(updater({ id: 'home' })).toBeUndefined();
+        expect(updater({ id: 'dashboards' })).toBeUndefined();
+      }
     });
   });
 
