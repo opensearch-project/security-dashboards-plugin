@@ -304,7 +304,18 @@ export class SecurityPlugin implements Plugin<
             updater$: this.appStateUpdater,
             // Reuse your existing wrapper so default route/query handling is consistent:
             mount: async (params: AppMountParameters) => {
-              return mountWrapper(params, '/resource-access-management');
+              const { renderApp } = await import(
+                './apps/resource-sharing/resource-access-management-app'
+              );
+              const [coreStart, depsStart] = await core.getStartServices();
+              return renderApp(
+                coreStart,
+                depsStart as SecurityPluginStartDependencies,
+                params,
+                config,
+                '/resource-access-management',
+                deps.dataSourceManagement
+              );
             },
           });
         }

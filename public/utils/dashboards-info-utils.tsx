@@ -17,9 +17,14 @@ import { HttpStart } from 'opensearch-dashboards/public';
 import { API_ENDPOINT_DASHBOARDSINFO } from '../../common';
 import { DashboardsInfo } from '../types';
 import { createLocalClusterRequestContext } from '../apps/configuration/utils/request-utils';
+import { createRequestContextWithDataSourceId } from '../apps/configuration/utils/request-utils';
 
-export async function getDashboardsInfo(http: HttpStart) {
-  return await createLocalClusterRequestContext().httpGet<DashboardsInfo>({
+export async function getDashboardsInfo(http: HttpStart, dataSourceId?: string) {
+  const requestContext =
+    dataSourceId !== undefined && dataSourceId !== ''
+      ? createRequestContextWithDataSourceId(dataSourceId)
+      : createLocalClusterRequestContext();
+  return await requestContext.httpGet<DashboardsInfo>({
     http,
     url: API_ENDPOINT_DASHBOARDSINFO,
   });

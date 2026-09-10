@@ -18,6 +18,7 @@ import {
   createRequestContextWithDataSourceId,
   createLocalClusterRequestContext,
 } from '../apps/configuration/utils/request-utils';
+import { getDashboardsInfo } from './dashboards-info-utils';
 
 export const buildResourceApi = (http: CoreStart['http'], dataSourceId?: string) => {
   const context = dataSourceId
@@ -60,6 +61,16 @@ export async function isResourceSharingAvailable(
   dataSourceId?: string
 ): Promise<boolean> {
   try {
+    // Global gate: the resource-sharing feature flag must be enabled on the
+    // selected data source's cluster (same signal the local Share button uses).
+    const dashboardsInfo = await getDashboardsInfo(http, dataSourceId);
+    if (!dashboardsInfo?.resource_sharing_enabled) {
+      return false;
+    }
+
+    // Per-type gate: the resource type must be a registered/protected shareable
+    // type. Admins can enable sharing for only a subset of types, so a globally
+    // enabled cluster does not imply every type is shareable.
     const response: any = await buildResourceApi(http, dataSourceId).listTypes();
     // listTypes() may resolve to either a bare array of type entries or a
     // { types: [...] } wrapper, matching how the resource-sharing panel and

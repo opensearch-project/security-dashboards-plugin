@@ -584,17 +584,24 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
   router.get(
     {
       path: `${API_PREFIX}/auth/dashboardsinfo`,
-      validate: false,
+      validate: {
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
+      },
     },
     async (
       context,
       request,
       response
     ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
-      const client = context.security_plugin.esClient.asScoped(request);
-      let esResp;
       try {
-        esResp = await client.callAsCurrentUser('opensearch_security.dashboardsinfo');
+        const esResp = await wrapRouteWithDataSource(
+          dataSourceEnabled,
+          context,
+          request,
+          'opensearch_security.dashboardsinfo'
+        );
 
         return response.ok({
           body: esResp,

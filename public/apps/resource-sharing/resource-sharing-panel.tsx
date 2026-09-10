@@ -87,6 +87,10 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
   const [rows, setRows] = useState<ResourceRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [typesLoading, setTypesLoading] = useState(false);
+  // True when resource sharing is disabled on the selected data source's cluster
+  // (the types endpoint returns HTTP 501). Rendered as a friendly empty state
+  // rather than an error toast.
+  const [featureDisabled, setFeatureDisabled] = useState(false);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
   const [modalState, setModalState] = useState<{
     open: boolean;
@@ -107,6 +111,7 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
   useEffect(() => {
     (async () => {
       setTypesLoading(true);
+      setFeatureDisabled(false);
       setRows([]);
       try {
         const res = await api.listTypes();
@@ -150,7 +155,20 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
           setSelectedType('');
         }
       } catch (e: any) {
-        toasts.addError(e, { title: 'Failed to load types' });
+        // Resource sharing is a per-cluster feature; when it's disabled on the
+        // selected data source the types endpoint returns HTTP 501. Treat that as
+        // a friendly empty state rather than surfacing a raw error toast.
+        const status = e?.response?.status ?? e?.body?.statusCode;
+        const message: string = e?.body?.message ?? e?.message ?? '';
+        const isFeatureDisabled =
+          status === 501 || /not implemented|feature disabled/i.test(message);
+        if (isFeatureDisabled) {
+          setFeatureDisabled(true);
+          setTypeOptions([]);
+          setSelectedType('');
+        } else {
+          toasts.addError(e, { title: 'Failed to load types' });
+        }
       } finally {
         setTypesLoading(false);
       }
@@ -387,6 +405,18 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
               iconType="iInCircle"
               title={<h2>Loading types…</h2>}
               body={<p>Fetching resource types. This should only take a moment.</p>}
+            />
+          ) : featureDisabled ? (
+            <EuiEmptyPrompt
+              iconType="iInCircle"
+              title={<h2>Resource sharing isn’t enabled on this data source</h2>}
+              body={
+                <p>
+                  The selected data source doesn’t have the resource sharing feature enabled. Select
+                  a different data source, or enable resource sharing on this cluster to manage
+                  access here.
+                </p>
+              }
             />
           ) : typeOptions.length === 0 ? (
             <EuiEmptyPrompt
