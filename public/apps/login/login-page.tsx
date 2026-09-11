@@ -237,8 +237,9 @@ export function LoginPage(props: LoginPageDeps) {
 
           if (props.config.auth.anonymous_auth_enabled) {
             const anonymousConfig = props.config.ui[AuthType.ANONYMOUS].login;
+            const anonymousAuthLoginUrl = ANONYMOUS_AUTH_LOGIN + extractNextUrlFromWindowLocation();
             formBody.push(
-              renderLoginButton(AuthType.ANONYMOUS, ANONYMOUS_AUTH_LOGIN, anonymousConfig)
+              renderLoginButton(AuthType.ANONYMOUS, anonymousAuthLoginUrl, anonymousConfig)
             );
           }
 
