@@ -308,3 +308,39 @@ describe('Login page', () => {
     });
   });
 });
+
+describe('Anonymous auth login button', () => {
+  const mockHttpStart = {
+    basePath: {
+      serverBasePath: '/app/opensearch-dashboards',
+    },
+  };
+  const config = {
+    ui: configUI,
+    auth: {
+      type: [AuthType.BASIC],
+      logout_url: API_AUTH_LOGOUT,
+      anonymous_auth_enabled: true,
+    },
+  };
+
+  const anonymousLoginHref = () => {
+    const chrome = chromeServiceMock.createStartContract();
+    const component = shallow(
+      <LoginPage http={mockHttpStart as any} chrome={chrome} config={config as any} />
+    );
+    return component.find('[aria-label="anonymous_login_button"]').prop('href');
+  };
+
+  it('keeps the nextUrl query parameter', () => {
+    window.location.assign('http://localhost:5601/app/login?nextUrl=%2Fapp%2Fdashboards');
+    expect(anonymousLoginHref()).toEqual(
+      '/app/opensearch-dashboards/auth/anonymous?nextUrl=%2Fapp%2Fdashboards'
+    );
+  });
+
+  it('does not add a query parameter when nextUrl is absent', () => {
+    window.location.assign('http://localhost:5601/app/login');
+    expect(anonymousLoginHref()).toEqual('/app/opensearch-dashboards/auth/anonymous');
+  });
+});
