@@ -530,8 +530,17 @@ export class SecurityPlugin implements Plugin<
     return {
       ui: {
         ShareButton: createShareButton(core, this.resourceSharingEnabled),
+        // Fail closed when the local DOM-marker SPI isn't running: without it,
+        // no Share button can ever mount, so a consumer's "is sharing
+        // available" check should say no regardless of what the *selected*
+        // data source reports. This matters in multi-data-source deployments
+        // where the local cluster has resource sharing disabled but a remote
+        // data source has it enabled — without this gate, a consumer would
+        // render an Access column whose Share button never appears.
         isResourceSharingAvailable: (resourceType: string, dataSourceId?: string) =>
-          isResourceSharingAvailable(core.http, resourceType, dataSourceId),
+          this.resourceSharingEnabled
+            ? isResourceSharingAvailable(core.http, resourceType, dataSourceId)
+            : Promise.resolve(false),
       },
     };
   }
