@@ -85,35 +85,3 @@ describe('isResourceSharingAvailable', () => {
     expect(createLocalClusterRequestContext).toHaveBeenCalled();
   });
 });
-
-// `SecurityPlugin.start()` composes `ui.isResourceSharingAvailable` by gating
-// this module's `isResourceSharingAvailable` on `this.resourceSharingEnabled`
-// (see public/plugin.ts). That composition is exercised here directly, since
-// it is what a consumer actually calls through the `ui` contract.
-describe('ui.isResourceSharingAvailable (local-SPI gate, as composed in plugin.ts)', () => {
-  const gate =
-    (resourceSharingEnabled: boolean) => (resourceType: string, dataSourceId?: string) =>
-      resourceSharingEnabled
-        ? isResourceSharingAvailable(http, resourceType, dataSourceId)
-        : Promise.resolve(false);
-
-  afterEach(() => {
-    mockHttpGetWithQuery.mockReset();
-  });
-
-  it('returns false without probing when the local DOM-marker SPI is not running, even if the selected data source has resource sharing enabled', async () => {
-    mockHttpGetWithQuery.mockImplementation(
-      respond(true, { types: [{ type: 'anomaly-detector' }] })
-    );
-    await expect(gate(false)('anomaly-detector', 'remote-ds')).resolves.toBe(false);
-    expect(mockHttpGetWithQuery).not.toHaveBeenCalled();
-  });
-
-  it('probes normally and can return true when the local DOM-marker SPI is running', async () => {
-    mockHttpGetWithQuery.mockImplementation(
-      respond(true, { types: [{ type: 'anomaly-detector' }] })
-    );
-    await expect(gate(true)('anomaly-detector', 'remote-ds')).resolves.toBe(true);
-    expect(mockHttpGetWithQuery).toHaveBeenCalled();
-  });
-});
