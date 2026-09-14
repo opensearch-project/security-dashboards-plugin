@@ -91,10 +91,11 @@ describe('isResourceSharingAvailable', () => {
 // (see public/plugin.ts). That composition is exercised here directly, since
 // it is what a consumer actually calls through the `ui` contract.
 describe('ui.isResourceSharingAvailable (local-SPI gate, as composed in plugin.ts)', () => {
-  const gate = (resourceSharingEnabled: boolean) => (resourceType: string, dataSourceId?: string) =>
-    resourceSharingEnabled
-      ? isResourceSharingAvailable(http, resourceType, dataSourceId)
-      : Promise.resolve(false);
+  const gate =
+    (resourceSharingEnabled: boolean) => (resourceType: string, dataSourceId?: string) =>
+      resourceSharingEnabled
+        ? isResourceSharingAvailable(http, resourceType, dataSourceId)
+        : Promise.resolve(false);
 
   afterEach(() => {
     mockHttpGetWithQuery.mockReset();
