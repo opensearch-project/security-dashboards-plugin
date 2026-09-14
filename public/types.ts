@@ -39,6 +39,13 @@ export interface SecurityPluginStart {
      * `<securityDashboards.ui.ShareButton resourceId={id} resourceType={type} />`
      */
     ShareButton: React.ComponentType<ResourceShareButtonProps>;
+
+    /**
+     * Whether resource sharing is available for the given resource type on the
+     * selected data source. Evaluated per data source (feature flag + registered
+     * types) rather than via the local Dashboards capability. Fails closed.
+     */
+    isResourceSharingAvailable: (resourceType: string, dataSourceId?: string) => Promise<boolean>;
   };
 }
 

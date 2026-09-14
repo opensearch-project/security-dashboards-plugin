@@ -68,6 +68,7 @@ import {
 import { addTenantToShareURL } from './services/shared-link';
 import { createShareButton } from './apps/resource-sharing/share-button-embeddable';
 import { startShareButtonDomSpi } from './apps/resource-sharing/share-button-dom-spi';
+import { isResourceSharingAvailable } from './utils/resource-sharing-utils';
 import { interceptError } from './utils/logout-utils';
 import { tenantColumn, getNamespacesToRegister } from './apps/configuration/utils/tenant-utils';
 import { getDashboardsInfoSafe } from './utils/dashboards-info-utils';
@@ -303,7 +304,17 @@ export class SecurityPlugin implements Plugin<
             updater$: this.appStateUpdater,
             // Reuse your existing wrapper so default route/query handling is consistent:
             mount: async (params: AppMountParameters) => {
-              return mountWrapper(params, '/resource-access-management');
+              const { renderApp } =
+                await import('./apps/resource-sharing/resource-access-management-app');
+              const [coreStart, depsStart] = await core.getStartServices();
+              return renderApp(
+                coreStart,
+                depsStart as SecurityPluginStartDependencies,
+                params,
+                config,
+                '/resource-access-management',
+                deps.dataSourceManagement
+              );
             },
           });
         }
@@ -519,6 +530,8 @@ export class SecurityPlugin implements Plugin<
     return {
       ui: {
         ShareButton: createShareButton(core, this.resourceSharingEnabled),
+        isResourceSharingAvailable: (resourceType: string, dataSourceId?: string) =>
+          isResourceSharingAvailable(core.http, resourceType, dataSourceId),
       },
     };
   }

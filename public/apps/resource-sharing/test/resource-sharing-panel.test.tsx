@@ -459,4 +459,41 @@ describe('ResourceSharingPanel', () => {
       expect(api.listSharingRecords).toHaveBeenCalledWith('forecaster');
     });
   });
+
+  it('shows a friendly empty state (no error toast) when resource sharing is disabled', async () => {
+    const err: any = new Error('Not Implemented');
+    err.body = { statusCode: 501, message: 'Not Implemented' };
+    const api = {
+      listTypes: jest.fn().mockRejectedValue(err),
+      listSharingRecords: jest.fn(),
+      getSharingRecord: jest.fn(),
+      share: jest.fn(),
+      update: jest.fn(),
+    };
+
+    renderWithI18n(<ResourceSharingPanel api={api as any} toasts={toasts as any} />);
+
+    expect(
+      await screen.findByText(/Resource sharing isn.t enabled on this data source/i)
+    ).toBeInTheDocument();
+    expect(toasts.addError).not.toHaveBeenCalled();
+  });
+
+  it('surfaces an error toast when loading types fails for a non-501 reason', async () => {
+    const api = {
+      listTypes: jest.fn().mockRejectedValue(new Error('boom')),
+      listSharingRecords: jest.fn(),
+      getSharingRecord: jest.fn(),
+      share: jest.fn(),
+      update: jest.fn(),
+    };
+
+    renderWithI18n(<ResourceSharingPanel api={api as any} toasts={toasts as any} />);
+
+    await waitFor(() => {
+      expect(toasts.addError).toHaveBeenCalledWith(expect.any(Error), {
+        title: 'Failed to load types',
+      });
+    });
+  });
 });
