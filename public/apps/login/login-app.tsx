@@ -26,8 +26,14 @@ export function renderApp(
   params: AppMountParameters,
   config: ClientConfigType
 ) {
+  const applicationTitle = coreStart.injectedMetadata?.getBranding()?.applicationTitle;
   ReactDOM.render(
-    <LoginPage http={coreStart.http} chrome={coreStart.chrome} config={config} />,
+    <LoginPage
+      http={coreStart.http}
+      chrome={coreStart.chrome}
+      config={config}
+      applicationTitle={applicationTitle}
+    />,
     params.element
   );
   return () => ReactDOM.unmountComponentAtNode(params.element);
