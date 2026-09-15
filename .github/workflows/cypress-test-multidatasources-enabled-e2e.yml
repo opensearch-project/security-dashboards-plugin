@@ -86,6 +86,15 @@ jobs:
           curl https://localhost:9202/_cat/plugins -v -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} -k
         shell: bash
 
+      # Prevent the local node (started later with default discovery settings) from
+      # joining the remote node's cluster via loopback seed scanning. See #2506.
+      - name: Isolate remote cluster
+        uses: ./.github/actions/isolate-remote-cluster
+        with:
+          opensearch-version: ${{ env.OPENSEARCH_VERSION }}
+          admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
+          port: '9202'
+
       # Configure the Dashboard for multi datasources
       - name: Create OpenSearch Dashboards Config
         if: ${{ runner.os == 'Linux' }}
