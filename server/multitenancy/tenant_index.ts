@@ -121,14 +121,12 @@ export async function migrateTenantIndices(
     try {
       await indexMigrator.migrate();
     } catch (error) {
+      // Log and continue with the next tenant. A single tenant's migration failure
+      // should not take down the node: this catch previously called process.exit(1),
+      // so any error here ended the process. Where a supervisor restarts OpenSearch
+      // Dashboards automatically, that restart can find a partially migrated index
+      // and then wait indefinitely for a migration that nothing is running.
       logger.error(error);
-      // fail early, exit the kibana process
-      // NOTE: according to https://github.com/elastic/kibana/issues/41983 ,
-      //       PR https://github.com/elastic/kibana/pull/75819 , API to allow plugins
-      //       to set status will be available in 7.10, for now, we fail OpenSearchDashboards
-      //       process to indicate index migration error. Customer can fix their
-      //       tenant indices in ES then restart OpenSearchDashboards.
-      process.exit(1);
     }
   }
 }
