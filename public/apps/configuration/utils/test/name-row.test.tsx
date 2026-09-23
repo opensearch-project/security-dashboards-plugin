@@ -77,16 +77,16 @@ describe('Name row', () => {
     });
   });
 
-  it('should validate the blurred value rather than the value prop', (done) => {
+  // Asserted synchronously on purpose: the blur handler runs inline, and a
+  // process.nextTick/done variant would hang until the jest timeout instead of
+  // failing fast when the handler throws.
+  it('should validate the blurred value rather than the value prop', () => {
     (validateResourceName as jest.Mock).mockReturnValueOnce([]);
     const event = {
       target: { value: 'value-from-the-event' },
     } as React.FocusEvent<HTMLInputElement>;
     component.find('[data-test-subj="name-text"]').simulate('blur', event);
-    process.nextTick(() => {
-      expect(validateResourceName).toHaveBeenCalledWith(resourceType, 'value-from-the-event');
-      done();
-    });
+    expect(validateResourceName).toHaveBeenCalledWith(resourceType, 'value-from-the-event');
   });
 });
 
