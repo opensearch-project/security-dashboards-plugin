@@ -36,6 +36,7 @@ import {
   OPENID_AUTH_LOGIN_WITH_FRAGMENT,
   SAML_AUTH_LOGIN_WITH_FRAGMENT,
 } from '../../../common';
+import { validateNextUrl } from '../../../common/next_url_validation';
 import { getSavedTenant } from '../../utils/storage-utils';
 
 interface LoginPageDeps {
@@ -54,7 +55,12 @@ interface LoginButtonConfig {
 export function getNextPath(serverBasePath: string) {
   const urlParams = new URLSearchParams(window.location.search);
   let nextUrl = urlParams.get('nextUrl');
-  if (!nextUrl || nextUrl.toLowerCase().includes('//')) {
+  // Use the shared validator instead of a `//`-substring denylist. The denylist
+  // was bypassable via `/\evil.com` etc. (WHATWG-URL normalizes `\` to `/` for
+  // special schemes, so the resulting pathname becomes protocol-relative and
+  // window.location.assign navigates off-origin). validateNextUrl returns
+  // undefined on success, an error message string on failure.
+  if (!nextUrl || validateNextUrl(nextUrl, serverBasePath)) {
     // Appending the next url with trailing slash. We do so because in case the serverBasePath is empty, we can simply
     // redirect to '/'.
     nextUrl = serverBasePath + '/';
@@ -81,10 +87,13 @@ function redirect(serverBasePath: string) {
   window.location.assign(getNextPath(serverBasePath));
 }
 
-export function extractNextUrlFromWindowLocation(): string {
+export function extractNextUrlFromWindowLocation(serverBasePath: string = ''): string {
   const urlParams = new URLSearchParams(window.location.search);
   let nextUrl = urlParams.get('nextUrl');
-  if (!nextUrl || nextUrl.toLowerCase().includes('//')) {
+  // Match the client-side validator used in getNextPath. `validateNextUrl`
+  // returns undefined on success, a message string on failure — so treat any
+  // truthy return as "invalid" and drop the value.
+  if (!nextUrl || validateNextUrl(nextUrl, serverBasePath)) {
     return '';
   } else {
     nextUrl = encodeURIComponent(nextUrl);
