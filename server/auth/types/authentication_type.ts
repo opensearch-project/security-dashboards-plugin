@@ -28,6 +28,7 @@ import {
 } from 'opensearch-dashboards/server';
 import { SecurityPluginConfigType } from '../..';
 import { SecuritySessionCookie } from '../../session/security_cookie';
+import { getLogoutLoginUrl } from '../../session/logout_return';
 import { SecurityClient } from '../../backend/opensearch_security_client';
 import { resolveTenant, isValidTenant } from '../../multitenancy/tenant_resolver';
 import { UnauthenticatedError } from '../../errors';
@@ -135,6 +136,24 @@ export abstract class AuthenticationType implements IAuthenticationType {
       } catch (error: any) {
         this.logger.error(`Error parsing cookie: ${error.message}`);
         cookie = undefined;
+      }
+
+      const logoutLoginUrl = cookie?.logoutNextUrl
+        ? getLogoutLoginUrl(cookie, this.coreSetup.http.basePath.serverBasePath)
+        : undefined;
+      if (logoutLoginUrl) {
+        // Do not let background requests consume the return path or treat it as authentication.
+        if (this.isPageRequest(request)) {
+          this.sessionStorageFactory.asScoped(request).clear();
+          return toolkit.redirected({ location: logoutLoginUrl });
+        }
+        if (request.url.pathname?.startsWith('/bundles/')) {
+          return toolkit.notHandled();
+        }
+        if (this.authOptional(request)) {
+          return toolkit.authenticated();
+        }
+        return response.unauthorized();
       }
 
       // If the cookie is not valid, clear the cookie and send the request to the authentication workflow
