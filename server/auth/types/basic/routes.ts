@@ -19,6 +19,7 @@ import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { SecurityPluginConfigType } from '../../..';
 import { User } from '../../user';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
+import { validateNextUrl } from '../../../utils/next_url';
 import {
   ANONYMOUS_AUTH_LOGIN,
   API_AUTH_LOGIN,
@@ -145,7 +146,16 @@ export class BasicAuthRoutes {
     this.router.get(
       {
         path: ANONYMOUS_AUTH_LOGIN,
-        validate: false,
+        validate: {
+          query: schema.object({
+            nextUrl: schema.maybe(
+              schema.string({
+                validate: (nexturl) =>
+                  validateNextUrl(nexturl, this.coreSetup.http.basePath.serverBasePath),
+              })
+            ),
+          }),
+        },
         options: {
           authRequired: false,
         },
