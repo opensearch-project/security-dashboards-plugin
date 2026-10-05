@@ -37,6 +37,7 @@ import {
   includeAdditionalParameters,
 } from './helper';
 import { validateNextUrl } from '../../../utils/next_url';
+import { createLogoutSession } from '../../../session/logout_return';
 import {
   AuthType,
   OPENID_AUTH_LOGIN,
@@ -244,7 +245,16 @@ export class OpenIdAuthRoutes {
     this.router.get(
       {
         path: OPENID_AUTH_LOGOUT,
-        validate: false,
+        validate: {
+          query: schema.object({
+            nextUrl: schema.maybe(
+              schema.string({
+                validate: (nextUrl) =>
+                  validateNextUrl(nextUrl, this.core.http.basePath.serverBasePath),
+              })
+            ),
+          }),
+        },
       },
       async (context, request, response) => {
         const cookie = await this.sessionStorageFactory.asScoped(request).get();
@@ -260,11 +270,14 @@ export class OpenIdAuthRoutes {
 
         clearSplitCookies(request, extraAuthStorageOptions);
         this.sessionStorageFactory.asScoped(request).clear();
+        this.sessionStorageFactory
+          .asScoped(request)
+          .set(createLogoutSession(request.query.nextUrl, this.core.http.basePath.serverBasePath));
 
         // authHeaderValue is the bearer header, e.g. "Bearer <auth_token>"
         const token = tokenFromExtraStorage.length
           ? tokenFromExtraStorage.split(' ')[1]
-          : cookie?.credentials.authHeaderValue.split(' ')[1]; // get auth token
+          : cookie?.credentials?.authHeaderValue?.split(' ')[1]; // get auth token
         const nextUrl = getBaseRedirectUrl(this.config, this.core, request);
 
         const logoutQueryParams = {

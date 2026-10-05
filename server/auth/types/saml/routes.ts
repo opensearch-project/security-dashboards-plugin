@@ -20,6 +20,7 @@ import { SecurityPluginConfigType } from '../../..';
 import { SecurityClient } from '../../../backend/opensearch_security_client';
 import { CoreSetup } from '../../../../../../src/core/server';
 import { validateNextUrl } from '../../../utils/next_url';
+import { createLogoutSession } from '../../../session/logout_return';
 import { AuthType, SAML_AUTH_LOGIN, SAML_AUTH_LOGOUT } from '../../../../common';
 
 import {
@@ -396,7 +397,16 @@ export class SamlAuthRoutes {
     this.router.get(
       {
         path: SAML_AUTH_LOGOUT,
-        validate: false,
+        validate: {
+          query: schema.object({
+            nextUrl: schema.maybe(
+              schema.string({
+                validate: (nextUrl) =>
+                  validateNextUrl(nextUrl, this.coreSetup.http.basePath.serverBasePath),
+              })
+            ),
+          }),
+        },
       },
       async (context, request, response) => {
         try {
@@ -406,6 +416,14 @@ export class SamlAuthRoutes {
             this.getExtraAuthStorageOptions(context.security_plugin.logger)
           );
           this.sessionStorageFactory.asScoped(request).clear();
+          this.sessionStorageFactory
+            .asScoped(request)
+            .set(
+              createLogoutSession(
+                request.query.nextUrl,
+                this.coreSetup.http.basePath.serverBasePath
+              )
+            );
           // TODO: need a default logout page
           const redirectUrl =
             authInfo.sso_logout_url || this.coreSetup.http.basePath.serverBasePath || '/';
