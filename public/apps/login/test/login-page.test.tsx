@@ -248,6 +248,53 @@ describe('Login page', () => {
     });
   });
 
+  describe('renders login title', () => {
+    const config: ClientConfigType = {
+      ui: configUiDefault,
+      auth: {
+        type: AuthType.BASIC,
+      },
+    } as any;
+
+    it('renders default title when login title and branding applicationTitle are not configured', () => {
+      const component = shallow(
+        <LoginPage http={mockHttpStart as any} chrome={chrome} config={config as any} />
+      );
+      expect(component.contains('Log in to OpenSearch Dashboards')).toBe(true);
+    });
+
+    it('renders title derived from branding applicationTitle when login title is not configured', () => {
+      const component = shallow(
+        <LoginPage
+          http={mockHttpStart as any}
+          chrome={chrome}
+          config={config as any}
+          applicationTitle="My Custom Analytics"
+        />
+      );
+      expect(component.contains('Log in to My Custom Analytics')).toBe(true);
+    });
+
+    it('renders configured login title over branding applicationTitle', () => {
+      const configWithTitle: ClientConfigType = {
+        ui: configUI,
+        auth: {
+          type: AuthType.BASIC,
+        },
+      } as any;
+      const component = shallow(
+        <LoginPage
+          http={mockHttpStart as any}
+          chrome={chrome}
+          config={configWithTitle as any}
+          applicationTitle="My Custom Analytics"
+        />
+      );
+      expect(component.contains('Title1')).toBe(true);
+      expect(component.contains('Log in to My Custom Analytics')).toBe(false);
+    });
+  });
+
   describe('event trigger testing', () => {
     let component;
     const setState = jest.fn();
@@ -307,5 +354,41 @@ describe('Login page', () => {
       });
       expect(validateCurrentPassword).toHaveBeenCalledTimes(1);
     });
+  });
+});
+
+describe('Anonymous auth login button', () => {
+  const mockHttpStart = {
+    basePath: {
+      serverBasePath: '/app/opensearch-dashboards',
+    },
+  };
+  const config = {
+    ui: configUI,
+    auth: {
+      type: [AuthType.BASIC],
+      logout_url: API_AUTH_LOGOUT,
+      anonymous_auth_enabled: true,
+    },
+  };
+
+  const anonymousLoginHref = () => {
+    const chrome = chromeServiceMock.createStartContract();
+    const component = shallow(
+      <LoginPage http={mockHttpStart as any} chrome={chrome} config={config as any} />
+    );
+    return component.find('[aria-label="anonymous_login_button"]').prop('href');
+  };
+
+  it('keeps the nextUrl query parameter', () => {
+    window.location.assign('http://localhost:5601/app/login?nextUrl=%2Fapp%2Fdashboards');
+    expect(anonymousLoginHref()).toEqual(
+      '/app/opensearch-dashboards/auth/anonymous?nextUrl=%2Fapp%2Fdashboards'
+    );
+  });
+
+  it('does not add a query parameter when nextUrl is absent', () => {
+    window.location.assign('http://localhost:5601/app/login');
+    expect(anonymousLoginHref()).toEqual('/app/opensearch-dashboards/auth/anonymous');
   });
 });

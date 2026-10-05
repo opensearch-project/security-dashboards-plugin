@@ -337,7 +337,12 @@ export class SamlAuthRoutes {
         path: '/auth/saml/redirectUrlFragment',
         validate: {
           query: schema.object({
-            nextUrl: schema.any(),
+            nextUrl: schema.maybe(
+              schema.string({
+                validate: (nexturl) =>
+                  validateNextUrl(nexturl, this.coreSetup.http.basePath.serverBasePath),
+              })
+            ),
           }),
         },
         options: {
@@ -362,7 +367,16 @@ export class SamlAuthRoutes {
     this.coreSetup.http.resources.register(
       {
         path: '/auth/saml/redirectUrlFragment.js',
-        validate: false,
+        validate: {
+          query: schema.object({
+            nextUrl: schema.maybe(
+              schema.string({
+                validate: (nexturl) =>
+                  validateNextUrl(nexturl, this.coreSetup.http.basePath.serverBasePath),
+              })
+            ),
+          }),
+        },
         options: {
           authRequired: true,
         },

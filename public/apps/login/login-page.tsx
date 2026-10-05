@@ -37,12 +37,15 @@ import {
   OPENID_AUTH_LOGIN_WITH_FRAGMENT,
   SAML_AUTH_LOGIN_WITH_FRAGMENT,
 } from '../../../common';
+import { validateNextUrl } from '../../../common/next_url_validation';
 import { getSavedTenant } from '../../utils/storage-utils';
 
 interface LoginPageDeps {
   http: CoreStart['http'];
   chrome: CoreStart['chrome'];
   config: ClientConfigType;
+  // `opensearchDashboards.branding.applicationTitle`, if customized
+  applicationTitle?: string;
 }
 
 interface LoginButtonConfig {
@@ -55,7 +58,12 @@ interface LoginButtonConfig {
 export function getNextPath(serverBasePath: string) {
   const urlParams = new URLSearchParams(window.location.search);
   let nextUrl = urlParams.get('nextUrl');
-  if (!nextUrl || nextUrl.toLowerCase().includes('//')) {
+  // Use the shared validator instead of a `//`-substring denylist. The denylist
+  // was bypassable via `/\evil.com` etc. (WHATWG-URL normalizes `\` to `/` for
+  // special schemes, so the resulting pathname becomes protocol-relative and
+  // window.location.assign navigates off-origin). validateNextUrl returns
+  // undefined on success, an error message string on failure.
+  if (!nextUrl || validateNextUrl(nextUrl, serverBasePath)) {
     // Appending the next url with trailing slash. We do so because in case the serverBasePath is empty, we can simply
     // redirect to '/'.
     nextUrl = serverBasePath + '/';
@@ -82,10 +90,13 @@ function redirect(serverBasePath: string) {
   window.location.assign(getNextPath(serverBasePath));
 }
 
-export function extractNextUrlFromWindowLocation(): string {
+export function extractNextUrlFromWindowLocation(serverBasePath: string = ''): string {
   const urlParams = new URLSearchParams(window.location.search);
   let nextUrl = urlParams.get('nextUrl');
-  if (!nextUrl || nextUrl.toLowerCase().includes('//')) {
+  // Match the client-side validator used in getNextPath. `validateNextUrl`
+  // returns undefined on success, a message string on failure — so treat any
+  // truthy return as "invalid" and drop the value.
+  if (!nextUrl || validateNextUrl(nextUrl, serverBasePath)) {
     return '';
   } else {
     nextUrl = encodeURIComponent(nextUrl);
@@ -238,8 +249,9 @@ export function LoginPage(props: LoginPageDeps) {
 
           if (props.config.auth.anonymous_auth_enabled) {
             const anonymousConfig = props.config.ui[AuthType.ANONYMOUS].login;
+            const anonymousAuthLoginUrl = ANONYMOUS_AUTH_LOGIN + extractNextUrlFromWindowLocation();
             formBody.push(
-              renderLoginButton(AuthType.ANONYMOUS, ANONYMOUS_AUTH_LOGIN, anonymousConfig)
+              renderLoginButton(AuthType.ANONYMOUS, anonymousAuthLoginUrl, anonymousConfig)
             );
           }
 
@@ -291,7 +303,8 @@ export function LoginPage(props: LoginPageDeps) {
       )}
       <EuiSpacer size="s" />
       <EuiText size="m" textAlign="center">
-        {props.config.ui.basicauth.login.title || 'Log in to OpenSearch Dashboards'}
+        {props.config.ui.basicauth.login.title ||
+          `Log in to ${props.applicationTitle || 'OpenSearch Dashboards'}`}
       </EuiText>
       <EuiSpacer size="s" />
       <EuiText size="s" textAlign="center">

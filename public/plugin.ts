@@ -69,6 +69,7 @@ import {
 import { addTenantToShareURL } from './services/shared-link';
 import { createShareButton } from './apps/resource-sharing/share-button-embeddable';
 import { startShareButtonDomSpi } from './apps/resource-sharing/share-button-dom-spi';
+import { isResourceSharingAvailable } from './utils/resource-sharing-utils';
 import { interceptError } from './utils/logout-utils';
 import { tenantColumn, getNamespacesToRegister } from './apps/configuration/utils/tenant-utils';
 import { getDashboardsInfoSafe } from './utils/dashboards-info-utils';
@@ -304,7 +305,17 @@ export class SecurityPlugin implements Plugin<
             updater$: this.appStateUpdater,
             // Reuse your existing wrapper so default route/query handling is consistent:
             mount: async (params: AppMountParameters) => {
-              return mountWrapper(params, '/resource-access-management');
+              const { renderApp } =
+                await import('./apps/resource-sharing/resource-access-management-app');
+              const [coreStart, depsStart] = await core.getStartServices();
+              return renderApp(
+                coreStart,
+                depsStart as SecurityPluginStartDependencies,
+                params,
+                config,
+                '/resource-access-management',
+                deps.dataSourceManagement
+              );
             },
           });
         }
@@ -512,14 +523,25 @@ export class SecurityPlugin implements Plugin<
     }
 
     // DOM-marker SPI: any plugin can render a `data-resource-share-button`
-    // marker element and the centralized share button mounts into it.
-    if (this.resourceSharingEnabled) {
-      startShareButtonDomSpi(core);
-    }
+    // marker element and the centralized share button mounts into it. The
+    // watcher itself is always started — it is a passive MutationObserver
+    // with no dependency on the local cluster's resource-sharing setting.
+    // Each mounted button independently fetches sharing info scoped to the
+    // marker's own `dataSourceId` (see ResourceShareButton) and self-hides
+    // (501/no matching type) when sharing isn't available on that specific
+    // data source. Gating the watcher's startup on the local flag previously
+    // meant that disabling resource sharing on the local cluster silently
+    // stopped every button from ever mounting, even for remote data sources
+    // that had it enabled — producing a visible but permanently empty Access
+    // column (see security-dashboards-plugin#2525 / kaituo's review on
+    // anomaly-detection-dashboards-plugin#1238).
+    startShareButtonDomSpi(core);
 
     return {
       ui: {
-        ShareButton: createShareButton(core, this.resourceSharingEnabled),
+        ShareButton: createShareButton(core),
+        isResourceSharingAvailable: (resourceType: string, dataSourceId?: string) =>
+          isResourceSharingAvailable(core.http, resourceType, dataSourceId),
       },
     };
   }
