@@ -49,6 +49,7 @@
     "zxcvbn": "^4.4.2"
   },
   "resolutions": {
+    "qs": "6.15.2",
     "selenium-webdriver": "4.10.0",
     "glob-parent": "^5.1.2",
     "debug": "^4.3.4",
