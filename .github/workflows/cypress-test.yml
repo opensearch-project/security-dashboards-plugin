@@ -51,14 +51,6 @@ jobs:
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
           jdk-version: 21
 
-      - name: Verify base Dashboards roles are available
-        run: |
-          for role in base_dashboards_user base_dashboards_user_read_only; do
-            curl --fail --silent --show-error --insecure \
-              --user "admin:${OPENSEARCH_INITIAL_ADMIN_PASSWORD}" \
-              "https://localhost:9200/_plugins/_security/api/roles/${role}" > /dev/null
-          done
-
       # Configure the Dashboard
       - name: Configure OpenSearch Dashboards for cypress
         run: |
