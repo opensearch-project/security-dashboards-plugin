@@ -67,10 +67,10 @@
     "cipher-base": "^1.0.7",
     "sha.js": "^2.4.5",
     "basic-ftp": "^5.2.0",
-    "@xmldom/xmldom": "^0.8.13",
-    "xmldom": "npm:@xmldom/xmldom@^0.8.13",
-    "brace-expansion": "2.1.4",
-    "ip-address": "10.3.1",
+    "@xmldom/xmldom": "^0.8.15",
+    "xmldom": "npm:@xmldom/xmldom@^0.8.15",
+    "brace-expansion": "2.1.7",
+    "ip-address": "10.7.4",
     "qs": "6.15.2"
   }
 }
