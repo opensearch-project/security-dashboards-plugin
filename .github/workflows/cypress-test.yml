@@ -51,6 +51,14 @@ jobs:
           admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
           jdk-version: 21
 
+      - name: Verify base Dashboards roles are available
+        run: |
+          for role in base_dashboards_user base_dashboards_user_read_only; do
+            curl --fail --silent --show-error --insecure \
+              --user "admin:${OPENSEARCH_INITIAL_ADMIN_PASSWORD}" \
+              "https://localhost:9200/_plugins/_security/api/roles/${role}" > /dev/null
+          done
+
       # Configure the Dashboard
       - name: Configure OpenSearch Dashboards for cypress
         run: |
@@ -63,7 +71,7 @@ jobs:
           opensearch.requestHeadersWhitelist: [ authorization,securitytenant ]
           opensearch_security.multitenancy.enabled: true
           opensearch_security.multitenancy.tenants.preferred: ["Private", "Global"]
-          opensearch_security.readonly_mode.roles: ["kibana_read_only"]
+          opensearch_security.readonly_mode.roles: ["kibana_read_only", "base_dashboards_user_read_only"]
           opensearch_security.cookie.secure: false
           opensearch_security.multitenancy.enable_aggregation_view: true
           EOT
@@ -96,6 +104,7 @@ jobs:
           CYPRESS_VERIFY_TIMEOUT=60000 yarn cypress:run-with-security-and-aggregation-view --browser chrome --spec "cypress/integration/plugins/security-dashboards-plugin/aggregation_view.js"
           CYPRESS_VERIFY_TIMEOUT=60000 yarn cypress:run-with-security --browser chrome --spec "cypress/integration/plugins/security-dashboards-plugin/multi_tenancy.js"
           CYPRESS_VERIFY_TIMEOUT=60000 yarn cypress:run-with-security --browser chrome --spec "cypress/integration/plugins/security-dashboards-plugin/default_tenant.js"
+          CYPRESS_VERIFY_TIMEOUT=60000 yarn cypress:run-with-security --browser chrome --spec "cypress/integration/plugins/security-dashboards-plugin/readonly.js"
 
       - name: Configure and Run OpenSearch Dashboards with Cypress Test Cases Release Tests
         run: |
