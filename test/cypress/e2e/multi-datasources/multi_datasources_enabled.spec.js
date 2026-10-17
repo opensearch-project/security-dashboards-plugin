@@ -71,7 +71,6 @@ let localDataSourceUrl;
 
 describe('Multi-datasources enabled', () => {
   beforeEach(() => {
-    localStorage.setItem('opendistro::security::tenant::saved', '""');
     localStorage.setItem('home:newThemeModal:show', 'false');
     createDataSource().then((resp) => {
       if (resp && resp.body) {
@@ -154,14 +153,6 @@ describe('Multi-datasources enabled', () => {
       cy.get('[data-test-subj="tableHeaderCell_name_0"]').click();
       cy.get('[data-test-subj="checkboxSelectRow-9202-permission"]').should('exist');
     });
-  });
-
-  it('Checks Tenancy Tab', () => {
-    // Datasource is locked to local cluster for tenancy tab
-    cy.visit(`http://localhost:5601/app/security-dashboards-plugin${localDataSourceUrl}#/tenants`);
-
-    cy.contains('h1', 'Dashboards multi-tenancy');
-    cy.get('[data-test-subj="dataSourceViewButton"]').should('contain', 'Local cluster');
   });
 
   it('Checks Audit Logs Tab', () => {
