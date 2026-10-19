@@ -184,9 +184,14 @@ describe('start OpenSearch Dashboards server', () => {
         }
         const user = await createOrUpdateEntityAsAdmin(root, 'internalusers', name, {
           password,
-          opendistro_security_roles: roles,
         });
         expect(user.status).toEqual(200);
+        for (const role of roles) {
+          const mapping = await createOrUpdateEntityAsAdmin(root, 'rolesmapping', role, {
+            users: [name],
+          });
+          expect(mapping.status).toEqual(200);
+        }
         const authInfo = await osdTestServer.request
           .get(root, '/api/v1/auth/authinfo')
           .set(AUTHORIZATION_HEADER_NAME, credentials);
@@ -224,6 +229,11 @@ describe('start OpenSearch Dashboards server', () => {
           writeStatus === 200 ? 'base-role-updated' : 'base-role-original'
         );
       } finally {
+        for (const role of roles) {
+          await osdTestServer.request
+            .delete(root, `/api/v1/configuration/rolesmapping/${role}`)
+            .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
+        }
         await osdTestServer.request
           .delete(root, objectPath)
           .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
