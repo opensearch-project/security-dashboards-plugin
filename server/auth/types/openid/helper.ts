@@ -18,6 +18,7 @@ import { parse, stringify } from 'querystring';
 import { CoreSetup } from 'opensearch-dashboards/server';
 import { SecurityPluginConfigType } from '../../..';
 import { OpenSearchDashboardsRequest } from '../../../../../../src/core/server';
+import { validateNextUrl } from '../../../utils/next_url';
 
 export function parseTokenResponse(payload: Buffer) {
   const payloadString = payload.toString();
@@ -77,7 +78,18 @@ export function getNextUrl(
   core: CoreSetup,
   request: OpenSearchDashboardsRequest
 ): string {
-  return request.query.nextUrl || getBaseRedirectUrl(config, core, request) || '/';
+  const requestedNextUrl = request.query?.nextUrl;
+  // Defense-in-depth: even if the caller's route schema already ran validateNextUrl on
+  // request.query.nextUrl, re-validate here so this helper cannot return an off-origin
+  // URL if a future caller is added on a route lacking schema validation.
+  // validateNextUrl returns undefined on success and an error message string on failure.
+  if (
+    typeof requestedNextUrl === 'string' &&
+    !validateNextUrl(requestedNextUrl, core.http?.basePath?.serverBasePath)
+  ) {
+    return requestedNextUrl;
+  }
+  return getBaseRedirectUrl(config, core, request) || '/';
 }
 
 export async function callTokenEndpoint(

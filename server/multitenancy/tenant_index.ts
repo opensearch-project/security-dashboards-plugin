@@ -126,7 +126,7 @@ export async function migrateTenantIndices(
       // so any error here ended the process. Where a supervisor restarts OpenSearch
       // Dashboards automatically, that restart can find a partially migrated index
       // and then wait indefinitely for a migration that nothing is running.
-      logger.error(error);
+      logger.error(`Tenant index migration failed for ${indexName}: ${error}`);
     }
   }
 }

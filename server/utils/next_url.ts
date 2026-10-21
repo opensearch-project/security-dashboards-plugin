@@ -19,6 +19,14 @@ import { OpenSearchDashboardsRequest } from 'opensearch-dashboards/server';
 import { encodeUriQuery } from '../../../../src/plugins/opensearch_dashboards_utils/common/url/encode_uri_query';
 import { getRedirectUrl } from '../../../../src/core/server/http';
 
+// The validator itself lives in common/ so the same function can be reused from
+// public/ code that redirects after login. Re-exported here for backward compat
+// with existing server-side callers.
+export {
+  validateNextUrl,
+  INVALID_NEXT_URL_PARAMETER_MESSAGE,
+} from '../../common/next_url_validation';
+
 export function composeNextUrlQueryParam(
   request: OpenSearchDashboardsRequest,
   basePath: string
@@ -45,38 +53,4 @@ export function composeNextUrlQueryParam(
 
 export interface ParsedUrlQueryParams extends ParsedUrlQuery {
   nextUrl: string;
-}
-
-export const INVALID_NEXT_URL_PARAMETER_MESSAGE = 'Invalid nextUrl parameter.';
-
-/**
- * We require the nextUrl parameter to be an relative url.
- *
- * Here we validate the nextUrl parameter by checking if it meets the following criteria:
- *   - nextUrl starts with the basePath (/ if no serverBasePath is set)
- *   - If nextUrl is longer than 2 chars then the second character must be alphabetical or underscore
- *   - The following characters must be alphanumeric, dash or underscore
- * Note: url has been decoded by OpenSearchDashboards.
- *
- * @param url url string.
- * @returns error message if nextUrl is invalid, otherwise void.
- */
-export function validateNextUrl(
-  url: string | undefined,
-  basePath: string | undefined
-): string | void {
-  if (url) {
-    const path = url.split(/\?|#/)[0];
-    const bp = basePath || '';
-    if (!path.startsWith(bp)) {
-      return INVALID_NEXT_URL_PARAMETER_MESSAGE;
-    }
-    const pathMinusBase = path.replace(bp, '');
-    if (
-      (pathMinusBase && !pathMinusBase.startsWith('/')) ||
-      (pathMinusBase.length >= 2 && !/^\/[a-zA-Z_][\/a-zA-Z0-9-_]+$/.test(pathMinusBase))
-    ) {
-      return INVALID_NEXT_URL_PARAMETER_MESSAGE;
-    }
-  }
 }

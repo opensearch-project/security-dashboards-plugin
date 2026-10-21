@@ -32,8 +32,11 @@ export interface NameRowDeps extends FormRowDeps {
 export function NameRow(props: NameRowDeps) {
   const [errors, setErrors] = React.useState<string[]>([]);
 
-  const validateName = () => {
-    const errorMessages = validateResourceName(props.resourceType, props.resourceName);
+  // Validate the value we are handed rather than props.resourceName. The prop
+  // carries whatever the last committed render held, so a blur that arrives
+  // before React has applied the latest keystroke would validate a stale name.
+  const validateName = (resourceName: string) => {
+    const errorMessages = validateResourceName(props.resourceType, resourceName);
     props.setIsFormValid(!(errorMessages.length > 0));
     setErrors(errorMessages);
   };
@@ -53,9 +56,16 @@ export function NameRow(props: NameRowDeps) {
         maxLength={MAX_INPUT_LENGTH}
         onChange={(e) => {
           props.setNameState(e.target.value);
+          // Once the field has been flagged, re-check as the user types so the
+          // error and the disabled submit button clear again when the name
+          // becomes valid. Only an already-invalid field is re-validated, so a
+          // half-typed name is never flagged mid-entry.
+          if (errors.length > 0) {
+            validateName(e.target.value);
+          }
         }}
-        onBlur={() => {
-          validateName();
+        onBlur={(e) => {
+          validateName(e.target.value);
         }}
         disabled={props.action === 'edit'}
         isInvalid={errors.length > 0}

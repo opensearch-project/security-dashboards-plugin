@@ -157,12 +157,14 @@ describe('start OpenSearch Dashboards server', () => {
   it.each<[string, string | undefined, number, number]>([
     ['base_dashboards_user', 'kibana_all_write', 200, 200],
     ['base_dashboards_user_read_only', 'kibana_all_read', 200, 403],
-    ['base_dashboards_user', undefined, 403, 403],
-    ['base_dashboards_user_read_only', undefined, 403, 403],
+    ['base_dashboards_user', undefined, 404, 404],
+    ['base_dashboards_user_read_only', undefined, 404, 404],
   ])(
     '%s with tenant permission %s: saved-object read %s, write %s',
     async (baseRole, tenantPermission, readStatus, writeStatus) => {
       const name = `base_role_${Date.now()}`;
+      // A tenant named after the user collides with their private tenant's backing index.
+      const tenantName = `${name}_tenant`;
       const password = 'testUserPassword123!';
       const roles = tenantPermission ? [baseRole, name] : [baseRole];
       const credentials = `Basic ${Buffer.from(`${name}:${password}`).toString('base64')}`;
@@ -170,7 +172,7 @@ describe('start OpenSearch Dashboards server', () => {
       const objectPath = `/api/saved_objects/config/${name}`;
 
       try {
-        const tenant = await createOrUpdateEntityAsAdmin(root, 'tenants', name, {
+        const tenant = await createOrUpdateEntityAsAdmin(root, 'tenants', tenantName, {
           description: 'Base Dashboards role integration test',
         });
         expect(tenant.status).toEqual(200);
@@ -178,7 +180,9 @@ describe('start OpenSearch Dashboards server', () => {
           const role = await createOrUpdateEntityAsAdmin(root, 'roles', name, {
             cluster_permissions: [],
             index_permissions: [],
-            tenant_permissions: [{ tenant_patterns: [name], allowed_actions: [tenantPermission] }],
+            tenant_permissions: [
+              { tenant_patterns: [tenantName], allowed_actions: [tenantPermission] },
+            ],
           });
           expect(role.status).toEqual(200);
         }
@@ -197,18 +201,30 @@ describe('start OpenSearch Dashboards server', () => {
           .set(AUTHORIZATION_HEADER_NAME, credentials);
         expect(authInfo.status).toEqual(200);
         expect(authInfo.body.roles.sort()).toEqual([...roles].sort());
+        const selectedTenant = await osdTestServer.request
+          .get(root, '/api/v1/auth/authinfo')
+          .set(AUTHORIZATION_HEADER_NAME, credentials)
+          .set('securitytenant', tenantName);
+        expect(selectedTenant.status).toEqual(200);
+        // An inaccessible requested tenant falls back to Private, where the seeded object does not exist.
+        expect(selectedTenant.body.user_requested_tenant).toEqual(
+          tenantPermission ? tenantName : '__user__'
+        );
+        expect(selectedTenant.body.tenants[tenantName]).toEqual(
+          tenantPermission ? tenantPermission === 'kibana_all_write' : undefined
+        );
 
         const seed = await osdTestServer.request
           .post(root, objectPath)
           .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
-          .set('securitytenant', name)
+          .set('securitytenant', tenantName)
           .send({ attributes: { defaultIndex: 'base-role-original' } });
         expect(seed.status).toEqual(200);
 
         const read = await osdTestServer.request
           .get(root, objectPath)
           .set(AUTHORIZATION_HEADER_NAME, credentials)
-          .set('securitytenant', name);
+          .set('securitytenant', tenantName);
         expect(read.status).toEqual(readStatus);
         if (readStatus === 200) {
           expect(read.body.attributes.defaultIndex).toEqual('base-role-original');
@@ -216,14 +232,14 @@ describe('start OpenSearch Dashboards server', () => {
         const write = await osdTestServer.request
           .put(root, objectPath)
           .set(AUTHORIZATION_HEADER_NAME, credentials)
-          .set('securitytenant', name)
+          .set('securitytenant', tenantName)
           .send({ attributes: { defaultIndex: 'base-role-updated' } });
         expect(write.status).toEqual(writeStatus);
 
         const stored = await osdTestServer.request
           .get(root, objectPath)
           .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
-          .set('securitytenant', name);
+          .set('securitytenant', tenantName);
         expect(stored.status).toEqual(200);
         expect(stored.body.attributes.defaultIndex).toEqual(
           writeStatus === 200 ? 'base-role-updated' : 'base-role-original'
@@ -237,10 +253,13 @@ describe('start OpenSearch Dashboards server', () => {
         await osdTestServer.request
           .delete(root, objectPath)
           .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS)
-          .set('securitytenant', name);
+          .set('securitytenant', tenantName);
         for (const entity of ['internalusers', 'roles', 'tenants']) {
           await osdTestServer.request
-            .delete(root, `/api/v1/configuration/${entity}/${name}`)
+            .delete(
+              root,
+              `/api/v1/configuration/${entity}/${entity === 'tenants' ? tenantName : name}`
+            )
             .set(AUTHORIZATION_HEADER_NAME, ADMIN_CREDENTIALS);
         }
       }
