@@ -18,6 +18,8 @@
     ".lock",
     ".snap",
     ".git",
+    ".husky",
+    ".github",
     ".gitignore",
     ".prettierrc",
     ".prettierignore",
