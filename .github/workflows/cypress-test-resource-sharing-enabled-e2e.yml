@@ -8,6 +8,8 @@ env:
   TERM: xterm
   PLUGIN_NAME: opensearch-security
   OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
+  # This suite does not switch themes; match the UI overrides below.
+  OSD_OPTIMIZER_THEMES: v8light
   
 jobs:
   tests:
@@ -109,6 +111,10 @@ jobs:
         run: |
           cat << 'EOT' > resource_sharing_config.yml
           server.host: "localhost"
+          uiSettings.overrides:
+            "theme:version": "v8"
+            "theme:darkMode": false
+            "theme:enableUserControl": false
           opensearch.hosts: ["https://localhost:9200"]
           opensearch.ssl.verificationMode: none
           opensearch.username: "kibanaserver"
