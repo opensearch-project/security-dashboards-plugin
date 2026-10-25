@@ -21,39 +21,22 @@ jest.mock('../configuration/utils/request-utils', () => ({
 }));
 
 describe('explicit logout destination', () => {
-  const windowDescriptor = Object.getOwnPropertyDescriptor(global, 'window');
-  const storageDescriptor = Object.getOwnPropertyDescriptor(global, 'sessionStorage');
-  let location: any;
+  const destination = '/osd/app/discover?security_tenant=team#/view/saved?_a=(query:test)';
 
   beforeEach(() => {
-    location = {
-      pathname: '/osd/app/discover',
-      search: '?security_tenant=team',
-      hash: '#/view/saved?_a=(query:test)',
-      assign: jest.fn(),
-    };
-    Object.defineProperty(global, 'window', { configurable: true, value: { location } });
-    Object.defineProperty(global, 'sessionStorage', {
-      configurable: true,
-      value: { clear: jest.fn() },
-    });
+    // Use the shared jest-location-mock rather than replacing JSDOM's window.
+    window.location.assign(`https://dashboards.example${destination}`);
+    jest.spyOn(Storage.prototype, 'clear');
   });
 
-  afterEach(() => {
-    if (windowDescriptor) Object.defineProperty(global, 'window', windowDescriptor);
-    else delete (global as any).window;
-    if (storageDescriptor) Object.defineProperty(global, 'sessionStorage', storageDescriptor);
-    else delete (global as any).sessionStorage;
-  });
+  afterEach(() => jest.restoreAllMocks());
 
   test('Basic logout preserves the full destination and disables automatic login', async () => {
     await logout({ basePath: { serverBasePath: '/osd' } } as any);
-    const redirect = new URL(location.assign.mock.calls[0][0], 'https://dashboards.example');
+    const redirect = new URL(window.location.href);
     expect(redirect.pathname).toBe('/osd/app/login');
     expect(redirect.searchParams.get('auto_login')).toBe('false');
-    expect(redirect.searchParams.get('nextUrl')).toBe(
-      location.pathname + location.search + location.hash
-    );
+    expect(redirect.searchParams.get('nextUrl')).toBe(destination);
     expect(sessionStorage.clear).toHaveBeenCalled();
   });
 
@@ -61,17 +44,15 @@ describe('explicit logout destination', () => {
     'passes the destination to %s',
     async (endpoint) => {
       await externalLogout({ basePath: { serverBasePath: '/osd' } } as any, endpoint);
-      const redirect = new URL(location.assign.mock.calls[0][0], 'https://dashboards.example');
+      const redirect = new URL(window.location.href);
       expect(redirect.pathname).toBe('/osd' + endpoint);
-      expect(redirect.searchParams.get('nextUrl')).toBe(
-        location.pathname + location.search + location.hash
-      );
+      expect(redirect.searchParams.get('nextUrl')).toBe(destination);
       expect(sessionStorage.clear).toHaveBeenCalled();
     }
   );
 
   test('preserves an explicitly configured Basic logout URL', async () => {
     await logout({ basePath: { serverBasePath: '' } } as any, 'https://example.org/logged-out');
-    expect(location.assign).toHaveBeenCalledWith('https://example.org/logged-out');
+    expect(window.location.href).toBe('https://example.org/logged-out');
   });
 });
