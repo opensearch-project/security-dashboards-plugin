@@ -80,7 +80,7 @@ jobs:
 
 
       - name: Run Opensearch with security + sample resource plugin
-        uses: opensearch-project/opensearch-build/.github/actions/start-opensearch@f69e41dd15eaa28dd5cc0336fe0fd29167c74708
+        uses: opensearch-project/opensearch-build/.github/actions/start-opensearch@350f76bcccd3a8e3b85c03a77d52abdfb0fcbecf
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: "file:$(pwd)/opensearch-security.zip,file:${{ env.SAMPLE_PLUGIN_ZIP }}"
