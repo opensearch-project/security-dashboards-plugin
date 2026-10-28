@@ -128,6 +128,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
     .map((option: string) => ({
       label: option,
     }));
+  const shouldDisableCustom = customTenantOptions.length === 0;
 
   const DEFAULT_READONLY_ROLES = ['kibana_read_only'];
   const readonly = roles.some(
@@ -196,7 +197,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
     {
       id: CUSTOM_TENANT_RADIO_ID,
       label: <>Choose from custom</>,
-      disabled: customTenantOptions.length === 0,
+      disabled: shouldDisableCustom,
     },
   ];
 
@@ -265,6 +266,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
           singleSelection={{ asPlainText: true }}
           selectedOptions={selectedCustomTenantOption}
           onChange={onCustomTenantChange}
+          isDisabled={shouldDisableCustom}
           // For vertical alignment with the radio option.
           style={{ marginLeft: '24px' }}
         />
