@@ -14,7 +14,7 @@
  */
 
 import { HttpStart } from 'opensearch-dashboards/public';
-import { API_AUTH_LOGOUT } from '../../../common';
+import { API_AUTH_LOGOUT, AuthType, JWT_AUTH_LOGOUT } from '../../../common';
 import { setShouldShowTenantPopup } from '../../utils/storage-utils';
 import { API_ENDPOINT_ACCOUNT_INFO } from './constants';
 import { AccountInfo } from './types';
@@ -33,6 +33,11 @@ export async function fetchAccountInfoSafe(http: HttpStart): Promise<AccountInfo
     url: API_ENDPOINT_ACCOUNT_INFO,
     ignores: [401],
   });
+}
+
+export function getLogoutEndpoint(authType?: string): string {
+  // Basic auth owns /auth/logout, so JWT logs out on its own route to also clear its extra cookies.
+  return authType?.toLowerCase() === AuthType.JWT ? JWT_AUTH_LOGOUT : API_AUTH_LOGOUT;
 }
 
 export async function logout(

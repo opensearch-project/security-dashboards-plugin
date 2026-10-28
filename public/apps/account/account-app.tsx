@@ -19,7 +19,7 @@ import { createRoot } from 'react-dom/client';
 import { AccountNavButton } from './account-nav-button';
 import { fetchAccountInfoSafe } from './utils';
 import { ClientConfigType } from '../../types';
-import { AuthType, CUSTOM_ERROR_PAGE_URI, ERROR_MISSING_ROLE_PATH } from '../../../common';
+import { CUSTOM_ERROR_PAGE_URI, ERROR_MISSING_ROLE_PATH } from '../../../common';
 import { fetchCurrentTenant, selectTenant } from '../configuration/utils/tenant-utils';
 import {
   getSavedTenant,
@@ -27,7 +27,7 @@ import {
   setShouldShowTenantPopup,
 } from '../../utils/storage-utils';
 import { constructErrorMessageAndLog } from '../error-utils';
-import { fetchCurrentAuthType } from '../../utils/logout-utils';
+import { getCurrentAuthType } from '../../utils/logout-utils';
 import { getDashboardsInfoSafe } from '../../utils/dashboards-info-utils';
 
 function tenantSpecifiedInUrl() {
@@ -38,19 +38,7 @@ function tenantSpecifiedInUrl() {
 }
 
 export async function setupTopNavButton(coreStart: CoreStart, config: ClientConfigType) {
-  const authType = config.auth?.type;
-  let currAuthType = '';
-  if (typeof authType === 'string') {
-    currAuthType = authType;
-  } else if (Array.isArray(authType) && authType.length === 1) {
-    currAuthType = authType[0];
-  } else {
-    try {
-      currAuthType = (await fetchCurrentAuthType(coreStart.http))?.currentAuthType;
-    } catch (e) {
-      currAuthType = AuthType.BASIC;
-    }
-  }
+  const currAuthType = await getCurrentAuthType(coreStart.http, config);
 
   const accountInfo = (await fetchAccountInfoSafe(coreStart.http))?.data;
   if (accountInfo) {

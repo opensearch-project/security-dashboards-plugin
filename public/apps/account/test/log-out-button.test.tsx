@@ -20,6 +20,7 @@ import { logout } from '../utils';
 import { API_AUTH_LOGOUT, AuthType, JWT_AUTH_LOGOUT } from '../../../../common';
 
 jest.mock('../utils', () => ({
+  ...jest.requireActual('../utils'),
   logout: jest.fn(),
 }));
 
