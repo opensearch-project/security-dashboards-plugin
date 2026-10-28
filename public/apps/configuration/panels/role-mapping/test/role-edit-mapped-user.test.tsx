@@ -117,10 +117,18 @@ describe('Role mapping edit', () => {
     );
   });
 
-  it('trims users and backend roles and drops empty ones on submit', () => {
-    useState.mockImplementationOnce(() => [[{ label: ' user1 ' }, { label: ' ' }], setState]);
+  it('trims users and backend roles and drops empty and duplicate ones on submit', () => {
     useState.mockImplementationOnce(() => [
-      [{ externalIdentity: '  backend_role1 ' }, { externalIdentity: '   ' }],
+      [{ label: ' user1 ' }, { label: ' ' }, { label: 'user2' }, { label: 'user1' }],
+      setState,
+    ]);
+    useState.mockImplementationOnce(() => [
+      [
+        { externalIdentity: '  backend_role1 ' },
+        { externalIdentity: '   ' },
+        { externalIdentity: 'backend_role2' },
+        { externalIdentity: 'backend_role1' },
+      ],
       setState,
     ]);
     const component = shallow(
@@ -138,8 +146,8 @@ describe('Role mapping edit', () => {
       mockCoreStart.http,
       sampleRole,
       {
-        users: ['user1'],
-        backend_roles: ['backend_role1'],
+        users: ['user1', 'user2'],
+        backend_roles: ['backend_role1', 'backend_role2'],
         hosts: [],
       },
       'test'

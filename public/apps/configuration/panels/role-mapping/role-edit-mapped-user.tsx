@@ -120,10 +120,14 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
         (v: ExternalIdentityStateClass) => v.externalIdentity.trim() !== ''
       );
       const updateObject: RoleMappingDetail = {
-        users: internalUsers
-          .map((user) => comboBoxOptionToString(user).trim())
-          .filter((user) => user !== ''),
-        backend_roles: unbuildExternalIdentityState(validExternalIdentities),
+        users: Array.from(
+          new Set(
+            internalUsers
+              .map((user) => comboBoxOptionToString(user).trim())
+              .filter((user) => user !== '')
+          )
+        ),
+        backend_roles: Array.from(new Set(unbuildExternalIdentityState(validExternalIdentities))),
         hosts,
       };
 

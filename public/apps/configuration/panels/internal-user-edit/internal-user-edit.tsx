@@ -116,7 +116,9 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
       const validAttributes = attributes.filter((v: UserAttributeStateClass) => v.key !== '');
 
       const updateObject: InternalUserUpdate = {
-        backend_roles: backendRoles.map((role) => role.trim()).filter((role) => role !== ''),
+        backend_roles: Array.from(
+          new Set(backendRoles.map((role) => role.trim()).filter((role) => role !== ''))
+        ),
         attributes: unbuildAttributeState(validAttributes),
       };
 

@@ -127,7 +127,7 @@ describe('Internal user edit', () => {
     expect(userUpdateObj.password).toEqual(undefined);
   });
 
-  it('trims backend roles and drops empty ones on submit', () => {
+  it('trims backend roles and drops empty and duplicate ones on submit', () => {
     const component = shallow(
       <InternalUserEdit
         action="edit"
@@ -139,13 +139,18 @@ describe('Internal user edit', () => {
         config={{} as any}
       />
     );
-    component.find(BackendRolePanel).prop('setState')([' backend_role1  ', '  ']);
+    component.find(BackendRolePanel).prop('setState')([
+      ' backend_role1  ',
+      '  ',
+      'backend_role2',
+      'backend_role1',
+    ]);
     component.find('#submit').simulate('click');
 
     expect(updateUser).toHaveBeenLastCalledWith(
       mockCoreStart.http,
       expect.anything(),
-      expect.objectContaining({ backend_roles: ['backend_role1'] }),
+      expect.objectContaining({ backend_roles: ['backend_role1', 'backend_role2'] }),
       expect.anything()
     );
   });
