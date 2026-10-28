@@ -16,7 +16,7 @@
 import { ManageTab } from '../manage_tab';
 import { shallow } from 'enzyme';
 import React from 'react';
-import { EuiInMemoryTable } from '@elastic/eui';
+import { EuiFacetButton, EuiInMemoryTable } from '@elastic/eui';
 import { useDeleteConfirmState } from '../../../utils/delete-confirm-modal-utils';
 import { Tenant } from '../../../types';
 import { TenantEditModal } from '../edit-modal';
@@ -248,6 +248,43 @@ describe('Tenant list', () => {
 
     // Expect error log
     expect(consoleLog).toHaveBeenCalledWith(error);
+  });
+
+  it('shows the private tenant as disabled when the yml setting disables it', async () => {
+    jest.spyOn(React, 'useState').mockRestore();
+    jest.spyOn(React, 'useEffect').mockImplementationOnce((f) => f());
+    (getDashboardsInfo as jest.Mock).mockImplementation(() => {
+      return { ...mockDashboardsInfo, default_tenant: 'Private' };
+    });
+    const ymlConfig = {
+      multitenancy: {
+        enabled: true,
+        tenants: {
+          enable_private: false,
+        },
+      },
+    };
+    const component = shallow(
+      <ManageTab
+        coreStart={mockCoreStart as any}
+        depsStart={{ navigation: {} } as any}
+        params={{} as any}
+        config={ymlConfig as any}
+      />
+    );
+    await new Promise(setImmediate);
+    component.update();
+
+    const renderStatus = component
+      .find(EuiInMemoryTable)
+      .prop('columns')
+      .find((column: any) => column.name === 'Status').render;
+    const statusOf = (tenantName: string) =>
+      shallow(<div>{renderStatus(tenantName)}</div>)
+        .find(EuiFacetButton)
+        .prop('children');
+    expect(statusOf('Private')).toBe('Disabled');
+    expect(statusOf('Global')).toBe('Default Tenant');
   });
 
   describe('Action menu enable-disable check', () => {
