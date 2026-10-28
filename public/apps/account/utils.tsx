@@ -35,10 +35,14 @@ export async function fetchAccountInfoSafe(http: HttpStart): Promise<AccountInfo
   });
 }
 
-export async function logout(http: HttpStart, logoutUrl?: string): Promise<void> {
+export async function logout(
+  http: HttpStart,
+  logoutUrl?: string,
+  logoutEndpoint: string = API_AUTH_LOGOUT
+): Promise<void> {
   await createLocalClusterRequestContext().httpPost({
     http,
-    url: API_AUTH_LOGOUT,
+    url: logoutEndpoint,
   });
   setShouldShowTenantPopup(null);
   // Clear everything in the sessionStorage since they can contain sensitive information

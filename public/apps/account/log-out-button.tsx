@@ -17,7 +17,13 @@ import React from 'react';
 import { EuiButtonEmpty } from '@elastic/eui';
 import { HttpStart } from 'opensearch-dashboards/public';
 import { externalLogout, logout } from './utils';
-import { AuthType, OPENID_AUTH_LOGOUT, SAML_AUTH_LOGOUT } from '../../../common';
+import {
+  API_AUTH_LOGOUT,
+  AuthType,
+  JWT_AUTH_LOGOUT,
+  OPENID_AUTH_LOGOUT,
+  SAML_AUTH_LOGOUT,
+} from '../../../common';
 import { setShouldShowTenantPopup } from '../../utils/storage-utils';
 
 export function LogoutButton(props: {
@@ -58,6 +64,8 @@ export function LogoutButton(props: {
     setShouldShowTenantPopup(null);
     return <div />;
   } else {
+    // Basic auth owns /auth/logout, so JWT logs out on its own route to also clear its extra cookies.
+    const logoutEndpoint = props.authType === AuthType.JWT ? JWT_AUTH_LOGOUT : API_AUTH_LOGOUT;
     return (
       <div>
         {props.divider}
@@ -65,7 +73,7 @@ export function LogoutButton(props: {
           data-test-subj="log-out-3"
           color="danger"
           size="xs"
-          onClick={() => logout(props.http, props.logoutUrl)}
+          onClick={() => logout(props.http, props.logoutUrl, logoutEndpoint)}
         >
           Log out
         </EuiButtonEmpty>
