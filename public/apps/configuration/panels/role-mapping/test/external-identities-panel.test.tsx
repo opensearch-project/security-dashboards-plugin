@@ -63,6 +63,12 @@ describe('Role mapping - external identities panel', () => {
     expect(result).toEqual(expected);
   });
 
+  it('Unbuild external identity state trims leading and trailing spaces', () => {
+    const result = unbuildExternalIdentityState([{ externalIdentity: `  ${externalIdentity1} ` }]);
+
+    expect(result).toEqual([externalIdentity1]);
+  });
+
   describe('External Identities Panel', () => {
     const externalIdentity2 = 'external_identity2';
     const externalIdentities = [

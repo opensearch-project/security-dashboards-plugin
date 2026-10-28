@@ -117,10 +117,12 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
     try {
       // Remove empty backend roles
       const validExternalIdentities = externalIdentities.filter(
-        (v: ExternalIdentityStateClass) => v.externalIdentity !== ''
+        (v: ExternalIdentityStateClass) => v.externalIdentity.trim() !== ''
       );
       const updateObject: RoleMappingDetail = {
-        users: internalUsers.map(comboBoxOptionToString),
+        users: internalUsers
+          .map((user) => comboBoxOptionToString(user).trim())
+          .filter((user) => user !== ''),
         backend_roles: unbuildExternalIdentityState(validExternalIdentities),
         hosts,
       };

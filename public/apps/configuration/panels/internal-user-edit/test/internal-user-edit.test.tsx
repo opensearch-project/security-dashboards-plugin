@@ -19,6 +19,7 @@ import { InternalUserUpdate } from '../../../types';
 import { getUserDetail, updateUser } from '../../../utils/internal-user-detail-utils';
 import { createErrorToast } from '../../../utils/toast-utils';
 import { AttributePanel } from '../attribute-panel';
+import { BackendRolePanel } from '../backend-role-panel';
 import { InternalUserEdit } from '../internal-user-edit';
 
 jest.mock('../../../utils/internal-user-detail-utils', () => ({
@@ -124,6 +125,29 @@ describe('Internal user edit', () => {
     expect(updateUser).toHaveBeenCalled();
     const userUpdateObj: InternalUserUpdate = updateUser.mock.calls[0][0];
     expect(userUpdateObj.password).toEqual(undefined);
+  });
+
+  it('trims backend roles and drops empty ones on submit', () => {
+    const component = shallow(
+      <InternalUserEdit
+        action="edit"
+        sourceUserName={sampleUsername}
+        buildBreadcrumbs={buildBreadcrumbs}
+        coreStart={mockCoreStart as any}
+        depsStart={{} as any}
+        params={{} as any}
+        config={{} as any}
+      />
+    );
+    component.find(BackendRolePanel).prop('setState')([' backend_role1  ', '  ']);
+    component.find('#submit').simulate('click');
+
+    expect(updateUser).toHaveBeenLastCalledWith(
+      mockCoreStart.http,
+      expect.anything(),
+      expect.objectContaining({ backend_roles: ['backend_role1'] }),
+      expect.anything()
+    );
   });
 
   it('should create error toast when password is invalid', () => {

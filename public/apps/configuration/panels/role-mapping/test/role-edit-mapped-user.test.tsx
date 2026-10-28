@@ -117,6 +117,35 @@ describe('Role mapping edit', () => {
     );
   });
 
+  it('trims users and backend roles and drops empty ones on submit', () => {
+    useState.mockImplementationOnce(() => [[{ label: ' user1 ' }, { label: ' ' }], setState]);
+    useState.mockImplementationOnce(() => [
+      [{ externalIdentity: '  backend_role1 ' }, { externalIdentity: '   ' }],
+      setState,
+    ]);
+    const component = shallow(
+      <RoleEditMappedUser
+        roleName={sampleRole}
+        coreStart={mockCoreStart as any}
+        depsStart={{} as any}
+        params={{} as any}
+        config={{} as any}
+      />
+    );
+    component.find('#map').last().simulate('click');
+
+    expect(updateRoleMapping).toHaveBeenLastCalledWith(
+      mockCoreStart.http,
+      sampleRole,
+      {
+        users: ['user1'],
+        backend_roles: ['backend_role1'],
+        hosts: [],
+      },
+      'test'
+    );
+  });
+
   it('submit update error', () => {
     const consoleError = jest.spyOn(console, 'error');
     consoleError.mockImplementation(() => {});

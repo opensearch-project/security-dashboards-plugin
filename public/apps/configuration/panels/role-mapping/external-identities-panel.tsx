@@ -38,7 +38,7 @@ export function unbuildExternalIdentityState(
   externalIdentities: ExternalIdentityStateClass[]
 ): string[] {
   return externalIdentities.map((item) => {
-    return item.externalIdentity;
+    return item.externalIdentity.trim();
   });
 }
 
