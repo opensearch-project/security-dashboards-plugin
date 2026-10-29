@@ -605,6 +605,41 @@ export function defineRoutes(router: IRouter, dataSourceEnabled: boolean) {
     }
   );
 
+  // Minimal, data-source-scoped resource-sharing feature flag. Reads dashboardsinfo
+  // for the selected data source (same MDS access model as the resource/types
+  // route) but returns ONLY the boolean, so no other cluster config crosses the
+  // data-source boundary.
+  router.get(
+    {
+      path: `${API_PREFIX}/auth/resource_sharing_enabled`,
+      validate: {
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
+      },
+    },
+    async (
+      context,
+      request,
+      response
+    ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
+      try {
+        const info: any = await wrapRouteWithDataSource(
+          dataSourceEnabled,
+          context,
+          request,
+          'opensearch_security.dashboardsinfo'
+        );
+
+        return response.ok({
+          body: { enabled: !!info?.resource_sharing_enabled },
+        });
+      } catch (error) {
+        return errorResponse(response, error);
+      }
+    }
+  );
+
   /**
    * Gets audit log configuration。
    *

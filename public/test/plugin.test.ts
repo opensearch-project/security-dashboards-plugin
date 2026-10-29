@@ -194,4 +194,37 @@ describe('SecurityPlugin', () => {
     // Assert that other apps are registered because the feature flag is on
     expect(registeredApps).toContain(PLUGIN_GET_STARTED_APP_ID);
   });
+
+  it('starts the Share button DOM-marker SPI even when resource sharing is disabled on the local cluster', async () => {
+    // Reproduces the scenario from kaituo's review on
+    // anomaly-detection-dashboards-plugin#1238: local cluster has resource
+    // sharing disabled, but a selected remote data source has it enabled.
+    // Consumers' own per-data-source checks already gate the Access column
+    // correctly; the SPI watcher must still run so a mounted button isn't
+    // stuck as a permanently empty column. See security-dashboards-plugin#2525.
+    pluginModule.hasApiPermission.mockResolvedValue(true);
+
+    jest.doMock('../utils/dashboards-info-utils', () => ({
+      getDashboardsInfoSafe: jest.fn().mockResolvedValue({
+        resource_sharing_enabled: false,
+      }),
+    }));
+    const domSpiMock = { startShareButtonDomSpi: jest.fn().mockReturnValue(jest.fn()) };
+    jest.doMock('../apps/resource-sharing/share-button-dom-spi', () => domSpiMock);
+
+    jest.resetModules();
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const freshPluginModule = require('../plugin');
+    const FreshSecurityPlugin = freshPluginModule.SecurityPlugin;
+    const freshPlugin = new FreshSecurityPlugin(initializerContext);
+
+    await freshPlugin.setup(coreSetup, deps);
+    freshPlugin.start(coreStart, deps);
+
+    expect(domSpiMock.startShareButtonDomSpi).toHaveBeenCalledWith(coreStart);
+
+    jest.dontMock('../utils/dashboards-info-utils');
+    jest.dontMock('../apps/resource-sharing/share-button-dom-spi');
+    jest.resetModules();
+  });
 });

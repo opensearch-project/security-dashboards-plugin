@@ -87,6 +87,9 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
   const [rows, setRows] = useState<ResourceRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [typesLoading, setTypesLoading] = useState(false);
+  // Resource sharing disabled on the selected data source (types endpoint 501);
+  // rendered as a friendly empty state instead of an error toast.
+  const [featureDisabled, setFeatureDisabled] = useState(false);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
   const [modalState, setModalState] = useState<{
     open: boolean;
@@ -107,6 +110,7 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
   useEffect(() => {
     (async () => {
       setTypesLoading(true);
+      setFeatureDisabled(false);
       setRows([]);
       try {
         const res = await api.listTypes();
@@ -150,7 +154,17 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
           setSelectedType('');
         }
       } catch (e: any) {
-        toasts.addError(e, { title: 'Failed to load types' });
+        // Feature disabled on this data source surfaces as HTTP 501. Match on the
+        // status code only (not error-message text, which a proxied data source
+        // could spoof) so real connection/auth failures still surface as toasts.
+        const status = e?.response?.status ?? e?.body?.statusCode ?? e?.statusCode;
+        if (status === 501) {
+          setFeatureDisabled(true);
+          setTypeOptions([]);
+          setSelectedType('');
+        } else {
+          toasts.addError(e, { title: 'Failed to load types' });
+        }
       } finally {
         setTypesLoading(false);
       }
@@ -387,6 +401,18 @@ export const ResourceSharingPanel: React.FC<Props> = ({ api, toasts }) => {
               iconType="iInCircle"
               title={<h2>Loading types…</h2>}
               body={<p>Fetching resource types. This should only take a moment.</p>}
+            />
+          ) : featureDisabled ? (
+            <EuiEmptyPrompt
+              iconType="iInCircle"
+              title={<h2>Resource sharing isn’t enabled on this data source</h2>}
+              body={
+                <p>
+                  The selected data source doesn’t have the resource sharing feature enabled. Select
+                  a different data source, or enable resource sharing on this cluster to manage
+                  access here.
+                </p>
+              }
             />
           ) : typeOptions.length === 0 ? (
             <EuiEmptyPrompt

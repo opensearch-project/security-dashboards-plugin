@@ -8,6 +8,8 @@ env:
   TERM: xterm
   PLUGIN_NAME: opensearch-security
   OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
+  # This suite does not switch themes; match the UI overrides below.
+  OSD_OPTIMIZER_THEMES: v8light
   
 jobs:
   tests:
@@ -23,7 +25,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
 
       - name: Set up JDK 21 for build
-        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: temurin
           java-version: '21'
@@ -78,7 +80,7 @@ jobs:
 
 
       - name: Run Opensearch with security + sample resource plugin
-        uses: opensearch-project/opensearch-build/.github/actions/start-opensearch@3d9a524bbfc8128d96113cc578b462153f2ea8d4
+        uses: opensearch-project/opensearch-build/.github/actions/start-opensearch@350f76bcccd3a8e3b85c03a77d52abdfb0fcbecf
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: "file:$(pwd)/opensearch-security.zip,file:${{ env.SAMPLE_PLUGIN_ZIP }}"
@@ -94,7 +96,7 @@ jobs:
 
       # OSD bootstrap
       - name: Setup Dashboard with Security Dashboards Plugin
-        uses: opensearch-project/opensearch-build/.github/actions/setup-opensearch-dashboards@3d9a524bbfc8128d96113cc578b462153f2ea8d4
+        uses: opensearch-project/opensearch-build/.github/actions/setup-opensearch-dashboards@350f76bcccd3a8e3b85c03a77d52abdfb0fcbecf
         with:
           plugin_name: security-dashboards-plugin
 
@@ -109,6 +111,10 @@ jobs:
         run: |
           cat << 'EOT' > resource_sharing_config.yml
           server.host: "localhost"
+          uiSettings.overrides:
+            "theme:version": "v8"
+            "theme:darkMode": false
+            "theme:enableUserControl": false
           opensearch.hosts: ["https://localhost:9200"]
           opensearch.ssl.verificationMode: none
           opensearch.username: "kibanaserver"
@@ -172,7 +178,7 @@ jobs:
       - name: Run Cypress Tests with retry
         run: |
           cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
-          yarn add cypress --save-dev
+          yarn add cypress@^15 --save-dev
 
           for attempt in {1..5}; do
             echo "Running Cypress attempt ${attempt}/5."

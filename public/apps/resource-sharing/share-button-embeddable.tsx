@@ -24,18 +24,15 @@ export type { ResourceShareButtonProps } from './resource-share-button';
  * Builds the embeddable ShareButton component exposed on the security plugin's
  * start contract. The heavy implementation (EUI modal etc.) is loaded lazily,
  * so consumer plugins only pay the cost when the button is actually rendered.
+ * `ResourceShareButton` independently fetches sharing info scoped to its own
+ * `dataSourceId` prop and self-hides (renders null) when resource sharing is
+ * unavailable for that data source, so no gate is needed here.
  *
  * @param core CoreStart used for http and toasts
- * @param resourceSharingEnabled when false, the returned component renders nothing
  */
 export const createShareButton = (
-  core: CoreStart,
-  resourceSharingEnabled: boolean
+  core: CoreStart
 ): React.ComponentType<ResourceShareButtonProps> => {
-  if (!resourceSharingEnabled) {
-    return () => null;
-  }
-
   const LazyResourceShareButton = React.lazy(() =>
     import('./resource-share-button').then((m) => ({ default: m.ResourceShareButton }))
   );
