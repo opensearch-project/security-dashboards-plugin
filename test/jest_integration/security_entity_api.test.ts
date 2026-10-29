@@ -463,7 +463,7 @@ describe('start OpenSearch Dashboards server multi datasources enabled', () => {
           password: OPENSEARCH_DASHBOARDS_SERVER_PASSWORD,
         },
         opensearch_security: {
-          multitenancy: { enabled: true, tenants: { preferred: ['Private', 'Global'] } },
+          multitenancy: { enabled: false },
         },
       },
       {
