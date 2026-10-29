@@ -89,7 +89,9 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
         setRoles(accountInfo.data.roles);
         const dashboardsInfo = await getDashboardsInfo(props.coreStart.http);
         setIsMultiTenancyEnabled(dashboardsInfo.multitenancy_enabled);
-        setIsPrivateEnabled(dashboardsInfo.private_tenant_enabled);
+        setIsPrivateEnabled(
+          props.config.multitenancy.tenants.enable_private && dashboardsInfo.private_tenant_enabled
+        );
         const tenantsInfo = accountInfo.data.tenants || {};
         setTenants(keys(tenantsInfo));
 

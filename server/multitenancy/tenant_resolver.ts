@@ -92,6 +92,8 @@ export function resolveTenant({
   );
 
   const globalTenantEnabled = config.multitenancy?.tenants.enable_global;
+  const privateTenantAvailable =
+    config.multitenancy?.tenants.enable_private && privateTenantEnabled;
 
   return resolve(
     username,
@@ -100,7 +102,7 @@ export function resolveTenant({
     availableTenants,
     globalTenantEnabled,
     multitenancyEnabled,
-    privateTenantEnabled
+    privateTenantAvailable
   );
 }
 
