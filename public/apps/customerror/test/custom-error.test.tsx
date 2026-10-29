@@ -85,7 +85,9 @@ describe('Custom error page test', () => {
       );
     });
 
-    fireEvent.click(screen.getByTestId('error-logout-button'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('error-logout-button'));
+    });
 
     expect(logout).toHaveBeenLastCalledWith(http, '', logoutEndpoint);
     unmount();
