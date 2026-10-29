@@ -179,6 +179,39 @@ describe('Account menu -tenant switch panel', () => {
     });
   });
 
+  it('keeps the private tenant disabled when the yml setting disables it', async () => {
+    const config = {
+      multitenancy: {
+        enabled: true,
+        tenants: {
+          enable_private: false,
+          enable_global: true,
+        },
+      },
+    };
+    const component = shallow(
+      <TenantSwitchPanel
+        coreStart={mockCoreStart as any}
+        handleClose={handleClose}
+        handleSwitchAndClose={handleSwitchAndClose}
+        config={config as any}
+      />
+    );
+    await new Promise(process.nextTick);
+    component.update();
+
+    const privateRadio = component
+      .find('[data-test-subj="tenant-switch-radios"]')
+      .prop('options')
+      .find((option: any) => option.id === PRIVATE_TENANT_RADIO_ID);
+    expect(privateRadio.disabled).toBe(true);
+    expect(
+      shallow(<div>{privateRadio.label}</div>)
+        .find('i')
+        .text()
+    ).toBe('Contact the administrator to enable private tenant.');
+  });
+
   it('error occurred while fetching data', (done) => {
     (getDashboardsInfo as jest.Mock).mockImplementation(() => {
       return mockDashboardsInfo;
