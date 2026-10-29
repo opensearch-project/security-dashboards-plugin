@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-import { get, set, curry, PropertyName } from 'lodash';
+import { get, set, curry, uniq, PropertyName } from 'lodash';
 import { Dispatch, SetStateAction } from 'react';
 
 function resolveValue<T>(value: T | (() => T)) {
@@ -120,4 +120,12 @@ export function removeElementFromArray<T>(
       return newState;
     }
   });
+}
+
+/**
+ * Trim each value, drop empty values and remove duplicates, keeping first-seen order.
+ * @param values values to clean up
+ */
+export function trimAndDedupe(values: string[]): string[] {
+  return uniq(values.map((v) => v.trim()).filter((v) => v !== ''));
 }

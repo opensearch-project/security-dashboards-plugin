@@ -37,6 +37,7 @@ import {
   getSuccessToastMessage,
 } from '../../utils/toast-utils';
 import { buildHashUrl, buildUrl } from '../../utils/url-builder';
+import { trimAndDedupe } from '../../utils/array-state-utils';
 import { AttributePanel, buildAttributeState, unbuildAttributeState } from './attribute-panel';
 import { UserAttributeStateClass } from './types';
 import { setCrossPageToast } from '../../utils/storage-utils';
@@ -116,9 +117,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
       const validAttributes = attributes.filter((v: UserAttributeStateClass) => v.key !== '');
 
       const updateObject: InternalUserUpdate = {
-        backend_roles: Array.from(
-          new Set(backendRoles.map((role) => role.trim()).filter((role) => role !== ''))
-        ),
+        backend_roles: trimAndDedupe(backendRoles),
         attributes: unbuildAttributeState(validAttributes),
       };
 

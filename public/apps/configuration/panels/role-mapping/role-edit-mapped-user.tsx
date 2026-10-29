@@ -34,6 +34,7 @@ import { ExternalIdentityStateClass } from './types';
 import { ComboBoxOptions } from '../../types';
 import { stringToComboBoxOption, comboBoxOptionToString } from '../../utils/combo-box-utils';
 import { buildHashUrl, buildUrl } from '../../utils/url-builder';
+import { trimAndDedupe } from '../../utils/array-state-utils';
 import { RoleMappingDetail, SubAction, Action } from '../../types';
 import { ResourceType } from '../../../../../common';
 import { fetchUserNameList } from '../../utils/internal-user-list-utils';
@@ -115,19 +116,9 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
 
   const updateRoleMappingHandler = async () => {
     try {
-      // Remove empty backend roles
-      const validExternalIdentities = externalIdentities.filter(
-        (v: ExternalIdentityStateClass) => v.externalIdentity.trim() !== ''
-      );
       const updateObject: RoleMappingDetail = {
-        users: Array.from(
-          new Set(
-            internalUsers
-              .map((user) => comboBoxOptionToString(user).trim())
-              .filter((user) => user !== '')
-          )
-        ),
-        backend_roles: Array.from(new Set(unbuildExternalIdentityState(validExternalIdentities))),
+        users: trimAndDedupe(internalUsers.map(comboBoxOptionToString)),
+        backend_roles: trimAndDedupe(unbuildExternalIdentityState(externalIdentities)),
         hosts,
       };
 
