@@ -8,6 +8,7 @@ updates:
     labels:
       - "dependabot"
       - "dependencies"
+      - "skip-changelog"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -15,3 +16,4 @@ updates:
     labels:
       - "dependabot"
       - "dependencies"
+      - "skip-changelog"
