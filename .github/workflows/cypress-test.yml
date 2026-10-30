@@ -2,6 +2,9 @@ name: Cypress Tests
 
 on: [ push, pull_request ]
 
+permissions:
+  contents: read
+
 env:
   TEST_BROWSER_HEADLESS: 1
   CI: 1
@@ -26,6 +29,8 @@ jobs:
     steps:       
       - name: Checkout Branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+        with:
+          persist-credentials: false
 
       - name: Set env
         run: |

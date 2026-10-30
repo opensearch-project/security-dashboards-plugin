@@ -2,6 +2,9 @@ name: Snapshot based E2E OIDC tests workflow
 
 on: [ push, pull_request ]
 
+permissions:
+  contents: read
+
 env:
   KEYCLOAK_VERSION: '21.0.1'
   TEST_KEYCLOAK_CLIENT_SECRET: 'oacHfNaXyy81r2uHq1A9RY4ASryre4rZ'
@@ -26,6 +29,8 @@ jobs:
     steps:
       - name: Checkout Branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+        with:
+          persist-credentials: false
 
       - name: Set env
         run: |
