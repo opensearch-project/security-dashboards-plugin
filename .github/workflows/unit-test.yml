@@ -5,6 +5,9 @@ on: [ push, pull_request ]
 env:
   YARN_IGNORE_ENGINES: true
 
+permissions:
+  contents: read
+
 jobs:
   unit-tests:
     name: Run unit tests
@@ -21,6 +24,8 @@ jobs:
 
       - name: Checkout Branch
         uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
+        with:
+          persist-credentials: false
 
       - id: install-dashboards
         uses: opensearch-project/opensearch-build/.github/actions/setup-opensearch-dashboards@643b632712710159088d5f0798de7e91c1f2b8f7

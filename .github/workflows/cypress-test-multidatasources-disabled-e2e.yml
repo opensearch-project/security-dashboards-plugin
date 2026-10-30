@@ -11,6 +11,10 @@ env:
   PLUGIN_NAME: opensearch-security
   OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
   
+
+permissions:
+  contents: read
+
 jobs:
   tests:
     name: Run Cypress multidatasources tests
@@ -23,6 +27,8 @@ jobs:
     steps:
       - name: Checkout Branch
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
+        with:
+          persist-credentials: false
 
       # Configure the Dashboard for multi datasources disabled (default)
       - name: Create OpenSearch Dashboards Config
