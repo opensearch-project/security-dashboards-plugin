@@ -207,7 +207,7 @@ describe('Log in via SAML', () => {
       });
     }
 
-    cy.intercept('GET', `${basePath}/auth/saml/logout`).as('samlLogout');
+    cy.intercept({ method: 'GET', pathname: `${basePath}/auth/saml/logout` }).as('samlLogout');
     runOnOsd(() => {
       cy.get('#private').should('be.enabled');
       cy.get('#private').click({ force: true });
@@ -220,7 +220,10 @@ describe('Log in via SAML', () => {
 
       cy.get('button[data-test-subj^="log-out-"]').click();
     });
-    cy.wait('@samlLogout').then(() => {});
+    cy.wait('@samlLogout').then(({ request }) => {
+      const nextUrl = new URL(request.url).searchParams.get('nextUrl');
+      expect(nextUrl).to.include(`${basePath}/app/opensearch_dashboards_overview`);
+    });
     cy.clearAllCookies();
 
     if (Cypress.env('loginMethod') === 'saml_multiauth') {
