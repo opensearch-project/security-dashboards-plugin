@@ -14,11 +14,18 @@
  */
 import { shallow } from 'enzyme';
 import React from 'react';
-import { CustomErrorPage } from '../custom-error';
-import { cleanup } from '@testing-library/react';
+import { createMemoryHistory } from 'history';
+import { CustomErrorPage, renderPage } from '../custom-error';
+import { act, cleanup, fireEvent, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { EuiSmallButton } from '../custom-error';
 import { logout } from '../../account/utils';
+import { API_AUTH_LOGOUT, ERROR_MISSING_ROLE_PATH, JWT_AUTH_LOGOUT } from '../../../../common';
+
+jest.mock('../../account/utils', () => ({
+  ...jest.requireActual('../../account/utils'),
+  logout: jest.fn(),
+}));
 
 afterEach(() => {
   cleanup();
@@ -57,5 +64,33 @@ describe('Custom error page test', () => {
     component.find('[data-test-subj="error-logout-button"]').simulate('onClick', {
       preventDefault: () => {},
     });
+  });
+
+  it.each([
+    ['jwt', JWT_AUTH_LOGOUT],
+    ['basicauth', API_AUTH_LOGOUT],
+  ])('logs out a %s session on the matching route', async (authType, logoutEndpoint) => {
+    const http = { basePath: { serverBasePath: '' } };
+    const element = document.createElement('div');
+    document.body.appendChild(element);
+    let unmount: () => boolean = () => false;
+    await act(async () => {
+      unmount = await renderPage(
+        { http, chrome: {} } as any,
+        {
+          element,
+          history: createMemoryHistory({ initialEntries: [ERROR_MISSING_ROLE_PATH] }),
+        } as any,
+        { auth: { type: authType }, ui: { basicauth: { login: {} } } } as any
+      );
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('error-logout-button'));
+    });
+
+    expect(logout).toHaveBeenLastCalledWith(http, '', logoutEndpoint);
+    unmount();
+    element.remove();
   });
 });
