@@ -1,6 +1,9 @@
 name: 'Install Dashboards with Plugin via Binary'
 
 on: [push, pull_request]
+permissions:
+  contents: read
+
 env:
   CI: 1
   # avoid warnings like "tput: No value for $TERM and no -T specified"
