@@ -21,6 +21,8 @@ jobs:
 
       - name: Checkout Branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+        with:
+          persist-credentials: false
 
       - id: install-dashboards
         uses: opensearch-project/opensearch-build/.github/actions/setup-opensearch-dashboards@350f76bcccd3a8e3b85c03a77d52abdfb0fcbecf
