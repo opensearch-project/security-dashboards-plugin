@@ -10,6 +10,9 @@ env:
   PLUGIN_NAME: opensearch-security
   OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
 
+permissions:
+  contents: read
+
 jobs:
   verify-binary-installation:
     name: Run binary installation

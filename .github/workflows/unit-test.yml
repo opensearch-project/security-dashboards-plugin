@@ -5,6 +5,9 @@ on: [ push, pull_request ]
 env:
   YARN_IGNORE_ENGINES: true
 
+permissions:
+  contents: read
+
 jobs:
   unit-tests:
     name: Run unit tests

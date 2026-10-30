@@ -15,6 +15,10 @@ env:
   KNOWN_CHECKSUM_OF_KEYCLOAK_SCRIPT: 'f825ea1a9ffa5ad91673737c06857ababbb69b6b8f09e0c637b4c998517f9608'
   OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
   
+
+permissions:
+  contents: read
+
 jobs:
   tests:
     name: Run Cypress E2E OIDC tests

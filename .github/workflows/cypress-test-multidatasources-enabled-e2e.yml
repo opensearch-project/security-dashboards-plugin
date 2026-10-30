@@ -11,6 +11,10 @@ env:
   PLUGIN_NAME: opensearch-security
   OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
   
+
+permissions:
+  contents: read
+
 jobs:
   tests:
     name: Run Cypress multidatasources tests
