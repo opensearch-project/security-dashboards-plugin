@@ -21,6 +21,8 @@ jobs:
     steps:
       - name: Checkout Branch
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
+        with:
+          persist-credentials: false
         
       - name: Set up JDK
         uses: actions/setup-java@b6e674f4b717d7b0ae3baee0fbe79f498905dfde # v1
