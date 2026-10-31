@@ -34,6 +34,7 @@ import { ExternalIdentityStateClass } from './types';
 import { ComboBoxOptions } from '../../types';
 import { stringToComboBoxOption, comboBoxOptionToString } from '../../utils/combo-box-utils';
 import { buildHashUrl, buildUrl } from '../../utils/url-builder';
+import { trimAndDedupe } from '../../utils/array-state-utils';
 import { RoleMappingDetail, SubAction, Action } from '../../types';
 import { ResourceType } from '../../../../../common';
 import { fetchUserNameList } from '../../utils/internal-user-list-utils';
@@ -73,6 +74,7 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
   );
   const [userNames, setUserNames] = useState<string[]>([]);
   const [hosts, setHosts] = React.useState<string[]>([]);
+  const storedRoleMapping = React.useRef<RoleMappingDetail>();
   const [toasts, addToast, removeToast] = useToastState();
   const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
@@ -86,6 +88,7 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
           dataSource.id
         );
         if (originalRoleMapData) {
+          storedRoleMapping.current = originalRoleMapData;
           setInternalUsers(originalRoleMapData.users.map(stringToComboBoxOption));
           setExternalIdentities(buildExternalIdentityState(originalRoleMapData.backend_roles));
           setHosts(originalRoleMapData.hosts);
@@ -115,13 +118,15 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
 
   const updateRoleMappingHandler = async () => {
     try {
-      // Remove empty backend roles
-      const validExternalIdentities = externalIdentities.filter(
-        (v: ExternalIdentityStateClass) => v.externalIdentity !== ''
-      );
       const updateObject: RoleMappingDetail = {
-        users: internalUsers.map(comboBoxOptionToString),
-        backend_roles: unbuildExternalIdentityState(validExternalIdentities),
+        users: trimAndDedupe(
+          internalUsers.map(comboBoxOptionToString),
+          storedRoleMapping.current?.users
+        ),
+        backend_roles: trimAndDedupe(
+          unbuildExternalIdentityState(externalIdentities),
+          storedRoleMapping.current?.backend_roles
+        ),
         hosts,
       };
 
