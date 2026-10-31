@@ -127,7 +127,13 @@ describe('Internal user edit', () => {
     expect(userUpdateObj.password).toEqual(undefined);
   });
 
-  it('trims backend roles and drops empty and duplicate ones on submit', () => {
+  it('trims new backend roles and keeps stored ones unchanged on submit', async () => {
+    const storedRole = 'cn=AA BB/CC (DD) my, company end=with=whitespace ';
+    useEffect.mockImplementationOnce((f) => f());
+    (getUserDetail as jest.Mock).mockResolvedValueOnce({
+      attributes: {},
+      backend_roles: [storedRole, 'backend_role1'],
+    });
     const component = shallow(
       <InternalUserEdit
         action="edit"
@@ -139,18 +145,20 @@ describe('Internal user edit', () => {
         config={{} as any}
       />
     );
+    await new Promise(process.nextTick);
     component.find(BackendRolePanel).prop('setState')([
-      ' backend_role1  ',
-      '  ',
-      'backend_role2',
+      storedRole,
       'backend_role1',
+      ' backend_role2  ',
+      '  ',
+      ' backend_role1',
     ]);
     component.find('#submit').simulate('click');
 
     expect(updateUser).toHaveBeenLastCalledWith(
       mockCoreStart.http,
       expect.anything(),
-      expect.objectContaining({ backend_roles: ['backend_role1', 'backend_role2'] }),
+      expect.objectContaining({ backend_roles: [storedRole, 'backend_role1', 'backend_role2'] }),
       expect.anything()
     );
   });

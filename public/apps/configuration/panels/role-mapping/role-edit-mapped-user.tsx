@@ -74,6 +74,7 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
   );
   const [userNames, setUserNames] = useState<string[]>([]);
   const [hosts, setHosts] = React.useState<string[]>([]);
+  const storedRoleMapping = React.useRef<RoleMappingDetail>();
   const [toasts, addToast, removeToast] = useToastState();
   const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
   const { dataSource, setDataSource } = useContext(DataSourceContext)!;
@@ -87,6 +88,7 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
           dataSource.id
         );
         if (originalRoleMapData) {
+          storedRoleMapping.current = originalRoleMapData;
           setInternalUsers(originalRoleMapData.users.map(stringToComboBoxOption));
           setExternalIdentities(buildExternalIdentityState(originalRoleMapData.backend_roles));
           setHosts(originalRoleMapData.hosts);
@@ -117,8 +119,14 @@ export function RoleEditMappedUser(props: RoleEditMappedUserProps) {
   const updateRoleMappingHandler = async () => {
     try {
       const updateObject: RoleMappingDetail = {
-        users: trimAndDedupe(internalUsers.map(comboBoxOptionToString)),
-        backend_roles: trimAndDedupe(unbuildExternalIdentityState(externalIdentities)),
+        users: trimAndDedupe(
+          internalUsers.map(comboBoxOptionToString),
+          storedRoleMapping.current?.users
+        ),
+        backend_roles: trimAndDedupe(
+          unbuildExternalIdentityState(externalIdentities),
+          storedRoleMapping.current?.backend_roles
+        ),
         hosts,
       };
 

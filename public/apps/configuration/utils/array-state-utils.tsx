@@ -123,9 +123,12 @@ export function removeElementFromArray<T>(
 }
 
 /**
- * Trim each value, drop empty values and remove duplicates, keeping first-seen order.
+ * Trim each new value, drop empty values and remove duplicates, keeping first-seen order.
+ * Stored values are kept exactly, because the backend matches them exactly, spaces included.
  * @param values values to clean up
+ * @param storedValues values loaded from the saved resource
  */
-export function trimAndDedupe(values: string[]): string[] {
-  return uniq(values.map((v) => v.trim()).filter((v) => v !== ''));
+export function trimAndDedupe(values: string[], storedValues: string[] = []): string[] {
+  const stored = new Set(storedValues);
+  return uniq(values.map((v) => (stored.has(v) ? v : v.trim())).filter((v) => v !== ''));
 }

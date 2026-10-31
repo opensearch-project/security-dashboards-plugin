@@ -117,17 +117,31 @@ describe('Role mapping edit', () => {
     );
   });
 
-  it('trims users and backend roles and drops empty and duplicate ones on submit', () => {
+  it('trims new users and backend roles and keeps stored ones unchanged on submit', async () => {
+    const storedUser = 'AA BB ';
+    const storedRole = 'cn=AA BB/CC (DD) my, company end=with=whitespace ';
+    roleMappingUtils.getRoleMappingData = jest.fn().mockReturnValue({
+      users: [storedUser, 'user1'],
+      backend_roles: [storedRole, 'backend_role1'],
+      hosts: [],
+    });
     useState.mockImplementationOnce(() => [
-      [{ label: ' user1 ' }, { label: ' ' }, { label: 'user2' }, { label: 'user1' }],
+      [
+        { label: storedUser },
+        { label: 'user1' },
+        { label: ' user2 ' },
+        { label: ' ' },
+        { label: ' user1' },
+      ],
       setState,
     ]);
     useState.mockImplementationOnce(() => [
       [
-        { externalIdentity: '  backend_role1 ' },
-        { externalIdentity: '   ' },
-        { externalIdentity: 'backend_role2' },
+        { externalIdentity: storedRole },
         { externalIdentity: 'backend_role1' },
+        { externalIdentity: '  backend_role2 ' },
+        { externalIdentity: '   ' },
+        { externalIdentity: 'backend_role1 ' },
       ],
       setState,
     ]);
@@ -140,14 +154,17 @@ describe('Role mapping edit', () => {
         config={{} as any}
       />
     );
-    component.find('#map').last().simulate('click');
+    // Keep the handler from the first render, which holds the mocked state; loading re-renders.
+    const map = component.find('#map').last();
+    await new Promise(process.nextTick);
+    map.simulate('click');
 
     expect(updateRoleMapping).toHaveBeenLastCalledWith(
       mockCoreStart.http,
       sampleRole,
       {
-        users: ['user1', 'user2'],
-        backend_roles: ['backend_role1', 'backend_role2'],
+        users: [storedUser, 'user1', 'user2'],
+        backend_roles: [storedRole, 'backend_role1', 'backend_role2'],
         hosts: [],
       },
       'test'

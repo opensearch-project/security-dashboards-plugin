@@ -71,6 +71,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
   const [isPasswordInvalid, setIsPasswordInvalid] = React.useState<boolean>(false);
   const [attributes, setAttributes] = useState<UserAttributeStateClass[]>([]);
   const [backendRoles, setBackendRoles] = useState<string[]>([]);
+  const storedBackendRoles = React.useRef<string[]>([]);
 
   const [toasts, addToast, removeToast] = useToastState();
 
@@ -89,6 +90,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
             dataSource.id
           );
           setAttributes(buildAttributeState(user.attributes));
+          storedBackendRoles.current = user.backend_roles;
           setBackendRoles(user.backend_roles);
           setUserName(generateResourceName(action, props.sourceUserName));
         } catch (e) {
@@ -117,7 +119,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
       const validAttributes = attributes.filter((v: UserAttributeStateClass) => v.key !== '');
 
       const updateObject: InternalUserUpdate = {
-        backend_roles: trimAndDedupe(backendRoles),
+        backend_roles: trimAndDedupe(backendRoles, storedBackendRoles.current),
         attributes: unbuildAttributeState(validAttributes),
       };
 
