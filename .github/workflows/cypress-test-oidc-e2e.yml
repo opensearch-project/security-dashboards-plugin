@@ -15,6 +15,10 @@ env:
   KNOWN_CHECKSUM_OF_KEYCLOAK_SCRIPT: 'f825ea1a9ffa5ad91673737c06857ababbb69b6b8f09e0c637b4c998517f9608'
   OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
   
+
+permissions:
+  contents: read
+
 jobs:
   tests:
     name: Run Cypress E2E OIDC tests
@@ -28,6 +32,8 @@ jobs:
     steps:
       - name: Checkout Branch
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
+        with:
+          persist-credentials: false
 
       # Download and Check Keycloak Version
       - name: Download and Check Keyloak Version on Linux
