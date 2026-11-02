@@ -210,3 +210,71 @@ describe('checks isReadonly', () => {
     expect(result).toBeFalsy();
   });
 });
+
+describe('checks headers sent by isReadonly', () => {
+  const readonlyAuthInfo = mockAuthInfo({
+    user_requested_tenant: 'readonly_tenant',
+    tenants: {
+      readonly_tenant: false,
+    },
+  });
+  const cookieAuthHeaders = { authorization: mockCookie().credentials.authHeaderValue };
+  const createRequest = () =>
+    httpServerMock.createOpenSearchDashboardsRequest({
+      headers: { host: 'dashboards.example.com', authorization: 'Basic dXNlcjpwYXNz' },
+    });
+
+  const setup = (requestIncludesAuthInfo: boolean, cookie: SecuritySessionCookie | null) => {
+    const securityClient = new SecurityClient(mockEsClient());
+    securityClient.authinfo = jest.fn().mockResolvedValue(readonlyAuthInfo);
+    securityClient.dashboardsinfo = jest.fn().mockResolvedValue(mockDashboardsInfo());
+
+    // @ts-ignore mock auth
+    const auth = new BasicAuthentication();
+    auth.requestIncludesAuthInfo = jest.fn().mockReturnValue(requestIncludesAuthInfo);
+    auth.buildAuthHeaderFromCookie = jest.fn().mockReturnValue(cookieAuthHeaders);
+    auth.getAdditionalAuthHeader = jest.fn().mockResolvedValue({});
+
+    const securitySessionStorageFactory = sessionStorageMock.createFactory<SecuritySessionCookie>();
+    securitySessionStorageFactory.asScoped = jest.fn().mockReturnValue({
+      get: jest.fn().mockResolvedValue(cookie),
+    });
+
+    const config = { multitenancy: { enabled: true } } as SecurityPluginConfigType;
+    const service = new ReadonlyService(
+      loggerMock.create(),
+      securityClient,
+      auth,
+      securitySessionStorageFactory,
+      config
+    );
+    service.isAnonymousPage = jest.fn(() => false);
+    return { service, securityClient };
+  };
+
+  it('does not forward the request host header when the request carries auth info', async () => {
+    const { service, securityClient } = setup(true, mockCookie());
+    const request = createRequest();
+
+    expect(await service.isReadonly(request)).toBe(true);
+    expect(securityClient.dashboardsinfo).toHaveBeenCalledWith(request, {});
+    expect(securityClient.authinfo).toHaveBeenCalledWith(request, {});
+  });
+
+  it('sends only the cookie auth headers when the request has a session cookie', async () => {
+    const { service, securityClient } = setup(false, mockCookie({ tenant: 'readonly_tenant' }));
+    const request = createRequest();
+
+    expect(await service.isReadonly(request)).toBe(true);
+    expect(securityClient.dashboardsinfo).toHaveBeenCalledWith(request, cookieAuthHeaders);
+    expect(securityClient.authinfo).toHaveBeenCalledWith(request, cookieAuthHeaders);
+  });
+
+  it('makes no backend call when the request has neither a cookie nor auth info', async () => {
+    const { service, securityClient } = setup(false, null);
+
+    expect(await service.isReadonly(createRequest())).toBe(false);
+    expect(securityClient.dashboardsinfo).not.toHaveBeenCalled();
+    expect(securityClient.authinfo).not.toHaveBeenCalled();
+  });
+});
