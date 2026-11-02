@@ -235,7 +235,10 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
       const esClient = core.opensearch.client.asInternalUser;
       const migrationClient = createMigrationOpenSearchClient(esClient, this.logger);
 
-      setupIndexTemplate(esClient, opensearchDashboardsIndex, typeRegistry, this.logger);
+      // these run without blocking startup, so a rejection must not escape as an unhandled one
+      setupIndexTemplate(esClient, opensearchDashboardsIndex, typeRegistry, this.logger).catch(
+        (error) => this.logger.error(`Failed to set up the tenant index template: ${error}`)
+      );
 
       const serializer: SavedObjectsSerializer = core.savedObjects.createSerializer();
       const opensearchDashboardsVersion = this.initializerContext.env.packageInfo.version;
@@ -246,7 +249,7 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
         typeRegistry,
         serializer,
         this.logger
-      );
+      ).catch((error) => this.logger.error(`Failed to migrate tenant indices: ${error}`));
     }
 
     return {
