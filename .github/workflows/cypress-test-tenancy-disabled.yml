@@ -2,6 +2,9 @@ name: Cypress Tests Multitenancy Disabled
 
 on: [ push, pull_request ]
 
+permissions:
+  contents: read
+
 env:
   TEST_BROWSER_HEADLESS: 1
   CI: 1
@@ -11,6 +14,8 @@ env:
   SPEC: 'cypress/integration/plugins/security-dashboards-plugin/aggregation_view.js,'
   PLUGIN_NAME: opensearch-security
   OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
+  # This suite does not switch themes; match the UI overrides below.
+  OSD_OPTIMIZER_THEMES: v8light
 
 jobs:
   cypress-tests-multitenancy-disabled:
@@ -24,6 +29,8 @@ jobs:
     steps:
       - name: Checkout Branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+        with:
+          persist-credentials: false
 
       - name: Set env
         run: |
@@ -42,7 +49,7 @@ jobs:
           download-location: ${{ env.PLUGIN_NAME }}
 
       - name: Run Opensearch with security
-        uses: opensearch-project/opensearch-build/.github/actions/start-opensearch@3d9a524bbfc8128d96113cc578b462153f2ea8d4
+        uses: opensearch-project/opensearch-build/.github/actions/start-opensearch@350f76bcccd3a8e3b85c03a77d52abdfb0fcbecf
         with:
           opensearch-version: ${{ env.OPENSEARCH_VERSION }}
           plugins: "file:$(pwd)/${{ env.PLUGIN_NAME }}.zip"
@@ -55,6 +62,10 @@ jobs:
         run: |
           cat << 'EOT' > tenancy-disabled-opensearch-dashboards-config.yml
           server.host: "0.0.0.0"
+          uiSettings.overrides:
+            "theme:version": "v8"
+            "theme:darkMode": false
+            "theme:enableUserControl": false
           opensearch.hosts: ["https://localhost:9200"]
           opensearch.ssl.verificationMode: none
           opensearch.username: "kibanaserver"
@@ -66,7 +77,7 @@ jobs:
           EOT
 
       - name: Run Dashboard with Security Dashboards Plugin
-        uses: opensearch-project/opensearch-build/.github/actions/setup-opensearch-dashboards@3d9a524bbfc8128d96113cc578b462153f2ea8d4
+        uses: opensearch-project/opensearch-build/.github/actions/setup-opensearch-dashboards@350f76bcccd3a8e3b85c03a77d52abdfb0fcbecf
         with:
           plugin_name: security-dashboards-plugin
           opensearch_dashboards_yml: tenancy-disabled-opensearch-dashboards-config.yml

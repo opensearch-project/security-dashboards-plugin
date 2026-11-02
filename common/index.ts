@@ -51,6 +51,7 @@ export const AUTO_LOGIN_QUERY_PARAM = 'auto_login';
 
 export const OPENID_AUTH_LOGOUT = '/auth/openid/logout';
 export const SAML_AUTH_LOGOUT = '/auth/saml/logout';
+export const JWT_AUTH_LOGOUT = `${API_PREFIX}${API_AUTH_LOGOUT}`;
 export const ANONYMOUS_AUTH_LOGOUT = '/auth/anonymous/logout';
 
 export const ERROR_MISSING_ROLE_PATH = '/missing-role';

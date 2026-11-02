@@ -15,7 +15,7 @@
 
 import { IRouter, Logger, SessionStorageFactory } from 'opensearch-dashboards/server';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
-import { API_AUTH_LOGOUT, API_PREFIX } from '../../../../common';
+import { JWT_AUTH_LOGOUT } from '../../../../common';
 import { clearSplitCookies, ExtraAuthStorageOptions } from '../../../session/cookie_splitter';
 import { JWT_DEFAULT_EXTRA_STORAGE_OPTIONS } from './jwt_auth';
 import { SecurityPluginConfigType } from '../../../index';
@@ -44,7 +44,7 @@ export class JwtAuthRoutes {
   public setupRoutes() {
     this.router.post(
       {
-        path: `${API_PREFIX}${API_AUTH_LOGOUT}`,
+        path: JWT_AUTH_LOGOUT,
         validate: false,
         options: {
           authRequired: false,

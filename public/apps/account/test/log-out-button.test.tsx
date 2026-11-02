@@ -17,9 +17,10 @@ import { shallow } from 'enzyme';
 import React from 'react';
 import { LogoutButton } from '../log-out-button';
 import { logout } from '../utils';
-import { AuthType } from '../../../../common';
+import { API_AUTH_LOGOUT, AuthType, JWT_AUTH_LOGOUT } from '../../../../common';
 
 jest.mock('../utils', () => ({
+  ...jest.requireActual('../utils'),
   logout: jest.fn(),
 }));
 
@@ -87,6 +88,15 @@ describe('Account menu - Log out button', () => {
     );
     component.find('[data-test-subj="log-out-3"]').simulate('click');
 
-    expect(logout).toHaveBeenCalled();
+    expect(logout).toHaveBeenLastCalledWith(mockHttpStart, undefined, API_AUTH_LOGOUT);
+  });
+
+  it('should post logout to the JWT logout route when auth type is JWT', () => {
+    const component = shallow(
+      <LogoutButton authType={AuthType.JWT} http={mockHttpStart} divider={mockDivider} />
+    );
+    component.find('[data-test-subj="log-out-3"]').simulate('click');
+
+    expect(logout).toHaveBeenLastCalledWith(mockHttpStart, undefined, JWT_AUTH_LOGOUT);
   });
 });

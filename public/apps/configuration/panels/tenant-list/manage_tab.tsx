@@ -96,6 +96,8 @@ export function ManageTab(props: AppDependencies) {
   const [dashboardsDefaultTenant, setDashboardsDefaultTenant] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
+  const isPrivateTenantAvailable =
+    props.config.multitenancy.tenants.enable_private && isPrivateTenantEnabled;
 
   const { http } = props.coreStart;
 
@@ -283,7 +285,7 @@ export function ManageTab(props: AppDependencies) {
       if (
         !isMultiTenancyEnabled ||
         tenantName === dashboardsDefaultTenant ||
-        (dashboardsDefaultTenant === 'Private' && !isPrivateTenantEnabled) ||
+        (dashboardsDefaultTenant === 'Private' && !isPrivateTenantAvailable) ||
         dashboardsDefaultTenant === ''
       ) {
         return (
@@ -300,7 +302,7 @@ export function ManageTab(props: AppDependencies) {
     }
 
     if (tenantName === 'Private') {
-      if (isPrivateTenantEnabled && isMultiTenancyEnabled) {
+      if (isPrivateTenantAvailable && isMultiTenancyEnabled) {
         if (tenantName === dashboardsDefaultTenant) {
           return (
             <EuiFacetButton icon={<EuiIcon type="dot" color="primary" aria-hidden={true} />}>

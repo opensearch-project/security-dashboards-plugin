@@ -358,7 +358,12 @@ export class OpenIdAuthRoutes {
         path: '/auth/openid/redirectUrlFragment',
         validate: {
           query: schema.object({
-            nextUrl: schema.any(),
+            nextUrl: schema.maybe(
+              schema.string({
+                validate: (nexturl) =>
+                  validateNextUrl(nexturl, this.core.http.basePath.serverBasePath),
+              })
+            ),
           }),
         },
         options: {
@@ -383,7 +388,16 @@ export class OpenIdAuthRoutes {
     this.core.http.resources.register(
       {
         path: '/auth/openid/redirectUrlFragment.js',
-        validate: false,
+        validate: {
+          query: schema.object({
+            nextUrl: schema.maybe(
+              schema.string({
+                validate: (nexturl) =>
+                  validateNextUrl(nexturl, this.core.http.basePath.serverBasePath),
+              })
+            ),
+          }),
+        },
         options: {
           authRequired: true,
         },

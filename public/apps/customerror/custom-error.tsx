@@ -22,7 +22,8 @@ import { ERROR_MISSING_ROLE_PATH } from '../../../common';
 import { ClientConfigType } from '../../types';
 import { AuthType } from '../../../common';
 import './_index.scss';
-import { logout } from '../account/utils';
+import { getLogoutEndpoint, logout } from '../account/utils';
+import { getCurrentAuthType } from '../../utils/logout-utils';
 
 interface CustomErrorDeps {
   title: string;
@@ -30,6 +31,7 @@ interface CustomErrorDeps {
   http: CoreStart['http'];
   chrome: CoreStart['chrome'];
   config: ClientConfigType['ui'][AuthType.BASIC]['login'];
+  clientConfig: ClientConfigType;
 }
 
 export function CustomErrorPage(props: CustomErrorDeps) {
@@ -49,7 +51,10 @@ export function CustomErrorPage(props: CustomErrorDeps) {
       <EuiSpacer size="s" />
       <EuiSmallButton
         fill
-        onClick={() => logout(props.http, '')}
+        onClick={async () => {
+          const authType = await getCurrentAuthType(props.http, props.clientConfig);
+          await logout(props.http, '', getLogoutEndpoint(authType));
+        }}
         data-test-subj="error-logout-button"
         fullWidth
       >
@@ -71,6 +76,7 @@ export async function renderPage(
           http={coreStart.http}
           chrome={coreStart.chrome}
           config={config.ui.basicauth.login}
+          clientConfig={config}
           title="Missing Role"
           subtitle="No roles available for this user, please contact your system administrator."
         />

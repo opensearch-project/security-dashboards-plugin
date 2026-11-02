@@ -19,6 +19,7 @@ import { InternalUserUpdate } from '../../../types';
 import { getUserDetail, updateUser } from '../../../utils/internal-user-detail-utils';
 import { createErrorToast } from '../../../utils/toast-utils';
 import { AttributePanel } from '../attribute-panel';
+import { BackendRolePanel } from '../backend-role-panel';
 import { InternalUserEdit } from '../internal-user-edit';
 
 jest.mock('../../../utils/internal-user-detail-utils', () => ({
@@ -124,6 +125,42 @@ describe('Internal user edit', () => {
     expect(updateUser).toHaveBeenCalled();
     const userUpdateObj: InternalUserUpdate = updateUser.mock.calls[0][0];
     expect(userUpdateObj.password).toEqual(undefined);
+  });
+
+  it('trims new backend roles and keeps stored ones unchanged on submit', async () => {
+    const storedRole = 'cn=AA BB/CC (DD) my, company end=with=whitespace ';
+    useEffect.mockImplementationOnce((f) => f());
+    (getUserDetail as jest.Mock).mockResolvedValueOnce({
+      attributes: {},
+      backend_roles: [storedRole, 'backend_role1'],
+    });
+    const component = shallow(
+      <InternalUserEdit
+        action="edit"
+        sourceUserName={sampleUsername}
+        buildBreadcrumbs={buildBreadcrumbs}
+        coreStart={mockCoreStart as any}
+        depsStart={{} as any}
+        params={{} as any}
+        config={{} as any}
+      />
+    );
+    await new Promise(process.nextTick);
+    component.find(BackendRolePanel).prop('setState')([
+      storedRole,
+      'backend_role1',
+      ' backend_role2  ',
+      '  ',
+      ' backend_role1',
+    ]);
+    component.find('#submit').simulate('click');
+
+    expect(updateUser).toHaveBeenLastCalledWith(
+      mockCoreStart.http,
+      expect.anything(),
+      expect.objectContaining({ backend_roles: [storedRole, 'backend_role1', 'backend_role2'] }),
+      expect.anything()
+    );
   });
 
   it('should create error toast when password is invalid', () => {

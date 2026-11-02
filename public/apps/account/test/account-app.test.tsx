@@ -16,7 +16,7 @@
 import { setupTopNavButton } from '../account-app';
 import { setShouldShowTenantPopup, getSavedTenant } from '../../../utils/storage-utils';
 import { fetchAccountInfoSafe } from '../utils';
-import { fetchCurrentAuthType } from '../../../utils/logout-utils';
+import { getCurrentAuthType } from '../../../utils/logout-utils';
 import { fetchCurrentTenant } from '../../configuration/utils/tenant-utils';
 import { getDashboardsInfoSafe } from '../../../utils/dashboards-info-utils';
 import { CoreStart } from 'opensearch-dashboards/public';
@@ -37,7 +37,7 @@ jest.mock('../../../utils/dashboards-info-utils.tsx', () => ({
 }));
 
 jest.mock('../../../utils/logout-utils', () => ({
-  fetchCurrentAuthType: jest.fn(),
+  getCurrentAuthType: jest.fn(),
 }));
 
 jest.mock('../../configuration/utils/tenant-utils', () => ({
@@ -72,7 +72,7 @@ describe('Account app', () => {
 
   beforeAll(() => {
     (fetchAccountInfoSafe as jest.Mock).mockResolvedValue(mockAccountInfo);
-    (fetchCurrentAuthType as jest.Mock).mockResolvedValue('dummy');
+    (getCurrentAuthType as jest.Mock).mockResolvedValue('dummy');
     (fetchCurrentTenant as jest.Mock).mockResolvedValue(mockTenant);
     (getDashboardsInfoSafe as jest.Mock).mockResolvedValue(mockDashboardsInfo);
   });

@@ -37,6 +37,7 @@ import {
   getSuccessToastMessage,
 } from '../../utils/toast-utils';
 import { buildHashUrl, buildUrl } from '../../utils/url-builder';
+import { trimAndDedupe } from '../../utils/array-state-utils';
 import { AttributePanel, buildAttributeState, unbuildAttributeState } from './attribute-panel';
 import { UserAttributeStateClass } from './types';
 import { setCrossPageToast } from '../../utils/storage-utils';
@@ -70,6 +71,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
   const [isPasswordInvalid, setIsPasswordInvalid] = React.useState<boolean>(false);
   const [attributes, setAttributes] = useState<UserAttributeStateClass[]>([]);
   const [backendRoles, setBackendRoles] = useState<string[]>([]);
+  const storedBackendRoles = React.useRef<string[]>([]);
 
   const [toasts, addToast, removeToast] = useToastState();
 
@@ -88,6 +90,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
             dataSource.id
           );
           setAttributes(buildAttributeState(user.attributes));
+          storedBackendRoles.current = user.backend_roles;
           setBackendRoles(user.backend_roles);
           setUserName(generateResourceName(action, props.sourceUserName));
         } catch (e) {
@@ -116,7 +119,7 @@ export function InternalUserEdit(props: InternalUserEditDeps) {
       const validAttributes = attributes.filter((v: UserAttributeStateClass) => v.key !== '');
 
       const updateObject: InternalUserUpdate = {
-        backend_roles: backendRoles.filter((role) => role.trim() !== ''),
+        backend_roles: trimAndDedupe(backendRoles, storedBackendRoles.current),
         attributes: unbuildAttributeState(validAttributes),
       };
 

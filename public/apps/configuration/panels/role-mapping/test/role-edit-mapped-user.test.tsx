@@ -117,6 +117,60 @@ describe('Role mapping edit', () => {
     );
   });
 
+  it('trims new users and backend roles and keeps stored ones unchanged on submit', async () => {
+    const storedUser = 'AA BB ';
+    const storedRole = 'cn=AA BB/CC (DD) my, company end=with=whitespace ';
+    roleMappingUtils.getRoleMappingData = jest.fn().mockReturnValue({
+      users: [storedUser, 'user1'],
+      backend_roles: [storedRole, 'backend_role1'],
+      hosts: [],
+    });
+    useState.mockImplementationOnce(() => [
+      [
+        { label: storedUser },
+        { label: 'user1' },
+        { label: ' user2 ' },
+        { label: ' ' },
+        { label: ' user1' },
+      ],
+      setState,
+    ]);
+    useState.mockImplementationOnce(() => [
+      [
+        { externalIdentity: storedRole },
+        { externalIdentity: 'backend_role1' },
+        { externalIdentity: '  backend_role2 ' },
+        { externalIdentity: '   ' },
+        { externalIdentity: 'backend_role1 ' },
+      ],
+      setState,
+    ]);
+    const component = shallow(
+      <RoleEditMappedUser
+        roleName={sampleRole}
+        coreStart={mockCoreStart as any}
+        depsStart={{} as any}
+        params={{} as any}
+        config={{} as any}
+      />
+    );
+    // Keep the handler from the first render, which holds the mocked state; loading re-renders.
+    const map = component.find('#map').last();
+    await new Promise(process.nextTick);
+    map.simulate('click');
+
+    expect(updateRoleMapping).toHaveBeenLastCalledWith(
+      mockCoreStart.http,
+      sampleRole,
+      {
+        users: [storedUser, 'user1', 'user2'],
+        backend_roles: [storedRole, 'backend_role1', 'backend_role2'],
+        hosts: [],
+      },
+      'test'
+    );
+  });
+
   it('submit update error', () => {
     const consoleError = jest.spyOn(console, 'error');
     consoleError.mockImplementation(() => {});

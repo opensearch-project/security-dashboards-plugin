@@ -13,7 +13,8 @@
  *   permissions and limitations under the License.
  */
 
-import { resolve } from '../tenant_resolver';
+import { resolve, resolveTenant } from '../tenant_resolver';
+import { GLOBAL_TENANT_SYMBOL, PRIVATE_TENANT_SYMBOL } from '../../../common';
 
 describe("Resolve tenants when multitenancy is enabled and both 'Global' and 'Private' tenants are disabled", () => {
   function resolveWithConfig(config: any) {
@@ -145,5 +146,36 @@ describe("Resolve tenants when multitenancy is enabled and both 'Global' and 'Pr
 
     const nonadminResult = resolveWithConfig(nonadminConfig);
     expect(nonadminResult).toEqual('');
+  });
+});
+
+describe('resolveTenant private tenant availability', () => {
+  function resolvePrivateRequest(ymlPrivateEnabled: boolean, backendPrivateEnabled: boolean) {
+    return resolveTenant({
+      request: { headers: { securitytenant: PRIVATE_TENANT_SYMBOL } },
+      username: 'user1',
+      roles: [],
+      availableTenants: { global_tenant: true, user1: true },
+      config: {
+        multitenancy: { tenants: { enable_global: true, enable_private: ymlPrivateEnabled } },
+      } as any,
+      cookie: {} as any,
+      multitenancyEnabled: true,
+      privateTenantEnabled: backendPrivateEnabled,
+      defaultTenant: undefined,
+      preferredTenants: undefined,
+    });
+  }
+
+  it('resolves the private tenant when both the yml and the backend settings enable it', () => {
+    expect(resolvePrivateRequest(true, true)).toEqual(PRIVATE_TENANT_SYMBOL);
+  });
+
+  it('falls back to the global tenant when the yml setting disables the private tenant', () => {
+    expect(resolvePrivateRequest(false, true)).toEqual(GLOBAL_TENANT_SYMBOL);
+  });
+
+  it('falls back to the global tenant when the backend setting disables the private tenant', () => {
+    expect(resolvePrivateRequest(true, false)).toEqual(GLOBAL_TENANT_SYMBOL);
   });
 });

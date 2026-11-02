@@ -195,22 +195,26 @@ describe('test OIDC helper utility', () => {
     );
   });
 
-  test('test getNextUrl when request.query.nextUrl is present', () => {
+  test('test getNextUrl when request.query.nextUrl is a valid relative path', () => {
     const config = {
       openid: {
         base_redirect_url: 'http://localhost:5601/ui',
       },
     };
 
-    const core = {};
-
-    const request = {
-      query: {
-        nextUrl: 'http://localhost:5601/ui/app/home',
+    const core = {
+      http: {
+        basePath: { serverBasePath: '' },
       },
     };
 
-    expect('http://localhost:5601/ui/app/home').toEqual(getNextUrl(config, core, request));
+    const request = {
+      query: {
+        nextUrl: '/app/home',
+      },
+    };
+
+    expect('/app/home').toEqual(getNextUrl(config, core, request));
   });
 
   test('test getNextUrl when request.query.nextUrl is absent', () => {
@@ -227,6 +231,73 @@ describe('test OIDC helper utility', () => {
     };
 
     // Should go to config.openid?.base_redirect_url
+    expect('http://localhost:5601/ui').toEqual(getNextUrl(config, core, request));
+  });
+
+  test('test getNextUrl rejects an absolute off-origin URL and falls back to base', () => {
+    const config = {
+      openid: {
+        base_redirect_url: 'http://localhost:5601/ui',
+      },
+    };
+
+    const core = {
+      http: {
+        basePath: { serverBasePath: '' },
+      },
+    };
+
+    const request = {
+      query: {
+        nextUrl: 'https://evil.example.com/',
+      },
+    };
+
+    // Malicious off-origin URL must not be returned; fall back to base URL.
+    expect('http://localhost:5601/ui').toEqual(getNextUrl(config, core, request));
+  });
+
+  test('test getNextUrl rejects a protocol-relative URL and falls back to base', () => {
+    const config = {
+      openid: {
+        base_redirect_url: 'http://localhost:5601/ui',
+      },
+    };
+
+    const core = {
+      http: {
+        basePath: { serverBasePath: '' },
+      },
+    };
+
+    const request = {
+      query: {
+        nextUrl: '//evil.example.com/',
+      },
+    };
+
+    expect('http://localhost:5601/ui').toEqual(getNextUrl(config, core, request));
+  });
+
+  test('test getNextUrl rejects a backslash protocol-relative URL and falls back to base', () => {
+    const config = {
+      openid: {
+        base_redirect_url: 'http://localhost:5601/ui',
+      },
+    };
+
+    const core = {
+      http: {
+        basePath: { serverBasePath: '' },
+      },
+    };
+
+    const request = {
+      query: {
+        nextUrl: '/\\evil.example.com/',
+      },
+    };
+
     expect('http://localhost:5601/ui').toEqual(getNextUrl(config, core, request));
   });
 });
