@@ -2,6 +2,9 @@ name: E2E multi datasources enabled workflow
 
 on: [ push, pull_request ]
 
+permissions:
+  contents: read
+
 env:
   CI: 1
   # avoid warnings like "tput: No value for $TERM and no -T specified"
@@ -21,6 +24,8 @@ jobs:
     steps:
       - name: Checkout Branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+        with:
+          persist-credentials: false
 
       - name: Set env
         run: |
