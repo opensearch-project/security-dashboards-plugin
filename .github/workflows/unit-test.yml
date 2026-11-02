@@ -25,7 +25,7 @@ jobs:
           persist-credentials: false
 
       - id: install-dashboards
-        uses: opensearch-project/opensearch-build/.github/actions/setup-opensearch-dashboards@350f76bcccd3a8e3b85c03a77d52abdfb0fcbecf
+        uses: opensearch-project/opensearch-build/.github/actions/setup-opensearch-dashboards@7e94691beaad2bf853d2758c9570248abcb1dc11
         with:
            plugin_name: security-dashboards-plugin
 
