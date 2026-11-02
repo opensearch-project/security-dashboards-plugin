@@ -24,6 +24,7 @@ import {
   getRoleMappingData,
   transformRoleMappingData,
   updateRoleMapping,
+  UserType,
 } from '../../../utils/role-mapping-utils';
 import { fetchActionGroups } from '../../../utils/action-groups-utils';
 import { getRoleDetail } from '../../../utils/role-detail-utils';
@@ -43,6 +44,7 @@ jest.mock('../../../utils/role-mapping-utils', () => ({
     userType: '',
   }),
   updateRoleMapping: jest.fn(),
+  UserType: jest.requireActual('../../../utils/role-mapping-utils').UserType,
 }));
 jest.mock('../../../utils/action-groups-utils', () => ({
   fetchActionGroups: jest.fn().mockReturnValue({}),
@@ -247,6 +249,49 @@ describe('Role view', () => {
       expect(updateRoleMapping).toHaveBeenCalled();
       done();
     });
+  });
+
+  it('keeps a backend role that shares a name with a deleted user', async () => {
+    const user = () => ({ userName: 'alice', userType: UserType.internal });
+    const backendRole = { userName: 'alice', userType: UserType.external };
+    const setMappedUsers = jest.fn();
+    // mapped users, error flag and hosts, for one render
+    const mockRenderState = () =>
+      useState
+        .mockImplementationOnce(() => [[user(), backendRole], setMappedUsers])
+        .mockImplementationOnce(() => [false, jest.fn()])
+        .mockImplementationOnce(() => [[], jest.fn()]);
+    mockRenderState();
+    const component = shallow(
+      <RoleView
+        roleName={sampleRole}
+        prevAction={SubAction.mapuser}
+        buildBreadcrumbs={buildBreadcrumbs}
+        coreStart={mockCoreStart as any}
+        depsStart={{} as any}
+        params={{} as any}
+        config={mockConfig as any}
+      />
+    );
+    // select a copy of the listed user row, as the table does after a refetch
+    mockRenderState();
+    component
+      .find(EuiTabbedContent)
+      .dive()
+      .find('[data-test-subj="role-mapping-list"]')
+      .prop('selection')
+      .onSelectionChange([user()]);
+    const deleteFunc = useDeleteConfirmState.mock.calls.slice(-1)[0][0];
+
+    await deleteFunc();
+
+    expect(updateRoleMapping).toHaveBeenLastCalledWith(
+      mockCoreStart.http,
+      sampleRole,
+      { users: [], backend_roles: ['alice'], hosts: [] },
+      'test'
+    );
+    expect(setMappedUsers).toHaveBeenLastCalledWith([backendRole]);
   });
 
   it('should capture error by console.log if error occurred while deleting role mapping', (done) => {
