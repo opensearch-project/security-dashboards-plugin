@@ -224,7 +224,11 @@ describe('checks headers sent by isReadonly', () => {
       headers: { host: 'dashboards.example.com', authorization: 'Basic dXNlcjpwYXNz' },
     });
 
-  const setup = (requestIncludesAuthInfo: boolean, cookie: SecuritySessionCookie | null) => {
+  const setup = (
+    requestIncludesAuthInfo: boolean,
+    cookie: SecuritySessionCookie | null,
+    additionalAuthHeader = {}
+  ) => {
     const securityClient = new SecurityClient(mockEsClient());
     securityClient.authinfo = jest.fn().mockResolvedValue(readonlyAuthInfo);
     securityClient.dashboardsinfo = jest.fn().mockResolvedValue(mockDashboardsInfo());
@@ -233,7 +237,7 @@ describe('checks headers sent by isReadonly', () => {
     const auth = new BasicAuthentication();
     auth.requestIncludesAuthInfo = jest.fn().mockReturnValue(requestIncludesAuthInfo);
     auth.buildAuthHeaderFromCookie = jest.fn().mockReturnValue(cookieAuthHeaders);
-    auth.getAdditionalAuthHeader = jest.fn().mockResolvedValue({});
+    auth.getAdditionalAuthHeader = jest.fn().mockResolvedValue(additionalAuthHeader);
 
     const securitySessionStorageFactory = sessionStorageMock.createFactory<SecuritySessionCookie>();
     securitySessionStorageFactory.asScoped = jest.fn().mockReturnValue({
@@ -268,6 +272,32 @@ describe('checks headers sent by isReadonly', () => {
     expect(await service.isReadonly(request)).toBe(true);
     expect(securityClient.dashboardsinfo).toHaveBeenCalledWith(request, cookieAuthHeaders);
     expect(securityClient.authinfo).toHaveBeenCalledWith(request, cookieAuthHeaders);
+  });
+
+  it('sends the additional auth header when the request carries auth info', async () => {
+    const bearer = { authorization: 'Bearer t' };
+    const { service, securityClient } = setup(true, mockCookie(), bearer);
+    const request = createRequest();
+
+    expect(await service.isReadonly(request)).toBe(true);
+    expect(securityClient.dashboardsinfo).toHaveBeenCalledWith(request, bearer);
+    expect(securityClient.authinfo).toHaveBeenCalledWith(request, bearer);
+  });
+
+  it('adds the additional auth header to the cookie auth headers', async () => {
+    const bearer = { authorization: 'Bearer t' };
+    const { service, securityClient } = setup(
+      false,
+      mockCookie({ tenant: 'readonly_tenant' }),
+      bearer
+    );
+    const request = createRequest();
+    // the additional header is applied last, as in the auth handler
+    const expected = { ...cookieAuthHeaders, ...bearer };
+
+    expect(await service.isReadonly(request)).toBe(true);
+    expect(securityClient.dashboardsinfo).toHaveBeenCalledWith(request, expected);
+    expect(securityClient.authinfo).toHaveBeenCalledWith(request, expected);
   });
 
   it('makes no backend call when the request has neither a cookie nor auth info', async () => {
