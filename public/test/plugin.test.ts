@@ -218,6 +218,28 @@ describe('SecurityPlugin', () => {
       expect(result).toEqual(expect.objectContaining({ status: expect.anything() }));
     };
 
+    const EXPLORE_DISCOVER_IDS = ['explore', 'explore/logs', 'explore/traces', 'explore/metrics'];
+
+    describe('explore plugin app ids', () => {
+      it('blocks the explore and visualization-editor ids when both flags are off', async () => {
+        const updater = await runAndGetUpdater({});
+        EXPLORE_DISCOVER_IDS.forEach((id) => expectBlocked(updater({ id })));
+        expectBlocked(updater({ id: 'visualization-editor' }));
+      });
+
+      it('allows the explore ids only with allow_discover', async () => {
+        const updater = await runAndGetUpdater({ allow_discover: true });
+        EXPLORE_DISCOVER_IDS.forEach((id) => expect(updater({ id })).toBeUndefined());
+        expectBlocked(updater({ id: 'visualization-editor' }));
+      });
+
+      it('allows visualization-editor only with allow_visualize', async () => {
+        const updater = await runAndGetUpdater({ allow_visualize: true });
+        expect(updater({ id: 'visualization-editor' })).toBeUndefined();
+        EXPLORE_DISCOVER_IDS.forEach((id) => expectBlocked(updater({ id })));
+      });
+    });
+
     describe('allow_discover flag', () => {
       it('blocks Discover (both ids) when the flag is unset (default off)', async () => {
         const updater = await runAndGetUpdater({});
