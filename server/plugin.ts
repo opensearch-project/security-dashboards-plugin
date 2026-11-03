@@ -236,8 +236,8 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
       const migrationClient = createMigrationOpenSearchClient(esClient, this.logger);
 
       // these run without blocking startup, so a rejection must not escape as an unhandled one
-      setupIndexTemplate(esClient, opensearchDashboardsIndex, typeRegistry, this.logger).catch(
-        (error) => this.logger.error(`Failed to set up the tenant index template: ${error}`)
+      setupIndexTemplate(esClient, opensearchDashboardsIndex, typeRegistry).catch((error) =>
+        this.logger.error(`Failed to set up the tenant index template: ${error?.stack ?? error}`)
       );
 
       const serializer: SavedObjectsSerializer = core.savedObjects.createSerializer();
@@ -249,7 +249,9 @@ export class SecurityPlugin implements Plugin<SecurityPluginSetup, SecurityPlugi
         typeRegistry,
         serializer,
         this.logger
-      ).catch((error) => this.logger.error(`Failed to migrate tenant indices: ${error}`));
+      ).catch((error) =>
+        this.logger.error(`Failed to migrate tenant indices: ${error?.stack ?? error}`)
+      );
     }
 
     return {

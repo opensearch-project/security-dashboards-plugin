@@ -22,24 +22,50 @@ describe('SecurityPlugin start', () => {
     path: '/_plugins/_security/tenantinfo',
   });
 
-  it('continues startup and logs the error when the tenant info call is rejected', async () => {
+  const startPlugin = async (
+    getTenantInfoWithInternalUser: jest.Mock,
+    putIndexTemplate?: jest.Mock
+  ) => {
     const initializerContext = coreMock.createPluginInitializerContext({
       multitenancy: { enabled: true },
     });
     const plugin = new SecurityPlugin(initializerContext);
-    const securityClient = {
-      getTenantInfoWithInternalUser: jest.fn().mockRejectedValue(authorizationException),
-    };
     // start() reads the client that setup() creates
-    Object.assign(plugin, { securityClient });
+    Object.assign(plugin, { securityClient: { getTenantInfoWithInternalUser } });
+    const coreStart = coreMock.createStart();
+    if (putIndexTemplate) {
+      coreStart.opensearch.client.asInternalUser.indices.putIndexTemplate = putIndexTemplate;
+    }
 
-    await expect(plugin.start(coreMock.createStart())).resolves.toBeDefined();
-    // start() does not wait for the migration; Jest fails the test if it rejects unhandled
+    await expect(plugin.start(coreStart)).resolves.toBeDefined();
+    // start() does not wait for the tenant index setup, so let its promises settle
     await new Promise((resolve) => setImmediate(resolve));
 
-    expect(securityClient.getTenantInfoWithInternalUser).toHaveBeenCalled();
-    expect(initializerContext.logger.get().error).toHaveBeenCalledWith(
-      `Failed to migrate tenant indices: ${authorizationException}`
+    return initializerContext.logger.get().error as jest.Mock;
+  };
+
+  it('continues startup and logs the error once when the tenant info call is rejected', async () => {
+    const getTenantInfo = jest.fn().mockRejectedValue(authorizationException);
+
+    const logError = await startPlugin(getTenantInfo);
+
+    expect(getTenantInfo).toHaveBeenCalled();
+    expect(logError).toHaveBeenCalledTimes(1);
+    expect(logError).toHaveBeenCalledWith(
+      `Failed to migrate tenant indices: ${authorizationException.stack}`
+    );
+  });
+
+  it('continues startup and logs the error once when the index template call is rejected', async () => {
+    const error = new Error('Template Exception');
+    const putIndexTemplate = jest.fn().mockRejectedValue(error);
+
+    const logError = await startPlugin(jest.fn().mockResolvedValue({}), putIndexTemplate);
+
+    expect(putIndexTemplate).toHaveBeenCalled();
+    expect(logError).toHaveBeenCalledTimes(1);
+    expect(logError).toHaveBeenCalledWith(
+      `Failed to set up the tenant index template: ${error.stack}`
     );
   });
 });
