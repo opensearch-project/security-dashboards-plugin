@@ -108,35 +108,10 @@ jobs:
       # Fail fast (with a clear message) if the nodes merged anyway, instead of
       # failing the datasource isolation tests half an hour later. See #2506.
       - name: Verify local and remote clusters are separate
-        shell: bash
-        run: |
-          set -euo pipefail
-          extract_uuid() {
-            curl -s -k -u 'admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}' "$1" \
-              | sed -n 's/.*"cluster_uuid"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p'
-          }
-          # A freshly started node briefly reports "_na_" until its cluster
-          # state is recovered; retry rather than compare transient values.
-          for i in $(seq 1 12); do
-            local_uuid=$(extract_uuid https://localhost:9200/)
-            remote_uuid=$(extract_uuid https://localhost:9202/)
-            if [ -n "$local_uuid" ] && [ -n "$remote_uuid" ] \
-              && [ "$local_uuid" != "_na_" ] && [ "$remote_uuid" != "_na_" ]; then
-              break
-            fi
-            sleep 5
-          done
-          echo "local:  $local_uuid"
-          echo "remote: $remote_uuid"
-          if [ -z "$local_uuid" ] || [ -z "$remote_uuid" ] \
-            || [ "$local_uuid" = "_na_" ] || [ "$remote_uuid" = "_na_" ]; then
-            echo "ERROR: could not obtain a settled cluster_uuid from both nodes."
-            exit 1
-          fi
-          if [ "$local_uuid" = "$remote_uuid" ]; then
-            echo "ERROR: the local (9200) and remote (9202) nodes report the same cluster_uuid - they merged into one cluster."
-            exit 1
-          fi
+        uses: ./.github/actions/verify-separate-clusters
+        with:
+          admin-password: ${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }}
+          remote-port: '9202'
 
 
       # https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
