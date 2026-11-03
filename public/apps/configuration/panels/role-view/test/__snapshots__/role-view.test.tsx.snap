@@ -365,7 +365,7 @@ exports[`Role view basic rendering when permission tab is selected 1`] = `
                   }
                   data-test-subj="role-mapping-list"
                   error=""
-                  itemId="userName"
+                  itemId={[Function]}
                   items={Array []}
                   loading={false}
                   message={
@@ -665,7 +665,7 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
                 }
                 data-test-subj="role-mapping-list"
                 error=""
-                itemId="userName"
+                itemId={[Function]}
                 items={Array []}
                 loading={false}
                 message={
@@ -876,7 +876,7 @@ exports[`Role view renders when mapped user tab is selected 1`] = `
                   }
                   data-test-subj="role-mapping-list"
                   error=""
-                  itemId="userName"
+                  itemId={[Function]}
                   items={Array []}
                   loading={false}
                   message={

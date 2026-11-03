@@ -255,7 +255,8 @@ describe('Role view', () => {
     const user = () => ({ userName: 'alice', userType: UserType.internal });
     const backendRole = { userName: 'alice', userType: UserType.external };
     const setMappedUsers = jest.fn();
-    // mapped users, error flag and hosts, for one render
+    // the spy sees only React.useState, so these are its first three calls in the next render:
+    // mapped users, error flag and hosts. Selection uses the named useState import and stays real.
     const mockRenderState = () =>
       useState
         .mockImplementationOnce(() => [[user(), backendRole], setMappedUsers])
@@ -292,6 +293,30 @@ describe('Role view', () => {
       'test'
     );
     expect(setMappedUsers).toHaveBeenLastCalledWith([backendRole]);
+  });
+
+  it('gives a user and a backend role with the same name distinct row ids', () => {
+    const component = shallow(
+      <RoleView
+        roleName={sampleRole}
+        prevAction={SubAction.mapuser}
+        buildBreadcrumbs={buildBreadcrumbs}
+        coreStart={mockCoreStart as any}
+        depsStart={{} as any}
+        params={{} as any}
+        config={mockConfig as any}
+      />
+    );
+    const itemId = component
+      .find(EuiTabbedContent)
+      .dive()
+      .find('[data-test-subj="role-mapping-list"]')
+      .prop('itemId');
+    const rowId = (item: object) => (typeof itemId === 'function' ? itemId(item) : item[itemId]);
+
+    expect(rowId({ userName: 'alice', userType: UserType.internal })).not.toEqual(
+      rowId({ userName: 'alice', userType: UserType.external })
+    );
   });
 
   it('should capture error by console.log if error occurred while deleting role mapping', (done) => {

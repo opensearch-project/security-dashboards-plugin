@@ -94,6 +94,9 @@ const mappedUserColumns = [
   },
 ];
 
+// a user and a backend role can share a name, so the row id includes the type
+const mappedUserRowId = (item: MappedUsersListing) => `${item.userType}:${item.userName}`;
+
 export function RoleView(props: RoleViewProps) {
   const duplicateRoleLink = buildHashUrl(ResourceType.roles, Action.duplicate, props.roleName);
 
@@ -356,7 +359,7 @@ export function RoleView(props: RoleViewProps) {
                 loading={mappedUsers === [] && !errorFlag}
                 columns={mappedUserColumns}
                 items={mappedUsers}
-                itemId={'userName'}
+                itemId={mappedUserRowId}
                 pagination={true}
                 message={showTableStatusMessage(loading, mappedUsers, emptyListMessage)}
                 selection={{ onSelectionChange: setSelection }}
