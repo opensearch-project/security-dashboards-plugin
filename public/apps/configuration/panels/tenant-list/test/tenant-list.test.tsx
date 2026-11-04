@@ -186,6 +186,39 @@ describe('Tenant list', () => {
     });
   });
 
+  it('removes a deleted tenant that was selected before a refetch', async () => {
+    const tenant = (name: string): Tenant => ({
+      tenant: name,
+      description: '',
+      reserved: false,
+      tenantValue: name,
+    });
+    // the listed rows come from a refetch, the selection holds older copies
+    const setTenantData = jest.fn();
+    jest
+      .spyOn(React, 'useState')
+      .mockImplementationOnce(() => [[tenant('tenant_1'), tenant('tenant_2')], setTenantData])
+      .mockImplementationOnce(() => [false, jest.fn()])
+      .mockImplementationOnce(() => [false, jest.fn()])
+      .mockImplementationOnce(() => [[tenant('tenant_1')], jest.fn()]);
+    shallow(
+      <ManageTab
+        coreStart={mockCoreStart as any}
+        depsStart={{ navigation: {} } as any}
+        params={{} as any}
+        config={config as any}
+      />
+    );
+    const deleteFunc = useDeleteConfirmState.mock.calls.slice(-1)[0][0];
+
+    await deleteFunc();
+
+    expect(mockTenantUtils.requestDeleteTenant).toHaveBeenCalledWith(mockCoreStart.http, [
+      'tenant_1',
+    ]);
+    expect(setTenantData).toHaveBeenCalledWith([tenant('tenant_2')]);
+  });
+
   it('delete tenant error', (done) => {
     mockTenantUtils.requestDeleteTenant.mockImplementationOnce(() => {
       throw new Error();
