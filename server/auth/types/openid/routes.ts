@@ -62,7 +62,8 @@ export class OpenIdAuthRoutes {
     private readonly openIdAuthConfig: OpenIdAuthConfig,
     private readonly securityClient: SecurityClient,
     private readonly core: CoreSetup,
-    private readonly wreckClient: typeof wreck
+    private readonly wreckClient: typeof wreck,
+    private readonly ensureDiscovery: () => Promise<void>
   ) {}
 
   private redirectToLogin(
@@ -115,6 +116,15 @@ export class OpenIdAuthRoutes {
         },
       },
       async (context, request, response) => {
+        try {
+          await this.ensureDiscovery();
+        } catch {
+          return response.customError({
+            statusCode: 503,
+            headers: { 'retry-after': '5' },
+            body: 'Identity provider unavailable. Please try again later.',
+          });
+        }
         // implementation refers to https://github.com/hapijs/bell/blob/master/lib/oauth.js
         // Sign-in initialization
         if (!request.query.code) {
@@ -264,13 +274,25 @@ export class OpenIdAuthRoutes {
         // authHeaderValue is the bearer header, e.g. "Bearer <auth_token>"
         const token = tokenFromExtraStorage.length
           ? tokenFromExtraStorage.split(' ')[1]
-          : cookie?.credentials.authHeaderValue.split(' ')[1]; // get auth token
+          : cookie?.credentials?.authHeaderValue?.split(' ')[1]; // get auth token
         const nextUrl = getBaseRedirectUrl(this.config, this.core, request);
 
         const logoutQueryParams = {
           post_logout_redirect_uri: `${nextUrl}`,
           id_token_hint: token,
         };
+
+        // Clear the local session even when discovery is unavailable after a restart.
+        if (!this.config.openid?.logout_url) {
+          try {
+            await this.ensureDiscovery();
+          } catch {
+            return response.redirected({ headers: { location: nextUrl } });
+          }
+        }
+        if (!this.config.openid?.logout_url && !this.openIdAuthConfig.endSessionEndpoint) {
+          return response.redirected({ headers: { location: nextUrl } });
+        }
 
         const endSessionUrl = composeLogoutUrl(
           this.config.openid?.logout_url,

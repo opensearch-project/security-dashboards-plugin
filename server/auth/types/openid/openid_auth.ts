@@ -35,6 +35,7 @@ import {
   SecuritySessionCookie,
 } from '../../../session/security_cookie';
 import { OpenIdAuthRoutes } from './routes';
+import { OpenIdDiscovery } from './discovery';
 import { AuthenticationType } from '../authentication_type';
 import { callTokenEndpoint, getExpirationDate } from './helper';
 import { getObjectProperties } from '../../../utils/object_properties_defined';
@@ -73,6 +74,7 @@ export class OpenIdAuthentication extends AuthenticationType {
   private openIdConnectUrl: string;
   private wreckClient: typeof wreck;
   private wreckHttpsOption: WreckHttpsOptions = {};
+  private discovery!: OpenIdDiscovery;
 
   constructor(
     config: SecurityPluginConfigType,
@@ -101,33 +103,39 @@ export class OpenIdAuthentication extends AuthenticationType {
   }
 
   public async init() {
-    try {
-      this.wreckClient = await this.createWreckClient();
-      const response = await this.wreckClient.get(this.openIdConnectUrl);
-      const payload = JSON.parse(response.payload as string);
-
-      this.openIdAuthConfig.authorizationEndpoint = payload.authorization_endpoint;
-      this.openIdAuthConfig.tokenEndpoint = payload.token_endpoint;
-      this.openIdAuthConfig.endSessionEndpoint = payload.end_session_endpoint || undefined;
-
-      this.createExtraStorage();
-
-      const routes = new OpenIdAuthRoutes(
-        this.router,
-        this.config,
-        this.sessionStorageFactory,
-        this.openIdAuthConfig,
-        this.securityClient,
-        this.coreSetup,
-        this.wreckClient
-      );
-
-      routes.setupRoutes();
-    } catch (error: any) {
-      this.logger.error(error); // TODO: log more info
-      throw new Error('Failed when trying to obtain the endpoints from your IdP');
+    // Local configuration errors remain startup errors; IdP availability does not.
+    const connectUrl = new URL(this.openIdConnectUrl);
+    if (!['http:', 'https:'].includes(connectUrl.protocol)) {
+      throw new Error('openid.connect_url must be an HTTP or HTTPS URL');
     }
+    this.wreckClient = await this.createWreckClient();
+    this.discovery = new OpenIdDiscovery(
+      async () => {
+        const response = await this.wreckClient.get(this.openIdConnectUrl, {
+          timeout: 5000,
+          maxBytes: 1024 * 1024,
+        });
+        return JSON.parse(response.payload as string);
+      },
+      () =>
+        this.logger.warn('OIDC discovery failed; a subsequent request can retry after 5 seconds.')
+    );
+    this.createExtraStorage();
+    new OpenIdAuthRoutes(
+      this.router,
+      this.config,
+      this.sessionStorageFactory,
+      this.openIdAuthConfig,
+      this.securityClient,
+      this.coreSetup,
+      this.wreckClient,
+      this.ensureDiscovery
+    ).setupRoutes();
   }
+
+  private ensureDiscovery = async () => {
+    Object.assign(this.openIdAuthConfig, await this.discovery.get());
+  };
 
   private generateNextUrl(request: OpenSearchDashboardsRequest): string {
     let path = getRedirectUrl({
@@ -304,6 +312,7 @@ export class OpenIdAuthentication extends AuthenticationType {
     // need to renew id token
     if (cookie.credentials.refresh_token) {
       try {
+        await this.ensureDiscovery();
         const query: any = {
           grant_type: 'refresh_token',
           client_id: this.config.openid?.client_id,
