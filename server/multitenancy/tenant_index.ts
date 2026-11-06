@@ -34,41 +34,35 @@ import { MAX_INTEGER } from '../../common';
 export async function setupIndexTemplate(
   esClient: OpenSearchClient,
   opensearchDashboardsIndex: string,
-  typeRegistry: ISavedObjectTypeRegistry,
-  logger: Logger
+  typeRegistry: ISavedObjectTypeRegistry
 ) {
   const mappings: IndexMapping = buildActiveMappings(mergeTypes(typeRegistry.getAllTypes()));
-  try {
-    await esClient.indices.putIndexTemplate({
-      name: 'tenant_template',
-      body: {
-        // Setting priority to the max value to avoid being overridden by custom index templates.
-        priority: MAX_INTEGER,
-        index_patterns: [
-          opensearchDashboardsIndex + '_-*_*',
-          opensearchDashboardsIndex + '_0*_*',
-          opensearchDashboardsIndex + '_1*_*',
-          opensearchDashboardsIndex + '_2*_*',
-          opensearchDashboardsIndex + '_3*_*',
-          opensearchDashboardsIndex + '_4*_*',
-          opensearchDashboardsIndex + '_5*_*',
-          opensearchDashboardsIndex + '_6*_*',
-          opensearchDashboardsIndex + '_7*_*',
-          opensearchDashboardsIndex + '_8*_*',
-          opensearchDashboardsIndex + '_9*_*',
-        ],
-        template: {
-          settings: {
-            number_of_shards: 1,
-          },
-          mappings,
+  await esClient.indices.putIndexTemplate({
+    name: 'tenant_template',
+    body: {
+      // Setting priority to the max value to avoid being overridden by custom index templates.
+      priority: MAX_INTEGER,
+      index_patterns: [
+        opensearchDashboardsIndex + '_-*_*',
+        opensearchDashboardsIndex + '_0*_*',
+        opensearchDashboardsIndex + '_1*_*',
+        opensearchDashboardsIndex + '_2*_*',
+        opensearchDashboardsIndex + '_3*_*',
+        opensearchDashboardsIndex + '_4*_*',
+        opensearchDashboardsIndex + '_5*_*',
+        opensearchDashboardsIndex + '_6*_*',
+        opensearchDashboardsIndex + '_7*_*',
+        opensearchDashboardsIndex + '_8*_*',
+        opensearchDashboardsIndex + '_9*_*',
+      ],
+      template: {
+        settings: {
+          number_of_shards: 1,
         },
+        mappings,
       },
-    });
-  } catch (error) {
-    logger.error(error);
-    throw error;
-  }
+    },
+  });
 }
 
 export async function migrateTenantIndices(
@@ -79,13 +73,7 @@ export async function migrateTenantIndices(
   serializer: SavedObjectsSerializer,
   logger: Logger
 ) {
-  let tenantInfo: any;
-  try {
-    tenantInfo = await securityClient.getTenantInfoWithInternalUser();
-  } catch (error) {
-    logger.error(error);
-    throw error;
-  }
+  const tenantInfo: any = await securityClient.getTenantInfoWithInternalUser();
 
   // follows the same approach in opensearch_dashboards_migrator.ts to initiate DocumentMigrator here
   const documentMigrator = new DocumentMigrator({
