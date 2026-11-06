@@ -29,6 +29,7 @@ const validateAuthType = (value: string[]) => {
     'proxy',
     'kerberos',
     'proxycache',
+    AuthType.NONE,
   ];
 
   value.forEach((authVal) => {
