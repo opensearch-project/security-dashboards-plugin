@@ -27,7 +27,7 @@ module.exports = defineConfig({
     baseUrl: 'http://localhost:5601',
     specPattern: ['test/cypress/e2e/**/*.spec.js', 'test/cypress/e2e/**/*.spec.ts'],
   },
-  env: {
+  expose: {
     openSearchUrl: 'https://localhost:9200',
     adminUserName: 'admin',
     adminPassword: 'myStrongPassword123!',
