@@ -23,6 +23,7 @@ import { SecurityPluginConfigType } from '../..';
 import { AUTO_LOGIN_QUERY_PARAM, LOGIN_PAGE_URI } from '../../../common';
 import { clearOldVersionCookieValue, SecuritySessionCookie } from '../../session/security_cookie';
 import { composeNextUrlQueryParam, validateNextUrl } from '../../utils/next_url';
+import { getLogoutLoginUrl } from '../../session/logout_return';
 
 function validateAutoLogin(autoLogin: string) {
   if (!['true', 'false'].includes(autoLogin.toLowerCase())) {
@@ -78,7 +79,20 @@ export function registerLoginPageRoute(
       },
     },
     async (context, request, response) => {
-      sessionStorageFactory.asScoped(request).clear();
+      const storage = sessionStorageFactory.asScoped(request);
+      let logoutLoginUrl: string | undefined;
+      try {
+        logoutLoginUrl = getLogoutLoginUrl(
+          await storage.get(),
+          coreSetup.http.basePath.serverBasePath
+        );
+      } catch {
+        // Invalid or expired cookies must not prevent the login page from loading.
+      }
+      storage.clear();
+      if (logoutLoginUrl && !request.query.nextUrl) {
+        return response.redirected({ headers: { location: logoutLoginUrl } });
+      }
       const clearOldVersionCookie = clearOldVersionCookieValue(config);
       return response.renderAnonymousCoreApp({
         headers: {

@@ -17,6 +17,8 @@ import { SessionStorageCookieOptions } from '../../../../src/core/server';
 import { SecurityPluginConfigType } from '..';
 
 export interface SecuritySessionCookie {
+  // Credential-free state used only to return to the login page after explicit logout.
+  logoutNextUrl?: string;
   // security_authentication
   username?: string;
   credentials?: any;

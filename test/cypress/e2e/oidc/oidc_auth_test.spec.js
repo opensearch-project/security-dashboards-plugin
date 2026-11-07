@@ -148,7 +148,7 @@ describe('Log in via OIDC', () => {
       hideHomeModal: true,
     });
 
-    cy.intercept('GET', `${basePath}/auth/openid/logout`).as('openidLogout');
+    cy.intercept({ method: 'GET', pathname: `${basePath}/auth/openid/logout` }).as('openidLogout');
     cy.origin(osdOrigin, () => {
       localStorage.setItem('home:newThemeModal:show', 'false');
 
@@ -160,7 +160,10 @@ describe('Log in via OIDC', () => {
       cy.get('button[id="user-icon-btn"]').click();
       cy.get('button[data-test-subj^="log-out-"]').click();
     });
-    cy.wait('@openidLogout').then(() => {});
+    cy.wait('@openidLogout').then(({ request }) => {
+      const nextUrl = new URL(request.url).searchParams.get('nextUrl');
+      expect(nextUrl).to.include(`${basePath}/app/opensearch_dashboards_overview`);
+    });
 
     loginWithOidc(url, {
       hideHomeModal: true,
