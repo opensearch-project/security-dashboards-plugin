@@ -65,6 +65,12 @@ opensearch.requestHeadersWhitelist: [ authorization,securitytenant ]
 opensearch_security.multitenancy.enabled: true
 opensearch_security.multitenancy.tenants.preferred: ["Private", "Global"]
 opensearch_security.readonly_mode.roles: ["kibana_read_only"]
+# Optional — opt in to letting read-only users access the Discover app.
+# Defaults to false to preserve existing behavior on upgrade.
+# opensearch_security.readonly_mode.allow_discover: true
+# Optional — opt in to letting read-only users access the Visualize app.
+# Defaults to false to preserve existing behavior on upgrade.
+# opensearch_security.readonly_mode.allow_visualize: true
 
 # Use this setting if you are running opensearch-dashboards without https
 opensearch_security.cookie.secure: false

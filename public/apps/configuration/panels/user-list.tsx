@@ -31,7 +31,7 @@ import {
   EuiTitle,
   Query,
 } from '@elastic/eui';
-import { Dictionary, difference, isEmpty, map } from 'lodash';
+import { Dictionary, differenceBy, isEmpty, map } from 'lodash';
 import React, { useContext, useState } from 'react';
 import { getAuthInfo } from '../../../utils/auth-info-utils';
 import { AppDependencies } from '../../types';
@@ -142,7 +142,7 @@ export function UserList(props: AppDependencies) {
       // Refresh from server (calling fetchData) does not work here, the server still return the users
       // that had been just deleted, probably because ES takes some time to sync to all nodes.
       // So here remove the selected users from local memory directly.
-      setUserData(difference(userData, selection));
+      setUserData(differenceBy(userData, selection, 'username'));
       setSelection([]);
     } catch (e) {
       console.log(e);

@@ -92,6 +92,20 @@ async function hasApiPermission(core: CoreSetup): Promise<boolean | undefined> {
 const DEFAULT_READONLY_ROLES = ['kibana_read_only'];
 const APP_ID_HOME = 'home';
 const APP_ID_DASHBOARDS = 'dashboards';
+// `discover` is a shim that redirects to `data-explorer`, and the app updater runs before
+// mount, so both ids are needed. `explore` redirects to `explore/logs` the same way.
+const APP_ID_DISCOVER = 'discover';
+const APP_ID_DATA_EXPLORER = 'data-explorer';
+const APP_ID_VISUALIZE = 'visualize';
+const DISCOVER_APP_IDS = [
+  APP_ID_DISCOVER,
+  APP_ID_DATA_EXPLORER,
+  'explore',
+  'explore/logs',
+  'explore/traces',
+  'explore/metrics',
+];
+const VISUALIZE_APP_IDS = [APP_ID_VISUALIZE, 'visualization-editor'];
 // OpenSearchDashboards app is for legacy url migration
 const APP_ID_OPENSEARCH_DASHBOARDS = 'kibana';
 const APP_ID_OVERVIEW = 'opensearch_dashboards_overview';
@@ -474,9 +488,15 @@ export class SecurityPlugin implements Plugin<
       });
     }
 
+    const readonlyAppAllowlist = [
+      ...APP_LIST_FOR_READONLY_ROLE,
+      ...(config.readonly_mode?.allow_discover ? DISCOVER_APP_IDS : []),
+      ...(config.readonly_mode?.allow_visualize ? VISUALIZE_APP_IDS : []),
+    ];
+
     core.application.registerAppUpdater(
       new BehaviorSubject<AppUpdater>((app) => {
-        if (!apiPermission && isReadonly && !APP_LIST_FOR_READONLY_ROLE.includes(app.id)) {
+        if (!apiPermission && isReadonly && !readonlyAppAllowlist.includes(app.id)) {
           return {
             status: AppStatus.inaccessible,
           };
