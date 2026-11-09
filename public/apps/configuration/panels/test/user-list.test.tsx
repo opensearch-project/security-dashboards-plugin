@@ -165,6 +165,32 @@ describe('User list', () => {
       });
     });
 
+    it('removes a deleted user by name when the selection holds a copy of the row', async () => {
+      const user = (username: string) => ({ username });
+      const setUserData = jest.fn();
+      // the spy sees only React.useState: user data, error flag, access error flag, then selection
+      (React.useState as jest.Mock)
+        .mockImplementationOnce(() => [[user('user_1'), user('user_2')], setUserData])
+        .mockImplementationOnce(() => [false, setState])
+        .mockImplementationOnce(() => [false, setState])
+        .mockImplementationOnce(() => [[user('user_1')], setState]);
+      // a single selected row renders a link built from the base path
+      const coreStart = { ...mockCoreStart, http: { basePath: { serverBasePath: '' } } };
+      shallow(
+        <UserList
+          coreStart={coreStart as any}
+          depsStart={{ navigation: {} }}
+          params={{} as any}
+          config={{} as any}
+        />
+      );
+      const deleteFunc = useDeleteConfirmState.mock.calls.slice(-1)[0][0];
+
+      await deleteFunc();
+
+      expect(setUserData).toHaveBeenCalledWith([user('user_2')]);
+    });
+
     it('delete user error', (done) => {
       requestDeleteUsers.mockImplementationOnce(() => {
         throw new Error();

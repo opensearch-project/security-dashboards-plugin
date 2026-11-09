@@ -19,9 +19,15 @@ import {
   HttpStart,
   IHttpInterceptController,
 } from '../../../../src/core/public';
-import { API_ENDPOINT_AUTHTYPE, CUSTOM_ERROR_PAGE_URI, LOGIN_PAGE_URI } from '../../common';
+import {
+  API_ENDPOINT_AUTHTYPE,
+  AuthType,
+  CUSTOM_ERROR_PAGE_URI,
+  LOGIN_PAGE_URI,
+} from '../../common';
 import { createLocalClusterRequestContext } from '../apps/configuration/utils/request-utils';
 import { setShouldShowTenantPopup } from './storage-utils';
+import { ClientConfigType } from '../types';
 
 export function interceptError(logoutUrl: string, thisWindow: Window): any {
   return (httpErrorResponse: HttpInterceptorResponseError, _: IHttpInterceptController) => {
@@ -50,4 +56,21 @@ export async function fetchCurrentAuthType(http: HttpStart): Promise<any> {
     http,
     url: API_ENDPOINT_AUTHTYPE,
   });
+}
+
+export async function getCurrentAuthType(
+  http: HttpStart,
+  config: ClientConfigType
+): Promise<string> {
+  const authType = config.auth?.type;
+  if (typeof authType === 'string') {
+    return authType;
+  } else if (Array.isArray(authType) && authType.length === 1) {
+    return authType[0];
+  }
+  try {
+    return (await fetchCurrentAuthType(http))?.currentAuthType;
+  } catch (e) {
+    return AuthType.BASIC;
+  }
 }

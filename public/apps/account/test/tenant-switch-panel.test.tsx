@@ -15,6 +15,7 @@
  */
 
 import { shallow } from 'enzyme';
+import { EuiCompressedComboBox } from '@elastic/eui';
 import React from 'react';
 import { fetchAccountInfo } from '../utils';
 import { getDashboardsInfo } from '../../../utils/dashboards-info-utils';
@@ -178,6 +179,64 @@ describe('Account menu -tenant switch panel', () => {
       expect(setState).toHaveBeenCalledWith([{ label: 'tenant1' }]);
       done();
     });
+  });
+
+  it('keeps the private tenant disabled when the yml setting disables it', async () => {
+    const config = {
+      multitenancy: {
+        enabled: true,
+        tenants: {
+          enable_private: false,
+          enable_global: true,
+        },
+      },
+    };
+    const component = shallow(
+      <TenantSwitchPanel
+        coreStart={mockCoreStart as any}
+        handleClose={handleClose}
+        handleSwitchAndClose={handleSwitchAndClose}
+        config={config as any}
+      />
+    );
+    await new Promise(process.nextTick);
+    component.update();
+
+    const privateRadio = component
+      .find('[data-test-subj="tenant-switch-radios"]')
+      .prop('options')
+      .find((option: any) => option.id === PRIVATE_TENANT_RADIO_ID);
+    expect(privateRadio.disabled).toBe(true);
+    expect(
+      shallow(<div>{privateRadio.label}</div>)
+        .find('i')
+        .text()
+    ).toBe('Contact the administrator to enable private tenant.');
+  });
+
+  it('disables the custom tenant combo box when there are no custom tenants', () => {
+    const component = shallow(
+      <TenantSwitchPanel
+        coreStart={mockCoreStart as any}
+        handleClose={handleClose}
+        handleSwitchAndClose={handleSwitchAndClose}
+        config={defaultConfig as any}
+      />
+    );
+    expect(component.find(EuiCompressedComboBox).prop('isDisabled')).toBe(true);
+  });
+
+  it('enables the custom tenant combo box when there are custom tenants', () => {
+    useState.mockImplementationOnce(() => [['global_tenant', 'tenant1'], setState]);
+    const component = shallow(
+      <TenantSwitchPanel
+        coreStart={mockCoreStart as any}
+        handleClose={handleClose}
+        handleSwitchAndClose={handleSwitchAndClose}
+        config={defaultConfig as any}
+      />
+    );
+    expect(component.find(EuiCompressedComboBox).prop('isDisabled')).toBe(false);
   });
 
   it('error occurred while fetching data', (done) => {

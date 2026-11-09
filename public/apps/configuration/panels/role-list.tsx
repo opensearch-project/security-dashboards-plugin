@@ -33,7 +33,7 @@ import {
   Query,
   EuiLoadingContent,
 } from '@elastic/eui';
-import { difference } from 'lodash';
+import { differenceBy } from 'lodash';
 import { AppDependencies } from '../../types';
 import {
   transformRoleData,
@@ -170,7 +170,7 @@ export function RoleList(props: AppDependencies) {
       // Refresh from server (calling fetchData) does not work here, the server still return the roles
       // that had been just deleted, probably because ES takes some time to sync to all nodes.
       // So here remove the selected roles from local memory directly.
-      setRoleData(difference(roleData, selection));
+      setRoleData(differenceBy(roleData, selection, 'roleName'));
       setSelection([]);
     } catch (e) {
       console.log(e);

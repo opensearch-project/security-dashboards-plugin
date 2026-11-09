@@ -38,7 +38,7 @@ import {
   EuiLoadingContent,
 } from '@elastic/eui';
 import React, { ReactNode, useState, useCallback } from 'react';
-import { difference } from 'lodash';
+import { differenceBy } from 'lodash';
 import { HashRouter as Router, Route } from 'react-router-dom';
 import { flow } from 'lodash';
 import { getCurrentUser } from '../../../../utils/auth-info-utils';
@@ -97,6 +97,8 @@ export function ManageTab(props: AppDependencies) {
   const [dashboardsDefaultTenant, setDashboardsDefaultTenant] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const dataSourceEnabled = !!props.depsStart.dataSource?.dataSourceEnabled;
+  const isPrivateTenantAvailable =
+    props.config.multitenancy.tenants.enable_private && isPrivateTenantEnabled;
 
   const { http } = props.coreStart;
 
@@ -135,7 +137,7 @@ export function ManageTab(props: AppDependencies) {
     const tenantsToDelete: string[] = selection.map((r) => r.tenant);
     try {
       await requestDeleteTenant(props.coreStart.http, tenantsToDelete);
-      setTenantData(difference(tenantData, selection));
+      setTenantData(differenceBy(tenantData, selection, 'tenant'));
       setSelection([]);
     } catch (e) {
       console.log(e);
@@ -284,7 +286,7 @@ export function ManageTab(props: AppDependencies) {
       if (
         !isMultiTenancyEnabled ||
         tenantName === dashboardsDefaultTenant ||
-        (dashboardsDefaultTenant === 'Private' && !isPrivateTenantEnabled) ||
+        (dashboardsDefaultTenant === 'Private' && !isPrivateTenantAvailable) ||
         dashboardsDefaultTenant === ''
       ) {
         return (
@@ -301,7 +303,7 @@ export function ManageTab(props: AppDependencies) {
     }
 
     if (tenantName === 'Private') {
-      if (isPrivateTenantEnabled && isMultiTenancyEnabled) {
+      if (isPrivateTenantAvailable && isMultiTenancyEnabled) {
         if (tenantName === dashboardsDefaultTenant) {
           return (
             <EuiFacetButton icon={<EuiIcon type="dot" color="primary" aria-hidden={true} />}>

@@ -35,7 +35,7 @@ import {
   EuiHorizontalRule,
   EuiSmallButtonEmpty,
 } from '@elastic/eui';
-import { difference } from 'lodash';
+import { differenceWith } from 'lodash';
 import { BreadcrumbsPageDependencies } from '../../../types';
 import { buildHashUrl, buildUrl } from '../../utils/url-builder';
 import {
@@ -94,6 +94,9 @@ const mappedUserColumns = [
     truncateText: true,
   },
 ];
+
+// a user and a backend role can share a name, so the row id includes the type
+const mappedUserRowId = (item: MappedUsersListing) => `${item.userType}:${item.userName}`;
 
 export function RoleView(props: RoleViewProps) {
   const duplicateRoleLink = buildHashUrl(ResourceType.roles, Action.duplicate, props.roleName);
@@ -170,21 +173,22 @@ export function RoleView(props: RoleViewProps) {
 
   const handleRoleMappingDelete = async () => {
     try {
-      const usersToDelete: string[] = selection.map((r) => r.userName);
-      const internalUsers: string[] = mappedUsers
-        .filter((r) => r.userType === UserType.internal)
-        .map((r) => r.userName);
-      const externalIdentities: string[] = mappedUsers
-        .filter((r) => r.userType === UserType.external)
-        .map((r) => r.userName);
+      // a user and a backend role can share a name, so match on both fields
+      const remainingUsers = differenceWith(
+        mappedUsers,
+        selection,
+        (a, b) => a.userName === b.userName && a.userType === b.userType
+      );
+      const namesOfType = (userType: UserType) =>
+        remainingUsers.filter((r) => r.userType === userType).map((r) => r.userName);
       const updateObject: RoleMappingDetail = {
-        users: difference(internalUsers, usersToDelete),
-        backend_roles: difference(externalIdentities, usersToDelete),
+        users: namesOfType(UserType.internal),
+        backend_roles: namesOfType(UserType.external),
         hosts,
       };
       await updateRoleMapping(props.coreStart.http, props.roleName, updateObject, dataSource.id);
 
-      setMappedUsers(difference(mappedUsers, selection));
+      setMappedUsers(remainingUsers);
       setSelection([]);
     } catch (e) {
       console.log(e);
@@ -356,7 +360,7 @@ export function RoleView(props: RoleViewProps) {
                 loading={mappedUsers === [] && !errorFlag}
                 columns={mappedUserColumns}
                 items={mappedUsers}
-                itemId={'userName'}
+                itemId={mappedUserRowId}
                 pagination={true}
                 message={showTableStatusMessage(loading, mappedUsers, emptyListMessage)}
                 selection={{ onSelectionChange: setSelection }}

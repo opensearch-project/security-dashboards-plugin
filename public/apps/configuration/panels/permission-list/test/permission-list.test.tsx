@@ -27,6 +27,7 @@ import {
   requestDeleteActionGroups,
   fetchActionGroups,
   updateActionGroup,
+  mergeAllPermissions,
   PermissionListingItem,
 } from '../../../utils/action-groups-utils';
 import { useDeleteConfirmState } from '../../../utils/delete-confirm-modal-utils';
@@ -217,6 +218,54 @@ describe('Permission list page ', () => {
         expect(requestDeleteActionGroups).toHaveBeenCalledWith(mockCoreStart.http, [], 'test');
         done();
       });
+    });
+
+    it('removes deleted action groups that were selected before a refetch', async () => {
+      // each fetch returns new objects, as the server response does
+      const fetchedItems = () =>
+        ['group1', 'group2'].map((name) => ({ ...sampleActionGroup, name }));
+      mergeAllPermissions
+        .mockResolvedValueOnce(fetchedItems())
+        .mockResolvedValueOnce(fetchedItems());
+      const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
+      const component = shallow(
+        <PermissionList
+          coreStart={mockCoreStart as any}
+          depsStart={{} as any}
+          params={{} as any}
+          config={{} as any}
+        />
+      );
+      const saveAndRefetch = async () => {
+        component.find('#create-from-selection').simulate('click');
+        await component.find(PermissionEditModal).prop('handleSave')('group3', []);
+        await flush();
+        component.update();
+      };
+      const listedNames = () =>
+        component
+          .find(EuiInMemoryTable)
+          .prop('items')
+          .map((item: PermissionListingItem) => item.name);
+
+      await saveAndRefetch();
+      const group1 = component
+        .find(EuiInMemoryTable)
+        .prop('items')
+        .find((item: PermissionListingItem) => item.name === 'group1');
+      component.find(EuiInMemoryTable).prop('selection').onSelectionChange([group1]);
+      await saveAndRefetch();
+
+      const handleDelete = useDeleteConfirmState.mock.calls.slice(-1)[0][0];
+      await handleDelete();
+      component.update();
+
+      expect(requestDeleteActionGroups).toHaveBeenCalledWith(
+        mockCoreStart.http,
+        ['group1'],
+        'test'
+      );
+      expect(listedNames()).toEqual(['group2']);
     });
 
     it('edit and duplicate button should be enabled when there is 1 custom action group selected', () => {

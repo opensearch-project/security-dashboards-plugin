@@ -35,7 +35,7 @@ import {
   Query,
   EuiLoadingContent,
 } from '@elastic/eui';
-import { difference } from 'lodash';
+import { differenceBy } from 'lodash';
 import React, {
   Dispatch,
   ReactNode,
@@ -237,7 +237,8 @@ export function PermissionList(props: AppDependencies) {
     const groupsToDelete: string[] = selection.map((r) => r.name);
     try {
       await requestDeleteActionGroups(props.coreStart.http, groupsToDelete, dataSource.id);
-      setPermissionList(difference(permissionList, selection));
+      // match by name: a refetch replaces the listed objects, so the selection may hold older copies
+      setPermissionList(differenceBy(permissionList, selection, 'name'));
       setSelection([]);
     } catch (e) {
       console.log(e);
