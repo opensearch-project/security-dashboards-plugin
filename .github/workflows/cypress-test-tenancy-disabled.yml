@@ -7,9 +7,8 @@ env:
   TEST_BROWSER_HEADLESS: 1
   CI: 1
   FTR_PATH: 'ftr'
-  START_CMD: 'node ../scripts/opensearch_dashboards --dev --no-base-path --no-watch --opensearch_security.multitenancy.enable_aggregation_view=true'
+  START_CMD: 'node ../scripts/opensearch_dashboards --dev --no-base-path --no-watch'
   OPENSEARCH_SNAPSHOT_CMD: 'node ../scripts/opensearch snapshot'
-  SPEC: 'cypress/integration/plugins/security-dashboards-plugin/aggregation_view.js,'
   PLUGIN_NAME: opensearch-security
   OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
 
@@ -88,5 +87,5 @@ jobs:
           sleep 500
           git clone https://github.com/opensearch-project/opensearch-dashboards-functional-test.git
           cd opensearch-dashboards-functional-test
-          npm install cypress --save-dev
+          npm ci
           yarn cypress:run-with-security --browser chrome --spec "cypress/integration/plugins/security/inaccessible_tenancy_features.js"
