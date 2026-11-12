@@ -103,6 +103,13 @@ runs:
         done
       shell: bash
 
+    # Build and start Dashboards with its required Node version before switching
+    # the test runner: Cypress 15 does not support Node 18 used by Dashboards 2.19.
+    - name: Set up Node.js for Cypress
+      uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+      with:
+        node-version: '22'
+
     - name: Run Cypress Tests with retry
       run: |
         cd ./OpenSearch-Dashboards/plugins/security-dashboards-plugin
