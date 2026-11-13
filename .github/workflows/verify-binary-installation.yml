@@ -72,7 +72,7 @@ jobs:
 
       - name: Run Dashboard with Security Dashboards Plugin
         id: setup-dashboards
-        uses: opensearch-project/opensearch-build/.github/actions/setup-opensearch-dashboards@350f76bcccd3a8e3b85c03a77d52abdfb0fcbecf
+        uses: opensearch-project/opensearch-build/.github/actions/setup-opensearch-dashboards@9d5b8833de44966ef503339dfe390fb62aae0277
         with:
           plugin_name: security-dashboards-plugin
           built_plugin_name: security-dashboards
