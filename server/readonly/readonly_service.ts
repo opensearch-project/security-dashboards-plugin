@@ -92,10 +92,19 @@ export class ReadonlyService extends BaseReadonlyService {
 
     try {
       const cookie = await this.securitySessionStorageFactory.asScoped(request).get();
-      let headers = request.headers;
-
-      if (!this.auth.requestIncludesAuthInfo(request) && cookie) {
-        headers = this.auth.buildAuthHeaderFromCookie(cookie, request);
+      // Send only auth headers, built as the auth handler does. The raw request headers carry
+      // the browser's Host, which breaks the TLS hostname check toward OpenSearch.
+      let headers;
+      if (this.auth.requestIncludesAuthInfo(request)) {
+        headers = await this.auth.getAdditionalAuthHeader(request);
+      } else if (cookie) {
+        headers = {
+          ...this.auth.buildAuthHeaderFromCookie(cookie, request),
+          ...(await this.auth.getAdditionalAuthHeader(request)),
+        };
+      } else {
+        // a call without credentials fails and counts toward the backend's failed login limit
+        return false;
       }
 
       const dashboardsInfo = await this.securityClient.dashboardsinfo(request, headers);
