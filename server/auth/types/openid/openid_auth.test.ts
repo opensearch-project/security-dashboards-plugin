@@ -22,6 +22,7 @@ import {
 } from '../../../../../../src/core/server/http/router';
 
 import { OpenIdAuthentication } from './openid_auth';
+import { OpenIdDiscovery } from './discovery';
 import { SecurityPluginConfigType } from '../../../index';
 import { SecuritySessionCookie } from '../../../session/security_cookie';
 import { deflateValue } from '../../../utils/compression';
@@ -309,6 +310,13 @@ describe('test OpenId authHeaderValue', () => {
       res: { statusCode: 200 },
       payload: mockResponsePayload,
     });
+    (openIdAuthentication as any).discovery = new OpenIdDiscovery(
+      async () => ({
+        authorization_endpoint: 'https://idp.example/authorize',
+        token_endpoint: 'https://idp.example/token',
+      }),
+      jest.fn()
+    );
 
     expect(await openIdAuthentication.isValidCookie(testCookie, {})).toBe(true);
     expect(mockClient.post).toHaveBeenCalledTimes(1);
