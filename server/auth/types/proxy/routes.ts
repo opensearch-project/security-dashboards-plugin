@@ -56,7 +56,7 @@ export class ProxyAuthRoutes {
           const nextUrl =
             request.query.nextUrl ||
             `${this.coreSetup.http.basePath.serverBasePath}/app/opensearch-dashboards`;
-          response.redirected({
+          return response.redirected({
             headers: {
               location: nextUrl,
             },

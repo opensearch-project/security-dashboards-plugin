@@ -202,7 +202,9 @@ export function defineResourceAccessManagementRoutes(router: IRouter, dataSource
       try {
         if (dataSourceEnabled && request.query?.dataSourceId) {
           const client = context.dataSource.opensearch.legacy.getClient(request.query.dataSourceId);
-          const result = await client.callAPI('opensearch_security.shareResource', request.body);
+          const result = await client.callAPI('opensearch_security.shareResource', {
+            body: request.body,
+          });
           return response.ok({ body: result as any });
         } else {
           const client = context.core.opensearch.client.asCurrentUser;
@@ -234,10 +236,9 @@ export function defineResourceAccessManagementRoutes(router: IRouter, dataSource
       try {
         if (dataSourceEnabled && request.query?.dataSourceId) {
           const client = context.dataSource.opensearch.legacy.getClient(request.query.dataSourceId);
-          const result = await client.callAPI(
-            'opensearch_security.updateResourceSharing',
-            request.body
-          );
+          const result = await client.callAPI('opensearch_security.updateResourceSharing', {
+            body: request.body,
+          });
           return response.ok({ body: result as any });
         } else {
           const client = context.core.opensearch.client.asCurrentUser;
