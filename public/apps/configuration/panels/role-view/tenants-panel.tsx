@@ -26,7 +26,7 @@ import {
 import { CoreStart } from 'opensearch-dashboards/public';
 import { getCurrentUser } from '../../../../utils/auth-info-utils';
 import { PanelWithHeader } from '../../utils/panel-with-header';
-import { RoleTenantPermissionView, RoleTenantPermissionDetail, Action } from '../../types';
+import { RoleTenantPermissionView, RoleTenantPermissionDetail, Action, Tenant } from '../../types';
 import { ResourceType } from '../../../../../common';
 import { truncatedListView, tableItemsUIProps } from '../../utils/display-utils';
 import {
@@ -53,31 +53,39 @@ interface RoleViewTenantsPanelProps {
 }
 
 export function TenantsPanel(props: RoleViewTenantsPanelProps) {
-  const [tenantPermissionDetail, setTenantPermissionDetail] = React.useState<
-    RoleTenantPermissionDetail[]
-  >([]);
+  const [tenantList, setTenantList] = React.useState<Tenant[]>();
   const [currentUsername, setCurrentUsername] = React.useState('');
   const [toasts, addToast, removeToast] = useToastState();
   const [errorFlag, setErrorFlag] = React.useState(props.errorFlag);
 
   React.useEffect(() => {
+    // A load for an older data source can finish after a newer one; ignore its result.
+    let isCurrent = true;
     const fetchData = async () => {
       try {
         const rawTenantData = await fetchTenants(props.coreStart.http, props.dataSourceId);
-        const processedTenantData = transformTenantData(rawTenantData);
-        setTenantPermissionDetail(
-          transformRoleTenantPermissionData(props.tenantPermissions, processedTenantData)
-        );
+        if (!isCurrent) return;
+        setTenantList(transformTenantData(rawTenantData));
         const currentUser = await getCurrentUser(props.coreStart.http);
+        if (!isCurrent) return;
         setCurrentUsername(currentUser);
       } catch (e) {
         console.log(e);
-        setErrorFlag(true);
+        if (isCurrent) setErrorFlag(true);
       }
     };
 
     fetchData();
-  }, [props]);
+    return () => {
+      isCurrent = false;
+    };
+  }, [props.coreStart.http, props.dataSourceId]);
+
+  const tenantPermissionDetail = React.useMemo<RoleTenantPermissionDetail[]>(
+    () =>
+      tenantList ? transformRoleTenantPermissionData(props.tenantPermissions, tenantList) : [],
+    [props.tenantPermissions, tenantList]
+  );
 
   const viewDashboard = async (tenantName: string) => {
     try {
