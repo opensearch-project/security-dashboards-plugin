@@ -265,11 +265,18 @@ describe('Role view - tenant panel', () => {
         },
       ];
 
+      const mockTenantList = [
+        { tenant: 'tenant_1', reserved: false, description: '', tenantValue: 'tenant_1' },
+      ];
+
+      mockTenantUtils.transformTenantData = jest.fn().mockReturnValue(mockTenantList);
       mockTenantUtils.transformRoleTenantPermissionData = jest
         .fn()
         .mockReturnValue(mockTenantPermissionData);
+      // The first state is the tenant list; return a loaded list so the table data is derived.
+      (React.useState as jest.Mock).mockImplementationOnce(() => [mockTenantList, setState]);
 
-      shallow(
+      const wrapper = shallow(
         <TenantsPanel
           roleName={sampleRoleName}
           tenantPermissions={[]}
@@ -285,7 +292,12 @@ describe('Role view - tenant panel', () => {
         expect(mockTenantUtils.transformTenantData).toHaveBeenCalledTimes(1);
         expect(mockTenantUtils.transformRoleTenantPermissionData).toHaveBeenCalledTimes(1);
         expect(mockAuthInfoUtils.getCurrentUser).toHaveBeenCalledTimes(1);
-        expect(setState).toHaveBeenCalledWith(mockTenantPermissionData);
+        expect(setState).toHaveBeenCalledWith(mockTenantList);
+        expect(mockTenantUtils.transformRoleTenantPermissionData).toHaveBeenCalledWith(
+          [],
+          mockTenantList
+        );
+        expect(wrapper.find(EuiInMemoryTable).prop('items')).toEqual(mockTenantPermissionData);
         done();
       });
     });
