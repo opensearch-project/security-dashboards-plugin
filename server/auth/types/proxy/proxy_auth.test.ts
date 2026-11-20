@@ -76,7 +76,7 @@ describe('Proxy auth tests', () => {
   });
 
   describe('header handling', () => {
-    const proxyConfig = ({
+    const proxyConfig = {
       session: { ttl: 1000 },
       proxycache: {
         user_header: 'X-Proxy-User',
@@ -85,7 +85,7 @@ describe('Proxy auth tests', () => {
         proxy_header_ip: '10.0.0.1',
         login_endpoint: 'https://idp.example.com/login',
       },
-    } as unknown) as SecurityPluginConfigType;
+    } as unknown as SecurityPluginConfigType;
 
     const newAuth = (c: SecurityPluginConfigType = proxyConfig) =>
       new ProxyAuthentication(c, sessionStorageFactory, router, esClient, core, logger);
@@ -119,7 +119,7 @@ describe('Proxy auth tests', () => {
     });
 
     test('requestIncludesAuthInfo is false when no user header is configured', () => {
-      const auth = newAuth(({ session: { ttl: 1000 } } as unknown) as SecurityPluginConfigType);
+      const auth = newAuth({ session: { ttl: 1000 } } as unknown as SecurityPluginConfigType);
       expect(
         auth.requestIncludesAuthInfo(
           requestWithHeaders({ 'x-forwarded-for': '1.2.3.4', 'x-proxy-user': 'alice' })
@@ -138,10 +138,10 @@ describe('Proxy auth tests', () => {
     });
 
     test('getAdditionalAuthHeader adds nothing without proxy_header_ip', async () => {
-      const auth = newAuth(({
+      const auth = newAuth({
         session: { ttl: 1000 },
         proxycache: { user_header: 'x-proxy-user', proxy_header: 'x-forwarded-for' },
-      } as unknown) as SecurityPluginConfigType);
+      } as unknown as SecurityPluginConfigType);
       expect(await auth.getAdditionalAuthHeader(requestWithHeaders({}))).toEqual({});
     });
 

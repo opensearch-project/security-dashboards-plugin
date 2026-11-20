@@ -1,4 +1,20 @@
 /*
+ * SPDX-License-Identifier: Apache-2.0
+ *   Copyright OpenSearch Contributors
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License").
+ *   You may not use this file except in compliance with the License.
+ *   A copy of the License is located at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   or in the "license" file accompanying this file. This file is distributed
+ *   on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ *   express or implied. See the License for the specific language governing
+ *   permissions and limitations under the License.
+ */
+
+/*
  *   Copyright OpenSearch Contributors
  *
  *   Licensed under the Apache License, Version 2.0 (the "License").
@@ -25,16 +41,16 @@ import { ProxyAuthRoutes } from './routes';
 function setup(config: Partial<SecurityPluginConfigType> = {}, serverBasePath = '/osd') {
   const capture = captureRoutes();
   const clear = jest.fn();
-  const sessionStorageFactory = ({
+  const sessionStorageFactory = {
     asScoped: jest.fn(() => ({ clear })),
-  } as unknown) as SessionStorageFactory<SecuritySessionCookie>;
-  const coreSetup = ({ http: { basePath: { serverBasePath } } } as unknown) as CoreSetup;
+  } as unknown as SessionStorageFactory<SecuritySessionCookie>;
+  const coreSetup = { http: { basePath: { serverBasePath } } } as unknown as CoreSetup;
 
   new ProxyAuthRoutes(
     capture.router,
     config as SecurityPluginConfigType,
     sessionStorageFactory,
-    ({} as unknown) as SecurityClient,
+    {} as unknown as SecurityClient,
     coreSetup
   ).setupRoutes();
 
