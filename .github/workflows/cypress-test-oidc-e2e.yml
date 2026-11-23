@@ -66,6 +66,8 @@ jobs:
       - name: Get and run Keycloak on Linux
         if: ${{ runner.os == 'Linux' }}
         run: |
+          # Keycloak 21 requires an older Java runtime than the runner default.
+          export JAVA_HOME="${JAVA_HOME_17_X64:?Java 17 is required for Keycloak 21}"
           export KEYCLOAK_ADMIN=admin
           export KEYCLOAK_ADMIN_PASSWORD=admin
           cd keycloak-${{ env.KEYCLOAK_VERSION }}/bin
