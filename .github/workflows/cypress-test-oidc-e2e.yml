@@ -6,14 +6,14 @@ permissions:
   contents: read
 
 env:
-  KEYCLOAK_VERSION: '21.0.1'
+  KEYCLOAK_VERSION: '26.8.2'
   TEST_KEYCLOAK_CLIENT_SECRET: 'oacHfNaXyy81r2uHq1A9RY4ASryre4rZ'
   CI: 1
   # avoid warnings like "tput: No value for $TERM and no -T specified"
   TERM: xterm
   PLUGIN_NAME: opensearch-security
-  # This is the SHA256 checksum of the known good kc.sh script for Keycloak version 21.0.1.
-  KNOWN_CHECKSUM_OF_KEYCLOAK_SCRIPT: 'f825ea1a9ffa5ad91673737c06857ababbb69b6b8f09e0c637b4c998517f9608'
+  # This is the SHA256 checksum of the known good kc.sh script for Keycloak version 26.8.2.
+  KNOWN_CHECKSUM_OF_KEYCLOAK_SCRIPT: '5f68e52cc8f86336b4b674e48a465ca9249e27dd4ba5aafa126437b648020afe'
   OPENSEARCH_INITIAL_ADMIN_PASSWORD: myStrongPassword123!
   
 jobs:
@@ -66,12 +66,13 @@ jobs:
       - name: Get and run Keycloak on Linux
         if: ${{ runner.os == 'Linux' }}
         run: |
-          export KEYCLOAK_ADMIN=admin
-          export KEYCLOAK_ADMIN_PASSWORD=admin
+          export JAVA_HOME="${JAVA_HOME_25_X64:?Java 25 is required for Keycloak}"
+          export KC_BOOTSTRAP_ADMIN_USERNAME=admin
+          export KC_BOOTSTRAP_ADMIN_PASSWORD=admin
           cd keycloak-${{ env.KEYCLOAK_VERSION }}/bin
           echo "Starting keycloak"
-          ./kc.sh start-dev --http-enabled=true --hostname-strict-https=false --http-host=localhost --http-relative-path /auth --health-enabled=true &
-          timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/auth/health)" != "200" ]]; do sleep 5; done'
+          ./kc.sh start-dev --http-enabled=true --http-host=localhost --http-relative-path /auth --health-enabled=true &
+          timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9000/auth/health/ready)" != "200" ]]; do sleep 5; done'
           chmod +x kcadm.sh
           echo "Creating client"
           ./kcadm.sh config credentials --server http://localhost:8080/auth --realm master --user admin --password admin
