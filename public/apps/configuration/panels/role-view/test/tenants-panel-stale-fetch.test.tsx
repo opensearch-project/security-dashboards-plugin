@@ -42,6 +42,11 @@ jest.mock('../../../utils/tenant-utils', () => ({
 jest.mock('../../../../../utils/auth-info-utils');
 
 describe('Role view tenants panel with overlapping loads', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+    (fetchTenants as jest.Mock).mockReset();
+  });
+
   const baseProps = {
     roleName: 'role',
     errorFlag: false,
@@ -74,5 +79,68 @@ describe('Role view tenants panel with overlapping loads', () => {
     expect((fetchTenants as jest.Mock).mock.calls.map((call) => call[1])).toEqual(['old', 'new']);
     expect(queryAllByText('View dashboard')).toHaveLength(1);
     expect(container.textContent).toContain('Tenant permissions (1)');
+  });
+
+  it('shows the loading state until the tenants load', async () => {
+    let finishLoad: (value: unknown) => void = () => {};
+    (fetchTenants as jest.Mock).mockImplementationOnce(
+      () => new Promise((resolve) => (finishLoad = resolve))
+    );
+    (getCurrentUser as jest.Mock).mockResolvedValue('admin');
+
+    const { container } = render(<TenantsPanel {...baseProps} dataSourceId="ds" />);
+    expect(container.querySelector('.euiBasicTable-loading')).not.toBeNull();
+
+    await act(async () => {
+      finishLoad(tenants);
+    });
+    expect(container.querySelector('.euiBasicTable-loading')).toBeNull();
+  });
+
+  it('does not show the tenants of the previous data source while the next one loads', async () => {
+    (fetchTenants as jest.Mock)
+      .mockImplementationOnce(() => Promise.resolve(tenants))
+      .mockImplementationOnce(() => new Promise(() => {}));
+    (getCurrentUser as jest.Mock).mockResolvedValue('admin');
+
+    const { rerender, container, queryAllByText } = render(
+      <TenantsPanel {...baseProps} dataSourceId="first" />
+    );
+    await waitFor(() => expect(queryAllByText('View dashboard')).toHaveLength(1));
+
+    rerender(<TenantsPanel {...baseProps} dataSourceId="second" />);
+    expect(queryAllByText('View dashboard')).toHaveLength(0);
+    expect(container.querySelector('.euiBasicTable-loading')).not.toBeNull();
+  });
+
+  it('clears a load error when the next data source loads', async () => {
+    (fetchTenants as jest.Mock)
+      .mockImplementationOnce(() => Promise.reject(new Error('unreachable')))
+      .mockImplementationOnce(() => Promise.resolve(tenants));
+    (getCurrentUser as jest.Mock).mockResolvedValue('admin');
+    jest.spyOn(console, 'log').mockImplementation(() => {});
+
+    const { rerender, container, queryAllByText } = render(
+      <TenantsPanel {...baseProps} dataSourceId="broken" />
+    );
+    await waitFor(() => expect(container.textContent).toContain('Load data failed'));
+
+    rerender(<TenantsPanel {...baseProps} dataSourceId="working" />);
+    await waitFor(() => expect(queryAllByText('View dashboard')).toHaveLength(1));
+    expect(container.textContent).not.toContain('Load data failed');
+  });
+
+  it('shows a role load error that the parent reports after mount', async () => {
+    (fetchTenants as jest.Mock).mockResolvedValue(tenants);
+    (getCurrentUser as jest.Mock).mockResolvedValue('admin');
+
+    const { rerender, container, queryAllByText } = render(
+      <TenantsPanel {...baseProps} dataSourceId="ds" />
+    );
+    await waitFor(() => expect(queryAllByText('View dashboard')).toHaveLength(1));
+    expect(container.textContent).not.toContain('Load data failed');
+
+    rerender(<TenantsPanel {...baseProps} dataSourceId="ds" errorFlag={true} />);
+    expect(container.textContent).toContain('Load data failed');
   });
 });
