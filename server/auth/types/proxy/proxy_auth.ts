@@ -36,8 +36,6 @@ export class ProxyAuthentication extends AuthenticationType {
 
   public readonly type: string = 'proxy';
 
-  private readonly authType: string = 'proxycache';
-
   private readonly userHeaderName: string;
   private readonly roleHeaderName: string;
 
@@ -90,7 +88,7 @@ export class ProxyAuthentication extends AuthenticationType {
     const cookie: SecuritySessionCookie = {
       username: authInfo.username,
       credentials: {},
-      authType: this.authType,
+      authType: this.type,
       isAnonymousAuth: false,
       expiryTime: Date.now() + this.config.session.ttl,
     };
