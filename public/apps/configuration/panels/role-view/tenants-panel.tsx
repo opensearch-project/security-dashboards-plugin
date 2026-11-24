@@ -56,11 +56,14 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
   const [tenantList, setTenantList] = React.useState<Tenant[]>();
   const [currentUsername, setCurrentUsername] = React.useState('');
   const [toasts, addToast, removeToast] = useToastState();
-  const [errorFlag, setErrorFlag] = React.useState(props.errorFlag);
+  // A tenant load failure; the role load failure comes in as props.errorFlag.
+  const [errorFlag, setErrorFlag] = React.useState(false);
 
   React.useEffect(() => {
     // A load for an older data source can finish after a newer one; ignore its result.
     let isCurrent = true;
+    setTenantList(undefined);
+    setErrorFlag(false);
     const fetchData = async () => {
       try {
         const rawTenantData = await fetchTenants(props.coreStart.http, props.dataSourceId);
@@ -86,6 +89,7 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
       tenantList ? transformRoleTenantPermissionData(props.tenantPermissions, tenantList) : [],
     [props.tenantPermissions, tenantList]
   );
+  const showError = errorFlag || props.errorFlag;
 
   const viewDashboard = async (tenantName: string) => {
     try {
@@ -205,11 +209,11 @@ export function TenantsPanel(props: RoleViewTenantsPanelProps) {
         <EuiInMemoryTable
           data-test-subj="tenant-permission-container"
           tableLayout={'auto'}
-          loading={tenantPermissionDetail === [] && !errorFlag}
+          loading={tenantList === undefined && !showError}
           columns={columns}
           items={tenantPermissionDetail}
           sorting={{ sort: { field: 'type', direction: 'asc' } }}
-          error={errorFlag ? 'Load data failed, please check console log for more detail.' : ''}
+          error={showError ? 'Load data failed, please check console log for more detail.' : ''}
           message={showTableStatusMessage(props.loading, props.tenantPermissions, emptyListMessage)}
         />
       </PanelWithHeader>
