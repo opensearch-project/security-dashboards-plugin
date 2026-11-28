@@ -26,6 +26,12 @@ import {
   SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT,
   SUB_URL_FOR_GENERAL_SETTINGS_EDIT,
 } from './panels/audit-logging/constants';
+import { StandaloneAudit } from './panels/standalone-audit/standalone-audit';
+import { StandaloneAuditEditSettings } from './panels/standalone-audit/standalone-audit-edit-settings';
+import {
+  SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT as STANDALONE_SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT,
+  SUB_URL_FOR_GENERAL_SETTINGS_EDIT as STANDALONE_SUB_URL_FOR_GENERAL_SETTINGS_EDIT,
+} from './panels/standalone-audit/constants';
 import { AuthView } from './panels/auth-view/auth-view';
 import { GetStarted } from './panels/get-started';
 import { InternalUserEdit } from './panels/internal-user-edit/internal-user-edit';
@@ -88,6 +94,11 @@ export const ROUTE_MAP: { [key: string]: RouteItem } = {
     breadCrumbDisplayNameWithoutSecurityBase: 'Audit logs',
     href: buildUrl(ResourceType.auditLogging),
   },
+  [ResourceType.standaloneAudit]: {
+    name: 'Standalone audit',
+    breadCrumbDisplayNameWithoutSecurityBase: 'Standalone audit logging',
+    href: buildUrl(ResourceType.standaloneAudit),
+  },
   [ResourceType.apiTokens]: {
     name: 'API Keys',
     breadCrumbDisplayNameWithoutSecurityBase: 'API Keys',
@@ -104,6 +115,7 @@ const getRouteList = (multitenancyEnabled: boolean, apiKeysEnabled: boolean = fa
     ROUTE_MAP[ResourceType.permissions],
     ...(multitenancyEnabled ? [ROUTE_MAP[ResourceType.tenants]] : []),
     ROUTE_MAP[ResourceType.auditLogging],
+    ROUTE_MAP[ResourceType.standaloneAudit],
     ...(apiKeysEnabled ? [ROUTE_MAP[ResourceType.apiTokens]] : []),
   ];
 };
@@ -114,6 +126,8 @@ export const allNavPanelUrls = (multitenancyEnabled: boolean, apiKeysEnabled: bo
     .concat([
       buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_GENERAL_SETTINGS_EDIT,
       buildUrl(ResourceType.auditLogging) + SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT,
+      buildUrl(ResourceType.standaloneAudit) + STANDALONE_SUB_URL_FOR_GENERAL_SETTINGS_EDIT,
+      buildUrl(ResourceType.standaloneAudit) + STANDALONE_SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT,
       ...(multitenancyEnabled ? [buildUrl(ResourceType.tenantsConfigureTab)] : []),
     ]);
 
@@ -215,6 +229,30 @@ export function AppRouter(props: AppDependencies) {
                 path={ROUTE_MAP.auditLogging.href + '/:fromType?'}
                 render={(match) => {
                   return <AuditLogging {...{ ...props, ...match.match.params }} />;
+                }}
+              />
+              <Route
+                path={
+                  buildUrl(ResourceType.standaloneAudit) +
+                  STANDALONE_SUB_URL_FOR_GENERAL_SETTINGS_EDIT
+                }
+                render={() => {
+                  return <StandaloneAuditEditSettings setting={'general'} {...props} />;
+                }}
+              />
+              <Route
+                path={
+                  buildUrl(ResourceType.standaloneAudit) +
+                  STANDALONE_SUB_URL_FOR_COMPLIANCE_SETTINGS_EDIT
+                }
+                render={() => {
+                  return <StandaloneAuditEditSettings setting={'compliance'} {...props} />;
+                }}
+              />
+              <Route
+                path={ROUTE_MAP.standaloneAudit.href + '/:fromType?'}
+                render={(match) => {
+                  return <StandaloneAudit {...{ ...props, ...match.match.params }} />;
                 }}
               />
               <Route
